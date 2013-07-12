@@ -6,6 +6,7 @@ wordpress/local-config.php
 .buildpath
 .project
 .settings
+*sublime*
 db
 docs/
 *~
