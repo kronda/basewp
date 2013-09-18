@@ -7,8 +7,9 @@ wordpress/local-config.php
 .project
 .settings
 *sublime*
+*.sass-cache*
+*debug.log*
+docs
 db
-docs/
 *~
 .DS_Store
-/.gitattributes
