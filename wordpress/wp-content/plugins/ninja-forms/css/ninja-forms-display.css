@@ -1,0 +1,257 @@
+a.tooltip {outline:none; text-decoration: none; }
+a.tooltip strong {line-height:30px;}
+a.tooltip:hover {text-decoration:none;}
+a.tooltip span {
+    z-index:10;display:none; padding:14px 20px;
+    margin-top:-10px; margin-left:28px;
+    width:240px; line-height:16px;
+    z-index: 1;
+    position: relative;
+}
+a.tooltip span:before {
+    border-top: 10px solid transparent;
+    border-right: 15px solid #ccc;
+    border-bottom: 10px solid transparent;
+    content: "";
+    position: absolute;
+    left: -15px;
+
+}
+a.tooltip:hover span{
+    display:inline; position:absolute; color:#333;
+    border:1px solid #ccc; background:#f1f1f1;}
+
+/*CSS3 extras*/
+a.tooltip span
+{
+    border-radius:4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+
+    -moz-box-shadow: 5px 5px 8px #CCC;
+    -webkit-box-shadow: 5px 5px 8px #CCC;
+    box-shadow: 5px 5px 8px #CCC;
+}
+#ui-datepicker-div {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+#ui-datepicker-div a {
+    text-decoration: none;
+    cursor: pointer;
+}
+#ui-datepicker-div .ui-datepicker-header,
+#ui-datepicker-div .ui-datepicker-calendar th,
+#ui-datepicker-div .ui-datepicker-calendar td {
+    padding: 5px;
+    text-align: center;
+}
+
+#ui-datepicker-div .ui-icon {
+    text-indent: 0px;
+}
+.ui-datepicker-prev {
+    float: left;
+}
+.ui-datepicker-next {
+    float: right;
+}
+.ninja-forms-no-display {
+    display: none;
+}
+.ninja-forms-form .wp-switch-editor {
+    height: auto;
+}
+.ninja-forms-form .mceIframeContainer {
+    background: #fff;
+}
+.ninja-forms-req-symbol {
+    color: #ff0000;
+}
+.ninja-forms-form .label-above label,
+.ninja-forms-form .label-below label {
+    display: block;
+}
+
+.field-wrap,
+#ninja_forms_required_items {
+    margin-bottom: 10px;
+}
+
+#pass-strength-result {
+    background-color: #eee;
+    border-color: #ddd !important;
+    border-style: solid;
+    border-width: 1px;
+    float: left;
+    margin: 13px 5px 5px 1px;
+    padding: 3px 5px;
+    text-align: center;
+    width: 200px;
+}
+
+#pass-strength-result.bad {
+    background-color: #ffb78c;
+    border-color: #ff853c !important;
+}
+
+#pass-strength-result.good {
+    background-color: #ffec8b;
+    border-color: #fc0 !important;
+}
+
+#pass-strength-result.short {
+    background-color: #ffa0a0;
+    border-color: #f04040 !important;
+}
+
+#pass-strength-result.strong {
+    background-color: #c3ff88;
+    border-color: #8dff1c !important;
+}
+
+
+.ninja-forms-form-wrap .ninja-forms-form .field-wrap:after {
+    clear: both;
+    content: "";
+    display: block;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .field-wrap.label-left .ninja-forms-field,
+.ninja-forms-form-wrap .ninja-forms-form .field-wrap.label-left .ninja-forms-star-rating-control {
+    margin-left: 8px;
+}
+.ninja-forms-form-wrap .ninja-forms-form .field-wrap.label-right .ninja-forms-field,
+.ninja-forms-form-wrap .ninja-forms-form .field-wrap.label-right .ninja-forms-star-rating-control {
+    margin-right: 8px;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .label-above label {
+    margin-bottom: 5px;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .MultiFile-wrap {
+    display: inline-block;
+}
+
+/* ---------------------------------
+TEXT FIELDS & TEXTAREAS
+----------------------------------*/
+
+.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-left input,
+.ninja-forms-form-wrap .ninja-forms-form .profile_pass-wrap.label-left input,
+.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-left textarea {
+    margin-left: 10px;
+}
+.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-right input,
+.ninja-forms-form-wrap .ninja-forms-form .profile_pass-wrap.label-right input,
+.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-right textarea {
+    margin-right: 10px;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-above label,
+.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-above label {
+    display: block;
+    width: 100%;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-above input,
+.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-below input,
+.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-above textarea,
+.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-below textarea {
+    width: 100%;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-inside input,
+.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-inside textarea {
+    width: 100%;
+}
+.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-inside input.ninja-forms-req,
+.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-inside textarea.ninja-forms-req {
+    width: 95%;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap textarea {
+    height: 100px;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .profile_pass-wrap input {
+    margin-bottom: 10px;
+}
+
+/* ---------------------------------
+RADIO & CHECKBOX LISTS
+----------------------------------*/
+
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap span ul li input,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap span ul li input {
+    margin-right: 5px;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap ul,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap ul li,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap ul li {
+    margin: 0;
+    padding: 0;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-left label,
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-left ul,
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-left ul li,
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-right label,
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-right ul,
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-right ul li,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-left label,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-left ul,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-left ul li,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-right label,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-right ul,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-right ul li {
+    float: left;
+}
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-left ul li,
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-right ul li,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-left ul li,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-right ul li {
+    padding: 0 8px;
+}
+
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-above ul li,
+.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-below ul li,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-above ul li,
+.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-below ul li {
+    padding: 0 0 0 10px;
+}
+
+/* ---------------------------------
+MULTI FIELD
+----------------------------------*/
+
+.ninja-forms-form-wrap .ninja-forms-form .list-multi-wrap.label-left label {
+    float:left;
+}
+.ninja-forms-form-wrap .ninja-forms-form .list-multi-wrap.label-right select {
+    float:left;
+}
+
+/* ---------------------------------
+CREDIT CARD BLOCK
+----------------------------------*/
+
+.ninja-forms-form-wrap .ninja-forms-form .credit_card-wrap div label,
+.ninja-forms-form-wrap .ninja-forms-form .credit_card-wrap div input {
+    display: block;
+    width: 100%;
+}
+.ninja-forms-form-wrap .ninja-forms-form .credit_card-wrap div {
+    margin-bottom: 10px;
+}
+.ninja-forms-form-wrap .ninja-forms-form .credit_card-wrap div span {
+    font-size: 0.8em;
+}
