@@ -25,7 +25,7 @@ function ninja_forms_register_field_desc(){
 					array('name' => 'h3', 'value' => 'h3'),
 					array('name' => 'h4', 'value' => 'h4'),
 					array('name' => 'h5', 'value' => 'h5'),
-					array('name' => 'h6', 'value' => 'h6'),					
+					array('name' => 'h6', 'value' => 'h6'),
 					array('name' => 'p', 'value' => 'p'),
 					array('name' => 'span', 'value' => 'span'),
 				),

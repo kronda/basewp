@@ -22,12 +22,11 @@ function ninja_forms_register_license_settings_metabox(){
 		'slug' => 'license_settings',
 		'title' => __( 'Licenses', 'ninja-forms' ),
 		'settings' => array(
-			//array(
-				//'name' => 'license_key',
-				//'type' => 'text',
-				//'label' => __('Ninja Forms License Key', 'ninja-forms'),
-				//'desc' => __('You will find this included with your purchase email.', 'ninja-forms'),
-			//),
+			array(
+				'name' => 'license_key',
+				'type' => 'desc',
+				'desc' => __('To activate licenses for Ninja Forms extensions you must first <a target="_blank" href="http://ninjaforms.com/documentation/extension-docs/installing-extensions/">install and activate</a> the chosen extension. License settings will then appear below.', 'ninja-forms'),
+			),
 		),
 	);
 	ninja_forms_register_tab_metabox($args);

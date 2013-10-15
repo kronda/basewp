@@ -715,6 +715,22 @@ jQuery(document).ready(function($) {
 		});
 	});
 
+	// Fetch the HTML for exluding terms when the user decides to attach this list element to a term.
+
+	$(document).on( 'change', '.ninja-forms-list-populate-term', function(e, data ){
+		var field_id = $(this).attr("rel");
+
+		if ( this.value != '' ) {
+			$.post(ajaxurl, { field_id: field_id, tax_name: this.value, from_ajax: 1, action:"ninja_forms_list_terms_checkboxes"}, function(response){
+				$("#ninja_forms_field_" + field_id + "_exclude_terms").html(response);
+				$("#ninja_forms_field_" + field_id + "_exclude_terms").show();
+			});
+			
+		} else {
+			$("#ninja_forms_field_" + field_id + "_exclude_terms").hide();
+		}
+	});
+
 	/* Password Field JS */
 
 	$(document).on( 'change', '.ninja-forms-_profile_pass-reg_password', function(){

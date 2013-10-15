@@ -72,6 +72,12 @@ function ninja_forms_display_fields($form_id){
 					$display_style = $data['display_style'];
 				}else{
 					$display_style = '';
+				}				
+
+				if( isset( $data['visible'] ) ){
+					$visible = $data['visible'];
+				}else{
+					$visible = true;
 				}
 
 				if ( $display_style != '' ) {
@@ -96,7 +102,7 @@ function ninja_forms_display_fields($form_id){
 						$field_wrap_class = apply_filters( 'ninja_forms_field_wrap_class', $field_wrap_class, $field_id );
 						do_action( 'ninja_forms_display_before_opening_field_wrap', $field_id, $data );
 						?>
-						<div class="<?php echo $field_wrap_class;?>" <?php echo $display_style;?> id="ninja_forms_field_<?php echo $field_id;?>_div_wrap">
+						<div class="<?php echo $field_wrap_class;?>" <?php echo $display_style;?> id="ninja_forms_field_<?php echo $field_id;?>_div_wrap" data-visible="<?php echo $visible;?>">
 						<?php
 						do_action( 'ninja_forms_display_after_opening_field_wrap', $field_id, $data );
 					}

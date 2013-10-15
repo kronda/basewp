@@ -153,115 +153,96 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 			if( $value == '' ){
 				$value = $default_value;
 			}
+			?>
 
+			<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
+				<?php if ( $s['type'] == 'desc' AND ! $label ) { ?>
+					 <td colspan="2">
+				<?php } else { ?>
+					<th scope="row">
+						<label for="<?php echo $name;?>"><?php echo $label;?></label>
+					</th>
+					<td>
+				<?php } ?>
+			<?php
 			switch( $s['type'] ){
 				case 'text':
 					$value = ninja_forms_esc_html_deep( $value );
 					?>
-					<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-						<th>
-							<?php echo $label; ?>
-						</th>
-						<td>
-							<input type="text" class="code widefat <?php echo $class;?>" name="<?php echo $name;?>" id="<?php echo $name;?>" value="<?php echo $value;?>" />
-							<?php if( $help_text != ''){ ?>
-							<a href="#" class="tooltip">
-							    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
-							    <span>
-							        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
-							        <?php echo $help_text;?>
-							    </span>
-							</a>
-							<?php } ?>
-						</td>
-					</tr>
-					<?php
+
+					<input type="text" class="code widefat <?php echo $class;?>" name="<?php echo $name;?>" id="<?php echo $name;?>" value="<?php echo $value;?>" />
+					<?php if( $help_text != ''){ ?>
+					<a href="#" class="tooltip">
+					    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
+					    <span>
+					        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
+					        <?php echo $help_text;?>
+					    </span>
+					</a>
+					<?php }
 					break;
 				case 'select':
 					?>
-					<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?>  <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-						<th>
-							<?php echo $label; ?>
-						</th>
-						<td>
-							<select name="<?php echo $name;?>" id="<?php echo $name;?>" class="<?php echo $class;?>">
+					<select name="<?php echo $name;?>" id="<?php echo $name;?>" class="<?php echo $class;?>">
+						<?php
+						if( is_array( $s['options']) AND !empty( $s['options'] ) ){
+							foreach( $s['options'] as $option ){
+								?>
+								<option value="<?php echo $option['value'];?>" <?php selected($value, $option['value']); ?>><?php echo $option['name'];?></option>
 								<?php
-								if( is_array( $s['options']) AND !empty( $s['options'] ) ){
-									foreach( $s['options'] as $option ){
-										?>
-										<option value="<?php echo $option['value'];?>" <?php selected($value, $option['value']); ?>><?php echo $option['name'];?></option>
-										<?php
-									}
-								} ?>
-							</select>
-							<?php if( $help_text != ''){ ?>
-								<a href="#" class="tooltip">
-								    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
-								    <span>
-								        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
-								        <?php echo $help_text;?>
-								    </span>
-								</a>
-							<?php } ?>
-						</td>
-					</tr>
-					<?php
+							}
+						} ?>
+					</select>
+					<?php if( $help_text != ''){ ?>
+						<a href="#" class="tooltip">
+						    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
+						    <span>
+						        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
+						        <?php echo $help_text;?>
+						    </span>
+						</a>
+					<?php }
 					break;
 				case 'multi_select':
 					if( $value == '' ){
 						$value = array();
 					}
 					?>
-					<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-						<th>
-							<?php echo $label; ?>
-						</th>
-						<td>
-							<input type="hidden" name="<?php echo $name;?>" value="">
-							<select name="<?php echo $name;?>[]" id="<?php echo $name;?>" class="<?php echo $class;?>" multiple="multiple" size="<?php echo $size;?>">
+
+					<input type="hidden" name="<?php echo $name;?>" value="">
+					<select name="<?php echo $name;?>[]" id="<?php echo $name;?>" class="<?php echo $class;?>" multiple="multiple" size="<?php echo $size;?>">
+						<?php
+						if( is_array( $s['options']) AND !empty( $s['options'] ) ){
+							foreach( $s['options'] as $option ){
+								?>
+								<option value="<?php echo $option['value'];?>" <?php selected( in_array( $option['value'], $value ) ); ?>><?php echo $option['name'];?></option>
 								<?php
-								if( is_array( $s['options']) AND !empty( $s['options'] ) ){
-									foreach( $s['options'] as $option ){
-										?>
-										<option value="<?php echo $option['value'];?>" <?php selected( in_array( $option['value'], $value ) ); ?>><?php echo $option['name'];?></option>
-										<?php
-									}
-								} ?>
-							</select>
-							<?php if( $help_text != ''){ ?>
-								<a href="#" class="tooltip">
-								    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
-								    <span>
-								        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
-								        <?php echo $help_text;?>
-								    </span>
-								</a>
-							<?php } ?>
-						</td>
-					</tr>
-					<?php
+							}
+						} ?>
+					</select>
+					<?php if( $help_text != ''){ ?>
+						<a href="#" class="tooltip">
+						    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
+						    <span>
+						        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
+						        <?php echo $help_text;?>
+						    </span>
+						</a>
+					<?php }
 					break;
 				case 'checkbox':
 					?>
-					<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-						<th>
-							<label for="<?php echo $name;?>"><?php echo $label;?></label>
-						</th>
-						<td>
-							<input type="hidden" name="<?php echo $name;?>" value="0">
-							<input type="checkbox" name="<?php echo $name;?>" value="1" <?php checked($value, 1);?> id="<?php echo $name;?>" class="<?php echo $class;?>">
-							<?php if( $help_text != ''){ ?>
-								<a href="#" class="tooltip">
-								    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
-								    <span>
-								        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
-								        <?php echo $help_text;?>
-								    </span>
-								</a>
-							<?php } ?>
-						</td>
-					</tr>
-					<?php
+					<input type="hidden" name="<?php echo $name;?>" value="0">
+					<input type="checkbox" name="<?php echo $name;?>" value="1" <?php checked($value, 1);?> id="<?php echo $name;?>" class="<?php echo $class;?>">
+					<?php if( $help_text != ''){ ?>
+						<a href="#" class="tooltip">
+						    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
+						    <span>
+						        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
+						        <?php echo $help_text;?>
+						    </span>
+						</a>
+					<?php }
 					break;
 				case 'checkbox_list':
 					if( $value == '' ){
@@ -270,19 +251,16 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 
 					?>
 					<input type="hidden" name="<?php echo $name;?>" value="">
-					<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-						<th>
-							<?php echo $label;?>
-						</th>
+
 						<?php
 						if( $select_all ){
 							?>
-							<td>
+
 								<label>
 									<input type="checkbox" name="" value="" id="<?php echo $name;?>_select_all" class="ninja-forms-select-all" title="ninja-forms-<?php echo $name;?>">
 								- <?php _e( 'Select All', 'ninja-forms' );?>
 								</label>
-							</td>
+
 						<?php
 						}else{
 							if( is_array( $s['options'] ) AND isset( $s['options'][0] ) ){
@@ -291,17 +269,17 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 								$option_value = $s['options'][0]['value'];
 
 								?>
-								<td>
+
 									<label>
 										<input type="checkbox" class="ninja-forms-<?php echo $name;?> <?php echo $class;?>" name="<?php echo $name;?>[]" value="<?php echo $option_value;?>" <?php checked( in_array( $option_value, $value ) );?> id="<?php echo $option_name;?>">
 										<?php echo $option_name;?>
 									</label>
-								</td>
+
 								<?php
 							}
 						}
 						?>
-					</tr>
+
 					<?php
 					if( is_array( $s['options'] ) AND !empty( $s['options'] ) ){
 						$x = 0;
@@ -310,17 +288,10 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 								$option_name = $option['name'];
 								$option_value = $option['value'];
 								?>
-								<tr <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-									<th>
-
-									</th>
-									<td>
 										<label>
 											<input type="checkbox" class="ninja-forms-<?php echo $name;?> <?php echo $class;?>" name="<?php echo $name;?>[]" value="<?php echo $option_value;?>" <?php checked( in_array( $option_value, $value ) );?> id="<?php echo $option_name;?>">
 											<?php echo $option_name;?>
 										</label>
-									</td>
-								</tr>
 								<?php
 							}
 							$x++;
@@ -330,84 +301,42 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 				case 'radio':
 					if( is_array( $s['options'] ) AND !empty( $s['options'] ) ){
 						$x = 0; ?>
-						<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-							<th>
-								<?php echo $label;?>
-							</th>
-							<td>
-								<?php foreach($s['options'] as $option){ ?>
-									<input type="radio" name="<?php echo $name;?>" value="<?php echo $option['value'];?>" id="<?php echo $name."_".$x;?>" <?php checked($value, $option['value']);?> class="<?php echo $class;?>"> <label for="<?php echo $name."_".$x;?>"><?php echo $option['name'];?></label>
-										<?php if( $help_text != ''){ ?>
-											<a href="#" class="tooltip">
-											    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
-											    <span>
-											        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
-											        <?php echo $help_text;?>
-											    </span>
-											</a>
-										<?php } ?>
-									<br />
+						<?php foreach($s['options'] as $option){ ?>
+							<input type="radio" name="<?php echo $name;?>" value="<?php echo $option['value'];?>" id="<?php echo $name."_".$x;?>" <?php checked($value, $option['value']);?> class="<?php echo $class;?>"> <label for="<?php echo $name."_".$x;?>"><?php echo $option['name'];?></label>
+								<?php if( $help_text != ''){ ?>
+									<a href="#" class="tooltip">
+									    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
+									    <span>
+									        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
+									        <?php echo $help_text;?>
+									    </span>
+									</a>
+								<?php } ?>
+							<br />
 
-								<?php
-									$x++;
-								} ?>
-							</td>
-						</tr>
-					<?php
+						<?php
+							$x++;
+						}
 					}
 					break;
 				case 'textarea':
 					$value = ninja_forms_esc_html_deep( $value );
 					?>
-					<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-						<th>
-							<?php echo $label; ?>
-						</th>
-						<td>
-							<textarea name="<?php echo $name;?>" id="<?php echo $name;?>" class="<?php echo $class;?>"><?php echo $value;?></textarea>
-						</td>
-					</tr>
+					<textarea name="<?php echo $name;?>" id="<?php echo $name;?>" class="<?php echo $class;?>"><?php echo $value;?></textarea>
 					<?php
 					break;
 				case 'rte':
-					?>
-					<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-						<th>
-							<?php echo $label; ?>
-						</th>
-						<td>
-							<?php
-							$args = apply_filters( 'ninja_forms_admin_metabox_rte', array() );
-							wp_editor( $value, $name, $args );
-							?>
-						</td>
-					</tr>
-					<?php
+					$args = apply_filters( 'ninja_forms_admin_metabox_rte', array() );
+					wp_editor( $value, $name, $args );
 					break;
 				case 'file':
 					?>
-					<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-						<th>
-							<?php echo $label; ?>
-						</th>
-						<td colspan="2">
-							<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $max_file_size;?>" />
-							<input type="file" name="<?php echo $name;?>" id="<?php echo $name;?>" class="<?php echo $class;?>">
-						</td>
-					</tr>
+					<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $max_file_size;?>" />
+					<input type="file" name="<?php echo $name;?>" id="<?php echo $name;?>" class="<?php echo $class;?>">
 					<?php
 					break;
 				case 'desc':
-					?>
-					<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-						<th>
-							<?php echo $label; ?>
-						</th>
-						<td>
-							<?php echo $desc;?>
-						</td>
-					</tr>
-					<?php
+					echo $desc;
 					break;
 				case 'hidden':
 					?>
@@ -416,11 +345,7 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 					break;
 				case 'submit':
 					?>
-					<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-						<td colspan="2">
-							<input type="submit" name="<?php echo $name;?>" class="<?php echo $class; ?>" value="<?php echo $label;?>">
-						</td>
-					</tr>
+					<input type="submit" name="<?php echo $name;?>" class="<?php echo $class; ?>" value="<?php echo $label;?>">
 					<?php
 					break;
 				default:
@@ -437,18 +362,14 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 
 			if( $desc != '' AND $s['type'] != 'desc' ){
 				?>
-				<tr class="<?php echo $tr_class;?>" <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
-					<th>
-
-					</th>
-					<td class="howto">
+					<p class="description">
 						<?php echo $desc;?>
-					</td>
-				</tr>
+					</p>
 				<?php
 			}
-
+			echo '</td></tr>';
 		}
+
 	}
 
 	if( $display_function != '' ){

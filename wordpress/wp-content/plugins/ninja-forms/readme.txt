@@ -1,9 +1,9 @@
 === Ninja Forms ===
-Contributors: kstover, jameslaws, daveshine
+Contributors: kstover, jameslaws, daveshine, mordauk, bftrick
 Tags: form, forms, contact form, custom form, form builder, form creator, form manager, form creation, contact forms, custom forms, forms builder, forms creator, forms manager, forms creation, form administration,
 Requires at least: 3.4
 Tested up to: 3.6
-Stable tag: 2.2.49
+Stable tag: 2.2.51
 License: GPLv2 or later
 
 Forms created with a simple drag and drop interface. Contact forms, Email collection forms, or any other form you want on your WordPress site.
@@ -76,20 +76,47 @@ For help and video tutorials, please visit our website: [Ninja Forms Documentati
 
 == Upgrade Notice ==
 
-= 2.2.49 =
+= 2.2.51 =
 
 *Bugs:*
 
-* Duplicated or imported forms that use the [ninja_forms_field] shortcode should now have their references automatically changed after duplication/import.
-* Fixed a bug that caused the Total calculation field to work incorrectly with Tax and Subtotals.
-* Fixed a major bug that could cause calculation fields to not work when using the currencty input mask.
-* Fixed a bug that caused special characters to appear incorrectly in List fields.
+* Fixed a bug that prevented advanced calculations from working properly.
+* Fixed some bugs with the field descripition.
+
+*Changes:*
+
+* Added a message to the license tab if no extensions are installed.
+* Improved the structure of metaboxes.
 
 == Requested Features ==
 
 If you have any feature requests, please feel free to visit [ninjaforms.com](http://ninjaforms.com) and let us know about it.
 
 == Changelog ==
+
+= 2.2.51 =
+
+*Bugs:*
+
+* Fixed a bug that prevented advanced calculations from working properly.
+* Fixed some bugs with the field descripition.
+
+*Changes:*
+
+* Added a message to the license tab if no extensions are installed.
+* Improved the structure of metaboxes.
+
+= 2.2.50 =
+
+*Bugs:*
+
+* Fixed a major bug that could prevent calculation fields from working properly when more than one calculation referenced the same field.
+* Fixed a bug that caused calculation fields to work incorrectly with the Conditional Logic extension.
+
+*Changes:*
+
+* Added the "visible" HTML5 data attribute to fields.
+* Removed functions from core that were specific to the Conditional Logic extension.
 
 = 2.2.49 =
 

@@ -119,6 +119,7 @@ function ninja_forms_tab_addons(){
             'plugin' => 'ninja-forms-constant-contact/ninja-forms-constant-contact.php',
             'docs' => '',
         ),
+        /*
         array (
             'title' => __( 'Pushover', 'ninja-forms' ),
             'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/07/pushover-300x121.png',
@@ -134,7 +135,8 @@ function ninja_forms_tab_addons(){
             'link' => 'http://ninjaforms.com/downloads/freshbooks/',
             'plugin' => 'ninja-forms-freshbooks/ninja-forms-freshbooks.php',
             'docs' => '',
-        ),        
+        ),
+        */     
         array (
             'title' => __( 'AWeber', 'ninja-forms' ),
             'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/08/aweber-300x121.png',
@@ -152,11 +154,19 @@ function ninja_forms_tab_addons(){
             'docs' => '',
         ),       
         array (
-            'title' => __( 'WYSIJA', 'ninja-forms' ),
-            'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/08/wysija-header-300x121.jpg',
-            'content' => __( 'The Wisija extension allows you to quickly create newsletter signup forms for your Wisija mailing lists using the power and flexibility that Ninja Forms provides.', 'ninja-forms' ),
-            'link' => 'http://ninjaforms.com/downloads/wysija/',
-            'plugin' => 'ninja-forms-wysija/nf-wysija.php',
+            'title' => __( 'MailPoet (formerly Wysija', 'ninja-forms' ),
+            'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/09/mailpoet-300x121.png',
+            'content' => __( 'The MailPoet (formerly Wysija) extension allows you to quickly create newsletter signup forms for your MailPoet mailing lists using the power and flexibility that Ninja Forms provides.', 'ninja-forms' ),
+            'link' => 'http://ninjaforms.com/downloads/mailpoet/',
+            'plugin' => 'ninja-forms-mailpoet/nf-mailpoet.php',
+            'docs' => '',
+        ),        
+        array (
+            'title' => __( 'HubSpot', 'ninja-forms' ),
+            'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/10/hubspot-300x121.png',
+            'content' => __( 'The Ninja Forms HubSpot Extension extends a forms capabilities by forwarding submit data directly into your HubSpot account.', 'ninja-forms' ),
+            'link' => 'http://ninjaforms.com/downloads/hubspot/',
+            'plugin' => 'ninja-forms-hubspot/ninja-forms-hubspot.php',
             'docs' => '',
         ),
     );

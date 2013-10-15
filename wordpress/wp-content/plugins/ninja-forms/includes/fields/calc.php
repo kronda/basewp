@@ -518,7 +518,12 @@ function ninja_forms_field_calc_pre_process(){
 				// If the tax and sub_total have been found, and this is a total field set to auto, change the calc_method and calc_eq.
 				if ( $tax AND $sub_total AND isset ( $field_data['payment_total'] ) AND $field_data['payment_total'] == 1 AND $calc_method == 'auto' ) {
 					$calc_method = 'eq';
-					$calc_eq = 'field_'.$sub_total.' + ( field_'.$sub_total.' * field_'.$tax.' )';
+					$tax_rate = $ninja_forms_processing->get_field_value( $tax );
+					if ( strpos( $tax_rate, "%" ) !== false ) {
+						$tax_rate = str_replace( "%", "", $tax_rate );
+						$tax_rate = $tax_rate / 100;
+					}
+					$calc_eq = 'field_'.$sub_total.' + ( field_'.$sub_total.' * '.$tax_rate.' )';
 
 					$field_settings = $ninja_forms_processing->get_field_settings( $field_id );
 					$field_settings['data']['calc_method'] = $calc_method;
@@ -645,8 +650,12 @@ function ninja_forms_calc_field_loop2( $field_id, $calc_eq = '', $result = '' ){
 
 	// If the tax and sub_total have been found, and this is a total field set to auto, change the calc_method and calc_eq.
 	if ( $tax AND $sub_total AND isset ( $calc_data['payment_total'] ) AND $calc_data['payment_total'] == 1 AND $calc_method == 'auto' ) {
-		$calc_method = 'eq';
-		$calc_eq = 'field_'.$sub_total.' + ( field_'.$sub_total.' * field_'.$tax.' )';
+		$calc_method = 'eq';$tax_rate = $ninja_forms_processing->get_field_value( $tax );
+		if ( strpos( $tax_rate, "%" ) !== false ) {
+			$tax_rate = str_replace( "%", "", $tax_rate );
+			$tax_rate = $tax_rate / 100;
+		}
+		$calc_eq = 'field_'.$sub_total.' + ( field_'.$sub_total.' * '.$tax_rate.' )';
 	}
 
 	// Figure out how many calculation fields we have and run

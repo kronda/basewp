@@ -78,94 +78,6 @@ function ninja_forms_delete_form( $form_id = '' ){
 
 }
 
-add_action('wp_ajax_ninja_forms_add_conditional', 'ninja_forms_add_conditional');
-function ninja_forms_add_conditional(){
-	global $wpdb, $ninja_forms_fields;
-
-	$field_id = $_REQUEST['field_id'];
-	$x = $_REQUEST['x'];
-	ninja_forms_field_conditional_output($field_id, $x);
-	die();
-}
-
-add_action('wp_ajax_ninja_forms_add_cr', 'ninja_forms_add_cr');
-function ninja_forms_add_cr(){
-	global $wpdb, $ninja_forms_fields;
-
-	$field_id = $_REQUEST['field_id'];
-	$x = $_REQUEST['x'];
-	$y = $_REQUEST['y'];
-	$new_html = ninja_forms_return_echo('ninja_forms_field_conditional_cr_output', $field_id, $x, $y);
-	header("Content-type: application/json");
-	$array = array ('new_html' => $new_html, 'field_id' => $field_id, 'x' => $x, 'y' => $y);
-	echo json_encode($array);
-	die();
-}
-
-add_action('wp_ajax_ninja_forms_change_action', 'ninja_forms_change_action');
-function ninja_forms_change_action(){
-	global $wpdb, $ninja_forms_fields;
-
-	$form_id = $_REQUEST['form_id'];
-	$action_slug = $_REQUEST['action_slug'];
-	$field_id = $_REQUEST['field_id'];
-	$x = $_REQUEST['x'];
-	$field_data = $_REQUEST['field_data'];
-
-	$field_data = $field_data['ninja_forms_field_'.$field_id];
-
-	$field_row = ninja_forms_get_field_by_id($field_id);
-	$type = $field_row['type'];
-	$reg_field = $ninja_forms_fields[$type];
-	if( isset( $reg_field['conditional']['action'][$action_slug] ) ){
-		$conditional = $reg_field['conditional']['action'][$action_slug];
-	}else if( $action_slug == 'change_value'){
-		$conditional = array( 'output' => 'text' );
-	}else{
-		$conditional = '';
-	}
-
-	header("Content-type: application/json");
-
-	if( isset( $conditional['output'] ) ){
-		$new_type = $conditional['output'];
-	}else{
-		$new_type = '';
-	}
-
-	$new_html = ninja_forms_return_echo( 'ninja_forms_field_conditional_action_output', $field_id, $x, $conditional, '', $field_data );
-	$array = array('new_html' => $new_html, 'new_type' => $new_type );
-	echo json_encode($array);
-
-	die();
-
-}
-
-add_action('wp_ajax_ninja_forms_change_cr_field', 'ninja_forms_change_cr_field');
-function ninja_forms_change_cr_field(){
-	global $wpdb, $ninja_forms_fields;
-
-	$field_id = $_REQUEST['field_id'];
-	$field_value = $_REQUEST['field_value'];
-	$x = $_REQUEST['x'];
-	$y = $_REQUEST['y'];
-
-	$field_row = ninja_forms_get_field_by_id($field_value);
-	$type = $field_row['type'];
-	$reg_field = $ninja_forms_fields[$type];
-	$conditional = $reg_field['conditional'];
-	header("Content-type: application/json");
-
-	$new_html = '';
-
-	if(isset($conditional['value']) AND is_array($conditional['value'])){
-		$new_html = ninja_forms_return_echo('ninja_forms_field_conditional_cr_value_output', $field_id, $x, $y, $conditional);
-		$array = array('new_html' => $new_html, 'new_type' => $conditional['value']['type'] );
-		echo json_encode($array);
-	}
-	die();
-}
-
 add_action('wp_ajax_ninja_forms_add_list_option', 'ninja_forms_add_list_options');
 function ninja_forms_add_list_options(){
 	global $wpdb;
@@ -546,6 +458,57 @@ function ninja_forms_import_list_options(){
 }
 
 add_action( 'wp_ajax_ninja_forms_import_list_options', 'ninja_forms_import_list_options' );
+
+/*
+ *
+ * Function that outputs a list of terms so that the user can exclude terms from a list selector.
+ *
+ * @since 2.2.51
+ * @return void
+ */
+
+function ninja_forms_list_terms_checkboxes( $field_id = '', $tax_name = '' ){
+	if ( $field_id == '' AND isset ( $_POST['field_id'] ) ) {
+		$field_id = $_POST['field_id'];
+	}	
+
+	if ( $tax_name == '' AND isset ( $_POST['tax_name'] ) ) {
+		$tax_name = $_POST['tax_name'];
+	}
+
+	if ( $field_id != '' AND $tax_name != '' ) {
+		$field = ninja_forms_get_field_by_id( $field_id );
+		if ( isset ( $field['data']['exclude_terms'] ) ) {
+			$exclude_terms = $field['data']['exclude_terms'];
+		} else {
+			$exclude_terms = '';
+		}
+
+		$terms = get_terms( $tax_name, array( 'hide_empty' => false ) );
+		if ( is_array ( $terms ) AND !empty ( $terms ) ) {
+			?>
+			<h4><?php _e( 'Do not show these terms', 'ninja-forms' );?>:</h4>
+            <input type="hidden" name="ninja_forms_field_<?php echo $field_id;?>[exclude_terms]" value="">
+			<?php
+			foreach ( $terms as $term ) {
+				?>
+				<div>
+					<label>
+						<input type="checkbox" <?php checked( in_array ( $term->term_id, $exclude_terms ), true );?> name="ninja_forms_field_<?php echo $field_id;?>[exclude_terms][]" value="<?php echo $term->term_id;?>">
+						<?php echo $term->name;?>
+					</label>
+				</div>
+				<?php
+			}
+		}
+	}
+
+	if ( isset ( $_POST['from_ajax'] ) AND $_POST['from_ajax'] == 1 ) {
+		die();
+	}
+}
+
+add_action( 'wp_ajax_ninja_forms_list_terms_checkboxes', 'ninja_forms_list_terms_checkboxes' );
 
 /*
  *

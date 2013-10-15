@@ -74,7 +74,7 @@ function ninja_forms_register_form_settings_basic_metabox(){
 		$hide_complete_style = 'hidden';
 		$success_msg_style = 'hidden';
 		$ajax_style = 'hidden';
-		$landing_page_style = '';	
+		$landing_page_style = '';
 	}else{
 		$clear_complete_style = '';
 		$hide_complete_style = '';
@@ -129,7 +129,7 @@ function ninja_forms_register_form_settings_basic_metabox(){
 				'display_function' => '',
 				'help' => __('', 'ninja-forms'),
 				'options' => $append_array,
-			),			
+			),
 			array(
 				'name' => 'ajax',
 				'type' => 'checkbox',
@@ -138,7 +138,7 @@ function ninja_forms_register_form_settings_basic_metabox(){
 				'display_function' => '',
 				'help' => __( '', 'ninja-forms' ),
 				'tr_class' => 'landing-page-hide '.$ajax_style,
-			),			
+			),
 			array(
 				'name' => 'landing_page',
 				'type' => 'select',
@@ -311,7 +311,7 @@ function ninja_forms_admin_email($form_id, $data){
 	?>
 	<label for="">
 		<p>
-			<?php _e( 'Administrator Email Addresses', 'ninja-forms' ); ?> &nbsp;&nbsp;<a href="#" id="ninja_forms_add_mailto_<?php echo $form_id;?>" name="" class="ninja-forms-add-mailto"><?php _e( 'Add New', 'ninja-forms' ); ?></a>
+			<a href="#" id="ninja_forms_add_mailto_<?php echo $form_id;?>" name="" class="ninja-forms-add-mailto"><?php _e( 'Add New', 'ninja-forms' ); ?></a>
 			<a href="#" class="tooltip">
 			    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
 			    <span>
@@ -349,7 +349,7 @@ function ninja_forms_save_form_settings($form_id, $data){
 	foreach( $data as $key => $val ){
 		$form_data[$key] = $val;
 	}
-	
+
 	if($form_id != 'new'){
 		$data_array = array('data' => serialize($form_data));
 		$wpdb->update( NINJA_FORMS_TABLE_NAME, $data_array, array( 'id' => $form_id ));
@@ -361,7 +361,7 @@ function ninja_forms_save_form_settings($form_id, $data){
 			$form_data['email_from'] = get_option( 'admin_email' );
 		}
 		$data_array = array('data' => serialize($form_data));
-		
+
 		$wpdb->insert( NINJA_FORMS_TABLE_NAME, $data_array );
 		$redirect = add_query_arg( array('form_id' => $wpdb->insert_id, 'update_message' => __( 'Form Settings Saved', 'ninja-forms' ) ) );
 		do_action( 'ninja_forms_save_new_form_settings', $wpdb->insert_id, $data );
