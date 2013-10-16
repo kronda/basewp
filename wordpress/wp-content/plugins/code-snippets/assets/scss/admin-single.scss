@@ -1,0 +1,43 @@
+/**
+ * Custom styling for the single snippet admin page
+ */
+
+@import 'compass/css3';
+
+h3 {
+	/* Provide some decent space between the fields and titles */
+	margin: 1em 0;
+}
+
+label {
+	/* What's with the pointer mouse on labels? */
+	cursor: auto;
+}
+
+/**
+ * Customize the CodeMirror editor
+ * to look pretty and support auto-resizing
+ */
+.CodeMirror {
+	min-height: 300px;
+	height: auto;
+	border: 1px solid #eee;
+	@include border-radius(3px);
+
+	/* Tweak things for the MP6 interface */
+	.admin-color-mp6 & {
+		width: 100%;
+		border-color: #dfdfdf;
+		background-color: #fff;
+	}
+
+}
+
+.CodeMirror-scroll {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+.CodeMirror-sizer {
+	min-height: 300px !important;
+}
