@@ -33,33 +33,7 @@ jQuery( document ).ready( function( $ ) {
     return this;
   };
 
-  $('#home-featured').equalHeights(true);
+  //$('#selector').equalHeights(true);
 
-
-  // The search submit is covered by a Font Awesome icon so make sure clicking the icon trigger search submit
-  $('.icon-search').click(function() {
-    $('.search-submit').click(); 
-  });
-
-  //Change the active sidebar link when on a single custom post type of 'Story'  
-  
-  $('.single-cs_stories #menu-item-134').removeClass('current_page_parent');
-  $('.single-cs_stories #menu-item-136').addClass('current_page_parent');
-
-  // Add class to target Firefox on Windows only
-  windows_firefox();
 });
-
-function windows_firefox () {
-  if ( navigator.appVersion.indexOf("Win") != -1 ) {
-    var OS = 'Windows';
-  }
-  if ( navigator.MozConnection) {
-    var winBrowser = "Firefox";
-    console.log(winBrowser);
-  };
-  if ( OS == "Windows" && winBrowser == "Firefox") {
-    jQuery('html').addClass('windows-firefox');
-  };
-}
 
