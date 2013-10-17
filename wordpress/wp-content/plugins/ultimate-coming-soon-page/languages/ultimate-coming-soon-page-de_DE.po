@@ -1,0 +1,303 @@
+# Copyright (C) 2010 Ultimate Coming Soon Page
+# Diese Datei steht unter der gleichen Lizenzvereinbarung wie das gesamte Ultimage Coming Soon Paket.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultimate Coming Soon Page 0.4.6\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/ultimate-coming-soon-page\n"
+"POT-Creation-Date: 2011-07-27 00:18:39+00:00\n"
+"PO-Revision-Date: 2023-07-09 16:51+0100\n"
+"Last-Translator: Frederic Ch.Reuter <frederic.reuter@r-quadrat.info>\n"
+"Language-Team: Frederic Ch.Reuter - http://www.r-quadrat.info <wording-crew@r-quadrat.info>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMAN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: ../\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: _e\n"
+"X-Poedit-SearchPath-1: __\n"
+
+#: inc/template/template-coming-soon.php:78
+#: inc/template/template-coming-soon.php:86
+#: inc/config.php:51
+msgid "Enter Your Email"
+msgstr "Geben Sie ihre eMail an"
+
+#: inc/template/template-coming-soon.php:79
+#: inc/template/template-coming-soon.php:87
+msgid "Notify Me!"
+msgstr "Benachrichtige mich"
+
+#: inc/config.php:52
+msgid "Error :( Please try again."
+msgstr "Fehler :( Bitte versuchen Sie es erneut."
+
+#: inc/config.php:53
+msgid "Please enter a valid email."
+msgstr "Bitte geben Sie eine g&uuml;ltige eMailadresse an"
+
+#: inc/config.php:54
+msgid "You'll be notified soon!"
+msgstr "Sie werden bald benachrichtigt!"
+
+#: inc/config.php:60
+#: inc/config.php:283
+msgid "Are you sure you want to DELETE all emails?"
+msgstr "Sind Sie sicher, dass Sie alle eMails L&Ouml;SCHEN m&ouml;chten?"
+
+#: inc/config.php:115
+msgid "Unable to load lists, check your API Key!"
+msgstr "Liste kann nicht geladen werden, &uuml;berpr&uuml;fen Sie den API-Key"
+
+#: inc/config.php:235
+msgid ""
+"Offer your visitors incentives such as coupons codes, free ebook, free software, etc. in exchange for their email.\n"
+"        \tJust fill out either or both of the fileds below and the information will be displayed after you have succesfully captured their email.\n"
+"        \t"
+msgstr ""
+"Bieten Sie Ihren Besuchern Anreize wie Coupons Codes, kostenlose ebook, "
+"kostenlose Software, etc. im Austausch f&uuml;r ihre E-Mail.\n         F&uuml;llen Sie "
+"einfach eine oder beide der unten stehenden Felder aus und die Informationen "
+"werden angezeigt, nachdem ihre Besucher ihre E-Mail erfolgreich eingegeben "
+"haben."
+
+#: inc/config.php:327
+#: inc/config.php:329
+#: inc/config.php:330
+msgid "Coming Soon"
+msgstr "Demn&auml;chst auf dieser Seite"
+
+#: inc/config.php:352
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: inc/config.php:364
+msgid "Enable"
+msgstr "Aktivieren"
+
+#: inc/config.php:365
+msgid "Enable if you want to display a coming soon page to visitors. Users who are logged in will not see the coming soon page, this means you.  <a href='%s/?cs_preview=true'>Preview</a>"
+msgstr ""
+"Aktivieren, wenn Sie eine Seite \"Demn&auml;chst auf dieser Seite\" Ihren Besucher "
+"anzeigen m&ouml;chten. Benutzer, die eingeloggt sind, werden diese Seite nicht "
+"sehen. Was sich f&uuml;r Besucher wie folgt darstellt: <a "
+"href='%s/?cs_preview=true'> Vorschau </ a>"
+
+#: inc/config.php:366
+msgid "Yes"
+msgstr "Ja"
+
+#: inc/config.php:372
+msgid "Image"
+msgstr "Grafik/Bild"
+
+#: inc/config.php:373
+msgid "Upload a logo or teaser image (or) enter the url to your image."
+msgstr ""
+"Laden Sie ein Kopfzeilen-Bild hoch (oder) geben Sie eine URL zu diesem an."
+
+#: inc/config.php:379
+msgid "Headline"
+msgstr "Schlagzeile"
+
+#: inc/config.php:380
+msgid "Write a headline for your coming soon page. Tip: Avoid using 'Coming Soon'."
+msgstr ""
+"Schreibe eine Schlagzeile f&uuml;r deine \"Hier erscheint demn&auml;chst …\" Seite"
+
+#: inc/config.php:386
+msgid "Description"
+msgstr "Beschreibung"
+
+#: inc/config.php:387
+msgid "Tell the visitor what to expect from your site."
+msgstr "Teile dem Besucher einen Auszug der Seite mit."
+
+#: inc/config.php:394
+msgid "FeedBurn Address"
+msgstr "Adresse bei Feedburn"
+
+#: inc/config.php:395
+msgid "Enter the part after http://feeds2.feedburner.com/"
+msgstr "Geben Sie den Teil nach Feedburner-URL http://feeds2.feedburner.com/ an"
+
+#: inc/config.php:401
+msgid "Mailing List"
+msgstr "Mailing Liste"
+
+#: inc/config.php:409
+msgid "Custom HTML"
+msgstr "Benutzerdefinierter HTML"
+
+#: inc/config.php:410
+msgid "Enter any custom html or javascript that you want outputted."
+msgstr ""
+"Tragen Sie beliebigen HTML- oder JavascriptCode ein, den Sie ausgeben m&ouml;chten."
+
+#: inc/config.php:418
+msgid "Style"
+msgstr "Stil"
+
+#: inc/config.php:423
+msgid "Background Color"
+msgstr "Hintergrundfarbe"
+
+#: inc/config.php:431
+msgid "Background Image"
+msgstr "Hintergrund-Bild"
+
+#: inc/config.php:434
+msgid "Upload an optional background image (or) enter the url to your image. This will override the color above if set."
+msgstr ""
+"Laden Sie ein Hintergrundbild hoch (oder) geben Sie eine URL zu diesem Bild "
+"an. Dies wird die obenstehende Hintergrundfarbe &uuml;berschreiben."
+
+#: inc/config.php:439
+msgid "Font Color"
+msgstr "Schriftfarbe"
+
+#: inc/config.php:440
+msgid "Black"
+msgstr "Schwarz"
+
+#: inc/config.php:440
+msgid "Gray"
+msgstr "Grau"
+
+#: inc/config.php:440
+msgid "White"
+msgstr "Wei&szlig;"
+
+#: inc/config.php:449
+msgid "Headline Font"
+msgstr "Schrift-Font der Schlagzeile"
+
+#: inc/config.php:453
+#: inc/config.php:462
+msgid "View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google Fonts</a>"
+msgstr ""
+"Zeige <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html\">Syst"
+"em Schriften</a> - Zeige <a href=\"http://www.google.com/webfonts\">Google "
+"Web-Schriften</a>"
+
+#: inc/config.php:457
+msgid "Body Font"
+msgstr "Body Schrift"
+
+#: inc/config.php:467
+msgid "Custom CSS"
+msgstr "Benutzerdefiniertes CSS"
+
+#: inc/config.php:472
+msgid "Need to tweaks the styles? Add your custom CSS here."
+msgstr "M&ouml;chten Sie die Styles optimieren? F&uuml;gen Sie hier ihren CSS-Code ein."
+
+#: inc/config.php:477
+msgid "Powered By SeedProd"
+msgstr "Bereitgestellt von SeedProd"
+
+#: inc/config.php:478
+msgid "Nope - Got No Love"
+msgstr "Hhmmm, dass st&ouml;&szlig;t nicht wirklich auf Liebe."
+
+#: inc/config.php:478
+msgid "Yep - I Love You Man"
+msgstr "Yepp - ich hab dich auch lieb"
+
+#: inc/config.php:479
+msgid "Can we show a <strong>cool stylish</strong> footer credit at the bottom the page."
+msgstr ""
+"D&uuml;rfen wir eine <strong>echt coole, stilvolle</ strong> Kredit-Fu&szlig;zeile am "
+"unteren Rand der Seite zeigen?"
+
+#: ultimate-coming-soon-page.php:38
+msgid "WordPress 3.0 and higher required. The plugin has now disabled itself. On a side note why are you running an old version :( Upgrade!"
+msgstr ""
+"Wordpress 3.0 oder h&ouml;her wird ben&ouml;tigt. Das PlugIn hat sich selbst "
+"deaktiviert. Als kleine Frage und gro&szlig;er Hinweis: Warum benutzt du eine so "
+"veraltete Version? \"Upgrade!\" hei&szlig;t die L&ouml;sung, dann klappt's auch wieder "
+"mit dem PlugIn's ;-)"
+
+#: framework/framework.php:118
+msgid "Plugin Support"
+msgstr "PlugIn-Unterst&uuml;tzung"
+
+#: framework/framework.php:122
+msgid "Got a Question, Idea, Problem or Praise?"
+msgstr ""
+"Hast du eine Frage, Idee, Problem, oder anderweitige Tipps und "
+"Anfeuerungsrufe?"
+
+#: framework/framework.php:125
+msgid "Support Request"
+msgstr "Unterst&uuml;tzungsanfrage"
+
+#: framework/framework.php:134
+msgid "Show Some Love"
+msgstr "Zeige ein bisschen Liebe ;-)"
+
+#: framework/framework.php:137
+msgid "Like this plugin? Show your support by:"
+msgstr "Magst du dieses PlugIn? Schenke uns deine Unterst&uuml;tzung via:"
+
+#: framework/framework.php:139
+msgid "Donate To It"
+msgstr "Spenden an"
+
+#: framework/framework.php:140
+msgid "Tweet It"
+msgstr "Twitter es"
+
+#: framework/framework.php:142
+msgid "Rate It"
+msgstr "Bewerte es"
+
+#: framework/framework.php:151
+msgid "SeedProd Blog"
+msgstr "SeedProd Blog"
+
+#: framework/framework.php:165
+msgid "Subscribe by Email"
+msgstr "per eMail abonnieren"
+
+#: framework/framework.php:194
+msgid "Save Changes"
+msgstr "Speicher &Auml;nderungen"
+
+#: framework/framework.php:274
+msgid "Media Image Library"
+msgstr "Media- und Bilder- Bilbliothek"
+
+#: framework/framework.php:322
+msgid "Select Color"
+msgstr "W&auml;hle eine Farbe"
+
+#: framework/framework.php:416
+msgid "Settings saved.  <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+msgstr ""
+"Einstellungen gespeichert. <a href='%s/?cs_preview=true'>Vorschau &raquo;</a>"
+
+#. Plugin Name of the plugin/theme
+msgid "Ultimate Coming Soon Page"
+msgstr "Ultimate Coming Soon Page"
+
+#. Plugin URI of the plugin/theme
+msgid "http://seedprod.com/wordpress-coming-soon-plugin/"
+msgstr "http://seedprod.com/wordpress-coming-soon-plugin/"
+
+#. Description of the plugin/theme
+msgid "Creates a Teaser Page for your Site and Collect Email Addresses from your Visitors."
+msgstr ""
+"Erstellt eine Teaser Seite f&uuml;r ihre Website und sammelt die eMail-Adressen "
+"der Besucher."
+
+#. Author of the plugin/theme
+msgid "SeedProd"
+msgstr "SeedProd"
+
+#. Author URI of the plugin/theme
+msgid "http://seedprod.com"
+msgstr "http://seedprod.com"
+

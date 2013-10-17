@@ -1,0 +1,278 @@
+# Copyright (C) 2010 Ultimate Coming Soon Page
+# This file is distributed under the same license as the Ultimate Coming Soon Page package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultimate Coming Soon Page 0.4.6\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/ultimate-coming-soon-page\n"
+"POT-Creation-Date: 2011-07-27 00:18:39+00:00\n"
+"PO-Revision-Date: 2011-09-08 02:09+0200\n"
+"Last-Translator: Mihalis Papanousis <greekphotographers@gmail.com>\n"
+"Language-Team: Mihalis Papanousis - http://aenaon.biz <fotonews@aenaon.biz>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Greek\n"
+"X-Poedit-Country: GREECE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Poedit-SearchPath-0: _e\n"
+"X-Poedit-SearchPath-1: __\n"
+
+#: inc/template/template-coming-soon.php:78
+#: inc/template/template-coming-soon.php:86
+#: inc/config.php:51
+msgid "Enter Your Email"
+msgstr "Το Email σας εδώ"
+
+#: inc/template/template-coming-soon.php:79
+#: inc/template/template-coming-soon.php:87
+msgid "Notify Me!"
+msgstr "Να ενημερωθώ !!!"
+
+#: inc/config.php:52
+msgid "Error :( Please try again."
+msgstr "Σφάλμα :( Παρακαλώ δοκιμάστε ξανά."
+
+#: inc/config.php:53
+msgid "Please enter a valid email."
+msgstr "Παρακαλώ, εισάγετε ενα έγκυρο Email"
+
+#: inc/config.php:54
+msgid "You'll be notified soon!"
+msgstr "Θα ειδοποιηθείτε σύντομα"
+
+#: inc/config.php:60
+#: inc/config.php:283
+msgid "Are you sure you want to DELETE all emails?"
+msgstr "Είστε σίγουροι/ες οτι θέλετε να ΔΙΑΓΡΑΨΕΤΕ ΟΛΑ τα email?"
+
+#: inc/config.php:115
+msgid "Unable to load lists, check your API Key!"
+msgstr "Αδυναμία φόρτωσης της λίστας. Παρακαλώ ελέγξτε το κλειδί API"
+
+#: inc/config.php:235
+msgid ""
+"Offer your visitors incentives such as coupons codes, free ebook, free software, etc. in exchange for their email.\n"
+"        \tJust fill out either or both of the fileds below and the information will be displayed after you have succesfully captured their email.\n"
+"        \t"
+msgstr ""
+"Δώστε κίνητρα στους επισκέπτες σας όπως, κουπόνια,δωρεάν ebook, δωρεάν λογισμικό, κλπ. σε αντάλλαγμα για το email τους.\n"
+"        \tΑπλώς συμπληρώστε ενα ή και τα δύο παρακάτω πεδία και οι πληροφορίες αυτές θα εμφανιστουν μετά την επιτυχή λήψη των e-mail τους.\n"
+"        \t"
+
+#: inc/config.php:327
+#: inc/config.php:329
+#: inc/config.php:330
+msgid "Coming Soon"
+msgstr "Coming Soon"
+
+#: inc/config.php:352
+msgid "Settings"
+msgstr "Επιλογές"
+
+#: inc/config.php:364
+msgid "Enable"
+msgstr "Ενεργοποίηση "
+
+#: inc/config.php:365
+msgid "Enable if you want to display a coming soon page to visitors. Users who are logged in will not see the coming soon page, this means you.  <a href='%s/?cs_preview=true'>Preview</a>"
+msgstr "Ενεργοποιήστε μόνο αν θέλετε οι επισκέπτες σας να βλέπουν την σελίδα \"Coming Soon\". Όσοι είναι συνδεδεμένοι (δηλαδή εσείς), θα βλέπουν κανονικά τον ιστότοπο.  <a href='%s/?cs_preview=true'>Προεπισκόπηση</a>"
+
+#: inc/config.php:366
+msgid "Yes"
+msgstr "Ναι"
+
+#: inc/config.php:372
+msgid "Image"
+msgstr "Εικόνα"
+
+#: inc/config.php:373
+msgid "Upload a logo or teaser image (or) enter the url to your image."
+msgstr "Μεταφορτώστε ενα logo ή μία εικόνα ώς teaser, ή απλά συμπληρώστε τη διεύθυνση μιας εικόνας σας."
+
+#: inc/config.php:379
+msgid "Headline"
+msgstr "Κεφαλίδα"
+
+#: inc/config.php:380
+msgid "Write a headline for your coming soon page. Tip: Avoid using 'Coming Soon'."
+msgstr "Γράψτε ένα τίτλο για την σελίδα σας. Προσοχή: Αποφύγετε τη χρήση του: 'Coming Soon'."
+
+#: inc/config.php:386
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: inc/config.php:387
+msgid "Tell the visitor what to expect from your site."
+msgstr "Ενημερώστε τους επισκέπτες σας για το περιεχόμενο των ιστοσελίδων σας."
+
+#: inc/config.php:394
+msgid "FeedBurn Address"
+msgstr "Διεύθυνση FeedBurn."
+
+#: inc/config.php:395
+msgid "Enter the part after http://feeds2.feedburner.com/"
+msgstr "Συμπληρώστε το υπόλοιπο κομμάτι ΜΕΤΑ το: http://feeds2.feedburner.com/"
+
+#: inc/config.php:401
+msgid "Mailing List"
+msgstr "Mailing Lists"
+
+#: inc/config.php:409
+msgid "Custom HTML"
+msgstr "Custom HTML"
+
+#: inc/config.php:410
+msgid "Enter any custom html or javascript that you want outputted."
+msgstr "Εισαγωγή custom HTML ή javascript που θα θέλατε να προβάλετε."
+
+#: inc/config.php:418
+msgid "Style"
+msgstr "Εμφάνιση"
+
+#: inc/config.php:423
+msgid "Background Color"
+msgstr "Χρώμα Φόντου"
+
+#: inc/config.php:431
+msgid "Background Image"
+msgstr "Εικόνα Φόντου"
+
+#: inc/config.php:434
+msgid "Upload an optional background image (or) enter the url to your image. This will override the color above if set."
+msgstr "Μεταφορτώστε μια εικόνα φόντου ή συμπληρώστε τη διεύθυνση μίας εικόνας. Αυτή θα αντικαταστήσει το χρώμα του φόντου, ακόμα και αν το έχετε συμπληρώσει πιο πάνω."
+
+#: inc/config.php:439
+msgid "Font Color"
+msgstr "Χρώμα Γραμματοσειράς"
+
+#: inc/config.php:440
+msgid "Black"
+msgstr "Μαύρο"
+
+#: inc/config.php:440
+msgid "Gray"
+msgstr "Γκρί"
+
+#: inc/config.php:440
+msgid "White"
+msgstr "Λευκό"
+
+#: inc/config.php:449
+msgid "Headline Font"
+msgstr "Γραμματοσειρά Κεφαλίδας"
+
+#: inc/config.php:453
+#: inc/config.php:462
+msgid "View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google Fonts</a>"
+msgstr "Δείτε τις <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html\">Γραμματοσειρές Συστήματος</a> - Δείτε τις <a href=\"http://www.google.com/webfonts\">Γραμματοσειρές Google</a>"
+
+#: inc/config.php:457
+msgid "Body Font"
+msgstr "Γραμματοσειρά Κειμένου"
+
+#: inc/config.php:467
+msgid "Custom CSS"
+msgstr "Custom CSS"
+
+#: inc/config.php:472
+msgid "Need to tweaks the styles? Add your custom CSS here."
+msgstr "Θέλετε να βελτιώστε τα διάφορα στύλ? Προσθέστε το δικό σας custom css εδώ."
+
+#: inc/config.php:477
+msgid "Powered By SeedProd"
+msgstr "Με τη δύναμη του SeedProd"
+
+#: inc/config.php:478
+msgid "Nope - Got No Love"
+msgstr "Οχι ευχαριστώ. Δεν θα πάρω"
+
+#: inc/config.php:478
+msgid "Yep - I Love You Man"
+msgstr "Ναί. Είσαι τέλειος δικέ μου !!!!"
+
+#: inc/config.php:479
+msgid "Can we show a <strong>cool stylish</strong> footer credit at the bottom the page."
+msgstr "Επιτρέψτε να εμφανίζουμε το όνομα μας με <strong>πολύ όμορφο στύλ</strong> στο υποσέλιδο σας."
+
+#: ultimate-coming-soon-page.php:38
+msgid "WordPress 3.0 and higher required. The plugin has now disabled itself. On a side note why are you running an old version :( Upgrade!"
+msgstr "Χρειάζεστε την έκδοση WordPress 3.0 ή μεταγενέστερη. Το πρόσθετο έχει απενεργοποιηθεί. Αλήθεια, γιατί έχετε μια τόσο παλιά έκδοση :( Αναβαθμίστε την καλύτερα !!"
+
+#: framework/framework.php:118
+msgid "Plugin Support"
+msgstr "Υποστήριξη Προσθέτου"
+
+#: framework/framework.php:122
+msgid "Got a Question, Idea, Problem or Praise?"
+msgstr "Έχετε κάποια ερώτηση, ιδέα, πρόβλημα ή καλό λόγο?"
+
+#: framework/framework.php:125
+msgid "Support Request"
+msgstr "Αίτημα υποστήριξης"
+
+#: framework/framework.php:134
+msgid "Show Some Love"
+msgstr "Δείξτε την αγάπη σας"
+
+#: framework/framework.php:137
+msgid "Like this plugin? Show your support by:"
+msgstr "Σας αρέσει αυτό το πρόσθετο? Δείξτε την υποστήριξή σας:"
+
+#: framework/framework.php:139
+msgid "Donate To It"
+msgstr "Προσφέρετε χρήματα"
+
+#: framework/framework.php:140
+msgid "Tweet It"
+msgstr "Γράψτε ενα Tweet"
+
+#: framework/framework.php:142
+msgid "Rate It"
+msgstr "Βαθμολογήστε το"
+
+#: framework/framework.php:151
+msgid "SeedProd Blog"
+msgstr "SeedProd Blog"
+
+#: framework/framework.php:165
+msgid "Subscribe by Email"
+msgstr "Γίνετε συνδρομητές στα νέα μας !!!"
+
+#: framework/framework.php:194
+msgid "Save Changes"
+msgstr "Αποθήκευση αλλαγών"
+
+#: framework/framework.php:274
+msgid "Media Image Library"
+msgstr "Συλλογή πολυμέσων"
+
+#: framework/framework.php:322
+msgid "Select Color"
+msgstr "Επιλογή χρώματος"
+
+#: framework/framework.php:416
+msgid "Settings saved.  <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+msgstr "Οι αλλαγές αποθηκεύτηκαν.  <a href='%s/?cs_preview=true'>Προεπισκόπηση &raquo;</a>"
+
+#. Plugin Name of the plugin/theme
+msgid "Ultimate Coming Soon Page"
+msgstr "Ultimate Coming Soon Page"
+
+#. Plugin URI of the plugin/theme
+msgid "http://seedprod.com/wordpress-coming-soon-plugin/"
+msgstr "http://seedprod.com/wordpress-coming-soon-plugin/"
+
+#. Description of the plugin/theme
+msgid "Creates a Teaser Page for your Site and Collect Email Addresses from your Visitors."
+msgstr "Δημιουργεί μια σελίδα \"Teaser\" για τον ιστότοπο σας και συγκεντρώνει τα Email των επισκεπτών."
+
+#. Author of the plugin/theme
+msgid "SeedProd"
+msgstr "SeedProd"
+
+#. Author URI of the plugin/theme
+msgid "http://seedprod.com"
+msgstr "http://seedprod.com"
+

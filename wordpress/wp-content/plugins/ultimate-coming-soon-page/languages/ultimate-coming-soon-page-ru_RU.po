@@ -1,0 +1,324 @@
+# Copyright (C) 2010 Ultimate Coming Soon Page
+# This file is distributed under the same license as the Ultimate Coming Soon Page package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultimate Coming Soon Page 0.4.6\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/ultimate-coming-soon-page\n"
+"POT-Creation-Date: 2011-07-27 00:18:39+00:00\n"
+"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Oleg Vlasov <skininforu@gmail.com>\n"
+"Language-Team: Oldpepper <skininfo.ru@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: Russian Federation\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: \n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#: inc/config.php:60
+#: inc/template/template-coming-soon.php:92
+#: inc/template/template-coming-soon.php:100
+#@ ultimate-coming-soon-page
+msgid "Enter Your Email"
+msgstr "Укажите ваш Email"
+
+#: inc/template/template-coming-soon.php:93
+#: inc/template/template-coming-soon.php:101
+#@ ultimate-coming-soon-page
+msgid "Notify Me!"
+msgstr "Подписаться!"
+
+#: inc/config.php:61
+#@ ultimate-coming-soon-page
+msgid "Error :( Please try again."
+msgstr "Ошибка. Попробуйте еще раз."
+
+#: inc/config.php:62
+#@ ultimate-coming-soon-page
+msgid "Please enter a valid email."
+msgstr "Напишите корректный адрес."
+
+#: inc/config.php:63
+#@ ultimate-coming-soon-page
+msgid "You'll be notified soon!"
+msgstr "Спасибо за подписку!"
+
+#: inc/config.php:288
+#@ ultimate-coming-soon-page
+msgid "Are you sure you want to DELETE all emails?"
+msgstr "Вы действительно хотите удалить все письма?"
+
+#: inc/config.php:120
+#@ ultimate-coming-soon-page
+msgid "Unable to load lists, check your API Key!"
+msgstr "Не удается загрузить список, проверьте API Key."
+
+#: inc/config.php:240
+#@ ultimate-coming-soon-page
+msgid ""
+"Offer your visitors incentives such as coupons codes, free ebook, free software, etc. in exchange for their email.\n"
+"        \tJust fill out either or both of the fileds below and the information will be displayed after you have succesfully captured their email.\n"
+"        \t"
+msgstr ""
+"Предложите своим подписчикам такие подарки, как бесплатная книга, купоны на скидки, бесплатное программное обеспечение, и многое другое в обмен на их подписку. \n"
+"        \\\t Заполните поля ниже, чтобы эта информация отображалась после того, как вы успешно захватили их электронную почту.\n"
+"        \\\t"
+
+#: inc/config.php:332
+#: inc/config.php:334
+#: inc/config.php:335
+#@ ultimate-coming-soon-page
+msgid "Coming Soon"
+msgstr "Плагин Страницы 'Скоро'"
+
+#: inc/config.php:357
+#@ ultimate-coming-soon-page
+msgid "Settings"
+msgstr "Настройки"
+
+#: inc/config.php:369
+#@ ultimate-coming-soon-page
+msgid "Enable"
+msgstr "Включить"
+
+#: inc/config.php:370
+#, php-format
+#@ ultimate-coming-soon-page
+msgid "Enable if you want to display a coming soon page to visitors. Users who are logged in will not see the coming soon page, this means you.  <a href='%s/?cs_preview=true'>Preview</a>"
+msgstr "Включить, если вы хотите показать эту страницу своим посетителям. Те посетители, кто зарегистрирован на сайте, эту страницу не увидят, а будут видеть обычную главную страницу. <a href='%s/?cs_preview=true'>Просмотр превью</a>"
+
+#: inc/config.php:371
+#: inc/config.php:445
+#@ ultimate-coming-soon-page
+msgid "Yes"
+msgstr "Да"
+
+#: inc/config.php:377
+#@ ultimate-coming-soon-page
+msgid "Image"
+msgstr "Изображение"
+
+#: inc/config.php:378
+#@ ultimate-coming-soon-page
+msgid "Upload a logo or teaser image (or) enter the url to your image."
+msgstr "Загрузите Логотип или напишите полную ссылку на изображение."
+
+#: inc/config.php:384
+#@ ultimate-coming-soon-page
+msgid "Headline"
+msgstr "Заголовок"
+
+#: inc/config.php:385
+#@ ultimate-coming-soon-page
+msgid "Write a headline for your coming soon page. Tip: Avoid using 'Coming Soon'."
+msgstr "Напишите заголовок для вашей стартовой страницы. Совет: не пишите 'Продолжение следует'"
+
+#: inc/config.php:391
+#@ ultimate-coming-soon-page
+msgid "Description"
+msgstr "Описание"
+
+#: inc/config.php:392
+#@ ultimate-coming-soon-page
+msgid "Tell the visitor what to expect from your site."
+msgstr "Скажите посетителю, что его ждет в ближайшее время."
+
+#: inc/config.php:399
+#@ ultimate-coming-soon-page
+msgid "FeedBurn Address"
+msgstr "Адрес FeedBurner"
+
+#: inc/config.php:400
+#@ ultimate-coming-soon-page
+msgid "Enter the part after http://feeds2.feedburner.com/"
+msgstr "Напишите адрес, который у вас идет после http://feeds2.feedburner.com/"
+
+#: inc/config.php:406
+#@ ultimate-coming-soon-page
+msgid "Mailing List"
+msgstr "Список адресатов"
+
+#: inc/config.php:414
+#@ ultimate-coming-soon-page
+msgid "Custom HTML"
+msgstr "Пользовательский HTML"
+
+#: inc/config.php:415
+#@ ultimate-coming-soon-page
+msgid "Enter any custom html or javascript that you want outputted."
+msgstr "Напишите свой вариант пользовательской страницы с использованием HTML или JS"
+
+#: inc/config.php:423
+#@ ultimate-coming-soon-page
+msgid "Style"
+msgstr "Стиль"
+
+#: inc/config.php:428
+#@ ultimate-coming-soon-page
+msgid "Background Color"
+msgstr "Цвет фона"
+
+#: inc/config.php:436
+#@ ultimate-coming-soon-page
+msgid "Background Image"
+msgstr "Фоновое изображение"
+
+#: inc/config.php:439
+#@ ultimate-coming-soon-page
+msgid "Upload an optional background image (or) enter the url to your image. This will override the color above if set."
+msgstr "Загрузите фоновое изображение или напишите ссылку на картинку. Это позволит изменить цвет фона."
+
+#: inc/config.php:452
+#@ ultimate-coming-soon-page
+msgid "Font Color"
+msgstr "Цвет шрифта"
+
+#: inc/config.php:453
+#@ ultimate-coming-soon-page
+msgid "Black"
+msgstr "Темный"
+
+#: inc/config.php:453
+#@ ultimate-coming-soon-page
+msgid "Gray"
+msgstr "Серый"
+
+#: inc/config.php:453
+#@ ultimate-coming-soon-page
+msgid "White"
+msgstr "Светлый"
+
+#: inc/config.php:462
+#@ ultimate-coming-soon-page
+msgid "Headline Font"
+msgstr "Шрифт заголовка"
+
+#: inc/config.php:466
+#: inc/config.php:475
+#@ ultimate-coming-soon-page
+msgid "View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google Fonts</a>"
+msgstr "Посмотреть <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html\">Системные шрифты</a> - Посмотреть <a href=\"http://www.google.com/webfonts\">Шрифты Google</a>"
+
+#: inc/config.php:470
+#@ ultimate-coming-soon-page
+msgid "Body Font"
+msgstr "Основной шрифт"
+
+#: inc/config.php:480
+#@ ultimate-coming-soon-page
+msgid "Custom CSS"
+msgstr "Пользовательский CSS"
+
+#: inc/config.php:485
+#@ ultimate-coming-soon-page
+msgid "Need to tweaks the styles? Add your custom CSS here."
+msgstr "Хотите что-то свое в стиле? Напишите код CSS."
+
+#: inc/config.php:490
+#@ ultimate-coming-soon-page
+msgid "Powered By SeedProd"
+msgstr "Разработка SeedProd"
+
+#: inc/config.php:491
+#@ ultimate-coming-soon-page
+msgid "Nope - Got No Love"
+msgstr "Без ссылки на автора"
+
+#: inc/config.php:491
+#@ ultimate-coming-soon-page
+msgid "Yep - I Love You Man"
+msgstr "С ссылкой на автора"
+
+#: inc/config.php:492
+#@ ultimate-coming-soon-page
+msgid "Can we show a <strong>cool stylish</strong> footer credit at the bottom the page."
+msgstr "Показать стильный вариант ссылки на автора в нижней части страницы."
+
+#: ultimate-coming-soon-page.php:38
+#@ ultimate-coming-soon-page
+msgid "WordPress 3.0 and higher required. The plugin has now disabled itself. On a side note why are you running an old version :( Upgrade!"
+msgstr "Работает на Wordpress 3.0 и старше. Плагин сейчас не работает. Почему бы вам не обновить свой Wordpress?"
+
+#: framework/framework.php:119
+#@ ultimate-coming-soon-page
+msgid "Plugin Support"
+msgstr "Поддержка"
+
+#: framework/framework.php:123
+#@ default
+msgid "Got a Question, Idea, Problem or Praise?"
+msgstr ""
+
+#: framework/framework.php:126
+#@ ultimate-coming-soon-page
+msgid "Support Request"
+msgstr "Запрос поддержки"
+
+#: framework/framework.php:135
+#@ ultimate-coming-soon-page
+msgid "Show Some Love"
+msgstr "Нравиться плагин"
+
+#: framework/framework.php:138
+#@ ultimate-coming-soon-page
+msgid "Like this plugin? Show your support by:"
+msgstr "Нравиться? Тогда поддержите меня через:"
+
+#: framework/framework.php:141
+#@ ultimate-coming-soon-page
+msgid "Tweet It"
+msgstr ""
+
+#: framework/framework.php:152
+#@ ultimate-coming-soon-page
+msgid "SeedProd Blog"
+msgstr ""
+
+#: framework/framework.php:166
+#@ ultimate-coming-soon-page
+msgid "Subscribe by Email"
+msgstr ""
+
+#: framework/framework.php:197
+#@ ultimate-coming-soon-page
+msgid "Save Changes"
+msgstr "Сохранить настройки"
+
+#: framework/framework.php:278
+#@ ultimate-coming-soon-page
+msgid "Media Image Library"
+msgstr "Библиотека Медиа"
+
+#: framework/framework.php:381
+#, php-format
+#@ ultimate-coming-soon-page
+msgid "Settings saved.  <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+msgstr "Настройки сохранены. <a href='%s/?cs_preview=true'>Превью &raquo;</a>"
+
+#: framework/framework.php:140
+#@ ultimate-coming-soon-page
+msgid "Rating It"
+msgstr "Голосовать"
+
+#: inc/config.php:443
+#@ ultimate-coming-soon-page
+msgid "Stretch Background Image"
+msgstr "Растянуть изображение фона"
+
+#: inc/config.php:444
+#@ ultimate-coming-soon-page
+msgid "This will stretch your background image to match any browser size."
+msgstr "Этот параметр позволит растянуть изображение для корректного просмотра при любои разрешении экрана монитора."
+
+#: inc/template/template-coming-soon.php:19
+#, php-format
+#@ toolbox
+msgid "Page %s"
+msgstr ""
+

@@ -1,0 +1,277 @@
+# Copyright (C) 2010 Ultimate Coming Soon Page
+# This file is distributed under the same license as the Ultimate Coming Soon Page package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultimate Coming Soon Page 0.4.6\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/ultimate-coming-soon-page\n"
+"POT-Creation-Date: 2011-07-27 00:18:39+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2011-09-13 15:27-0500\n"
+"Last-Translator: \n"
+"Language-Team: QB - Creative Studio <info@qb.si>\n"
+"X-Poedit-Language: Slovenian\n"
+"X-Poedit-Country: SLOVENIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: _e\n"
+"X-Poedit-SearchPath-1: __\n"
+
+#: inc/template/template-coming-soon.php:78
+#: inc/template/template-coming-soon.php:86
+#: inc/config.php:51
+msgid "Enter Your Email"
+msgstr "Vpišite e-Naslov"
+
+#: inc/template/template-coming-soon.php:79
+#: inc/template/template-coming-soon.php:87
+msgid "Notify Me!"
+msgstr "Obvesti me!"
+
+#: inc/config.php:52
+msgid "Error :( Please try again."
+msgstr "Napaka :( Poskusite znova."
+
+#: inc/config.php:53
+msgid "Please enter a valid email."
+msgstr "Prosim vpišite veljaven e-Naslov."
+
+#: inc/config.php:54
+msgid "You'll be notified soon!"
+msgstr "Kmalu vas bomo obvestili!"
+
+#: inc/config.php:60
+#: inc/config.php:283
+msgid "Are you sure you want to DELETE all emails?"
+msgstr "Ste prepričani, da želite izbrisati vse e-Naslove?"
+
+#: inc/config.php:115
+msgid "Unable to load lists, check your API Key!"
+msgstr "Ne morem naložiti spiska, prosim preverite API ključ!"
+
+#: inc/config.php:235
+msgid ""
+"Offer your visitors incentives such as coupons codes, free ebook, free software, etc. in exchange for their email.\n"
+"        \tJust fill out either or both of the fileds below and the information will be displayed after you have succesfully captured their email.\n"
+"        \t"
+msgstr ""
+"Ponudite svojim obiskovalcem kodo kuponov, brezplačno knjigo ali programsko opremo v zameno za njihov e-naslov.\n"
+"        \Izpolnite obrazec. Informacije bodo prikazane, ko bodo obiskovalci vpisali e-Naslov..\n"
+"        \t"
+
+#: inc/config.php:327
+#: inc/config.php:329
+#: inc/config.php:330
+msgid "Coming Soon"
+msgstr "Kmalu"
+
+#: inc/config.php:352
+msgid "Settings"
+msgstr "Nastavitve"
+
+#: inc/config.php:364
+msgid "Enable"
+msgstr "Omogoči"
+
+#: inc/config.php:365
+msgid "Enable if you want to display a coming soon page to visitors. Users who are logged in will not see the coming soon page, this means you.  <a href='%s/?cs_preview=true'>Preview</a>"
+msgstr "Omogočite, če želite prikazati, stran v izdelavi \"Kmalu\" vašim obiskovalcem. Uporabniki, ki so prijavljeni v sistem je ne bodo videli, zato uporabite ta naslov za <a href='%s/?cs_preview=true'>Predogled</a>."
+
+#: inc/config.php:366
+msgid "Yes"
+msgstr "Da"
+
+#: inc/config.php:372
+msgid "Image"
+msgstr "Slika"
+
+#: inc/config.php:373
+msgid "Upload a logo or teaser image (or) enter the url to your image."
+msgstr "Naložite logotip ali vpišite URL naslov do slike."
+
+#: inc/config.php:379
+msgid "Headline"
+msgstr "Naslov"
+
+#: inc/config.php:380
+msgid "Write a headline for your coming soon page. Tip: Avoid using 'Coming Soon'."
+msgstr "Vpišite naslov za vašo stran. Nasvet: Izogibajte se besedi 'Coming Soon' oz. 'Kmalu'."
+
+#: inc/config.php:386
+msgid "Description"
+msgstr "Opis"
+
+#: inc/config.php:387
+msgid "Tell the visitor what to expect from your site."
+msgstr "Povejte obiskovalcem, kaj bodo lahko pričakovali na vaši strani."
+
+#: inc/config.php:394
+msgid "FeedBurn Address"
+msgstr "FeedBurn naslov."
+
+#: inc/config.php:395
+msgid "Enter the part after http://feeds2.feedburner.com/"
+msgstr "Vpišite naslov za naslovom http://feeds2.feedburner.com/"
+
+#: inc/config.php:401
+msgid "Mailing List"
+msgstr "Mailing lista"
+
+#: inc/config.php:409
+msgid "Custom HTML"
+msgstr "HTML koda"
+
+#: inc/config.php:410
+msgid "Enter any custom html or javascript that you want outputted."
+msgstr "Vpišite željeno HTML ali JavaScript kodo, ki jo želite na strani."
+
+#: inc/config.php:418
+msgid "Style"
+msgstr "Stil"
+
+#: inc/config.php:423
+msgid "Background Color"
+msgstr "Barva ozadja"
+
+#: inc/config.php:431
+msgid "Background Image"
+msgstr "Slika ozadja"
+
+#: inc/config.php:434
+msgid "Upload an optional background image (or) enter the url to your image. This will override the color above if set."
+msgstr "Naložite željeno slika za ozadje ali vpišite URL naslov slike.  S tem boste zamenjali barvo, če je nastavljena."
+
+#: inc/config.php:439
+msgid "Font Color"
+msgstr "Barva pisave"
+
+#: inc/config.php:440
+msgid "Black"
+msgstr "Črna"
+
+#: inc/config.php:440
+msgid "Gray"
+msgstr "Siva"
+
+#: inc/config.php:440
+msgid "White"
+msgstr "Bela"
+
+#: inc/config.php:449
+msgid "Headline Font"
+msgstr "Pisava naslova"
+
+#: inc/config.php:453
+#: inc/config.php:462
+msgid "View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google Fonts</a>"
+msgstr "Poglejte <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html\">sistemske pisave</a> - Poglejte <a href=\"http://www.google.com/webfonts\">Google pisave</a>"
+
+#: inc/config.php:457
+msgid "Body Font"
+msgstr "Body pisava"
+
+#: inc/config.php:467
+msgid "Custom CSS"
+msgstr "CSS koda"
+
+#: inc/config.php:472
+msgid "Need to tweaks the styles? Add your custom CSS here."
+msgstr "Želite spremeniti stil? Vstavite željeno CSS kodo."
+
+#: inc/config.php:477
+msgid "Powered By SeedProd"
+msgstr "Poganja: SeedProd"
+
+#: inc/config.php:478
+msgid "Nope - Got No Love"
+msgstr "Ne - Ni ljubezni"
+
+#: inc/config.php:478
+msgid "Yep - I Love You Man"
+msgstr "Da - Ljubim te ;)"
+
+#: inc/config.php:479
+msgid "Can we show a <strong>cool stylish</strong> footer credit at the bottom the page."
+msgstr "Lahko prikažemo <strong>lep</strong> naslov na dnu strani v znak podpore?"
+
+#: ultimate-coming-soon-page.php:38
+msgid "WordPress 3.0 and higher required. The plugin has now disabled itself. On a side note why are you running an old version :( Upgrade!"
+msgstr "Zahtevan je WordPress 3.0 ali več. Vtičnik se bo samodejno izklopil. Priporočamo da nadgradite WordPress!"
+
+#: framework/framework.php:118
+msgid "Plugin Support"
+msgstr "Pomoč"
+
+#: framework/framework.php:122
+msgid "Got a Question, Idea, Problem or Praise?"
+msgstr "Imate vprašanje, idejo ali presenečenje? "
+
+#: framework/framework.php:125
+msgid "Support Request"
+msgstr "Prošnja za pomoč"
+
+#: framework/framework.php:134
+msgid "Show Some Love"
+msgstr "Pokažite ljubezen"
+
+#: framework/framework.php:137
+msgid "Like this plugin? Show your support by:"
+msgstr "Vam je všeč vtičnik? Pokažite podporo z:"
+
+#: framework/framework.php:139
+msgid "Donate To It"
+msgstr "Donacijo"
+
+#: framework/framework.php:140
+msgid "Tweet It"
+msgstr "Tweetom"
+
+#: framework/framework.php:142
+msgid "Rate It"
+msgstr "Glasom"
+
+#: framework/framework.php:151
+msgid "SeedProd Blog"
+msgstr "SeedProd Blog"
+
+#: framework/framework.php:165
+msgid "Subscribe by Email"
+msgstr "Naročite se na e-Novice"
+
+#: framework/framework.php:194
+msgid "Save Changes"
+msgstr "Shrani spremembe"
+
+#: framework/framework.php:274
+msgid "Media Image Library"
+msgstr "Medijska zbirka"
+
+#: framework/framework.php:322
+msgid "Select Color"
+msgstr "Izberite barvo"
+
+#: framework/framework.php:416
+msgid "Settings saved.  <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+msgstr "Nastavitve so shranjene.<a href='%s/?cs_preview=true'>Predogled &raquo;</a>"
+
+#. Plugin Name of the plugin/theme
+msgid "Ultimate Coming Soon Page"
+msgstr "Stran: Ultimate Coming Soon"
+
+#. Plugin URI of the plugin/theme
+msgid "http://seedprod.com/wordpress-coming-soon-plugin/"
+msgstr "http://seedprod.com/wordpress-coming-soon-plugin/"
+
+#. Description of the plugin/theme
+msgid "Creates a Teaser Page for your Site and Collect Email Addresses from your Visitors."
+msgstr "Ustvarite stran, kjer lahko zbirate e-Naslove uporabnikov, da bi jih obvestili o prihajajoči strani."
+
+#. Author of the plugin/theme
+msgid "SeedProd"
+msgstr "SeedProd"
+
+#. Author URI of the plugin/theme
+msgid "http://seedprod.com"
+msgstr "http://seedprod.com"
+

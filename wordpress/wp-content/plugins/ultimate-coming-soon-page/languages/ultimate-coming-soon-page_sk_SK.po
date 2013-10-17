@@ -1,0 +1,236 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: ultimate-coming-soon-page.php:38
+msgid ""
+"WordPress 3.0 and higher required. The plugin has now disabled itself. On a "
+"side note why are you running an old version :( Upgrade!"
+msgstr ""
+".. WordPress 3.0 a vyssi vyzaduje plugin je teraz zakazane sa Na strane na "
+"vedomie, preco ste neaktualne verzii: (Upgrade!"
+
+#: framework/framework.php:281
+msgid "Media Image Library"
+msgstr "Media Image Library"
+
+#: framework/framework.php:384
+#, php-format
+msgid "Settings saved.  <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+msgstr "Nastavenie ulozene. <a href='%s/?cs_preview=true'> Nahlad» </ a> "
+
+#: inc/config.php:49
+msgid "Coming Soon Mode Active"
+msgstr "Uz coskoro Mode Active"
+
+#: inc/config.php:78
+msgid "Enter Your Email"
+msgstr "Zadajte Vas e-mail"
+
+#: inc/config.php:79
+msgid "Error :( Please try again."
+msgstr "Chyba: (prosim skuste to znova."
+
+#: inc/config.php:80
+msgid "Please enter a valid email."
+msgstr "Zadajte prosim svoj e-mail."
+
+#: inc/config.php:81
+msgid "You'll be notified soon!"
+msgstr "Budete upozorneni coskoro!"
+
+#: inc/config.php:138
+msgid "Unable to load lists, check your API Key!"
+msgstr "Nemozno nacitat zoznamy, skontrolujte API kluc!"
+
+#: inc/config.php:306
+msgid "Are you sure you want to DELETE all emails?"
+msgstr "Ste si isti, ze chcete vymazat vsetky e-maily?"
+
+#: inc/config.php:350 inc/config.php:352 inc/config.php:353
+msgid "Coming Soon"
+msgstr "Coming Soon"
+
+#: inc/config.php:375
+msgid "Settings"
+msgstr "Nastavenia"
+
+#: inc/config.php:387
+msgid "Enable"
+msgstr "Povolit"
+
+#: inc/config.php:388
+#, php-format
+msgid ""
+"Enable if you want to display a coming soon page to visitors. Users who are "
+"logged in will not see the coming soon page, this means you.  <a href='%s/?"
+"cs_preview=true'>Preview</a>"
+msgstr ""
+"Povolit, ak chcete zobrazit Uz coskoro stranku navstevnikmi. Uzivatelia, "
+"ktori su prihlaseni nebude vidiet Coming Soon stranku, to znamena, ze. <a "
+"href='%s/?cs_preview=true'> Nahlad </ > "
+
+#: inc/config.php:389 inc/config.php:463
+msgid "Yes"
+msgstr "Ano"
+
+#: inc/config.php:395
+msgid "Image"
+msgstr "Obrazok"
+
+#: inc/config.php:396
+msgid "Upload a logo or teaser image (or) enter the url to your image."
+msgstr ""
+"Nahrat logo alebo teaser obrazok (alebo) zadajte adresu URL do svojho obrazu."
+
+#: inc/config.php:402
+msgid "Headline"
+msgstr "Nadpis"
+
+#: inc/config.php:403
+msgid ""
+"Write a headline for your coming soon page. Tip: Avoid using 'Coming Soon'."
+msgstr ""
+"Napiste titulok pre vas coskoro pride stranku Tip:. Nepouzivajte 'Coming "
+"Soon'."
+
+#: inc/config.php:409
+msgid "Description"
+msgstr "Popis"
+
+#: inc/config.php:410
+msgid "Tell the visitor what to expect from your site."
+msgstr "Povedz navstevnika, co ocakavate od vasho webu."
+
+#: inc/config.php:417
+msgid "FeedBurn Address"
+msgstr "FeedBurn Adresa"
+
+#: inc/config.php:418
+msgid "Enter the part after http://feeds2.feedburner.com/"
+msgstr "Zadajte cast po http://feeds2.feedburner.com/"
+
+#: inc/config.php:424
+msgid "Mailing List"
+msgstr "Mailing List"
+
+#: inc/config.php:432
+msgid "Custom HTML"
+msgstr "Vlastne HTML"
+
+#: inc/config.php:433
+msgid "Enter any custom html or javascript that you want outputted."
+msgstr ""
+"Zadajte lubovolne vlastne HTML alebo JavaScript, ktore chcete vystupujuceho."
+
+#: inc/config.php:441
+msgid "Style"
+msgstr "Style"
+
+#: inc/config.php:446
+msgid "Background Color"
+msgstr "Farba pozadia"
+
+#: inc/config.php:454
+msgid "Background Image"
+msgstr "Obrazok na pozadi"
+
+#: inc/config.php:457
+msgid ""
+"Upload an optional background image (or) enter the url to your image. This "
+"will override the color above if set."
+msgstr ""
+"Nahrat volitelne obrazok na pozadi (alebo) zadajte adresu URL do obrazu. To "
+"prepise farbu vyssie, ak set."
+
+#: inc/config.php:461
+msgid "Stretch Background Image"
+msgstr "Stretch Obrazok na pozadi"
+
+#: inc/config.php:462
+msgid "This will stretch your background image to match any browser size."
+msgstr ""
+"Toto bude trvat vas obrazok na pozadi v lubovolnej velkosti prehliadaca."
+
+#: inc/config.php:470
+msgid "Font Color"
+msgstr "Farba pisma"
+
+#: inc/config.php:471
+msgid "Black"
+msgstr "Black"
+
+#: inc/config.php:471
+msgid "Gray"
+msgstr "Gray"
+
+#: inc/config.php:471
+msgid "White"
+msgstr "White"
+
+#: inc/config.php:480
+msgid "Headline Font"
+msgstr "Nadpis Font"
+
+#: inc/config.php:484 inc/config.php:493
+msgid ""
+"View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html"
+"\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google "
+"Fonts</a>"
+msgstr ""
+"View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html"
+"\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google "
+"Fonts</a>"
+
+#: inc/config.php:488
+msgid "Body Font"
+msgstr "Telo Font"
+
+#: inc/config.php:498
+msgid "Custom CSS"
+msgstr "Vlastne CSS"
+
+#: inc/config.php:503
+msgid "Need to tweaks the styles? Add your custom CSS here."
+msgstr "Potrebujete vylepsi styly? Pridajte svoj vlastny CSS tu."
+
+#: inc/config.php:508
+msgid "Powered By SeedProd"
+msgstr "Powered By SeedProd"
+
+#: inc/config.php:509
+msgid "Nope - Got No Love"
+msgstr "Nie - Got No Love"
+
+#: inc/config.php:509
+msgid "Yep - I Love You Man"
+msgstr "Jo - I Love You Man"
+
+#: inc/config.php:510
+msgid ""
+"Can we show a <strong>cool stylish</strong> footer credit at the bottom the "
+"page."
+msgstr ""
+"Mozeme ukazat <strong> pohode stylovy </ strong> pata kredit na dne stranku."
+
+#: inc/config.php:517
+msgid "Powered By SeedProd Affiliate ID"
+msgstr "Powered By SeedProd affiliate ID"
+
+#: inc/config.php:518
+msgid ""
+"Enter your affiliate ID and earn commisions on sales referred to SeedProd "
+"from your page. <a href='http://www.seedprod.com/affiliates/' "
+"target='_blank'>Learn More</a>. "
+msgstr ""
+"Zadajte vas partnersky ID a ziskajte provizie z predaja uvedenych SeedProd z "
+"vasej stranky. <a href='http://www.seedprod.com/affiliates/' "
+"target='_blank'> Dalsie informacie </ a>."

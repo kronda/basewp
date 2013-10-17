@@ -1,0 +1,264 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultimate Coming Soon Page\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-04-09 13:10-0500\n"
+"PO-Revision-Date: 2012-12-06 16:57+0100\n"
+"Last-Translator: Luca Barbetti <lucabarbetti@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-Basepath: ../\n"
+"X-Generator: Poedit 1.5.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: ultimate-coming-soon-page.php:38
+msgid ""
+"WordPress 3.0 and higher required. The plugin has now disabled itself. On a "
+"side note why are you running an old version :( Upgrade!"
+msgstr ""
+"È richiesto WordPress 3.0 o superiore. Il plugin si è automaticamente "
+"disabilitato. Come nota a margine, perché è in uso una vecchia versione? :"
+"( Aggiornare!"
+
+#: framework/framework.php:281
+msgid "Media Image Library"
+msgstr "Libreria delle immagini"
+
+#: framework/framework.php:384
+#, php-format
+msgid "Settings saved.  <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+msgstr ""
+"Impostazioni salvate.  <a href='%s/?cs_preview=true'>Anteprima &raquo;</a>"
+
+#: inc/config.php:49
+msgid "Coming Soon Mode Active"
+msgstr "Coming Soon è attivo"
+
+#: inc/config.php:78
+msgid "Enter Your Email"
+msgstr "Inserire l'indirizzo email"
+
+#: inc/config.php:79
+msgid "Error :( Please try again."
+msgstr "Errore :( Riprovare nuovamente."
+
+#: inc/config.php:80
+msgid "Please enter a valid email."
+msgstr "Inserire un indirizzo email valido."
+
+#: inc/config.php:81
+msgid "You'll be notified soon!"
+msgstr "Presto sarete avvisati!"
+
+#: inc/config.php:138
+msgid "Unable to load lists, check your API Key!"
+msgstr "Impossibile caricare le liste, controllare la propria API Key!"
+
+#: inc/config.php:258
+msgid ""
+"Offer your visitors incentives such as coupons codes, free ebook, free "
+"software, etc. in exchange for their email.\n"
+"        \tJust fill out either or both of the fileds below and the "
+"information will be displayed after you have succesfully captured their "
+"email.\n"
+"        \t"
+msgstr ""
+"In cambio dell'email dei visitatori offrite codici per coupon, ebook "
+"gratuiti, software gratuito, ecc.\n"
+"        \t È sufficiente compilare uno od entrambi i campi sottostanti e le "
+"informazioni verranno visualizzate dopo che la loro email è stata "
+"effettivamente catturata.\n"
+"        \t"
+
+#: inc/config.php:306
+msgid "Are you sure you want to DELETE all emails?"
+msgstr "Si vuole veramente CANCELLARE tutte le email?"
+
+#: inc/config.php:350 inc/config.php:352 inc/config.php:353
+msgid "Coming Soon"
+msgstr "Coming Soon (In arrivo)"
+
+#: inc/config.php:375
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: inc/config.php:387
+msgid "Enable"
+msgstr "Abilita"
+
+#: inc/config.php:388
+#, php-format
+msgid ""
+"Enable if you want to display a coming soon page to visitors. Users who are "
+"logged in will not see the coming soon page, this means you.  <a href='%s/?"
+"cs_preview=true'>Preview</a>"
+msgstr ""
+"Abilitare se si vuole mostrare ai visitatori una pagina 'coming soon' (in "
+"arrivo). Gli utenti registrati che hanno effettuato l'accesso, come voi in "
+"questo momento, non vedranno la pagina 'coming soon'.  <a href='%s/?"
+"cs_preview=true'>Anteprima</a>"
+
+#: inc/config.php:389 inc/config.php:463
+msgid "Yes"
+msgstr "Si"
+
+#: inc/config.php:395
+msgid "Image"
+msgstr "Immagine"
+
+#: inc/config.php:396
+msgid "Upload a logo or teaser image (or) enter the url to your image."
+msgstr ""
+"Caricare un logo o un'immagine accattivante o inserire l'URL dell'immagine."
+
+#: inc/config.php:402
+msgid "Headline"
+msgstr "Titolo"
+
+#: inc/config.php:403
+msgid ""
+"Write a headline for your coming soon page. Tip: Avoid using 'Coming Soon'."
+msgstr ""
+"Scrivere un titolo per la pagina 'coming soon'. Suggerimento: Evitare di "
+"usare il termine 'Coming Soon'."
+
+#: inc/config.php:409
+msgid "Description"
+msgstr "Descrizione"
+
+#: inc/config.php:410
+msgid "Tell the visitor what to expect from your site."
+msgstr "Comunicare al visitatore cosa si dovrà aspettare dal sito."
+
+#: inc/config.php:417
+msgid "FeedBurn Address"
+msgstr "Indirizzo di FeedBurn"
+
+#: inc/config.php:418
+msgid "Enter the part after http://feeds2.feedburner.com/"
+msgstr "Inserire la parte dopo http://feeds2.feedburner.com/"
+
+#: inc/config.php:424
+msgid "Mailing List"
+msgstr "Mailing List (Lista di distribuzione)"
+
+#: inc/config.php:432
+msgid "Custom HTML"
+msgstr "HTML personalizzato"
+
+#: inc/config.php:433
+msgid "Enter any custom html or javascript that you want outputted."
+msgstr "Inserire il codice HTML o JavaScript che si vuole far eseguire."
+
+#: inc/config.php:441
+msgid "Style"
+msgstr "Stile"
+
+#: inc/config.php:446
+msgid "Background Color"
+msgstr "Colore di sfondo"
+
+#: inc/config.php:454
+msgid "Background Image"
+msgstr "Immagine di sfondo"
+
+#: inc/config.php:457
+msgid ""
+"Upload an optional background image (or) enter the url to your image. This "
+"will override the color above if set."
+msgstr ""
+"Caricare un'immagine di sfondo opzionale (o) inserire l'URL dell'immagine. "
+"Ciò sovrascriverà il colore che eventualmente è stato impostato "
+"precedentemente."
+
+#: inc/config.php:461
+msgid "Stretch Background Image"
+msgstr "Stira l'immagine di sfondo"
+
+#: inc/config.php:462
+msgid "This will stretch your background image to match any browser size."
+msgstr ""
+"Questo stirerà l'immagine di sfondo per adattarsi a qualsiasi dimensione "
+"della finestra del browser."
+
+#: inc/config.php:470
+msgid "Font Color"
+msgstr "Colore del font"
+
+#: inc/config.php:471
+msgid "Black"
+msgstr "Nero"
+
+#: inc/config.php:471
+msgid "Gray"
+msgstr "Grigio"
+
+#: inc/config.php:471
+msgid "White"
+msgstr "Bianco"
+
+#: inc/config.php:480
+msgid "Headline Font"
+msgstr "Font del titolo"
+
+#: inc/config.php:484 inc/config.php:493
+msgid ""
+"View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html"
+"\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google "
+"Fonts</a>"
+msgstr ""
+"Visualizza <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html"
+"\">Font di sistema</a> - Visualizza <a href=\"http://www.google.com/webfonts"
+"\">Font di Google</a>"
+
+#: inc/config.php:488
+msgid "Body Font"
+msgstr "Font del corpo"
+
+#: inc/config.php:498
+msgid "Custom CSS"
+msgstr "CSS personalizzato"
+
+#: inc/config.php:503
+msgid "Need to tweaks the styles? Add your custom CSS here."
+msgstr ""
+"È necessario modificare lo stile? Aggiungere qui il proprio codice CSS "
+"personalizzato."
+
+#: inc/config.php:508
+msgid "Powered By SeedProd"
+msgstr "Con tecnologia SeedProd"
+
+#: inc/config.php:509
+msgid "Nope - Got No Love"
+msgstr "No - Non mi piace"
+
+#: inc/config.php:509
+msgid "Yep - I Love You Man"
+msgstr "Si - Mi piace"
+
+#: inc/config.php:510
+msgid ""
+"Can we show a <strong>cool stylish</strong> footer credit at the bottom the "
+"page."
+msgstr ""
+"È possibile mostrare un <strong>elegante</strong> riconoscimento nel pié di "
+"pagina della pagina stessa."
+
+#: inc/config.php:517
+msgid "Powered By SeedProd Affiliate ID"
+msgstr "Codice ID di affiliazione a 'Con tecnologia SeedProd'"
+
+#: inc/config.php:518
+msgid ""
+"Enter your affiliate ID and earn commisions on sales referred to SeedProd "
+"from your page. <a href='http://www.seedprod.com/affiliates/' "
+"target='_blank'>Learn More</a>. "
+msgstr ""
+"Inserire il codice ID di affiliazione per guadagnare commissioni sulle "
+"vendite di prodotti SeedPred generate dalle vostre pagine. <a href='http://"
+"www.seedprod.com/affiliates/' target='_blank'>Per saperne di più</a>. "

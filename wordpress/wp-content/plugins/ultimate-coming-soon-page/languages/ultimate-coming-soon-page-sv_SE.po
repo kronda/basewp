@@ -1,0 +1,336 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultimate Coming Soon Page v1.9.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2013-07-30 13:47:56+0000\n"
+"Last-Translator: mobilskalet <konsult@sennbrink.se>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: CSL v1.x\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#: framework/framework.php:119
+#: inc/config.php:384
+#@ ultimate-coming-soon-page
+msgid "Settings"
+msgstr "Inställningar"
+
+#: framework/framework.php:120
+#@ ultimate-coming-soon-page
+msgid "&larr; Close Window"
+msgstr "&larr; Stäng Fönster"
+
+#: framework/framework.php:120
+#@ ultimate-coming-soon-page
+msgid "Live Preview"
+msgstr "Förhandsgranskning"
+
+#: framework/framework.php:129
+#@ ultimate-coming-soon-page
+msgid "Plugin Support"
+msgstr "Tilläggssupport"
+
+#: framework/framework.php:133
+#@ default
+msgid "Got a Question, Idea, Problem or Praise?"
+msgstr "Har du en fråga, en idé, ett problem eller ett lovord?"
+
+#: framework/framework.php:136
+#@ ultimate-coming-soon-page
+msgid "Support Request"
+msgstr "Begäran om support"
+
+#: framework/framework.php:145
+#@ ultimate-coming-soon-page
+msgid "Show Some Love"
+msgstr "Visa lite kärlek"
+
+#: framework/framework.php:148
+#@ ultimate-coming-soon-page
+msgid "Like this plugin? Show your support by:"
+msgstr "Gillar du det här tillägget? Visa ditt stöd genom att:"
+
+#: framework/framework.php:150
+#@ ultimate-coming-soon-page
+msgid "Submit your site to the Showcase"
+msgstr "Sänd din webbplats till Showcase"
+
+#: framework/framework.php:151
+#@ ultimate-coming-soon-page
+msgid "Rating It"
+msgstr "Betygsätt"
+
+#: framework/framework.php:152
+#@ ultimate-coming-soon-page
+msgid "Tweet It"
+msgstr "Tweeta"
+
+#: framework/framework.php:163
+#@ ultimate-coming-soon-page
+msgid "SeedProd Blog"
+msgstr "SeedProd-blogg"
+
+#: framework/framework.php:177
+#@ ultimate-coming-soon-page
+msgid "Subscribe by Email"
+msgstr "Prenumerera via e-post"
+
+#: framework/framework.php:289
+#@ ultimate-coming-soon-page
+msgid "Media Image Library"
+msgstr "Mediabibliotek"
+
+#: framework/framework.php:403
+#, php-format
+#@ ultimate-coming-soon-page
+msgid "Settings saved.  <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+msgstr "Inställningar sparade. <a href='%s/?cs_preview=true'>Förhandsgranska &raquo;</a>"
+
+#: framework/framework.php:514
+#@ ultimate-coming-soon-page
+msgid "Save Changes"
+msgstr "Spara ändringar"
+
+#: inc/config.php:53
+#@ ultimate-coming-soon-page
+msgid "Coming Soon Mode Active"
+msgstr "Kommer snart-läge Aktiverat"
+
+#: inc/config.php:86
+#: inc/template/template-coming-soon.php:91
+#@ ultimate-coming-soon-page
+msgid "Enter Your Email"
+msgstr "Ange din e-postadress"
+
+#: inc/config.php:87
+#@ ultimate-coming-soon-page
+msgid "Error :( Please try again."
+msgstr "Error :( Vänligen försök igen."
+
+#: inc/config.php:88
+#@ ultimate-coming-soon-page
+msgid "Please enter a valid email."
+msgstr "Vänligen ange en giltig e-postadress."
+
+#: inc/config.php:89
+#@ ultimate-coming-soon-page
+msgid "You'll be notified soon!"
+msgstr "Du kommer att bli meddelad snart!"
+
+#: inc/config.php:146
+#@ ultimate-coming-soon-page
+msgid "Unable to load lists, check your API Key!"
+msgstr "Det gick inte att ladda listorna, kontrollera din API-nyckel!"
+
+#: inc/config.php:267
+#@ ultimate-coming-soon-page
+msgid ""
+"Offer your visitors incentives such as coupons codes, free ebook, free software, etc. in exchange for their email.\n"
+"        \tJust fill out either or both of the fileds below and the information will be displayed after you have succesfully captured their email.\n"
+"        \t"
+msgstr ""
+"Erbjud dina besökare bonusar såsom rabattkoder, gratis e-böcker, gratis mjukvara och liknande i utbyte mot deras e-postadresser. .\n"
+"        \\\t Det är bara att fylla i ett eller bägge nedanstående fält så kommer informationen att visas efter att du tagit emot deras e-postadresser.\n"
+"        \\\t"
+
+#: inc/config.php:315
+#@ ultimate-coming-soon-page
+msgid "Are you sure you want to DELETE all emails?"
+msgstr "Är du säker på att du vill RADERA alla e-postadresser?"
+
+#: inc/config.php:359
+#: inc/config.php:361
+#: inc/config.php:362
+#@ ultimate-coming-soon-page
+msgid "Coming Soon"
+msgstr "Kommer snart"
+
+#: inc/config.php:396
+#@ ultimate-coming-soon-page
+msgid "Enable"
+msgstr "Aktivera"
+
+#: inc/config.php:397
+#, php-format
+#@ ultimate-coming-soon-page
+msgid "Enable if you want to display a coming soon page to visitors. Users who are logged in will not see the coming soon page, this means you.  <a href='%s/?cs_preview=true'>Preview</a>"
+msgstr "Aktivera om du vill visa en Kommer-Snart-sida för dina besökare. Användare som är inloggade kommer inte att se Kommer-Snart-sidan, vilket inkluderar dig. <a href='%s/?cs_preview=true'>Förhandsgranska</a>"
+
+#: inc/config.php:398
+#: inc/config.php:474
+#@ ultimate-coming-soon-page
+msgid "Yes"
+msgstr "Ja"
+
+#: inc/config.php:404
+#@ ultimate-coming-soon-page
+msgid "Image"
+msgstr "Bild"
+
+#: inc/config.php:405
+#@ ultimate-coming-soon-page
+msgid "Upload a logo or teaser image (or) enter the url to your image."
+msgstr "Ladda upp en logotyp eller bild om vad som komma skall (eller) ange URL:en till din bild."
+
+#: inc/config.php:411
+#@ ultimate-coming-soon-page
+msgid "Headline"
+msgstr "Rubrik"
+
+#: inc/config.php:412
+#@ ultimate-coming-soon-page
+msgid "Write a headline for your coming soon page. Tip: Avoid using 'Coming Soon'."
+msgstr "Skriv en rubrik för din Kommer-Snart-sida. Tips: Undvik att skriva 'Kommer snart'."
+
+#: inc/config.php:418
+#@ ultimate-coming-soon-page
+msgid "Description"
+msgstr "Beskrivning"
+
+#: inc/config.php:419
+#@ ultimate-coming-soon-page
+msgid "Tell the visitor what to expect from your site."
+msgstr "Berätta för besökaren vad han eller hon har att förvänta sig på din webbplats."
+
+#: inc/config.php:427
+#@ ultimate-coming-soon-page
+msgid "Mailing List"
+msgstr "E-postlista"
+
+#: inc/config.php:435
+#@ ultimate-coming-soon-page
+msgid "FeedBurn Address"
+msgstr "FeedBurn-adress"
+
+#: inc/config.php:436
+#@ ultimate-coming-soon-page
+msgid "Enter the part after http://feeds2.feedburner.com/ <a href='http://wordpress.org/extend/plugins/ultimate-coming-soon-page/faq/'' target='_blanks'> Learn how</a> to use FeedBurner to collect emails."
+msgstr "Mata in delen efter http://feeds2.feedburner.com/ <a href='http://wordpress.org/extend/plugins/ultimate-coming-soon-page/faq/'' target='_blanks'> Lär dig hur</a> du kan använda FeedBurner för att samla in e-postadresser."
+
+#: inc/config.php:443
+#@ ultimate-coming-soon-page
+msgid "Custom HTML"
+msgstr "Egen HTML"
+
+#: inc/config.php:444
+#@ ultimate-coming-soon-page
+msgid "Enter any custom html or javascript that you want outputted. You can also enter you Google Analytics code."
+msgstr "Mata in valfri egen html eller javascript som du vill ska köras. Du kan även ange din spårningskod för Google Analytics."
+
+#: inc/config.php:452
+#@ ultimate-coming-soon-page
+msgid "Style"
+msgstr "Utseende / Stil"
+
+#: inc/config.php:457
+#@ ultimate-coming-soon-page
+msgid "Background Color"
+msgstr "Bakgrundsfärg"
+
+#: inc/config.php:465
+#@ ultimate-coming-soon-page
+msgid "Background Image"
+msgstr "Bakgrundsbild"
+
+#: inc/config.php:468
+#@ ultimate-coming-soon-page
+msgid "Upload an optional background image (or) enter the url to your image. This will override the color above if set."
+msgstr "Ladda upp en valfri bakgrundsbild (eller) ange URL:en för din bild. Detta kommer att gå före valet av bakgrundsfärg."
+
+#: inc/config.php:472
+#@ ultimate-coming-soon-page
+msgid "Stretch Background Image"
+msgstr "Sträck ut bakgrundsbilden"
+
+#: inc/config.php:473
+#@ ultimate-coming-soon-page
+msgid "This will stretch your background image to match any browser size."
+msgstr "Det här kommer att sträcka ut bakgrundsbilden för att matcha alla webbläsarstorlekar."
+
+#: inc/config.php:481
+#@ ultimate-coming-soon-page
+msgid "Font Color"
+msgstr "Textfärg"
+
+#: inc/config.php:482
+#@ ultimate-coming-soon-page
+msgid "Black"
+msgstr "Svart"
+
+#: inc/config.php:482
+#@ ultimate-coming-soon-page
+msgid "Gray"
+msgstr "Grå"
+
+#: inc/config.php:482
+#@ ultimate-coming-soon-page
+msgid "White"
+msgstr "Vit"
+
+#: inc/config.php:491
+#@ ultimate-coming-soon-page
+msgid "Headline Font"
+msgstr "Rubrikens typsnitt"
+
+#: inc/config.php:495
+#: inc/config.php:504
+#@ ultimate-coming-soon-page
+msgid "View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google Fonts</a>"
+msgstr "Visa <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html\">System Fonts</a> - Visa <a href=\"http://www.google.com/webfonts\">Google Fonts</a>"
+
+#: inc/config.php:499
+#@ ultimate-coming-soon-page
+msgid "Body Font"
+msgstr "Typsnitt för body"
+
+#: inc/config.php:509
+#@ ultimate-coming-soon-page
+msgid "Custom CSS"
+msgstr "Egen CSS"
+
+#: inc/config.php:514
+#@ ultimate-coming-soon-page
+msgid "Need to tweaks the styles? Add your custom CSS here."
+msgstr "Vill du justera utseendet? Lägg till din egen CSS här."
+
+#: inc/config.php:519
+#@ ultimate-coming-soon-page
+msgid "Powered By SeedProd"
+msgstr "Kraftsatt av SeedProd"
+
+#: inc/config.php:520
+#@ ultimate-coming-soon-page
+msgid "Nope - Got No Love"
+msgstr "Nix - Har ingen kärlek inom mig"
+
+#: inc/config.php:520
+#@ ultimate-coming-soon-page
+msgid "Yep - I Love You Man"
+msgstr "Japp - Jag älskar dig mannen"
+
+#: inc/config.php:521
+#@ ultimate-coming-soon-page
+msgid "Can we show a <strong>cool stylish</strong> footer credit at the bottom the page."
+msgstr "Kan vi visa en <strong>cool och stilig</strong> hänvisning i sidfoten på sidan?"
+
+#: inc/template/template-coming-soon.php:92
+#@ ultimate-coming-soon-page
+msgid "Notify Me!"
+msgstr "Meddela mig!"
+
+#: ultimate-coming-soon-page.php:38
+#@ ultimate-coming-soon-page
+msgid "WordPress 3.0 and higher required. The plugin has now disabled itself. On a side note why are you running an old version :( Upgrade!"
+msgstr "WordPress 3.0 eller högre krävs. Tillägget har deaktiverats automatiskt. Förresten, varför använder du en utdaterad version? Uppgradera!"
+

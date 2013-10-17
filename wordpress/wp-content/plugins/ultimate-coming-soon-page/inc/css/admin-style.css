@@ -1,0 +1,17 @@
+.seedprod #icon-options-general {
+	background: transparent url(../../framework/seedprod-logo.png) no-repeat 0 9px;
+	width: 75px;
+}
+
+#wpadminbar .ucsp-mode-active > .ab-item{
+	color:#fff;
+	background-color: #f44;
+	background-image: -moz-linear-gradient(bottom, #d00, #f44);
+	background-image: -webkit-gradient(linear, left bottom, left top, from(#d00), to(#f44));
+}
+
+#wpadminbar .ucsp-mode-active:hover > .ab-item{
+	background-color: #a30 !important;
+	background-image: -moz-linear-gradient(bottom, #d00, #a30) !important;
+	background-image: -webkit-gradient(linear, left bottom, left top, from(#d00), to(#a30)) !important;
+}
