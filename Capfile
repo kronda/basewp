@@ -112,12 +112,12 @@ namespace :db do
       temp = "/tmp/#{release_name}_#{application}_#{filename}"
       run "touch #{temp} && chmod 600 #{temp}"
       run_locally "mkdir -p db"
-      run "source /home/krondaco/.bash_profile && cd #{deploy_to}/current/webroot && #{wp} db export #{temp} && cd -"
+      run "cd #{deploy_to}/current/webroot && #{wp} db export #{temp} && cd -"
       download("#{temp}", "db/#{filename}", :via=> :scp)
       if "#{stage}" == "prod"
-        search = "karveldigital.com"
+        search = "#{application}.com"
       else
-        search = "#{application}-#{stage}.kronda.com"
+        search = "#{stage}.#{application}.com"
       end
       replace = local_domain
       puts "searching (#{search}) and replacing (#{replace}) domain information"
@@ -130,7 +130,7 @@ namespace :db do
   task :pull, :roles => :db, :only => { :primary => true } do
     domains.each do |domain|
       filename = "#{domain}_#{stage}.sql"
-      system "cd #{app_root} ; #{wp} db import #{filename}"
+      run_locally "cd #{local_path}/webroot ; wp db import ../db/#{filename}"
     end
   end
 
@@ -141,9 +141,9 @@ namespace :db do
       temp = "/tmp/#{release_name}_#{application}_#{filename}"
       run "touch #{temp} && chmod 600 #{temp}"
       if "#{stage}" == "prod"
-        replace = "karveldigital.com"
+        replace = "#{application}.com"
       else
-        replace = "#{application}-#{stage}.kronda.com"
+        replace = "#{stage}.#{application}.com"
       end
       search = local_domain
       puts "searching (#{search}) and replacing (#{replace}) domain information"
