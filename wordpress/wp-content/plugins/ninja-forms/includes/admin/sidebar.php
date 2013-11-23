@@ -1,32 +1,36 @@
 <?php
 
 function ninja_forms_sidebar_sorter($array, $sequence){
-  $tmp = array();
-  foreach($sequence as $s){
-    foreach($array as $key => $a){
-      if($key == $s){
-        $tmp[$key] = $a;
-        unset( $array[$key] );
-        break;
-      }
-    }
-  }
-  if( is_array( $array ) AND !empty( $array ) ){
-  	  foreach( $array as $key => $a ){
-  	  	$tmp[$key] = $a;
-  	}
-  }
+	$tmp = array();
+	foreach($sequence as $s){
+	    foreach($array as $key => $a){
+			$s = str_replace( 'ninja_forms_metabox_', '', $s );
+			if($key == $s){
+				$tmp[$key] = $a;
+				unset( $array[$key] );
+				break;
+			}
+		}
+	}
+	if( is_array( $array ) AND !empty( $array ) ){
+		foreach( $array as $key => $a ){
+			$tmp[$key] = $a;
+		}
+	}
 
-  return $tmp;
+	return $tmp;
 }
 
 function ninja_forms_display_sidebars($data){
 	global $ninja_forms_sidebars;
 	$current_tab = ninja_forms_get_current_tab();
-	$current_page = $_REQUEST['page'];
+	$current_page = esc_html( $_REQUEST['page'] );
 	$opt = get_option('ninja_forms_settings');
 	if( isset( $opt['sidebars'][$current_page][$current_tab] ) ){
 		$order = $opt['sidebars'][$current_page][$current_tab];
+		if ( !is_array ( $order ) ) {
+			$order = array();
+		}
 		$ninja_forms_sidebars[$current_page][$current_tab] = ninja_forms_sidebar_sorter( $ninja_forms_sidebars[$current_page][$current_tab], $order );
 	}
 	$plugin_settings = get_option( 'ninja_forms_settings' );

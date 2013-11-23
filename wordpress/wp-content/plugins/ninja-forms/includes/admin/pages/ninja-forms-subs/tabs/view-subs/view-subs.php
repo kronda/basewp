@@ -32,8 +32,8 @@ function ninja_forms_tab_view_subs(){
 		unset($_SESSION['ninja_forms_form_id']);
 		$form_id = $first_form_id;
 	}else if( isset( $_REQUEST['form_id'] ) AND $_REQUEST['form_id'] != '' ){
-		$_SESSION['ninja_forms_form_id'] = $_REQUEST['form_id'];
-		$form_id = $_REQUEST['form_id'];
+		$_SESSION['ninja_forms_form_id'] = absint( $_REQUEST['form_id'] );
+		$form_id = absint( $_REQUEST ['form_id'] );
 	}else if( isset( $_SESSION['ninja_forms_form_id']) AND $_SESSION['ninja_forms_form_id'] != 'all' ){
 		$form_id = $_SESSION['ninja_forms_form_id'];
 	}else{
@@ -41,13 +41,13 @@ function ninja_forms_tab_view_subs(){
 	}
 
 	if( isset( $_REQUEST['sub_id'] ) AND !empty( $_REQUEST['sub_id'] ) ){
-		$sub_id = $_REQUEST['sub_id'];
+		$sub_id = absint( $_REQUEST['sub_id'] );
 	}else{
 		$sub_id = '';
 	}
 
 	if( isset( $_REQUEST['begin_date'] ) AND !empty( $_REQUEST['begin_date'] ) ){
-		$begin_date = $_REQUEST['begin_date'];
+		$begin_date = esc_html( $_REQUEST['begin_date'] );
 	}else if( isset( $_SESSION['ninja_forms_begin_date'] ) AND !empty($_SESSION['ninja_forms_begin_date'] ) ){
 		$begin_date = $_SESSION['ninja_forms_begin_date'];
 	}else{
@@ -55,7 +55,7 @@ function ninja_forms_tab_view_subs(){
 	}
 
 	if(isset($_REQUEST['end_date']) AND !empty($_REQUEST['end_date'])){
-		$end_date = $_REQUEST['end_date'];
+		$end_date = esc_html( $_REQUEST['end_date'] );
 	}else if(isset($_SESSION['ninja_forms_end_date']) AND !empty($_SESSION['ninja_forms_end_date'])){
 		$end_date = $_SESSION['ninja_forms_end_date'];
 	}else{
@@ -63,7 +63,7 @@ function ninja_forms_tab_view_subs(){
 	}
 
 	if(isset($_REQUEST['edit_sub_form'])){
-		$edit_sub_form = $_REQUEST['edit_sub_form'];
+		$edit_sub_form = absint( $_REQUEST['edit_sub_form'] );
 	}else{
 		$edit_sub_form = '';
 	}
@@ -90,8 +90,8 @@ function ninja_forms_tab_view_subs(){
 		$sub_count = count( $sub_results );
 		
 		if( isset( $_REQUEST['limit'] ) ){
-			$saved_limit = $_REQUEST['limit'];
-			$limit = $_REQUEST['limit'];
+			$saved_limit = absint( $_REQUEST['limit'] );
+			$limit = absint( $_REQUEST['limit'] );
 		}else{
 			$saved_limit = 20;
 			$limit = 20;
@@ -102,7 +102,7 @@ function ninja_forms_tab_view_subs(){
 		}
 
 		if( isset( $_REQUEST['paged']) AND !empty( $_REQUEST['paged'] ) ){
-			$current_page = $_REQUEST['paged'];
+			$current_page = absint( $_REQUEST['paged'] );
 		}else{
 			$current_page = 1;
 		}
@@ -156,6 +156,8 @@ function ninja_forms_tab_view_subs(){
 					<option value="20" <?php selected($saved_limit, 20);?>>20</option>
 					<option value="50" <?php selected($saved_limit, 50);?>>50</option>
 					<option value="100" <?php selected($saved_limit, 100);?>>100</option>
+					<option value="300" <?php selected($saved_limit, 300);?>>300</option>
+					<option value="500" <?php selected($saved_limit, 500);?>>500</option>
 				</select>
 				<?php _e('Submissions Per Page', 'ninja-forms');?>
 				<input type="submit" name="submit" value="<?php _e( 'Go', 'ninja-forms' ); ?>" class="button-secondary">
@@ -206,7 +208,7 @@ function ninja_forms_tab_view_subs(){
 				$back_link = remove_query_arg( array( 'edit_sub_form' ) );
 			?>
 			<div id="" class="">
-				<a href="<?php echo $back_link;?>"><input type="button" class="button-primary" value="<?php _e( 'Back To Sub List', 'ninja-forms' ); ?>"></a>
+				<a href="<?php echo $back_link;?>"><input type="button" class="button-secondary" value="<?php _e( 'Back To Submissions', 'ninja-forms' ); ?>"></a>
 			</div>
 			<?php
 			} 
@@ -355,7 +357,7 @@ function ninja_forms_tab_view_subs(){
 				ninja_forms_display_form($form_id);
 				?>
 				<tr id="">
-					<td colspan="2"><input type="submit" name="submit" value="<?php _e( 'Save Sub', 'ninja-forms' ); ?>" class="button-secondary"></td>
+					<td colspan="2"><input type="submit" name="submit" value="<?php _e( 'Save Submission', 'ninja-forms' ); ?>" class="button-primary"></td>
 				</tr>
 			<?php
 		}else{
@@ -428,7 +430,7 @@ function ninja_forms_tab_view_subs(){
 	}
 }
 
-if(isset($_POST['_ninja_forms_edit_sub']) AND $_POST['_ninja_forms_edit_sub'] == 1){
+if( isset ( $_POST['_ninja_forms_edit_sub'] ) AND absint( $_POST['_ninja_forms_edit_sub'] ) == 1 ) {
 	add_action( 'init', 'ninja_forms_setup_processing_class', 5 );
 	add_action( 'init', 'ninja_forms_set_save_sub' );
 	add_action( 'init', 'ninja_forms_edit_sub_remove_ajax_processing', 7 );
@@ -521,7 +523,8 @@ function ninja_forms_save_view_subs( $form_id, $data = array() ){
 				if( isset( $_POST['bulk_action'] ) ){
 					if( $_POST['bulk_action'] == 'delete' ){
 						if( isset( $_POST['ninja_forms_sub'] ) AND is_array( $_POST['ninja_forms_sub'] ) AND !empty( $_POST['ninja_forms_sub'] ) ){
-							foreach( $_POST['ninja_forms_sub'] as $sub_id ){
+							$subs = ninja_forms_esc_html_deep( $_POST['ninja_forms_sub'] );
+							foreach( $subs as $sub_id ){
 								ninja_forms_delete_sub($sub_id);
 							}
 
@@ -535,7 +538,8 @@ function ninja_forms_save_view_subs( $form_id, $data = array() ){
 						}
 					}elseif( $_POST['bulk_action'] == 'export' ){
 						if( isset($_POST['ninja_forms_sub'] ) AND is_array( $_POST['ninja_forms_sub'] ) AND !empty( $_POST['ninja_forms_sub'] ) ){
-							ninja_forms_export_subs_to_csv( $_POST['ninja_forms_sub'] );	
+							$subs = ninja_forms_esc_html_deep( $_POST['ninja_forms_sub'] );
+							ninja_forms_export_subs_to_csv( $subs );	
 						}
 					}
 				}
@@ -548,19 +552,19 @@ function ninja_forms_save_view_subs( $form_id, $data = array() ){
 					$date_format = 'm/d/Y';
 				}
 				if( isset( $_REQUEST['form_id'] ) AND !empty( $_REQUEST['form_id'] ) ){
-					$form_id = $_REQUEST['form_id'];
+					$form_id = absint( $_REQUEST['form_id'] );
 				}else{
 					$form_id = '';
 				}
 				
 				if( isset( $_REQUEST['ninja_forms_begin_date'] ) AND !empty( $_REQUEST['ninja_forms_begin_date'] ) ){
-					$begin_date = $_REQUEST['ninja_forms_begin_date'];
+					$begin_date = esc_html( $_REQUEST['ninja_forms_begin_date'] );
 				}else{
 					$begin_date = '';
 				}
 				
 				if( isset( $_REQUEST['ninja_forms_end_date'] ) AND !empty( $_REQUEST['ninja_forms_end_date'] ) ){
-					$end_date = $_REQUEST['ninja_forms_end_date'];
+					$end_date = esc_html( $_REQUEST['ninja_forms_end_date'] );
 				}else{
 					$end_date = '';
 				}
@@ -591,12 +595,12 @@ function ninja_forms_save_view_subs( $form_id, $data = array() ){
 
 function ninja_forms_set_save_sub(){
 	global $ninja_forms_processing;
-	$ninja_forms_processing->update_form_setting( 'sub_id', $_REQUEST['_sub_id'] );
+	$ninja_forms_processing->update_form_setting( 'sub_id', absint( $_REQUEST['_sub_id'] ) );
 	$ninja_forms_processing->set_action( 'edit_sub' );
 }
 
 function ninja_forms_edit_sub_default_value($data, $field_id){
-	$sub_id = $_REQUEST['sub_id'];
+	$sub_id = absint( $_REQUEST['sub_id'] );
 	$sub_row = ninja_forms_get_sub_by_id($sub_id);
 	$sub_data = $sub_row['data'];
 	if(is_array($sub_data) AND !empty($sub_data)){

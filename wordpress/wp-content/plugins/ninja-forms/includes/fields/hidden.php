@@ -35,7 +35,6 @@ function ninja_forms_register_field_hiddenbox(){
 add_action('init', 'ninja_forms_register_field_hiddenbox');
 
 function ninja_forms_field_hidden_edit($field_id, $data){
-
 	$custom = '';
 	// Default Value
 	if(isset($data['default_value'])){
@@ -49,13 +48,16 @@ function ninja_forms_field_hidden_edit($field_id, $data){
 		<label for="">
 			<?php _e( 'Default Value' , 'ninja-forms'); ?><br />
 			<select id="default_value_<?php echo $field_id;?>" name="" class="widefat ninja-forms-hidden-default-value" rel="<?php echo $field_id;?>">
-				<option value="" <?php if($default_value == 'none' OR $default_value == ''){ echo 'selected'; $custom = 'no';}?>><?php _e('None', 'ninja-forms'); ?></option>
+				<option value="" <?php if( $default_value == ''){ echo 'selected'; $custom = 'no';}?>><?php _e('None', 'ninja-forms'); ?></option>
 				<option value="_user_id" <?php if($default_value == '_user_id'){ echo 'selected'; $custom = 'no';}?>><?php _e('User ID (If logged in)', 'ninja-forms'); ?></option>
-				<option value="user_firstname" <?php if($default_value == 'user_firstname'){ echo 'selected'; $custom = 'no';}?>><?php _e('User Firstname (If logged in)', 'ninja-forms'); ?></option>
-				<option value="user_lastname" <?php if($default_value == 'user_lastname'){ echo 'selected'; $custom = 'no';}?>><?php _e('User Lastname (If logged in)', 'ninja-forms'); ?></option>
+				<option value="_user_firstname" <?php if($default_value == '_user_firstname'){ echo 'selected'; $custom = 'no';}?>><?php _e('User Firstname (If logged in)', 'ninja-forms'); ?></option>
+				<option value="_user_lastname" <?php if($default_value == '_user_lastname'){ echo 'selected'; $custom = 'no';}?>><?php _e('User Lastname (If logged in)', 'ninja-forms'); ?></option>
 				<option value="_user_display_name" <?php if($default_value == '_user_display_name'){ echo 'selected'; $custom = 'no';}?>><?php _e('User Display Name (If logged in)', 'ninja-forms'); ?></option>
-				<option value="user_email" <?php if($default_value == 'user_email'){ echo 'selected'; $custom = 'no';}?>><?php _e('User Email (If logged in)', 'ninja-forms'); ?></option>
-				<option value="custom" <?php if($custom != 'no'){ echo 'selected';}?>><?php _e('Custom', 'ninja-forms'); ?> -></option>
+				<option value="_user_email" <?php if($default_value == '_user_email'){ echo 'selected'; $custom = 'no';}?>><?php _e('User Email (If logged in)', 'ninja-forms'); ?></option>
+				<option value="post_id" <?php if($default_value == 'post_id'){ echo 'selected'; $custom = 'no';}?>><?php _e('Post / Page ID (If available)', 'ninja-forms'); ?></option>
+				<option value="post_title" <?php if($default_value == 'post_title'){ echo 'selected'; $custom = 'no';}?>><?php _e('Post / Page Title (If available)', 'ninja-forms'); ?></option>
+				<option value="post_url" <?php if($default_value == 'post_url'){ echo 'selected'; $custom = 'no';}?>><?php _e('Post / Page URL (If available)', 'ninja-forms'); ?></option>
+				<option value="_custom" <?php if($custom != 'no'){ echo 'selected';}?>><?php _e('Custom', 'ninja-forms'); ?> -></option>
 			</select>
 		</label>
 	</p>
@@ -121,31 +123,6 @@ function ninja_forms_field_hidden_display($field_id, $data){
 		$default_value = $data['default_value'];
 	}else{
 		$default_value = '';
-	}
-
-	get_currentuserinfo();
-	$user_ID = $current_user->ID;
-	$user_firstname = $current_user->user_firstname;
-    $user_lastname = $current_user->user_lastname;
-    $user_display_name = $current_user->display_name;
-    $user_email = $current_user->user_email;
-
-	switch( $default_value ){
-		case '_user_id':
-			$default_value = $user_ID;
-			break;
-		case 'user_firstname':
-			$default_value = $user_firstname;
-			break;
-		case 'user_lastname':
-			$default_value = $user_lastname;
-			break;
-		case '_user_display_name':
-			$default_value = $user_display_name;
-			break;
-		case 'user_email':
-			$default_value = $user_email;
-			break;
 	}
 
 	?>

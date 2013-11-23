@@ -305,6 +305,8 @@ function ninja_forms_field_list_display( $field_id, $data ){
 
 					$label = stripslashes( $label );
 
+					$label = str_replace( '&amp;', '&', $label );
+
 					$field_label = $data['label'];
 
 					if($list_show_value == 0){
@@ -530,7 +532,9 @@ function ninja_forms_field_list_option_output($field_id, $x, $option = '', $hidd
 	}
 	if(is_array($option)){
 		$label = htmlspecialchars( $option['label'] );
+		$label = str_replace( '&amp;', '&', $label );
 		$value = htmlspecialchars( $option['value'] );
+		$value = str_replace( '&amp;', '&', $value );
 		if ( isset ( $option['calc'] ) ) {
 			$calc = $option['calc'];
 		} else {

@@ -4,7 +4,7 @@ add_action( 'init', 'ninja_forms_preview_form' );
 function ninja_forms_preview_form() {
 	global $ninja_forms_append_page_form_id;
 	if( isset( $_REQUEST['form_id'] ) AND isset($_REQUEST['preview']) ) { //I
-		$form_id = $_REQUEST['form_id'];
+		$form_id = absint( $_REQUEST['form_id'] );
 	} else {
 		$form_id = '';
 	}
@@ -23,7 +23,7 @@ function ninja_forms_preview_form() {
 function ninja_forms_preview_link( $form_id = '', $echo = true ) {
 	if( $form_id == '' ){
 		if( isset( $_REQUEST['form_id'] ) ){
-			$form_id = $_REQUEST['form_id'];
+			$form_id = absint( $_REQUEST['form_id'] );
 		}else{
 			$form_id = '';
 		}

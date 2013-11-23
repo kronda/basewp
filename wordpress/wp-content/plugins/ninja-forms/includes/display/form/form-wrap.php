@@ -13,7 +13,7 @@ function ninja_forms_display_open_form_wrap($form_id){
 	//Check to see if the form_id has been sent.
 	if($form_id == ''){
 		if(isset($_REQUEST['form_id'])){ //If it hasn't, set it to our requested form_id. Sometimes this function can be called without an expressly passed form_id.
-			$form_id = $_REQUEST['form_id'];
+			$form_id = absint( $_REQUEST['form_id'] );
 		}
 	}
 

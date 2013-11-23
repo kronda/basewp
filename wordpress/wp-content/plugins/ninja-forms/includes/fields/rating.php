@@ -4,6 +4,7 @@ function ninja_forms_register_field_rating(){
 		'name' => __( 'Star Rating', 'ninja-forms' ),
 		'sidebar' => 'template_fields',
 		'display_function' => 'ninja_forms_field_rating_display',
+		'pre_process' => 'ninja_forms_field_rating_pre_process',
 		'group' => 'standard_fields',
 		'edit_options' => array(
 			array(
@@ -48,5 +49,12 @@ function ninja_forms_field_rating_display( $field_id, $data ){
 		<?php
 		$x++;
 	}
+}
 
+function ninja_forms_field_rating_pre_process( $field_id, $user_value ) {
+	global $ninja_forms_processing;
+	
+	if ( $user_value == false ) {
+		$ninja_forms_processing->update_field_value( $field_id, '' );
+	}
 }

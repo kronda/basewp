@@ -5,7 +5,7 @@ if(isset($_REQUEST['ninja_forms_export_subs_to_csv']) AND $_REQUEST['ninja_forms
 
 function ninja_forms_subs_bulk_export(){
 	if(isset($_REQUEST['sub_id']) AND $_REQUEST['sub_id'] != ''){
-		$sub_ids = array($_REQUEST['sub_id']);
+		$sub_ids = array( esc_html( $_REQUEST['sub_id'] ) );
 		ninja_forms_export_subs_to_csv($sub_ids);
 	}
 }
@@ -23,7 +23,7 @@ function ninja_forms_export_subs_to_csv( $sub_ids = '', $return = false ){
 	if ( isset ( $ninja_forms_processing ) ) {
 		$form_id = $ninja_forms_processing->get_form_ID();
 	} else if ( isset($_REQUEST['form_id'] ) ){
-		$form_id = $_REQUEST['form_id'];
+		$form_id = absint( $_REQUEST['form_id'] );
 	}
 	//Get the fields attached to the Form ID
 	$field_results = ninja_forms_get_fields_by_form_id($form_id);
@@ -37,7 +37,12 @@ function ninja_forms_export_subs_to_csv( $sub_ids = '', $return = false ){
 		foreach($field_results as $field){
 			$field_type = $field['type'];
 			$field_id = $field['id'];
-			$process_field = $ninja_forms_fields[$field_type]['process_field'];
+			if ( isset ( $ninja_forms_fields[$field_type]['process_field'] ) ) {
+				$process_field = $ninja_forms_fields[$field_type]['process_field'];
+			} else {
+				$process_field = true;
+			}
+			
 			if(isset($field['data']['label'])){
 				$label = $field['data']['label'];
 			}else{
@@ -94,14 +99,20 @@ function ninja_forms_export_subs_to_csv( $sub_ids = '', $return = false ){
 	$filename = $filename . ".csv";
 
 	if( $return ){
-		return str_putcsv($array);
+		return str_putcsv($array , 
+			apply_filters('ninja_forms_csv_delimiter',',') , 
+			apply_filters('ninja_forms_csv_enclosure','"') , 
+			apply_filters('ninja_forms_csv_terminator',"\n") );
 	}else{
 		header("Content-type: application/csv");
 		header("Content-Disposition: attachment; filename=".$filename);
 		header("Pragma: no-cache");
 		header("Expires: 0");
-		echo "\xEF\xBB\xBF"; // Byte Order Mark
-		echo str_putcsv($array);
+		echo apply_filters('ninja_forms_csv_bom',"\xEF\xBB\xBF") ; // Byte Order Mark
+		echo str_putcsv($array , 
+			apply_filters('ninja_forms_csv_delimiter',',') , 
+			apply_filters('ninja_forms_csv_enclosure','"') , 
+			apply_filters('ninja_forms_csv_terminator',"\n") );
 
 		die();
 	}

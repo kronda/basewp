@@ -1,7 +1,7 @@
 <?php
 
-if( isset( $_POST['_ninja_forms_display_submit'] ) AND $_POST['_ninja_forms_display_submit'] == 1 ){
-	$form_row = ninja_forms_get_form_by_id( $_POST['_form_id'] );
+if( isset ( $_POST['_ninja_forms_display_submit'] ) AND absint ( $_POST['_ninja_forms_display_submit'] ) == 1 ){
+	$form_row = ninja_forms_get_form_by_id( absint( $_POST['_form_id'] ) );
 	if( isset( $form_row['data']['ajax'] ) ){
 		$ajax = $form_row['data']['ajax'];
 	}else{
@@ -113,7 +113,7 @@ function ninja_forms_display_form( $form_id = '' ){
 	if($form_id == ''){
 		$function = false;
 		if(isset($_REQUEST['form_id'])){ //If it hasn't, set it to our requested form_id. Sometimes this function can be called without an expressly passed form_id.
-			$form_id = $_REQUEST['form_id'];
+			$form_id = absint( $_REQUEST['form_id'] );
 		}
 	}else{
 		$function = true;

@@ -3,7 +3,7 @@
 
 function ninja_forms_register_form_export(){
 	if( isset( $_REQUEST['export_form'] ) AND $_REQUEST['export_form'] == 1 ){
-		$form_id = $_REQUEST['form_id'];
+		$form_id = absint( $_REQUEST['form_id'] );
 		ninja_forms_export_form( $form_id );
 	}
 }
@@ -12,7 +12,7 @@ add_action( 'admin_init', 'ninja_forms_register_form_export' );
 
 function ninja_forms_register_form_duplicate(){
 	if ( isset ( $_REQUEST['duplicate_form'] ) AND $_REQUEST['duplicate_form'] == 1 ) {
-		$form_id = $_REQUEST['form_id'];
+		$form_id = absint( $_REQUEST['form_id'] );
 		$form_row = ninja_forms_serialize_form( $form_id );
 		ninja_forms_import_form( $form_row );
 		$url = remove_query_arg( array( 'duplicate_form', 'form_id' ) );
@@ -47,8 +47,8 @@ function ninja_forms_tab_form_list($form_id, $data){
 	$form_count = count($all_forms);
 
 	if( isset( $_REQUEST['limit'] ) ){
-		$saved_limit = $_REQUEST['limit'];
-		$limit = $_REQUEST['limit'];
+		$saved_limit = absint( $_REQUEST['limit'] );
+		$limit = absint( $_REQUEST['limit'] );
 	}else{
 		$saved_limit = 20;
 		$limit = 20;
@@ -59,7 +59,7 @@ function ninja_forms_tab_form_list($form_id, $data){
 	}
 
 	if( isset( $_REQUEST['paged']) AND !empty( $_REQUEST['paged'] ) ){
-		$current_page = $_REQUEST['paged'];
+		$current_page = absint( $_REQUEST['paged'] );
 	}else{
 		$current_page = 1;
 	}

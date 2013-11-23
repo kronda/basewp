@@ -1,3 +1,19 @@
+/* ---------------------------------
+/  Generic styles & classes
+----------------------------------*/
+.nf-box {
+	background: #f1f1f1;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 10px;
+}
+
+
+
+/* ---------------------------------
+/  Styles for specific admin pages
+----------------------------------*/
+
 div.field-wrap.list-wrap {
 	display: block;
 }
@@ -618,15 +634,11 @@ a.tooltip span
 }
 
 .nf-extend {
-	background: #f1f1f1;
-	border: 1px solid #ccc;
-	border-radius: 4px;
 	float: left;
 	margin: 0 20px 20px 0;
-	padding: 10px;
-	position: relative;
 	width: 300px;
-	height: 315px;
+	height: 350px;
+	position: relative;
 }
 .nf-extend img {
 	margin-bottom: 10px;
@@ -640,6 +652,26 @@ a.tooltip span
 	right: 10px;
 }
 
+.nf-extend .nf-doc-button {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+}
+
+.mp6 .nf-extend {
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	float: left;
+	margin: 0 20px 20px 0;
+	padding: 10px;
+	position: relative;
+	width: 300px;
+	height: 350px;
+}
+.branch-3-8 .nf-extend {
+	background: #fff;
+}
 .forms_page_ninja-forms-style h2 .nav-tab {
 	font-size: 16px;
 }
@@ -688,4 +720,77 @@ a.tooltip span
 
 .ninja-forms-calc-row input{
 	width: 50px;
+}
+
+#wpfooter {
+	display: none;
+}
+
+
+/* ---------------------------------
+/  System Status Page
+----------------------------------*/
+#debug-report {
+	display: none;
+}
+	#debug-report textarea {
+		height: 200px;
+		width: 300px;
+	}
+p.debug-report {
+	display: inline-block;
+	padding: .5em 0;
+}
+.nf-status-table {
+	background: #f1f1f1;
+	border-radius: 4px 4px 0 0;
+	width: 100%;
+}
+	.nf-status-table th {
+		border-color: #ccc;
+		border-style: solid;
+		border-width: 1px 1px 0 1px;
+		border-radius: 4px 4px 0 0;
+		font-size: 1.4em;
+		font-weight: normal;
+		padding: .5em 0;
+		width: 100%;
+	}
+		.nf-status-table thead:first-child th {
+			border-radius: 4px 4px 0 0;
+		}
+	.nf-status-table td {
+		border-color: #ccc;
+		border-style: solid;
+		border-width: 1px 1px 0px 1px;
+		padding: .5em;
+	}
+		.nf-status-table td:first-child {
+			border-left: 1px solid #ccc;
+			border-right-width: 0;
+		}
+		.nf-status-table tbody:last-child td {
+			border-bottom-width: 1px;
+		}
+
+/* ---------------------------------
+/  WP 3.8 styles
+----------------------------------*/
+
+.branch-3-8 #post-body .menu-item-handle {
+	background: #fff;
+	padding: 5px 5px 5px 10px;
+}
+.branch-3-8 #post-body .menu-item-settings {
+	background: #fff;
+	padding: 12px;
+}
+.branch-3-8 #post-body #post-body-content h3 {
+ margin-top: 0;
+}
+/*.branch-3-8 .item-controls {
+	top: 5px;
+}*/
+.branch-3-8 #TB_window .item-controls {
+	top: 17px;
 }

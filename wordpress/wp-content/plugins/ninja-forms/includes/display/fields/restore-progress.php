@@ -36,7 +36,8 @@ function ninja_forms_filter_restore_progress( $data, $field_id ){
 			}
 		}
 	}
+
 	return $data;
 }
 
-add_filter( 'ninja_forms_field', 'ninja_forms_filter_restore_progress', 10, 2 );
+add_filter( 'ninja_forms_field', 'ninja_forms_filter_restore_progress', 8, 2 );

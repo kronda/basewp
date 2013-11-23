@@ -10,7 +10,6 @@ function ninja_forms_register_tab_addons(){
         'show_save' => false,
     );
     ninja_forms_register_tab('extend', $args);
-
 }
 
 function ninja_forms_tab_addons(){
@@ -69,7 +68,7 @@ function ninja_forms_tab_addons(){
             'content' => __( 'The Front-End Editor Extension brings the power of your WordPress admin to your front-facing site. It is a one-stop solution for almost all your front-end editing needs. Users can now be allowed to create, edit, or delete posts, pages, or any custom post type without the need to see the WordPress admin.', 'ninja-forms' ),
             'link' => 'http://ninjaforms.com/downloads/front-end-editor/',
             'plugin' => 'ninja-forms-front-end-editor/front-end-editor.php',
-            'docs' => '',
+            'docs' => 'http://ninjaforms.com/documentation/extension-docs/front-end-editor/',
         ),
         array (
             'title' => __( 'Multi-Part Forms', 'ninja-forms' ),
@@ -77,7 +76,7 @@ function ninja_forms_tab_addons(){
             'content' => __( 'The Multi-Part Forms extension allows you to break long forms into sections, creating a natural flow for your visitors. You can add a breadcrumb trail through the various sections of the form and a progress bar so that your users …', 'ninja-forms' ),
             'link' => 'http://ninjaforms.com/downloads/multi-part-forms/',
             'plugin' => 'ninja-forms-multi-part/multi-part.php',
-            'docs' => '',
+            'docs' => 'http://ninjaforms.com/documentation/extension-docs/multi-part-forms/',
         ),
         array (
             'title' => __( 'Conditional Logic', 'ninja-forms' ),
@@ -85,7 +84,7 @@ function ninja_forms_tab_addons(){
             'content' => __( 'This extension for Ninja Forms allows you to create “smart” forms. Fields within these forms can dynamically change based upon user input; show or hide fields based on a selected item, set field values based upon a list selection, or …', 'ninja-forms' ),
             'link' => 'http://ninjaforms.com/downloads/conditional-logic/',
             'plugin' => 'ninja-forms-conditionals/conditionals.php',
-            'docs' => '',
+            'docs' => 'http://ninjaforms.com/documentation/extension-docs/conditional-logic/',
         ),
         array (
             'title' => __( 'MailChimp', 'ninja-forms' ),
@@ -151,10 +150,10 @@ function ninja_forms_tab_addons(){
             'content' => __( 'The Picatcha extension allows you to add image-based CAPTHA to your forms.', 'ninja-forms' ),
             'link' => 'http://ninjaforms.com/downloads/picatcha/',
             'plugin' => 'ninja-forms-picatcha/ninja-forms-picatcha.php',
-            'docs' => '',
+            'docs' => 'http://ninjaforms.com/documentation/extension-docs/picatcha/',
         ),       
         array (
-            'title' => __( 'MailPoet (formerly Wysija', 'ninja-forms' ),
+            'title' => __( 'MailPoet (formerly Wysija)', 'ninja-forms' ),
             'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/09/mailpoet-300x121.png',
             'content' => __( 'The MailPoet (formerly Wysija) extension allows you to quickly create newsletter signup forms for your MailPoet mailing lists using the power and flexibility that Ninja Forms provides.', 'ninja-forms' ),
             'link' => 'http://ninjaforms.com/downloads/mailpoet/',
@@ -169,16 +168,32 @@ function ninja_forms_tab_addons(){
             'plugin' => 'ninja-forms-hubspot/ninja-forms-hubspot.php',
             'docs' => '',
         ),
+        array (
+            'title' => __( 'Text Message Notifications', 'ninja-forms' ),
+            'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/10/text-message-notifications-300x121.png',
+            'content' => __( 'Send text message notifications to a site administrator when a form has been submitted.', 'ninja-forms' ),
+            'link' => 'http://ninjaforms.com/downloads/text-message-notifications/',
+            'plugin' => 'ninja-forms-text-message-notifications/nf-text-message-notifications.php',
+            'docs' => 'http://ninjaforms.com/documentation/extension-docs/text-message-notifications/',
+        ),
+        array (
+            'title' => __( 'Modal Forms', 'ninja-forms' ),
+            'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/11/modal-forms-300x121.png',
+            'content' => __( 'Open your Ninja Forms with a simple and clean modal pop-up.', 'ninja-forms' ),
+            'link' => 'http://ninjaforms.com/downloads/modal-forms/',
+            'plugin' => 'ninja-forms-modal/ninja-forms-modal.php',
+            'docs' => 'http://ninjaforms.com/documentation/extension-docs/modal-forms/',
+        ),
     );
 
     foreach ($items as $item) {
-        echo '<div class="nf-extend">';
+        echo '<div class="nf-extend nf-box">';
             echo '<img src="' . $item['image'] . '" />';
             echo '<h2>' . $item['title'] . '</h2>';
             echo '<div>';
                 echo '<p>' . $item['content'] . '</p>';
                 if( !empty( $item['docs'] ) ) {
-                    echo '<p><a href="' . $item['docs'] . '">' . $item['title'] . ' ' . __( 'Extension Documentation', 'ninja-forms' ) . '</a></p>';
+                    echo '<a href="' . $item['docs'] . '" class="button-secondary nf-doc-button">' . __( 'Documentation', 'ninja-forms' ) . '</a>';
                 } else {
                     echo '<p>' . __( 'Documentation coming soon.', 'ninja-forms' ) . '</a>.</p>';
                 }
@@ -201,5 +216,4 @@ function ninja_forms_tab_addons(){
 
 function ninja_forms_save_addons($data){
     global $wpdb;
-
 }

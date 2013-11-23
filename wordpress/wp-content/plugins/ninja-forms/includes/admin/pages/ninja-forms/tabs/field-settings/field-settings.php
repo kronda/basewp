@@ -2,7 +2,7 @@
 
 function ninja_forms_register_tab_field_settings(){
 	if(isset($_REQUEST['form_id'])){
-		$form_id = $_REQUEST['form_id'];
+		$form_id = absint( $_REQUEST['form_id'] );
 	}else{
 		$form_id = '';
 	}
@@ -24,7 +24,7 @@ add_action('admin_init', 'ninja_forms_register_tab_field_settings');
 function ninja_forms_tab_field_settings(){
 	global $wpdb;
 	if(isset($_REQUEST['form_id'])){
-		$form_id = $_REQUEST['form_id'];
+		$form_id = absint( $_REQUEST['form_id'] );
 	}else{
 		$form_id = '';
 	}
@@ -41,7 +41,7 @@ function ninja_forms_tab_field_settings(){
 function ninja_forms_save_field_settings($form_id, $data){
 	global $wpdb, $ninja_forms_fields, $ninja_forms_admin_update_message;
 
-	$order = $_POST['_ninja_forms_field_order'];
+	$order = esc_html( $_POST['_ninja_forms_field_order'] );
 
 	$order = str_replace("ninja_forms_field_", "", $order);
 	$order = explode(',', $order);
@@ -84,6 +84,9 @@ function ninja_forms_save_field_settings($form_id, $data){
 			$data_array = array('data' => serialize( $field_data ), 'order' => $order);
 			$wpdb->update( NINJA_FORMS_FIELDS_TABLE_NAME, $data_array, array( 'id' => $field_id ));
 		}
+		$date_updated = date( 'Y-m-d H:i:s', strtotime ( 'now' ) );
+		$data_array = array( 'date_updated' => $date_updated );
+		$wpdb->update( NINJA_FORMS_TABLE_NAME, $data_array, array( 'id' => $form_id ) );
 	}
 
 	$update_msg = __( 'Field Settings Saved', 'ninja-forms' );

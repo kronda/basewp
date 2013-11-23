@@ -165,7 +165,7 @@ class Ninja_Forms_Processing {
 			$form_data = $form_row['data'];
 
 			if(isset($_REQUEST['_sub_id']) AND !empty($_REQUEST['_sub_id'])){
-				$form_data['sub_id'] = $_REQUEST['_sub_id'];
+				$form_data['sub_id'] = absint ( $_REQUEST['_sub_id'] );
 			}else{
 				$form_data['sub_id'] = '';
 			}
@@ -1144,18 +1144,8 @@ class Ninja_Forms_Processing {
 	* @return $url string
 	*/
 	function get_current_url() {
-		$protocol = "http";
-		if($_SERVER["SERVER_PORT"]==443 || (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"]=="on")) {
-			$protocol .= "s";
-			$protocol_port = $_SERVER["SERVER_PORT"];
-		} else {
-			$protocol_port = 80;
-		}
-		$host = $_SERVER["HTTP_HOST"];
-		$port = $_SERVER["SERVER_PORT"];
-		$request_path = $_SERVER["PHP_SELF"];
-		$querystr = $_SERVER["QUERY_STRING"];
-		$url = $protocol."://".$host.(($port!=$protocol_port && strpos($host,":")==-1)?":".$port:"").$request_path.(empty($querystr)?"":"?".$querystr);
+		$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+		$url = $protocol . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 		return $url;
 	}
 

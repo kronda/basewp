@@ -52,15 +52,19 @@ if ( !function_exists ( 'ninja_forms_field_filter_populate_term' ) ) {
             $taxonomies = array( $populate_term );
             $args = array(
                 'hide_empty' => false,
+                'parent' => 0
             );
-
-            foreach( get_terms( $taxonomies, $args ) as $term ){
-                if( $selected_term == $term->term_id ){
-                    $data['default_value'] = $term->term_id;
+            $data['default_value'] = $selected_term;
+            foreach( get_terms( $taxonomies, $args ) as $parent_term ){
+                $tmp_array[] = array( 'label' => $parent_term->name, 'value' => $parent_term->term_id );
+                $child_args = array(
+                    'hide_empty' => false,
+                    'child_of' => $parent_term->term_id
+                );
+                foreach( get_terms( $taxonomies, $child_args ) as $child_term ) {
+                   $tmp_array[] = array( 'label' => '&nbsp;&nbsp;&nbsp;&nbsp;'.$child_term->name, 'value' => $child_term->term_id ); 
                 }
-                if ( !in_array( $term->term_id, $exclude_terms ) ) {
-                    $tmp_array[] = array( 'label' => $term->name, 'value' => $term->term_id );
-                }
+                
             }
             $data['list']['options'] = apply_filters( 'ninja_forms_list_terms', $tmp_array, $field_id );
             $data['list_show_value'] = 1;

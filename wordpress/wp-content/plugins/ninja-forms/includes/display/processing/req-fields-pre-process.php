@@ -64,12 +64,12 @@ function ninja_forms_req_fields_process(){
 					}
 				}else{
 					if($label_pos == 'inside'){
-						if( $user_value == $label OR $user_value == '' ){
+						if( $user_value == $label OR empty( $user_value ) ){
 							$ninja_forms_processing->add_error('required-'.$field_id, $req_field_error, $field_id);
 							$ninja_forms_processing->add_error('required-general', $req_error_label, 'general');
 						}
 					}else{
-						if($user_value == ''){
+						if( empty( $user_value ) ){
 							$ninja_forms_processing->add_error('required-'.$field_id, $req_field_error, $field_id);
 							$ninja_forms_processing->add_error('required-general', $req_error_label, 'general');
 						}

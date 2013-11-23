@@ -32,13 +32,13 @@ function ninja_forms_edit_field_el_output($field_id, $type, $label = '', $name =
 	} else {
 		$name = 'ninja_forms_field_'.$field_id.'['.$name.']';
 	}
-	
+
 	?>
 	<div class="description description-<?php echo $width;?> <?php echo $type;?>" id="<?php echo $name;?>_p">
 	<?php
 	if($type != 'rte'){
 		$value = ninja_forms_esc_html_deep( $value );
-	?>	
+	?>
 		<span class="field-option">
 			<?php
 	}
@@ -52,6 +52,11 @@ function ninja_forms_edit_field_el_output($field_id, $type, $label = '', $name =
 		case 'text':
 		?>
 			<input type="text" class="<?php echo $class;?>" name="<?php echo $name;?>" id="<?php echo $id;?>" value="<?php echo $value;?>" />
+		<?php
+		break;
+		case 'number':
+		?>
+			<input type="number" class="<?php echo $class;?>" name="<?php echo $name;?>" id="<?php echo $id;?>" value="<?php echo $value;?>" />
 		<?php
 		break;
 		case 'checkbox':
@@ -115,12 +120,12 @@ function ninja_forms_edit_field_el_output($field_id, $type, $label = '', $name =
 				$plugin_settings['version_2_2_25_rte_fix'] = 1;
 				update_option( 'ninja_forms_settings', $plugin_settings );
 			}
-			
+
 			$args = apply_filters( 'ninja_forms_edit_field_rte', array() );
 			wp_editor( $value, $name, $args );
 		break;
 	}
-		
+
 	if($desc != ''){
 	?>
 		<span class="description">

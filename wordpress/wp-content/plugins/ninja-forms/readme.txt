@@ -1,9 +1,9 @@
 === Ninja Forms ===
-Contributors: kstover, jameslaws, daveshine, mordauk, bftrick
+Contributors: kstover, jameslaws, daveshine, mordauk, bftrick, helgatheviking
 Tags: form, forms, contact form, custom form, form builder, form creator, form manager, form creation, contact forms, custom forms, forms builder, forms creator, forms manager, forms creation, form administration,
 Requires at least: 3.4
 Tested up to: 3.6
-Stable tag: 2.2.51
+Stable tag: 2.3.3
 License: GPLv2 or later
 
 Forms created with a simple drag and drop interface. Contact forms, Email collection forms, or any other form you want on your WordPress site.
@@ -76,23 +76,134 @@ For help and video tutorials, please visit our website: [Ninja Forms Documentati
 
 == Upgrade Notice ==
 
-= 2.2.51 =
+= 2.3.3 =
 
 *Bugs:*
 
-* Fixed a bug that prevented advanced calculations from working properly.
-* Fixed some bugs with the field descripition.
+* Fixed a bug that prevented sidebars from saving properly on the Field Settings tab and producing a PHP warning.
+* Forms should now update their “Date Updated” status when a change is made.
 
 *Changes:*
 
-* Added a message to the license tab if no extensions are installed.
-* Improved the structure of metaboxes.
+* Added a default, basic contact form that will be automatically created upon plugin activation.
+* Optimized images to make load times faster.
+* Changed from underscores to dashes for proper class name of the required fields wrapper.
+* Added a new default value for textboxes: Today's Date.
+* Increased the number of submissions viewable at once to 300 and 500.
+* Minor CSS adjustments for WP 3.8 compatibility.
 
 == Requested Features ==
 
 If you have any feature requests, please feel free to visit [ninjaforms.com](http://ninjaforms.com) and let us know about it.
 
 == Changelog ==
+
+= 2.3.3 =
+
+*Bugs:*
+
+* Fixed a bug that prevented sidebars from saving properly on the Field Settings tab and producing a PHP warning.
+* Forms should now update their “Date Updated” status when a change is made.
+
+*Changes:*
+
+* Added a default, basic contact form that will be automatically created upon plugin activation.
+* Optimized images to make load times faster.
+* Changed from underscores to dashes for proper class name of the required fields wrapper.
+* Added a new default value for textboxes: Today's Date.
+* Increased the number of submissions viewable at once to 300 and 500.
+* Minor CSS adjustments for WP 3.8 compatibility.
+
+= 2.3.2 =
+
+*Bugs:*
+
+* Fixed a bug that prevented forms from populated correctly after they had been submitted. i.e. after missing required fields.
+
+*Changes:*
+
+* Changed the way that Ninja Forms figures out what URL a form lives on.
+* The "From Address" used in admin emails can now be filtered using ninja_forms_admin_email_from.
+* The delimiter, new line marker, and byte order mark can now all be filtered. See includes/admin/export-subs.php for more information. (Thanks to Jörn Lund!)
+* Changed button colors on the submission editing page to be inline with WordPress standards.
+
+= 2.3.1 =
+
+*Bugs:*
+
+* Fixed a bug that prevented "From Email" and "From Name" from saving properly on the Form Settings page.
+* Star Ratings fields can now be set to required. The user will be forced to enter at least one star.
+* Removed some PHP notices that could appear when using the widget.
+
+*Changes:*
+
+* The datepicker used in the Ninja Forms admin section should now respect the date settings on the Plugin Settings page.
+
+= 2.3 =
+
+*Bugs:*
+
+* Fixed several minor bugs related to saving form fields.
+
+*Changes:*
+
+* Added a new submit feature called "Timed Submit." This new submit button will force users to wait a certain number of seconds before they can submit your form. Thanks helgatheviking!
+* Improved the Form Settings UI by adding a much-requested "Email From Name" field setting. You can use this to more easily define the name that emails appear to be from.
+* Added an easier way for developers to troubleshoot JS errors.
+* The "Use this as the From Email for Administrators..." setting has been removed in favour of one labelled "Set this as the reply-to email" for the form. We think that this presents a clearer interface and is easier to understand.
+
+= 2.2.56 =
+
+*Bugs:*
+
+* Fixed a bug that prevented bulk actions from working on submissions.
+* Duplicating a form should now properly change ninja_forms_field references in the admin and user email subjects.
+
+*Changes:*
+
+* Added a honeypot field for catching spam bots. Thanks helgatheviking!
+* The date input mask should now reflect the settings for date format.
+* Added a "button" option type to the admin metabox output.
+* Changed the way that Ninja Forms attempts to get a form's URL to the wp_guess_url() function.
+* Added the option to give a field type a default label and default value when registering a field type.
+
+= 2.2.55 =
+
+*Bugs:*
+
+* Fixed a security-related bug that prevented pluagin and form settings from saving properly.
+
+*Changes:*
+
+* Add smtp option output to System Status to assist in approved email issue troubleshooting.
+
+= 2.2.54 =
+
+*Bugs:*
+
+* Fixed a security-related bug that prevented new forms from being created.
+
+*Changes:*
+
+* Added better input escaping to improve form security.
+
+= 2.2.53 =
+
+*Bugs:*
+
+* Fixed some minor bugs related to default values for hidden and textbox fields.
+
+*Changes:*
+
+* Added a new resource that will allow users to quickly and easily add their pertinent system information when requesting support for Ninja Forms. The new option can be found underneath the Forms menu: System Status.
+
+= 2.2.52 =
+
+*Changes:*
+
+* Added new options to the default value setting: Post ID, Post Title, and Post URL.
+* Changed the date format in ninja_forms_get_subs() to allow 24 hour date selection.
+* Improved performance with the MP6 plugin.
 
 = 2.2.51 =
 

@@ -27,8 +27,8 @@ function ninja_forms_sidebar_select_subs(){
 		unset($_SESSION['ninja_forms_form_id']);
 		$form_id = '';
 	}else if( isset( $_REQUEST['form_id'] ) AND $_REQUEST['form_id'] != '' ){
-		$_SESSION['ninja_forms_form_id'] = $_REQUEST['form_id'];
-		$form_id = $_REQUEST['form_id'];
+		$_SESSION['ninja_forms_form_id'] = absint( $_REQUEST['form_id'] );
+		$form_id = absint( $_REQUEST['form_id'] );
 	}else if( isset( $_SESSION['ninja_forms_form_id']) AND $_SESSION['ninja_forms_form_id'] != 'all' ){
 		$form_id = $_SESSION['ninja_forms_form_id'];
 	}else{
@@ -36,8 +36,8 @@ function ninja_forms_sidebar_select_subs(){
 	}
 	
 	if( isset( $_REQUEST['begin_date'] ) AND !empty( $_REQUEST['begin_date'] ) ){
-		$begin_date = $_REQUEST['begin_date'];
-		$_SESSION['ninja_forms_begin_date'] = $_REQUEST['begin_date'];
+		$begin_date = esc_html( $_REQUEST['begin_date'] );
+		$_SESSION['ninja_forms_begin_date'] = esc_html( $_REQUEST['begin_date'] );
 	}else if( isset( $_SESSION['ninja_forms_begin_date'] ) AND !empty($_SESSION['ninja_forms_begin_date'] ) ){
 		$begin_date = $_SESSION['ninja_forms_begin_date'];
 	}else{
@@ -45,8 +45,8 @@ function ninja_forms_sidebar_select_subs(){
 	}
 
 	if(isset($_REQUEST['end_date']) AND !empty($_REQUEST['end_date'])){
-		$end_date = $_REQUEST['end_date'];
-		$_SESSION['ninja_forms_end_date'] = $_REQUEST['end_date'];
+		$end_date = esc_html( $_REQUEST['end_date'] );
+		$_SESSION['ninja_forms_end_date'] = esc_html( $_REQUEST['end_date'] );
 	}else if( isset( $_SESSION['ninja_forms_end_date'] ) AND !empty( $_SESSION['ninja_forms_end_date'] ) ){
 		$end_date = $_SESSION['ninja_forms_end_date'];
 	}else{

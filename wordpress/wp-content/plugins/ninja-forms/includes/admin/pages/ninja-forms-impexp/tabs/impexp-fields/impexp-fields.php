@@ -92,7 +92,7 @@ function ninja_forms_save_impexp_fields( $data ){
 
 	if($_POST['submit'] == __( 'Export Fields', 'ninja-forms' ) ){
 		if(isset($_POST['ninja_forms_fav']) AND !empty($_POST['ninja_forms_fav'])){
-			$fav_ids = $_POST['ninja_forms_fav'];
+			$fav_ids = esc_html( $_POST['ninja_forms_fav'] );
 
 			if(isset($plugin_settings['date_format'])){
 				$date_format = $plugin_settings['date_format'];

@@ -3,7 +3,7 @@
 function ninja_forms_load_screen_options_tab() {
 	global $ninja_forms_help_screen_tabs, $ninja_forms_screen_options;
 	$current_tab = ninja_forms_get_current_tab();
-	$current_page = $_REQUEST['page'];
+	$current_page = esc_html( $_REQUEST['page'] );
     $screen = get_current_screen();
 
 	if(isset($ninja_forms_help_screen_tabs['_universal_'])){
@@ -47,7 +47,7 @@ function ninja_forms_load_screen_options_tab() {
 
 function ninja_forms_display_screen_options($content){
 	global $ninja_forms_help_screen_tabs, $ninja_forms_screen_options;
-	$current_page = $_REQUEST['page'];
+	$current_page = esc_html( $_REQUEST['page'] );
 	$current_tab = ninja_forms_get_current_tab();
 	ninja_forms_update_screen_options();
 

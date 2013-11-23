@@ -51,14 +51,21 @@ if ( !function_exists ( 'ninja_forms_register_field_post_status' ) ) {
 
 	function ninja_forms_field_post_status_display( $field_id, $data ){
 		global $post, $ninja_forms_processing;
-		if( is_object( $post ) ){
-			$selected_status = $post->post_status;
+
+		if ( isset ( $data['default_value'] ) ) {
+			$default_value = $data['default_value'];
+		} else {
+			$default_value = '';
+		}
+
+		if( is_object( $post ) and $default_value == '' ){
+			$default_value = $post->post_status;
 		}
 		?>
 		<select name="ninja_forms_field_<?php echo $field_id;?>"  rel="<?php echo $field_id;?>" >
-			<option value="draft" <?php selected( $selected_status, 'draft' );?>>Draft</option>
-			<option value="pending" <?php selected( $selected_status, 'pending' );?>>Pending</option>
-			<option value="publish" <?php selected( $selected_status, 'publish' );?>>Published</option>
+			<option value="draft" <?php selected( $default_value, 'draft' );?>>Draft</option>
+			<option value="pending" <?php selected( $default_value, 'pending' );?>>Pending</option>
+			<option value="publish" <?php selected( $default_value, 'publish' );?>>Published</option>
 		</select>
 		<?php
 	}

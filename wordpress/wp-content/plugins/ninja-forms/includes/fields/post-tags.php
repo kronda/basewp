@@ -117,17 +117,23 @@ if ( !function_exists ( 'ninja_forms_register_field_post_tags' ) ) {
 				$form_row = ninja_forms_get_form_by_field_id($field_id);
 				$post_tags = $form_row['data']['post_tags'];
 			}
-			
-			if($post_tags){
-				$post_tags = explode(',', $post_tags);
-			}
 		}else{
 			$post_tags = $default_value;
 		}
+
+		if($post_tags){
+			$post_tags = explode(',', $post_tags);
+		}
+
 		if($adv_tags == 1){
 			$string_tag = '';
 		
 			if(is_array( $post_tags ) AND !empty( $post_tags ) ){
+				for ($x=0; $x < count( $post_tags ) - 1 ; $x++) { 
+					if ( $post_tags[$x] == '' ) {
+						unset( $post_tags[$x] );
+					}
+				}
 				$x = 0;
 				foreach( $post_tags as $tag ){
 					if(is_object($tag)){

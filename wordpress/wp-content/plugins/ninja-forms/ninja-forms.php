@@ -3,7 +3,7 @@
 Plugin Name: Ninja Forms
 Plugin URI: http://ninjaforms.com/
 Description: Ninja Forms is a webform builder with unparalleled ease of use and features.
-Version: 2.2.51
+Version: 2.3.3
 Author: The WP Ninjas
 Author URI: http://ninjaforms.com
 Text Domain: ninja-forms
@@ -46,16 +46,18 @@ Ninja Forms also uses the following jQuery plugins. Their licenses can be found 
 	By: Bob Knothe And okolov Yura aka funny_falcon
 
 */
-	
+
 global $wpdb, $wp_version;
 
 define("NINJA_FORMS_DIR", WP_PLUGIN_DIR."/".basename( dirname( __FILE__ ) ) );
 define("NINJA_FORMS_URL", plugins_url()."/".basename( dirname( __FILE__ ) ) );
-define("NINJA_FORMS_VERSION", "2.2.51");
+define("NINJA_FORMS_VERSION", "2.3.3");
 define("NINJA_FORMS_TABLE_NAME", $wpdb->prefix . "ninja_forms");
 define("NINJA_FORMS_FIELDS_TABLE_NAME", $wpdb->prefix . "ninja_forms_fields");
 define("NINJA_FORMS_FAV_FIELDS_TABLE_NAME", $wpdb->prefix . "ninja_forms_fav_fields");
 define("NINJA_FORMS_SUBS_TABLE_NAME", $wpdb->prefix . "ninja_forms_subs");
+
+define("NINJA_FORMS_JS_DEBUG", false);
 
 /* Require Core Files */
 require_once( NINJA_FORMS_DIR . "/includes/database.php" );
@@ -65,6 +67,9 @@ require_once( NINJA_FORMS_DIR . "/includes/shortcode.php" );
 require_once( NINJA_FORMS_DIR . "/includes/widget.php" );
 require_once( NINJA_FORMS_DIR . "/includes/field-type-groups.php" );
 require_once( NINJA_FORMS_DIR . "/includes/eos.class.php" );
+require_once( NINJA_FORMS_DIR . "/includes/from-setting-check.php" );
+require_once( NINJA_FORMS_DIR . "/includes/reply-to-check.php" );
+require_once( NINJA_FORMS_DIR . "/includes/import-export.php" );
 
 require_once( NINJA_FORMS_DIR . "/includes/display/scripts.php" );
 
@@ -237,6 +242,9 @@ require_once( NINJA_FORMS_DIR . "/includes/display/fields/default-value-filter.p
 
 	/* Manage Addons */
 	require_once( NINJA_FORMS_DIR . "/includes/admin/pages/ninja-forms-addons/tabs/addons/addons.php" );
+
+	/* System Status */
+	require_once( NINJA_FORMS_DIR . "/includes/classes/class-nf-system-status.php" );
 //}
 
 /* Require Pre-Registered Fields */
@@ -247,6 +255,8 @@ require_once( NINJA_FORMS_DIR . "/includes/fields/hidden.php" );
 require_once( NINJA_FORMS_DIR . "/includes/fields/organizer.php" );
 require_once( NINJA_FORMS_DIR . "/includes/fields/submit.php" );
 require_once( NINJA_FORMS_DIR . "/includes/fields/spam.php" );
+require_once( NINJA_FORMS_DIR . "/includes/fields/honeypot.php" );
+require_once( NINJA_FORMS_DIR . "/includes/fields/timed-submit.php" );
 require_once( NINJA_FORMS_DIR . "/includes/fields/hr.php" );
 require_once( NINJA_FORMS_DIR . "/includes/fields/desc.php" );
 require_once( NINJA_FORMS_DIR . "/includes/fields/textarea.php" );
@@ -280,7 +290,7 @@ function ninja_forms_set_transient_id(){
 		while ( get_transient( $t_id ) !== false ) {
 			$_id = ninja_forms_random_string();
 		}
-		$_SESSION['ninja_forms_transient_id'] = $t_id;		
+		$_SESSION['ninja_forms_transient_id'] = $t_id;
 	}
 }
 
@@ -350,4 +360,22 @@ function ninja_forms_remove_from_array($arr, $key, $val, $within = FALSE) {
                 unset($arr[$i]);
 
     return array_values($arr);
+}
+
+function ninja_forms_letters_to_numbers( $size ) {
+	$l		= substr( $size, -1 );
+	$ret	= substr( $size, 0, -1 );
+	switch( strtoupper( $l ) ) {
+		case 'P':
+			$ret *= 1024;
+		case 'T':
+			$ret *= 1024;
+		case 'G':
+			$ret *= 1024;
+		case 'M':
+			$ret *= 1024;
+		case 'K':
+			$ret *= 1024;
+	}
+	return $ret;
 }

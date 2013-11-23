@@ -2,10 +2,10 @@
 add_action( 'wp_ajax_ninja_forms_save_metabox_state', 'ninja_forms_save_metabox_state' );
 function ninja_forms_save_metabox_state(){
 	$plugin_settings = get_option( 'ninja_forms_settings' );
-	$page = $_REQUEST['page'];
-	$tab = $_REQUEST['tab'];
-	$slug = $_REQUEST['slug'];
-	$state = $_REQUEST['state'];
+	$page = esc_html( $_REQUEST['page'] );
+	$tab = esc_html( $_REQUEST['tab'] );
+	$slug = esc_html( $_REQUEST['slug'] );
+	$state = esc_html( $_REQUEST['state'] );
 	$plugin_settings['metabox_state'][$page][$tab][$slug] = $state;
 	update_option( 'ninja_forms_settings', $plugin_settings );
 	//$plugin_settings = get_option( 'ninja_forms_settings' );
@@ -17,13 +17,19 @@ add_action('wp_ajax_ninja_forms_new_field', 'ninja_forms_new_field');
 function ninja_forms_new_field(){
 	global $wpdb, $ninja_forms_fields;
 
-	$type = $_REQUEST['type'];
-	$form_id = $_REQUEST['form_id'];
+	$type = esc_html( $_REQUEST['type'] );
+	$form_id = absint( $_REQUEST['form_id'] );
 
 	if( isset( $ninja_forms_fields[$type]['name'] ) ){
 		$type_name = $ninja_forms_fields[$type]['name'];
 	}else{
 		$type_name = '';
+	}
+
+	if( isset( $ninja_forms_fields[$type]['default_label'] ) ){
+		$default_label = $ninja_forms_fields[$type]['default_label'];
+	}else{
+		$default_label = '';
 	}
 
 	if( isset( $ninja_forms_fields[$type]['edit_options'] ) ){
@@ -32,7 +38,13 @@ function ninja_forms_new_field(){
 		$edit_options = '';
 	}
 
-	$data = serialize(array('label' => $type_name));
+	if ( $default_label != '' ) {
+		$label = $default_label;
+	} else {
+		$label = $type_name;
+	}
+
+	$data = serialize(array('label' => $label));
 
 	$order = 999;
 
@@ -54,7 +66,7 @@ function ninja_forms_new_field(){
 add_action('wp_ajax_ninja_forms_remove_field', 'ninja_forms_remove_field');
 function ninja_forms_remove_field(){
 	global $wpdb;
-	$field_id = $_REQUEST['field_id'];
+	$field_id = absint( $_REQUEST['field_id'] );
 	$wpdb->query($wpdb->prepare("DELETE FROM ".NINJA_FORMS_FIELDS_TABLE_NAME." WHERE id = %d", $field_id));
 	die();
 }
@@ -64,7 +76,7 @@ function ninja_forms_delete_form( $form_id = '' ){
 	global $wpdb;
 	if( $form_id == '' ){
 		$ajax = true;
-		$form_id = $_REQUEST['form_id'];
+		$form_id = absint( $_REQUEST['form_id'] );
 	}else{
 		$ajax = false;
 	}
@@ -81,9 +93,9 @@ function ninja_forms_delete_form( $form_id = '' ){
 add_action('wp_ajax_ninja_forms_add_list_option', 'ninja_forms_add_list_options');
 function ninja_forms_add_list_options(){
 	global $wpdb;
-	$field_id = $_REQUEST['field_id'];
-	$x = $_REQUEST['x'];
-	$hidden_value = $_REQUEST['hidden_value'];
+	$field_id = absint( $_REQUEST['field_id'] );
+	$x = absint( $_REQUEST['x'] );
+	$hidden_value = esc_html( $_REQUEST['hidden_value'] );
 	ninja_forms_field_list_option_output($field_id, $x, '', $hidden_value);
 	die();
 }
@@ -91,8 +103,8 @@ function ninja_forms_add_list_options(){
 add_action('wp_ajax_ninja_forms_insert_fav', 'ninja_forms_insert_fav');
 function ninja_forms_insert_fav(){
 	global $wpdb, $ninja_forms_fields;
-	$fav_id = $_REQUEST['fav_id'];
-	$form_id = $_REQUEST['form_id'];
+	$fav_id = absint( $_REQUEST['fav_id'] );
+	$form_id = absint( $_REQUEST['form_id'] );
 
 	$fav_row = ninja_forms_get_fav_by_id($fav_id);
 
@@ -118,8 +130,8 @@ function ninja_forms_insert_fav(){
 add_action('wp_ajax_ninja_forms_insert_def', 'ninja_forms_insert_def');
 function ninja_forms_insert_def(){
 	global $wpdb, $ninja_forms_fields;
-	$def_id = $_REQUEST['def_id'];
-	$form_id = $_REQUEST['form_id'];
+	$def_id = absint( $_REQUEST['def_id'] );
+	$form_id = absint( $_REQUEST['form_id'] );
 
 	$def_row = ninja_forms_get_def_by_id($def_id);
 
@@ -147,7 +159,7 @@ function ninja_forms_add_fav(){
 	global $wpdb;
 
 	$field_data = $_REQUEST['field_data'];
-	$field_id = $_REQUEST['field_id'];
+	$field_id = absint( $_REQUEST['field_id'] );
 
 	$field_row = ninja_forms_get_field_by_id($field_id);
 
@@ -181,8 +193,12 @@ function ninja_forms_add_fav(){
 		}
 	}
 
-	$name = stripslashes($_REQUEST['fav_name']);
-	$data['label'] = $name;
+	$name = stripslashes( esc_html( $_REQUEST['fav_name'] ) );
+	if ( !isset ( $data['label'] ) or empty ( $data['label'] ) ) {
+		$data['label'] = $name;		
+	}
+
+	$data = ninja_forms_stripslashes_deep( $data );
 
 	$data = serialize($data);
 	$wpdb->insert(NINJA_FORMS_FAV_FIELDS_TABLE_NAME, array('row_type' => 1, 'type' => $field_type, 'order' => 0, 'data' => $data, 'name' => $name));
@@ -205,7 +221,7 @@ add_action('wp_ajax_ninja_forms_add_def', 'ninja_forms_add_def');
 function ninja_forms_add_def(){
 	global $wpdb;
 	$field_data = $_REQUEST['field_data'];
-	$field_id = $_REQUEST['field_id'];
+	$field_id = absint( $_REQUEST['field_id'] );
 
 	$field_row = ninja_forms_get_field_by_id($field_id);
 
@@ -238,7 +254,7 @@ function ninja_forms_add_def(){
 		}
 	}
 
-	$name = stripslashes($_REQUEST['def_name']);
+	$name = stripslashes( esc_html( $_REQUEST['def_name'] ) );
 	$data['label'] = $name;
 	$data = serialize($data);
 	$wpdb->insert(NINJA_FORMS_FAV_FIELDS_TABLE_NAME, array('row_type' => $row_type, 'type' => $field_type, 'data' => $data, 'name' => $name));
@@ -260,7 +276,7 @@ add_action('wp_ajax_ninja_forms_remove_fav', 'ninja_forms_remove_fav');
 function ninja_forms_remove_fav(){
 	global $wpdb, $ninja_forms_fields;
 
-	$field_id = $_REQUEST['field_id'];
+	$field_id = absint( $_REQUEST['field_id'] );
 	$field_row = ninja_forms_get_field_by_id($field_id);
 	$field_type = $field_row['type'];
 	$fav_id = $field_row['fav_id'];
@@ -278,7 +294,7 @@ add_action('wp_ajax_ninja_forms_remove_def', 'ninja_forms_remove_def');
 function ninja_forms_remove_def(){
 	global $wpdb, $ninja_forms_fields;
 
-	$field_id = $_REQUEST['field_id'];
+	$field_id = absint( $_REQUEST['field_id'] );
 	$field_row = ninja_forms_get_field_by_id($field_id);
 	$field_type = $field_row['type'];
 	$def_id = $field_row['def_id'];
@@ -295,9 +311,9 @@ function ninja_forms_remove_def(){
 add_action( 'wp_ajax_ninja_forms_side_sortable', 'ninja_forms_side_sortable' );
 function ninja_forms_side_sortable(){
 	$plugin_settings = get_option( 'ninja_forms_settings' );
-	$page = $_REQUEST['page'];
-	$tab = $_REQUEST['tab'];
-	$order = $_REQUEST['order'];
+	$page = esc_html( $_REQUEST['page'] );
+	$tab = esc_html( $_REQUEST['tab'] );
+	$order = ninja_forms_esc_html_deep( $_REQUEST['order'] );
 
 	$plugin_settings['sidebars'][$page][$tab] = $order;
 	update_option( 'ninja_forms_settings', $plugin_settings );
@@ -369,7 +385,7 @@ function ninja_forms_view_sub(){
 add_action('wp_ajax_ninja_forms_edit_sub', 'ninja_forms_edit_sub');
 function ninja_forms_edit_sub(){
 	global $wpdb;
-	$sub_id = $_REQUEST['sub_id'];
+	$sub_id = absint( $_REQUEST['sub_id'] );
 	$sub_data = $_REQUEST['sub_data'];
 
 	$args = array(
@@ -387,7 +403,7 @@ function ninja_forms_delete_sub($sub_id = ''){
 	global $wpdb;
 	if($sub_id == ''){
 		$ajax = true;
-		$sub_id = $_REQUEST['sub_id'];
+		$sub_id = absint( $_REQUEST['sub_id'] );
 	}else{
 		$ajax = false;
 	}
@@ -430,8 +446,8 @@ function ninja_forms_array_merge_recursive() {
 
 function ninja_forms_import_list_options(){
 	$options = $_REQUEST['options'];
-	$field_id = $_REQUEST['field_id'];
-
+	$field_id = absint( $_REQUEST['field_id'] );
+	$options = str_replace('\,', '-comma-replace-placeholder-', $options );
 	$options = csv_explode( $options );
 
 	if( is_array( $options ) ){
@@ -441,7 +457,9 @@ function ninja_forms_import_list_options(){
 			$label = stripslashes( $option[0] );
 			$value = stripslashes( $option[1] );
 			$label = str_replace( "''", "", $label );
+			$label = str_replace( "-comma-replace-placeholder-", ",", $label );
 			$value = str_replace( "''", "", $value );
+			$value = str_replace( "-comma-replace-placeholder-", ",", $value );
 			$tmp_array[$x]['label'] = $label;
 			$tmp_array[$x]['value'] = $value;
 			$x++;
@@ -469,11 +487,11 @@ add_action( 'wp_ajax_ninja_forms_import_list_options', 'ninja_forms_import_list_
 
 function ninja_forms_list_terms_checkboxes( $field_id = '', $tax_name = '' ){
 	if ( $field_id == '' AND isset ( $_POST['field_id'] ) ) {
-		$field_id = $_POST['field_id'];
+		$field_id = absint( $_POST['field_id'] );
 	}	
 
 	if ( $tax_name == '' AND isset ( $_POST['tax_name'] ) ) {
-		$tax_name = $_POST['tax_name'];
+		$tax_name = esc_html( $_POST['tax_name'] );
 	}
 
 	if ( $field_id != '' AND $tax_name != '' ) {
@@ -503,7 +521,7 @@ function ninja_forms_list_terms_checkboxes( $field_id = '', $tax_name = '' ){
 		}
 	}
 
-	if ( isset ( $_POST['from_ajax'] ) AND $_POST['from_ajax'] == 1 ) {
+	if ( isset ( $_POST['from_ajax'] ) AND absint( $_POST['from_ajax'] ) == 1 ) {
 		die();
 	}
 }
@@ -519,9 +537,9 @@ add_action( 'wp_ajax_ninja_forms_list_terms_checkboxes', 'ninja_forms_list_terms
  */
 
 function ninja_forms_add_calc_row(){
-	$field_id = $_REQUEST['field_id'];
+	$field_id = absint( $_REQUEST['field_id'] );
 	$c = array( 'calc' => '', 'operator' => 'add', 'value' => '', 'when' => '' );
-	$x = $_REQUEST['x'];
+	$x = absint( $_REQUEST['x'] );
 
 	ninja_forms_output_field_calc_row( $field_id, $c, $x );
 	die();

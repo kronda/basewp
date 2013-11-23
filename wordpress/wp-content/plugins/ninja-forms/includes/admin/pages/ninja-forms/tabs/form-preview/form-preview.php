@@ -2,7 +2,7 @@
 
 function ninja_forms_register_tab_form_preview(){
 	if(isset($_REQUEST['form_id'])){
-		$form_id = $_REQUEST['form_id'];
+		$form_id = absint( $_REQUEST['form_id'] );
 	}else{
 		$form_id = '';
 	}

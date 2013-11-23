@@ -18,12 +18,17 @@ function ninja_forms_register_field_textbox(){
 			array(
 				'type' => 'checkbox',
 				'name' => 'send_email',
-				'label' => __( 'Send a copy of the form to this address?', 'ninja-forms' ),
+				'label' => __( 'Send a repsonse email to this email address?', 'ninja-forms' ),
 			),
+			// array(
+			// 	'type' => 'checkbox',
+			// 	'name' => 'from_email',
+			// 	'label' => __( 'Use this as the "From" email address for Administrative recipients of this form?', 'ninja-forms' ),
+			// ),
 			array(
 				'type' => 'checkbox',
-				'name' => 'from_email',
-				'label' => __( 'Use this as the "From" email address for Administrative recipients of this form?', 'ninja-forms' ),
+				'name' => 'replyto_email',
+				'label' => __( 'Use this email address as the Reply-To address?', 'ninja-forms' ),
 			),
 			array(
 				'type' => 'hidden',
@@ -36,7 +41,7 @@ function ninja_forms_register_field_textbox(){
 			array(
 				'type' => 'checkbox',
 				'name' => 'from_name',
-				'label' => __( 'Use this as the "From" email name for Administrative recipients of this form?', 'ninja-forms' ),
+				'label' => __( 'Use this as the "From" and Reply-To email name for Administrative recipients of this form?', 'ninja-forms' ),
 			),
 			array(
 				'type' => 'hidden',
@@ -129,6 +134,10 @@ function ninja_forms_field_text_edit( $field_id, $data ){
 				<option value="_user_lastname" <?php if($default_value == '_user_lastname'){ echo 'selected'; $custom = 'no';}?>><?php _e('User Lastname (If logged in)', 'ninja-forms'); ?></option>
 				<option value="_user_display_name" <?php if($default_value == '_user_display_name'){ echo 'selected'; $custom = 'no';}?>><?php _e('User Display Name (If logged in)', 'ninja-forms'); ?></option>
 				<option value="_user_email" <?php if($default_value == '_user_email'){ echo 'selected'; $custom = 'no';}?>><?php _e('User Email (If logged in)', 'ninja-forms'); ?></option>
+				<option value="post_id" <?php if($default_value == 'post_id'){ echo 'selected'; $custom = 'no';}?>><?php _e('Post / Page ID (If available)', 'ninja-forms'); ?></option>
+				<option value="post_title" <?php if($default_value == 'post_title'){ echo 'selected'; $custom = 'no';}?>><?php _e('Post / Page Title (If available)', 'ninja-forms'); ?></option>
+				<option value="post_url" <?php if($default_value == 'post_url'){ echo 'selected'; $custom = 'no';}?>><?php _e('Post / Page URL (If available)', 'ninja-forms'); ?></option>
+				<option value="today" <?php if($default_value == 'today'){ echo 'selected'; $custom = 'no';}?>><?php _e('Today\'s Date', 'ninja-forms'); ?></option>
 				<option value="_custom" <?php if($custom != 'no'){ echo 'selected';}?>><?php _e('Custom', 'ninja-forms'); ?> -></option>
 			</select>
 		</span>
@@ -190,31 +199,6 @@ function ninja_forms_field_text_display( $field_id, $data ){
 		$default_value = '';
 	}
 
-	get_currentuserinfo();
-	$user_ID = $current_user->ID;
-	$user_firstname = $current_user->user_firstname;
-    $user_lastname = $current_user->user_lastname;
-    $user_display_name = $current_user->display_name;
-    $user_email = $current_user->user_email;
-
-	switch( $default_value ){
-		case '_user_id':
-			$default_value = $user_ID;
-			break;
-		case '_user_firstname':
-			$default_value = $user_firstname;
-			break;
-		case '_user_lastname':
-			$default_value = $user_lastname;
-			break;
-		case '_user_display_name':
-			$default_value = $user_display_name;
-			break;
-		case '_user_email':
-			$default_value = $user_email;
-			break;
-	}
-
 	if(isset($data['label_pos'])){
 		$label_pos = $data['label_pos'];
 	}else{
@@ -274,9 +258,9 @@ function ninja_forms_field_text_pre_process( $field_id, $user_value ){
 		}
 	}
 
-	if( isset( $data['from_email'] ) AND $data['from_email'] == 1 ){
+	if( ( isset( $data['replyto_email'] ) AND $data['replyto_email'] == 1 ) OR ( isset( $data['from_email'] ) AND $data['from_email'] == 1 ) ) {
 		$user_value = $ninja_forms_processing->get_field_value( $field_id );
-		$ninja_forms_processing->update_form_setting( 'admin_email_from', $user_value );
+		$ninja_forms_processing->update_form_setting( 'admin_email_replyto', $user_value );
 	}
 
 	if( isset( $data['from_name'] ) AND $data['from_name'] == 1 ){

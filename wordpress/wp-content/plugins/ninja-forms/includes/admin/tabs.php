@@ -2,10 +2,10 @@
 function ninja_forms_display_tabs(){
 	global $ninja_forms_tabs;
 	$current_tab = ninja_forms_get_current_tab();
-	$current_page = $_REQUEST['page'];
+	$current_page = esc_html( $_REQUEST['page'] );
 	$opt = get_option('ninja_forms_settings');
 	if(isset($_REQUEST['form_id'])){
-		$form_id = $_REQUEST['form_id'];
+		$form_id = absint( $_REQUEST['form_id'] );
 	}else{
 		$form_id = '';
 	}

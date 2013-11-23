@@ -29,11 +29,12 @@ function ninja_forms_email_user(){
 		}
 	}
 
-	$email_from = $ninja_forms_processing->get_form_setting('email_from');
-	$email_type = $ninja_forms_processing->get_form_setting('email_type');
-	$subject = $ninja_forms_processing->get_form_setting('user_subject');
-	$message = $ninja_forms_processing->get_form_setting('user_email_msg');
-	$default_email = get_option( 'admin_email' );
+	$email_from 		= $ninja_forms_processing->get_form_setting('email_from');
+	$email_from_name 	= $ninja_forms_processing->get_form_setting( 'email_from_name' );
+	$email_type 		= $ninja_forms_processing->get_form_setting('email_type');
+	$subject 			= $ninja_forms_processing->get_form_setting('user_subject');
+	$message 			= $ninja_forms_processing->get_form_setting('user_email_msg');
+	$default_email 		= get_option( 'admin_email' );
 
 	if(!$subject){
 		$subject = $form_title;
@@ -52,12 +53,15 @@ function ninja_forms_email_user(){
 		$message = wpautop( $message );
 	}
 
+	$email_from = $email_from_name.' <'.$email_from.'>';
+
 	$email_from = htmlspecialchars_decode($email_from);
 	$email_from = htmlspecialchars_decode($email_from);
 
-	$headers = "\nMIME-Version: 1.0\n";
-	$headers .= "From: $email_from \r\n";
-	$headers .= "Content-Type: text/".$email_type."; charset=utf-8\r\n";
+	$headers = array();
+	$headers[] = 'From: '.$email_from;
+	$headers[] = 'Content-Type: text/'.$email_type;
+	$headers[] = 'charset=utf-8';
 
 	if($ninja_forms_processing->get_form_setting('user_attachments')){
 		$attachments = $ninja_forms_processing->get_form_setting('user_attachments');

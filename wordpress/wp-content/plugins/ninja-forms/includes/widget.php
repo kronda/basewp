@@ -28,7 +28,12 @@ class Ninja_Forms_Widget extends WP_Widget {
 		$form_id = $instance['form_id'];
 		$form_row = ninja_forms_get_form_by_id( $form_id );
 		$form_data = $form_row['data'];
-		$title = $form_data['form_title'];
+		if ( isset ( $form_data['form_title'] ) ) {
+			$title = $form_data['form_title'];
+		} else {
+			$title = '';
+		}
+		
 		$title = apply_filters( 'widget_title', $title );
 		$display_title = $instance['display_title'];
 

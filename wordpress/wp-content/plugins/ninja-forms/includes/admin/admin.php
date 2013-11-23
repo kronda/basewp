@@ -13,6 +13,7 @@ function ninja_forms_add_menu(){
 	$subs = add_submenu_page("ninja-forms", __( 'Submissions', 'ninja-forms' ), __( 'Submissions', 'ninja-forms' ), $capabilities, "ninja-forms-subs", "ninja_forms_admin");
 	$import = add_submenu_page("ninja-forms", __( 'Import/Export', 'ninja-forms' ), __( 'Import / Export', 'ninja-forms' ), $capabilities, "ninja-forms-impexp", "ninja_forms_admin");
 	$settings = add_submenu_page("ninja-forms", __( 'Ninja Form Settings', 'ninja-forms' ), __( 'Settings', 'ninja-forms' ), $capabilities, "ninja-forms-settings", "ninja_forms_admin");
+	$system_status = add_submenu_page("ninja-forms", __( 'System Status', 'ninja-forms' ), __( 'System Status', 'ninja-forms' ), $capabilities, "ninja-forms-system-status", "ninja_forms_admin");
 	$extend = add_submenu_page("ninja-forms", __( 'Ninja Form Extensions', 'ninja-forms' ), __( 'Extend', 'ninja-forms' ), $capabilities, "ninja-forms-extend", "ninja_forms_admin");
 
 	add_action('admin_print_styles-' . $page, 'ninja_forms_admin_css');
@@ -30,6 +31,9 @@ function ninja_forms_add_menu(){
 	add_action('admin_print_styles-' . $subs, 'ninja_forms_admin_js');
 	add_action('admin_print_styles-' . $subs, 'ninja_forms_admin_css');
 
+	add_action('admin_print_styles-' . $system_status, 'ninja_forms_admin_js');
+	add_action('admin_print_styles-' . $system_status, 'ninja_forms_admin_css');
+
 	add_action('admin_print_styles-' . $extend, 'ninja_forms_admin_js');
 	add_action('admin_print_styles-' . $extend, 'ninja_forms_admin_css');
 
@@ -38,6 +42,7 @@ function ninja_forms_add_menu(){
 	add_action( 'load-' . $settings, 'ninja_forms_load_screen_options_tab' );
 	add_action( 'load-' . $import, 'ninja_forms_load_screen_options_tab' );
 	add_action( 'load-' . $subs, 'ninja_forms_load_screen_options_tab' );
+	add_action( 'load-' . $system_status, 'ninja_forms_load_screen_options_tab' );
 	add_action( 'load-' . $extend, 'ninja_forms_load_screen_options_tab' );
 }
 
@@ -45,10 +50,10 @@ function ninja_forms_admin(){
 	global $wpdb, $ninja_forms_tabs, $ninja_forms_sidebars, $current_tab, $ninja_forms_tabs_metaboxes, $ninja_forms_admin_update_message;
 
 	$current_tab = ninja_forms_get_current_tab();
-	$current_page = $_REQUEST['page'];
+	$current_page = esc_html( $_REQUEST['page'] );
 
 	if(isset($_REQUEST['form_id'])){
-		$form_id = $_REQUEST['form_id'];
+		$form_id = absint( $_REQUEST['form_id'] );
 		$form_row = ninja_forms_get_form_by_id($form_id);
 		$data = $form_row['data'];
 	}else{
@@ -160,11 +165,11 @@ if(is_admin()){
 function ninja_forms_get_current_tab(){
 	global $ninja_forms_tabs;
 	if(isset($_REQUEST['page'])){
-		$current_page = $_REQUEST['page'];
+		$current_page = esc_html( $_REQUEST['page'] );
 
 
 		if(isset($_REQUEST['tab'])){
-			$current_tab = $_REQUEST['tab'];
+			$current_tab = esc_html( $_REQUEST['tab'] );
 		}else{
 			if(isset($ninja_forms_tabs[$current_page]) AND is_array($ninja_forms_tabs[$current_page])){
 				$first_tab = array_slice($ninja_forms_tabs[$current_page], 0, 1);

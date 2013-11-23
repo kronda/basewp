@@ -81,17 +81,20 @@ function ninja_forms_field_calc_filter( $calc_data, $field_id ){
 						} else {
 							$field_value = '';
 						}
+
 						switch ( $calc_method ) {
 							case 'auto': // We are automatically totalling the fields that have a calc_auto_include set to 1.
 								if ( isset ( $field_data['calc_auto_include'] ) AND $field_data['calc_auto_include'] == 1 ) {
+									
 									if ( $field['type'] == '_calc' ) {
-										$result = ninja_forms_calc_field_loop( $field['id'], '', $result );
+										$calc_value = ninja_forms_calc_field_loop( $field['id'], '', $result );
 									} else {
-										$calc_value = ninja_forms_field_calc_value( $field['id'], $field_value, $calc_method );
-										if ( $calc_value !== false ) {
-											$result = ninja_forms_calc_evaluate( 'add', $result, $calc_value );						
-										}								
+										$calc_value = ninja_forms_field_calc_value( $field['id'], $field_value, $calc_method );							
 									}
+									if ( $calc_value !== false ) {
+										$result = ninja_forms_calc_evaluate( 'add', $result, $calc_value );						
+									}
+									
 								}
 								break;
 							case 'fields': // We are performing a specific set of operations on a set of fields.

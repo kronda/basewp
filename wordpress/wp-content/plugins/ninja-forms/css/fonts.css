@@ -17,14 +17,14 @@
 	position: relative;
 	left: 5px; /* positions the icon */
 	top: 4px; /* positions the icon */
-	text-shadow: 1px 1px 0px #eee;
 	color: #aaa;
+}
+.branch-3-8 #toplevel_page_ninja-forms .wp-menu-image:before {
+	left: 0; /* positions the icon */
+	top: 0; /* positions the icon */
 }
 #toplevel_page_ninja-forms:hover .wp-menu-image:before, .wp-has-current-submenu#toplevel_page_ninja-forms .wp-menu-image:before {
 	color: #21759b;
-}
-.wp-has-current-submenu#toplevel_page_ninja-forms .wp-menu-image:before {
-	text-shadow: 1px 1px 0px #555;
 }
 div#icon-edit.icon32-posts-book-review {
 	background-image: none;

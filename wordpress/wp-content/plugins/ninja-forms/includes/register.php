@@ -8,7 +8,9 @@ function ninja_forms_register_field($slug, $args = array()){
 
 	$defaults = array(
 		'conditional' => '',
+		'default_label' => '',		
 		'default_label_pos' => '',
+		'default_value' => '',
  		'display_function' => '',
  		'display_label' => true,
  		'display_wrap' => true,
@@ -42,6 +44,7 @@ function ninja_forms_register_field($slug, $args = array()){
 	 	'sub_edit' => 'text',
  		'sub_edit_function' => '',
  		'use_li' => true,
+ 		'visible' => 1,
 	);
 
 	// Parse incomming $args into an array and merge it with $defaults

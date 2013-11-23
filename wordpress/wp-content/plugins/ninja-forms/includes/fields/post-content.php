@@ -25,7 +25,12 @@ if ( !function_exists ( 'ninja_forms_register_field_post_content') ) {
 					'label' => __('Show Rich Text Editor?', 'ninja-forms'),
 					'width' => 'wide',
 					//'class' => 'widefat', //Additional classes to be added to the input element.
-				),			
+				),
+				array(
+					'type' => 'checkbox',
+					'name' => 'content_media',
+					'label' => __( 'Show Media Upload Button', 'ninja-forms' ),
+				),		
 				array(
 					'type' => 'rte', //What type of input should this be?
 					'name' => 'default_value', //What should it be named. This should always be a programmatic name, not a label.
@@ -79,6 +84,13 @@ if ( !function_exists ( 'ninja_forms_register_field_post_content') ) {
 		}else{
 			$content_rte = 0;
 		}
+
+		if( isset ( $data['content_media'] ) AND $data['content_media'] == 1 ){
+			$content_media = true;
+		}else{
+			$content_media = false;
+		}
+
 		if(isset($data['class'])){
 			$class = $data['class'];
 		}else{
@@ -86,7 +98,9 @@ if ( !function_exists ( 'ninja_forms_register_field_post_content') ) {
 		}
 
 		if($content_rte == 1){
-			wp_editor( $default_value, 'ninja_forms_field_'.$field_id );
+			$settings = array( 'media_buttons' => $content_media );
+			$args = apply_filters( 'ninja_forms_content_rte', $settings );
+			wp_editor( $default_value, 'ninja_forms_field_'.$field_id, $args );
 		}else{
 			?>
 			<textarea name="ninja_forms_field_<?php echo $field_id;?>" id="ninja_forms_field_<?php echo $field_id;?>" class="<?php echo $class;?>" rel="<?php echo $field_id;?>" ><?php echo $default_value;?></textarea>
