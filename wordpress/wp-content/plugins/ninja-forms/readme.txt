@@ -1,9 +1,9 @@
 === Ninja Forms ===
 Contributors: kstover, jameslaws, daveshine, mordauk, bftrick, helgatheviking
 Tags: form, forms, contact form, custom form, form builder, form creator, form manager, form creation, contact forms, custom forms, forms builder, forms creator, forms manager, forms creation, form administration,
-Requires at least: 3.4
-Tested up to: 3.6
-Stable tag: 2.3.3
+Requires at least: 3.6
+Tested up to: 3.8
+Stable tag: 2.3.7
 License: GPLv2 or later
 
 Forms created with a simple drag and drop interface. Contact forms, Email collection forms, or any other form you want on your WordPress site.
@@ -76,27 +76,66 @@ For help and video tutorials, please visit our website: [Ninja Forms Documentati
 
 == Upgrade Notice ==
 
-= 2.3.3 =
+= 2.3.7 =
 
 *Bugs:*
 
-* Fixed a bug that prevented sidebars from saving properly on the Field Settings tab and producing a PHP warning.
-* Forms should now update their “Date Updated” status when a change is made.
-
-*Changes:*
-
-* Added a default, basic contact form that will be automatically created upon plugin activation.
-* Optimized images to make load times faster.
-* Changed from underscores to dashes for proper class name of the required fields wrapper.
-* Added a new default value for textboxes: Today's Date.
-* Increased the number of submissions viewable at once to 300 and 500.
-* Minor CSS adjustments for WP 3.8 compatibility.
+* Input masks should now work without causing Javascript errors.
+* "Back to submissions" should now work in IE.
 
 == Requested Features ==
 
 If you have any feature requests, please feel free to visit [ninjaforms.com](http://ninjaforms.com) and let us know about it.
 
 == Changelog ==
+
+= 2.3.7 =
+
+*Bugs:*
+
+* Input masks should now work without causing Javascript errors.
+* "Back to submissions" should now work in IE.
+
+= 2.3.6 =
+
+*Bugs:*
+
+* Fixed a bug in calc filters that could cause infinite loops.
+* "Back to submissions" should now work in IE.
+
+*Changes:*
+
+* Add some CSS for 3.8 compatability.
+* Removed the "Save Subs" option. Now all submissions are saved by default. This can be changed by using a WordPress filter.
+* Moved the "Forms" admin menu up to the same section as posts and custom post types.
+* Changed some CSS selector weights ot make overriding a little easier.
+* Changed the mask definition to be stored in a data-attribute rather than the field title.
+* Changed the currency mask to use the WordPress defined thousands separator and decimal point.
+
+= 2.3.5 =
+
+*Bugs:*
+
+* Fixed a bug that prevented calculations from working properly in Mulit-Part Forms.
+* Fixed a bug that could prevent success messages from showing properly in modal forms.
+
+= 2.3.4 =
+
+*Bugs:*
+
+* Fixed up the extend page. Added some extensions and cleaned up CSS.
+* Added url encoding to the form settings saved message so it was no longer without spaces.
+* Fixed the get_subs function so that it works properly with dates in formats different than m/d/Y.
+* Fixed a bug that caused response message fields to be output if multiple forms were on the same page.
+* Fixed a bug that caused hidden fields to not show up on the submission edit screen.
+
+*Changes:*
+
+* Adding styling to admin metabox textareas so that they have a minimum size.
+* Saving a post/page should no longer create an empty Ninja Forms custom post meta.
+* Changed the call to sys_get_temp_dir() to the WordPress get_temp_dir() when trying to create a CSV attachment.
+* Added a new filter ninja_forms_email_all_fields_array to give users a way to remove unwanted data from being sent in emails.
+* Users can now add Calc values to their List Options import CSV.
 
 = 2.3.3 =
 

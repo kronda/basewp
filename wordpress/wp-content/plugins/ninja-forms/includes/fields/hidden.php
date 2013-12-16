@@ -27,6 +27,7 @@ function ninja_forms_register_field_hiddenbox(){
 			),
 		),
 		'display_label' => false,
+		'sub_edit_function' => 'ninja_forms_field_hidden_edit_sub',
 	);
 
 	ninja_forms_register_field('_hidden', $args);
@@ -129,4 +130,24 @@ function ninja_forms_field_hidden_display($field_id, $data){
 	<input id="ninja_forms_field_<?php echo $field_id;?>" name="ninja_forms_field_<?php echo $field_id;?>" type="hidden" class="<?php echo $field_class;?>" value="<?php echo $default_value;?>" rel="<?php echo $field_id;?>" />
 	<?php
 
+}
+
+function ninja_forms_field_hidden_edit_sub( $field_id, $data ) {
+	if(isset($data['default_value'])){
+		$default_value = $data['default_value'];
+	}else{
+		$default_value = '';
+	}	
+
+	if(isset($data['label'])){
+		$label = $data['label'];
+	}else{
+		$label = '';
+	}
+	?>
+	<label>
+		<?php echo $label; ?>
+	</label>
+	<input id="ninja_forms_field_<?php echo $field_id;?>" name="ninja_forms_field_<?php echo $field_id;?>" type="text" class="<?php echo $field_class;?>" value="<?php echo $default_value;?>" rel="<?php echo $field_id;?>" />
+	<?php
 }

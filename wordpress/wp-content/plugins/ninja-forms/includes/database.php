@@ -230,6 +230,12 @@ function ninja_forms_get_all_defs(){
 
 function ninja_forms_get_subs($args = array()){
 	global $wpdb;
+	$plugin_settings = get_option( 'ninja_forms_settings' );
+	if ( isset ( $plugin_settings['date_format'] ) ) {
+		$date_format = $plugin_settings['date_format'];
+	} else {
+		$date_format = 'm/d/Y';
+	}
 	if(is_array($args) AND !empty($args)){
 		$where = '';
 		if(isset($args['form_id'])){
@@ -259,6 +265,11 @@ function ninja_forms_get_subs($args = array()){
 		}
 		if(isset($args['begin_date']) AND $args['begin_date'] != ''){
 			$begin_date = $args['begin_date'];
+			if ( $date_format == 'd/m/Y' ) {
+				$begin_date = str_replace( '/', '-', $begin_date );
+			} else if ( $date_format == 'm-d-Y' ) {
+				$begin_date = str_replace( '-', '/', $begin_date );
+			}
 			$begin_date = strtotime($begin_date);
 			$begin_date = date("Y-m-d G:i:s", $begin_date);
 			unset($args['begin_date']);
@@ -268,6 +279,11 @@ function ninja_forms_get_subs($args = array()){
 		}
 		if(isset($args['end_date']) AND $args['end_date'] != ''){
 			$end_date = $args['end_date'];
+			if ( $date_format == 'd/m/Y' ) {
+				$end_date = str_replace( '/', '-', $end_date );
+			} else if ( $date_format == 'm-d-Y' ) {
+				$end_date = str_replace( '-', '/', $end_date );
+			}
 			$end_date = strtotime($end_date);
 			$end_date = date("Y-m-d G:i:s", $end_date);
 			unset($args['end_date']);

@@ -456,12 +456,16 @@ function ninja_forms_import_list_options(){
 		foreach( $options as $option ){
 			$label = stripslashes( $option[0] );
 			$value = stripslashes( $option[1] );
+			$calc = stripslashes( $option[2] );
 			$label = str_replace( "''", "", $label );
 			$label = str_replace( "-comma-replace-placeholder-", ",", $label );
 			$value = str_replace( "''", "", $value );
 			$value = str_replace( "-comma-replace-placeholder-", ",", $value );
+			$calc = str_replace( "''", "", $calc );
+			$calc = str_replace( "-comma-replace-placeholder-", ",", $calc );
 			$tmp_array[$x]['label'] = $label;
 			$tmp_array[$x]['value'] = $value;
+			$tmp_array[$x]['calc'] = $calc;
 			$x++;
 		}
 		$x = 0;

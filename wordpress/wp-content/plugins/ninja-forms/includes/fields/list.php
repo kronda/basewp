@@ -189,16 +189,16 @@ function ninja_forms_field_list_edit($field_id, $data){
 			<p><?php _e( 'To use this feature, you can paste your CSV into the textarea above.', 'ninja-forms' );?></p>
 			<p><?php _e( 'The format should look like the following:', 'ninja-forms' );?></p>
 <pre>
-Label,Value
-Label,Value
-Label,Value
+Label,Value,Calc
+Label,Value,Calc
+Label,Value,Calc
 </pre>
 
-			<p><?php _e( "If you want to send an empty value, you can use '' for the value.", 'ninja-forms' );?></p>
+			<p><?php _e( "If you want to send an empty value or calc, you should use '' for those.", 'ninja-forms' );?></p>
 <pre>
-Label,''
-Label,''
-Label,''
+Label,'',''
+Label,'',''
+Label,'',''
 </pre>
 
 

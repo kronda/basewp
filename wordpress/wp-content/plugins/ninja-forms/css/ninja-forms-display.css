@@ -123,26 +123,26 @@ a.tooltip span
     font-weight: normal;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .field-wrap:after {
+.field-wrap:after {
     clear: both;
     content: "";
     display: block;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .field-wrap.label-left .ninja-forms-field,
-.ninja-forms-form-wrap .ninja-forms-form .field-wrap.label-left .ninja-forms-star-rating-control {
+.field-wrap.label-left .ninja-forms-field,
+.field-wrap.label-left .ninja-forms-star-rating-control {
     margin-left: 8px;
 }
-.ninja-forms-form-wrap .ninja-forms-form .field-wrap.label-right .ninja-forms-field,
-.ninja-forms-form-wrap .ninja-forms-form .field-wrap.label-right .ninja-forms-star-rating-control {
+.field-wrap.label-right .ninja-forms-field,
+.field-wrap.label-right .ninja-forms-star-rating-control {
     margin-right: 8px;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .label-above label {
+.label-above label {
     margin-bottom: 5px;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .MultiFile-wrap {
+.MultiFile-wrap {
     display: inline-block;
 }
 
@@ -150,46 +150,46 @@ a.tooltip span
 TEXT FIELDS & TEXTAREAS
 ----------------------------------*/
 
-.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-left input,
-.ninja-forms-form-wrap .ninja-forms-form .profile_pass-wrap.label-left input,
-.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-left textarea {
+.text-wrap.label-left input,
+.profile_pass-wrap.label-left input,
+.textarea-wrap.label-left textarea {
     margin-left: 10px;
 }
-.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-right input,
-.ninja-forms-form-wrap .ninja-forms-form .profile_pass-wrap.label-right input,
-.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-right textarea {
+.text-wrap.label-right input,
+.profile_pass-wrap.label-right input,
+.textarea-wrap.label-right textarea {
     margin-right: 10px;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-above label,
-.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-above label {
+.text-wrap.label-above label,
+.textarea-wrap.label-above label {
     display: block;
     width: 100%;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-above input,
-.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-below input,
-.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-above textarea,
-.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-below textarea,
-.ninja-forms-form-wrap .ninja-forms-form .list-dropdown-wrap.label-above select,
-.ninja-forms-form-wrap .ninja-forms-form .list-dropdown-wrap.label-below select {
+.text-wrap.label-above input,
+.text-wrap.label-below input,
+.textarea-wrap.label-above textarea,
+.textarea-wrap.label-below textarea,
+.list-dropdown-wrap.label-above select,
+.list-dropdown-wrap.label-below select {
     width: 100%;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-inside input,
-.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-inside textarea {
+.text-wrap.label-inside input,
+.textarea-wrap.label-inside textarea {
     width: 100%;
 }
-.ninja-forms-form-wrap .ninja-forms-form .text-wrap.label-inside input.ninja-forms-req,
-.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap.label-inside textarea.ninja-forms-req {
+.text-wrap.label-inside input.ninja-forms-req,
+.textarea-wrap.label-inside textarea.ninja-forms-req {
     width: 95%;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .textarea-wrap textarea {
+.textarea-wrap textarea {
     height: 100px;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .profile_pass-wrap input {
+.profile_pass-wrap input {
     margin-bottom: 10px;
 }
 
@@ -197,54 +197,54 @@ TEXT FIELDS & TEXTAREAS
 RADIO & CHECKBOX LISTS
 ----------------------------------*/
 
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap span ul li input,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap span ul li input {
+.list-radio-wrap span ul li input,
+.list-checkbox-wrap span ul li input {
     margin-right: 5px;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap ul,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap ul {
+.list-radio-wrap ul,
+.list-checkbox-wrap ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap ul li {
+.list-radio-wrap ul li,
+.list-checkbox-wrap ul li {
     list-style: none;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap ul li {
+.list-radio-wrap ul li,
+.list-checkbox-wrap ul li {
     margin: 0;
     padding: 0;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-left label,
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-left ul,
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-left ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-right label,
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-right ul,
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-right ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-left label,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-left ul,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-left ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-right label,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-right ul,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-right ul li {
+.list-radio-wrap.label-left label,
+.list-radio-wrap.label-left ul,
+.list-radio-wrap.label-left ul li,
+.list-radio-wrap.label-right label,
+.list-radio-wrap.label-right ul,
+.list-radio-wrap.label-right ul li,
+.list-checkbox-wrap.label-left label,
+.list-checkbox-wrap.label-left ul,
+.list-checkbox-wrap.label-left ul li,
+.list-checkbox-wrap.label-right label,
+.list-checkbox-wrap.label-right ul,
+.list-checkbox-wrap.label-right ul li {
     float: left;
 }
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-left ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-right ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-left ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-right ul li {
+.list-radio-wrap.label-left ul li,
+.list-radio-wrap.label-right ul li,
+.list-checkbox-wrap.label-left ul li,
+.list-checkbox-wrap.label-right ul li {
     padding: 0 8px;
 }
 
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-above ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-radio-wrap.label-below ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-above ul li,
-.ninja-forms-form-wrap .ninja-forms-form .list-checkbox-wrap.label-below ul li {
+.list-radio-wrap.label-above ul li,
+.list-radio-wrap.label-below ul li,
+.list-checkbox-wrap.label-above ul li,
+.list-checkbox-wrap.label-below ul li {
     padding: 0 0 0 10px;
 }
 
@@ -252,10 +252,10 @@ RADIO & CHECKBOX LISTS
 MULTI FIELD
 ----------------------------------*/
 
-.ninja-forms-form-wrap .ninja-forms-form .list-multi-wrap.label-left label {
+.list-multi-wrap.label-left label {
     float:left;
 }
-.ninja-forms-form-wrap .ninja-forms-form .list-multi-wrap.label-right select {
+.list-multi-wrap.label-right select {
     float:left;
 }
 
@@ -263,15 +263,15 @@ MULTI FIELD
 CREDIT CARD BLOCK
 ----------------------------------*/
 
-.ninja-forms-form-wrap .ninja-forms-form .credit_card-wrap div label,
-.ninja-forms-form-wrap .ninja-forms-form .credit_card-wrap div input {
+.credit_card-wrap div label,
+.credit_card-wrap div input {
     display: block;
     width: 100%;
 }
-.ninja-forms-form-wrap .ninja-forms-form .credit_card-wrap div {
+.credit_card-wrap div {
     margin-bottom: 10px;
 }
-.ninja-forms-form-wrap .ninja-forms-form .credit_card-wrap div span {
+.credit_card-wrap div span {
     font-size: 0.8em;
 }
 
@@ -279,6 +279,6 @@ CREDIT CARD BLOCK
 HONEYPOT
 ----------------------------------*/
 
-.ninja-forms-form-wrap .ninja-forms-form .honeypot-wrap {
+.honeypot-wrap {
     display: none;
 }

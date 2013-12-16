@@ -237,7 +237,7 @@ function ninja_forms_field_text_display( $field_id, $data ){
 	}
 
 	?>
-	<input id="ninja_forms_field_<?php echo $field_id;?>" title="<?php echo $mask;?>" name="ninja_forms_field_<?php echo $field_id;?>" type="text" class="<?php echo $field_class;?> <?php echo $mask_class;?>" value="<?php echo $default_value;?>" rel="<?php echo $field_id;?>" />
+	<input id="ninja_forms_field_<?php echo $field_id;?>" data-mask="<?php echo $mask;?>" name="ninja_forms_field_<?php echo $field_id;?>" type="text" class="<?php echo $field_class;?> <?php echo $mask_class;?>" value="<?php echo $default_value;?>" rel="<?php echo $field_id;?>" />
 	<?php
 
 }

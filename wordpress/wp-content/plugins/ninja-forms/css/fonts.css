@@ -19,7 +19,8 @@
 	top: 4px; /* positions the icon */
 	color: #aaa;
 }
-.branch-3-8 #toplevel_page_ninja-forms .wp-menu-image:before {
+.branch-3-8 #toplevel_page_ninja-forms .wp-menu-image:before,
+.branch-3-9 #toplevel_page_ninja-forms .wp-menu-image:before {
 	left: 0; /* positions the icon */
 	top: 0; /* positions the icon */
 }

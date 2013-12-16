@@ -1,7 +1,7 @@
 <?php
 
 function ninja_forms_display_js($form_id, $local_vars = ''){
-	global $post, $ninja_forms_display_localize_js;
+	global $post, $ninja_forms_display_localize_js, $wp_locale;
 
 	if ( defined( 'NINJA_FORMS_JS_DEBUG' ) && NINJA_FORMS_JS_DEBUG ) {
 		$suffix = '';
@@ -218,6 +218,8 @@ function ninja_forms_display_js($form_id, $local_vars = ''){
 		wp_localize_script( 'ninja-forms-display', 'ninja_forms_settings', array('ajax_msg_format' => $msg_format, 'password_mismatch' => $password_mismatch, 'plugin_url' => NINJA_FORMS_URL, 'date_format' => $date_format, 'currency_symbol' => $currency_symbol ) );
 		$ninja_forms_display_localize_js = true;
 	}
+	wp_localize_script( 'ninja-forms-display','thousandsSeparator', addslashes( $wp_locale->number_format['thousands_sep'] ) );
+	wp_localize_script( 'ninja-forms-display','decimalPoint', addslashes( $wp_locale->number_format['decimal_point'] ) );
 
 	wp_localize_script( 'ninja-forms-display', 'ninja_forms_form_'.$form_id.'_settings', $ninja_forms_js_form_settings );
 	wp_localize_script( 'ninja-forms-display', 'ninja_forms_form_'.$form_id.'_calc_settings', $calc_settings );

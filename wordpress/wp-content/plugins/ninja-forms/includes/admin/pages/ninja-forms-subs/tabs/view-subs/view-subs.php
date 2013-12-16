@@ -2,12 +2,12 @@
 add_action( 'init', 'ninja_forms_register_tab_view_subs', 999 );
 function ninja_forms_register_tab_view_subs(){
 	$args = array(
-		'name' => __( 'View Submissions', 'ninja-forms' ), 
+		'name' => __( 'View Submissions', 'ninja-forms' ),
 		'page' => 'ninja-forms-subs',
-		'display_function' => 'ninja_forms_tab_view_subs', 
+		'display_function' => 'ninja_forms_tab_view_subs',
 		'save_function' => 'ninja_forms_save_view_subs',
 		'show_save' => false,
-	); 
+	);
 	ninja_forms_register_tab( 'view_subs', $args );
 }
 
@@ -49,15 +49,25 @@ function ninja_forms_tab_view_subs(){
 	if( isset( $_REQUEST['begin_date'] ) AND !empty( $_REQUEST['begin_date'] ) ){
 		$begin_date = esc_html( $_REQUEST['begin_date'] );
 	}else if( isset( $_SESSION['ninja_forms_begin_date'] ) AND !empty($_SESSION['ninja_forms_begin_date'] ) ){
-		$begin_date = $_SESSION['ninja_forms_begin_date'];
+		if ( ( isset ( $_POST['submit'] ) AND !empty( $_REQUEST['begin_date'] ) ) OR !isset ( $_POST['submit'] ) ) {
+			$begin_date = $_SESSION['ninja_forms_begin_date'];
+		} else {
+			$begin_date = '';
+		}
+
 	}else{
 		$begin_date = '';
 	}
 
 	if(isset($_REQUEST['end_date']) AND !empty($_REQUEST['end_date'])){
 		$end_date = esc_html( $_REQUEST['end_date'] );
-	}else if(isset($_SESSION['ninja_forms_end_date']) AND !empty($_SESSION['ninja_forms_end_date'])){
-		$end_date = $_SESSION['ninja_forms_end_date'];
+	}else if(isset($_SESSION['ninja_forms_end_date']) AND !empty($_SESSION['ninja_forms_end_date']) ){
+		if ( ( isset ( $_POST['submit'] ) AND !empty( $_REQUEST['end_date'] ) ) OR !isset ( $_POST['submit'] ) ) {
+			$end_date = $_SESSION['ninja_forms_end_date'];
+		} else {
+			$end_date = '';
+		}
+
 	}else{
 		$end_date = '';
 	}
@@ -72,7 +82,7 @@ function ninja_forms_tab_view_subs(){
 		?>
 		<h2><?php _e( 'View Form Submissions', 'ninja-forms' );?></h2>
 		<p class="description description-wide">
-			
+
 		</p>
 		<?php
 	}else{
@@ -88,7 +98,7 @@ function ninja_forms_tab_view_subs(){
 		$sub_results = apply_filters( 'ninja_forms_view_subs_results', $sub_results );
 
 		$sub_count = count( $sub_results );
-		
+
 		if( isset( $_REQUEST['limit'] ) ){
 			$saved_limit = absint( $_REQUEST['limit'] );
 			$limit = absint( $_REQUEST['limit'] );
@@ -137,7 +147,7 @@ function ninja_forms_tab_view_subs(){
 				$form_title = $form_row['data']['form_title'];
 			}
 		}
-		
+
 
 			if($edit_sub_form != 1){
 
@@ -189,7 +199,7 @@ function ninja_forms_tab_view_subs(){
 							}else{
 								$next_page = $last_page;
 							}
-							
+
 					?>
 					<span class="pagination-links">
 						<a class="first-page disabled" title="<?php _e( 'Go to the first page', 'ninja-forms' ); ?>" href="<?php echo $first_page;?>">«</a>
@@ -208,12 +218,12 @@ function ninja_forms_tab_view_subs(){
 				$back_link = remove_query_arg( array( 'edit_sub_form' ) );
 			?>
 			<div id="" class="">
-				<a href="<?php echo $back_link;?>"><input type="button" class="button-secondary" value="<?php _e( 'Back To Submissions', 'ninja-forms' ); ?>"></a>
+				<a href="<?php echo $back_link;?>" class="button-secondary"><?php _e( 'Back To Submissions', 'ninja-forms' ); ?></a>
 			</div>
 			<?php
-			} 
+			}
 			?>
-			</div>			
+			</div>
 			<table border="1px" class="wp-list-table widefat fixed posts">
 			<?php
 			//Grab the first few fields attached to our form so that we can create column headers.
@@ -233,7 +243,7 @@ function ninja_forms_tab_view_subs(){
 						}
 					}
 				}
-				
+
 				$field_results = array_values( $field_results );
 				$field_results = apply_filters( 'ninja_forms_view_subs_table_header', $field_results, $form_id );
 
@@ -248,14 +258,14 @@ function ninja_forms_tab_view_subs(){
 				$x = 0;
 				while($x <= $col_count){
 					if(isset($field_results[$x]['data']['label'])){
-		
+
 				?>
 						<th><?php echo $field_results[$x]['data']['label'];?></th>
 				<?php
 					}
-					$x++;			
+					$x++;
 				}
-				?>	
+				?>
 					</tr>
 				</thead>
 		<?php
@@ -305,7 +315,7 @@ function ninja_forms_tab_view_subs(){
 									$user_value = ninja_forms_stripslashes_deep( $user_value );
 									$user_value = ninja_forms_strip_tags_deep($user_value);
 									$user_value = apply_filters('ninja_forms_view_sub_td', $user_value, $d['field_id'], $sub['id'] );
-									
+
 									if(is_array($user_value) AND !empty($user_value)){
 										$y = 1;
 										foreach($user_value as $val){
@@ -324,10 +334,10 @@ function ninja_forms_tab_view_subs(){
 						</td>
 					<?php
 						}
-						$x++;	
+						$x++;
 					}
 				?>
-					
+
 				</tr>
 				<?php
 			}
@@ -337,7 +347,7 @@ function ninja_forms_tab_view_subs(){
 			$date_updated = strtotime($sub_row['date_updated']);
 			$date_updated = date($date_format, $date_updated);
 			$sub_status = $sub_row['status'];
-			
+
 
 			?>
 				<input type="hidden" name="_sub_id" value="<?php echo $sub_id;?>">
@@ -370,11 +380,11 @@ function ninja_forms_tab_view_subs(){
 			<?php
 		}
 			?>
-			
+
 				</tbody>
 				<?php
 			//Grab the first few fields attached to our form so that we can create column headers.
-				
+
 			//$field_results = ninja_forms_get_fields_by_form_id($form_id);
 			//$col_count = 0;
 			if(is_array($field_results) AND !empty($field_results) AND $edit_sub_form != 1){
@@ -390,7 +400,7 @@ function ninja_forms_tab_view_subs(){
 						}
 					}
 				}
-			
+
 				*/
 				?>
 				<tfoot>
@@ -406,9 +416,9 @@ function ninja_forms_tab_view_subs(){
 						<th><?php echo $field_results[$x]['data']['label'];?></th>
 				<?php
 					}
-					$x++;			
+					$x++;
 				}
-				?>	
+				?>
 					</tr>
 				</tfoot>
 		<?php
@@ -420,13 +430,13 @@ function ninja_forms_tab_view_subs(){
 			<br />
 			<br />
 			<div id="ninja_forms_sub_info">
-			
-			
+
+
 			</div>
 			<input type="button" id="ninja_forms_edit_sub" value="<?php _e( 'Save', 'ninja-forms' ); ?>" class="button-primary"> &nbsp;&nbsp; <span id="ninja_forms_edit_sub_loading" style="display:none;"><img src="<?php echo NINJA_FORMS_URL."/images/loading.gif";?>" alt="loading"></span>
 		</div>
 			<?php
-	
+
 	}
 }
 
@@ -484,13 +494,13 @@ function ninja_forms_edit_sub_save_values(){
 	}else{
 		$status = '';
 	}
-	
+
 	if( isset( $sub_row['action'] ) ){
 		$action = $sub_row['action'];
 	}else{
 		$action = '';
 	}
-	
+
 	$field_data = $ninja_forms_processing->get_all_fields();
 	$sub_data = array();
 
@@ -539,13 +549,13 @@ function ninja_forms_save_view_subs( $form_id, $data = array() ){
 					}elseif( $_POST['bulk_action'] == 'export' ){
 						if( isset($_POST['ninja_forms_sub'] ) AND is_array( $_POST['ninja_forms_sub'] ) AND !empty( $_POST['ninja_forms_sub'] ) ){
 							$subs = ninja_forms_esc_html_deep( $_POST['ninja_forms_sub'] );
-							ninja_forms_export_subs_to_csv( $subs );	
+							ninja_forms_export_subs_to_csv( $subs );
 						}
 					}
 				}
 				break;
 			case __( 'Download All Submissions', 'ninja-forms' ):
-					
+
 				if( isset( $plugin_settings['date_format'] ) AND $plugin_settings['date_format'] != '' ){
 					$date_format = $plugin_settings['date_format'];
 				}else{
@@ -556,13 +566,13 @@ function ninja_forms_save_view_subs( $form_id, $data = array() ){
 				}else{
 					$form_id = '';
 				}
-				
+
 				if( isset( $_REQUEST['ninja_forms_begin_date'] ) AND !empty( $_REQUEST['ninja_forms_begin_date'] ) ){
 					$begin_date = esc_html( $_REQUEST['ninja_forms_begin_date'] );
 				}else{
 					$begin_date = '';
 				}
-				
+
 				if( isset( $_REQUEST['ninja_forms_end_date'] ) AND !empty( $_REQUEST['ninja_forms_end_date'] ) ){
 					$end_date = esc_html( $_REQUEST['ninja_forms_end_date'] );
 				}else{
@@ -631,7 +641,7 @@ function ninja_forms_edit_sub_hide_fields($data, $field_id){
 function ninja_forms_view_subs_default_filter( $sub_results ) {
 	if( is_array( $sub_results ) AND !empty( $sub_results ) ){
 		$tmp_array = array();
-		for ($i=0; $i < count( $sub_results ); $i++) { 
+		for ($i=0; $i < count( $sub_results ); $i++) {
 			if( $sub_results[$i]['status'] == 1 ){
 				$tmp_array[] = $sub_results[$i];
 			}

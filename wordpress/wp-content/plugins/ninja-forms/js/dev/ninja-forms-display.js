@@ -33,7 +33,8 @@ jQuery(document).ready(function(jQuery) {
 
 	if( jQuery.fn.mask ){
 		jQuery(".ninja-forms-mask").each(function(){
-			var mask = this.title;
+			var mask = jQuery(this).data('mask');
+			mask = mask.toString();			
 			jQuery(this).mask(mask);
 		});
 
@@ -53,7 +54,7 @@ jQuery(document).ready(function(jQuery) {
 	}
 
 	if( jQuery.fn.autoNumeric ){
-		jQuery(".ninja-forms-currency").autoNumeric({aSign: ninja_forms_settings.currency_symbol});
+		jQuery(".ninja-forms-currency").autoNumeric({aSign: ninja_forms_settings.currency_symbol, aSep: thousandsSeparator, aDec: decimalPoint});
 	}
 
 	/* * * End Mask JS * * */

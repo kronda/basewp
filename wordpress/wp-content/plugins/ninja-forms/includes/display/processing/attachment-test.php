@@ -9,7 +9,7 @@ function ninja_forms_attachment_test( $sub_id ){
 		$files = $ninja_forms_processing->get_form_setting( 'admin_attachments' );
 		$sub_ids = array($sub_id);
 		$csv = ninja_forms_export_subs_to_csv( $sub_ids, true );
-		$path = tempnam( sys_get_temp_dir(), 'Sub' );
+		$path = tempnam( get_temp_dir(), 'Sub' );
 		$temp_file = fopen( $path, 'r+' );
 		fwrite( $temp_file, $csv );
 		fclose( $temp_file );

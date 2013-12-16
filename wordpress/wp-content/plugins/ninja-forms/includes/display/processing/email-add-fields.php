@@ -30,7 +30,7 @@ function ninja_forms_filter_email_add_fields( $message ){
 			}
 		}
 	}
-	$all_fields = $tmp_array;
+	$all_fields = apply_filters( 'ninja_forms_email_all_fields_array', $tmp_array, $form_id );
 
 	$email_type = $ninja_forms_processing->get_form_setting( 'email_type' );
 	if(is_array($all_fields) AND !empty($all_fields)){

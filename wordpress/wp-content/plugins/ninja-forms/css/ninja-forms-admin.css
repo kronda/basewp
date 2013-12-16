@@ -179,6 +179,11 @@ border-bottom-color: transparent;
 #ninja_forms_admin_metaboxes .item-edit {
 	top: -4px;
 }
+#ninja_forms_admin_metaboxes textarea {
+	min-height: 100px;
+	padding: 5px;
+	width: 100%;
+}
 
 .menu-item-settings.list li {
 	display:block;
@@ -777,20 +782,24 @@ p.debug-report {
 /  WP 3.8 styles
 ----------------------------------*/
 
-.branch-3-8 #post-body .menu-item-handle {
+.branch-3-8 #post-body .menu-item-handle,
+.branch-3-9 #post-body .menu-item-handle {
 	background: #fff;
-	padding: 5px 5px 5px 10px;
+	padding: 10px 5px 10px 10px;
 }
-.branch-3-8 #post-body .menu-item-settings {
+.branch-3-8 #post-body .menu-item-settings,
+.branch-3-9 #post-body .menu-item-settings {
 	background: #fff;
 	padding: 12px;
 }
-.branch-3-8 #post-body #post-body-content h3 {
+.branch-3-8 #post-body #post-body-content h3,
+.branch-3-9 #post-body #post-body-content h3 {
  margin-top: 0;
 }
 /*.branch-3-8 .item-controls {
 	top: 5px;
 }*/
-.branch-3-8 #TB_window .item-controls {
+.branch-3-8 #TB_window .item-controls,
+.branch-3-9 #TB_window .item-controls {
 	top: 17px;
 }

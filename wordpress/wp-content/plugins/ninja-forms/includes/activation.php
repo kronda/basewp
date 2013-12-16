@@ -326,12 +326,6 @@ function ninja_forms_activation_old_forms_check(){
 					$forms[$x]['data']['admin_mailto'] = $admin_mailto;
 					$forms[$x]['data']['user_subject'] = $form['subject'];
 					$forms[$x]['data']['success_msg'] = $form['success_msg'];
-					if( $form['save_subs'] == 'checked' ){
-						$save_subs = 1;
-					}else{
-						$save_subs = 0;
-					}
-					$forms[$x]['data']['save_subs'] = $save_subs;
 					if( $form['send_email'] == 'checked' ){
 						$send_email = 1;
 					}else{

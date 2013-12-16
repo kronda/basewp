@@ -10,12 +10,12 @@
 
 function ninja_forms_field_calc_filter( $calc_data, $field_id ){
 	global $ninja_forms_processing;
-
+	
 	if ( !is_object ( $ninja_forms_processing ) ) {
 		$field_row = ninja_forms_get_field_by_id( $field_id );
 		$form_id = $field_row['form_id'];
 		if ( $field_row['type'] == '_calc' ) {
-			//echo "Calc Filter";	
+				
 			// Figure out which method we are using to calculate this field.
 			if ( isset ( $calc_data['calc_method'] ) ) {
 				$calc_method = $calc_data['calc_method'];
@@ -91,6 +91,7 @@ function ninja_forms_field_calc_filter( $calc_data, $field_id ){
 									} else {
 										$calc_value = ninja_forms_field_calc_value( $field['id'], $field_value, $calc_method );							
 									}
+
 									if ( $calc_value !== false ) {
 										$result = ninja_forms_calc_evaluate( 'add', $result, $calc_value );						
 									}
@@ -129,7 +130,7 @@ function ninja_forms_field_calc_filter( $calc_data, $field_id ){
 					}
 				}
 
-				if ( $calc_method == 'eq' ) {
+				if ( $calc_method == 'eq' and $calc_eq != '' ) {
 					$eq = new eqEOS();
 					$result = $eq->solveIF($calc_eq);
 	 			}
@@ -234,12 +235,13 @@ function ninja_forms_calc_field_loop( $field_id, $calc_eq = '', $result = '' ){
 				case 'auto': // We are automatically totalling the fields that have a calc_auto_include set to 1.
 					if ( isset ( $field_data['calc_auto_include'] ) AND $field_data['calc_auto_include'] == 1 ) {
 						if ( $field['type'] == '_calc' ) {
-							$result = ninja_forms_calc_field_loop( $field['id'], '', $result );
+							$calc_value = ninja_forms_calc_field_loop( $field['id'], '', $result );
 						} else {
-							$calc_value = ninja_forms_field_calc_value( $field['id'], $field_value, $calc_method );
-							if ( $calc_value !== false ) {
-								$result = ninja_forms_calc_evaluate( 'add', $result, $calc_value );						
-							}								
+							$calc_value = ninja_forms_field_calc_value( $field['id'], $field_value, $calc_method );							
+						}
+
+						if ( $calc_value !== false ) {
+							$result = ninja_forms_calc_evaluate( 'add', $result, $calc_value );						
 						}
 					}
 					break;
@@ -274,7 +276,7 @@ function ninja_forms_calc_field_loop( $field_id, $calc_eq = '', $result = '' ){
 			}
 		}
 	}
-	if ( $calc_method == 'eq' ) {
+	if ( $calc_method == 'eq' and $calc_eq != '' ) {
 		$eq = new eqEOS();
 		$result = $eq->solveIF($calc_eq);
 	}

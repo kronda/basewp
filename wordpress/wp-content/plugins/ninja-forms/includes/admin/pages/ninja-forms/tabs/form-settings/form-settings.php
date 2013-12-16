@@ -227,16 +227,6 @@ function ninja_forms_register_form_settings_basic_metabox(){
 				'label' => __( 'Display Form Title', 'ninja-forms' ),
 			),
 			array(
-				'name' => 'save_subs',
-				'type' => 'checkbox',
-				'desc' => '',
-				'label' => __( 'Save form submissions?', 'ninja-forms' ),
-				'display_function' => '',
-				'help' => __( '', 'ninja-forms' ),
-				'default_value' => 1,
-			),
-
-			array(
 				'name' => 'logged_in',
 				'type' => 'checkbox',
 				'desc' => '',
@@ -390,7 +380,7 @@ function ninja_forms_save_form_settings( $form_id, $data ){
 		$data_array = array('data' => serialize( $form_data ) );
 
 		$wpdb->insert( NINJA_FORMS_TABLE_NAME, $data_array );
-		$redirect = add_query_arg( array( 'form_id' => $wpdb->insert_id, 'update_message' => __( 'Form Settings Saved', 'ninja-forms' ) ) );
+		$redirect = add_query_arg( array( 'form_id' => $wpdb->insert_id, 'update_message' => urlencode( __( 'Form Settings Saved', 'ninja-forms' ) ) ) );
 		do_action( 'ninja_forms_save_new_form_settings', $wpdb->insert_id, $data );
 		wp_redirect( $redirect );
 		exit();
