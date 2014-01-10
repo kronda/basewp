@@ -18,7 +18,7 @@ function ninja_forms_register_field_textbox(){
 			array(
 				'type' => 'checkbox',
 				'name' => 'send_email',
-				'label' => __( 'Send a repsonse email to this email address?', 'ninja-forms' ),
+				'label' => __( 'Send a response email to this email address?', 'ninja-forms' ),
 			),
 			// array(
 			// 	'type' => 'checkbox',
@@ -70,6 +70,12 @@ function ninja_forms_register_field_textbox(){
 			array(
 				'type' => 'hidden',
 				'name' => 'user_info_field_group',
+				'default_value' => 1,
+			),
+			array(
+				'type' => 'checkbox',
+				'label' => __( 'This is the user\'s state', 'ninja-forms' ),
+				'name' => 'user_state',
 			),
 		),
 		'display_function' => 'ninja_forms_field_text_display',
@@ -108,7 +114,7 @@ function ninja_forms_field_text_edit( $field_id, $data ){
 	if( isset( $plugin_settings['date_format'] ) ){
 		$date_format = $plugin_settings['date_format'];
 	}else{
-		$date_format = "$";
+		$date_format = "m/d/Y";
 	}
 	$custom = '';
 	// Default Value

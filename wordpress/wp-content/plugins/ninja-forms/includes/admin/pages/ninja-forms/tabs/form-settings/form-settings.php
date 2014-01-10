@@ -288,6 +288,7 @@ function ninja_forms_register_form_settings_basic_metabox(){
 				'type' => 'rte',
 				'label' => __( 'Success Message', 'ninja-forms' ),
 				'desc' => __( 'If you want to include field data entered by the user, for instance a name, you can use the following shortcode: [ninja_forms_field id=23] where 23 is the ID of the field you want to insert. This will tell Ninja Forms to replace the bracketed text with whatever input the user placed in that field. You can find the field ID when you expand the field for editing.', 'ninja-forms' ),
+				'default_value' => __( 'Thanks for submitting this form. We&#39;ll get back to you soon.', 'ninja-forms' ),
 				'tr_class' => 'landing-page-hide ' . $success_msg_style,
 			),
 		),

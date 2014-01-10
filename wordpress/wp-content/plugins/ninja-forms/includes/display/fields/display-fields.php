@@ -306,6 +306,34 @@ function ninja_forms_get_field_class($field_id){
 		}
 	}
 
+	// Check to see if we are dealing with a field that has the user_info_field_group set.
+	if ( isset ( $data['user_info_field_group_name'] ) and $data['user_info_field_group_name'] != '' ) {
+		$user_info_group_class = $data['user_info_field_group_name'].'-address';
+	} else {
+		$user_info_group_class = '';
+	}
+
+	// Check to see if we are dealing with an address field.
+	if ( isset ( $data['user_address_1'] ) and $data['user_address_1'] == 1 ) {
+		$address_class = 'address address1';
+	}	
+
+	if ( isset ( $data['user_address_2'] ) and $data['user_address_2'] == 1 ) {
+		$address_class = 'address address2';
+	}	
+
+	if ( isset ( $data['user_city'] ) and $data['user_city'] == 1 ) {
+		$address_class = 'address city';
+	}	
+
+	if ( isset ( $data['user_state'] ) and $data['user_state'] == 1 ) {
+		$address_class = 'address state';
+	}
+
+	if ( isset ( $data['user_city'] ) and $data['user_city'] == 1 ) {
+		$address_class = 'address city';
+	}
+
 	$listen_class = '';
 	if(isset($watch_fields[$field_id]) AND $watch_fields[$field_id] == 1){
 		$listen_class = "ninja-forms-field-conditional-listen";
@@ -325,6 +353,14 @@ function ninja_forms_get_field_class($field_id){
 
 	if ( $calc_listen != '' ) {
 		$field_class .= ' '.$calc_listen;
+	}
+
+	if ( $user_info_group_class != '' ) {
+		$field_class .=" ".$user_info_group_class;
+	}
+	
+	if ( $address_class != '' ) {
+		$field_class .=" ".$address_class;
 	}
 
 	return apply_filters( 'ninja_forms_display_field_class', $field_class, $field_id );

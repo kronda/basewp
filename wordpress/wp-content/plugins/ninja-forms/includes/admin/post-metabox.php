@@ -85,8 +85,6 @@ function ninja_forms_save_postdata( $post_id ) {
 		// OK, we're authenticated: we need to find and save the data
 		$post_id = absint( $_POST['post_ID'] );
 		$form_id = absint( $_POST['ninja_form_select'] );
-		if ( !empty( $form_id ) ) {
-			update_post_meta( $post_id, 'ninja_forms_form', $form_id );
-		}
+		update_post_meta( $post_id, 'ninja_forms_form', $form_id );
 	}
 }
