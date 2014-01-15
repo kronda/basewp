@@ -18,7 +18,7 @@ set(:db_pass) { random_password }
 
 # The subdirectory within the repo containing the DocumentRoot.
 set :app_root, "webroot"
-set :local_path, "Users/Kronda/Sites/karveldigital"
+set :local_path, "/Users/Kronda/Sites/karveldigital"
 
 # Use a remote cache to speed things up
 set :deploy_via, :remote_cache
