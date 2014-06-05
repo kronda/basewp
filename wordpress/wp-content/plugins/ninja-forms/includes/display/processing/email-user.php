@@ -29,12 +29,12 @@ function ninja_forms_email_user(){
 		}
 	}
 
-	$email_from 		= $ninja_forms_processing->get_form_setting('email_from');
-	$email_from_name 	= $ninja_forms_processing->get_form_setting( 'email_from_name' );
-	$email_type 		= $ninja_forms_processing->get_form_setting('email_type');
-	$subject 			= $ninja_forms_processing->get_form_setting('user_subject');
-	$message 			= $ninja_forms_processing->get_form_setting('user_email_msg');
-	$default_email 		= get_option( 'admin_email' );
+	$email_from      = $ninja_forms_processing->get_form_setting('email_from');
+	$email_from_name = $ninja_forms_processing->get_form_setting( 'email_from_name' );
+	$email_type      = $ninja_forms_processing->get_form_setting('email_type');
+	$subject         = $ninja_forms_processing->get_form_setting('user_subject');
+	$message         = $ninja_forms_processing->get_form_setting('user_email_msg');
+	$default_email   = get_option( 'admin_email' );
 
 	if(!$subject){
 		$subject = $form_title;
@@ -50,7 +50,7 @@ function ninja_forms_email_user(){
 	}
 
 	if( $email_type !== 'plain' ){
-		$message = wpautop( $message );
+		$message = apply_filters( 'ninja_forms_user_email_message_wpautop', wpautop( $message ) );
 	}
 
 	$email_from = $email_from_name.' <'.$email_from.'>';
@@ -63,13 +63,18 @@ function ninja_forms_email_user(){
 	$headers[] = 'Content-Type: text/'.$email_type;
 	$headers[] = 'charset=utf-8';
 
-	if($ninja_forms_processing->get_form_setting('user_attachments')){
+	$attachments = false;
+	if ( $ninja_forms_processing->get_form_setting( 'user_attachments' ) ) {
 		$attachments = $ninja_forms_processing->get_form_setting('user_attachments');
-	}else{
-		$attachments = '';
 	}
 
-	if(is_array($user_mailto) AND !empty($user_mailto)){
-		wp_mail($user_mailto, $subject, $message, $headers, $attachments);
+	if ( is_array( $user_mailto ) AND ! empty( $user_mailto ) ) {
+		// check to make sure there's an attachment before attaching one
+		if ( $attachments ) {
+			wp_mail( $user_mailto, $subject, $message, $headers, $attachments );
+		} else {
+			wp_mail( $user_mailto, $subject, $message, $headers );
+		}
+
 	}
 }

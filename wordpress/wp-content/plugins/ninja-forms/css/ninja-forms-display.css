@@ -1,3 +1,12 @@
+.ninja-forms-form-wrap *,
+.ninja-forms-form-wrap *:after,
+.ninja-forms-form-wrap *:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 a.tooltip {outline:none; text-decoration: none; }
 a.tooltip strong {line-height:30px;}
 a.tooltip:hover {text-decoration:none;}
@@ -75,7 +84,7 @@ a.tooltip span
 
 .field-wrap,
 #ninja_forms_required_items {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 #pass-strength-result {
@@ -109,12 +118,23 @@ a.tooltip span
     background-color: #c3ff88;
     border-color: #8dff1c !important;
 }
+.ninja-forms-cont {
+    position: relative;
+}
+.ninja-forms-cont:after {
+    clear: both;
+    content: "";
+    display: block;
+}
 
 .ninja-forms-form-wrap input,
 .ninja-forms-form-wrap select ,
 .ninja-forms-form-wrap textarea {
     width: auto;
+    height: auto;
+    vertical-align: inherit;
 }
+
 .ninja-forms-form-wrap label {
     font-weight: bold;
 }
@@ -136,6 +156,10 @@ a.tooltip span
 .field-wrap.label-right .ninja-forms-field,
 .field-wrap.label-right .ninja-forms-star-rating-control {
     margin-right: 8px;
+}
+.field-wrap.label-right label,
+.field-wrap.label-left label  {
+    display: inline;
 }
 
 .label-above label {
@@ -169,24 +193,17 @@ TEXT FIELDS & TEXTAREAS
 
 .text-wrap.label-above input,
 .text-wrap.label-below input,
+.text-wrap.label-inside input,
 .textarea-wrap.label-above textarea,
 .textarea-wrap.label-below textarea,
+.textarea-wrap.label-inside textarea,
 .list-dropdown-wrap.label-above select,
 .list-dropdown-wrap.label-below select {
     width: 100%;
 }
 
-.text-wrap.label-inside input,
-.textarea-wrap.label-inside textarea {
-    width: 100%;
-}
-.text-wrap.label-inside input.ninja-forms-req,
-.textarea-wrap.label-inside textarea.ninja-forms-req {
-    width: 95%;
-}
-
 .textarea-wrap textarea {
-    height: 100px;
+    height: 200px;
 }
 
 .profile_pass-wrap input {

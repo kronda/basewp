@@ -58,6 +58,8 @@ function ninja_forms_field_textarea_display($field_id, $data){
 		$default_value = '';
 	}
 
+	$default_value = htmlspecialchars_decode( $default_value );
+
 	if(isset($data['textarea_rte'])){
 		$textarea_rte = $data['textarea_rte'];
 	}else{
@@ -74,6 +76,24 @@ function ninja_forms_field_textarea_display($field_id, $data){
 		$textarea_rte = 0;
 	}
 
+	if( isset( $data['input_limit'] ) ){
+		$input_limit = $data['input_limit'];
+	}else{
+		$input_limit = '';
+	}
+
+	if( isset( $data['input_limit_type'] ) ){
+		$input_limit_type = $data['input_limit_type'];
+	}else{
+		$input_limit_type = '';
+	}
+
+	if( isset( $data['input_limit_msg'] ) ){
+		$input_limit_msg = $data['input_limit_msg'];
+	}else{
+		$input_limit_msg = '';
+	}
+
 	$field_class = ninja_forms_get_field_class( $field_id );
 
 	if($textarea_rte == 1){
@@ -82,7 +102,7 @@ function ninja_forms_field_textarea_display($field_id, $data){
 		wp_editor( $default_value, 'ninja_forms_field_'.$field_id, $args );
 	}else{
 		?>
-		<textarea name="ninja_forms_field_<?php echo $field_id;?>" id="ninja_forms_field_<?php echo $field_id;?>" class="<?php echo $field_class;?>" rel="<?php echo $field_id;?>"><?php echo $default_value;?></textarea>
+		<textarea name="ninja_forms_field_<?php echo $field_id;?>" id="ninja_forms_field_<?php echo $field_id;?>" class="<?php echo $field_class;?>" rel="<?php echo $field_id;?>" data-input-limit="<?php echo $input_limit;?>" data-input-limit-type="<?php echo $input_limit_type;?>" data-input-limit-msg="<?php echo $input_limit_msg;?>"><?php echo $default_value;?></textarea>
 		<?php
 	}
 }

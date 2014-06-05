@@ -70,7 +70,7 @@ function ninja_forms_register_field_textbox(){
 			array(
 				'type' => 'hidden',
 				'name' => 'user_info_field_group',
-				'default_value' => 1,
+				'default' => 1,
 			),
 			array(
 				'type' => 'checkbox',
@@ -103,7 +103,7 @@ function ninja_forms_register_field_textbox(){
 add_action( 'init', 'ninja_forms_register_field_textbox' );
 
 function ninja_forms_field_text_edit( $field_id, $data ){
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 
 	if( isset( $plugin_settings['currency_symbol'] ) ){
 		$currency_symbol = $plugin_settings['currency_symbol'];
@@ -199,6 +199,10 @@ function ninja_forms_field_text_display( $field_id, $data ){
 	global $current_user;
 	$field_class = ninja_forms_get_field_class( $field_id );
 
+	if ( isset( $data['email'] ) ) {
+		$field_class .= ' email';
+	}
+
 	if(isset($data['default_value'])){
 		$default_value = $data['default_value'];
 	}else{
@@ -221,6 +225,24 @@ function ninja_forms_field_text_display( $field_id, $data ){
 		$mask = $data['mask'];
 	}else{
 		$mask = '';
+	}	
+
+	if( isset( $data['input_limit'] ) ){
+		$input_limit = $data['input_limit'];
+	}else{
+		$input_limit = '';
+	}
+
+	if( isset( $data['input_limit_type'] ) ){
+		$input_limit_type = $data['input_limit_type'];
+	}else{
+		$input_limit_type = '';
+	}
+
+	if( isset( $data['input_limit_msg'] ) ){
+		$input_limit_msg = $data['input_limit_msg'];
+	}else{
+		$input_limit_msg = '';
 	}
 
 	switch( $mask ){
@@ -243,16 +265,16 @@ function ninja_forms_field_text_display( $field_id, $data ){
 	}
 
 	?>
-	<input id="ninja_forms_field_<?php echo $field_id;?>" data-mask="<?php echo $mask;?>" name="ninja_forms_field_<?php echo $field_id;?>" type="text" class="<?php echo $field_class;?> <?php echo $mask_class;?>" value="<?php echo $default_value;?>" rel="<?php echo $field_id;?>" />
+	<input id="ninja_forms_field_<?php echo $field_id;?>" data-mask="<?php echo $mask;?>" data-input-limit="<?php echo $input_limit;?>" data-input-limit-type="<?php echo $input_limit_type;?>" data-input-limit-msg="<?php echo $input_limit_msg;?>" name="ninja_forms_field_<?php echo $field_id;?>" type="text" class="<?php echo $field_class;?> <?php echo $mask_class;?>" value="<?php echo $default_value;?>" rel="<?php echo $field_id;?>" />
 	<?php
 
 }
 
 function ninja_forms_field_text_pre_process( $field_id, $user_value ){
 	global $ninja_forms_processing;
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 	if( isset( $plugin_settings['invalid_email'] ) ){
-		$invalid_email = $plugin_settings['invalid_email'];
+		$invalid_email = __( $plugin_settings['invalid_email'], 'ninja-forms' );
 	}else{
 		$invalid_email = __( 'Please enter a valid email address.', 'ninja-forms' );
 	}

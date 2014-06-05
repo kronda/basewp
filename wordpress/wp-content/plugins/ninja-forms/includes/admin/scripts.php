@@ -1,7 +1,7 @@
 <?php
 //Load up our WP Ninja Custom Form JS files.
 function ninja_forms_admin_css(){
-	$plugin_settings = get_option('ninja_forms_settings');
+	$plugin_settings = nf_get_settings();
 
 	wp_enqueue_style( 'jquery-smoothness', NINJA_FORMS_URL .'/css/smoothness/jquery-smoothness.css');
 	wp_enqueue_style( 'ninja-forms-admin', NINJA_FORMS_URL .'/css/ninja-forms-admin.css');
@@ -35,7 +35,7 @@ function ninja_forms_admin_js(){
 		$src = 'min';
 	}
 
-	$plugin_settings = get_option("ninja_forms_settings");
+	$plugin_settings = nf_get_settings();
 	if(isset($plugin_settings['date_format'])){
 		$date_format = $plugin_settings['date_format'];
 	}else{

@@ -197,7 +197,7 @@ function ninja_forms_register_field_country(){
 		__( 'Sao Tome And Principe', 'ninja-forms' ) => 'ST',
 		__( 'Saudi Arabia', 'ninja-forms' ) => 'SA',
 		__( 'Senegal', 'ninja-forms' ) => 'SN',
-		__( 'Serbia', 'ninja-forms' ) => 'SR',
+		__( 'Serbia', 'ninja-forms' ) => 'RS',
 		__( 'Seychelles', 'ninja-forms' ) => 'SC',
 		__( 'Sierra Leone', 'ninja-forms' ) => 'SL',
 		__( 'Singapore', 'ninja-forms' ) => 'SG',

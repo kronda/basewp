@@ -10,7 +10,7 @@ function ninja_forms_display_response_message( $form_id ){
 	if ( isset ( $ninja_forms_processing ) and $ninja_forms_processing->get_form_ID() != $form_id )
 		return;
 
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 	$form_row = ninja_forms_get_form_by_id($form_id);
 	if( isset( $form_row['data']['ajax'] ) ){
 		$ajax = $form_row['data']['ajax'];

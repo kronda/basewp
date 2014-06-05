@@ -12,7 +12,7 @@ function ninja_forms_edit_field_output_li( $field_id ) {
 	
 	$field_type = $field_row['type'];
 	$field_data = $field_row['data'];
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 	
 	if ( isset( $ninja_forms_fields[$field_type]['use_li'] ) and $ninja_forms_fields[$field_type]['use_li'] ) {
 
@@ -88,7 +88,11 @@ function ninja_forms_edit_field_output_li( $field_id ) {
 			$li_label = stripslashes( $li_label );
 			$li_label = ninja_forms_esc_html_deep( $li_label );
 
-			if ( isset( $reg_field['conditional']['value']['type'] ) ) {
+			if ( 
+			isset( $reg_field ) &&
+			isset( $reg_field['conditional'] ) &&
+			isset( $reg_field['conditional']['value'] ) &&
+			isset( $reg_field['conditional']['value']['type'] ) ) {
 				$conditional_value_type = $reg_field['conditional']['value']['type'];
 			} else {
 				$conditional_value_type = '';

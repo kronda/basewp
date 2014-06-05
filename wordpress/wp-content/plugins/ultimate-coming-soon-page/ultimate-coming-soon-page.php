@@ -3,7 +3,7 @@
 Plugin Name: Ultimate Coming Soon Page
 Plugin URI: http://www.seedprod.com
 Description: Creates a Coming Soon or Launch page for your website.
-Version: 1.10.0
+Version: 1.10.1
 Author: SeedProd
 Author URI: http://www.seedprod.com
 License: GPLv2

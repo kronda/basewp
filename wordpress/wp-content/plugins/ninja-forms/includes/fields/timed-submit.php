@@ -86,7 +86,7 @@ function ninja_forms_field_timed_submit_display($field_id, $data){
 
 	<input id="ninja_forms_field_<?php echo $field_id;?>_js" name="ninja_forms_field_<?php echo $field_id;?>[no-js]" type="hidden" value="1" rel="<?php echo $field_id;?>_js" class="no-js" />
 
-	<button type="submit" name="ninja_forms_field_<?php echo $field_id;?>[timer]" class="<?php echo $field_class;?> countdown-timer" id="ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $countdown;?>" rel="<?php echo $field_id;?>" data-countdown="<?php echo $countdown;?>" data-text="<?php esc_attr_e( $submit_text );?>"><?php echo $label ;?>
+	<button type="submit" name="ninja_forms_field_<?php echo $field_id;?>[timer]" class="<?php echo $field_class;?> countdown-timer" id="ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $countdown;?>" rel="<?php echo $field_id;?>" data-countdown="<?php echo $countdown;?>" data-text="<?php esc_attr_e( $submit_text );?>"><?php echo $label ;?></button>
 
 	<?php
 
@@ -95,15 +95,15 @@ function ninja_forms_field_timed_submit_display($field_id, $data){
 function ninja_forms_field_timed_submit_pre_process( $field_id, $user_value ){
 	global $ninja_forms_processing;
 
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 	if ( isset ( $plugin_settings['timed_submit_error'] ) ) {
-		$timed_submit_error = $plugin_settings['timed_submit_error'];
+		$timed_submit_error = __( $plugin_settings['timed_submit_error'], 'ninja-forms' );
 	} else {
 		$timed_submit_error = __('If you are a human, please slow down.', 'ninja-forms');
 	}
 
 	if ( isset ( $plugin_settings['javascript_error'] ) ) {
-		$javascript_error = $plugin_settings['javascript_error'];
+		$javascript_error = __( $plugin_settings['javascript_error'], 'ninja-forms' );
 	} else {
 		$javascript_error = __( 'You need JavaScript to submit this form. Please enable it and try again.', 'ninja-forms' );
 	}

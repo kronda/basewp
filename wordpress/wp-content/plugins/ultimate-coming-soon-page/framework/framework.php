@@ -435,10 +435,11 @@ if (!class_exists('SeedProd_Framework')) {
             $fonts['_trebuchet'] = 'Trebuchet MS, sans-serif';
             $fonts['_verdana'] = 'Verdana, Geneva, sans-serif';
             if($family){
-                $font_family=$fonts[$family];
-                if(empty($font_family)){
+                if(!empty($fonts[$family])){
+                   $font_family=$fonts[$family]; 
+               }else{
                     $font_family = '"'. urldecode($family) . '",sans-serif' ;
-                }
+               }
             }else{
                 $font_family=$fonts;  
             }

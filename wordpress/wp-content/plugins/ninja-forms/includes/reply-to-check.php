@@ -2,7 +2,7 @@
 
 function ninja_forms_replyto_change() {
 
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 	if ( !isset ( $plugin_settings['fix_field_reply_to'] ) or $plugin_settings['fix_field_reply_to'] != 1 ) {
 		$fields = ninja_forms_get_all_fields();
 		foreach ($fields as $field) {

@@ -38,7 +38,7 @@ function ninja_forms_email_admin() {
 	}
 
 	if ( $email_type !== 'plain' ){
-		$message = wpautop( $message );
+		$message = apply_filters( 'ninja_forms_admin_email_message_wpautop', wpautop( $message ) );
 	}
 
 	$email_from = $email_from_name.' <'.$email_from.'>';
@@ -50,18 +50,21 @@ function ninja_forms_email_admin() {
 	if( $email_reply ) {
 		$headers[] = 'Reply-To: ' . $email_reply;
 	}
-	$headers[] = 'Content-Type: text/' . $email_type; 
+	$headers[] = 'Content-Type: text/' . $email_type;
 	$headers[] = 'charset=utf-8';
 
+	$attachments = false;
 	if ($ninja_forms_processing->get_form_setting( 'admin_attachments' ) ) {
 		$attachments = $ninja_forms_processing->get_form_setting( 'admin_attachments' );
-	} else {
-		$attachments = '';
 	}
 
 	if ( is_array( $admin_mailto ) AND !empty( $admin_mailto ) ){
-		foreach( $admin_mailto as $to ){
-			$sent = wp_mail( $to, $subject, $message, $headers, $attachments );
+		foreach( $admin_mailto as $to ) {
+			if ( $attachments ) {
+				wp_mail( $to, $subject, $message, $headers, $attachments );
+			} else {
+				wp_mail( $to, $subject, $message, $headers );
+			}
 		}
 	}
 }

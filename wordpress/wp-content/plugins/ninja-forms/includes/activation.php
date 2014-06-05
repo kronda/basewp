@@ -50,7 +50,7 @@ function ninja_forms_activation(){
 
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 
 	if( isset( $plugin_settings['version'] ) ){
 		$current_version = $plugin_settings['version'];
@@ -176,7 +176,7 @@ function ninja_forms_activation(){
 			'req_div_label' => __('Fields marked with a * are required.', 'ninja-forms'),
 			'req_field_symbol' => '*',
 			'req_error_label' => __( 'Please ensure all required fields are completed.', 'ninja-forms' ),
-			'req_field_error' => __( 'This is a required field', 'ninja-forms' ),
+			'req_field_error' => __( 'This is a required field.', 'ninja-forms' ),
 			'spam_error' => __( 'Please answer the anti-spam question correctly.', 'ninja-forms' ),
 			'honeypot_error' => __('If you are a human, please leave this field blank.', 'ninja-forms' ),
 			'timed_submit_error' => __('If you are a human, please slow down.', 'ninja-forms' ),
@@ -208,11 +208,13 @@ function ninja_forms_activation(){
 		$opt = $plugin_settings;
 	}
 
-	$preview_page = get_page_by_title( 'ninja_forms_preview_page' );
+
+	$title = ninja_forms_get_preview_page_title();
+    $preview_page = get_page_by_title( $title );
 	if( !$preview_page ) {
 		// Create preview page object
 		$preview_post = array(
-			'post_title' => 'ninja_forms_preview_page',
+			'post_title' => $title,
 			'post_content' => 'This is a preview of how this form will appear on your website',
 			'post_status' => 'draft',
 			'post_type' => 'page'
@@ -296,13 +298,13 @@ function ninja_forms_activation(){
  		ninja_forms_add_starter_form();
  	}
 
- 	
+
 }
 
 function ninja_forms_activation_old_forms_check(){
 	global $wpdb;
 	//Get the current plugin settings.
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 
 	$current_version = $plugin_settings['version'];
 
@@ -627,11 +629,21 @@ function ninja_forms_starter_form_exists() {
  * @returns int
  */
 function ninja_forms_add_starter_form() {
-	// load starter form
-	$file = file_get_contents( NINJA_FORMS_DIR . "/includes/forms/starter-form.nff" );
-	$file = apply_filters( 'ninja_forms_starter_form_contents', $file );
+    // load starter form
+    $file = file_get_contents( NINJA_FORMS_DIR . "/includes/forms/starter-form.nff" );
+    $file = apply_filters( 'ninja_forms_starter_form_contents', $file );
 
-	// create new form
-	ninja_forms_import_form( $file );
+    // create new form
+    ninja_forms_import_form( $file );
 }
 
+
+/*
+ * Get the preview page title
+ *
+ * @since 2.5.2
+ * @returns string
+ */
+function ninja_forms_get_preview_page_title() {
+    return apply_filters( 'ninja_forms_preview_page_title', 'ninja_forms_preview_page' );
+}

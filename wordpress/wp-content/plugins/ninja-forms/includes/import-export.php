@@ -19,6 +19,7 @@ function ninja_forms_import_form( $data ){
 	unset($form['field']);
 	$form = apply_filters( 'ninja_forms_before_import_form', $form );
 	$form['data'] = serialize( $form['data'] );
+	$form['id'] = NULL;
 	$wpdb->insert(NINJA_FORMS_TABLE_NAME, $form);
 	$form_id = $wpdb->insert_id;
 	$form['id'] = $form_id;

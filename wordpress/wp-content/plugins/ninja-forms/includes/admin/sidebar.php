@@ -25,7 +25,7 @@ function ninja_forms_display_sidebars($data){
 	global $ninja_forms_sidebars;
 	$current_tab = ninja_forms_get_current_tab();
 	$current_page = esc_html( $_REQUEST['page'] );
-	$opt = get_option('ninja_forms_settings');
+	$opt = nf_get_settings();
 	if( isset( $opt['sidebars'][$current_page][$current_tab] ) ){
 		$order = $opt['sidebars'][$current_page][$current_tab];
 		if ( !is_array ( $order ) ) {
@@ -33,7 +33,7 @@ function ninja_forms_display_sidebars($data){
 		}
 		$ninja_forms_sidebars[$current_page][$current_tab] = ninja_forms_sidebar_sorter( $ninja_forms_sidebars[$current_page][$current_tab], $order );
 	}
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 ?>
 <div id="menu-settings-column" class="metabox-holder">
 	<div id="side-sortables" class="meta-box-sortables ui-sortable">

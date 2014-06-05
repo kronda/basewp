@@ -10,7 +10,7 @@ function ninja_forms_screen_option_tabs(){
 	global $ninja_forms_tabs, $ninja_forms_sidebars;
 	$current_tab = ninja_forms_get_current_tab();
 	$current_page = $_REQUEST['page'];
-	$opt = get_option('ninja_forms_settings');
+	$opt = nf_get_settings();
 	if(isset($ninja_forms_tabs[$current_page]) AND is_array($ninja_forms_tabs[$current_page])){
 		?>
 		<div class="tabs-prefs">
@@ -56,7 +56,7 @@ function ninja_forms_screen_option_tabs(){
 function ninja_forms_save_screen_option_tabs(){
 	$current_tab = ninja_forms_get_current_tab();
 	$current_page = $_REQUEST['page'];
-	$opt = get_option('ninja_forms_settings');
+	$opt = nf_get_settings();
 	if(is_array($_POST['ninja-forms-tab'])){
 		foreach($_POST['ninja-forms-tab'] as $slug => $val){
 			$opt['screen_options']['tab'][$slug]['visible'] = $val;

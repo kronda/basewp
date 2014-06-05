@@ -34,7 +34,7 @@ jQuery(document).ready(function(jQuery) {
 	if( jQuery.fn.mask ){
 		jQuery(".ninja-forms-mask").each(function(){
 			var mask = jQuery(this).data('mask');
-			mask = mask.toString();			
+			mask = mask.toString();
 			jQuery(this).mask(mask);
 		});
 
@@ -71,6 +71,20 @@ jQuery(document).ready(function(jQuery) {
 
 	/* * * End Help Hover JS * * */
 
+	/* * * Begin Character/Word Limit JS * * */
+
+	jQuery(".input-limit").each(function() {
+		var input_limit = jQuery(this).data( 'input-limit' );
+		var input_limit_type = jQuery(this).data( 'input-limit-type' );
+		var input_limit_msg = jQuery(this).data( 'input-limit-msg' );
+		jQuery(this).counter( {
+		    count: 'down',
+		    goal: input_limit,
+		    type: input_limit_type,
+		    msg: input_limit_msg
+		} );
+
+	});
 
 	/* * * Begin ajaxForms JS * * */
 
@@ -114,6 +128,11 @@ jQuery(document).ready(function(jQuery) {
 		ajax = settings.ajax
 		if(ajax == 1){
 			var options = {
+            beforeSerialize: function($form, add_product_form_options) {
+            	if ( typeof tinyMCE !== 'undefined' ) {
+            		tinyMCE.triggerSave();
+            	}
+            },
 			beforeSubmit:  ninja_forms_before_submit,
 			success:       ninja_forms_response,
 			dataType: 'json'
@@ -438,7 +457,7 @@ jQuery(document).ready(function(jQuery) {
 								}
 							}
 
-							console.log(field_id + ':' + old_value);
+							//console.log(field_id + ':' + old_value);
 
 							// Check to see if our old_value exists in the calc_value JS object.
 							if ( typeof calc_settings.calc_value[field_id] !== 'undefined' && typeof calc_settings.calc_value[field_id][old_value] !== 'undefined' ) {
@@ -635,7 +654,7 @@ jQuery(document).ready(function(jQuery) {
 						if ( current_value !== calc_value ) {
 
 							if ( jQuery('#ninja_forms_field_' + field_id + '_list_type').val() != 'checkbox' ) {
-								console.log( 'set old value ' + field_id + ':' + key );
+								//console.log( 'set old value ' + field_id + ':' + key );
 								jQuery(this).data(calc_id + '-oldValue', key);
 							}
 
@@ -666,7 +685,11 @@ jQuery(document).ready(function(jQuery) {
 	});
 }); //End document.ready
 
-function ninja_forms_before_submit(formData, jqForm, options){
+function ninja_forms_before_submit( formData, jqForm, options ){
+	var form_id = jQuery( jqForm ).prop( 'id' ).replace( 'ninja_forms_form_', '' );
+	jQuery( '#nf_submit_' + form_id ).hide();
+	jQuery( '#nf_processing_' + form_id ).show();
+	jQuery( document ).data( 'submit_action', 'submit' );
 	var result = jQuery(jqForm).triggerHandler('beforeSubmit', [ formData, jqForm, options ]);
 	if ( result !== false ) {
 		result = jQuery('body').triggerHandler('beforeSubmit', [ formData, jqForm, options ]);
@@ -679,6 +702,10 @@ function ninja_forms_before_submit(formData, jqForm, options){
 
 function ninja_forms_response(responseText, statusText, xhr, jQueryform){
 	//alert(responseText);
+	var form_id = responseText.form_id;
+	jQuery( '#nf_processing_' + form_id ).hide();
+	jQuery( '#nf_submit_' + form_id ).show();
+
 	if( ninja_forms_settings.ajax_msg_format == 'inline' ){
 		var result = jQuery(jQueryform).triggerHandler('submitResponse', [ responseText ]);
 		if ( result !== false ) {
@@ -709,19 +736,20 @@ function ninja_forms_default_before_submit(formData, jqForm, options){
 	var form_id = jQuery(jqForm).prop("id").replace("ninja_forms_form_", "" );
 
 	// Show the ajax spinner and processing message.
-	jQuery("#ninja_forms_form_" + form_id + "_process_msg").show();
+	//jQuery("#ninja_forms_form_" + form_id + "_process_msg").show();
 	jQuery("#ninja_forms_form_" + form_id + "_response_msg").prop("innerHTML", "");
 	jQuery("#ninja_forms_form_" + form_id + "_response_msg").removeClass("ninja-forms-error-msg");
 	jQuery("#ninja_forms_form_" + form_id + "_response_msg").removeClass("ninja-forms-success-msg");
 	jQuery(".ninja-forms-field-error").prop("innerHTML", "");
 	jQuery(".ninja-forms-error").removeClass("ninja-forms-error");
+
 	return true;
 }
 
 function ninja_forms_default_response(response){
 	var form_id = response.form_id;
 
-	jQuery("#ninja_forms_form_" + form_id + "_process_msg").hide();
+	//jQuery("#ninja_forms_form_" + form_id + "_process_msg").hide();
 
 	ninja_forms_update_error_msgs(response)
 	ninja_forms_update_success_msg(response)
@@ -750,7 +778,10 @@ function ninja_forms_update_success_msg(response){
 			jQuery("#ninja_forms_form_" + form_id ).hide();
 		}
 		if(clear_complete == 1 ){
-			jQuery("#ninja_forms_form_" + form_id ).resetForm();
+			jQuery("#ninja_forms_form_" + form_id ).clearForm();
+			if( 'rating' in jQuery("input[type=radio].ninja-forms-star") ) {
+				jQuery("input[type=radio].ninja-forms-star").rating("drain");
+			}
 		}
 	}
 }

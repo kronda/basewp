@@ -43,7 +43,13 @@
 		</tr>
 		<tr>
 			<td><?php _e( 'MySQL Version','ninja-forms' ); ?>:</td>
-			<td><?php if ( function_exists( 'mysql_get_server_info' ) ) echo esc_html( mysql_get_server_info() ); ?></td>
+			<td>
+				<?php
+				/** @global wpdb $wpdb */
+				global $wpdb;
+				echo $wpdb->db_version();
+				?>
+			</td>
 		</tr>
 		<tr>
 			<td><?php _e( 'PHP Locale','ninja-forms' ); ?>:</td>
@@ -78,6 +84,10 @@
 			<tr>
 				<td><?php _e('PHP Post Max Size','ninja-forms' ); ?>:</td>
 				<td><?php echo size_format( ninja_forms_letters_to_numbers( ini_get('post_max_size') ) ); ?></td>
+			</tr>
+			<tr>
+				<td><?php _e('Max Input Nesting Level','ninja-forms' ); ?>:</td>
+				<td><?php echo ini_get('max_input_nesting_level'); ?></td>
 			</tr>
 			<tr>
 				<td><?php _e('PHP Time Limit','ninja-forms' ); ?>:</td>

@@ -107,7 +107,7 @@ function ninja_forms_tab_addons(){
             'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/05/user-analytics-header-300x121.png',
             'content' => __( 'The User Analytics extension will help website owners understand how hot a lead is based on extra data automatically collected about the user. …', 'ninja-forms' ),
             'link' => 'http://ninjaforms.com/downloads/user-analytics/',
-            'plugin' => 'ninja-forms-user-analytics/nf-user-analytics.php',
+            'plugin' => 'ninja-forms-user-analytics/ninja-forms-user-analytics.php',
             'docs' => '',
         ),
         array (
@@ -118,7 +118,6 @@ function ninja_forms_tab_addons(){
             'plugin' => 'ninja-forms-constant-contact/ninja-forms-constant-contact.php',
             'docs' => '',
         ),
-        /*
         array (
             'title' => __( 'Pushover', 'ninja-forms' ),
             'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/07/pushover-300x121.png',
@@ -134,8 +133,7 @@ function ninja_forms_tab_addons(){
             'link' => 'http://ninjaforms.com/downloads/freshbooks/',
             'plugin' => 'ninja-forms-freshbooks/ninja-forms-freshbooks.php',
             'docs' => '',
-        ),
-        */     
+        ), 
         array (
             'title' => __( 'AWeber', 'ninja-forms' ),
             'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/08/aweber-300x121.png',
@@ -184,7 +182,41 @@ function ninja_forms_tab_addons(){
             'plugin' => 'ninja-forms-modal/ninja-forms-modal.php',
             'docs' => 'http://ninjaforms.com/documentation/extension-docs/modal-forms/',
         ),
+        array (
+            'title' => __( 'Mad Mimi', 'ninja-forms' ),
+            'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/12/mad-mini-300x121.png',
+            'content' => __( 'Use Ninja Forms to quickly create flexible newsletter signup forms for your Mad Mimi email marketing account.', 'ninja-forms' ),
+            'link' => 'http://ninjaforms.com/downloads/mad-mimi/',
+            'plugin' => 'ninja-forms-mad-mimi/ninja-forms-mad-mimi.php',
+            'docs' => '',
+        ),
+        array (
+            'title' => __( 'Zoho CRM', 'ninja-forms' ),
+            'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/12/zoho-crm-300x121.png',
+            'content' => __( 'Easily integrate your Zoho CRM and convert more inquiries into sales.', 'ninja-forms' ),
+            'link' => 'http://ninjaforms.com/downloads/zoho-crm/',
+            'plugin' => 'ninja-forms-zoho-crm/zoho-integration.php',
+            'docs' => 'http://ninjaforms.com/documentation/extension-docs/zoho-crm/',
+        ),
+        array (
+            'title' => __( 'Table Editor', 'ninja-forms' ),
+            'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2014/01/table-editor-300x121.png',
+            'content' => __( 'Collect tabular data in your form from users with a spreadsheet-like table editor.', 'ninja-forms' ),
+            'link' => 'http://ninjaforms.com/downloads/table-editor/',
+            'plugin' => 'ninja-forms-table-editor/ninja-forms-table-editor.php',
+            'docs' => 'http://ninjaforms.com/documentation/extension-docs/table-editor/',
+        ),        
+        array (
+            'title' => __( 'Stripe', 'ninja-forms' ),
+            'image' => 'http://ninjaforms.com/wp-content/uploads/edd/2013/09/stripe-300x121.png',
+            'content' => __( 'Use Stripe to accept payments using your Ninja Forms.', 'ninja-forms' ),
+            'link' => 'http://ninjaforms.com/downloads/stripe/',
+            'plugin' => 'ninja-forms-stripe/stripe.php',
+            'docs' => 'http://ninjaforms.com/documentation/extension-docs/stripe/',
+        ),
     );
+
+    shuffle( $items );
 
     foreach ($items as $item) {
         echo '<div class="nf-extend nf-box">';

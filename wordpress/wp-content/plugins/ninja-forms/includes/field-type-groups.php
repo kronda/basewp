@@ -1,6 +1,5 @@
 <?php
 
-add_action( 'init', 'ninja_forms_register_common_field_type_groups', 8 );
 function ninja_forms_register_common_field_type_groups(){
 	$args = array(
 		'name' => 'Standard Fields',
@@ -20,4 +19,10 @@ function ninja_forms_register_common_field_type_groups(){
 		'name' => 'Post Creation',
 	);
 	ninja_forms_register_field_type_group( 'create_post', $args );
+}
+
+if ( isset ( $_REQUEST['page'] ) ) {
+	if ( strpos( $_REQUEST['page'], 'ninja-forms' ) !== false ) {
+		add_action( 'admin_init', 'ninja_forms_register_common_field_type_groups', 8 );
+	}
 }

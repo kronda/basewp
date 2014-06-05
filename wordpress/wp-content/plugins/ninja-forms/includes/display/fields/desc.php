@@ -10,7 +10,7 @@
 // }
 
 function ninja_forms_add_field_desc( $field_id, $data ){
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 
 	if ( isset( $data['desc_pos'] ) ) {
 		$desc_pos = $data['desc_pos'];
@@ -49,9 +49,9 @@ function ninja_forms_add_field_desc( $field_id, $data ){
 add_action( 'ninja_forms_display_before_field', 'ninja_forms_add_field_desc', 10, 2 );
 
 function ninja_forms_display_field_desc( $field_id, $data ){
-	$plugin_settings = get_option( 'ninja_forms_settings' );
-
-	if ( isset( $data['desc_text'] ) ) {
+	$plugin_settings = nf_get_settings();
+	
+	if ( ( isset( $data['show_desc'] ) and $data['show_desc'] == 1 ) and isset( $data['desc_text'] ) ) {
 		echo '<div class="ninja-forms-field-description">';
 			echo do_shortcode( wpautop( $data['desc_text'] ) );
 		echo '</div>';

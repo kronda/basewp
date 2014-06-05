@@ -10,7 +10,7 @@
 
 function ninja_forms_check_email_from_name() {
 
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 	// Check to see if we've already fixed the setting.
 	if ( !isset ( $plugin_settings['fix_form_email_from'] ) or $plugin_settings['fix_form_email_from'] != 1 ) {
 		// Get our forms.

@@ -15,7 +15,7 @@ add_action('init', 'ninja_forms_register_general_settings_metabox');
 
 function ninja_forms_register_general_settings_metabox(){
 
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 	if ( isset ( $plugin_settings['version'] ) ) {
 		$current_version = $plugin_settings['version'];
 	} else {
@@ -53,7 +53,7 @@ function ninja_forms_register_general_settings_metabox(){
 }
 
 function ninja_forms_save_general_settings( $data ){
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 
 	foreach( $data as $key => $val ){
 		$plugin_settings[$key] = $val;

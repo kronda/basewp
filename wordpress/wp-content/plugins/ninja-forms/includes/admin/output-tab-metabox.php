@@ -1,12 +1,12 @@
 <?php
 function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
-	$plugin_settings = get_option( 'ninja_forms_settings' );
+	$plugin_settings = nf_get_settings();
 	if($form_id != ''){
 		$form_row = ninja_forms_get_form_by_id($form_id);
 		$current_settings = $form_row['data'];
 	}else{
 		$form_id = '';
-		$current_settings = get_option("ninja_forms_settings");
+		$current_settings = nf_get_settings();
 	}
 
 	$page = $metabox['page'];
@@ -123,6 +123,16 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 			}else{
 				$size = '';
 			}
+			if(isset($s['min'])){
+				$min = $s['min'];
+			}else{
+				$min = 0;
+			}
+			if(isset($s['max'])){
+				$max = $s['max'];
+			}else{
+				$max = '';
+			}
 
 			if( is_array( $name_array ) ){
 				$tmp = '';
@@ -155,7 +165,7 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 			}
 			?>
 
-			<tr <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
+			<tr id="row_<?php echo $name;?>" <?php if( $tr_class != '' ){ ?>class="<?php echo $tr_class;?>"<?php } ?> <?php if( $style != '' ){ ?> style="<?php echo $style;?>"<?php }?>>
 				<?php if ( $s['type'] == 'desc' AND ! $label ) { ?>
 					 <td colspan="2">
 				<?php } else { ?>
@@ -171,6 +181,21 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 					?>
 
 					<input type="text" class="code widefat <?php echo $class;?>" name="<?php echo $name;?>" id="<?php echo $name;?>" value="<?php echo $value;?>" />
+					<?php if( $help_text != ''){ ?>
+					<a href="#" class="tooltip">
+					    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
+					    <span>
+					        <img class="callout" src="<?php echo NINJA_FORMS_URL;?>/images/callout.gif" />
+					        <?php echo $help_text;?>
+					    </span>
+					</a>
+					<?php }
+					break;
+				case 'number':
+					$value = ninja_forms_esc_html_deep( $value );
+					?>
+
+					<input type="number" class="code <?php echo $class;?>" name="<?php echo $name;?>" id="<?php echo $name;?>" value="<?php echo $value;?>" min="<?php echo $min; ?>" max="<?php echo $max; ?>" />
 					<?php if( $help_text != ''){ ?>
 					<a href="#" class="tooltip">
 					    <img id="" class='ninja-forms-help-text' src="<?php echo NINJA_FORMS_URL;?>/images/question-ico.gif" title="">
@@ -364,6 +389,7 @@ function ninja_forms_output_tab_metabox($form_id = '', $slug, $metabox){
 						if( $s_display_function != '' ){
 							$arguments['form_id'] = $form_id;
 							$arguments['data'] = $current_settings;
+							$arguments['field'] = $s;
 							call_user_func_array( $s_display_function, $arguments );
 						}
 					}

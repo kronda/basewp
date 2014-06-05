@@ -88,7 +88,7 @@ class NF_Extension_Updater
 	 */
 
 	function check_license( $data ) {
-		$plugin_settings = get_option( 'ninja_forms_settings' );
+		$plugin_settings = nf_get_settings();
 
 		if( isset( $plugin_settings[ $this->product_name.'_license_status' ] ) ){
 			$status = $plugin_settings[ $this->product_name.'_license_status' ];
@@ -120,7 +120,7 @@ class NF_Extension_Updater
 	 */
 
 	function activate_license( $data ) {
-		$plugin_settings = get_option( 'ninja_forms_settings' );
+		$plugin_settings = nf_get_settings();
 		// retrieve the license from the database
 		$license = $data[ $this->product_name.'_license' ];
 
@@ -156,7 +156,7 @@ class NF_Extension_Updater
 	 */
 
 	function deactivate_license() {
-		$plugin_settings = get_option( 'ninja_forms_settings' );
+		$plugin_settings = nf_get_settings();
 
 		if( isset( $plugin_settings[ $this->product_name.'_license_status' ] ) ){
 			$status = $plugin_settings[ $this->product_name.'_license_status' ];
@@ -209,7 +209,7 @@ class NF_Extension_Updater
 
 		for ($x=0; $x < count( $ninja_forms_tabs_metaboxes['ninja-forms-settings']['license_settings']['license_settings']['settings'] ); $x++) { 
 			if( $ninja_forms_tabs_metaboxes['ninja-forms-settings']['license_settings']['license_settings']['settings'][$x]['name'] == $this->product_name.'_license' ){
-				$plugin_settings = get_option( 'ninja_forms_settings' );
+				$plugin_settings = nf_get_settings();
 				if( !isset( $plugin_settings[ $this->product_name.'_license_status' ] ) OR $plugin_settings[ $this->product_name.'_license_status' ] == 'invalid' ){
 					$status = ' <img src="'.NINJA_FORMS_URL.'/images/no.png">';
 				}else{
@@ -229,7 +229,7 @@ class NF_Extension_Updater
 	 */
 
 	function auto_update() {
-		$plugin_settings = get_option( 'ninja_forms_settings' );
+		$plugin_settings = nf_get_settings();
 
 		// retrieve our license key from the DB
 		if( isset( $plugin_settings[ $this->product_name.'_license' ] ) ){

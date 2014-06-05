@@ -170,6 +170,8 @@ function ninja_forms_tab_form_list($form_id, $data){
 			$subs_link = admin_url( 'admin.php?page=ninja-forms-subs&form_id='.$form_id );
 			$export_link = esc_url( add_query_arg( array( 'export_form' => 1, 'form_id' => $form_id ) ) );
 			$duplicate_link = esc_url( add_query_arg( array( 'duplicate_form' => 1, 'form_id' => $form_id ) ) );
+			$shortcode = apply_filters ( "ninja_forms_form_list_shortcode", "[ninja_forms_display_form id=" .  $form_id . "]", $form_id );
+			$template_function = apply_filters ( "ninja_forms_form_list_template_function", "<pre>if( function_exists( 'ninja_forms_display_form' ) ){ ninja_forms_display_form( " . "$form_id" . " ); }</pre>", $form_id );
 			?>
 			<tr id="ninja_forms_form_<?php echo $form_id;?>_tr">
 				<th scope="row" class="check-column">
@@ -189,10 +191,10 @@ function ninja_forms_tab_form_list($form_id, $data){
 					</div>
 				</td>
 				<td>
-					[ninja_forms_display_form id=<?php echo $form_id;?>]
+					<?php echo $shortcode; ?>
 				</td>
 				<td>
-					<pre>if( function_exists( 'ninja_forms_display_form' ) ){ ninja_forms_display_form( <?php echo $form_id;?> ); }</pre>
+					<?php echo $template_function; ?>
 				</td>
 				<td>
 					<?php echo $date_updated;?>
