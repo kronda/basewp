@@ -4,13 +4,13 @@ Donate link: http://seedprod.com/
 Tags: wordpress coming soon, wordpress maintenance mode. wordpress under construction, maintenance mode, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, newsletter, coming soon page, landing page
 Requires at least: 3
 Tested up to: 3.9.1
-Stable tag: 1.10.1
+Stable tag: 1.10.2
 
 Creates a Coming Soon page or Launch page for your Website while it's under construction and collects emails from your visitors.
 
 == Description ==
 
-The **Ultimate Coming Soon Page** plugin allows you quick and easily set up a coming soon or launch page for your website. 
+The **Ultimate Coming Soon Page** plugin allows you quick and easily set up a coming soon or launch page for your website.
 
 Simple and flexible, the Ultimate Coming Soon Page plugin works with any WordPress theme you have installed on your site. Anyone who isn't logged in to your site will see the coming soon page, while you or any other logged-in staffers can access the site as normal and do not not see the coming soon page which allows you to work on your changes or content.
 
@@ -72,21 +72,22 @@ Simple and flexible, the Ultimate Coming Soon Page plugin works with any WordPre
 
 **Included Translations:**
 
-* Portuguese(pt_PT) by [Alexander Pereira](http://www.pontovisual.net/traducao-do-plugin-ultimate-coming-soon-page/)
-* Greek(el_EL) by [Mihalis Papanousis](http://aenaon.biz)
-* Slovenian(sl_SI) by [Jani Roskar](http://qb.si)
-* Portuguese Brazilian (pt_BR) by [Bruno Cantuatia](http://cantuaria.net.br)
-* French (fr_FR) by Gabriel Delattre
-* Polish (pl_PL) by [pl2wp-Team](http://pl2wp.prywatny.eu)
-* Russian (ru_RU) by [Oleg Vlasov](http://bestplugins.ru)
-* German (de_DE) by Frederic Ch. Reuter
-* Italian (it_IT) by Luca Barbetti
-* Slovak (sk_SK) by [Branco Radenovich/WebHostingGeeks.com](http://webhostinggeeks.com/blog/)
-* Persian(fa_IR) by [Ali Mirzaei](http://www.alimir.ir)
-* Spanish(es_CO) by [Jaime Echeverry](http://jaime.co/)
-* Turkish(tr_TR) by [Hakan Er](http://hakanertr.wordpress.com)
-* Swedish(sv_SE) by [Björn Sennbrink](https://github.com/Sennbrink/SeedProd-Ultimate-Coming-Soon-WP-Plugin-Swedish-Translation)
 * Estonian(et_ET) by Rait Huusmann
+* French (fr_FR) by Gabriel Delattre
+* German (de_DE) by Frederic Ch. Reuter
+* Greek(el_EL) by [Mihalis Papanousis](http://aenaon.biz)
+* Italian (it_IT) by Luca Barbetti
+* Persian(fa_IR) by [Ali Mirzaei](http://www.alimir.ir)
+* Polish (pl_PL) by [pl2wp-Team](http://pl2wp.prywatny.eu)
+* Portuguese Brazilian (pt_BR) by [Bruno Cantuatia](http://cantuaria.net.br)
+* Portuguese(pt_PT) by [Alexander Pereira](http://www.pontovisual.net/traducao-do-plugin-ultimate-coming-soon-page/)
+* Russian (ru_RU) by [Oleg Vlasov](http://bestplugins.ru)
+* Spanish(es_CO) by [Jaime Echeverry](http://jaime.co/)
+* Slovak (sk_SK) by [Branco Radenovich/WebHostingGeeks.com](http://webhostinggeeks.com/blog/)
+* Slovenian(sl_SI) by [Jani Roskar](http://qb.si)
+* Swedish(sv_SE) by [Björn Sennbrink](https://github.com/Sennbrink/SeedProd-Ultimate-Coming-Soon-WP-Plugin-Swedish-Translation)
+* Turkish(tr_TR) by [Hakan Er](http://hakanertr.wordpress.com)
+* Ukrainian(uk_UA) by [Michael Yunat](http://www.iphostmonitor.com)
 
 == Installation ==
 
@@ -124,7 +125,7 @@ or
 
 = I disabled the plugin but the Coming Soon page is still showing. =
 
-This occurs when you are using a caching plugin and the plugin is still serving a cached page. 
+This occurs when you are using a caching plugin and the plugin is still serving a cached page.
 
 To fix:
 
@@ -139,6 +140,9 @@ To fix:
 
 
 == Changelog ==
+= 1.10.2 =
+* Added: Added Ukrainian Translation
+
 = 1.10.1 =
 * Fixed: Undefined Indexes
 

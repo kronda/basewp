@@ -26,7 +26,7 @@ function ninja_forms_post_process(){
 
 				if( $ninja_forms_processing->get_form_setting( 'landing_page' ) != '' ){
 					ninja_forms_set_transient();
-					header( 'Location: '.$ninja_forms_processing->get_form_setting( 'landing_page' ) );
+					wp_redirect( $ninja_forms_processing->get_form_setting( 'landing_page' ) );
 					die();
 				}
 			}

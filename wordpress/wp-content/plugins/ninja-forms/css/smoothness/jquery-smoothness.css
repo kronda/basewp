@@ -402,4 +402,4 @@
 }/* Progressbar
 ----------------------------------*/
 .ui-progressbar { height:1em; text-align: left; }
-.ui-progressbar-value {  height:100%; margin: -1px; font-size: .3 em; text-align: right; background-color: #0CF); }
+.ui-progressbar-value {  height:100%; margin: -1px; font-size: .3em; text-align: right; background-color: #0CF; }

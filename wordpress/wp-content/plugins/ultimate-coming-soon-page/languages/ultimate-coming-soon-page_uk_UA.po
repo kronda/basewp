@@ -1,0 +1,259 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultimate Coming Soon Page\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-12 12:02-0500\n"
+"PO-Revision-Date: 2014-05-22 13:17+0200\n"
+"Last-Translator: Michael Yunat <Michael.Yunat@gmail.com>\n"
+"Language-Team: http://getvoip.com/\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-Basepath: ../\n"
+"X-Generator: Poedit 1.6.5\n"
+"Language: uk_UA\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: ultimate-coming-soon-page.php:38
+msgid ""
+"WordPress 3.0 and higher required. The plugin has now disabled itself. On a "
+"side note why are you running an old version :( Upgrade!"
+msgstr ""
+"Потрібно WordPress 3.0 і вище. Плагін був відключений.Примітка, чому ви "
+"використовуєте стару версію :( Обновіться!"
+
+#: framework/framework.php:289
+msgid "Media Image Library"
+msgstr "Медіатека зображення"
+
+#: framework/framework.php:403
+#, php-format
+msgid "Settings saved. <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+msgstr ""
+"Налаштування збережені. <a href='%s/?cs_preview=true'>Попередній перегляд »</"
+"a>"
+
+#: framework/framework.php:514
+msgid "Save Changes"
+msgstr "Зберегти зміни"
+
+#: inc/config.php:49
+msgid "Coming Soon Mode Active"
+msgstr "Скоро активний режим"
+
+#: inc/config.php:78
+msgid "Enter Your Email"
+msgstr "Введіть e-mail"
+
+#: inc/config.php:79
+msgid "Error :( Please try again."
+msgstr "Помилка: (Будь ласка, спробуйте ще раз."
+
+#: inc/config.php:80
+msgid "Please enter a valid email."
+msgstr "Будь ласка, введіть дійсну адресу електронної пошти."
+
+#: inc/config.php:81
+msgid "You'll be notified soon!"
+msgstr "Ви будете повідомлені скоро!"
+
+#: inc/config.php:138
+msgid "Unable to load lists, check your API Key!"
+msgstr "Неможливо завантажити списки, перевірте свій API Key!"
+
+#: inc/config.php:259
+msgid ""
+"Offer your visitors incentives such as coupons codes, free ebook, free "
+"software, etc. in exchange for their email.\n"
+" \tJust fill out either or both of the fileds below and the information will "
+"be displayed after you have succesfully captured their email.\n"
+" \t"
+msgstr ""
+"Запропонувати вашим відвідувачам стимули, такі як купони коди, безкоштовну "
+"електронну книгу, вільного програмного забезпечення тощо в обмін на їх "
+"електронну пошту. \n"
+" \tJust заповнити один або обидва з наступних fileds і інформації буде "
+"відображатися після ви успішно захопив їх  електронною поштою. \n"
+"  \t "
+
+#: inc/config.php:307
+msgid "Are you sure you want to DELETE all emails?"
+msgstr "Ви впевнені, що хочете видалити всі листи?"
+
+#: inc/config.php:351 inc/config.php:353 inc/config.php:354
+msgid "Coming Soon"
+msgstr "Скоро"
+
+#: inc/config.php:376
+msgid "Settings"
+msgstr "Налаштування"
+
+#: inc/config.php:388
+msgid "Enable"
+msgstr "Включити"
+
+#: inc/config.php:389
+#, php-format
+msgid ""
+"Enable if you want to display a coming soon page to visitors. Users who are "
+"logged in will not see the coming soon page, this means you. <a href='%s/?"
+"cs_preview=true'>Preview</a>"
+msgstr ""
+"Включити, якщо ви хочете, щоб відобразити скоро прийде сторінку для "
+"відвідувачів. Користувачі, які увійшли не побачите скоро прийде сторінку, це "
+"означає, що ви. <a href='%s/?cs_preview=true'>Попередній</a> "
+
+#: inc/config.php:390 inc/config.php:466
+msgid "Yes"
+msgstr "Так"
+
+#: inc/config.php:396
+msgid "Image"
+msgstr "Зображення"
+
+#: inc/config.php:397
+msgid "Upload a logo or teaser image (or) enter the url to your image."
+msgstr ""
+"Завантажити логотип або тизер зображення (або) введіть URL до зображення."
+
+#: inc/config.php:403
+msgid "Headline"
+msgstr "Тема"
+
+#: inc/config.php:404
+msgid ""
+"Write a headline for your coming soon page. Tip: Avoid using 'Coming Soon'."
+msgstr ""
+"Напишіть заголовок для вашого найближчим часом сторінки. Порада: Намагайтеся "
+"не використовувати 'Скоро'."
+
+#: inc/config.php:410
+msgid "Description"
+msgstr "Опис"
+
+#: inc/config.php:411
+msgid "Tell the visitor what to expect from your site."
+msgstr "Розкажи відвідувача, чого очікувати від вашого сайту."
+
+#: inc/config.php:419
+msgid "Mailing List"
+msgstr "Список розсилки"
+
+#: inc/config.php:427
+msgid "FeedBurn Address"
+msgstr "FeedBurn Адреса"
+
+#: inc/config.php:428
+msgid ""
+"Enter the part after http://feeds2.feedburner.com/ <a href='http://wordpress."
+"org/extend/plugins/ultimate-coming-soon-page/faq/'' target='_blanks'> Learn "
+"how</a> to use FeedBurner to collect emails."
+msgstr ""
+"Введіть частину після http://feeds2.feedburner.com/ <a href='http://"
+"wordpress.org/extend/plugins/ultimate-coming-soon-page/faq/'' "
+"target='_blanks'>ЖЖ  як</a> використовувати FeedBurner збирати листи ."
+
+#: inc/config.php:435
+msgid "Custom HTML"
+msgstr "Особливий HTML"
+
+#: inc/config.php:436
+msgid ""
+"Enter any custom html or javascript that you want outputted. You can also "
+"enter you Google Analytics code."
+msgstr ""
+"Введіть будь користувальницьке HTML або JavaScript, який ви хочете "
+"виводиться. Ви також можете введіть вам Google Analytics код."
+
+#: inc/config.php:444
+msgid "Style"
+msgstr "Стиль"
+
+#: inc/config.php:449
+msgid "Background Color"
+msgstr "Колір фону"
+
+#: inc/config.php:457
+msgid "Background Image"
+msgstr "Фонове зображення"
+
+#: inc/config.php:460
+msgid ""
+"Upload an optional background image (or) enter the url to your image. This "
+"will override the color above if set."
+msgstr ""
+"Завантажити додатковий фонове зображення (або) введіть URL до зображення. Ця "
+"замінить колір вище, якщо встановлений."
+
+#: inc/config.php:464
+msgid "Stretch Background Image"
+msgstr "Стретч фонове зображення"
+
+#: inc/config.php:465
+msgid "This will stretch your background image to match any browser size."
+msgstr ""
+"Це буде розтягнути фонове зображення, щоб відповідати будь-який розмір "
+"браузера."
+
+#: inc/config.php:473
+msgid "Font Color"
+msgstr "Колір шрифту"
+
+#: inc/config.php:474
+msgid "Black"
+msgstr "Чорний"
+
+#: inc/config.php:474
+msgid "Gray"
+msgstr "Грей"
+
+#: inc/config.php:474
+msgid "White"
+msgstr "Білий"
+
+#: inc/config.php:483
+msgid "Headline Font"
+msgstr "Тема шрифту"
+
+#: inc/config.php:487 inc/config.php:496
+msgid ""
+"View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html"
+"\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google "
+"Fonts</a>"
+msgstr ""
+"Перегляд <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html"
+"\">системних шрифтів</a> - Перегляд <a href=\"http://www.google.com/webfonts"
+"\">Google  Шрифти</a> "
+
+#: inc/config.php:491
+msgid "Body Font"
+msgstr "Тіло шрифту"
+
+#: inc/config.php:501
+msgid "Custom CSS"
+msgstr "Користувальницькі CSS"
+
+#: inc/config.php:506
+msgid "Need to tweaks the styles? Add your custom CSS here."
+msgstr "Потрібно хитрості стилі? Додайте користувальницький CSS тут."
+
+#: inc/config.php:511
+msgid "Powered By SeedProd"
+msgstr "Форум SeedProd"
+
+#: inc/config.php:512
+msgid "Nope - Got No Love"
+msgstr "Ні - не отримав Любов"
+
+#: inc/config.php:512
+msgid "Yep - I Love You Man"
+msgstr "Так - Люблю тебе, чувак"
+
+#: inc/config.php:513
+msgid ""
+"Can we show a <strong>cool stylish</strong> footer credit at the bottom the "
+"page."
+msgstr ""
+"Чи можемо ми показати <strong>прохолодний стильний</strong> кредит "
+"колонтитула в нижній сторінку."

@@ -12,7 +12,9 @@ function ninja_forms_edit_field_input_limit( $field_id ) {
 	$field_row = ninja_forms_get_field_by_id($field_id);
 	$field_type = $field_row['type'];
 
-	if ( $field_type != '_text' and $field_type != '_textarea' )
+	$allowed_types = apply_filters( 'nf_input_limit_types', array( '_text', '_textarea' ) );
+
+	if ( ! in_array( $field_type, $allowed_types ) )
 		return false;
 
 	$field_data = $field_row['data'];

@@ -3,7 +3,7 @@ Contributors: kstover, jameslaws, daveshine, mordauk, bftrick, helgatheviking
 Tags: form, forms, contact form, custom form, form builder, form creator, form manager, form creation, contact forms, custom forms, forms builder, forms creator, forms manager, forms creation, form administration,
 Requires at least: 3.6
 Tested up to: 3.9
-Stable tag: 2.6.4
+Stable tag: 2.6.5
 License: GPLv2 or later
 
 Forms created with a simple drag and drop interface. Contact forms, Email collection forms, or any other form you want on your WordPress site.
@@ -76,17 +76,35 @@ For help and video tutorials, please visit our website: [Ninja Forms Documentati
 
 == Upgrade Notice ==
 
-= 2.6.4 (05/15/2014) =
+= 2.6.5 (06/10/2014) =
 
 *Changes:*
 
-* Modified CSS styling slightly for default contact forms.
+* Added a filter for setting which field types are shown the input limiter.
+* Changed the header( 'Location....') php function with wp_redirect().
+
+*Bugs:*
+
+* Fixed a bug that could cause the required symbol to be added twice if the label position was set inside.
+* Wrapped the $post global in an if check to prevent errors on some WP pages.
 
 == Requested Features ==
 
 If you have any feature requests, please feel free to visit [ninjaforms.com](http://ninjaforms.com) and let us know about it.
 
 == Changelog ==
+
+= 2.6.5 (06/10/2014) =
+
+*Changes:*
+
+* Added a filter for setting which field types are shown the input limiter.
+* Changed the header( 'Location....') php function with wp_redirect().
+
+*Bugs:*
+
+* Fixed a bug that could cause the required symbol to be added twice if the label position was set inside.
+* Wrapped the $post global in an if check to prevent errors on some WP pages.
 
 = 2.6.4 (05/15/2014) =
 
