@@ -1,0 +1,29 @@
+label {display:block; min-width:220px; float:left; height:40px; font-weight: bold; color: #222; }
+.wpm_form_item {margin-bottom:20px}
+.wpm_form_item textarea {height:100px;width:350px; }
+.wpm_input{clear:both; min-height: 40px}
+.wpm_form_item small { font-style: italic; color: #222; font-size: 11px;margin-top: 5px; display: block; }
+.wpm_input input[type=text]{width:350px;}
+.wpm_form_textarea_container { float: left; }
+.wpm_form_radio_container label { min-width: 0; padding-right: 10px; height: auto; }
+#wpm-waiting { vertical-align: middle; display:none;}
+.wpm-hidden{display:none}
+
+#tabs-1 label { min-width: 300px; }
+#tabs-1 .manual {margin-left:45px}
+#tabs-1 .manual label { min-width: 255px; }
+#tabs-1 .wpm_form_radio_container label , #tabs-1 .manual .wpm_form_radio_container label { min-width: 0; }
+#tabs-1 label img { vertical-align: middle;  margin-right: 10px }
+#tabs-1 .icon-container { display: inline; position: relative; margin-right: 20px; }
+#tabs-1 .horizontal-icon { position:absolute; top: 2px; left: 0; }
+#tabs-1 .vertical-icon { position: absolute; top: 2px; left: 0; }
+
+.ui-tabs { position: relative; zoom: 1; padding:0 }
+.ui-tabs .ui-tabs-nav { border-bottom: 1px solid #CCC; font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",sans-serif}
+.ui-tabs .ui-tabs-nav li { list-style: none; display: inline-block; position: relative; margin: 0 6px -1px 0; padding: 0; white-space: nowrap;  padding: 4px 10px 6px; border-style: solid; border-color: #DFDFDF #DFDFDF white; border-width: 1px 1px 0; line-height: 24px; -webkit-border-top-left-radius: 3px; -webkit-border-top-right-radius: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; text-shadow: white 0 1px 0}
+.ui-tabs .ui-tabs-nav li a {  text-decoration: none; font-size: 20px; font-weight: normal; color: #222;}
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { border-color: #CCC #CCC white; border-width: 1px; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; color: black;}
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+.ui-tabs .ui-tabs-panel { display: block; border-width: 0; padding: 1em; background: none; }
+.ui-tabs .ui-tabs-hide { display: none !important; }
