@@ -1,8 +1,0 @@
-@import "compass/utilities/general/clearfix";
-@import "compass/css3";
-@import "_mixins.scss";
-@import "_variables.scss";
-
-* {
-  @include box-sizing('border-box');
-}
