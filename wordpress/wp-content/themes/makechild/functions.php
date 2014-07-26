@@ -61,77 +61,32 @@ function child_setup() {
    *
    * @link http://codex.wordpress.org/Function_Reference/add_theme_support#Post_Thumbnails
    */
-  add_theme_support( 'post-thumbnails' );
-  //set_post_thumbnail_size( 247, 270 );
-
-  /**
-   * This theme uses wp_nav_menu() in one location.
-   */
-  register_nav_menus( array(
-    'primary' => __( 'Primary Menu', 'child' ),
-  ) );
-
-  /**
-   * Enable support for Post Formats
-   */
-  add_theme_support( 'post-formats', array( 'aside', 'image', 'video', 'quote', 'link' ) );
-
-  /**
-   * Setup the WordPress core custom background feature.
-   */
-  add_theme_support( 'custom-background', apply_filters( 'child_custom_background_args', array(
-    'default-color' => 'ffffff',
-    'default-image' => '',
-  ) ) );
-  // Switches default core markup for search form, comment form, and comments
-  // to output valid HTML5.
-  add_theme_support( 'html5', array( 'search-form', 'comment-form', 'comment-list' ) );
+  //add_theme_support( 'post-thumbnails' );
+  //set_post_thumbnail_size( 247, 270 );  
 }
 endif; // child_setup
 add_action( 'after_setup_theme', 'child_setup' );
 
-  /**
-   * Add Google fonts to the header
-   */
-  function child_google_fonts() {
-    echo '<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans:400,700|Roboto:400|Roboto+Condensed:400,300,700" media="screen">';
-  }
-  add_action( 'wp_head', 'child_google_fonts', 5);
 
-/**
- * Register widgetized area and update sidebar with default widgets
- */
-function child_widgets_init() {
-  register_sidebar( array(
-    'name'          => __( 'Sidebar', 'child' ),
-    'id'            => 'sidebar-1',
-    'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-    'after_widget'  => '</aside>',
-    'before_title'  => '<h1 class="widget-title">',
-    'after_title'   => '</h1>',
-  ) );
-}
-add_action( 'widgets_init', 'child_widgets_init' );
 
 /**
  * Enqueue scripts and styles
  */
 function child_scripts() {
-  wp_enqueue_style( 'child-style', get_stylesheet_uri() );
-  wp_enqueue_script( 'child_modernizr', get_template_directory_uri() . '/js/modernizr.custom.js', array(), '1.0', false );
-  wp_enqueue_script( 'child-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20120206', true );
-  wp_enqueue_script( 'child_selectivizr', get_template_directory_uri() . '/js/selectivizr-min.js', array('jquery'), '1.0.2', false );
-  wp_enqueue_script( 'child-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20130115', true );
-  wp_enqueue_script( 'child', get_template_directory_uri() . '/js/child.js', array(), '1.2', 'true');
-  wp_enqueue_script( 'child-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20120206', true );
-  wp_enqueue_script( 'child-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20130115', true );
-
-  if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-    wp_enqueue_script( 'comment-reply' );
-  }
-
-  if ( is_singular() && wp_attachment_is_image() ) {
-    wp_enqueue_script( 'child-keyboard-image-navigation', get_template_directory_uri() . '/js/keyboard-image-navigation.js', array( 'jquery' ), '20120202' );
-  }
+  wp_enqueue_style( 'child-style', get_stylesheet_uri() . '/stylesheets/style.css', array('ttfmake-main-style') '1.0');
 }
 add_action( 'wp_enqueue_scripts', 'child_scripts' );
+
+function child_add_body_class( $classes ) {
+  global $post;
+  if ( isset( $post ) ) {
+      $classes[] = $post->post_type . '-' . $post->post_name;
+  }
+  if ( !is_front_page() ) {
+    $classes[] = 'not-home';
+  }
+  $classes[] = 'child-custom';
+  return $classes;
+}
+
+add_filter( 'body_class', 'child_add_body_class' );
