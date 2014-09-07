@@ -180,6 +180,32 @@ function ttfmake_css_add_rules() {
 				'color' => $color_text
 			)
 		) );
+		// These placeholder selectors have to be isolated in individual rules.
+		// See http://css-tricks.com/snippets/css/style-placeholder-text/#comment-96771
+		ttfmake_get_css()->add( array(
+			'selectors'    => array( '::-webkit-input-placeholder' ),
+			'declarations' => array(
+				'color' => $color_text
+			)
+		) );
+		ttfmake_get_css()->add( array(
+			'selectors'    => array( ':-moz-placeholder' ),
+			'declarations' => array(
+				'color' => $color_text
+			)
+		) );
+		ttfmake_get_css()->add( array(
+			'selectors'    => array( '::-moz-placeholder' ),
+			'declarations' => array(
+				'color' => $color_text
+			)
+		) );
+		ttfmake_get_css()->add( array(
+			'selectors'    => array( ':-ms-input-placeholder' ),
+			'declarations' => array(
+				'color' => $color_text
+			)
+		) );
 	}
 
 	// Detail color
@@ -454,7 +480,7 @@ function ttfmake_css_add_rules() {
 }
 endif;
 
-add_action( 'ttfmake_css', 'ttfmake_css_add_rules' );
+add_action( 'make_css', 'ttfmake_css_add_rules' );
 
 if ( ! function_exists( 'ttfmake_maybe_add_with_avatar_class' ) ) :
 /**

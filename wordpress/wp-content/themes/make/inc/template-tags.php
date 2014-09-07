@@ -154,8 +154,14 @@ function ttfmake_get_read_more( $before = '<a class="read-more" href="%s">', $af
 		);
 	}
 
-	$more = apply_filters( 'ttfmake_read_more_text', __( 'Read more', 'make' ) );
-
+	/**
+	 * Filter the value of the read more text.
+	 *
+	 * @since 1.2.3.
+	 *
+	 * @param string    $read_more_text    The read more text value.
+	 */
+	$more = apply_filters( 'make_read_more_text', __( 'Read more', 'make' ) );
 	return $before . $more . $after;
 }
 endif;
@@ -282,8 +288,10 @@ function ttfmake_maybe_show_social_links( $region ) {
 				<ul class="social-customizer social-links <?php echo $region; ?>-social-links">
 				<?php foreach ( $social_links as $key => $link ) : ?>
 					<li class="<?php echo esc_attr( $key ); ?>">
-						<a href="<?php echo esc_url( $link['url'] ); ?>" title="<?php echo esc_attr( $link['title'] ); ?>">
-							<i class="fa fa-fw <?php echo esc_attr( $link['class'] ); ?>"></i>
+						<a href="<?php echo esc_url( $link['url'] ); ?>">
+							<i class="fa fa-fw <?php echo esc_attr( $link['class'] ); ?>">
+								<span><?php echo esc_html( $link['title'] ); ?></span>
+							</i>
 						</a>
 					</li>
 				<?php endforeach; ?>
@@ -333,8 +341,18 @@ function ttfmake_pre_wp_nav_menu_social( $output, $args ) {
 
 	unset( $menu_items, $menu_item );
 
-	// Supported social icons (filterable); [url pattern] => [css class]
-	$supported_icons = apply_filters( 'ttfmake_supported_social_icons', array(
+	/**
+	 * Filter the supported social icons.
+	 *
+	 * This array uses the url pattern for the key and the CSS class (as dictated by Font Awesome) as the array value.
+	 * The URL pattern is used to match the URL used by a menu item.
+	 *
+	 * @since 1.2.3.
+	 *
+	 * @param array    $icons    The array of supported social icons.
+	 */
+	$supported_icons = apply_filters( 'make_supported_social_icons', array(
+		'angel.co'           => 'fa-angellist',
 		'app.net'            => 'fa-adn',
 		'behance.net'        => 'fa-behance',
 		'bitbucket.org'      => 'fa-bitbucket',
@@ -351,11 +369,13 @@ function ttfmake_pre_wp_nav_menu_social( $output, $args ) {
 		'plus.google.com'    => 'fa-google-plus-square',
 		'instagram.com'      => 'fa-instagram',
 		'jsfiddle.net'       => 'fa-jsfiddle',
+		'last.fm'            => 'fa-lastfm',
 		'linkedin.com'       => 'fa-linkedin',
 		'pinterest.com'      => 'fa-pinterest',
 		'qzone.qq.com'       => 'fa-qq',
 		'reddit.com'         => 'fa-reddit',
 		'renren.com'         => 'fa-renren',
+		'slideshare.net'     => 'fa-slideshare',
 		'soundcloud.com'     => 'fa-soundcloud',
 		'spotify.com'        => 'fa-spotify',
 		'stackexchange.com'  => 'fa-stack-exchange',
@@ -365,6 +385,7 @@ function ttfmake_pre_wp_nav_menu_social( $output, $args ) {
 		't.qq.com'           => 'fa-tencent-weibo',
 		'trello.com'         => 'fa-trello',
 		'tumblr.com'         => 'fa-tumblr',
+		'twitch.tv'          => 'fa-twitch',
 		'twitter.com'        => 'fa-twitter',
 		'vimeo.com'          => 'fa-vimeo-square',
 		'vine.co'            => 'fa-vine',
@@ -374,6 +395,7 @@ function ttfmake_pre_wp_nav_menu_social( $output, $args ) {
 		'wordpress.com'      => 'fa-wordpress',
 		'xing.com'           => 'fa-xing',
 		'yahoo.com'          => 'fa-yahoo',
+		'yelp.com'           => 'fa-yelp',
 		'youtube.com'        => 'fa-youtube',
 	) );
 
@@ -385,10 +407,10 @@ function ttfmake_pre_wp_nav_menu_social( $output, $args ) {
 		foreach ( $supported_icons as $pattern => $class ) {
 			if ( false !== strpos( $item->url, $pattern ) ) {
 				$item_output .= '<li class="' . esc_attr( str_replace( 'fa-', '', $class ) ) . '">';
-				$item_output .= '<a href="' . esc_url( $item->url ) . '" title="' . esc_attr( $item->title ) . '">';
-				$item_output .= '<i class="fa fa-fw ' . esc_attr( $class ) . '"></i>';
-				$item_output .= '</a></li>';
-
+				$item_output .= '<a href="' . esc_url( $item->url ) . '">';
+				$item_output .= '<i class="fa fa-fw ' . esc_attr( $class ) . '">';
+				$item_output .= '<span>' . esc_html( $item->title ) . '</span>';
+				$item_output .= '</i></a></li>';
 				break;
 			}
 		}
@@ -396,9 +418,10 @@ function ttfmake_pre_wp_nav_menu_social( $output, $args ) {
 		// No matching icons
 		if ( '' === $item_output ) {
 			$item_output .= '<li class="external-link-square">';
-			$item_output .= '<a href="' . esc_url( $item->url ) . '" title="' . esc_attr( $item->title ) . '">';
-			$item_output .= '<i class="fa fa-fw fa-external-link-square"></i>';
-			$item_output .= '</a></li>';
+			$item_output .= '<a href="' . esc_url( $item->url ) . '">';
+			$item_output .= '<i class="fa fa-fw fa-external-link-square">';
+			$item_output .= '<span>' . esc_html( $item->title ) . '</span>';
+			$item_output .= '</i></a></li>';
 		}
 
 		// Add item to list
@@ -469,7 +492,16 @@ function ttfmake_get_exif_data( $attachment_id = 0 ) {
 					_x( 'seconds', 'time', 'make' )
 				);
 			}
-			$image_meta['shutter_speed'] = apply_filters( 'ttfmake_exif_shutter_speed', $converted_ss, $image_meta['shutter_speed'] );
+
+			/**
+			 * Filter the shutter speed value.
+			 *
+			 * @since 1.2.3.
+			 *
+			 * @param string    $converted_as         The shutter speed value.
+			 * @param float     $raw_shutter_speed    The raw shutter speed value.
+			 */
+			$image_meta['shutter_speed'] = apply_filters( 'make_exif_shutter_speed', $converted_ss, $image_meta['shutter_speed'] );
 		}
 
 		// Convert the aperture to an F-stop
@@ -479,7 +511,16 @@ function ttfmake_get_exif_data( $attachment_id = 0 ) {
 				_x( 'f/', 'camera f-stop', 'make' ),
 				number_format_i18n( pow( sqrt( 2 ), absint( $image_meta['aperture'] ) ) )
 			);
-			$image_meta['aperture'] = apply_filters( 'ttfmake_exif_aperture', $f_stop, $image_meta['aperture'] );
+
+			/**
+			 * Filter the aperture value.
+			 *
+			 * @since 1.2.3.
+			 *
+			 * @param string    $f_stop          The aperture value.
+			 * @param int       $raw_aperture    The raw aperture value.
+			 */
+			$image_meta['aperture'] = apply_filters( 'make_exif_aperture', $f_stop, $image_meta['aperture'] );
 		}
 
 		$output .= "<ul class=\"entry-exif-list\">\n";
@@ -517,13 +558,21 @@ function ttfmake_get_exif_data( $attachment_id = 0 ) {
 
 		// ISO
 		if ( ! empty( $image_meta['iso'] ) ) {
-			$output .= '<li><span>' . _x( 'ISO:', 'camera setting', 'oxford' ) . '</span> ';
+			$output .= '<li><span>' . _x( 'ISO:', 'camera setting', 'make' ) . '</span> ';
 			$output .= absint( $image_meta['iso'] ) . "</li>\n";
 		}
 
 		$output .= "</ul>\n";
 	}
 
-	return $output;
+	/**
+	 * Alter the exif data output.
+	 *
+	 * @since 1.2.3.
+	 *
+	 * @param string    $output           The EXIF data prepared as HTML.
+	 * @param int       $attachment_id    The image being generated.
+	 */
+	return apply_filters( 'make_get_exif_data', $output, $attachment_id );
 }
 endif;

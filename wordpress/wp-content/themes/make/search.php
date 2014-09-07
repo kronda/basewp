@@ -4,6 +4,7 @@
  */
 
 get_header();
+global $post;
 ?>
 
 <?php ttfmake_maybe_show_sidebar( 'left' ); ?>
@@ -16,7 +17,18 @@ get_header();
 	</header>
 
 	<?php while ( have_posts() ) : the_post(); ?>
-		<?php get_template_part( 'partials/content', 'search' ); ?>
+		<?php
+		/**
+		 * Allow for changing the template partial.
+		 *
+		 * @since 1.2.3.
+		 *
+		 * @param string     $type    The default template type to use.
+		 * @param WP_Post    $post    The post object for the current post.
+		 */
+		$template_type =  apply_filters( 'make_template_content_search', 'search', $post );
+		get_template_part( 'partials/content', $template_type );
+		?>
 	<?php endwhile; ?>
 
 	<?php get_template_part( 'partials/nav', 'paging' ); ?>

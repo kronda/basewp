@@ -6,25 +6,12 @@
 /**
  * The current version of the theme.
  */
-define( 'TTFMAKE_VERSION', '1.1.1' );
-
-if ( ! function_exists( 'ttfmake_is_wpcom' ) ) :
-/**
- * Whether or not the current environment is WordPress.com.
- *
- * @since  1.0.0.
- *
- * @return bool    Whether or not the current environment is WordPress.com.
- */
-function ttfmake_is_wpcom() {
-	return ( defined( 'IS_WPCOM' ) && true === IS_WPCOM );
-}
-endif;
+define( 'TTFMAKE_VERSION', '1.3.0' );
 
 /**
  * The suffix to use for scripts.
  */
-if ( ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG ) || ttfmake_is_wpcom() ) {
+if ( ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG ) ) {
 	define( 'TTFMAKE_SUFFIX', '' );
 } else {
 	define( 'TTFMAKE_SUFFIX', '.min' );
@@ -155,8 +142,9 @@ function ttfmake_setup() {
 
 	// Menu locations
 	register_nav_menus( array(
-		'primary' => __( 'Primary Menu', 'make' ),
-		'social'  => __( 'Social Profile Links', 'make' )
+		'primary'    => __( 'Primary Menu', 'make' ),
+		'social'     => __( 'Social Profile Links', 'make' ),
+		'header-bar' => __( 'Header Bar Menu', 'make' ),
 	) );
 
 	// Editor styles
@@ -291,9 +279,9 @@ function ttfmake_scripts() {
 	// Font Awesome
 	wp_enqueue_style(
 		'ttfmake-font-awesome',
-		get_template_directory_uri() . '/css/font-awesome.css',
+		get_template_directory_uri() . '/css/font-awesome' . TTFMAKE_SUFFIX . '.css',
 		$style_dependencies,
-		'4.1.0'
+		'4.2.0'
 	);
 	$style_dependencies[] = 'ttfmake-font-awesome';
 
@@ -344,8 +332,14 @@ function ttfmake_scripts() {
 		"iframe[src*='//www.hulu.com']",
 	);
 
-	// Filter selectors
-	$selector_array = apply_filters( 'ttfmake_fitvids_custom_selectors', $selector_array );
+	/**
+	 * Allow for changing of the selectors that are used to apply FitVids.
+	 *
+	 * @since 1.2.3.
+	 *
+	 * @param array    $selector_array    The selectors used by FitVids.
+	 */
+	$selector_array = apply_filters( 'make_fitvids_custom_selectors', $selector_array );
 
 	// Compile selectors
 	$fitvids_custom_selectors = array(
@@ -448,6 +442,20 @@ endif;
 
 add_action( 'wp_head', 'ttfmake_head_late', 99 );
 
+if ( ! function_exists( 'ttfmake_is_preview' ) ) :
+/**
+ * Check if the current view is rendering in the Customizer preview pane.
+ *
+ * @since 1.2.0.
+ *
+ * @return bool    True if in the preview pane.
+ */
+function ttfmake_is_preview() {
+	global $wp_customize;
+	return ( isset( $wp_customize ) && $wp_customize->is_preview() );
+}
+endif;
+
 /**
  * Determine if the companion plugin is installed.
  *
@@ -456,7 +464,14 @@ add_action( 'wp_head', 'ttfmake_head_late', 99 );
  * @return bool    Whether or not the companion plugin is installed.
  */
 function ttfmake_is_plus() {
-	return apply_filters( 'ttfmake_is_plus', class_exists( 'TTFMP_App' ) );
+	/**
+	 * Allow for toggling of the Make Plus status.
+	 *
+	 * @since 1.2.3.
+	 *
+	 * @param bool    $is_plus    Whether or not Make Plus is installed.
+	 */
+	return apply_filters( 'make_is_plus', class_exists( 'TTFMP_App' ) );
 }
 
 /**
