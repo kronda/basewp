@@ -1,29 +1,23 @@
-/*
-Theme Name: Make Child (Make)
-Theme URI: https://thethemefoundry.com/wordpress-themes/make/
-Description: Child theme based on Make
-Author: Kronda Adair
-Author URI: http://karveldigital.com
-Text Domain: Make
-Template: make
-Version: 1.1.1
+/**
+ * Theme Name:  Make Child(Make child theme)
+ * Theme URI:   https://thethemefoundry.com/wordpress-themes/make/
+ * Author:      The Theme Foundry
+ * Author URI:  https://thethemefoundry.com
+ * Description: Custom theme based on the Make theme by Theme Foundry.  
+ * Version:     1.0.0
+ * License:     GNU General Public License v2 or later
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * Template: make
+ * Text Domain: make
+ * Domain Path: /languages/
 
-This theme, like WordPress, is licensed under the GPL.
-Use it to make something cool, have fun, and share what you've learned with others.
-*/
-
-/*
-So SASSy
-
-You can find the style.scss in the /sass/ directory, and the generated file in /stylesheets/.
-
-*/
+ *
+ * Make WordPress Theme, Copyright 2014 The Theme Foundry
+ * Make is distributed under the terms of the GNU GPL
+ */
 
 /* Import parent theme stylesheet */
-@import url("../make/style.css");
-
-/* Import of SASS generated stylesheet */
-@import url('stylesheets/style.css');
+@import url( '../make/style.css' );
 
 /* Your customizations go here */
 
