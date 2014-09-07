@@ -36,6 +36,6 @@ add_filter( 'body_class', 'child_add_body_class' );
  * Enqueue scripts and styles
  */
 function child_scripts() {
-  wp_enqueue_style( 'child-style', get_stylesheet_uri() . '/stylesheets/style.css', array('ttfmake-main-style'), '1.0');
+  wp_enqueue_style( 'child-style', get_bloginfo('stylesheet_directory') . '/stylesheets/style.css', array('ttfmake-main-style'), '1.0');
 }
 add_action( 'wp_enqueue_scripts', 'child_scripts' );
