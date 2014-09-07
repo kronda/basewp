@@ -1,0 +1,212 @@
+/*---------------------------------------------------------
+ Post List common (post-list.scss)
+-------------------------------------------------------- */
+.ttfmp-post-list {
+	.ttfmp-post-list-item-date {
+		display: block;
+	}
+	.ttfmp-post-list-item {
+		float: left;
+		width: 100%;
+		margin-right: 0; //reset
+	}
+	&.thumbnail-left.has-excerpt, &.thumbnail-right.has-excerpt {
+		.ttfmp-post-list-item-header {
+			zoom: 1;
+			&:before,
+			&:after {
+				display: table;
+				content: "";
+			}
+			&:after {
+				clear: both;
+			}
+		}
+	}
+}
+/*---------------------------------------------------------
+ Post List widget (post-list.scss)
+-------------------------------------------------------- */
+.ttfmp-widget-post-list {
+	zoom: 1;
+	&:before,
+	&:after {
+		display: table;
+		content: "";
+	}
+	&:after {
+		clear: both;
+	}
+	.ttfmp-post-list-item {
+		margin-bottom: 22px;
+		&:last-of-type {
+			margin-bottom: 0; //reset
+		}
+	}
+	.ttfmp-post-list-item-title {
+		display: block;
+		a {
+			word-break: break-all;
+			word-break: break-word;
+			-webkit-hyphens: auto;
+			-moz-hyphens: auto;
+			hyphens: auto;
+		}
+	}
+	.ttfmp-post-list-item-date {
+		font-style: italic;
+		a {
+			color: #171717; //text
+			font-weight: normal; //reset
+		}
+	}
+	.ttfmp-post-list-item-content p {
+		margin-bottom: 11px;
+	}
+	.ttfmp-post-list-item-author {
+		font-style: italic;
+	}
+	.ttfmp-post-list-item-comment-link {
+		display: block;
+		font-weight: normal; //reset
+		color: #b9bcbf; // detail
+		&:hover {
+			color: #3070d1; //primary
+		}
+	}
+	.has-excerpt {
+		.ttfmp-post-list-item-date {
+			margin-bottom: 11px;
+		}
+		.ttfmp-post-list-item-comment-link {
+			margin-top: 11px;
+		}
+	}
+	.ttfmp-post-list-item-thumb {
+		&.position-left {
+			float: left;
+			width: 100px;
+			margin-right: 11px;
+		}
+		&.position-right {
+			float: right;
+			width: 100px;
+			margin-left: 11px;
+		}
+	}
+}
+/*---------------------------------------------------------
+ Post List section (post-list.scss)
+-------------------------------------------------------- */
+.builder-section-postlist {
+	.ttfmp-post-list-item {
+		margin-bottom: 44px;
+	}
+	.ttfmp-post-list-item-date {
+		font-size: 12px;
+		font-size: 1.2rem;
+		font-weight: bold;
+		letter-spacing: 1px;
+		letter-spacing: .1rem;
+		text-transform: uppercase;
+		a {
+			color: #171717; // text
+		}
+	}
+	.ttfmp-post-list-item-author {
+		display: block;
+		font-size: 15px;
+		font-size: 1.5rem;
+	}
+	.ttfmp-post-list-item-footer {
+		font-size: 14px;
+		font-size: 1.4rem;
+		color: #b9bcbf; //detail
+		.fa {
+			position: relative;
+			top: 4px;
+			top: .4rem;
+			float: left;
+			padding-right: 8px;
+			padding-right: .8rem;
+		}
+		li a {
+			display: inline-block;
+		}
+		a {
+			color: #b9bcbf; // detail
+			font-weight: normal; //reset
+			&:hover {
+				color: #3070d1; //primary
+			}
+		}
+	}
+	.ttfmp-post-list-item-comment-link {
+		display: block;
+	}
+	.has-excerpt {
+		.ttfmp-post-list-item-date {
+			margin-bottom: 22px;
+		}
+		.ttfmp-post-list-item-author {
+			margin-bottom: 11px;
+		}
+		.ttfmp-post-list-item-comment-link {
+			margin-top: 11px;
+		}
+	}
+	.ttfmp-post-list-item-thumb {
+		&.position-left {
+			float: left;
+			width: 48.33333%;
+			margin-right: 3.33333%;
+		}
+		&.position-right {
+			float: right;
+			width: 48.33333%;
+			left: 3.33333%;
+		}
+	}
+	@media screen and (min-width: 800px) {
+		.ttfmp-post-list.columns-1 {
+			.ttfmp-post-list-item-header {
+				&:before,
+				&:after {
+					display: block;
+					content: none;
+				}
+				&:after {
+					clear: none;
+				}
+			}
+		}
+	}
+}
+/*---------------------------------------------------------
+ Post List grid (post-list.scss)
+-------------------------------------------------------- */
+@media screen and (min-width: 800px) {
+	.ttfmp-post-list {
+		&.columns-2 .ttfmp-post-list-item {
+			width: 48.33333%;
+			margin-right: 3.33333%;
+			&.last {
+				margin-right: 0; //reset
+			}
+		}
+		&.columns-3 .ttfmp-post-list-item {
+			width: 31.11111%;
+			margin-right: 3.33333%;
+			&.last {
+				margin-right: 0; //reset
+			}
+		}
+		&.columns-4 .ttfmp-post-list-item {
+			width: 22.5%;
+			margin-right: 3.33333%;
+			&.last {
+				margin-right: 0; //reset
+			}
+		}
+	}
+}

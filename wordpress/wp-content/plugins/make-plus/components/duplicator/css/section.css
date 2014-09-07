@@ -1,0 +1,18 @@
+a.ttfmake-section-remove.ttfmake-builder-section-footer-link {
+	color: #0074a2;
+}
+a.ttfmake-section-remove.ttfmake-builder-section-footer-link:hover {
+	color: #2ea2cc;
+}
+.ttfmake-builder-section-footer-link {
+	text-decoration: none;
+}
+.ttfmake-section .spinner {
+	float: none;
+	display: inline-block;
+	margin-top: -2px;
+}
+.ttfmp-duplicator-error {
+	font-style: italic;
+	color: #d54e21;
+}

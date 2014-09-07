@@ -1,0 +1,20 @@
+.ttfmp-import-message-hide {
+	display: none;
+}
+.ttfmp-import-message-left {
+	float: left;
+}
+.ttfmp-import-message-left strong {
+	font-size: 14px;
+}
+.ttfmp-import-message-right {
+	float: right;
+}
+.ttfmp-import-message-right select {
+	position: relative;
+	top: -1px;
+	margin-right: 8px;
+}
+.ttfmake-default-active .ttfmp-import-message {
+	display: none;
+}

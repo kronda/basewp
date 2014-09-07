@@ -1,0 +1,13 @@
+.ttfmp-perpage-options li {
+	padding: 0 0 2px;
+}
+.ttfmp-perpage-options li.ttfmp-perpage-header {
+	font-weight: bold;
+	padding: 14px 0 6px;
+}
+.ttfmp-perpage-options li.ttfmp-perpage-header.first {
+	padding-top: 0px;
+}
+
+.ttfmake-builder-active .default-only { display: none; }
+.ttfmake-default-active .builder-only { display: none; }

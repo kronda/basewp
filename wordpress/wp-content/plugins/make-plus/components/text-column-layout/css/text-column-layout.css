@@ -1,0 +1,27 @@
+.ttfmake-select {
+	float: right;
+	margin-left: 12px;
+}
+.ttfmake-text-column-layout-select-hidden {
+	display: none;
+}
+.ttfmake-text-column .ttfmake-media-button-text {
+	display: none;
+}
+@media screen and ( min-width: 1160px ) {
+	.ttfmake-section-body .ttfmake-column-width-two-thirds {
+		width: 66.3333%;
+	}
+	.ttfmake-section-body .ttfmake-column-width-one-third {
+		width: 33.3333%;
+	}
+	.ttfmake-section-body .ttfmake-column-width-three-fourths {
+		width: 75%;
+	}
+	.ttfmake-section-body .ttfmake-column-width-one-fourth {
+		width: 25%;
+	}
+	.ttfmake-section-body .ttfmake-column-width-one-half {
+		width: 50%;
+	}
+}

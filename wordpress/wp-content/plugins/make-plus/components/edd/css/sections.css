@@ -1,0 +1,18 @@
+.ttfmake-edd-downloads-options-container {
+	float: left;
+	margin-right: 40px;
+}
+#ttfmake-builder .button.edd-thickbox {
+	width: 28px;
+	overflow: hidden;
+}
+#ttfmake-builder .button.edd-thickbox span {
+	position: relative;
+	top: 2px;
+}
+@media screen and ( max-width: 782px ) {
+	#ttfmake-builder .button.edd-thickbox span {
+		top: 5px !important;
+		left: 7px;
+	}
+}
