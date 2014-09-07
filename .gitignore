@@ -14,6 +14,7 @@ docs/
 *~
 .DS_Store
 /.gitattributes
+*compass_app_log.txt*
 *.sass-cache/
 *.sublime*
 *compass_app_log.txt*
