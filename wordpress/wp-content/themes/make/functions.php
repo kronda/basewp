@@ -6,7 +6,7 @@
 /**
  * The current version of the theme.
  */
-define( 'TTFMAKE_VERSION', '1.3.0' );
+define( 'TTFMAKE_VERSION', '1.4.5' );
 
 /**
  * The suffix to use for scripts.
@@ -58,6 +58,9 @@ add_action( 'template_redirect', 'ttfmake_content_width' );
 /**
  * Global includes.
  */
+// Compatibility
+require get_template_directory() . '/inc/compatibility.php';
+
 // Custom functions that act independently of the theme templates
 require get_template_directory() . '/inc/extras.php';
 
@@ -70,16 +73,13 @@ require get_template_directory() . '/inc/customizer/bootstrap.php';
 // Gallery slider
 require get_template_directory() . '/inc/gallery-slider/gallery-slider.php';
 
+// Formatting
+require get_template_directory() . '/inc/formatting/formatting.php';
+
 /**
  * Admin includes.
  */
 if ( is_admin() ) {
-	// TinyMCE customizations
-	require get_template_directory() . '/inc/tinymce.php';
-
-	// TinyMCE buttons
-	require get_template_directory() . '/inc/tinymce-buttons/tinymce-buttons.php';
-
 	// Page customizations
 	require get_template_directory() . '/inc/edit-page.php';
 
@@ -508,6 +508,16 @@ function ttfmake_plus_styles() {
 		text-transform: uppercase;
 		-webkit-font-smoothing: subpixel-antialiased !important;
 	}
+	.ttfmake-plus-info p {
+		margin-top: 0;
+		margin-left: 10px;
+	}
+	.ttfmake-section-text .ttfmake-titlediv {
+		padding-right: 45px;
+	}
+	.edit-text-column-link {
+		right: 0;
+	}
 	a.ttfmake-customize-plus {
 		margin-left: 0;
 	}
@@ -523,8 +533,9 @@ function ttfmake_plus_styles() {
 	}
 	.make-plus-products .ttfmake-menu-list-item-link-icon-wrapper:before {
 		position: relative;
-		top: 38px;
-		left: 17px;
+		top: 32px;
+		margin-left: -2px;
+		text-align: center;
 	}
 	.make-plus-products .section-type-description {
 		color: #777777;
@@ -545,3 +556,16 @@ function ttfmake_plus_styles() {
 
 add_action( 'admin_head', 'ttfmake_plus_styles', 20 );
 add_action( 'customize_controls_print_styles', 'ttfmake_plus_styles', 20 );
+
+/**
+ * Generate a link to the Make info page.
+ *
+ * @since  1.0.6.
+ *
+ * @param  string    $deprecated    This parameter is no longer used.
+ * @return string                   The link.
+ */
+function ttfmake_get_plus_link( $deprecated ) {
+	$url = 'https://thethemefoundry.com/make-buy/';
+	return esc_url( $url );
+}

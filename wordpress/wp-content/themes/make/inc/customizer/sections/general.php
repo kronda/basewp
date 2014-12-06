@@ -180,7 +180,7 @@ function ttfmake_customizer_define_general_sections( $sections ) {
 					'description'  => sprintf(
 						__( 'If you would like to add a social profile that is not listed above, or change the order of the icons, create a custom menu %s.', 'make' ),
 						sprintf(
-							'<a href="' . esc_url( 'https://thethemefoundry.com/tutorials/make/#social-profiles-and-rss' ) . '">%s</a>',
+							'<a href="' . esc_url( 'https://thethemefoundry.com/docs/make-docs/tutorials/set-social-profile-links-using-custom-menu/' ) . '">%s</a>',
 							__( 'as described here', 'make' )
 						)
 					),

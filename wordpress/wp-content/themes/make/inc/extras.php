@@ -111,6 +111,46 @@ endif;
 
 add_action( 'wp', 'ttfmake_setup_author' );
 
+if ( ! function_exists( 'ttfmake_sanitize_text' ) ) :
+/**
+ * Allow only certain tags and attributes in a string.
+ *
+ * @since  1.0.0.
+ *
+ * @param  string    $string    The unsanitized string.
+ * @return string               The sanitized string.
+ */
+function ttfmake_sanitize_text( $string ) {
+	global $allowedtags;
+	$expandedtags = $allowedtags;
+
+	// span
+	$expandedtags['span'] = array();
+
+	// Enable id, class, and style attributes for each tag
+	foreach ( $expandedtags as $tag => $attributes ) {
+		$expandedtags[$tag]['id']    = true;
+		$expandedtags[$tag]['class'] = true;
+		$expandedtags[$tag]['style'] = true;
+	}
+
+	// br (doesn't need attributes)
+	$expandedtags['br'] = array();
+
+	/**
+	 * Customize the tags and attributes that are allows during text sanitization.
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param array     $expandedtags    The list of allowed tags and attributes.
+	 * @param string    $string          The text string being sanitized.
+	 */
+	apply_filters( 'make_sanitize_text_allowed_tags', $expandedtags, $string );
+
+	return wp_kses( $string, $expandedtags );
+}
+endif;
+
 if ( ! function_exists( 'sanitize_hex_color' ) ) :
 /**
  * Sanitizes a hex color.
@@ -382,56 +422,6 @@ function ttfmake_sidebar_list_enabled( $location ) {
 }
 endif;
 
-/**
- * Generate a link to the Make info page.
- *
- * @since  1.0.6.
- *
- * @param  string    $component    The component where the link is located.
- * @return string                  The link.
- */
-function ttfmake_get_plus_link( $component ) {
-	$url = 'https://thethemefoundry.com/wordpress-themes/make/#make-table';
-	return esc_url( $url );
-}
-
-/**
- * Add notice if Make Plus is installed as a theme.
- *
- * @since  1.1.2.
- *
- * @param  string         $source           File source location.
- * @param  string         $remote_source    Remove file source location.
- * @param  WP_Upgrader    $upgrader         WP_Upgrader instance.
- * @return WP_Error                         Error or source on success.
- */
-function ttfmake_check_package( $source, $remote_source, $upgrader ) {
-	global $wp_filesystem;
-
-	if ( ! isset( $_GET['action'] ) || 'upload-theme' !== $_GET['action'] ) {
-		return $source;
-	}
-
-	if ( is_wp_error( $source ) ) {
-		return $source;
-	}
-
-	// Check the folder contains a valid theme
-	$working_directory = str_replace( $wp_filesystem->wp_content_dir(), trailingslashit( WP_CONTENT_DIR ), $source );
-	if ( ! is_dir( $working_directory ) ) { // Sanity check, if the above fails, lets not prevent installation.
-		return $source;
-	}
-
-	// A proper archive should have a style.css file in the single subdirectory
-	if ( ! file_exists( $working_directory . 'style.css' ) && strpos( $source, 'make-plus-' ) >= 0 ) {
-		return new WP_Error( 'incompatible_archive_theme_no_style', $upgrader->strings[ 'incompatible_archive' ], __( 'The uploaded package appears to be a plugin. PLEASE INSTALL AS A PLUGIN.', 'make' ) );
-	}
-
-	return $source;
-}
-
-add_filter( 'upgrader_source_selection', 'ttfmake_check_package', 9, 3 );
-
 if ( ! function_exists( 'ttfmake_get_section_data' ) ) :
 /**
  * Retrieve all of the data for the sections.
@@ -575,127 +565,82 @@ function ttfmake_is_builder_page( $post_id = 0 ) {
 }
 endif;
 
-if ( ! function_exists( 'ttfmake_filter_backcompat' ) ) :
+if ( ! function_exists( 'ttfmake_builder_css' ) ) :
 /**
- * Adds back compat for filters with changed names.
+ * Trigger an action hook for each section on a Builder page for the purpose
+ * of adding section-specific CSS rules to the document head.
  *
- * In Make 1.2.3, filters were all changed from "ttfmake_" to "make_". In order to maintain back compatibility, the old
- * version of the filter needs to still be called. This function collects all of those changed filters and mirrors the
- * new filter so that the old filter name will still work.
- *
- * @since  1.2.3.
+ * @since 1.4.5
  *
  * @return void
  */
-function ttfmake_filter_backcompat() {
-	// All filters that need a name change
-	$old_filters = array(
-		'template_content_archive'     => 2,
-		'fitvids_custom_selectors'     => 1,
-		'template_content_page'        => 2,
-		'template_content_search'      => 2,
-		'footer_1'                     => 1,
-		'footer_2'                     => 1,
-		'footer_3'                     => 1,
-		'footer_4'                     => 1,
-		'sidebar_left'                 => 1,
-		'sidebar_right'                => 1,
-		'template_content_single'      => 2,
-		'get_view'                     => 2,
-		'has_sidebar'                  => 3,
-		'read_more_text'               => 1,
-		'supported_social_icons'       => 1,
-		'exif_shutter_speed'           => 2,
-		'exif_aperture'                => 2,
-		'style_formats'                => 1,
-		'prepare_data_section'         => 3,
-		'insert_post_data_sections'    => 1,
-		'section_classes'              => 2,
-		'the_builder_content'          => 1,
-		'builder_section_footer_links' => 1,
-		'section_defaults'             => 1,
-		'section_choices'              => 3,
-		'gallery_class'                => 2,
-		'builder_banner_class'         => 2,
-		'customizer_sections'          => 1,
-		'setting_defaults'             => 1,
-		'font_relative_size'           => 1,
-		'font_stack'                   => 2,
-		'font_variants'                => 3,
-		'all_fonts'                    => 1,
-		'get_google_fonts'             => 1,
-		'custom_logo_information'      => 1,
-		'custom_logo_max_width'        => 1,
-		'setting_choices'              => 2,
-		'social_links'                 => 1,
-		'show_footer_credit'           => 1,
-		'is_plus'                      => 1,
-	);
+function ttfmake_builder_css() {
+	if ( ttfmake_is_builder_page() ) {
+		$sections = ttfmake_get_section_data( get_the_ID() );
 
-	foreach ( $old_filters as $filter => $args ) {
-		add_filter( 'make_' . $filter, 'ttfmake_backcompat_filter', 10, $args );
+		if ( ! empty( $sections ) ) {
+			foreach ( $sections as $id => $data ) {
+				if ( isset( $data['section-type'] ) ) {
+					/**
+					 * Allow section-specific CSS rules to be added to the document head of a Builder page.
+					 *
+					 * @since 1.4.5
+					 *
+					 * @param array    $data    The Builder section's data.
+					 * @param int      $id      The ID of the Builder section.
+					 */
+					do_action( 'make_builder_' . $data['section-type'] . '_css', $data, $id );
+				}
+			}
+		}
 	}
 }
 endif;
 
-add_action( 'after_setup_theme', 'ttfmake_filter_backcompat', 1 );
+add_action( 'make_css', 'ttfmake_builder_css' );
 
-if ( ! function_exists( 'ttfmake_backcompat_filter' ) ) :
+if ( ! function_exists( 'ttfmake_builder_banner_css' ) ) :
 /**
- * Prepends "ttf" to a filter name and calls that new filter variant.
+ * Add frontend CSS rules for Banner sections based on certain section options.
  *
- * @since  1.2.3.
+ * @since 1.4.5
  *
- * @return mixed    The result of the filter.
- */
-function ttfmake_backcompat_filter() {
-	$filter = 'ttf' . current_filter();
-	return apply_filters_ref_array( $filter, func_get_args() );
-}
-endif;
-
-if ( ! function_exists( 'ttfmake_action_backcompat' ) ) :
-/**
- * Adds back compat for actions with changed names.
- *
- * In Make 1.2.3, actions were all changed from "ttfmake_" to "make_". In order to maintain back compatibility, the old
- * version of the action needs to still be called. This function collects all of those changed actions and mirrors the
- * new filter so that the old filter name will still work.
- *
- * @since  1.2.3.
+ * @param array    $data    The banner's section data.
+ * @param int      $id      The banner's section ID.
  *
  * @return void
  */
-function ttfmake_action_backcompat() {
-	// All filters that need a name change
-	$old_actions = array(
-		'section_text_before_columns_select' => 1,
-		'section_text_after_columns_select'  => 1,
-		'section_text_after_title'           => 1,
-		'section_text_before_column'         => 2,
-		'section_text_after_column'          => 2,
-		'section_text_after_columns'         => 1,
-		'css'                                => 1,
-	);
+function ttfmake_builder_banner_css( $data, $id ) {
+	$responsive = ( isset( $data['responsive'] ) ) ? $data['responsive'] : 'balanced';
+	$slider_height = absint( $data['height'] );
+	if ( 0 === $slider_height ) {
+		$slider_height = 600;
+	}
+	$slider_ratio = ( $slider_height / 960 ) * 100;
 
-	foreach ( $old_actions as $action => $args ) {
-		add_action( 'make_' . $action, 'ttfmake_backcompat_action', 10, $args );
+	if ( 'aspect' === $responsive ) {
+		ttfmake_get_css()->add( array(
+			'selectors'    => array( '#builder-section-' . esc_attr( $id ) . ' .builder-banner-slide' ),
+			'declarations' => array(
+				'padding-bottom' => $slider_ratio . '%'
+			),
+		) );
+	} else {
+		ttfmake_get_css()->add( array(
+			'selectors'    => array( '#builder-section-' . esc_attr( $id ) . ' .builder-banner-slide' ),
+			'declarations' => array(
+				'padding-bottom' => $slider_height . 'px'
+			),
+		) );
+		ttfmake_get_css()->add( array(
+			'selectors'    => array( '#builder-section-' . esc_attr( $id ) . ' .builder-banner-slide' ),
+			'declarations' => array(
+				'padding-bottom' => $slider_ratio . '%'
+			),
+			'media'        => 'screen and (min-width: 600px) and (max-width: 960px)'
+		) );
 	}
 }
 endif;
 
-add_action( 'after_setup_theme', 'ttfmake_action_backcompat', 1 );
-
-if ( ! function_exists( 'ttfmake_backcompat_action' ) ) :
-/**
- * Prepends "ttf" to a filter name and calls that new filter variant.
- *
- * @since  1.2.3.
- *
- * @return mixed    The result of the filter.
- */
-function ttfmake_backcompat_action() {
-	$action = 'ttf' . current_action();
-	do_action_ref_array( $action, func_get_args() );
-}
-endif;
+add_action( 'make_builder_banner_css', 'ttfmake_builder_banner_css', 10, 2 );

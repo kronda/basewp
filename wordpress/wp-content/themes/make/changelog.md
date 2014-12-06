@@ -1,3 +1,47 @@
+## 1.4.5
+
+* Fixed raw CSS appearing in rich snippet content in some situations
+* Fixed post meta alignment issues
+* Fixed blurry Page Builder overlays in Safari
+* Updated Google Fonts list
+* Updated documentation links
+* Updated Dutch translation
+
+## 1.4.4
+
+* Fixed inaccessible Attachment Display Settings panel when editing pages
+* Added Dutch translation
+
+## 1.4.3
+
+* Improved text sanitization in some instances to allow more HTML tags and attributes
+* Fixed incorrect text color being applied to Header Bar menu items
+* Other minor code improvements
+
+## 1.4.2
+
+* Fixed Column configuration data not saving correctly in the Page Builder
+
+## 1.4.1
+
+* Added the Format Builder tool to the Visual Editor
+* Added the Insert Icon button to the Visual Editor
+* Removed old button, alert, and list formatting options in favor of the Format Builder
+* Fixed minor issues with the Page Builder
+* Updated German translations
+
+## 1.4.0
+
+* Updated Page Builder interface to improve performance, reduce clutter and better match WordPress' flat design
+
+## 1.3.2
+
+* Fixed fatal error in PHP 5.2.
+
+## 1.3.1
+
+* Fixed fatal error in PHP 5.2.
+
 ## 1.3.0
 
 * Added support for WordPress 4.0 and Customizer panels
