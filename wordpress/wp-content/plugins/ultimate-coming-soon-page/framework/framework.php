@@ -8,7 +8,7 @@
  */
 if (!class_exists('SeedProd_Framework')) {
 	class SeedProd_Framework {
-	
+
         /**
          * Define the Version of the Plugin
          */
@@ -38,12 +38,12 @@ if (!class_exists('SeedProd_Framework')) {
          *  Do not replace callback function.
          */
         public $menu = array();
-        
+
         /**
          *  Define options, sections and fields
          */
         public $options = array();
-	
+
     	/**
     	 * Load Hooks
     	 */
@@ -52,7 +52,7 @@ if (!class_exists('SeedProd_Framework')) {
     	    add_action('admin_menu',array(&$this,'create_menu'));
     	    add_action('admin_init', array(&$this,'set_settings'));
     	}
-    	
+
     	/**
          * Set the base url to use in the plugin
          *
@@ -62,8 +62,8 @@ if (!class_exists('SeedProd_Framework')) {
     	function base_url(){
             return plugins_url('',dirname(__FILE__));
         }
-    	    
-	
+
+
         /**
          * Properly enqueue styles and scripts for our theme options page.
          *
@@ -83,7 +83,7 @@ if (!class_exists('SeedProd_Framework')) {
         	wp_enqueue_style( 'seedprod_plugin', plugins_url('inc/css/admin-style.css',dirname(__FILE__)), false, $this->plugin_version );
         	wp_enqueue_style('thickbox');
             wp_enqueue_script( 'theme-preview' );
-            wp_enqueue_style('farbtastic'); 
+            wp_enqueue_style('farbtastic');
         }
 
         /**
@@ -97,7 +97,7 @@ if (!class_exists('SeedProd_Framework')) {
             foreach ($this->menu as $v) {
                 $this->pages[] = call_user_func_array($v['type'],array($v['page_name'],$v['menu_name'],$v['capability'],$v['menu_slug'],$v['callback'],$v['icon_url']));
             }
-    
+
         }
 
         /**
@@ -114,7 +114,7 @@ if (!class_exists('SeedProd_Framework')) {
                 <a href="http://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=plugin&utm_medium=banner&utm_campaign=coming-soon-pro-in-plugin-banner" target="_blank">
                 <img src="http://static.seedprod.com.s3.amazonaws.com/ads/ultimate-coming-soon-page-banner-772x250.jpg" style="max-width:100%">
                 </a>
-        		<?php //settings_errors(); ?> 
+        		<?php //settings_errors(); ?>
                 <h2 class="nav-tab-wrapper" style="padding-left:20px">
                     <a class="nav-tab seed_csp3-support" href="options-general.php?page=seedprod_coming_soon"><?php _e('Settings','ultimate-coming-soon-page') ?></a>
                     <a class="nav-tab seed_csp3-preview thickbox-preview" href="<?php echo home_url(); ?>?cs_preview=true&TB_iframe=true&width=640&height=632" title="<?php _e('&larr; Close Window','ultimate-coming-soon-page') ?>"><?php _e('Live Preview','ultimate-coming-soon-page'); ?></a>
@@ -135,7 +135,7 @@ if (!class_exists('SeedProd_Framework')) {
                 					<ul>
                 					    <li>&raquo; <a href="<?php echo (empty($this->plugin_support_url) ? 'http://seedprod.com/support/' : $this->plugin_support_url) ?>" target="_blank"><?php _e('Support Request', 'ultimate-coming-soon-page') ?></a></li>
                 				    </ul>
-                					
+
                 					</div>
                 				</div>
                             </div>
@@ -150,9 +150,9 @@ if (!class_exists('SeedProd_Framework')) {
                                         <li>&raquo; <a href="https://www.seedprod.com/submit-site/"><?php _e('Submit your site to the Showcase', 'ultimate-coming-soon-page') ?></a></li>
                 					    <li>&raquo; <a target="_blank" href="http://wordpress.org/extend/plugins/ultimate-coming-soon-page/"><?php _e('Rating It', 'ultimate-coming-soon-page') ?></a></li>
                 					    <li>&raquo; <a target="_blank" href="<?php echo "http://twitter.com/share?url={$this->plugin_seedprod_url}&text=Check out this awesome WordPress Plugin I'm using, 'Ultimate Coming Soon Page' by SeedProd {$this->plugin_short_url}"; ?>"><?php _e('Tweet It', 'ultimate-coming-soon-page') ?></a></li>
-                					    
-                					    
-                					   
+
+
+
                 					</ul>
                 					</div>
                 				</div>
@@ -179,7 +179,7 @@ if (!class_exists('SeedProd_Framework')) {
                 					</div>
                 				</div>
                             </div>
-                            
+
                         </div>
                     </div>-->
                     <div id="post-body">
@@ -199,19 +199,19 @@ if (!class_exists('SeedProd_Framework')) {
                                             		$this->seedprod_do_settings_sections($v['id']);
                                         		    echo '</div>';
                                         		    break;
-                        		    
+
                             		        }
                     		            }
             		                }
                                 }
                                 ?>
-                        		
+
                         	    </form>
                             </div>
                         </div>
                     </div>
                 </div>
-        	</div>	
+        	</div>
         	<?php
         }
 
@@ -258,15 +258,15 @@ if (!class_exists('SeedProd_Framework')) {
                     		$k['callback'],
                     		$k['section_id'],
                     		$k['section_id'],
-                    		array('id' => $k['id'], 
+                    		array('id' => $k['id'],
                     		'desc' => (isset($k['desc']) ? $k['desc'] : ''),
-                    		'setting_id' => $k['setting_id'], 
-                    		'class' => (isset($k['class']) ? $k['class'] : ''), 
+                    		'setting_id' => $k['setting_id'],
+                    		'class' => (isset($k['class']) ? $k['class'] : ''),
                     		'type' => $k['type'],
                     		'default_value' => (isset($k['default_value']) ? $k['default_value'] : ''),
                     		'option_values' => (isset($k['option_values']) ? $k['option_values'] : ''))
                     	);
-                	    
+
         	    }
             }
         }
@@ -300,7 +300,7 @@ if (!class_exists('SeedProd_Framework')) {
                 	            echo "<optgroup label='$v'>";
                 	        }else{
 
-                	            if(preg_match("/empty/i",$k) && empty($default_value)){             
+                	            if(preg_match("/empty/i",$k) && empty($default_value)){
                 	                echo "<option value=''>$v</option>";
                 	            }else{
             	                    echo "<option value='$k' ".((preg_match("/empty/i",$options[$id] || isset($options[$id]) === false) ? $default_value : $options[$id]) == $k ? 'selected' : '').">$v</option>";
@@ -321,8 +321,8 @@ if (!class_exists('SeedProd_Framework')) {
                     $content   = $options[ $id ];
                     $editor_id = $id;
                     $args      = array(
-                         'textarea_name' => "{$setting_id}[$id]" 
-                    ); 
+                         'textarea_name' => "{$setting_id}[$id]"
+                    );
 
                     wp_editor( $content, $editor_id, $args );
 
@@ -351,7 +351,7 @@ if (!class_exists('SeedProd_Framework')) {
                         ";
         	        break;
         	}
-	
+
         }
 
         /**
@@ -382,9 +382,9 @@ if (!class_exists('SeedProd_Framework')) {
                         			'error'
                         		);
                         		unset($input[$k['id']]);
-                        	}		
+                        	}
                         }
-                        // Sanitize 
+                        // Sanitize
                 	    if($k['type'] == 'image'){
                 	        $input[$k['id']] = esc_url_raw($input[$k['id']]);
                 	    }
@@ -414,7 +414,7 @@ if (!class_exists('SeedProd_Framework')) {
         function section_dummy_desc() {
         	echo '';
         }
-        
+
         /**
          * Returns Font Families
          *
@@ -436,25 +436,25 @@ if (!class_exists('SeedProd_Framework')) {
             $fonts['_verdana'] = 'Verdana, Geneva, sans-serif';
             if($family){
                 if(!empty($fonts[$family])){
-                   $font_family=$fonts[$family]; 
+                   $font_family=$fonts[$family];
                }else{
                     $font_family = '"'. urldecode($family) . '",sans-serif' ;
                }
             }else{
-                $font_family=$fonts;  
+                $font_family=$fonts;
             }
         	return $font_family;
         }
-        
+
         /**
          * Get list of fonts from google and web safe fonts.
          *
          * @since 0.1
-         * @return array 
+         * @return array
          */
          function font_field_list($show_google_fonts = true){
-              $fonts = unserialize(get_transient('seedprod_fonts'));
-              if($fonts === false){
+              $fonts = maybe_unserialize(get_transient('seedprod_fonts'));
+              if(empty($fonts)){
                   if($show_google_fonts){
                       //$query = urlencode('select * from html where url="http://www.google.com/webfonts" and xpath=\'//div[@class="preview"]/span\'');
                       //$request = "http://query.yahooapis.com/v1/public/yql?q={$query}&format=json";
@@ -490,7 +490,7 @@ if (!class_exists('SeedProd_Framework')) {
              }
              return $fonts;
          }
-         
+
          /**
           * SeedProd version of WP's do_settings_sections
           *
@@ -520,4 +520,3 @@ if (!class_exists('SeedProd_Framework')) {
 
     }
 }
-?>

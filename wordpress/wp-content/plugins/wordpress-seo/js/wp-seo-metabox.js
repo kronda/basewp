@@ -186,6 +186,10 @@ function yst_replaceVariables(str, callback) {
 	callback(str);
 }
 
+function yst_strip_tags(string) {
+	return jQuery(jQuery('<div />')).html( string ).text();
+}
+
 function yst_updateTitle(force) {
 	var title = '';
 	var titleElm = jQuery('#' + wpseoMetaboxL10n.field_prefix + 'title');
@@ -217,6 +221,8 @@ function yst_updateTitle(force) {
 		// do the placeholder
 		var placeholder_title = divHtml.html(title).text();
 		titleElm.attr('placeholder', placeholder_title);
+
+		title = yst_strip_tags(title);
 
 		// and now the snippet preview title
 		title = yst_boldKeywords(title, false);
@@ -466,30 +472,36 @@ jQuery(document).ready(function () {
 	});
 
 
-	jQuery(".yoast_help").qtip({
-		position: {
-			corner: {
-				target : 'topMiddle',
-				tooltip: 'bottomLeft'
+
+	jQuery(".yoast_help").qtip(
+		{
+			content: {
+				attr: 'alt'
+			},
+			position: {
+				my: 'bottom left',
+				at: 'top center'
+			},
+			style   : {
+				tip: {
+					corner: true
+				},
+				classes : 'yoast-qtip qtip-rounded qtip-blue'
+			},
+			show    : {
+				when: {
+					event: 'mouseover'
+				}
+			},
+			hide    : {
+				fixed: true,
+				when : {
+					event: 'mouseout'
+				}
 			}
-		},
-		show    : {
-			when: {
-				event: 'mouseover'
-			}
-		},
-		hide    : {
-			fixed: true,
-			when : {
-				event: 'mouseout'
-			}
-		},
-		style   : {
-			tip : 'bottomLeft',
-			name: 'blue'
+
 		}
-	});
+	);
 
 	yst_updateSnippet();
-
 });
