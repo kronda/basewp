@@ -1,0 +1,1199 @@
+/* ---------------- */
+/*  GLOBAL SETTINGS */
+/* ---------------- */
+
+.toolset-views .hidden,
+.toolset-views .button-secondary.hidden,
+.toolset-views .button-primary.hidden {
+	display: none;
+}
+
+.wpv-taglike-list {
+	overflow: hidden;
+}
+	.wpv-taglike-list li {
+		display: inline-block;
+		background: #e9e9e9;
+	/*	float: left;*/
+		margin: 5px 10px 5px 0;
+		padding: 2px 8px;
+		vertical-align: bottom;
+	}
+
+.wpv-mightlong-list {
+	overflow: hidden;
+}
+
+	.wpv-mightlong-list li {
+		min-width:45%;
+		float:left;
+		padding-right:4%;
+	}
+
+/* clearfix */
+.wpv-setting-container:before,
+.wpv-setting-container:after {
+	display: table;
+	content: " ";
+}
+.wpv-setting-container:after {
+	clear: both;
+}
+.wpv-setting-container {
+	*zoom: 1;
+}
+/* / clearfix */
+
+/* Icons */
+
+.toolset-views  #icon-edit, #icon-post, #icon-views {
+	background:url("../img/views-32.png") #fff right no-repeat;
+}
+
+.toolset-views  [class^="icon-"] {
+	font-size: 14px;
+}
+
+.toolset-views  .icon-question-sign {
+	color: #ccc;
+	cursor: pointer;
+}
+
+.toolset-views  p .icon-question-sign {
+	vertical-align: middle;
+}
+
+.toolset-views  .icon-question-sign:hover {
+	color: #007cbd;
+	-webkit-transition: all 0.15s linear;
+	-moz-transition: all 0.15s linear;
+	-ms-transition: all 0.15s linear;
+	-o-transition: all 0.15s linear;
+	transition: all 0.15s linear;
+}
+
+.toolset-views .icon-remove-sign,
+.toolset-views .icon-warning-sign,
+.toolset-views .icon-warning-sign:hover,
+.toolset-help .icon-remove-sign {
+	color: #d54e21;
+}
+.toolset-views .icon-remove,
+.toolset-views .icon-remove-sign,
+.toolset-help .icon-remove,
+.toolset-help .icon-remove-sign {
+	vertical-align: middle;
+	font-size: 16px;
+	opacity: .6;
+	cursor: pointer;
+}
+.toolset-views .icon-remove:hover,
+.toolset-views .icon-remove-sign:hover,
+.toolset-help .icon-remove:hover,
+.toolset-help .icon-remove-sign:hover {
+	opacity: 1;
+}
+
+.toolset-views [class^="icon-caret-"] {
+	color: #007cbd;
+	vertical-align: middle;
+}
+
+.toolset-views .icon-pagination,
+.toolset-views .icon-views,
+.toolset-views .icon-filter-mod,
+.toolset-views .icon-cred {
+	display: inline-block;
+	margin: 0 3px 0 0;
+	width: 14px;
+	height: 14px;
+	background-position: center left;
+	background-repeat: no-repeat;
+}
+
+.toolset-views .icon-pagination {
+	background-image: url('../img/icon-pagination-14.png');
+}
+
+.toolset-views .wpv-setting .icon-views {
+	background-image: url('../img/icon-views-14.png');
+}
+
+.toolset-views .icon-filter-mod {
+	background-image: url('../img/icon-filter-14.png');
+}
+
+.toolset-views .icon-cred {
+	background-image: url('../img/icon-cred-14.png');
+}
+
+
+.toolset-views .button [class^="icon-"],
+.toolset-views .button-secondary [class^="icon-"],
+.toolset-views .button-primary [class^="icon-"] {
+	margin: 0 5px 0 0;
+	vertical-align: middle;
+}
+
+.toolset-views .no-label [class^="icon-"]{
+	margin: 0;
+}
+
+	.toolset-views .no-label .button-label {
+		display: none;
+	}
+
+/* Icons END */
+
+/*  ------------------- */
+/*  GLOBAL SETTINGS END */
+/*  ------------------- */
+
+/*  --------------- */
+/*  VIEWS EDIT PAGE */
+/*  ----------------*/
+
+/* Views edit page globals */
+.wpv-setting-container {
+	padding: 15px;
+	max-width: 930px;
+	border-bottom: 1px solid #ededed;
+	clear: both;
+/*	background: #fff;*/
+}
+.wpv-setting-container:last-child {
+	border-bottom: none;
+}
+
+	.wpv-title-section,
+	.wpv-query-section,
+	.wpv-filter-section,
+	.wpv-layout-section,
+	.wpv-help-section {
+		margin-top: 20px;
+		width: 930px;
+	}
+
+	.wpv-query-section:before,
+	.wpv-filter-section:before,
+	.wpv-layout-section:before,
+	.wpv-help-section:before,
+	.wpv-query-section:after,
+	.wpv-filter-section:after,
+	.wpv-layout-section:after,
+	.wpv-help-section:after {
+		content: " ";
+		display: table;
+	}
+
+	.wpv-query-section:after,
+	.wpv-filter-section:after,
+	.wpv-layout-section:after,
+	.wpv-help-section:after {
+		clear: both;
+	}
+
+		.wpv-section-title {
+			margin-bottom: 0;
+			padding: 1px 4px;
+			color: #fff;
+			font-weight: normal;
+			font-size: 11px;
+		}
+		.wpv-query-section .wpv-section-title {
+			background: #4AA4A4;
+		}
+		.wpv-filter-section .wpv-section-title {
+			background: #C09853;
+		}
+		.wpv-layout-section .wpv-section-title {
+			background: #348BB6;
+		}
+
+		.wpv-views-settings-section .wpv-section-title {
+			background: #4AA4A4;
+			font-weight: bold;
+			font-size: 13px;
+		}
+
+		.wpv-setting-container .wpv-settings-header {
+			float: left;
+			width: 30%;
+		}
+		.wpv-setting-container-horizontal .wpv-settings-header {
+			float: none;
+		}
+
+		.wpv-query-section .wpv-settings-header {
+			color: #4AA4A4;
+		}
+		.wpv-filter-section .wpv-settings-header {
+			color: #C09853;
+		}
+		.wpv-layout-section .wpv-settings-header {
+			color: #348BB6;
+		}
+
+			.wpv-setting-container .wpv-settings-header h3 {
+				margin-top: 8px;
+				font-weight: normal;
+				font-size: 18px;
+				line-height: 1.5;
+			}
+
+			.wpv-setting-container .wpv-settings-header h3 i {
+				font-size: 12px;
+			}
+
+		.wpv-setting {
+			float: right;
+			margin-left: 1%;
+			width: 69%;
+		}
+		.wpv-setting-container-horizontal .wpv-setting {
+			width: 90%;
+		}
+
+			.wpv-setting .wpv-advanced-setting {
+				padding:1px 0 1px 20px;
+				background:#f6f6f6;
+				border-left:solid 3px #cdcdcd;
+			}
+			
+			.wpv-setting .wpv-setting-options-box {
+				background: #e9e9e9;
+				overflow:hidden;
+				padding:20px;
+			}
+			
+				.wpv-setting .wpv-setting-options-box .wpv-mightlong-list {
+					margin-top: 0;
+				}
+				
+				.wpv-setting .wpv-setting-options-box .wpv-options-box-info {
+					display: block;
+					clear: both;
+					margin-top: 10px;
+					padding-top: 10px; 
+					border-top:solid 1px #cdcdcd;
+				}
+			
+			.wpv-setting textarea {
+				width: 100%;
+			}
+
+			.wpv-setting .update-button-wrap {
+				margin: 25px 0;
+				text-align: right;
+				line-height: 26px;
+			}
+			.wpv-setting .update-button-wrap:last-child {
+				margin-bottom: 0;
+			}
+				.wpv-setting .update-button-wrap .toolset-alert {
+					float: left;
+				}
+				.wpv-setting .update-button-wrap .spinner {
+					display: inline-block;
+					float: none;
+					margin: 0 5px;
+					vertical-align: middle;
+				}
+				.wpv-setting .update-button-wrap .spinner.hidden {
+					display: none;
+				}
+
+			.wpv-setting .ajax-loader {
+				display: inline-block;
+				float: none;
+				margin: 0 0 0 10px;
+				vertical-align: middle;
+			}
+
+			.wpv-setting .updated,
+			.wpv-setting .unsaved {
+				display: inline-block;
+				margin: 0 0 0 10px;
+			}
+
+			.wpv-setting .updated {
+				color: #468847;
+			}
+
+			.wpv-setting .unsaved {
+				color: #b94a48;
+			}
+
+			.wpv-ct-editors .code-editor.closed,
+			.wpv-setting .code-editor.closed {
+				display: block;
+				overflow: hidden;
+				height: 0;
+			}
+				.wpv-ct-editors .code-editor.closed .CodeMirror,
+				.wpv-setting .code-editor.closed .CodeMirror {
+					float: left;
+				}
+
+			.wpv-setting .more-controls-container {
+				margin: 0;
+				text-align: right;
+			}
+				.wpv-setting .more-controls-container .button-secondary {
+					border-bottom: 0;
+					border-radius: 3px 3px 0 0;
+				}
+				.wpv-setting .more-controls-container .button-secondary i {
+					vertical-align: baseline;
+				}
+
+			.wpv-ct-editors .CodeMirror,
+			.wpv-setting .CodeMirror {
+				border: solid 1px #ccc;
+			}
+
+				.wpv-ct-editors .code-editor,
+				.wpv-setting .code-editor {
+					position: relative;
+				}
+
+					.wpv-ct-editors .code-editor-toolbar,
+					.wpv-setting .code-editor-toolbar {
+						padding: 5px 2px 0 2px;
+						border: 1px solid #ccc;
+						border-width: 1px 1px 0 1px;
+						border-radius: 2px 2px 0 0;
+						background: #e5e5e5;
+						background: -moz-linear-gradient(top,  #e5e5e5 0%, #f4f4f4 100%);
+						background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5e5e5), color-stop(100%,#f4f4f4));
+						background: -webkit-linear-gradient(top,  #e5e5e5 0%,#f4f4f4 100%);
+						background: -o-linear-gradient(top,  #e5e5e5 0%,#f4f4f4 100%);
+						background: -ms-linear-gradient(top,  #e5e5e5 0%,#f4f4f4 100%);
+						background: linear-gradient(to bottom,  #e5e5e5 0%,#f4f4f4 100%);
+						filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#f4f4f4',GradientType=0 );
+					}
+
+					.wpv-ct-editors .more-controls-container + .code-editor>.code-editor-toolbar,
+					.wpv-setting .more-controls-container + .code-editor>.code-editor-toolbar {
+						border-top-right-radius: 0;
+					}
+
+					.wpv-ct-editors .closed .code-editor-toolbar,
+					.wpv-setting .closed .code-editor-toolbar {
+						display: none;
+					}
+
+						.wpv-setting .code-editor-toolbar>ul {
+							margin: 0;
+							text-align: left;
+						}
+						.wpv-setting .code-editor-toolbar>ul:before,
+						.wpv-setting .code-editor-toolbar>ul:after {
+						    display: table;
+						    content: " ";
+						}
+						.wpv-setting .code-editor-toolbar>ul:after {
+						    clear: both;
+						}
+
+							.wpv-setting .code-editor-toolbar>ul>li {
+								float: left;
+								margin: 0 2px 5px 2px;
+								color: #666;
+								vertical-align: middle;
+								text-align: center;
+								cursor: pointer;
+							}
+								/* temp: to be removed;  */
+								.wpv-setting .code-editor-toolbar button>[class^="icon-"] {
+									position: static;
+									color: #222;
+									vertical-align: middle;
+								}
+
+								.wpv-setting .code-editor-toolbar button[disabled] [class^="icon-"] {
+									opacity: .4;
+								}
+
+								.wpv-setting button.code-editor-textarea-full:after, .template_meta_html_extra_edit button.code-editor-textarea-full:after {
+									content: "\f111";
+									font-family: FontAwesome;
+									display: inline-block;
+									margin-left: 10px;
+									color: #fb823f;
+									text-shadow: 0 -1px #b9602e;
+								}
+
+								.wpv-setting button.code-editor-textarea-full:hover:after, .template_meta_html_extra_edit button.code-editor-textarea-full:hover:after {
+									color: #f65a00;
+									text-shadow: 0 -1px #a03a00;
+								}
+
+								.wpv-ct-editors .code-editor-toolbar .close-editor,
+								.wpv-setting .code-editor-toolbar .close-editor {
+									float: right;
+								}
+								
+								.wpv-setting .code-editor-toolbar .cred-media-button {
+									margin: 0;
+								}
+
+							.wpv-setting .code-editor-toolbar .ajax-loader {
+								margin: 4px 0 0 0;
+							}
+
+					.wpv-setting .disable-toolbar-labels {
+						position: absolute;
+						top: 6px;
+						right: 5px;
+					}
+/* Views edit page globals END */
+
+
+/* Settings section: Title and Descriprion */
+.wpv-settings-title-and-desc { }
+/* Settings section: Title and Descriprion END */
+
+/* Settings section: Content selection */
+.wpv-settings-content-selection { }
+/* Settings section: Content selection END */
+
+/* Settings section: Query options */
+.wpv-settings-query-options { }
+/* Settings section: Query options END */
+
+/* Settings section: Limits and Offset */
+.wpv-settings-limit { }
+/* Settings section: Limits and Offset END */
+
+/* Settings section: Pagination and Sliders */
+.wpv-settings-pagination{ }
+
+	.wpv-settings-pagination .wpv-pagination-options-box {
+		padding: 1px 10px 10px 10px;
+	}
+
+	.wpv-settings-pagination .wpv-pagination-advanced {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+		.wpv-settings-pagination .wpv-spinner-selection {
+			padding: 0 0 0 20px
+		}
+
+			.wpv-settings-pagination .wpv-spinner-selection li {
+				display: inline-block;
+				margin: 0 10px 0 0;
+			}
+/* Settings section: Pagination and Sliders END */
+
+/* Settings section: Filter the result */
+.wpv-settings-content-selection {
+
+}
+
+	.wpv-settings-content-filter .button-secondary .icon-plus {
+		vertical-align: baseline;
+	}
+
+	.wpv-settings-content-filter .filter-input-error {
+		border-color: #B94A48;
+		background-color: #F2DEDE;
+		color: #B94A48;
+	}
+
+	.wpv-settings-content-filter .filter-info {
+		display:block;
+	}
+
+	.wpv-settings-content-filter .filter-list {
+		margin-top: 0;
+		border: 3px solid #ededed;
+		border-radius: 2px;
+	}
+
+		.wpv-settings-content-filter .filter-list > li {
+			position: relative;
+			overflow: hidden;
+			margin: 0;
+			padding: 5px 100px 7px 20px;
+			border-top: 2px solid #ededed;
+		}
+
+			.wpv-settings-content-filter .filter-list > li ul {
+				max-height: 400px;
+				overflow-y: auto;
+			}
+
+			.wpv-settings-content-filter .filter-list ul::-webkit-scrollbar {
+			    width: 12px;
+			    height: 12px;
+			    background-color: #fafafa;
+			    border: 1px solid #f1f1f1;
+			    border-width: 0 1px;
+			}
+			.wpv-settings-content-filter .filter-list ul::-webkit-scrollbar:hover {
+			    background-color: #eee;
+			}
+			.wpv-settings-content-filter .filter-list ul::-webkit-scrollbar-thumb {
+			    min-width: 13px;
+			    min-height: 12px;
+			    background-color: rgba(0, 0, 0, .1);
+			}
+
+				.wpv-settings-content-filter .filter-list ul::-webkit-scrollbar-thumb:hover {
+				    background-color: rgba(0, 0, 0, .2);
+				}
+				.wpv-settings-content-filter .filter-list ul:-webkit-scrollbar-thumb:active {
+				    background-color: rgba(0, 0, 0, .3);
+				}
+
+			.wpv-settings-content-filter .filter-list .wpv-filter-row-multiple-element {
+				margin: 0 0 20px 0;
+				padding: 0 100px 20px 0;
+				border-bottom: 1px solid #ededed;
+				position: relative;
+			}
+
+		.wpv-settings-content-filter .filter-list .filter-row-multiple {
+			padding-right: 0;
+			position: relative;
+		}
+
+		.wpv-settings-content-filter .filter-list .filter-row-multiple .wpv-filter-edit-summary {
+			padding-right: 100px;
+		}
+		
+		.wpv-settings-content-filter .filter-list .filter-row-multiple .wpv-filter-multiple-summary-item {
+			display: block;
+			padding-left: 20px;
+		}
+
+			.wpv-settings-content-filter .filter-list > li:first-child {
+				border-top: 0;
+			}
+
+			.wpv-settings-content-filter .filter-list > li:nth-child(2n) {
+				background: #fff;
+			}
+			
+			.wpv-settings-content-filter .filter-list > li:nth-child(2n+1) {
+				background: #f9f9f9;
+			}
+
+				.wpv-settings-content-filter .edit-filter {
+					position: absolute;
+					top: 0;
+					right: 5px;
+					z-index: 1;
+				}
+				
+				.wpv-settings-content-filter .edit-filter i {
+					color: #999;
+				}
+				
+				.wpv-settings-content-filter .edit-filter i:hover {
+					color: #666;
+				}
+				
+				.wpv-settings-content-filter .wpv-filter-row-multiple-element .edit-filter {
+					top: -15px;
+				}
+				
+				.wpv-settings-content-filter .wpv-filter-row-multiple-element .wpv-filter-row-multiple-element-optionlist {
+					padding: 10px 0 0 20px;
+				}
+
+					.wpv-settings-content-filter .edit-filter .icon-remove-sign {
+					/*	margin: 0 0 0 5px; DEPRECATED */
+					}
+
+	.wpv-filter-users-edit ul {
+		margin: 0 0 25px 0;
+	}
+
+/* Settings section: Filter the result END */
+
+/* Settings section: Filter HTML/CSS/JS */
+.wpv-settings-filter-markup { }
+/* Settings section: Filter HTML/CSS/JS END */
+
+/* Settings section: Filter Templates for this View */
+.wpv-settings-templates { }
+/* Settings section: Filter Templates for this View END */
+
+/* Settings section: Filter Layout HTML/CSS/JS */
+.wpv-settings-layout-markup { }
+/* Settings section: Filter Layout HTML/CSS/JS END */
+
+/* Settings section: Aditional Javascript files */
+.wpv-settings-output-extra-js { }
+/* Settings section: Aditional Javascript files END */
+
+/* Settings section: Complete Output */
+.wpv-settings-complete-output { }
+/* Settings section: Complete Output END */
+
+/* Settings section: Media manager */
+.wpv-settings-media-manager { }
+/* Settings section: Media manager END */
+
+/* Settings section: Loops selection */
+.wpv-settings-archive-loops { }
+
+	.wpv-settings-archive-loops h3 {
+	/*	margin-bottom: 0;*/
+	}
+/* Settings section: Loops selection END */
+
+/* Settings section: Media manager */
+.wpv-settings-save-all {
+	background-color: #F1F1F1;
+}
+	.wpv-settings-save-all .update-button-wrap {
+		margin: 0;
+	}
+/* Settings section: Media manager END */
+
+/* Settings section: Module Manager */
+.wpv-setting .modman-inline-module-manager .spinner {
+	float: none;
+	margin: 0 0 0 5px;
+	vertical-align: middle;
+}
+/* Settings section: Module Manager  END */
+
+
+/* Content template view list */
+	.wpv-content-template-view-list {
+
+	}
+
+		.wpv-content-template-view-list .wpv-content-template-open {
+			border: none;
+			background: none;
+		}
+
+/*  --------------- */
+/*  VIEWS EDIT PAGE */
+/*  ----------------*/
+
+/* -------*/
+/* WIZARD */
+/* ------ */
+.wpv-wizard-settings-container {
+	max-width: 1200px;
+}
+
+	.wpv-wizard-steps {
+		float: left;
+		width: 25%;
+	}
+
+		.wpv-wizard-steps h3 {
+			padding-right: 15px;
+			padding-left: 0;
+			text-decoration: none;
+		}
+		.wpv-wizard-steps h3 a {
+			color: #ccc;
+			text-decoration: none;
+			font-size: 18px;
+		}
+		.wpv-wizard-steps h3 a:hover,
+		.wpv-wizard-steps h3.active a {
+			color: #666;
+		}
+
+	.wpv-wizard-settings-container .wpv-setting {
+		width: 74%;
+	}
+		.wpv-wizard-settings {
+			padding-left: 15px;
+			border-left: 1px solid #ededed;
+		}
+
+		.wpv-wizard-settings h3 {
+			padding-left: 0;
+			font-size: 18px;
+		}
+			.wpv-wizard-settings h3 span {
+				font-weight: bold;
+			}
+
+		.wpv-wizard-settings .wpv-wizard-settings-progressbar {
+			margin: 10px 0 25px 0;
+		}
+
+		.wpv-wizard-settings .wpv-wizard-step {
+			display: none;
+		}
+		.wpv-wizard-settings .wpv-wizard-step.active {
+			display: block;
+		}
+
+			.wpv-wizard-settings-item {
+				padding-bottom: 10px;
+			}
+
+				.wpv-wizard-settings-item h4 {
+					margin-bottom: 5px;
+					color: #666;
+					font-size: 14px;
+				}
+				.wpv-wizard-settings .wpv-wizard-settings-item-desc {
+					margin: 0;
+					color: #999;
+				}
+
+			.wpv-wizard-settings-nav {
+				padding: 25px 0 25px 0;
+				text-align: right;
+			}
+
+	#view_layout_fields_table input {
+		width:100px;
+	}
+	.postbox-container #views_template .hndle span {
+		display: block;
+		padding-left: 22px;
+		background: url('../img/icon16.png') 0 0 no-repeat;
+		line-height: 16px;
+	}
+/* -----------*/
+/* WIZARD END */
+/* ---------- */
+
+/* ------------------ */
+/* VIEWS LISTING PAGE */
+/* ------------------ */
+.wpv-view-not-exist,
+.wpv-views-listing-page {
+	clear: both;
+}
+.wpv-views-listing-page  {
+	padding: 0;
+}
+.wpv-archive-tables-containter + .add-new-view,
+.wpv-views-listing + .add-new-view {
+	text-align: right;
+}
+
+.wpv-views-listing-page td:first-child {
+
+}
+
+	.wpv-views-listing-page div.updated,
+	.wpv-views-listing-page div.error {
+		clear: both;
+		margin-bottom: 6px;
+	}
+
+	.wpv-views-listing-page .icon-warning-sign {
+		margin: 0 5px;
+		cursor: pointer;
+	}
+
+	.wpv-views-listing-page  .wpv-page-title {
+		float: left;
+		margin: 0 0 20px 0;
+	}
+
+	.wpv-views-listing-page  .search-box {
+		margin: 0 0 15px 0;
+		padding: 9px 0 0 0;
+	}
+
+	.wpv-views-listing-arrange {
+		clear: both;
+	}
+		.wpv-views-listing-arrange ul {
+			display: inline-block;
+			margin: 0;
+			list-style: none;
+		}
+			.wpv-views-listing-arrange p,
+			.wpv-views-listing-arrange li {
+				display: inline-block;
+			}
+
+			.wpv-views-listing-arrange p {
+				font-weight: bold;
+			}
+			.wpv-views-listing-arrange li {
+				margin: 0 0 0 3px;
+				padding-left: 5px;
+				border-left: 1px solid #ededed;
+				color: #21759b;
+				cursor: pointer;
+			}
+			.wpv-views-listing-arrange li.active,
+			.wpv-views-listing-arrange li:hover {
+				color: #d54e21;
+			}
+				.wpv-views-listing-arrange li.active a {
+					color: inherit;
+				}
+
+	.wpv-views-listing-page .wpv-views-listing {
+		clear: both;
+	}
+
+		.wpv-views-listing-page .wpv-views-listing td {
+			vertical-align: middle;
+			padding: 8px;
+		}
+
+		.wpv-views-listing-page .wpv-views-listing th {
+			white-space: nowrap;
+		}
+
+			.wpv-views-listing-page .wpv-views-listing table {
+				border: 0;
+			}
+
+				.wpv-views-listing-page .wpv-views-listing table td {
+					padding: 0;
+					border: 0;
+				}
+
+		.wpv-views-listing-page .wpv-views-listing tr:last-child td {
+			border-bottom: none;
+		}
+
+			.wpv-views-listing-page .wpv-views-listing td ul {
+				margin: 0;
+			}
+
+			.wpv-views-listing-page .wpv-views-listing td h3 {
+				margin-top: 0;
+			}
+
+			.wpv-views-listing-page .wpv-views-listing td .desc {
+				color: #999;
+			}
+			
+			.wpv-views-listing-page .wpv-views-listing .button.button-leveled {
+				vertical-align: baseline;
+			}
+
+			.wpv-views-listing-page .ajax-loader {
+				display: inline-block;
+				float: none;
+				margin: 0 0 0 10px;
+				vertical-align: middle;
+			}
+
+			.wpv-views-listing-page .message-container {
+				display: inline-block;
+				margin: 0 5px;
+			}
+
+/* Views listing pagination */
+.wpv-listing-pagination {
+	clear: both;
+	overflow: hidden;
+	margin: 20px 0;
+	text-align: right;
+}
+
+	.wpv-listing-pagination ul,
+	.wpv-listing-pagination p {
+		display: inline-block;
+		margin: 0;
+	}
+
+	.wpv-listing-pagination p {
+		font-weight: bold;
+	}
+
+	.wpv-listing-pagination ul {
+		list-style: none;
+	}
+
+		.wpv-listing-pagination li {
+			display: inline-block;
+			margin: 0 0 0 5px;
+			text-align: center;
+		}
+
+			.wpv-listing-pagination a {
+				text-decoration: none;
+			}
+			.wpv-listing-pagination a.active {
+				color: #d54e21;
+				font-weight: bold;
+				cursor: default;
+			}
+/* / Views listing pagination */
+
+/* Views listing date sorting */
+
+.views-list-sort i {
+	visibility: hidden;
+	display: inline-block;
+	margin: 0 2px;
+}
+
+.views-list-sort:hover i,
+.views-list-sort-active i {
+	visibility: visible;
+}
+
+/* / Views listing date sorting END */
+
+/* ---------------------- */
+/* VIEWS LISTING PAGE END */
+/* ---------------------- */
+
+/*  Content Template Settings - metabox  */
+
+.wpv-content-template-open {
+	cursor: pointer;
+}
+.wpv-content-template-open:hover {
+	color: #d54e21;
+}
+.wpv-content-template-dropdown-list {
+	overflow: hidden;
+	margin: 0 0 0 10px;
+}
+	.wpv-content-template-dropdown-list ul {
+		margin: 0;
+	}
+
+	.wpv-content-template-dropdown-list li a {
+		text-decoration: none;
+	}
+
+	.wpv-content-template-dropdown-list .icon-warning-sign,
+	.wpv-content-template-dropdown-list .icon-warning-sign:hover,
+	.wpv-content-template-dropdown-list .icon-warning-sign:active,
+	.wpv-content-template-dropdown-list .icon-warning-sign:focus {
+		color: #d54e21;
+	}
+
+	.wpv-content-template-dropdown-list .button-leveled {
+		vertical-align: baseline;
+	}
+/*  / Content Template Settings - metabox  */
+
+/* Views list loader overlay */
+.table-loader-overlay {
+	position: absolute;
+	display: none;
+	text-align: center;
+}
+
+	.table-loader-overlay p {
+		position: absolute;
+		top: 45%;
+		margin: 0;
+		padding: 0 0 25px 0;
+		width: 100%;
+		background: url('../img/ajax-loader-overlay.gif') bottom center no-repeat;
+		font-size: 16px;
+	}
+/* Views list loader overlay END */
+
+/* -------------- */
+/* SCREEN OPTIONS */
+/* -------------- */
+
+.wpv-screen-options { }
+
+	.wpv-screen-options h6 {
+		margin-bottom: 0;
+	}
+
+	.wpv-show-hide-section  {
+		padding: 0 0 0 10px;
+		border-left: 5px solid;
+	}
+
+	.wpv-show-hide-section-query {
+		border-color: #4AA4A4;
+	}
+
+	.wpv-show-hide-section-filter {
+		border-color: #C09853;
+	}
+
+	.wpv-show-hide-section-layout {
+		border-color: #348BB6;
+	}
+
+/* SCREEN OPTIONS END */
+
+/* ------------ */
+/* CT EDIT PAGE */
+/* ------------ */
+
+/* --------- */
+/* HELP PAGE */
+/* --------- */
+
+.wpv-views-help-page {
+	width: 785px;
+	color: #666;
+}
+
+	.wpv-views-help-page .header,
+	.wpv-views-help-page .footer {
+		margin: 30px 0 20px 0;
+	}
+
+		.wpv-views-help-page .header h3,
+		.wpv-views-help-page .footer h3 {
+			color: #333;
+			font-size: 20px;
+		}
+
+		.wpv-views-help-page .header p,
+		.wpv-views-help-page .footer li {
+			font-size: 14px;
+		}
+		.wpv-views-help-page .header p+p {
+			font-weight: bold;
+		}
+
+		.wpv-views-help-page .footer li {
+			padding: 17px 0;
+			border: 1px dashed #dcdcdc;
+			font-weight: bold;
+			border-width: 0 0 1px 0;
+		}
+		.wpv-views-help-page .footer li:first-child {
+			border-top-width: 1px;
+		}
+
+			.wpv-views-help-page .footer li a {
+				color: #2175af;
+				font-weight: bold;
+			}
+			.wpv-views-help-page .footer li p {
+				margin-bottom: 0;
+				font-weight: normal;
+			}
+			.wpv-views-help-page .footer li a:hover {
+				text-decoration: none;
+			}
+
+	.wpv-views-help-page .types-of-views {
+		padding: 32px 10px 0 10px;
+		border: 1px solid #dfdfdf;
+		border-width: 1px 0;
+		background: #fbfcfd;
+		box-shadow: 0px 1px 0px 0px #fff inset, 0px -1px 0px 0px #fff inset;
+	}
+
+		.wpv-views-help-page .types-of-views ul {
+			overflow: hidden;
+		}
+
+			.wpv-views-help-page .types-of-views li {
+				float: left;
+				margin-left: 35px;
+				width: 231px;
+			}
+			.wpv-views-help-page .types-of-views li:first-child {
+				margin-left: 0;
+			}
+
+				.wpv-views-help-page .types-of-views .img-wrap {
+					padding: 6px;
+					border: 1px solid #e5e5e5;
+					border-radius: 2px;
+					background: #f0f0f0;
+				}
+					.wpv-views-help-page .types-of-views .img-wrap img {
+						display: block;
+					}
+
+				.wpv-views-help-page .types-of-views h4 {
+					color: #333;
+					font-size: 18px;
+				}
+
+				.wpv-views-help-page .types-of-views .desc {
+					line-height: 2;
+				}
+
+/* HELP PAGE END */
+
+/* ------------ */
+/* CT EDIT PAGE */
+/* ------------ */
+
+.wpv-ct-description {}
+
+	.wpv-ct-description textarea {
+		width: 100%;
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+	}
+
+	.wpv-ct-editors .button-placeholder {
+		margin: 0 0 10px 0;
+	}
+
+	.wpv-ct-editors .code-editor {
+		margin: 20px 0 30px 0;
+	}
+	.wpv-ct-editors .code-editor.closed {
+		margin: 0;
+	}
+
+		.wpv-ct-editors .code-editor-toolbar {
+			overflow: hidden;
+		}
+
+			.wpv-ct-editors .code-editor-toolbar button {
+				float: right;
+				margin: 0 2px 5px 2px;
+			}
+
+/* CT EDIT PAGE END */
+
+/* --------------------- */
+/* GENERAL SETTINGS PAGE */
+/* --------------------- */
+
+.wpv-settings-hidden-cf { }
+
+	.wpv-settings-hidden-cf .cf-list {
+		overflow-y: scroll;
+		max-height: 800px;
+	}
+
+.wpv-settings-shortcodes { }
+
+	.wpv-settings-shortcodes ul {
+		overflow: hidden;
+		margin: 0 0 10px;
+	}
+	
+			.wpv-settings-shortcodes .icon-remove-sign {
+				color: #d54e21;
+				opacity: .8;
+				cursor: pointer;
+				margin: 0 0 0 3px;
+			}
+			.wpv-settings-shortcodes .icon-remove-sign:hover {
+				opacity: 1;
+			}
+
+/* GENERAL SETTINGS PAGE END */
+
+
+/* TEMP: TODO: To be removed */
+
+#wpv-settings-layout-styles div {
+		display: none;
+	}
+
+	div#wpv-settings-layout-style-unformated {
+		display: block;
+	}

@@ -1,0 +1,369 @@
+-------------------------------------------------------------------------------------------------------------------
+Version 1.6.1
+	- New: general View setting to disable frontend edit links to Views objects
+	- New: better copy on the parametric search popup
+	- New: suggesions for the default value on a filter by custom field on parametric search when using existing values
+	- New: when performing a parametric search by a checkbox field that stores zero in the database when unchecked, allow filtering by this zero value
+	- Fix: parametric search - allow between, greater than and lower than comparisons when setting values manually if they do not match actual custom field values
+	- Fix: post relationship parametric search when WPML is active
+	- Fix: parametric search with dependency if the View is sorted by a custom field
+	- Fix: parametric search with dependency and manual pagination
+	- Fix: allow the use of zero as a value in a custom field filter
+	- Fix: parametric search on multisite
+	- Fix: improve the export/import flow so it restores the WPA and CT settings for archive loops
+	- Fix: menu links when editing a View object do not redirect to error pages anymore
+	- Optimization: better calculation of available options for parametric search dependency
+	- Compatibility: Layouts inline editing of a View
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.6
+	- New: Bootstrap Layout for Views
+	- New: parametric search for Types post relationships with dependency
+	- New: dependent parametric search inputs
+	- New: update Views form results on the fly
+	- New: id="X" attribute for the [wpv-user] shortcode: it now can be used outside a View listing users loop
+	- New: filter "wpv_filter_force_wordpress_archive"
+	- New: filter "wpv_filter_custom_field_filter_type"
+	- New: improved layout for the Views filter section
+	- New: output="raw|sanitize" attribute for the [wpv-post-title] shortcode
+	- New: API to create Views with custom default settings
+	- New: add the Pagination button to the Layout HTML textarea toolbar so users can add pagination controls after the View results
+	- New: revamped HTML structure and CSS styles on listing, editing and settings pages
+	- New: when creating or editing Content Templates or WordPress Archives, show a red asterisk on elements already in use
+	- New: Media Manager can now handle audio and video attachments and inserts the right shortcode or link
+	- New: now you can use a thumbnail from an image attachment as a spinner for pagination and parametric search
+	- New: action "wpv_action_views_settings_sections" for modular settings page
+	- New: shortcode [wpv-search-term param="xxx"] to get search values from URL parameters
+	- New: start="X" and end="Y" attributes for the [wpv-for-each] shortcode
+	- Fix: wpv-user requesting for a usermeta field that does not exists should return nothing
+	- Fix: sorting by a numeric custom field created outside Types but under Types control
+	- Fix: custom inner shortcodes break the export/import flow
+	- Fix: prevent orphaned list item in Views toolbars when CRED is not installed
+	- Fix: better handling of the "attr" attribute of the [wpv-post-featured-image] shortcode to escape quotes, tags and brackets
+	- Fix: center map to view all points not working on some browsers
+	- Fix: single-marker maps were not displayed centered on the marker
+	- Fix: higher priority to our pagination redirect script so no other plugin can call it a 404
+	- Fix: issue on the Views Map plugin: Uncaught TypeError: Cannot read property 'length' of undefined
+	- Fix: typo on the inline Add Content Template popup in the Views edit screen
+	- Fix: do not enable SAVEQUERIES unless the debugger is enabled
+	- Fix: do not have a return inside an object buffer
+	- Fix: render_view_template() now adjusts the global $authordata
+	- Fix: add the charset info to our pagination AJAX response, so it does not let the server use a different encoding
+	- Fix: change the AJAX pagination response content-type to text/html
+	- Fix: correct protocol for AJAX callback URLs when backend uses FORCE_SSL_ADMIN and frontend is not SSL
+	- Fix: colorbox position when opening a toggle box while creating or editing the usage of a Content Template
+	- Fix: settings page slug changed from "views-settings-new" back to "views-settings"
+	- Fix: add the toolbar button to toggle syntax highlighting in the Content Template edit screen using the Quicktag API
+	- Fix: a View listing taxonomies and filtering by page terms on a page with no terms returns an error
+	- Fix: a View, Content Template or WordPress Archive with an attached non-image file was breaking the export
+	- Fix: when changing a Content Template title, if it already exists, the Update button gets locked on disabled state
+	- Fix: do not allow spaces or special characters in Views or WordPress Archives slugs
+	- Compatibility: fix issue with Post Type Switcher
+	- Compatibility: WordPress 3.9 - remove mysql_* functions
+	- Compatibility: better layout for the administration box of Views widgets
+	- Optimization: merge frontend scripts
+	- Optimization: merge frontend styles
+	- Optimization: avoid recursive AJAX calls in backend
+	- Optimization: better backend styles
+	- Optimization: better Layout Wizard structure
+	- Optimization: rewrite of the popups for creating and editing the usage of Content Templates and WordPress Archives
+	- Optimization: rewrite of the metabox in the Content Template edit screen to assign it
+	- Update: CodeMirror 3.21
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.5.1
+	- New: filter "wpv_filter_post_excerpt"
+	- New: filters  "wpv_filter_start_filter_form" and "wpv_filter_end_filter_form"
+	- New: filter "wpv_filter_content_template_output"
+	- New: shortcode [wpv-post-class add=""]
+	- New: output="normal|raw|inherit" attribute for the [wpv-post-body view_template="None"] shortcode
+	- New: improve the [wpv-post-excerpt] shortcode:
+		* the length attribute now applies to real excerpts too
+		* new count="char|word" attribute
+		* new more attribute
+	- New: [wpv-user] shortcode can take ID as the field attribute value
+	- Optimization:
+		* shave one SQL query when displaying the debugger per [wpv-post-body view_template="None"] shortcode
+		* shave one SQL query per [wpv-post-taxonomy] shortcode
+		* improve the [wpv-post-featured-image] shortcode - shave a SQL query when data="url" and size="full"
+		* save a SQL query if we use get_the_terms() and wp_list_pluck() instead of wp_get_post_terms() in the filter by taxonomy for Views listing posts
+		* add usermeta caching for Views listing users when using Types
+	- Change: Views edit screen - change the Content selection section select into a series of radios
+	- Fix: fields created outside Types and then added to Types control as numeric were not sorting a View as numeric values
+	- Fix: error when creating a Content Template on the Templates listing page if unchecking all the options offered in the popup
+	- Fix: error when rendering a Content Template with auto formatting inside a View with AJAX pagination
+	- Fix: "shop_order_status" taxonomy was hijacking "post_tag" taxonomy on the V icon popup when using WooCommerce
+	- Fix: allow quotes in parametric search values, both in search boxes and in custom fields using textfield
+	- Fix: inner shortcodes inside Tempates used calling [wpv-post-body] with the attribute suppress_filters set to true were not being rendered
+	- Fix: move the custom CSS output earlier in the wp_footer hoot, before the script printing at 10, to avoid the bottleneck
+	- Fix: raise z-index for the V popup in the Content Templates edit screen - avoid CodeMirror gutters and scroll bars problems
+	- Fix: pagination sumary was displaying wrong data
+	- Fix: PHP fatal error when adding debug info for a taxonomy filter by terms coming from the current page
+	- Fix: error when filtering by taxonomy set by the current page - the passed terms array was not correctly indexed
+	- Fix: preload last page when doing AJAX pagination using Slide Down or Slide Right effects
+	- Fix: clean the get_users_query() function and make it modular by using filter hooks in "wpv_filter_user_query"
+	- Fix: changing some setting for a WordPress Archive was deleting all the Views Settings options from the database
+	- Fix: offset will not work on Views listing posts if there is no limit or pagination setting
+	- Fix: offset will not work on Views listing users if there is no limit setting
+	- Fix: duplicating a View can lead to a View with status of "future"
+	- Fix: export error on layout wizard settings for Views created using an older version
+	- Fix: error on the disable_rich_edit_for_views() function on scenarios where the $post is not already set
+	- Fix: Content Templates attached to a View were lost on the export/import flow
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.5
+	- New: debug tool
+	- New: Views Maps plugin
+	- New: adjust Views layout widths on window resize - responsive layouts
+	- New: add option to filter posts excluding by ID
+	- New: add option to use IN, NOT IN and AND as operators when filtering by taxonomy using URL parameter or shortcode attribute
+	- New: add shortcode attribute and URL parameter options to the post relationship filters
+	- New: add a GUI for the callback_next parameter for AJAX pagination
+	- New: hide_empty option for parametric search filtering by taxonomy
+	- New: filters "wpv_filter_start_filter_form" and "wpv_filter_end_filter_form"
+	- New: add $args parameter to get_view_query_results() so arguments can be passed when getting a View results
+	- New: add visual flag to buttons for CSS and JS textareas when they have content
+	- Fix: parametric search - custom field relationship is not maintained if new filter added to search
+	- Fix: filter on taxonomy fails when using taxonomy by current page and current page has no taxonomy set
+	- Fix: console.log not defined in IE8/9 was breaking image preloading in frontend pagination
+	- Fix: restore the Fade effect on frontend pagination when old and new pages have the same height - fadeOut and fadeIn should happen at the same time
+	- Fix: .wpv-pagination element has zero height if elements inside the pagination are floated
+	- Fix: remove onclick attributes from frontend
+	- Fix: make the output of taxonomy parametric search radios consistent with other layouts - first the input, then the label
+	- Fix: broken pagination when displaying two Views on a page and both using pagination links
+	- Fix: adjust vertical sliding effect when old and new page have diffferent heights
+	- Fix: add version numbers when registering scripts
+	- Fix: parametric search popup - taxonomy_order & taxonomy_orderby & auto_fill_sort options are not inserted
+	- Fix: timezone problem with date filters
+	- Fix: wpv-post-date defaults to WordPress general settings
+	- Fix: duplicating a View should use the new title as the slug
+	- Fix: duplicating a View duplicates the View description too
+	- Fix: post_type_dont_include_current_page was not working when using AJAX pagination and the current post was not on the first page
+	- Fix: possible SSL errors by setting the correct URLs when loading assets
+	- Fix: remove unwanted br tags and empty p tags caused by newlines formatting
+	- Fix: pagination for taxonomy Views was not working
+	- Fix: save one database query if there are no custom fields filters
+	- Fix: add custom CSS and JS to pages containing Views and Content Templates displayed using PHP functions
+	- Fix: clean Views pagination: remove inline styles, remove unwanted br tag, add new classnames
+	- Fix: correctly register and enqueue scripts and styles for the frontend
+	- Fix: wpdb->prepare missing second argument
+	- Fix: better settings page - only offer to save some setting when it has changed
+	- Fix: Layout Wizard fields data was corrupted on import
+	- Fix: add shortcode support inside wpv-heading shortcodes on table layouts
+	- Fix: PHP 5.4 Strict standards: Only variables should be passed by reference
+	- Fix: register wp_footer actions involving scripts at a 21+ priority, so the scripts enqueued on the footer (with priority 20) are all loaded before them
+	- Fix: normalize the form style when using wpv-view or wpv-form-view shortcodes: remove inline styles
+	- Fix: invalid values in text inputs (search box and textfield parametric search) containing quotes
+	- Fix: improve date filters for parametric searches:
+		* remove onclick attributes
+		* remove dependency on the order of imputs - LTR support
+		* JSLint the script
+	- Compatibility: WordPress 3.8
+		* admin notices in Views listing screens use the native WordPress styles
+		* V popup is not correctly displayed in Content Templates with syntax highlight on
+		* table cebra styling for listing pages
+	- Compatibility: WPML integration
+		* add [wpml-string] shortcodes by default to Views textareas
+		* register strings on textarea save if String Translation is active
+		* automatically register existing strings when activating String Translation
+		* automatically register strings when importing if String Translation is active
+		* require string and context fields in Translatable String popup
+		* same value used twice in labels on parametric search inputs was not correctly registered in String Translation
+	- Compatibility: Module Manager - move the integration code to the embedded part to support WooCommmerce Views wizard
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.4.1
+	- Fix: 500 server error on sites using multisite with a lot of sites and / or sites with a lot of usermeta fields
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.4
+	- New: users support in Views
+		- New: PHP filters "wpv_filter_user_query" and "wpv_filter_user_post_query"
+		- New: filters for Views listing users - include/exclude specific users, filter by a usermeta field
+		- New: shortcodes for displaying users data - [wpv-user field="xxx"]
+		- New: filter posts by author set by parent View - nested Views
+	- New: sorting a View listing posts by last modified
+	- New: make slugs editable for Views and WordPress Archives
+	- New: [wpv-post-status] shortcode
+	- New: improved [wpv-post-featured-image] shortcode
+	- New: [wpv-taxonomy-archive] shortcode
+	- New: [wpv-post-slug] shortcode
+	- New: [wpv-post-body] new attribute "suppress_filters" - when set to 'true' the shortcode will render with basic WordPress filters applied
+	- New: extend [wpv-if] shortcodes - add custom functions support to [wpv-if] shortcodes
+	- New: [wpv-items-found] and [wpv-no-items-found] support for Posts, Taxonomies and Users
+	- New: [wpv-found-count] extend support for Taxonomies and Users
+	- New: trash for Views, WordPress Archives and Content Templates
+	- New: custom inner shortcodes in Settings and "wpv_custom_inner_shortcodes" PHP filter. Add [wpml-string] shortcode by default when available
+	- New: add a "class" parameter to the [wpv-filter-submit] shortcode
+	- New: allow to clear all existing single posts from a Content Template asignment
+	- New: "wpv_edit_view_link" PHP filter for frontend edit links
+	- New: "wpv_filter_custom_field_filter_original_value" and "wpv_filter_custom_field_filter_processed_value" filters for values for Views filters - can override the values used on a filter by custom fields for Views listing posts
+	- New: Translatable string item in V popup when WPML and String Translation are active
+	- Fix: the filter the_content gets applied twice in some cases
+	- Fix: when using a [wpv-post-body] shortcode inside a Content Template other shortcodes might not be expanded
+	- Fix: workaround for AJAX pagination on IIS servers
+	- Fix: default spinner image for pagination was not being set
+	- Fix: small glitches in Content Templates asignment
+	- Fix: evil comma of doom in javascript
+	- Fix: descriptions for Views objects are now exported and imported
+	- Fix: hook a PHP filter before and after the query to prevent incompatibilities with plugins that mess with the query
+	- Fix: do not offer creation of Content Templates for archive loops that do not exists (like posts, pages and attachments archives
+	- Fix: View forms in V popup missing in some situations
+	- Fix: View widgets now list only the relevant Views
+	- Fix: remove dash from default shortcode attribute for taxonomy filters
+	- Fix: use ColorBox for the Insert View Form popup in the post.php and post-new.php screens
+	- Fix: [wpv-control] shortcode parameter format was not being used for taxonomy filters using checkboxes
+	- Fix: Views form shortcode can now be inserted in embedded Views
+	- Fix: Convert URLs to point to translated content in Views and Content Template option in WPML was not working for links to taxonomy archives
+	- Fix: if a page contains two Views with table layout, sorting the first affected the order of the other (and the second one could not be sorted)
+	- Fix: respect format in Content Templates affected by the wptexturize filter
+	- Fix: [wpv-for-each] shortcode behaviour is now more accurate
+	- Fix: editing a posts with an asigned Content Template using a CRED form resulted in a broken layout
+	- Fix: PHP warnings when performing parametric searches by taxonomies using select or radios and taxonomy names as values
+	- Fix: parametric search popup - do not offer taxonomies we want to exclude or taxonomies with show_ui set to false
+	- Fix: ability to insert a Content Template inside posts, templates
+	- Fix: datepicker in parametric search does not display the selected date on results page when default_date is set to NONE
+	- Fix: do not offer to create a WordPress Archive or a Content Template for post archives for posts that do not have an archive
+	- Fix: when adding the [wpv-filter-meta-html] shortcode twice to a View combined output the table sorting stops working
+	- Fix: PHP notice when the [wpv-heading] has no name attribute
+	- Fix: View duplication on multisite
+	- Fix: WPML + Views integration:
+		- Fix: Views form widget - sync of target page for Views form wiget accross languages
+		- Fix: Views form widget - only offer as target pages the ones in the current language
+		- Fix: Views form shortcode - sync the target page from shortcode accross languages
+		- Fix: Views filters - sync options like parents, taxonomy terms or post IDs accross languages
+		- Fix: Views filter by taxonomy term - fix so it displays translated terms when needed
+	- Clean: delete unused version of CodeMirror
+	- Clean: improve scripts and styles queue list so we only load in the backend the needed elements and delete some unused scripts
+	- Compatibility: Relevanssi
+	- Deprecated: [wpv-post-found] is replaced with [wpv-items-found]
+	- Deprecated: [wpv-no-post-found] and [wpv-no-taxonomy-found] are replaced with [wpv-no-items-found]
+	- Deprecated: [wpv-post-count] is replaced with [wpv-items-count]
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.3.1
+	- Admin listing screens: full page refresh instead of AJAX
+	- Admin listing screens: improved pagination and partial search
+	- Admin listing screens: table sorting by "name" and new column "date"
+	- Views and WP Archives: Update All Sections button
+	- Fix Views pagination admin GUI
+	- Fix Content Template asignment for posts previous to Views activation and for attachments
+	- Fix Missing templates in template chooser when arranged by usage
+	- Fix Search filter only in post titles
+	- Fix Layout Wizard behaviour
+	- Fix Create or update a WordPress Archive deletes the settings for some Content Templates
+	- WPML fix: CPT slugs in Views with AJAX pagination
+	- WPML fix: translation for strings in Views widget
+	- Several fixes in Views filters
+	- Fix Settings page - AJAX nonces and error handling
+	- Fix permissions where editors could access the natural Views and Content Templates listing screens
+	- Fix error in export and import for specific taxonomy Views and Layout Wizard settings
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.3.0.3
+	- Fix problem rendering [wpv-post-body] when no view_template is specified
+	- Fix bug creating Content Templates on some systems
+	
+-------------------------------------------------------------------------------------------------------------------
+Version 1.3.0.2
+	- Fix comparison function when inserting a filter
+	- Fix wrong message when editing a Views
+	- Fix adding a Content Template when only one exists
+	- Fix empty function in wpv-if shortcode
+	- Fix error when changing WordPress Archive title. Settings were lost.
+	- Fix problem when saving inline Content Template. Settings were lost.
+	- Add check for compatible Toolset plugins
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.3.0.1
+	- Fix SQL bug on Views listing page
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.3
+	- Major redesign of the UI to improve usability
+	- Rename View Templates to Content Templates
+	- New UI for Views listing page
+	- New UI for WordPress Archive listing page
+	- New UI for Content Template listing page
+	- New UI for the Views editor
+	- New UI for the Views setting page
+	- New UI for applying Content Templates
+	- Descriptions added to Views
+	- Descriptions added to Content Templates
+	- Improved workflow for creating Views
+	- Improved workflow for Views filters
+	- Improved workflow for Parametric Searches
+	- Improved workflow for Pagination
+	- Improved workflow for layouts with Layout wizard
+	- Easy HTML editing
+	- Added Inline Content Templates editing to Views Editor
+	
+-------------------------------------------------------------------------------------------------------------------
+Version 1.2.1
+	- Fixed wpv_control -- auto_fill_sort parameter is not working
+	- Fixed Not default sorting for AJAX pagination not working
+	- Fixed View Templates: if syntax highlight is off, CSS and JS editors won't show a textarea
+	- Fixed Filter by author was not exported/imported correctly
+	- Fixed Filtering by 2+ custom fields using OR relationship and sorting by a third custom field was not working
+	- Fixed Add Module Manager keys to the embedded version
+	- New Output the results of the View query for PHP using get_view_query_results
+	- New Output the results of View Templates to PHP using render_view_template
+	- New Two new options for the wpv-current-user shortcode: logged_in and role
+	- New Export/Import now adjusts image thumbnails inserted into any textarea in addition to full images
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.2
+	- Fixed Views filter appears to have a problem with Asian characters - allow asian characters in values
+	- Fixed Change the order of View results - allow adding aditional manual sorting
+	- Fixed The default option not working for Select type fields
+	- Fixed Filter controls: There is no way to set Default label for taxonomies, only for custom fields
+	- Fixed Fix generation of table header layout Meta HTML
+	- Fixed Debug to console is not working in WP 3.5
+	- Fixed Some items in the V popup are centered and some not
+	- Fixed Passing arguments using views short code attribute - fix for example text
+	- Fixed Both in frontend and backend: Calendar always shows in english, even with another default language - fixed frontend
+	- Fixed Open_basedir restriction in effect when exporting
+	- Fixed View not get correct translated CPT slug in LOOP
+	- Fixed Archive View settings still in effect after changing View to Normal
+	- Fixed Search filter mixes specific and visitor modes
+	- Fixed Archive views not working when no posts found
+	- New Syntax highlighter in Views Meta HTML and View Templates editor
+	- New Add a media section to the View edit
+	- New Add CSS editor to Views and View templates
+	- New Add JS editor to Views and View templates
+	- New Make meta HTML, CSS and JS boxes open-state persistent
+	- New Export CSS, JS and images
+	- New Add View template name to body classes
+	- New Check if we receive a complete form when editing Views
+	- New Raw output for [wpv-post-featured-image]
+	- New Shortcode for get_currentuserinfo()
+	- New Add [wpv-current-user] to wpv-if processing
+	- New Shortcode for bloginfo()
+	- New Shortcode for get_post_type_archive_link($post_type)
+	- New Add taxonomy shortcodes to shortcodes-in-shortcodes
+
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.1.4.1
+	- Fixed taxonomy query using name instead of slug
+    
+
+-------------------------------------------------------------------------------------------------------------------
+Version 1.1.4
+    - Fixed WP 3.5 Filter forms - taxonomy filter doesn't work when there is a space in taxonomy term name
+    - Fixed Missing links in Settings page
+    - Fixed Paginating looses filter control values
+    - Fixed Display usage tips for filter by author
+    - Fixed Add colons before inputs
+    - Fixed Check/handle spaces in URL parameters
+    - Fixed Validate that the URL argument name or shortcode attribute name is specified and show an error message otherwise
+    - Fixed When inserting author filter via the popup, it's saved incorrectly
+    - Fixed New Pages Overridden by Post View Template
+    - Fixed Pagination looses frontend filter values
+    - Add filtering by author
+    - Fixed Don't use mb_ereg
+    - Fixed HTML validation errors with View filter
+    - Fixed Javascript error when inserting shortcodes
+    - Add Wrap View loop in [wpv-posts-found] shortcode
+    - Fixed Conditional with empty not working
+

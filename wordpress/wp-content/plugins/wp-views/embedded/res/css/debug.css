@@ -1,0 +1,133 @@
+body {
+	overflow-y: scroll;
+	font: 11px/16px Helvetica, Arial, sans-serif;
+}
+
+.desc {
+	color: #999;
+}
+
+.wpv-debug-table-wrapper {
+	position: relative;
+	margin: 20px auto;
+	padding-top: 40px; /* The same as .wpv-settings-wrapper height */
+	max-width: 1000px;
+}
+
+.wpv-settings-wrapper {
+	position: fixed;
+	top: 0;
+	margin-left: -100px;
+	padding: 0 100px;
+	width: 1000px;
+	height: 40px;
+	border-bottom: 1px solid #ededed;
+	background: #fafafa;
+	box-shadow: 0 0 30px 20px #fff;
+}
+
+.wpv-settings-wrapper .desc {
+	display: none;
+}
+
+.wpv-settings-wrapper label {
+	margin-right: 10px;
+	padding-right: 10px;
+	border-right: 1px solid #ededed;
+	cursor: pointer;
+}
+
+.wpv-loop-table-wrapper {
+	/*display: none;*/
+}
+
+.wpv-debug-table {
+	width: 100%;
+	border: 1px solid #ededed;
+	border: 1px solid #999;
+	border-collapse: collapse;
+}
+
+/* Top level table */
+.wpv-debug-table-wrapper > .wpv-debug-table {
+	margin-bottom: 30px;
+}
+
+/* Nested tables */
+.wpv-debug-table table {
+	margin: 10px 0 0 20px;
+}
+
+.wpv-debug-table td {
+	overflow: hidden;
+	padding: 4px;
+	border: 1px solid #ededed;
+	background: #fff;
+	vertical-align: text-top;
+	font-size: 13px;
+}
+
+.wpv-debug-table td:first-child {
+	width: 200px;
+	font-weight: bold;
+}
+
+.wpv-debug-table > tbody > tr:nth-child(2n) > td {
+	background: #fafafa;
+}
+
+.wpv-debug-toggle-wrap {
+	padding: 4px 0;
+	background: #fff;
+}
+
+/* Button */
+.wpv-debug-toggle {
+	display: inline-block;
+	padding: 4px;
+	outline: none;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	background: #f5f5f5;
+	background: -moz-linear-gradient(top,  #f5f5f5 0%, #f1f1f1 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f5f5), color-stop(100%,#f1f1f1));
+	background: -webkit-linear-gradient(top,  #f5f5f5 0%,#f1f1f1 100%);
+	background: -o-linear-gradient(top,  #f5f5f5 0%,#f1f1f1 100%);
+	background: -ms-linear-gradient(top,  #f5f5f5 0%,#f1f1f1 100%);
+	background: linear-gradient(to bottom,  #f5f5f5 0%,#f1f1f1 100%);
+	color: #333;
+	text-decoration: none;
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#f1f1f1',GradientType=0 );
+	cursor: pointer;
+}
+.wpv-debug-toggle[disabled] {
+	border-color: #ccc;
+	cursor: default;
+}
+.wpv-debug-toggle:hover {
+	border-color: #999;
+}
+
+pre {
+	/*display: none;*/
+	clear: both;
+	max-height: 600px;
+	overflow: auto;
+}
+
+.wpv-debug-table pre,
+.wpv-debug-table code[class*="language-"] {
+	max-width: 800px;
+	white-space: pre-wrap;
+}
+
+/* nowrap class is added to the <body> tag once "Enable line breaks" is selected */
+.nowrap .wpv-debug-table pre,
+.nowrap .wpv-debug-table code[class*="language-"]{
+	max-width: none;
+	white-space: pre;
+}
+
+.hidden {
+	display:none;
+}

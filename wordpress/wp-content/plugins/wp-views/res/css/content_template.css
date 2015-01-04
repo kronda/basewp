@@ -1,0 +1,24 @@
+.vpv-content-template-mode-tip-js{
+	margin-left:5px;
+	position: absolute;
+	right:-14px;
+	top:-1px;
+}
+.vpv-content-template-mode-tip-body{
+	display:none;	
+}
+.wpv-content-template-dropdown-list{
+	margin-left:10px;
+}
+.wpv-content-template-dropdown-list-closed{
+	display:none;
+}
+.wpv-content-template-alert-js{
+	color:red;
+	font-size:9px;
+	cursor:pointer;
+}
+.wpv-show-content-template-notification{
+	text-align:center;
+	margin-bottom:30px;
+}

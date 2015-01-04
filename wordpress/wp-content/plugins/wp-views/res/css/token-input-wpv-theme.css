@@ -1,0 +1,85 @@
+/* Example tokeninput style #2: Facebook style */
+ul.token-input-list-wpv {
+    overflow: hidden;
+    border: 1px solid #dfdfdf;
+    border-radius: 3px;
+    cursor: text;
+    position: relative;
+}
+
+ul.token-input-list-wpv li input {
+    -webkit-appearance: caret;
+    border-color: transparent;
+}
+
+ul.token-input-list-wpv li input:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+li.token-input-token-wpv {
+    overflow: hidden;
+    background: #ededed;
+    padding: 2px;
+    margin: 2px;
+}
+
+li.token-input-token-wpv p {
+    float: left;
+    padding: 0;
+    margin: 0;
+}
+li.token-input-selected-token-wpv {
+    background: #278ab7;
+    color: #fff;
+}
+
+li.token-input-token-wpv .token-input-delete-token-wpv {
+    float: right;
+    color: #d54e21;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0 5px;
+}
+
+li.token-input-token-wpv .token-input-selected-token-wpv .token-input-delete-token-wpv {
+    color: #fff;
+}
+
+
+li.token-input-input-token-wpv {
+    margin-bottom: 0;
+}
+
+div.token-input-dropdown-wpv {
+    background: #fff;
+    position: absolute;
+    margin-top: -2px;
+    overflow: hidden;
+    border: 1px solid #dfdfdf;
+    border-top-width: 0;
+    cursor: default;
+    z-index: 1;
+    width: 514px;
+}
+
+div.token-input-dropdown-wpv ul {
+    margin: 0;
+    padding: 0;
+}
+
+div.token-input-dropdown-wpv p,
+div.token-input-dropdown-wpv li {
+    padding: 2px;
+    margin: 2px;
+}
+
+div.token-input-dropdown-wpv ul li em {
+    font-weight: bold;
+    font-style: normal;
+}
+
+div.token-input-dropdown-wpv ul li.token-input-selected-dropdown-item-wpv {
+    color: #fff;
+    background: #278ab7;
+}

@@ -1,0 +1,194 @@
+/* Globals */
+.toolset-help,
+.toolset-alert {
+	position: relative;
+	clear: both;
+	margin: 20px 0;
+	border: 1px solid;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+
+/* Validation messages */
+
+.toolset-alert {
+	padding: 10px 20px 10px 10px;
+	border-color: #fbeed5;
+	background-color: #fcf8e3;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	line-height: 1;
+}
+
+span.toolset-alert {
+	display: inline-block;
+	clear: none;
+	margin: 2px 1px;
+	padding: 4px 6px;
+	cursor: pointer;
+}
+
+.toolset-alert.hidden {
+	display: none;
+}
+
+.toolset-alert,
+.toolset-alert .toolset-alert-header {
+	color: #c09853;
+}
+
+	.toolset-alert .toolset-alert-header {
+		margin: 0;
+	}
+
+	.toolset-alert .toolset-alert-close {
+		position: absolute;
+		top: 9px;
+		right: 5px;
+		color: #999;
+	}
+
+.toolset-alert-success {
+	border-color: #d6e9c6;
+	background-color: #dff0d8;
+	color: #468847;
+}
+
+	.toolset-alert-success .toolset-alert-header {
+	 	color: #468847;
+	}
+
+.toolset-alert-error {
+	border-color: #eed3d7;
+	background-color: #f2dede;
+	color: #b94a48;
+}
+
+	.toolset-alert-error .toolset-alert-header {
+	 	color: #b94a48;
+	}
+
+.toolset-alert-info {
+	border-color: #bce8f1;
+	background-color: #d9edf7;
+	color: #3a87ad;
+}
+
+	.toolset-alert-info .toolset-alert-header {
+		color: #3a87ad;
+	}
+
+/* Explanation messages */
+.toolset-help {
+	min-height: 140px;
+	border-color: #d2e9e7;
+	background: #f6fafa;
+	background: -moz-linear-gradient(top,  #f6fafa 0%, #eff6f6 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6fafa), color-stop(100%,#eff6f6));
+	background: -webkit-linear-gradient(top,  #f6fafa 0%,#eff6f6 100%);
+	background: -o-linear-gradient(top,  #f6fafa 0%,#eff6f6 100%);
+	background: -ms-linear-gradient(top,  #f6fafa 0%,#eff6f6 100%);
+	background: linear-gradient(to bottom,  #f6fafa 0%,#eff6f6 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6fafa', endColorstr='#eff6f6',GradientType=0 );
+}
+/*.wpv-section-title + .toolset-help {
+	margin-top: 0;
+	border-top: 0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}*/
+.js-show-toolset-message {
+	display: none;
+}
+
+	.toolset-help-content {
+		padding: 15px 160px 15px 15px;
+		min-height: 105px;
+		color: #4f4f4f;
+	}
+
+		.toolset-help-content a {
+			display: inline-block;
+			line-height: 18px;
+			text-decoration: underline;
+		}
+		.toolset-help-content p,
+		.toolset-help-content ul,
+		.toolset-help-content ol {
+			line-height: 1.6;
+		}
+		.toolset-help-content ul,
+		.toolset-help-content ol {
+			margin-left: 0;
+			list-style-position: inside;
+		}
+		.toolset-help-content ul li {
+			list-style-type: disc;
+		}
+		.toolset-help-content ol li {
+			list-style-type: decimal;
+		}
+		.toolset-help-content p:first-child {
+			margin-top: 0;
+		}
+		.toolset-help-content .btn {
+			margin: 0 10px 0 0;
+			padding: 0 10px;
+			border: 0;
+			border-radius: 15px;
+			background: #11a99b;
+			color: #fff;
+			text-decoration: none;
+			text-shadow: none;
+			font-weight: bold;
+		}
+
+		.toolset-help-content .toolset-help-content-toolbar {
+			margin: 20px 0 0 0;
+		}
+
+	.toolset-help-sidebar {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 145px;
+		border-left: 1px solid #d2e9e7;
+		background: -moz-linear-gradient(top,  #e5f4f3 0%, #dff1f0 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5f4f3), color-stop(100%,#dff1f0));
+		background: -webkit-linear-gradient(top,  #e5f4f3 0%,#dff1f0 100%);
+		background: -o-linear-gradient(top,  #e5f4f3 0%,#dff1f0 100%);
+		background: -ms-linear-gradient(top,  #e5f4f3 0%,#dff1f0 100%);
+		background: linear-gradient(to bottom,  #e5f4f3 0%,#dff1f0 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5f4f3', endColorstr='#dff1f0',GradientType=0 );
+	}
+		.toolset-help-sidebar-ico {
+			margin: 20px auto 0 auto;
+			width: 93px;
+			height: 83px;
+			background: url('../img/icon-help-message.png') center center no-repeat;
+			vertical-align: middle;
+		}
+
+	.toolset-help-footer {
+		position: relative;
+		z-index: 1;
+		padding: 5px;
+		border-top: 1px solid #d2e9e7;
+		background: #dff1f0;
+		text-align: right;
+	}
+
+		.toolset-help-footer [class^="button-"] {
+			margin-left: 5px;
+		}
+
+
+	.toolset-help .icon-remove-sign {
+		position: absolute;
+		top: -10px;
+		right: -8px;
+		color: #333;
+		font-size: 22px;
+	}
