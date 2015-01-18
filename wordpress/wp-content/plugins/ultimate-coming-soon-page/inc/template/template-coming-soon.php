@@ -1,5 +1,5 @@
-<?php 
-$sc_jdt = get_option('seedprod_comingsoon_options'); 
+<?php
+$sc_jdt = get_option('seedprod_comingsoon_options');
 global $seedprod_comingsoon;
 ?>
 <!DOCTYPE html>
@@ -25,7 +25,7 @@ global $seedprod_comingsoon;
   <?php  do_action( 'sc_head'); ?>
 
   <link rel="stylesheet" href="<?php echo plugins_url('template/style.css',dirname(__FILE__)); ?>">
-  
+
   <?php
   if(isset($sc_jdt['comingsoon_background_noise_effect']) && $sc_jdt['comingsoon_background_noise_effect'] == 'on' ){
     $noise = plugins_url('template/images/bg.png',dirname(__FILE__));
@@ -144,5 +144,9 @@ global $seedprod_comingsoon;
   <![endif]-->
 </body>
 </html>
+
+
+
+<!-- Ultimate Coming Soon Page by SeedProd. Learn more: http://www.seedprod.com -->
 
 <?php exit(); ?>

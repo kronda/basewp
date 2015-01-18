@@ -3,8 +3,8 @@ Contributors: johnnytee
 Donate link: http://seedprod.com/
 Tags: wordpress coming soon, wordpress maintenance mode. wordpress under construction, maintenance mode, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, newsletter, coming soon page, landing page
 Requires at least: 3
-Tested up to: 3.9.1
-Stable tag: 1.10.2
+Tested up to: 4.1.0
+Stable tag: 1.12.0
 
 Creates a Coming Soon page or Launch page for your Website while it's under construction and collects emails from your visitors.
 
@@ -83,6 +83,7 @@ Simple and flexible, the Ultimate Coming Soon Page plugin works with any WordPre
 * Portuguese(pt_PT) by [Alexander Pereira](http://www.pontovisual.net/traducao-do-plugin-ultimate-coming-soon-page/)
 * Russian (ru_RU) by [Oleg Vlasov](http://bestplugins.ru)
 * Spanish(es_CO) by [Jaime Echeverry](http://jaime.co/)
+* Spanish(es_ES) by [WebHostingHub](http://webhostinghub.com)
 * Slovak (sk_SK) by [Branco Radenovich/WebHostingGeeks.com](http://webhostinggeeks.com/blog/)
 * Slovenian(sl_SI) by [Jani Roskar](http://qb.si)
 * Swedish(sv_SE) by [Björn Sennbrink](https://github.com/Sennbrink/SeedProd-Ultimate-Coming-Soon-WP-Plugin-Swedish-Translation)
@@ -140,6 +141,16 @@ To fix:
 
 
 == Changelog ==
+= 1.12.0 =
+* Added: responsiveness
+* Fixed: typo
+
+= 1.11.1 =
+* Fixed: unserialized message
+
+= 1.11.0 =
+* Added: Added Spanish Translation
+
 = 1.10.2 =
 * Added: Added Ukrainian Translation
 
@@ -318,6 +329,16 @@ To fix:
 * Alpha Launch
 
 == Upgrade Notice ==
+= 1.12.0 =
+* Added: responsiveness
+* Fixed: typo
+
+= 1.11.1 =
+* Fixed: unserialized message
+
+= 1.11.0 =
+* Added: Added Spanish Translation
+
 = 1.10.1 =
 * Fixed: Undefined Indexes
 

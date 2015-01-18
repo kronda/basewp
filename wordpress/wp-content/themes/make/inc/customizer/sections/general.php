@@ -235,7 +235,13 @@ function ttfmake_customizer_define_general_sections( $sections ) {
 	 * This is a built-in section.
 	 */
 
-	// Filter the definitions
+	/**
+	 * Filter the definitions for the controls in the General panel of the Customizer.
+	 *
+	 * @since 1.3.0.
+	 *
+	 * @param array    $general_sections    The array of definitions.
+	 */
 	$general_sections = apply_filters( 'make_customizer_general_sections', $general_sections );
 
 	// Merge with master array

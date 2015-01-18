@@ -3,7 +3,7 @@ Contributors: New Nine
 Author URI: http://www.newnine.com
 Tags: menus, font awesome, navigation, responsive, nav menu, wp_nav_menu
 Requires at least: 3
-Tested up to: 3.9.1
+Tested up to: 4.0
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -81,10 +81,17 @@ If you uninstall the plugin, Font Awesome 4 Menus cleans up after itself by remo
 
 == Upgrade Notice ==
 
+= 4.2.0.1 =
+Update to Font Awesome 4.2 which includes another 40 icons
+
 = 4.1.0.1 =
 This upgrade allows you to load Font Awesome from a CDN or prevent double-loading of the stylesheet. It also adds the ability to remove the space in your menus for finer style control.
 
 == Changelog ==
+
+= 4.2.0.1 =
+* Added 40 new icons
+* Updated MaxCDN to 4.2.0
 
 = 4.1.0.1 =
 * Added MaxCDN as an optional stylesheet source

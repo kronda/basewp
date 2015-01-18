@@ -7,7 +7,7 @@ if ( ! function_exists( 'ttfmake_get_google_fonts' ) ) :
 /**
  * Return an array of all available Google Fonts.
  *
- * Updated: 2014-12-02T00:45:59+00:00
+ * Updated: 2015-01-12T22:51:47+00:00
  *
  * @since  1.0.0.
  *
@@ -25,8 +25,8 @@ function ttfmake_get_google_fonts() {
 		'ABeeZee' => array(
 			'label' => 'ABeeZee',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -49,8 +49,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -100,15 +100,15 @@ function ttfmake_get_google_fonts() {
 				'100',
 				'200',
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'greek',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -118,8 +118,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -129,8 +129,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -140,8 +140,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -158,8 +158,8 @@ function ttfmake_get_google_fonts() {
 		'Alef' => array(
 			'label' => 'Alef',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -169,32 +169,32 @@ function ttfmake_get_google_fonts() {
 		'Alegreya' => array(
 			'label' => 'Alegreya',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Alegreya SC' => array(
 			'label' => 'Alegreya SC',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -205,8 +205,6 @@ function ttfmake_get_google_fonts() {
 				'100italic',
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'500',
 				'500italic',
 				'700',
@@ -215,10 +213,12 @@ function ttfmake_get_google_fonts() {
 				'800italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 				'vietnamese',
 			),
 			'category' => 'sans-serif',
@@ -230,8 +230,6 @@ function ttfmake_get_google_fonts() {
 				'100italic',
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'500',
 				'500italic',
 				'700',
@@ -240,10 +238,12 @@ function ttfmake_get_google_fonts() {
 				'800italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 				'vietnamese',
 			),
 			'category' => 'sans-serif',
@@ -254,8 +254,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -302,12 +302,12 @@ function ttfmake_get_google_fonts() {
 		'Allan' => array(
 			'label' => 'Allan',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -337,22 +337,22 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Almendra' => array(
 			'label' => 'Almendra',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -362,8 +362,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -383,18 +383,18 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Amaranth' => array(
 			'label' => 'Amaranth',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -404,8 +404,8 @@ function ttfmake_get_google_fonts() {
 		'Amatic SC' => array(
 			'label' => 'Amatic SC',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -428,8 +428,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -439,8 +439,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -450,10 +450,10 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -480,16 +480,16 @@ function ttfmake_get_google_fonts() {
 		'Anonymous Pro' => array(
 			'label' => 'Anonymous Pro',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
 				'cyrillic',
+				'greek',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'monospace',
 		),
@@ -529,16 +529,16 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Arapey' => array(
 			'label' => 'Arapey',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -551,8 +551,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -562,8 +562,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -583,41 +583,41 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Archivo Narrow' => array(
 			'label' => 'Archivo Narrow',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Arimo' => array(
 			'label' => 'Arimo',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'vietnamese',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'sans-serif',
 		),
@@ -627,8 +627,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -638,8 +638,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -656,10 +656,10 @@ function ttfmake_get_google_fonts() {
 		'Arvo' => array(
 			'label' => 'Arvo',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -669,14 +669,14 @@ function ttfmake_get_google_fonts() {
 		'Asap' => array(
 			'label' => 'Asap',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -693,8 +693,8 @@ function ttfmake_get_google_fonts() {
 		'Astloch' => array(
 			'label' => 'Astloch',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -704,8 +704,8 @@ function ttfmake_get_google_fonts() {
 		'Asul' => array(
 			'label' => 'Asul',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -738,8 +738,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -749,8 +749,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -760,8 +760,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -771,8 +771,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -782,8 +782,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -792,10 +792,10 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -807,10 +807,10 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -822,10 +822,10 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -838,8 +838,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin',
 				'cyrillic',
+				'latin',
 			),
 			'category' => 'handwriting',
 		),
@@ -869,16 +869,16 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Battambang' => array(
 			'label' => 'Battambang',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'khmer',
@@ -921,8 +921,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -930,12 +930,12 @@ function ttfmake_get_google_fonts() {
 			'label' => 'BenchNine',
 			'variants' => array(
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -955,8 +955,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -976,8 +976,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -997,8 +997,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -1008,21 +1008,21 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Bitter' => array(
 			'label' => 'Bitter',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -1032,8 +1032,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1083,8 +1083,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1104,8 +1104,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -1115,8 +1115,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1126,8 +1126,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -1144,12 +1144,12 @@ function ttfmake_get_google_fonts() {
 		'Buenard' => array(
 			'label' => 'Buenard',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -1159,8 +1159,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1170,22 +1170,22 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Cabin' => array(
 			'label' => 'Cabin',
 			'variants' => array(
-				'regular',
-				'italic',
 				'500',
 				'500italic',
 				'600',
 				'600italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1195,10 +1195,10 @@ function ttfmake_get_google_fonts() {
 		'Cabin Condensed' => array(
 			'label' => 'Cabin Condensed',
 			'variants' => array(
-				'regular',
 				'500',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1208,8 +1208,8 @@ function ttfmake_get_google_fonts() {
 		'Cabin Sketch' => array(
 			'label' => 'Cabin Sketch',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1269,10 +1269,10 @@ function ttfmake_get_google_fonts() {
 		'Cantarell' => array(
 			'label' => 'Cantarell',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1285,8 +1285,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -1296,8 +1296,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -1307,23 +1307,23 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Cardo' => array(
 			'label' => 'Cardo',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'greek',
 				'greek-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -1370,16 +1370,16 @@ function ttfmake_get_google_fonts() {
 		'Caudex' => array(
 			'label' => 'Caudex',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'greek',
 				'greek-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -1406,8 +1406,8 @@ function ttfmake_get_google_fonts() {
 		'Changa One' => array(
 			'label' => 'Changa One',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1420,20 +1420,20 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Chau Philomene One' => array(
 			'label' => 'Chau Philomene One',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -1443,8 +1443,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1454,8 +1454,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1482,12 +1482,12 @@ function ttfmake_get_google_fonts() {
 		'Cherry Swash' => array(
 			'label' => 'Cherry Swash',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1507,18 +1507,18 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Chivo' => array(
 			'label' => 'Chivo',
 			'variants' => array(
-				'regular',
-				'italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1528,9 +1528,9 @@ function ttfmake_get_google_fonts() {
 		'Cinzel' => array(
 			'label' => 'Cinzel',
 			'variants' => array(
-				'regular',
 				'700',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1540,9 +1540,9 @@ function ttfmake_get_google_fonts() {
 		'Cinzel Decorative' => array(
 			'label' => 'Cinzel Decorative',
 			'variants' => array(
-				'regular',
 				'700',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1555,16 +1555,16 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Coda' => array(
 			'label' => 'Coda',
 			'variants' => array(
-				'regular',
 				'800',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1588,8 +1588,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1599,8 +1599,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1608,15 +1608,15 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Comfortaa',
 			'variants' => array(
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1636,8 +1636,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1647,16 +1647,16 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Content' => array(
 			'label' => 'Content',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'khmer',
@@ -1706,8 +1706,8 @@ function ttfmake_get_google_fonts() {
 		'Corben' => array(
 			'label' => 'Corben',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1720,35 +1720,35 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Cousine' => array(
 			'label' => 'Cousine',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'vietnamese',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'monospace',
 		),
 		'Coustard' => array(
 			'label' => 'Coustard',
 			'variants' => array(
-				'regular',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1788,24 +1788,24 @@ function ttfmake_get_google_fonts() {
 		'Crete Round' => array(
 			'label' => 'Crete Round',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Crimson Text' => array(
 			'label' => 'Crimson Text',
 			'variants' => array(
-				'regular',
-				'italic',
 				'600',
 				'600italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1818,8 +1818,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -1836,15 +1836,15 @@ function ttfmake_get_google_fonts() {
 		'Cuprum' => array(
 			'label' => 'Cuprum',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -1854,8 +1854,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -1865,8 +1865,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'monospace',
 		),
@@ -1883,8 +1883,8 @@ function ttfmake_get_google_fonts() {
 		'Dancing Script' => array(
 			'label' => 'Dancing Script',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1944,8 +1944,8 @@ function ttfmake_get_google_fonts() {
 		'Delius Unicase' => array(
 			'label' => 'Delius Unicase',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -1968,8 +1968,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -1979,10 +1979,21 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
+		),
+		'Dhurjati' => array(
+			'label' => 'Dhurjati',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'sans-serif',
 		),
 		'Didact Gothic' => array(
 			'label' => 'Didact Gothic',
@@ -1990,12 +2001,12 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2005,8 +2016,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -2016,20 +2027,20 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Domine' => array(
 			'label' => 'Domine',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -2039,8 +2050,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -2050,8 +2061,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2070,15 +2081,15 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'200',
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
 				'800',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2088,16 +2099,16 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Droid Sans' => array(
 			'label' => 'Droid Sans',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -2117,10 +2128,10 @@ function ttfmake_get_google_fonts() {
 		'Droid Serif' => array(
 			'label' => 'Droid Serif',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -2133,8 +2144,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2144,8 +2155,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -2155,11 +2166,11 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
-				'vietnamese',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'serif',
 		),
@@ -2169,8 +2180,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -2180,22 +2191,22 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Economica' => array(
 			'label' => 'Economica',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2204,16 +2215,16 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'200',
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
 				'800',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2230,24 +2241,24 @@ function ttfmake_get_google_fonts() {
 		'Elsie' => array(
 			'label' => 'Elsie',
 			'variants' => array(
-				'regular',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Elsie Swash Caps' => array(
 			'label' => 'Elsie Swash Caps',
 			'variants' => array(
-				'regular',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -2257,8 +2268,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -2268,8 +2279,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -2289,20 +2300,20 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Enriqueta' => array(
 			'label' => 'Enriqueta',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -2322,8 +2333,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -2333,8 +2344,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -2344,8 +2355,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -2358,8 +2369,6 @@ function ttfmake_get_google_fonts() {
 				'200italic',
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'500',
 				'500italic',
 				'600',
@@ -2370,10 +2379,12 @@ function ttfmake_get_google_fonts() {
 				'800italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2386,8 +2397,6 @@ function ttfmake_get_google_fonts() {
 				'200italic',
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'500',
 				'500italic',
 				'600',
@@ -2398,25 +2407,27 @@ function ttfmake_get_google_fonts() {
 				'800italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Expletus Sans' => array(
 			'label' => 'Expletus Sans',
 			'variants' => array(
-				'regular',
-				'italic',
 				'500',
 				'500italic',
 				'600',
 				'600italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -2426,8 +2437,8 @@ function ttfmake_get_google_fonts() {
 		'Fanwood Text' => array(
 			'label' => 'Fanwood Text',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -2480,8 +2491,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -2511,8 +2522,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -2522,8 +2533,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -2540,15 +2551,15 @@ function ttfmake_get_google_fonts() {
 		'Fira Mono' => array(
 			'label' => 'Fira Mono',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'monospace',
 		),
@@ -2557,19 +2568,19 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'500',
 				'500italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2579,8 +2590,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2618,12 +2629,12 @@ function ttfmake_get_google_fonts() {
 		'Fondamento' => array(
 			'label' => 'Fondamento',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -2643,10 +2654,10 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -2656,8 +2667,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2667,8 +2678,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -2708,8 +2719,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2729,8 +2740,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -2757,10 +2768,10 @@ function ttfmake_get_google_fonts() {
 		'GFS Neohellenic' => array(
 			'label' => 'GFS Neohellenic',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'greek',
@@ -2773,8 +2784,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -2784,8 +2795,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -2805,44 +2816,44 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Gentium Basic' => array(
 			'label' => 'Gentium Basic',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Gentium Book Basic' => array(
 			'label' => 'Gentium Book Basic',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Geo' => array(
 			'label' => 'Geo',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -2879,14 +2890,25 @@ function ttfmake_get_google_fonts() {
 			),
 			'category' => 'display',
 		),
+		'Gidugu' => array(
+			'label' => 'Gidugu',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'sans-serif',
+		),
 		'Gilda Display' => array(
 			'label' => 'Gilda Display',
 			'variants' => array(
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -2906,21 +2928,21 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Glegoo' => array(
 			'label' => 'Glegoo',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -2957,8 +2979,8 @@ function ttfmake_get_google_fonts() {
 		'Gorditas' => array(
 			'label' => 'Gorditas',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -2991,8 +3013,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -3012,8 +3034,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -3023,8 +3045,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -3034,21 +3056,21 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Gudea' => array(
 			'label' => 'Gudea',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3058,8 +3080,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -3067,15 +3089,15 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Halant',
 			'variants' => array(
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -3085,8 +3107,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3096,8 +3118,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -3107,8 +3129,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -3125,8 +3147,8 @@ function ttfmake_get_google_fonts() {
 		'Hanuman' => array(
 			'label' => 'Hanuman',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'khmer',
@@ -3139,8 +3161,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -3150,8 +3172,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -3171,8 +3193,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -3180,15 +3202,15 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Hind',
 			'variants' => array(
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3218,16 +3240,16 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'IM Fell DW Pica' => array(
 			'label' => 'IM Fell DW Pica',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -3247,8 +3269,8 @@ function ttfmake_get_google_fonts() {
 		'IM Fell Double Pica' => array(
 			'label' => 'IM Fell Double Pica',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -3268,8 +3290,8 @@ function ttfmake_get_google_fonts() {
 		'IM Fell English' => array(
 			'label' => 'IM Fell English',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -3289,8 +3311,8 @@ function ttfmake_get_google_fonts() {
 		'IM Fell French Canon' => array(
 			'label' => 'IM Fell French Canon',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -3310,8 +3332,8 @@ function ttfmake_get_google_fonts() {
 		'IM Fell Great Primer' => array(
 			'label' => 'IM Fell Great Primer',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -3354,20 +3376,20 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Inconsolata' => array(
 			'label' => 'Inconsolata',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'monospace',
 		),
@@ -3377,8 +3399,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3395,12 +3417,12 @@ function ttfmake_get_google_fonts() {
 		'Inika' => array(
 			'label' => 'Inika',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -3417,16 +3439,16 @@ function ttfmake_get_google_fonts() {
 		'Istok Web' => array(
 			'label' => 'Istok Web',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3446,8 +3468,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -3477,8 +3499,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -3488,8 +3510,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3499,8 +3521,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -3511,16 +3533,16 @@ function ttfmake_get_google_fonts() {
 				'100italic',
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'600',
 				'600italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3531,12 +3553,12 @@ function ttfmake_get_google_fonts() {
 				'100italic',
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'600',
 				'600italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -3549,17 +3571,17 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Judson' => array(
 			'label' => 'Judson',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -3582,8 +3604,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3601,16 +3623,16 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Jura',
 			'variants' => array(
 				'300',
-				'regular',
 				'500',
 				'600',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3630,8 +3652,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -3639,21 +3661,21 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Kalam',
 			'variants' => array(
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Kameron' => array(
 			'label' => 'Kameron',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -3664,8 +3686,8 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Kantumruy',
 			'variants' => array(
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'khmer',
@@ -3675,14 +3697,14 @@ function ttfmake_get_google_fonts() {
 		'Karla' => array(
 			'label' => 'Karla',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3690,15 +3712,15 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Karma',
 			'variants' => array(
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -3708,8 +3730,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -3719,8 +3741,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -3740,8 +3762,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -3751,9 +3773,9 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -3771,15 +3793,15 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Khand',
 			'variants' => array(
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3809,8 +3831,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -3820,8 +3842,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -3849,8 +3871,8 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Kreon',
 			'variants' => array(
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -3873,8 +3895,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3892,15 +3914,15 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Laila',
 			'variants' => array(
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -3921,16 +3943,16 @@ function ttfmake_get_google_fonts() {
 				'100italic',
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'700',
 				'700italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3960,22 +3982,22 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Lekton' => array(
 			'label' => 'Lekton',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -3992,25 +4014,25 @@ function ttfmake_get_google_fonts() {
 		'Libre Baskerville' => array(
 			'label' => 'Libre Baskerville',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Life Savers' => array(
 			'label' => 'Life Savers',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4020,8 +4042,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4031,8 +4053,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4042,16 +4064,16 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Linden Hill' => array(
 			'label' => 'Linden Hill',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4064,19 +4086,19 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Lobster Two' => array(
 			'label' => 'Lobster Two',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4126,15 +4148,15 @@ function ttfmake_get_google_fonts() {
 		'Lora' => array(
 			'label' => 'Lora',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -4164,8 +4186,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4182,8 +4204,8 @@ function ttfmake_get_google_fonts() {
 		'Lusitana' => array(
 			'label' => 'Lusitana',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4223,12 +4245,12 @@ function ttfmake_get_google_fonts() {
 		'Magra' => array(
 			'label' => 'Magra',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -4252,14 +4274,36 @@ function ttfmake_get_google_fonts() {
 			),
 			'category' => 'sans-serif',
 		),
+		'Mallanna' => array(
+			'label' => 'Mallanna',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'sans-serif',
+		),
+		'Mandali' => array(
+			'label' => 'Mandali',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'sans-serif',
+		),
 		'Marcellus' => array(
 			'label' => 'Marcellus',
 			'variants' => array(
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -4269,8 +4313,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -4280,9 +4324,9 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4292,8 +4336,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4313,19 +4357,19 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Marvel' => array(
 			'label' => 'Marvel',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4335,8 +4379,8 @@ function ttfmake_get_google_fonts() {
 		'Mate' => array(
 			'label' => 'Mate',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4356,10 +4400,10 @@ function ttfmake_get_google_fonts() {
 		'Maven Pro' => array(
 			'label' => 'Maven Pro',
 			'variants' => array(
-				'regular',
 				'500',
 				'700',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4372,8 +4416,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4393,8 +4437,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4424,20 +4468,20 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Merienda' => array(
 			'label' => 'Merienda',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4456,16 +4500,16 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'700',
 				'700italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -4474,16 +4518,16 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'700',
 				'700italic',
 				'800',
 				'800italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -4503,8 +4547,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4514,8 +4558,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4545,8 +4589,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4586,8 +4630,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4597,8 +4641,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4608,8 +4652,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -4619,20 +4663,20 @@ function ttfmake_get_google_fonts() {
 				'italic',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Monda' => array(
 			'label' => 'Monda',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -4662,8 +4706,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4690,8 +4734,8 @@ function ttfmake_get_google_fonts() {
 		'Montserrat' => array(
 			'label' => 'Montserrat',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4701,8 +4745,8 @@ function ttfmake_get_google_fonts() {
 		'Montserrat Alternates' => array(
 			'label' => 'Montserrat Alternates',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4712,8 +4756,8 @@ function ttfmake_get_google_fonts() {
 		'Montserrat Subrayada' => array(
 			'label' => 'Montserrat Subrayada',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4743,8 +4787,8 @@ function ttfmake_get_google_fonts() {
 		'Mountains of Christmas' => array(
 			'label' => 'Mountains of Christmas',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4757,8 +4801,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -4768,8 +4812,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4779,8 +4823,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4790,8 +4834,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4801,8 +4845,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4812,8 +4856,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4822,8 +4866,8 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'300',
 				'300italic',
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4836,10 +4880,21 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
+		),
+		'NTR' => array(
+			'label' => 'NTR',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'sans-serif',
 		),
 		'Neucha' => array(
 			'label' => 'Neucha',
@@ -4847,8 +4902,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin',
 				'cyrillic',
+				'latin',
 			),
 			'category' => 'handwriting',
 		),
@@ -4857,14 +4912,14 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'200',
 				'300',
-				'regular',
-				'italic',
 				'700',
 				'800',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -4874,20 +4929,20 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'News Cycle' => array(
 			'label' => 'News Cycle',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -4897,8 +4952,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4915,10 +4970,10 @@ function ttfmake_get_google_fonts() {
 		'Nobile' => array(
 			'label' => 'Nobile',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -4928,8 +4983,8 @@ function ttfmake_get_google_fonts() {
 		'Nokora' => array(
 			'label' => 'Nokora',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'khmer',
@@ -4942,8 +4997,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -4953,8 +5008,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -4971,14 +5026,14 @@ function ttfmake_get_google_fonts() {
 		'Noticia Text' => array(
 			'label' => 'Noticia Text',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 				'vietnamese',
 			),
 			'category' => 'serif',
@@ -4986,39 +5041,39 @@ function ttfmake_get_google_fonts() {
 		'Noto Sans' => array(
 			'label' => 'Noto Sans',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'vietnamese',
-				'devanagari',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'devanagari',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'sans-serif',
 		),
 		'Noto Serif' => array(
 			'label' => 'Noto Serif',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'vietnamese',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'serif',
 		),
@@ -5048,8 +5103,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin',
 				'greek',
+				'latin',
 			),
 			'category' => 'monospace',
 		),
@@ -5117,8 +5172,8 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Nunito',
 			'variants' => array(
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -5148,9 +5203,9 @@ function ttfmake_get_google_fonts() {
 		'Old Standard TT' => array(
 			'label' => 'Old Standard TT',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -5163,32 +5218,32 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Oleo Script' => array(
 			'label' => 'Oleo Script',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Oleo Script Swash Caps' => array(
 			'label' => 'Oleo Script Swash Caps',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5197,24 +5252,24 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'600',
 				'600italic',
 				'700',
 				'700italic',
 				'800',
 				'800italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'vietnamese',
-				'devanagari',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'devanagari',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'sans-serif',
 		),
@@ -5226,13 +5281,13 @@ function ttfmake_get_google_fonts() {
 				'700',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'vietnamese',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'sans-serif',
 		),
@@ -5242,20 +5297,20 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Orbitron' => array(
 			'label' => 'Orbitron',
 			'variants' => array(
-				'regular',
 				'500',
 				'700',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -5265,12 +5320,12 @@ function ttfmake_get_google_fonts() {
 		'Oregano' => array(
 			'label' => 'Oregano',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5280,8 +5335,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -5299,12 +5354,12 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Oswald',
 			'variants' => array(
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -5321,16 +5376,16 @@ function ttfmake_get_google_fonts() {
 		'Overlock' => array(
 			'label' => 'Overlock',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5340,8 +5395,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5359,12 +5414,12 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Oxygen',
 			'variants' => array(
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -5374,8 +5429,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'monospace',
 		),
@@ -5385,84 +5440,84 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'monospace',
 		),
 		'PT Sans' => array(
 			'label' => 'PT Sans',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'PT Sans Caption' => array(
 			'label' => 'PT Sans Caption',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'PT Sans Narrow' => array(
 			'label' => 'PT Sans Narrow',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'PT Serif' => array(
 			'label' => 'PT Serif',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'PT Serif Caption' => array(
 			'label' => 'PT Serif Caption',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -5492,8 +5547,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -5503,21 +5558,21 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Passion One' => array(
 			'label' => 'Passion One',
 			'variants' => array(
-				'regular',
 				'700',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5527,8 +5582,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -5538,8 +5593,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 				'vietnamese',
 			),
 			'category' => 'handwriting',
@@ -5550,8 +5605,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 				'vietnamese',
 			),
 			'category' => 'handwriting',
@@ -5576,14 +5631,25 @@ function ttfmake_get_google_fonts() {
 			),
 			'category' => 'sans-serif',
 		),
+		'Peddana' => array(
+			'label' => 'Peddana',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'serif',
+		),
 		'Peralta' => array(
 			'label' => 'Peralta',
 			'variants' => array(
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5603,8 +5669,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -5621,14 +5687,14 @@ function ttfmake_get_google_fonts() {
 		'Philosopher' => array(
 			'label' => 'Philosopher',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin',
 				'cyrillic',
+				'latin',
 			),
 			'category' => 'sans-serif',
 		),
@@ -5638,8 +5704,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5659,8 +5725,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5670,23 +5736,23 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Play' => array(
 			'label' => 'Play',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -5696,50 +5762,50 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Playfair Display' => array(
 			'label' => 'Playfair Display',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Playfair Display SC' => array(
 			'label' => 'Playfair Display SC',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Podkova' => array(
 			'label' => 'Podkova',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -5752,9 +5818,9 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5771,8 +5837,8 @@ function ttfmake_get_google_fonts() {
 		'Poly' => array(
 			'label' => 'Poly',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -5795,8 +5861,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -5846,10 +5912,10 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
 				'cyrillic',
+				'greek',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5859,8 +5925,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -5880,19 +5946,19 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Puritan' => array(
 			'label' => 'Puritan',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -5905,8 +5971,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -5916,18 +5982,18 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Quantico' => array(
 			'label' => 'Quantico',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -5937,26 +6003,26 @@ function ttfmake_get_google_fonts() {
 		'Quattrocento' => array(
 			'label' => 'Quattrocento',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Quattrocento Sans' => array(
 			'label' => 'Quattrocento Sans',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -5974,8 +6040,8 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Quicksand',
 			'variants' => array(
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -5988,8 +6054,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -5999,8 +6065,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -6010,20 +6076,20 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Radley' => array(
 			'label' => 'Radley',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -6031,15 +6097,15 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Rajdhani',
 			'variants' => array(
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6049,12 +6115,12 @@ function ttfmake_get_google_fonts() {
 				'100',
 				'200',
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
 				'800',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -6067,22 +6133,44 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
+		),
+		'Ramabhadra' => array(
+			'label' => 'Ramabhadra',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'sans-serif',
+		),
+		'Ramaraja' => array(
+			'label' => 'Ramaraja',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'serif',
 		),
 		'Rambla' => array(
 			'label' => 'Rambla',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6092,8 +6180,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6103,8 +6191,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6154,8 +6242,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6165,8 +6253,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6176,8 +6264,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6187,8 +6275,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6198,8 +6286,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6210,23 +6298,23 @@ function ttfmake_get_google_fonts() {
 				'100italic',
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'500',
 				'500italic',
 				'700',
 				'700italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'vietnamese',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6235,19 +6323,19 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'vietnamese',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6256,17 +6344,17 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'100',
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'vietnamese',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'serif',
 		),
@@ -6293,8 +6381,8 @@ function ttfmake_get_google_fonts() {
 		'Rokkitt' => array(
 			'label' => 'Rokkitt',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -6307,30 +6395,30 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
 		'Ropa Sans' => array(
 			'label' => 'Ropa Sans',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Rosario' => array(
 			'label' => 'Rosario',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -6340,12 +6428,12 @@ function ttfmake_get_google_fonts() {
 		'Rosarivo' => array(
 			'label' => 'Rosarivo',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -6365,9 +6453,9 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -6377,8 +6465,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6388,33 +6476,33 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Ruda' => array(
 			'label' => 'Ruda',
 			'variants' => array(
-				'regular',
 				'700',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Rufina' => array(
 			'label' => 'Rufina',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -6424,8 +6512,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -6435,8 +6523,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6446,8 +6534,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6457,9 +6545,9 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6469,9 +6557,9 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6481,8 +6569,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -6492,8 +6580,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6503,8 +6591,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -6531,12 +6619,12 @@ function ttfmake_get_google_fonts() {
 		'Sanchez' => array(
 			'label' => 'Sanchez',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -6546,8 +6634,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6567,25 +6655,25 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Sarpanch' => array(
 			'label' => 'Sarpanch',
 			'variants' => array(
-				'regular',
 				'500',
 				'600',
 				'700',
 				'800',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6602,15 +6690,15 @@ function ttfmake_get_google_fonts() {
 		'Scada' => array(
 			'label' => 'Scada',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6630,8 +6718,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6641,8 +6729,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6652,9 +6740,9 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6674,8 +6762,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -6692,14 +6780,14 @@ function ttfmake_get_google_fonts() {
 		'Share' => array(
 			'label' => 'Share',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6729,8 +6817,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6768,13 +6856,13 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Signika',
 			'variants' => array(
 				'300',
-				'regular',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6782,39 +6870,39 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Signika Negative',
 			'variants' => array(
 				'300',
-				'regular',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Simonetta' => array(
 			'label' => 'Simonetta',
 			'variants' => array(
-				'regular',
-				'italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Sintony' => array(
 			'label' => 'Sintony',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -6841,14 +6929,36 @@ function ttfmake_get_google_fonts() {
 		'Skranji' => array(
 			'label' => 'Skranji',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
+		),
+		'Slabo 13px' => array(
+			'label' => 'Slabo 13px',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'latin-ext',
+			),
+			'category' => 'serif',
+		),
+		'Slabo 27px' => array(
+			'label' => 'Slabo 27px',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'latin-ext',
+			),
+			'category' => 'serif',
 		),
 		'Slackey' => array(
 			'label' => 'Slackey',
@@ -6883,12 +6993,12 @@ function ttfmake_get_google_fonts() {
 		'Sniglet' => array(
 			'label' => 'Sniglet',
 			'variants' => array(
-				'regular',
 				'800',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6908,8 +7018,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -6939,20 +7049,20 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Sorts Mill Goudy' => array(
 			'label' => 'Sorts Mill Goudy',
 			'variants' => array(
-				'regular',
 				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -6961,15 +7071,15 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'200',
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'monospace',
 		),
@@ -6980,18 +7090,18 @@ function ttfmake_get_google_fonts() {
 				'200italic',
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'600',
 				'600italic',
 				'700',
 				'700italic',
 				'900',
 				'900italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 				'vietnamese',
 			),
 			'category' => 'sans-serif',
@@ -6999,13 +7109,13 @@ function ttfmake_get_google_fonts() {
 		'Source Serif Pro' => array(
 			'label' => 'Source Serif Pro',
 			'variants' => array(
-				'regular',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -7035,8 +7145,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7066,8 +7176,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'handwriting',
 		),
@@ -7077,17 +7187,17 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Stardos Stencil' => array(
 			'label' => 'Stardos Stencil',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -7100,8 +7210,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -7111,8 +7221,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -7123,8 +7233,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -7191,8 +7301,8 @@ function ttfmake_get_google_fonts() {
 		'Syncopate' => array(
 			'label' => 'Syncopate',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -7202,8 +7312,8 @@ function ttfmake_get_google_fonts() {
 		'Tangerine' => array(
 			'label' => 'Tangerine',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -7226,8 +7336,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7235,15 +7345,15 @@ function ttfmake_get_google_fonts() {
 			'label' => 'Teko',
 			'variants' => array(
 				'300',
-				'regular',
 				'500',
 				'600',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7257,15 +7367,26 @@ function ttfmake_get_google_fonts() {
 			),
 			'category' => 'sans-serif',
 		),
+		'Tenali Ramakrishna' => array(
+			'label' => 'Tenali Ramakrishna',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'sans-serif',
+		),
 		'Tenor Sans' => array(
 			'label' => 'Tenor Sans',
 			'variants' => array(
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7275,8 +7396,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7293,9 +7414,9 @@ function ttfmake_get_google_fonts() {
 		'Tienne' => array(
 			'label' => 'Tienne',
 			'variants' => array(
-				'regular',
 				'700',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -7305,19 +7426,19 @@ function ttfmake_get_google_fonts() {
 		'Tinos' => array(
 			'label' => 'Tinos',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'vietnamese',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
+				'vietnamese',
 			),
 			'category' => 'serif',
 		),
@@ -7327,8 +7448,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -7339,17 +7460,17 @@ function ttfmake_get_google_fonts() {
 				'200italic',
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'600',
 				'600italic',
 				'700',
 				'700italic',
 				'900',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7369,17 +7490,17 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
 		'Trochut' => array(
 			'label' => 'Trochut',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -7392,8 +7513,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -7412,20 +7533,20 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'300',
 				'300italic',
-				'regular',
-				'italic',
 				'500',
 				'500italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7435,30 +7556,30 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
 		'Ubuntu Mono' => array(
 			'label' => 'Ubuntu Mono',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
-				'greek',
-				'cyrillic-ext',
-				'greek-ext',
 				'cyrillic',
+				'cyrillic-ext',
+				'greek',
+				'greek-ext',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'monospace',
 		),
@@ -7488,9 +7609,9 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -7500,8 +7621,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -7528,8 +7649,8 @@ function ttfmake_get_google_fonts() {
 		'Unkempt' => array(
 			'label' => 'Unkempt',
 			'variants' => array(
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -7572,8 +7693,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -7583,8 +7704,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7611,15 +7732,15 @@ function ttfmake_get_google_fonts() {
 		'Vesper Libre' => array(
 			'label' => 'Vesper Libre',
 			'variants' => array(
-				'regular',
 				'500',
 				'700',
 				'900',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'devanagari',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'serif',
 		),
@@ -7649,8 +7770,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7660,18 +7781,18 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
 		'Volkhov' => array(
 			'label' => 'Volkhov',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -7681,10 +7802,10 @@ function ttfmake_get_google_fonts() {
 		'Vollkorn' => array(
 			'label' => 'Vollkorn',
 			'variants' => array(
-				'regular',
-				'italic',
 				'700',
 				'700italic',
+				'italic',
+				'regular',
 			),
 			'subsets' => array(
 				'latin',
@@ -7737,8 +7858,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -7748,8 +7869,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),
@@ -7759,8 +7880,8 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7779,12 +7900,12 @@ function ttfmake_get_google_fonts() {
 			'variants' => array(
 				'200',
 				'300',
-				'regular',
 				'700',
+				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
 				'latin',
+				'latin-ext',
 			),
 			'category' => 'sans-serif',
 		),
@@ -7804,9 +7925,9 @@ function ttfmake_get_google_fonts() {
 				'regular',
 			),
 			'subsets' => array(
-				'latin-ext',
-				'latin',
 				'cyrillic',
+				'latin',
+				'latin-ext',
 			),
 			'category' => 'display',
 		),

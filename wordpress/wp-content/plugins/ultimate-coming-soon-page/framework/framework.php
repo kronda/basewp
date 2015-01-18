@@ -8,7 +8,7 @@
  */
 if (!class_exists('SeedProd_Framework')) {
 	class SeedProd_Framework {
-	
+
         /**
          * Define the Version of the Plugin
          */
@@ -38,12 +38,12 @@ if (!class_exists('SeedProd_Framework')) {
          *  Do not replace callback function.
          */
         public $menu = array();
-        
+
         /**
          *  Define options, sections and fields
          */
         public $options = array();
-	
+
     	/**
     	 * Load Hooks
     	 */
@@ -52,7 +52,7 @@ if (!class_exists('SeedProd_Framework')) {
     	    add_action('admin_menu',array(&$this,'create_menu'));
     	    add_action('admin_init', array(&$this,'set_settings'));
     	}
-    	
+
     	/**
          * Set the base url to use in the plugin
          *
@@ -62,8 +62,8 @@ if (!class_exists('SeedProd_Framework')) {
     	function base_url(){
             return plugins_url('',dirname(__FILE__));
         }
-    	    
-	
+
+
         /**
          * Properly enqueue styles and scripts for our theme options page.
          *
@@ -83,7 +83,7 @@ if (!class_exists('SeedProd_Framework')) {
         	wp_enqueue_style( 'seedprod_plugin', plugins_url('inc/css/admin-style.css',dirname(__FILE__)), false, $this->plugin_version );
         	wp_enqueue_style('thickbox');
             wp_enqueue_script( 'theme-preview' );
-            wp_enqueue_style('farbtastic'); 
+            wp_enqueue_style('farbtastic');
         }
 
         /**
@@ -97,7 +97,7 @@ if (!class_exists('SeedProd_Framework')) {
             foreach ($this->menu as $v) {
                 $this->pages[] = call_user_func_array($v['type'],array($v['page_name'],$v['menu_name'],$v['capability'],$v['menu_slug'],$v['callback'],$v['icon_url']));
             }
-    
+
         }
 
         /**
@@ -108,81 +108,22 @@ if (!class_exists('SeedProd_Framework')) {
         function option_page() {
             $page = $_REQUEST['page'];
         	?>
+
         	<div class="wrap seedprod">
         	    <?php screen_icon(); ?>
         		<h2><?php echo $this->plugin_name; ?> </h2>
                 <a href="http://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=plugin&utm_medium=banner&utm_campaign=coming-soon-pro-in-plugin-banner" target="_blank">
                 <img src="http://static.seedprod.com.s3.amazonaws.com/ads/ultimate-coming-soon-page-banner-772x250.jpg" style="max-width:100%">
                 </a>
-        		<?php //settings_errors(); ?> 
+        		<?php //settings_errors(); ?>
                 <h2 class="nav-tab-wrapper" style="padding-left:20px">
                     <a class="nav-tab seed_csp3-support" href="options-general.php?page=seedprod_coming_soon"><?php _e('Settings','ultimate-coming-soon-page') ?></a>
                     <a class="nav-tab seed_csp3-preview thickbox-preview" href="<?php echo home_url(); ?>?cs_preview=true&TB_iframe=true&width=640&height=632" title="<?php _e('&larr; Close Window','ultimate-coming-soon-page') ?>"><?php _e('Live Preview','ultimate-coming-soon-page'); ?></a>
                 </h2>
-        		<div id="poststuff" class="metabox-holder">
-                    <!--<div id="side-info-column" class="inner-sidebar">
-                        <div id="side-sortables" class="meta-box-sortables ui-sortable">
-					     	<a href="http://www.seedprod.com/plugins/wordpress-coming-soon-pro-plugin/?utm_source=plugin&utm_medium=banner&utm_campaign=coming-soon-pro-in-plugin-banner" target="_blank"><img src="http://static.seedprod.com/ads/coming-soon-pro-sidebar.png" /></a>
-                            <br><br>
-                            <div class="postbox support-postbox">
-                                <div class="handlediv" title="Click to toggle"><br /></div>
-                				<h3 class="hndle"><span><?php _e('Plugin Support', 'ultimate-coming-soon-page') ?></span></h3>
-                				<div class="inside">
-                					<div class="support-widget">
-                					<p>
-                					   <?php _e('Got a Question, Idea, Problem or Praise?') ?>
-                					</p>
-                					<ul>
-                					    <li>&raquo; <a href="<?php echo (empty($this->plugin_support_url) ? 'http://seedprod.com/support/' : $this->plugin_support_url) ?>" target="_blank"><?php _e('Support Request', 'ultimate-coming-soon-page') ?></a></li>
-                				    </ul>
-                					
-                					</div>
-                				</div>
-                            </div>
-                            <?php if($this->plugin_type != 'pro'){ ?>
-                            <div class="postbox like-postbox">
-                                <div class="handlediv" title="Click to toggle"><br /></div>
-                				<h3 class="hndle"><span><?php _e('Show Some Love', 'ultimate-coming-soon-page') ?></span></h3>
-                				<div class="inside">
-                					<div class="like-widget">
-                					<p><?php _e('Like this plugin? Show your support by:', 'ultimate-coming-soon-page')?></p>
-                					<ul>
-                                        <li>&raquo; <a href="https://www.seedprod.com/submit-site/"><?php _e('Submit your site to the Showcase', 'ultimate-coming-soon-page') ?></a></li>
-                					    <li>&raquo; <a target="_blank" href="http://wordpress.org/extend/plugins/ultimate-coming-soon-page/"><?php _e('Rating It', 'ultimate-coming-soon-page') ?></a></li>
-                					    <li>&raquo; <a target="_blank" href="<?php echo "http://twitter.com/share?url={$this->plugin_seedprod_url}&text=Check out this awesome WordPress Plugin I'm using, 'Ultimate Coming Soon Page' by SeedProd {$this->plugin_short_url}"; ?>"><?php _e('Tweet It', 'ultimate-coming-soon-page') ?></a></li>
-                					    
-                					    
-                					   
-                					</ul>
-                					</div>
-                				</div>
-                            </div>
-                            <?php } ?>
-                            <div class="postbox rss-postbox">
-                                <div class="handlediv" title="Click to toggle"><br /></div>
-                				<h3 class="hndle"><span><?php _e('SeedProd Blog', 'ultimate-coming-soon-page') ?></span></h3>
-                				<div class="inside">
-                					<div class="rss-widget">
-                					<?php
-                					wp_widget_rss_output(array(
-                					   'url' => 'http://seedprod.com/feed/',
-                					   'title' => 'SeedProd Blog',
-                					   'items' => 3,
-                					   'show_summary' => 0,
-                					   'show_author' => 0,
-                					   'show_date' => 1,
-                					));
-                					?>
-            					    <ul>
-                					    <li>&raquo; <a href="http://seedprod.com/subscribe/"><?php _e('Subscribe by Email', 'ultimate-coming-soon-page') ?></a></li>
-                				    </ul>
-                					</div>
-                				</div>
-                            </div>
-                            
-                        </div>
-                    </div>-->
-                    <div id="post-body">
+
+        		<div id="poststuff" >
+
+                    <div id="post-body" class="metabox-holder columns-2">
                         <div id="post-body-content" >
                             <div class="meta-box-sortables ui-sortable">
                                 <form action="options.php" method="post">
@@ -199,19 +140,126 @@ if (!class_exists('SeedProd_Framework')) {
                                             		$this->seedprod_do_settings_sections($v['id']);
                                         		    echo '</div>';
                                         		    break;
-                        		    
+
                             		        }
                     		            }
             		                }
                                 }
                                 ?>
-                        		
+
                         	    </form>
                             </div>
                         </div>
+						<div id="postbox-container-1" class="postbox-container">
+							<div id="side-sortables" class="meta-box-sortables ui-sortable">
+								<!-- <a href="http://www.seedprod.com/plugins/wordpress-coming-soon-pro-plugin/?utm_source=plugin&utm_medium=banner&utm_campaign=coming-soon-pro-in-plugin-banner" target="_blank"><img src="http://static.seedprod.com/ads/coming-soon-pro-sidebar.png" /></a>
+								<br><br> -->
+								<div class="postbox support-postbox" style="background-color: #fcf8e3">
+									<div class="handlediv" title="Click to toggle"><br /></div>
+									<h3 class="hndle"><span><?php _e('Plugin Support', 'ultimate-coming-soon-page') ?></span></h3>
+									<div class="inside">
+										<div class="support-widget">
+											<p>
+												<?php _e('Got a Question, Idea, Problem or Praise?') ?>
+											</p>
+											<ul>
+												<li>&raquo; <a href="https://wordpress.org/support/plugin/ultimate-coming-soon-page" target="_blank"><?php _e('Support Request', 'ultimate-coming-soon-page') ?></a></li>
+												<li>&raquo; <a href="http://support.seedprod.com/article/83-how-to-clear-wp-super-caches-cache" target="_blank"><?php _e('Common Caching Issues Resolutions', 'ultimate-coming-soon-page') ?></a></li>
+											</ul>
+
+										</div>
+									</div>
+								</div>
+								<?php if($this->plugin_type != 'pro'){ ?>
+									<div class="postbox like-postbox" style="background-color:#dff0d8">
+										<div class="handlediv" title="Click to toggle"><br /></div>
+										<h3 class="hndle"><span><?php _e('Show Some Love', 'ultimate-coming-soon-page') ?></span></h3>
+										<div class="inside">
+											<div class="like-widget">
+												<p><?php _e('Like this plugin? Show your support by:', 'ultimate-coming-soon-page')?></p>
+												<ul>
+													<li>&raquo; <a target="_blank" href="https://www.seedprod.com?utm_source=plugin&utm_medium=banner&utm_campaign=coming-soon-pro-in-plugin-banner"><?php _e('Buy It', 'ultimate-coming-soon-page') ?></a></li>
+
+													<li>&raquo; <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/ultimate-coming-soon-page?rate=5#postform"><?php _e('Rate It', 'ultimate-coming-soon-page') ?></a></li>
+													<li>&raquo; <a target="_blank" href="<?php echo "http://twitter.com/share?url=https%3A%2F%2Fwordpress.org%2Fplugins%2Fultimate-coming-soon-page%2F&text=Check out this awesome %23WordPress Plugin I'm using, 'Ultimate Coming Soon Page' by SeedProd"; ?>"><?php _e('Tweet It', 'ultimate-coming-soon-page') ?></a></li>
+
+													<li>&raquo; <a href="https://www.seedprod.com/submit-site/"><?php _e('Submit your site to the Showcase', 'ultimate-coming-soon-page') ?></a></li>
+
+												</ul>
+											</div>
+										</div>
+									</div>
+									<?php } ?>
+									<div class="postbox rss-postbox" style="background-color:#d9edf7">
+										<div class="handlediv" title="Click to toggle"><br /></div>
+										<h3 class="hndle"><span><?php _e("How to launch a site that's successful on Day One", 'ultimate-coming-soon-page') ?></span></h3>
+										<div class="inside">
+											<form action="https://www.getdrip.com/forms/7838563/submissions" method="post" target="_blank" data-drip-embedded-form="1541">
+
+												<p data-drip-attribute="description">There's nothing more disappointing than launching a new site and not get
+													enough visitors to support it. Find out how to build an audience before you
+													launch in this free 5-part course.</p>
+													<div>
+														<label for="fields[first_name]">First Name</label><br />
+														<input type="text" name="fields[first_name]" value="" />
+													</div>
+													<div>
+														<label for="fields[email]">Email Address</label><br />
+														<input type="text" name="fields[email]" value="" />
+													</div>
+													<br>
+													<div>
+														<input type="submit" name="submit" value="Learn How" data-drip-attribute="sign-up-button" class="button-primary" />
+													</div>
+												</form>
+											<!-- <div class="rss-widget">
+												<?php
+												wp_widget_rss_output(array(
+													'url' => 'http://seedprod.com/feed/',
+													'title' => 'SeedProd Blog',
+													'items' => 3,
+													'show_summary' => 0,
+													'show_author' => 0,
+													'show_date' => 1,
+													));
+													?>
+													<ul>
+														<li>&raquo; <a href="http://seedprod.com/subscribe/"><?php _e('Subscribe by Email', 'ultimate-coming-soon-page') ?></a></li>
+													</ul>
+												</div> -->
+											</div>
+										</div>
+
+										<div class="postbox rss-postbox" style="background-color:#f2dede">
+											<div class="handlediv" title="Click to toggle"><br /></div>
+											<h3 class="hndle"><span><?php _e('SeedProd Blog', 'ultimate-coming-soon-page') ?></span></h3>
+											<div class="inside">
+
+												<div class="rss-widget">
+													<?php
+													wp_widget_rss_output(array(
+													'url' => 'http://seedprod.com/feed/',
+													'title' => 'SeedProd Blog',
+													'items' => 3,
+													'show_summary' => 0,
+													'show_author' => 0,
+													'show_date' => 1,
+												));
+												?>
+												<ul>
+													<br>
+												<li>&raquo; <a href="https://feedburner.google.com/fb/a/mailverify?uri=seedprod"><?php _e('Subscribe by Email', 'ultimate-coming-soon-page') ?></a></li>
+											</ul>
+										</div>
+									</div>
+								</div>
+
+									</div>
+								</div>
                     </div>
+
                 </div>
-        	</div>	
+        	</div>
         	<?php
         }
 
@@ -258,15 +306,15 @@ if (!class_exists('SeedProd_Framework')) {
                     		$k['callback'],
                     		$k['section_id'],
                     		$k['section_id'],
-                    		array('id' => $k['id'], 
+                    		array('id' => $k['id'],
                     		'desc' => (isset($k['desc']) ? $k['desc'] : ''),
-                    		'setting_id' => $k['setting_id'], 
-                    		'class' => (isset($k['class']) ? $k['class'] : ''), 
+                    		'setting_id' => $k['setting_id'],
+                    		'class' => (isset($k['class']) ? $k['class'] : ''),
                     		'type' => $k['type'],
                     		'default_value' => (isset($k['default_value']) ? $k['default_value'] : ''),
                     		'option_values' => (isset($k['option_values']) ? $k['option_values'] : ''))
                     	);
-                	    
+
         	    }
             }
         }
@@ -300,7 +348,7 @@ if (!class_exists('SeedProd_Framework')) {
                 	            echo "<optgroup label='$v'>";
                 	        }else{
 
-                	            if(preg_match("/empty/i",$k) && empty($default_value)){             
+                	            if(preg_match("/empty/i",$k) && empty($default_value)){
                 	                echo "<option value=''>$v</option>";
                 	            }else{
             	                    echo "<option value='$k' ".((preg_match("/empty/i",$options[$id] || isset($options[$id]) === false) ? $default_value : $options[$id]) == $k ? 'selected' : '').">$v</option>";
@@ -321,8 +369,8 @@ if (!class_exists('SeedProd_Framework')) {
                     $content   = $options[ $id ];
                     $editor_id = $id;
                     $args      = array(
-                         'textarea_name' => "{$setting_id}[$id]" 
-                    ); 
+                         'textarea_name' => "{$setting_id}[$id]"
+                    );
 
                     wp_editor( $content, $editor_id, $args );
 
@@ -351,7 +399,7 @@ if (!class_exists('SeedProd_Framework')) {
                         ";
         	        break;
         	}
-	
+
         }
 
         /**
@@ -382,9 +430,9 @@ if (!class_exists('SeedProd_Framework')) {
                         			'error'
                         		);
                         		unset($input[$k['id']]);
-                        	}		
+                        	}
                         }
-                        // Sanitize 
+                        // Sanitize
                 	    if($k['type'] == 'image'){
                 	        $input[$k['id']] = esc_url_raw($input[$k['id']]);
                 	    }
@@ -414,7 +462,7 @@ if (!class_exists('SeedProd_Framework')) {
         function section_dummy_desc() {
         	echo '';
         }
-        
+
         /**
          * Returns Font Families
          *
@@ -436,25 +484,25 @@ if (!class_exists('SeedProd_Framework')) {
             $fonts['_verdana'] = 'Verdana, Geneva, sans-serif';
             if($family){
                 if(!empty($fonts[$family])){
-                   $font_family=$fonts[$family]; 
+                   $font_family=$fonts[$family];
                }else{
                     $font_family = '"'. urldecode($family) . '",sans-serif' ;
                }
             }else{
-                $font_family=$fonts;  
+                $font_family=$fonts;
             }
         	return $font_family;
         }
-        
+
         /**
          * Get list of fonts from google and web safe fonts.
          *
          * @since 0.1
-         * @return array 
+         * @return array
          */
          function font_field_list($show_google_fonts = true){
-              $fonts = unserialize(get_transient('seedprod_fonts'));
-              if($fonts === false){
+              $fonts = maybe_unserialize(get_transient('seedprod_fonts'));
+              if(empty($fonts)){
                   if($show_google_fonts){
                       //$query = urlencode('select * from html where url="http://www.google.com/webfonts" and xpath=\'//div[@class="preview"]/span\'');
                       //$request = "http://query.yahooapis.com/v1/public/yql?q={$query}&format=json";
@@ -490,7 +538,7 @@ if (!class_exists('SeedProd_Framework')) {
              }
              return $fonts;
          }
-         
+
          /**
           * SeedProd version of WP's do_settings_sections
           *
@@ -520,4 +568,3 @@ if (!class_exists('SeedProd_Framework')) {
 
     }
 }
-?>

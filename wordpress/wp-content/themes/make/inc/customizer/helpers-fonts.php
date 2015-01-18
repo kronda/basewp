@@ -12,7 +12,16 @@ if ( ! function_exists( 'ttfmake_font_get_relative_sizes' ) ) :
  * @return array    The percentage value relative to another specific size
  */
 function ttfmake_font_get_relative_sizes() {
-	// Relative font sizes
+	/**
+	 * Filter the array of relative font sizes.
+	 *
+	 * Each array item defines a percentage by which to scale a font size compared
+	 * to some other font size. Most of these were deprecated in version 1.3.0.
+	 *
+	 * @since 1.0.0.
+	 *
+	 * @param array    $sizes    The array of relative sizes.
+	 */
 	return apply_filters( 'make_font_relative_size', array(
 		// Relative to navigation font size
 		'sub-menu'     => 93,  // Deprecated in 1.3.0.
@@ -251,7 +260,15 @@ if ( ! function_exists( 'ttfmake_parse_font_properties' ) ) :
  * @return array                 An array of non-default CSS declarations.
  */
 function ttfmake_parse_font_properties( $element ) {
-	// css_property => sanitize_callback
+	/**
+	 * Filter the array of customizable font properties and their sanitization callbacks.
+	 *
+	 * css_property => sanitize_callback
+	 *
+	 * @since 1.3.0.
+	 *
+	 * @param array    $properties    The array of font properties and callbacks.
+	 */
 	$properties = apply_filters( 'make_css_font_properties', array(
 		'font-family'	=> 'ttfmake_get_font_stack',
 		'font-size'		=> 'absint',
@@ -562,6 +579,7 @@ function ttfmake_get_google_font_subsets() {
 		'khmer'        => __( 'Khmer', 'make' ),
 		'latin'        => __( 'Latin', 'make' ),
 		'latin-ext'    => __( 'Latin Extended', 'make' ),
+		'telugu'       => __( 'Telugu', 'make' ),
 		'vietnamese'   => __( 'Vietnamese', 'make' ),
 	) );
 }
