@@ -15,3 +15,7 @@
 	background-image: -moz-linear-gradient(bottom, #d00, #a30) !important;
 	background-image: -webkit-gradient(linear, left bottom, left top, from(#d00), to(#a30)) !important;
 }
+
+.support-postbox{
+	background: #fcf8e3;
+}

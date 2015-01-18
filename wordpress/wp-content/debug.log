@@ -1,0 +1,2 @@
+[18-Jan-2015 19:28:18 UTC] PHP Notice:  Undefined index: package in phar:///usr/local/bin/wp/php/commands/plugin.php on line 326
+[18-Jan-2015 19:28:19 UTC] PHP Notice:  Undefined property: stdClass::$package in /Users/Kronda/Sites/basewp/wordpress/wp-admin/includes/class-wp-upgrader.php on line 644
