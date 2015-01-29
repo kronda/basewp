@@ -4,6 +4,7 @@ wordpress/wp-content/uploads
 wordpress/wp-content/w3tc
 wordpress/wp-content/avatars
 wordpress/wp-content/cache
+wordpress/wp-content/debug.log
 wordpress/local-config.php
 debug_log.txt
 .buildpath
@@ -12,6 +13,7 @@ debug_log.txt
 db
 docs/
 *~
+*debug.log*
 .DS_Store
 /.gitattributes
 *compass_app_log.txt*
