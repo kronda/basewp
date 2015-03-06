@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package Make Plus
+ */
+
 global $post, $ttfmp_data;
 
 // Are we rendering a widget?
@@ -64,7 +68,12 @@ if ( $is_widget || in_array( $thumbnail, array( 'left', 'right' ) ) ) {
 <?php endif; ?>
 <?php if ( $d['show-categories'] || $d['show-tags'] || $d['show-comments'] ) : ?>
 <footer class="ttfmp-post-list-item-footer">
-	<?php if ( ( $d['show-categories'] && has_category() && ttfmake_categorized_blog() ) || ( $d['show-tags'] || has_tag() ) ) : ?>
+	<?php
+	$categorized_blog = true;
+	if ( function_exists( 'ttfmake_categorized_blog' ) ) :
+		$categorized_blog = ttfmake_categorized_blog();
+	endif;
+	if ( ( $d['show-categories'] && has_category() && $categorized_blog ) || ( $d['show-tags'] || has_tag() ) ) : ?>
 		<?php
 		$category_list   = get_the_category_list();
 		$tag_list        = get_the_tag_list( '<ul class="post-tags"><li>', "</li>\n<li>", '</li></ul>' ); // Replicates category output

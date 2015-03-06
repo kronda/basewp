@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! class_exists( 'TTFMP_Section_Duplicator' ) ) :
 /**
@@ -112,14 +115,12 @@ class TTFMP_Section_Duplicator {
 	 * @return array              The new links.
 	 */
 	public function builder_section_footer_links( $links ) {
-		// Update the label to give more room for additional links
-		$links[100]['label'] = __( 'Remove', 'make-plus' );
-
 		// Add the duplicate link
-		$links[200] = array(
+		$links[60] = array(
 			'class' => 'ttfmp-duplicate-section',
 			'href'  => '#',
 			'label' => __( 'Duplicate', 'make-plus' ),
+			'title' => __( 'Duplicate section', 'make-plus' ),
 		);
 
 		return $links;

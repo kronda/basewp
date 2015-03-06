@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! class_exists( 'TTFMP_WooCommerce' ) ) :
 /**
@@ -42,6 +45,24 @@ class TTFMP_WooCommerce {
 	 * @var   string    The URI base for the plugin.
 	 */
 	var $url_base = '';
+
+	/**
+	 * The version of the WooCommerce plugin.
+	 *
+	 * @since 1.5.0.
+	 *
+	 * @var    int    The version of the WooCommerce plugin.
+	 */
+	var $wc_version = 0;
+
+	/**
+	 * WooCommerce Colors plugin indicator flag.
+	 *
+	 * @since 1.5.0.
+	 *
+	 * @var    bool    True if WooCommerce Colors plugin is active.
+	 */
+	var $colors_plugin = false;
 
 	/**
 	 * The one instance of TTFMP_WooCommerce.
@@ -89,36 +110,51 @@ class TTFMP_WooCommerce {
 	 * @return void
 	 */
 	public function init() {
-		// Include needed files
-		require_once $this->component_root . '/class-section-definitions.php';
-		require_once $this->component_root . '/class-shortcode.php';
-		require_once $this->component_root . '/color.php';
+		// Passive mode
+		if ( true === ttfmp_get_app()->passive ) {
+			// Include needed files
+			require_once $this->component_root . '/class-shortcode.php';
+		}
+		// Active mode
+		else {
+			// Detect WooCommerce plugin version
+			if ( defined( 'WC_VERSION' ) ) {
+				$this->wc_version = WC_VERSION;
+			}
 
-		// Enqueue scripts and styles
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			// Detect WooCommerce Colors plugin
+			$this->colors_plugin = in_array( 'woocommerce-colors/woocommerce-colors.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) );
 
-		// Modify the WooCommerce General Settings page
-		add_action( 'woocommerce_settings_general', array( $this, 'modify_wc_settings' ) );
+			// Include needed files
+			require_once $this->component_root . '/class-section-definitions.php';
+			require_once $this->component_root . '/class-shortcode.php';
 
-		// Filter the frontend color settings
-		add_filter( 'pre_option_woocommerce_frontend_css_colors', array( $this, 'frontend_css_colors' ) );
+			// Enqueue scripts and styles
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		// Use a preview version of the WooCommerce stylesheet while in the Theme Customizer
-		add_action( 'wp', array( $this, 'compile_preview_styles' ) );
+			// Define shop and product views
+			add_filter( 'ttfmake_get_view', array( $this, 'get_view' ), 10, 2 );
+			add_filter( 'ttfmp_perpage_view', array( $this, 'perpage_view' ), 10, 2 );
 
-		// Re-compile the WooCommerce CSS file when settings are saved
-		add_action( 'customize_save_after', array( $this, 'save_frontend_styles' ) );
+			// Add Customizer section descriptions
+			add_filter( 'ttfmp_shop_layout_shop_description', array( $this, 'layout_shop_description' ) );
+			add_filter( 'ttfmp_shop_layout_product_description', array( $this, 'layout_product_description' ) );
 
-		// Define shop and product views
-		add_filter( 'ttfmake_get_view', array( $this, 'get_view' ), 10, 2 );
-		add_filter( 'ttfmp_perpage_view', array( $this, 'perpage_view' ), 10, 2 );
+			// Handle color with the WC Color plugin
+			if ( true === $this->colors_plugin ) {
+				add_action( 'customize_register', array( $this, 'wc_colors_customizer_mod' ), 30 );
+			}
+			// Handle color for WC < 2.3
+			else if ( version_compare( $this->wc_version, '2.3', '<' ) ) {
+				require_once $this->component_root . '/legacy/class-legacy-color.php';
+			}
 
-		// Add Customizer section descriptions
-		add_filter( 'ttfmp_shop_layout_shop_description', array( $this, 'layout_shop_description' ) );
-		add_filter( 'ttfmp_shop_layout_product_description', array( $this, 'layout_product_description' ) );
+			// Add support for Shop Settings
+			$this->add_support();
 
-		// Add support for Shop Settings
-		$this->add_support();
+			// Admin notices
+			add_action( 'admin_init', array( $this, 'admin_notice' ) );
+		}
 	}
 
 	/**
@@ -130,261 +166,39 @@ class TTFMP_WooCommerce {
 	 */
 	public function enqueue_scripts() {
 		// Styles
-		wp_enqueue_style(
-			'ttfmp-woocommerce',
-			trailingslashit( $this->url_base ) . 'css/woocommerce.css',
-			array( 'woocommerce-general', 'woocommerce-smallscreen', 'woocommerce-layout' ),
-			ttfmp_get_app()->version
-		);
-	}
-
-	/**
-	 * Replace the color pickers in the Frontend styles section of the UI with a note
-	 * directing users to the Customizer.
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @return void
-	 */
-	public function modify_wc_settings() {
-		// Determine the callback to remove
-		$callback = $this->has_method_filter( 'woocommerce_admin_field_frontend_styles', 'WC_Settings_General', 'frontend_styles_setting' );
-
-		if ( false !== $callback ) {
-			// Replace the Frontend styles options in WooCommerce settings with
-			// blurb about settings in the Customizer
-			remove_action( 'woocommerce_admin_field_frontend_styles', $callback );
-			add_action( 'woocommerce_admin_field_frontend_styles', array( $this, 'frontend_styles_setting' ) );
+		if ( version_compare( $this->wc_version, '2.3', '>=' ) ) {
+			wp_enqueue_style(
+				'ttfmp-woocommerce',
+				trailingslashit( $this->url_base ) . 'css/woocommerce.css',
+				array( 'woocommerce-general', 'woocommerce-smallscreen', 'woocommerce-layout' ),
+				ttfmp_get_app()->version
+			);
+		} else {
+			wp_enqueue_style(
+				'ttfmp-woocommerce-legacy',
+				trailingslashit( $this->url_base ) . 'legacy/woocommerce.css',
+				array( 'woocommerce-general', 'woocommerce-smallscreen', 'woocommerce-layout' ),
+				ttfmp_get_app()->version
+			);
 		}
 	}
 
 	/**
-	 * Add Frontend styles message.
+	 * Modify the WooCommerce color section added by the WooCommerce Colors plugin.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.5.0.
 	 *
-	 * @return void
+	 * @param $wp_customize
 	 */
-	public function frontend_styles_setting() {
-		?>
-		<tr valign="top" class="woocommerce_frontend_css_colors">
-			<th scope="row" class="titledesc">
-				<?php _e( 'Frontend Styles', 'make-plus' ); ?>
-			</th>
-			<td class="forminp">
-				<span class="description">
-			<?php // File writability check
-			$base_file = WC()->plugin_path() . '/assets/css/woocommerce-base.less';
-			$css_file  = WC()->plugin_path() . '/assets/css/woocommerce.css';
-			if ( is_writable( $base_file ) && is_writable( $css_file ) ) {
-				// Get the URL
-				$url = admin_url( 'customize.php' );
-				$shop = get_option( 'woocommerce_shop_page_id' );
-				if ( $shop ) {
-					$url = add_query_arg( 'url', urlencode( get_permalink( $shop ) ), $url );
-				}
-				// Add the message
-				printf(
-					__( 'These styles can be customized in the Colors section of the %s.', 'make-plus' ),
-					sprintf(
-						'<a href="%1$s">%2$s</a>',
-						esc_url( $url ),
-						__( 'Theme Customizer', 'make-plus' )
-					)
-				);
-			} else {
-				echo __( 'To edit colours <code>woocommerce/assets/css/woocommerce-base.less</code> and <code>woocommerce.css</code> need to be writable. See <a href="http://codex.wordpress.org/Changing_File_Permissions">the Codex</a> for more information.', 'make-plus' );
-			}
-			?>
-				</span>
-			</td>
-		</tr>
-	<?php
-	}
+	public function wc_colors_customizer_mod( $wp_customize ) {
+		$panel_id = 'ttfmake_color-scheme';
+		$panel = $wp_customize->get_panel( $panel_id );
+		$section_id = 'woocommerce_colors';
+		$section = $wp_customize->get_section( $section_id );
 
-	/**
-	 * Override the WooCommerce frontend color options with the Make color settings
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @param  bool     $colors    Unused
-	 * @return array               The Make color settings array
-	 */
-	public function frontend_css_colors( $colors ) {
-		$colors = array(
-			'primary' => get_theme_mod( 'color-primary', ttfmake_get_default( 'color-primary' ) ),
-			'secondary' => get_theme_mod( 'color-secondary', ttfmake_get_default( 'color-secondary' ) ),
-			'highlight' => get_theme_mod( 'color-highlight', ttfmake_get_default( 'color-highlight' ) ),
-			'content_bg' => get_theme_mod( 'main-background-color', ttfmake_get_default( 'main-background-color' ) ),
-			'subtext' => get_theme_mod( 'color-detail', ttfmake_get_default( 'color-detail' ) ),
-		);
-
-		return $colors;
-	}
-
-	/**
-	 * Check if the currently loading instance is in the Preview pane
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @return bool    True if it's in the Preview pane
-	 */
-	public function is_preview() {
-		global $wp_customize;
-		return ( isset( $wp_customize ) && $wp_customize->is_preview() );
-	}
-
-	/**
-	 * Swap the normal woocommerce CSS file with the preview file in the style queue
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @return void
-	 */
-	public function preview_frontend_styles() {
-		if ( ! $this->is_preview() ) {
-			return;
-		}
-
-		wp_dequeue_style( 'woocommerce-general' );
-		wp_deregister_style( 'woocommerce-general' );
-		wp_enqueue_style(
-			'woocommerce-general',
-			WC()->plugin_url() . '/assets/css/ttfmp-woocommerce-preview.css',
-			array(),
-			time()
-		);
-	}
-
-	/**
-	 * Build a preview version of the woocommerce CSS file
-	 *
-	 * Based on woocommerce_compile_less_styles() in version 2.1.9 of WooCommerce
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @return void
-	 */
-	public function compile_preview_styles() {
-		if ( ! $this->is_preview() ) {
-			return;
-		}
-
-		$colors    = array_map( 'esc_attr', (array) get_option( 'woocommerce_frontend_css_colors' ) );
-		$base_file = WC()->plugin_path() . '/assets/css/woocommerce-base.less';
-		$less_file = WC()->plugin_path() . '/assets/css/woocommerce.less';
-		$css_file  = WC()->plugin_path() . '/assets/css/ttfmp-woocommerce-preview.css';
-
-		if ( ! file_exists( $css_file ) ) {
-			$new_file = file_put_contents( $css_file, '' );
-			if ( false === $new_file ) {
-				return;
-			}
-		}
-
-		if ( is_writable( $base_file ) && is_writable( $css_file ) ) {
-			if ( ! class_exists( 'lessc' ) ) {
-				include_once( WC()->plugin_path() . '/includes/libraries/class-lessc.php' );
-			}
-			if ( ! class_exists( 'cssmin' ) ) {
-				include_once( WC()->plugin_path() . '/includes/libraries/class-cssmin.php' );
-			}
-
-			try {
-				// Write new color to base file
-				$color_rules = "
-@primary:       " . $colors['primary'] . ";
-@primarytext:   " . wc_light_or_dark( $colors['primary'], 'desaturate(darken(@primary,50%),18%)', 'desaturate(lighten(@primary,50%),18%)' ) . ";
-
-@secondary:     " . $colors['secondary'] . ";
-@secondarytext: " . wc_light_or_dark( $colors['secondary'], 'desaturate(darken(@secondary,60%),18%)', 'desaturate(lighten(@secondary,60%),18%)' ) . ";
-
-@highlight:     " . $colors['highlight'] . ";
-@highlightext:  " . wc_light_or_dark( $colors['highlight'], 'desaturate(darken(@highlight,60%),18%)', 'desaturate(lighten(@highlight,60%),18%)' ) . ";
-
-@contentbg:     " . $colors['content_bg'] . ";
-
-@subtext:       " . $colors['subtext'] . ";
-            ";
-
-				// Save the original base for later
-				$original_base = file_get_contents( $base_file, null, null, null, 1024 );
-
-				if ( trim( $color_rules ) != trim( $original_base ) ) {
-					file_put_contents( $base_file, $color_rules );
-
-					$less         = new lessc;
-					$compiled_css = $less->compileFile( $less_file );
-					$compiled_css = CssMin::minify( $compiled_css );
-
-					if ( $compiled_css ) {
-						file_put_contents( $css_file, $compiled_css );
-					}
-				}
-
-				// Swap the woocommerce.css file with the new preview file in the style queue
-				add_action( 'wp_enqueue_scripts', array( $this, 'preview_frontend_styles' ), 20 );
-
-				// Reset the base
-				file_put_contents( $base_file, $original_base );
-			} catch ( exception $ex ) {
-				wp_die( __( 'Could not compile woocommerce.less:', 'make-plus' ) . ' ' . $ex->getMessage() );
-			}
-		}
-	}
-
-	/**
-	 * Re-compile the WooCommerce stylesheet when color changes are saved
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @return void
-	 */
-	public function save_frontend_styles() {
-		// Load the LESS compile function
-		if ( class_exists( 'WC' ) && ! function_exists( 'woocommerce_compile_less_styles' ) ) {
-			// Include the file with the compile function
-			$file = WC()->plugin_path() . '/includes/admin/wc-admin-functions.php';
-			if ( file_exists( $file ) ) {
-				include_once( $file );
-			}
-		}
-
-		// If the function was successfully loaded, run it
-		if ( function_exists( 'woocommerce_compile_less_styles' ) ) {
-			woocommerce_compile_less_styles();
-		}
-	}
-
-	/**
-	 * Utility function to determine if an action/filter hook has a particular class method added to it.
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @param  string         $tag       The action/filter hook tag.
-	 * @param  string         $class     The class.
-	 * @param  string         $method    The class method.
-	 * @return bool|string               The encoded class/method id attached to the hook.
-	 */
-	public function has_method_filter( $tag, $class, $method ) {
-		global $wp_filter;
-		$callback = false;
-
-		if ( isset( $wp_filter[$tag] ) ) {
-			foreach ( $wp_filter[$tag] as $priority ) {
-				foreach ( $priority as $cb => $action ) {
-					if ( is_array( $action['function'] ) && $class === get_class( $action['function'][0] ) && $method === $action['function'][1] ) {
-						$callback = $cb;
-						break;
-					}
-				}
-				if ( false !== $callback ) {
-					break;
-				}
-			}
-		}
-
-		return $callback;
+		// Move the WooCommerce section to the Colors panel
+		$section->panel = 'ttfmake_color-scheme';
+		$section->priority = (int) $panel->priority + 95;
 	}
 
 	/**
@@ -490,7 +304,41 @@ class TTFMP_WooCommerce {
 		add_theme_support( 'ttfmp-shop-sidebar', array( 'shop', 'product', 'page' ) );
 
 		// Highlight color
-		add_theme_support( 'ttfmp-shop-color-highlight' );
+		if ( version_compare( $this->wc_version, '2.3', '<' ) ) {
+			add_theme_support( 'ttfmp-shop-color-highlight' );
+		}
+	}
+
+	/**
+	 * Add relevant admin notices.
+	 *
+	 * @since 1.5.0.
+	 *
+	 * @return void
+	 */
+	public function admin_notice() {
+		if ( ! function_exists( 'ttfmake_register_admin_notice' ) ) {
+			return;
+		}
+
+		if ( version_compare( $this->wc_version, '2.3', '>=' ) && false === $this->colors_plugin ) {
+			ttfmake_register_admin_notice(
+				'woocommerce-23-no-color-plugin',
+				sprintf(
+					__( 'Make\'s color scheme no longer applies to WooCommerce shop elements. Please install the %s plugin to customize your shop\'s colors.', 'make-plus' ),
+					sprintf(
+						'<a href="%1$s">%2$s</a>',
+						esc_url( 'https://wordpress.org/plugins/woocommerce-colors/' ),
+						__( 'WooCommerce Colors', 'make-plus' )
+					)
+				),
+				array(
+					'cap'    => 'update_plugins',
+					'screen' => array( 'index.php', 'plugins.php' ),
+					'type'   => 'warning',
+				)
+			);
+		}
 	}
 }
 endif;

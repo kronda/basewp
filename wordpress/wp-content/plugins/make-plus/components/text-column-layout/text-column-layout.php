@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! class_exists( 'TTFMP_Text_Column_Layout' ) ) :
 /**
@@ -83,8 +86,12 @@ class TTFMP_Text_Column_Layout {
 		// Add the JS/CSS
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
-		// Add content after the column
-		add_action( 'ttfmake_section_text_before_columns_select', array( $this, 'add_text_column_layout_input' ) );
+		if ( defined( 'TTFMAKE_VERSION' ) && true === version_compare( TTFMAKE_VERSION, '1.3.99', '>=' ) ) {
+			add_action( 'make_add_section', array( $this, 'add_text_column_layout_input_to_configuration_panel' ) );
+		} else {
+			// Add content after the column
+			add_action( 'ttfmake_section_text_before_columns_select', array( $this, 'add_text_column_layout_input' ) );
+		}
 
 		// Add content after the column
 		add_action( 'ttfmake_section_text_after_columns_select', array( $this, 'clear_inputs' ) );
@@ -104,6 +111,9 @@ class TTFMP_Text_Column_Layout {
 
 	/**
 	 * Add input for the text column layout.
+	 *
+	 * Note that this is deprecated in 1.4.0. With the Make builder UI refresh, the action that this is hooked to has
+	 * changed its meaning. This is left here only for back compatibility.
 	 *
 	 * @since  1.3.0.
 	 *
@@ -146,6 +156,37 @@ class TTFMP_Text_Column_Layout {
 			</select>
 		</div>
 	<?php
+	}
+
+	/**
+	 * Add the extra config option to the overlay.
+	 *
+	 * @since  1.4.0
+	 *
+	 * @param  array    $section_data    The section data.
+	 * @return array                     Modified section data.
+	 */
+	public function add_text_column_layout_input_to_configuration_panel( $section_data ) {
+		if ( 'text' === $section_data['id'] ) {
+			$options = array();
+
+			foreach ( $this->layouts() as $value ) {
+				foreach ( $value as $subkey => $subvalue ) {
+					$options[ $subkey ] = $subvalue;
+				}
+			}
+
+			$section_data['config'][300] = array(
+				'type'    => 'select',
+				'name'    => 'text-column-layout',
+				'label'   => __( 'Column layout', 'make-plus' ),
+				'class'   => 'ttfmp-text-column-layout-select',
+				'default' => 'three-equal',
+				'options' => $options
+			);
+		}
+
+		return $section_data;
 	}
 
 	/**

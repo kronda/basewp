@@ -7,7 +7,7 @@ if ( ! function_exists( 'ttfmake_get_google_fonts' ) ) :
 /**
  * Return an array of all available Google Fonts.
  *
- * Updated: 2015-01-12T22:51:47+00:00
+ * Updated: 2015-02-17T07:09:17+00:00
  *
  * @since  1.0.0.
  *
@@ -1246,6 +1246,21 @@ function ttfmake_get_google_fonts() {
 			),
 			'category' => 'handwriting',
 		),
+		'Cambay' => array(
+			'label' => 'Cambay',
+			'variants' => array(
+				'700',
+				'700italic',
+				'italic',
+				'regular',
+			),
+			'subsets' => array(
+				'devanagari',
+				'latin',
+				'latin-ext',
+			),
+			'category' => 'sans-serif',
+		),
 		'Cambo' => array(
 			'label' => 'Cambo',
 			'variants' => array(
@@ -1920,6 +1935,18 @@ function ttfmake_get_google_fonts() {
 				'latin',
 			),
 			'category' => 'sans-serif',
+		),
+		'Dekko' => array(
+			'label' => 'Dekko',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'devanagari',
+				'latin',
+				'latin-ext',
+			),
+			'category' => 'handwriting',
 		),
 		'Delius' => array(
 			'label' => 'Delius',
@@ -3074,6 +3101,17 @@ function ttfmake_get_google_fonts() {
 			),
 			'category' => 'sans-serif',
 		),
+		'Gurajada' => array(
+			'label' => 'Gurajada',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'serif',
+		),
 		'Habibi' => array(
 			'label' => 'Habibi',
 			'variants' => array(
@@ -3815,6 +3853,22 @@ function ttfmake_get_google_fonts() {
 			),
 			'category' => 'display',
 		),
+		'Khula' => array(
+			'label' => 'Khula',
+			'variants' => array(
+				'300',
+				'600',
+				'700',
+				'800',
+				'regular',
+			),
+			'subsets' => array(
+				'devanagari',
+				'latin',
+				'latin-ext',
+			),
+			'category' => 'sans-serif',
+		),
 		'Kite One' => array(
 			'label' => 'Kite One',
 			'variants' => array(
@@ -3925,6 +3979,17 @@ function ttfmake_get_google_fonts() {
 				'latin-ext',
 			),
 			'category' => 'serif',
+		),
+		'Lakki Reddy' => array(
+			'label' => 'Lakki Reddy',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'handwriting',
 		),
 		'Lancelot' => array(
 			'label' => 'Lancelot',
@@ -6206,6 +6271,19 @@ function ttfmake_get_google_fonts() {
 			),
 			'category' => 'handwriting',
 		),
+		'Ranga' => array(
+			'label' => 'Ranga',
+			'variants' => array(
+				'700',
+				'regular',
+			),
+			'subsets' => array(
+				'devanagari',
+				'latin',
+				'latin-ext',
+			),
+			'category' => 'display',
+		),
 		'Rationale' => array(
 			'label' => 'Rationale',
 			'variants' => array(
@@ -6215,6 +6293,17 @@ function ttfmake_get_google_fonts() {
 				'latin',
 			),
 			'category' => 'sans-serif',
+		),
+		'Ravi Prakash' => array(
+			'label' => 'Ravi Prakash',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'display',
 		),
 		'Redressed' => array(
 			'label' => 'Redressed',
@@ -7170,6 +7259,17 @@ function ttfmake_get_google_fonts() {
 			),
 			'category' => 'display',
 		),
+		'Sree Krushnadevaraya' => array(
+			'label' => 'Sree Krushnadevaraya',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'serif',
+		),
 		'Stalemate' => array(
 			'label' => 'Stalemate',
 			'variants' => array(
@@ -7277,6 +7377,28 @@ function ttfmake_get_google_fonts() {
 				'latin',
 			),
 			'category' => 'display',
+		),
+		'Suranna' => array(
+			'label' => 'Suranna',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'serif',
+		),
+		'Suravaram' => array(
+			'label' => 'Suravaram',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'serif',
 		),
 		'Suwannaphum' => array(
 			'label' => 'Suwannaphum',
@@ -7422,6 +7544,17 @@ function ttfmake_get_google_fonts() {
 				'latin',
 			),
 			'category' => 'serif',
+		),
+		'Timmana' => array(
+			'label' => 'Timmana',
+			'variants' => array(
+				'regular',
+			),
+			'subsets' => array(
+				'latin',
+				'telugu',
+			),
+			'category' => 'sans-serif',
 		),
 		'Tinos' => array(
 			'label' => 'Tinos',

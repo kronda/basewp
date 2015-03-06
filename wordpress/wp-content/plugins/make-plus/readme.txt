@@ -3,8 +3,8 @@ Contributors: thethemefoundry, dstrojny, jupiterwise, scottrrollo, tollmanz
 Donate link: https://thethemefoundry.com
 Tags: woocommerce, sidebars, widgets, customizer, fonts, typekit, demo content, page builder
 Requires at least: 3.9
-Tested up to: 3.9.2
-Stable tag: 1.3.3
+Tested up to: 4.1.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Make Plus is a premium upgrade for the Make WordPress theme that adds more featu
 
 == Description ==
 
-Make Plus provides additional features to the [Make WordPress theme](https://thethemefoundry.com/wordpress-themes/make/). Additional features include:
+Make Plus provides additional features to the [Make WordPress theme](https://thethemefoundry.com/make/). Additional features include:
 
 * Quick Start templates for importing pre-configured builder layouts to a page
 * WooCommerce integration which adds a new builder section for highlighting products
@@ -24,13 +24,68 @@ Make gives you the flexibility to build the site that you want. Make Plus makes 
 
 == Installation ==
 
-1. Download and activate the [Make WordPress theme](https://thethemefoundry.com/wordpress-themes/make/)
+1. Download and activate the [Make WordPress theme](https://thethemefoundry.com/make/)
 1. Upload the `make-plus` folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
-For more information, please see the [Make Plus support page](https://thethemefoundry.com/tutorials/make/).
+For more information, please see the [Make Plus support page](https://thethemefoundry.com/docs/make-docs/).
 
 == Changelog ==
+
+= 1.5.0 =
+
+* Updated Style Kits, White Label, and Typekit modules for compatibility with Make 1.5.0's new Customizer options.
+* Updated properties of some existing Style Kits.
+* Improved code performance and structure.
+* Updated WooCommerce module for compatibility with WooCommerce 2.3.x.
+* Removed color scheme support for WooCommerce 2.3.x shop elements in favor of the WooCommerce Colors plugin.
+* Added Russian translation.
+
+= 1.4.8 =
+
+* Fixed problem with the updater. If you are having trouble updating through the WordPress interface, please follow these steps to update manually: https://thethemefoundry.com/tutorials/updating-your-existing-theme/
+
+= 1.4.7 =
+
+* Added new "Hello" style kit.
+* Added "Default" style kit that sets style-related options back to theme defaults.
+* Improved backend code for Style Kits functionality.
+
+= 1.4.6 =
+
+* Improved functionality for load/reset buttons in Style Kits.
+
+= 1.4.5 =
+
+* Fixed minor compatibility issues with WordPress 4.1.
+* Added package info to plugin files.
+* Updated documentation links.
+
+= 1.4.4 =
+
+* Improved workflow for adding widgets to Column widget areas.
+* Fixed the plugin appearing as both a plugin and a theme when an update is available.
+* Fixed an issue between the Customizer and the WooCommerce module in some hosting environments.
+
+= 1.4.3 =
+
+* Added "passive mode" to allow shortcodes to continue working when Make is no longer the active theme.
+
+= 1.4.2 =
+
+* Fixed layout issues with the Posts List section.
+
+= 1.4.1 =
+
+* Added the ability to edit and delete widget in page edit screen.
+
+= 1.4.0 =
+
+* Updated Page Builder components to complement Make 1.4.0 Page Builder interface refresh.
+
+= 1.3.4 =
+
+* Fixed bug where automatic updates functionality was missing in some cases
 
 = 1.3.3 =
 
@@ -117,6 +172,50 @@ For more information, please see the [Make Plus support page](https://thethemefo
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+
+Compatibility updates for Make 1.5.0 and WooCommerce 2.3.x.
+
+= 1.4.8 =
+
+Fixes a problem with the updater.
+
+= 1.4.7 =
+
+Adds new "Hello" and "Default" style kits.
+
+= 1.4.6 =
+
+Improves load/reset functionality for Style Kits.
+
+= 1.4.5 =
+
+Compatibility updates for WordPress 4.1.
+
+= 1.4.4 =
+
+Minor improvements to Column widget areas, WooCommerce integration, and plugin updates.
+
+= 1.4.3 =
+
+Allows shortcodes to continue working when Make is no longer the active theme.
+
+= 1.4.2 =
+
+Fixes layout issues with the Posts List section.
+
+= 1.4.1 =
+
+Adds the ability to edit and delete widget in page edit screen.
+
+= 1.4.0 =
+
+Updates Make Plus components to complement Make 1.4.0 Page Builder interface refresh.
+
+= 1.3.4 =
+
+Restores automatic updates.
 
 = 1.3.3 =
 

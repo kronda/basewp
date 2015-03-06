@@ -4,7 +4,7 @@ Donate link: http://seedprod.com/
 Tags: wordpress coming soon, wordpress maintenance mode. wordpress under construction, maintenance mode, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, newsletter, coming soon page, landing page
 Requires at least: 3
 Tested up to: 4.1.0
-Stable tag: 1.12.0
+Stable tag: 1.13.0
 
 Creates a Coming Soon page or Launch page for your Website while it's under construction and collects emails from your visitors.
 
@@ -141,6 +141,10 @@ To fix:
 
 
 == Changelog ==
+= 1.13.0 =
+* Added: Toggle to disable default excluded urls: login, admin, dashboard, account
+* Fixed: iframe height issue
+
 = 1.12.0 =
 * Added: responsiveness
 * Fixed: typo
@@ -329,6 +333,10 @@ To fix:
 * Alpha Launch
 
 == Upgrade Notice ==
+= 1.13.0 =
+* Added: Toggle to disable default excluded urls: login, admin, dashboard, account
+* Fixed: iframe height issue
+
 = 1.12.0 =
 * Added: responsiveness
 * Fixed: typo

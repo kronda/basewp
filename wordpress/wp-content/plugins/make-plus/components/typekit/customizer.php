@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! class_exists( 'TTFMP_Typekit_Customizer' ) ) :
 /**
@@ -51,7 +54,6 @@ class TTFMP_Typekit_Customizer {
 		// Add the sections
 		if ( ttfmake_customizer_supports_panels() && function_exists( 'ttfmake_customizer_add_panels' ) ) {
 			add_filter( 'make_customizer_typography_sections', array( $this, 'customize_register' ), 20 );
-			add_action( 'customize_register', array( $this, 'section_priority' ), 30 );
 		} else {
 			add_action( 'customize_register', array( $this, 'legacy_customize_register' ), 20 );
 		}
@@ -61,8 +63,9 @@ class TTFMP_Typekit_Customizer {
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'customize_controls_enqueue_scripts' ) );
 		add_action( 'customize_controls_print_styles', array( $this, 'customize_controls_print_styles' ) );
 
-		// AJAX handler
+		// AJAX handlers
 		add_action( 'wp_ajax_ttfmp_get_typekit_fonts', array( $this, 'get_typekit_fonts' ) );
+		add_action( 'wp_ajax_ttfmp_reset_preview', array( $this, 'reset_preview' ) );
 
 		// Filter the available font choices
 		add_filter( 'ttfmake_all_fonts', array( $this, 'all_fonts' ) );
@@ -119,7 +122,7 @@ class TTFMP_Typekit_Customizer {
 							__( 'For more information about Typekit integration, please see the %s.', 'make-plus' ),
 							sprintf(
 								'<a href="%1$s">Make Plus %2$s</a>',
-								'https://thethemefoundry.com/tutorials/make/#typekit-integration',
+								'https://thethemefoundry.com/docs/make-docs/customizer/typography/',
 								__( 'documentation', 'make-plus' )
 							)
 						),
@@ -129,22 +132,6 @@ class TTFMP_Typekit_Customizer {
 		);
 
 		return $sections;
-	}
-
-	/**
-	 * Set the Typekit section priority above the Google Web Fonts section.
-	 *
-	 * @since 1.3.3
-	 *
-	 * @param  object    $wp_customize
-	 * @return void
-	 */
-	public function section_priority( $wp_customize ) {
-		// Get Google Web Fonts section priority
-		$google = $wp_customize->get_section( 'ttfmake_font-google' )->priority;
-
-		// Set the Typekit section priority
-		$wp_customize->get_section( 'ttfmake_font-typekit' )->priority = $google - 5;
 	}
 
 	/**
@@ -197,7 +184,7 @@ class TTFMP_Typekit_Customizer {
 				array(
 					'section'     => 'ttfmake_font',
 					'type'        => 'text',
-					'description' => sprintf( __( 'For more information about Typekit integration, please see <a href="%s">Make Plus\' documentation</a>.', 'make-plus' ), 'https://thethemefoundry.com/tutorials/make/#typekit-integration' ),
+					'description' => sprintf( __( 'For more information about Typekit integration, please see <a href="%s">Make Plus\' documentation</a>.', 'make-plus' ), 'https://thethemefoundry.com/docs/make-docs/customizer/typography/' ),
 					'priority'    => 470
 				)
 			)
@@ -260,7 +247,27 @@ class TTFMP_Typekit_Customizer {
 	 * @return array    Array of Typekit fonts available to the kit.
 	 */
 	public function get_typekit_choices() {
-		return ( '' !== get_theme_mod( 'typekit-temp-choices', '' ) ) ? get_theme_mod( 'typekit-temp-choices', array() ) : get_theme_mod( 'typekit-choices', array() );
+		$choices = get_theme_mod( 'typekit-temp-choices', array() );
+		if ( empty( $choices ) ) {
+			$choices = get_theme_mod( 'typekit-choices', array() );
+		}
+
+		if ( is_array( $choices ) && ! empty( $choices ) ) {
+			// Sanitize the stored array of choices.
+			$keys = array_map( 'esc_attr', array_keys( $choices ) );
+			$values = array();
+			foreach ( $choices as $data ) {
+				if ( isset( $data['label'] ) && isset( $data['stack'] ) ) {
+					$values[] = array(
+						'label' => wp_strip_all_tags( $data['label'] ),
+						'stack' => wp_strip_all_tags( $data['stack'] ),
+					);
+				}
+			}
+			return array_combine( $keys, $values );
+		}
+
+		return array();
 	}
 
 	/**
@@ -271,7 +278,7 @@ class TTFMP_Typekit_Customizer {
 	 * @return string    ID for the current Typekit Kit.
 	 */
 	public function get_typekit_id() {
-		return ( '' !== get_theme_mod( 'typekit-temp-id', '' ) ) ? get_theme_mod( 'typekit-temp-id', array() ) : get_theme_mod( 'typekit-id', '' );
+		return ( '' !== get_theme_mod( 'typekit-temp-id', '' ) ) ? get_theme_mod( 'typekit-temp-id' ) : get_theme_mod( 'typekit-id', '' );
 	}
 
 	/**
@@ -306,6 +313,7 @@ class TTFMP_Typekit_Customizer {
 				'noInputError'   => __( 'Please enter your Typekit Kit ID', 'make-plus' ),
 				'ajaxError'      => __( 'Typekit fonts could not be found. Please try again', 'make-plus' ),
 				'success'        => __( 'Fonts loaded successfully.', 'make-plus' ),
+				'resetSuccess'   => __( 'Fonts reset.', 'make-plus' ),
 				'typekitChoices' => ( ! empty( $typekit_choices ) ) ? array_keys( $typekit_choices ) : array(),
 				'optionKeys'     => $option_keys,
 			)
@@ -391,7 +399,7 @@ class TTFMP_Typekit_Customizer {
 		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : '';
 		$id    = isset( $_POST['id'] ) ? $this->sanitize_typekit_id( $_POST['id'] ) : '';
 
-		if ( wp_verify_nonce( $nonce, 'ttfmp-typekit-request' ) && ! empty( $id ) ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && wp_verify_nonce( $nonce, 'ttfmp-typekit-request' ) && ! empty( $id ) ) {
 			$response      = wp_remote_get( 'https://typekit.com/api/v1/json/kits/' . $id . '/published' );
 			$response_code = wp_remote_retrieve_response_code( $response );
 			$response_body = json_decode( wp_remote_retrieve_body( $response ) );
@@ -423,7 +431,29 @@ class TTFMP_Typekit_Customizer {
 				wp_send_json_error( $response_body );
 			}
 		} else {
+			wp_send_json_error( new WP_Error() );
+		}
+	}
 
+	/**
+	 *
+	 */
+	public function reset_preview() {
+		// Make sure we have got the data we are expecting.
+		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : '';
+
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && wp_verify_nonce( $nonce, 'ttfmp-typekit-request' ) ) {
+			$this->remove_temp_mods();
+
+			$saved_fonts = array();
+			$option_keys = ( ttfmake_customizer_supports_panels() && function_exists( 'ttfmake_get_font_property_option_keys' ) ) ? ttfmake_get_font_property_option_keys( 'family' ) : array( 'font-site-title', 'font-header', 'font-body', );
+			foreach ( $option_keys as $key ) {
+				$saved_fonts[ $key ] = ttfmake_sanitize_font_choice( get_theme_mod( $key, ttfmake_get_default( $key ) ) );
+			}
+
+			wp_send_json_success( $saved_fonts );
+		} else {
+			wp_send_json_error( new WP_Error( 403 ) );
 		}
 	}
 
@@ -464,8 +494,7 @@ class TTFMP_Typekit_Customizer {
 		}
 
 		// Remove options that are no longer needed
-		remove_theme_mod( 'typekit-temp-choices' );
-		remove_theme_mod( 'typekit-temp-id' );
+		$this->remove_temp_mods();
 	}
 
 	/**
@@ -478,6 +507,16 @@ class TTFMP_Typekit_Customizer {
 	 */
 	public function sanitize_typekit_id( $value ) {
 		return preg_replace( '/[^0-9a-z]+/', '', $value );
+	}
+
+	/**
+	 * Remove temporary id and choice values stored in the theme mods array.
+	 *
+	 * @since 1.5.0.
+	 */
+	public function remove_temp_mods() {
+		remove_theme_mod( 'typekit-temp-choices' );
+		remove_theme_mod( 'typekit-temp-id' );
 	}
 }
 endif;

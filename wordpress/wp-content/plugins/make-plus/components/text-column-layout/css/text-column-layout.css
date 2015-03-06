@@ -1,27 +1,49 @@
+/*---------------------------------------------------------
+ Columns general (text-column-layout.css)
+-------------------------------------------------------- */
 .ttfmake-select {
 	float: right;
 	margin-left: 12px;
 }
-.ttfmake-text-column-layout-select-hidden {
-	display: none;
-}
+.ttfmake-text-column-layout-select-hidden,
 .ttfmake-text-column .ttfmake-media-button-text {
-	display: none;
+	display: none; /*reset*/
 }
+.ttfmake-section-text .ttfmp-widget-area-display .ttfmake-titlediv {
+	padding-right: 0; /*reset*/
+}
+/*---------------------------------------------------------
+ Columns grid (text-column-layout.css)
+-------------------------------------------------------- */
 @media screen and ( min-width: 1160px ) {
-	.ttfmake-section-body .ttfmake-column-width-two-thirds {
-		width: 66.3333%;
+	.ttfmake-section-body .ttfmake-column-width-two-thirds,
+	.ttfmake-section-body .ttfmake-column-width-two-thirds .sortable-placeholder {
+		flex: 2.65; /* 2/3 */
+		-ms-flex: 2.65; /* 2/3 */
+		-webkit-flex: 2.65; /* 2/3 */
 	}
-	.ttfmake-section-body .ttfmake-column-width-one-third {
-		width: 33.3333%;
+	.ttfmake-section-body .ttfmake-column-width-one-third,
+	.ttfmake-section-body .ttfmake-column-width-one-third .sortable-placeholder {
+		flex: 1; /* 1/3 */
+		-ms-flex: 1; /* 1/3 */
+		-webkit-flex: 1; /* 1/3 */
 	}
-	.ttfmake-section-body .ttfmake-column-width-three-fourths {
-		width: 75%;
+	.ttfmake-section-body .ttfmake-column-width-three-fourths,
+	.ttfmake-section-body .ttfmake-column-width-three-fourths .sortable-placeholder {
+		flex: 3; /* 3/4 */
+		-ms-flex: 3; /* 3/3 */
+		-webkit-flex: 3; /* 3/4 */
 	}
-	.ttfmake-section-body .ttfmake-column-width-one-fourth {
-		width: 25%;
+	.ttfmake-section-body .ttfmake-column-width-one-fourth,
+	.ttfmake-section-body .ttfmake-column-width-one-fourth .sortable-placeholder {
+		flex: 1; /* 1/4 */
+		-ms-flex: 1; /* 1/4 */
+		-webkit-flex: 1; /* 1/4 */
 	}
-	.ttfmake-section-body .ttfmake-column-width-one-half {
-		width: 50%;
+	.ttfmake-section-body .ttfmake-column-width-one-half,
+	.ttfmake-section-body .ttfmake-column-width-one-half .sortable-placeholder {
+		flex: 2; /* 2/4 */
+		-ms-flex: 2; /* 2/4 */
+		-webkit-flex: 2; /* 2/4 */
 	}
 }

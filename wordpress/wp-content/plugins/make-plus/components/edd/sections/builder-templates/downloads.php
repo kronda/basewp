@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 ttfmake_load_section_header();
 
@@ -19,19 +22,6 @@ $defaults = array(
 $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 ?>
 
-	<div class="ttfmake-columns-select-wrapper">
-		<label for="<?php echo $section_name; ?>[columns]"><?php _e( 'Columns:', 'make-plus' ); ?></label>
-		<select id="<?php echo $section_name; ?>[columns]" name="<?php echo $section_name; ?>[columns]">
-			<?php foreach ( ttfmake_get_section_choices( 'columns', 'edd-downloads' ) as $value => $label ) : ?>
-				<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['columns'] ); ?>>
-					<?php echo esc_html( $label ); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-	</div>
-
-	<div class="clear"></div>
-
 	<div class="ttfmake-titlediv">
 		<div class="ttfmake-titlewrap">
 			<input placeholder="<?php esc_attr_e( 'Enter title here' ); ?>" type="text" name="<?php echo $section_name; ?>[title]" class="ttfmake-title ttfmake-section-header-title-input" value="<?php echo esc_attr( htmlspecialchars( $data['title'] ) ); ?>" autocomplete="off" />
@@ -40,7 +30,7 @@ $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 
 	<div class="ttfmake-edd-downloads-options-container">
 		<div class="ttfmake-taxonomy-select-wrapper">
-			<h4><?php _e( 'Show downloads from', 'make-plus' ); ?></h4>
+			<h4><?php _e( 'From', 'make-plus' ); ?></h4>
 			<select id="<?php echo $section_name; ?>[taxonomy]" name="<?php echo $section_name; ?>[taxonomy]">
 				<?php foreach ( ttfmake_get_section_choices( 'taxonomy', 'edd-downloads' ) as $value => $label ) : ?>
 					<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['taxonomy'] ); ?><?php if ( false !== strpos( $value, 'ttfmp-disabled' ) ) echo ' disabled="disabled"' ?>>
@@ -51,7 +41,7 @@ $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 		</div>
 
 		<div class="ttfmake-sortby-select-wrapper">
-			<h4><?php _e( 'Sort by', 'make-plus' ); ?></h4>
+			<h4><?php _e( 'Sort', 'make-plus' ); ?></h4>
 			<select id="<?php echo $section_name; ?>[sortby]" name="<?php echo $section_name; ?>[sortby]">
 				<?php foreach ( ttfmake_get_section_choices( 'sortby', 'edd-downloads' ) as $value => $label ) : ?>
 					<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['sortby'] ); ?>>
@@ -63,27 +53,26 @@ $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 	</div>
 
 	<div class="ttfmake-edd-downloads-options-container">
-		<h4 class="ttfmake-edd-downloads-options-title">
-			<?php _e( 'Number of downloads to show', 'make-plus' ); ?>
-		</h4>
-		<input id="<?php echo $section_name; ?>[count]" class="code" type="number" name="<?php echo $section_name; ?>[count]" value="<?php echo esc_attr( $data['count'] ); ?>" />
-		<p><?php _e( 'To show all available products,<br> set to <code>-1</code>.', 'make-plus' ); ?></p>
-
-		<div class="ttfmake-details-select-wrapper">
-			<h4><?php _e( 'Download details', 'make-plus' ); ?></h4>
-			<select id="<?php echo $section_name; ?>[details]" name="<?php echo $section_name; ?>[details]">
-				<?php foreach ( ttfmake_get_section_choices( 'details', 'edd-downloads' ) as $value => $label ) : ?>
-					<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['details'] ); ?>>
+		<div class="ttfmake-columns-select-wrapper">
+			<h4><?php _e( 'Columns', 'make-plus' ); ?></h4>
+			<select id="<?php echo $section_name; ?>[columns]" name="<?php echo $section_name; ?>[columns]">
+				<?php foreach ( ttfmake_get_section_choices( 'columns', 'edd-downloads' ) as $value => $label ) : ?>
+					<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['columns'] ); ?>>
 						<?php echo esc_html( $label ); ?>
 					</option>
 				<?php endforeach; ?>
 			</select>
 		</div>
 
+		<h4 class="ttfmake-edd-downloads-options-title">
+			<?php _e( 'Number to show', 'make-plus' ); ?>
+		</h4>
+		<input id="<?php echo $section_name; ?>[count]" class="code" type="number" name="<?php echo $section_name; ?>[count]" value="<?php echo esc_attr( $data['count'] ); ?>" />
+		<p><?php _e( 'To show all, set to <code>-1</code>.', 'make-plus' ); ?></p>
 	</div>
 
 	<div class="ttfmake-edd-downloads-options-container">
-		<h4><?php _e( 'Download display', 'make-plus' ); ?></h4>
+		<h4><?php _e( 'Display', 'make-plus' ); ?></h4>
 		<p>
 			<input id="<?php echo $section_name; ?>[thumb]" type="checkbox" name="<?php echo $section_name; ?>[thumb]" value="1"<?php checked( absint( $data['thumb'] ) ); ?> />
 			<label for="<?php echo $section_name; ?>[thumb]">
@@ -102,6 +91,17 @@ $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 				<?php _e( 'Show purchase button', 'make-plus' ); ?>
 			</label>
 		</p>
+
+		<div class="ttfmake-details-select-wrapper">
+			<h4><?php _e( 'Details', 'make-plus' ); ?></h4>
+			<select id="<?php echo $section_name; ?>[details]" name="<?php echo $section_name; ?>[details]">
+				<?php foreach ( ttfmake_get_section_choices( 'details', 'edd-downloads' ) as $value => $label ) : ?>
+					<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['details'] ); ?>>
+						<?php echo esc_html( $label ); ?>
+					</option>
+				<?php endforeach; ?>
+			</select>
+		</div>
 	</div>
 
 	<div class="clear"></div>

@@ -1,14 +1,20 @@
+/*---------------------------------------------------------
+ EDD (edd.scss)
+-------------------------------------------------------- */
 .edd_download_inner {
 	margin: 0;
 	margin-bottom: 44px; 
-	padding: 0;}
+	padding: 0;
+}
 
 .edd_download_title {
 	font-size: 17px; 
-	margin-bottom: 6px;}
+	margin-bottom: 6px;
+}
 
 .builder-section-downloads .builder-section-header {
-	padding: 0; }
+	padding: 0;
+}
 
 .edd-submit.button.blue, #edd-purchase-button, .edd-submit, input[type=submit].edd-submit, #edd_checkout_cart a.edd-cart-saving-button {
 	font-size: 17px;
@@ -16,51 +22,68 @@
 	padding: 10px 12px;
 	color: #535353;
 	border: 0;
-	background: #eaecee; }
+	background: #eaecee;
+}
 
 .edd-submit.button.blue.active, .edd-submit.button.blue:focus, .edd-submit.button.blue:hover {
 	color: #535353;
-	background: #eaecee; }
+	background: #eaecee;
+}
 
 .edd_price {
 	text-decoration: underline; 
-	color: #289a00;}
+	color: #289a00;
+}
 
 .edd-cart-added-alert {
-	color: #289a00; }
+	color: #289a00;
+}
 
 #edd_final_total_wrap {
-	border: 0 !important; }
+	border: 0 !important;
+}
 
 #edd_checkout_form_wrap #edd_final_total_wrap {
-	background-color: #eaecee; }
+	background-color: #eaecee;
+}
 
 #edd_checkout_cart .edd_cart_header_row th {
-	background: none; }
+	background: none;
+}
 
 #edd_checkout_cart td, #edd_checkout_cart th, #edd_checkout_form_wrap fieldset {
-	border-color: #eaecee; }
+	border-color: #eaecee;
+}
 
 #edd_download_pagination {
-	display: none; }
+	display: none;
+}
 
 .edd_download_columns_1 .edd_download, .edd_download_columns_2 .edd_download, .edd_download_columns_3 .edd_download, .edd_download_columns_4 .edd_download {
 	width: 100% !important;
-	margin-right: 0; }
+	margin-right: 0;
+}
 
 @media screen and (min-width: 800px) {
 	.edd_download_columns_2 .edd_download {
 		width: 48.33333% !important;
-		margin-right: 3.33333%; }
+		margin-right: 3.33333%;
+	}
 	.edd_download_columns_2 .edd_download.last {
-		margin-right: 0; }
+		margin-right: 0;
+	}
 	.edd_download_columns_3 .edd_download {
 		width: 31.11111% !important;
-		margin-right: 3.33333%; }
+		margin-right: 3.33333%;
+	}
 	.edd_download_columns_3 .edd_download.last {
-		margin-right: 0; }
+		margin-right: 0;
+	}
 	.edd_download_columns_4 .edd_download {
 		width: 22.5% !important;
-		margin-right: 3.33333%; }
+		margin-right: 3.33333%;
+	}
 	.edd_download_columns_4 .edd_download.last {
-		margin-right: 0; } }
+		margin-right: 0;
+	}
+}

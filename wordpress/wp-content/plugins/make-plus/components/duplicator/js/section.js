@@ -1,99 +1,70 @@
 /* global jQuery */
-var oneApp = oneApp || {}, ttfmakeMCE = ttfmakeMCE || '';
+var oneApp = oneApp || {};
 
 (function($) {
 	'use strict';
 
-	var duplicatorSection = {
+	var disable = false,
+		duplicatorSection = {
 		init: function() {
 			$('.ttfmake-stage').on('click', '.ttfmp-duplicate-section', function(evt) {
 				evt.preventDefault();
 
-				var $this = $(this),
-					$el = $this.parents('.ttfmake-section'),
-					sectionType = $el.attr('data-section-type'),
-					$stage = $('.ttfmake-stage'),
-					$spinner = $('<span class="spinner"></span>'),
-					ttfmakeMCEBackup = ttfmakeMCE,
-					$appendedSection, view;
+				// Only proceed if duplication is not currently disabled
+				if (false === disable) {
+					var $this = $(this),
+						$el = $this.parents('.ttfmake-section'),
+						sectionType = $el.attr('data-section-type'),
+						$stage = $('.ttfmake-stage'),
+						$appendedSection, view;
 
-				// Activate the spinner
-				$this.after($spinner);
+					// Activate the spinner
+					$this.addClass('ttfmp-spinner');
+					disable = true;
 
-				// Update the TinyMCE value property before serializing the data
-				$('.wp-editor-wrap', $el).each(function(index, el) {
-					var $el = $(el),
-						editorID = $el.attr('id').replace('wp-', '').replace('-wrap', ''),
-						editor = tinymce.get(editorID),
-						$editorEl = $('#' + editorID),
-						mode = ($el.hasClass('html-active')) ? 'text' : 'tmce';
+					wp.ajax.send( 'ttf_duplicate_section', {
+						success: function(data) {
+							if (data.result && 'success' === data.result && data.section) {
+								$appendedSection = $(data.section);
+								$appendedSection.appendTo($stage);
 
-					// Only if the TinyMCE instance is available, get the content
-					if (null !== editor && 'tmce' === mode) {
-						$editorEl.val(editor.getContent());
-					}
-				});
+								// Init the views
+								view = oneApp.initAllViews($appendedSection);
 
-				wp.ajax.send( 'ttf_duplicate_section', {
-					success: function(data) {
-						if (data.result && 'success' === data.result && data.section) {
-							$appendedSection = $(data.section);
-							$appendedSection.appendTo($stage);
+								// Scroll to the content
+								oneApp.scrollToAddedView(view);
 
-							// Init the views
-							view = oneApp.initAllViews($appendedSection);
+								// Register the section with the sortable order field
+								oneApp.addOrderValue(view.model.get('id'), oneApp.cache.$sectionOrder);
 
-							// Scroll to the content
-							oneApp.scrollToAddedView(view);
-
-							// Register the section with the sortable order field
-							oneApp.addOrderValue(view.model.get('id'), oneApp.cache.$sectionOrder);
-
-							// Denotes if the TinyMCE init process should init the editor or not
-							ttfmakeMCE = getUserSetting('editor');
-
-							// Init TinyMCE
-							if ('banner' === sectionType) {
-								// Banner slides have editors and need to init'd separately
-								$('.wp-editor-wrap', view.$el).each(function(index, el) {
-									var $el = $(el),
-										id = $el.parents('.ttfmake-banner-slide').attr('data-id'),
-										editorID = $el.attr('id').replace('wp-', '').replace('-wrap', ''),
-										tempEditorID = editorID.replace(id, '') + 'temp';
-
-									oneApp.initEditor(editorID, tempEditorID);
-								});
+								// Initiate sortables
+								if ('text' === sectionType) {
+									oneApp.initializeTextColumnSortables(view);
+									duplicatorSection.initFrames(view);
+								}
 							} else {
-								// Init TinyMCE
-								oneApp.initAllEditors(view.$el.attr('id'), view.model);
+								duplicatorSection.handleError(data, $this);
 							}
 
-							ttfmakeMCE = ttfmakeMCEBackup;
-
-							// Initiate sortables
-							if ('text' === sectionType) {
-								oneApp.initializeTextColumnSortables(view);
-							}
-						} else {
+							// Remove the spinner
+							$this.removeClass('ttfmp-spinner');
+							disable = false;
+						},
+						error: function(data) {
 							duplicatorSection.handleError(data, $this);
+
+							// Remove the spinner
+							$this.removeClass('ttfmp-spinner');
+							disable = false;
+						},
+						data: {
+							nonce: ttfmpDuplicateSection.nonce,
+							data: $('#post').serialize(),
+							sectionType: sectionType,
+							id: $el.attr('data-id')
 						}
-
-						// Remove the spinner
-						$spinner.remove();
-					},
-					error: function(data) {
-						duplicatorSection.handleError(data, $this);
-
-						// Remove the spinner
-						$spinner.remove();
-					},
-					data: {
-						nonce: ttfmpDuplicateSection.nonce,
-						data: $('#post').serialize(),
-						sectionType: sectionType,
-						id: $el.attr('data-id')
-					}
-				});
+					});
+				}
 			});
 		},
 
@@ -105,7 +76,18 @@ var oneApp = oneApp || {}, ttfmakeMCE = ttfmakeMCE || '';
 			$link.after($html.delay(3000).fadeOut(function(){
 				$html.remove();
 			}));
+		},
 
+		initFrames: function(view) {
+			var $frames = $('iframe', view.$el),
+				link = oneApp.getFrameHeadLinks(),
+				id, $this;
+
+			$.each($frames, function() {
+				$this = $(this);
+				id = $this.attr('id').replace('ttfmake-iframe-', '');
+				oneApp.initFrame(id, link);
+			});
 		}
 	};
 

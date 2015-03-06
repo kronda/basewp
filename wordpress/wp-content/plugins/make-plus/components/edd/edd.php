@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! class_exists( 'TTFMP_EDD' ) ) :
 /**
@@ -117,6 +120,9 @@ class TTFMP_EDD {
 		// Add Customizer section descriptions
 		add_filter( 'ttfmp_shop_layout_shop_description', array( $this, 'layout_shop_description' ) );
 		add_filter( 'ttfmp_shop_layout_product_description', array( $this, 'layout_product_description' ) );
+
+		// Add description for Highlight Color control
+		add_filter( 'ttfmp_color_highlight_description', array( $this, 'color_highlight_description' ) );
 
 		// Add support for Shop Settings
 		$this->add_support();
@@ -303,6 +309,25 @@ class TTFMP_EDD {
 
 		// Highlight color
 		add_theme_support( 'ttfmp-shop-color-highlight' );
+	}
+
+	/**
+	 * Add a description to the Highlight Color control.
+	 *
+	 * @since 1.5.0.
+	 *
+	 * @param $text
+	 *
+	 * @return string
+	 */
+	public function color_highlight_description( $text ) {
+		$description = __( 'For Easy Digital Downloads, used for prices and alerts.', 'make-plus' );
+
+		if ( '' !== $text ) {
+			$text .= ' ';
+		}
+
+		return $text . $description;
 	}
 }
 endif;

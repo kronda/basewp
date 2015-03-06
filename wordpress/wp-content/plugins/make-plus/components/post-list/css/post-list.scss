@@ -1,33 +1,5 @@
-/*---------------------------------------------------------
- Post List common (post-list.scss)
--------------------------------------------------------- */
-.ttfmp-post-list {
-	.ttfmp-post-list-item-date {
-		display: block;
-	}
-	.ttfmp-post-list-item {
-		float: left;
-		width: 100%;
-		margin-right: 0; //reset
-	}
-	&.thumbnail-left.has-excerpt, &.thumbnail-right.has-excerpt {
-		.ttfmp-post-list-item-header {
-			zoom: 1;
-			&:before,
-			&:after {
-				display: table;
-				content: "";
-			}
-			&:after {
-				clear: both;
-			}
-		}
-	}
-}
-/*---------------------------------------------------------
- Post List widget (post-list.scss)
--------------------------------------------------------- */
-.ttfmp-widget-post-list {
+// Templates
+%clear {
 	zoom: 1;
 	&:before,
 	&:after {
@@ -37,6 +9,34 @@
 	&:after {
 		clear: both;
 	}
+}
+
+/*---------------------------------------------------------
+ Post List common (post-list.scss)
+-------------------------------------------------------- */
+.ttfmp-post-list {
+	.ttfmp-post-list-row {
+		@extend %clear;
+	}
+	.ttfmp-post-list-item {
+		float: left;
+		width: 100%;
+		margin-right: 0; //reset
+	}
+	.ttfmp-post-list-item-date {
+		display: block;
+	}
+	&.thumbnail-left.has-excerpt, &.thumbnail-right.has-excerpt {
+		.ttfmp-post-list-item-header {
+			@extend %clear;
+		}
+	}
+}
+/*---------------------------------------------------------
+ Post List widget (post-list.scss)
+-------------------------------------------------------- */
+.ttfmp-widget-post-list {
+	@extend %clear;
 	.ttfmp-post-list-item {
 		margin-bottom: 22px;
 		&:last-of-type {

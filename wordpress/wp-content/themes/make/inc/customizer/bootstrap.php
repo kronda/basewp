@@ -12,17 +12,22 @@ if ( ! function_exists( 'ttfmake_customizer_init' ) ) :
  * @return void
  */
 function ttfmake_customizer_init() {
-	$path = get_template_directory() . '/inc/customizer/';
+	$path = trailingslashit( get_template_directory() ) . 'inc/customizer/';
 
-	// Always load
-	require_once( $path . 'controls.php' );
+	// Utilities
+	require_once( $path . 'choices.php' );
+	require_once( $path . 'css.php' );
+	require_once( $path . 'defaults.php' );
+	require_once( $path . 'fonts.php' );
 	require_once( $path . 'google-fonts.php' );
-	require_once( $path . 'helpers.php' );
-	require_once( $path . 'helpers-css.php' );
-	require_once( $path . 'helpers-defaults.php' );
-	require_once( $path . 'helpers-display.php' );
-	require_once( $path . 'helpers-fonts.php' );
-	require_once( $path . 'helpers-logo.php' );
+	require_once( $path . 'logo.php' );
+	require_once( $path . 'priority.php' );
+
+	// Style rendering
+	require_once( $path . 'style/background.php' );
+	require_once( $path . 'style/color.php' );
+	require_once( $path . 'style/layout.php' );
+	require_once( $path . 'style/typography.php' );
 
 	// Hook up functions
 	add_action( 'customize_register', 'ttfmake_customizer_add_panels' );
@@ -30,8 +35,7 @@ function ttfmake_customizer_init() {
 	add_action( 'customize_register', 'ttfmake_customizer_set_transport' );
 	add_action( 'customize_preview_init', 'ttfmake_customizer_preview_script' );
 	add_action( 'customize_preview_init', 'ttfmake_add_customizations' );
-	add_action( 'customize_controls_enqueue_scripts', 'ttfmake_customizer_sections_script' );
-	add_action( 'customize_controls_print_styles', 'ttfmake_customizer_admin_styles' );
+	add_action( 'customize_controls_enqueue_scripts', 'ttfmake_customizer_scripts' );
 }
 endif;
 
@@ -64,12 +68,13 @@ if ( ! function_exists( 'ttfmake_customizer_get_panels' ) ) :
  */
 function ttfmake_customizer_get_panels() {
 	$panels = array(
-		'general'        => array( 'title' => __( 'General', 'make' ), 'priority' => 100 ),
-		'typography'     => array( 'title' => __( 'Typography', 'make' ), 'priority' => 200 ),
-		'color-scheme'   => array( 'title' => __( 'Color Scheme', 'make' ), 'priority' => 300 ),
-		'header'         => array( 'title' => __( 'Header', 'make' ), 'priority' => 400 ),
-		'content-layout' => array( 'title' => __( 'Content & Layout', 'make' ), 'priority' => 500 ),
-		'footer'         => array( 'title' => __( 'Footer', 'make' ), 'priority' => 600 ),
+		'general'           => array( 'title' => __( 'General', 'make' ), 'priority' => 100 ),
+		'typography'        => array( 'title' => __( 'Typography', 'make' ), 'priority' => 200 ),
+		'color-scheme'      => array( 'title' => __( 'Color', 'make' ), 'priority' => 300 ),
+		'background-images' => array( 'title' => __( 'Background Images', 'make' ), 'priority' => 400 ),
+		'content-layout'    => array( 'title' => __( 'Layout', 'make' ), 'priority' => 500 ),
+		'header'            => array( 'title' => __( 'Header', 'make' ) ), // Deprecated in 1.5.0
+		'footer'            => array( 'title' => __( 'Footer', 'make' ) ), // Deprecated in 1.5.0
 	);
 
 	/**
@@ -330,6 +335,12 @@ function ttfmake_customizer_add_section_options( $section, $args, $initial_prior
 			if ( isset( $control['control_type'] ) ) {
 				$class = $control['control_type'];
 
+				$control_path = apply_filters( 'make_customizer_control_path', get_template_directory() . '/inc/customizer/controls/' , $control );
+				$control_file = $control_path . $class . '.php';
+				if ( file_exists( $control_file ) ) {
+					require_once( $control_file );
+				}
+
 				if ( class_exists( $class ) ) {
 					unset( $control['control_type'] );
 
@@ -497,36 +508,67 @@ function ttfmake_customizer_preview_script() {
 }
 endif;
 
-if ( ! function_exists( 'ttfmake_customizer_sections_script' ) ) :
+if ( ! function_exists( 'ttfmake_customizer_scripts' ) ) :
 /**
  * Enqueue customizer sections script
  *
  * Hooked to 'customize_controls_enqueue_scripts' via ttfmake_customizer_init()
  *
- * @since  1.0.0.
+ * @since  1.5.0.
  *
  * @return void
  */
-function ttfmake_customizer_sections_script() {
+function ttfmake_customizer_scripts() {
+	// Styles
+	wp_enqueue_style(
+		'ttfmake-customizer-jquery-ui',
+		get_template_directory_uri() . '/inc/customizer/css/jquery-ui/jquery-ui-1.10.4.custom.css',
+		array(),
+		'1.10.4'
+	);
+	wp_enqueue_style(
+		'ttfmake-customizer-chosen',
+		get_template_directory_uri() . '/inc/customizer/css/chosen/chosen.css',
+		array(),
+		'1.3.0'
+	);
+	wp_enqueue_style(
+		'ttfmake-customizer-sections',
+		get_template_directory_uri() . '/inc/customizer/css/customizer-sections.css',
+		array( 'ttfmake-customizer-jquery-ui', 'ttfmake-customizer-chosen' ),
+		TTFMAKE_VERSION
+	);
+
+	// Scripts
+	wp_enqueue_script(
+		'ttfmake-customizer-chosen',
+		get_template_directory_uri() . '/inc/customizer/js/chosen.jquery.js',
+		array( 'jquery', 'customize-controls' ),
+		'1.3.0',
+		true
+	);
+
 	wp_enqueue_script(
 		'ttfmake-customizer-sections',
 		get_template_directory_uri() . '/inc/customizer/js/customizer-sections' . TTFMAKE_SUFFIX . '.js',
-		array( 'customize-controls' ),
+		array( 'customize-controls', 'ttfmake-customizer-chosen' ),
 		TTFMAKE_VERSION,
 		true
 	);
 
 	// Collect localization data
 	$data = array(
-		'fontOptions'		=> ttfmake_get_font_property_option_keys( 'family' ),
+		'fontOptions'		=> ttfmake_get_font_property_option_keys( 'font-family' ),
 		'allFontChoices'	=> ttfmake_all_font_choices_js(),
 	);
 
-	// Add localization strings for Upgrade button
+	// Add localization strings
 	if ( ! ttfmake_is_plus() ) {
 		$localize = array(
-			'plusURL'			=> esc_url( ttfmake_get_plus_link( 'customize-head' ) ),
-			'plusLabel'			=> __( 'Upgrade to Make Plus', 'make' ),
+			'chosen_no_results_default' => __( 'No results match', 'make' ),
+			'chosen_no_results_fonts'   => __( 'No matching fonts', 'make' ),
+			'plusURL'			        => esc_url( ttfmake_get_plus_link( 'customize-head' ) ),
+			'plusLabel'		        	=> __( 'Upgrade to Make Plus', 'make' ),
 		);
 		$data = $data + $localize;
 	}
@@ -537,30 +579,6 @@ function ttfmake_customizer_sections_script() {
 		'ttfmakeCustomizerL10n',
 		$data
 	);
-}
-endif;
-
-if ( ! function_exists( 'ttfmake_customizer_admin_styles' ) ) :
-/**
- * Styles for our Customizer sections and controls. Prints in the <head>
- *
- * @since  1.0.0.
- *
- * @return void
- */
-function ttfmake_customizer_admin_styles() {
-?>
-	<style type="text/css">
-		.customize-control.customize-control-heading {
-			margin-top: 6px;
-			margin-bottom: -2px;
-		}
-		.customize-control.customize-control-line {
-			margin-top: 10px;
-			margin-bottom: 6px;
-		}
-	</style>
-<?php
 }
 endif;
 

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! function_exists( 'ttfmake_customizer_stylekit' ) ) :
 /**

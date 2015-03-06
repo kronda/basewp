@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! function_exists( 'ttfmp_edd_add_color_css' ) ) :
 /**

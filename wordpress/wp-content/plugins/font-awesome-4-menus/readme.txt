@@ -3,7 +3,7 @@ Contributors: New Nine
 Author URI: http://www.newnine.com
 Tags: menus, font awesome, navigation, responsive, nav menu, wp_nav_menu
 Requires at least: 3
-Tested up to: 4.0
+Tested up to: 4.1
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -80,6 +80,9 @@ Your site will be fine. Where you used Font Awesome 4 Menus, those menu items wi
 If you uninstall the plugin, Font Awesome 4 Menus cleans up after itself by removing the site option and user meta that it set in your database. No bloat here and we clean up after ourselves!
 
 == Upgrade Notice ==
+
+= 4.3.0.1 =
+Update to Font Awesome 4.3 which includes another 40 icons
 
 = 4.2.0.1 =
 Update to Font Awesome 4.2 which includes another 40 icons

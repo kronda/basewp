@@ -59,9 +59,14 @@ if ( ! class_exists( 'SeedProd_Ultimate_Coming_Soon_Page' ) ) {
          * Display the coming soon page
          */
         function render_comingsoon_page() {
+                $seedprod_comingsoon_options = get_option('seedprod_comingsoon_options');
+
+
                 // Return if a login page
-                if(preg_match("/login/i",$_SERVER['REQUEST_URI']) > 0){
-                    return false;
+                if(empty($seedprod_comingsoon_options['disable_default_exclude_terms'])){
+                    if(preg_match("/login|admin|dashboard|account/i",$_SERVER['REQUEST_URI']) > 0){
+                        return false;
+                    }
                 }
 
 	            if(!is_admin()){
@@ -446,6 +451,16 @@ $seedprod_comingsoon->options[] = array( "type" => "textarea",
 				"section_id" => "seedprod_section_coming_soon",
 				"setting_id" => "seedprod_comingsoon_options",
 				);
+
+$seedprod_comingsoon->options[] = array( "type" => "checkbox",
+                "id" => "disable_default_exclude_terms",
+                "label" => __("Disable Default Excluded URLs", 'ultimate-coming-soon-page'),
+                "desc" => sprintf(__("By default urls with the terms: login, admin, dashboard and account are excluded. Check to disbale. ", 'ultimate-coming-soon-page'),home_url()),
+                "option_values" => array('1'=>__('Yes', 'ultimate-coming-soon-page')),
+                "section_id" => "seedprod_section_coming_soon",
+                "setting_id" => "seedprod_comingsoon_options",
+                );
+
 
 $seedprod_comingsoon->options[] = array( "type" => "section",
                 "id" => "seedprod_section_style",

@@ -3,17 +3,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Make 1.4.0\n"
-"Report-Msgid-Bugs-To: https://thethemefoundry.com/support\n"
-"POT-Creation-Date: 2014-09-23 23:51:34+00:00\n"
+"Report-Msgid-Bugs-To: https://thethemefoundry.com/support/\n"
+"POT-Creation-Date: 2015-01-12 22:51:32+00:00\n"
+"PO-Revision-Date: 2015-02-09 18:06+0100\n"
+"Last-Translator: Leo Oosterloo <leo@pronamic.nl>\n"
+"Language-Team: \n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-11-10 21:26+0100\n"
-"Last-Translator: Leo Oosterloo <leo.oosterloo@gmail.com>\n"
-"Language-Team: \n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.5.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: nl_NL\n"
 
 #: 404.php:12
 msgid "Oops! That page can&rsquo;t be found."
@@ -31,39 +31,39 @@ msgstr "Reactie navigatie"
 msgid "Comments are closed."
 msgstr "Reacties zijn gesloten."
 
-#: functions.php:145
+#: functions.php:160
 msgid "Primary Menu"
 msgstr "Primair Menu"
 
-#: functions.php:146
+#: functions.php:161
 msgid "Social Profile Links"
 msgstr "Sociale profiel links"
 
-#: functions.php:147
+#: functions.php:162
 msgid "Header Bar Menu"
 msgstr "Header balk menu"
 
-#: functions.php:177
+#: functions.php:192
 msgid "Left Sidebar"
 msgstr "Linker Sidebar"
 
-#: functions.php:186
+#: functions.php:201
 msgid "Right Sidebar"
 msgstr "Rechter Sidebar"
 
-#: functions.php:195
+#: functions.php:210
 msgid "Footer 1"
 msgstr "Footer 1"
 
-#: functions.php:204
+#: functions.php:219
 msgid "Footer 2"
 msgstr "Footer 2"
 
-#: functions.php:213
+#: functions.php:228
 msgid "Footer 3"
 msgstr "Footer 3"
 
-#: functions.php:222
+#: functions.php:237
 msgid "Footer 4"
 msgstr "Footer 4"
 
@@ -75,47 +75,46 @@ msgstr "Pagina Bouwer"
 msgid "Use Page Builder"
 msgstr "Gebruik Pagina Bouwer"
 
-#: inc/builder/core/base.php:424 inc/builder/core/configuration-helpers.php:96
-#: inc/builder/sections/builder-templates/text.php:131
+#: inc/builder/core/base.php:335
+msgid "Delete the section?"
+msgstr "Verwijder deze sectie?"
+
+#: inc/builder/core/base.php:432 inc/builder/core/configuration-helpers.php:96
+#: inc/builder/sections/builder-templates/text.php:142
 msgid "Set image"
 msgstr "Afbeelding instellen"
 
-#: inc/builder/core/base.php:457
+#: inc/builder/core/base.php:465
 #: inc/builder/core/templates/overlay-tinymce.php:4
 #: inc/builder/sections/builder-templates/banner-slide.php:42
 #: inc/builder/sections/builder-templates/banner-slide.php:44
 #: inc/builder/sections/builder-templates/gallery-item.php:40
 #: inc/builder/sections/builder-templates/gallery-item.php:42
-#: inc/builder/sections/builder-templates/text.php:84
 #: inc/builder/sections/builder-templates/text.php:91
 msgid "Edit content"
 msgstr "Bewerk content"
 
-#: inc/builder/core/base.php:542
+#: inc/builder/core/base.php:551
 msgid "Current image"
 msgstr "Huidige afbeelding"
 
-#: inc/builder/core/base.php:544
+#: inc/builder/core/base.php:553
 msgid "Remove Current Image"
 msgstr "Verwijder huidige afbeelding"
 
-#: inc/builder/core/base.php:611
-msgid "Add Media"
-msgstr "Media toevoegen"
-
-#: inc/builder/core/base.php:704
+#: inc/builder/core/base.php:684
 msgid "Duplicate this page with %s."
 msgstr "Dupliceer deze pagina met %s."
 
-#: inc/builder/core/base.php:1110
+#: inc/builder/core/base.php:1075
 msgid "Want some ideas?"
 msgstr "Wil je enkele idee&euml;n?"
 
-#: inc/builder/core/base.php:1113
+#: inc/builder/core/base.php:1078
 msgid "%s and get a quick start with pre-made designer builder templates."
 msgstr "%s en krijg een snelle start met vooraf ontworpen bouwer templates."
 
-#: inc/builder/core/base.php:1118
+#: inc/builder/core/base.php:1083
 #: inc/builder/sections/builder-templates/text.php:27 inc/edit-page.php:96
 msgid "Upgrade to %s"
 msgstr "Upgrade naar %s"
@@ -147,7 +146,7 @@ msgstr "Klaar"
 msgid "Delete section"
 msgstr "Verwijder sectie"
 
-#: inc/builder/core/templates/section-header.php:67
+#: inc/builder/core/templates/section-header.php:84
 msgid "Click to toggle"
 msgstr "Klik om te schakelen"
 
@@ -170,36 +169,36 @@ msgstr "Configureer slide"
 msgid "Delete slide"
 msgstr "Delete slide"
 
-#: inc/builder/sections/builder-templates/banner-slide.php:67
+#: inc/builder/sections/builder-templates/banner-slide.php:74
 msgid "Content position"
 msgstr "Content positie"
 
-#: inc/builder/sections/builder-templates/banner-slide.php:70
+#: inc/builder/sections/builder-templates/banner-slide.php:77
 #: inc/builder/sections/section-definitions.php:208
 #: inc/builder/sections/section-definitions.php:343
 #: inc/builder/sections/section-definitions.php:354
-#: inc/customizer/helpers.php:86 inc/customizer/helpers.php:98
-#: inc/customizer/helpers.php:109 inc/customizer/helpers.php:209
+#: inc/customizer/helpers.php:71 inc/customizer/helpers.php:83
+#: inc/customizer/helpers.php:94 inc/customizer/helpers.php:194
 #: inc/gallery-slider/gallery-slider.php:118
 msgid "None"
 msgstr "Geen"
 
-#: inc/builder/sections/builder-templates/banner-slide.php:71
-#: inc/customizer/helpers.php:131 inc/customizer/helpers.php:161
+#: inc/builder/sections/builder-templates/banner-slide.php:78
+#: inc/customizer/helpers.php:116 inc/customizer/helpers.php:146
 msgid "Left"
 msgstr "Links"
 
-#: inc/builder/sections/builder-templates/banner-slide.php:72
-#: inc/customizer/helpers.php:133 inc/customizer/helpers.php:162
+#: inc/builder/sections/builder-templates/banner-slide.php:79
+#: inc/customizer/helpers.php:118 inc/customizer/helpers.php:147
 msgid "Right"
 msgstr "Rechts"
 
-#: inc/builder/sections/builder-templates/banner-slide.php:77
+#: inc/builder/sections/builder-templates/banner-slide.php:84
 #: inc/builder/sections/section-definitions.php:375
 msgid "Darken background to improve readability"
 msgstr "Verduister achtergrond voor betere leesbaarheid"
 
-#: inc/builder/sections/builder-templates/banner-slide.php:83
+#: inc/builder/sections/builder-templates/banner-slide.php:90
 #: inc/builder/sections/section-definitions.php:391
 msgid "Background color"
 msgstr "Achtergrond kleur"
@@ -232,11 +231,11 @@ msgstr "Configureer item"
 msgid "Delete item"
 msgstr "Delete item"
 
-#: inc/builder/sections/builder-templates/gallery-item.php:65
+#: inc/builder/sections/builder-templates/gallery-item.php:72
 msgid "Title"
 msgstr "Titel"
 
-#: inc/builder/sections/builder-templates/gallery-item.php:72
+#: inc/builder/sections/builder-templates/gallery-item.php:79
 msgid "Item link URL"
 msgstr "Item link URL"
 
@@ -249,7 +248,8 @@ msgid "%s and convert any column into an area for widgets."
 msgstr "%s en converteer elke kolom in een widgetgebied."
 
 #: inc/builder/sections/builder-templates/text.php:81
-#: inc/builder/sections/builder-templates/text.php:149
+#: inc/builder/sections/builder-templates/text.php:84
+#: inc/builder/sections/builder-templates/text.php:160
 msgid "Configure column"
 msgstr "Configureer kolom"
 
@@ -257,15 +257,15 @@ msgstr "Configureer kolom"
 msgid "Edit text column"
 msgstr "Bewerk tekst kolom"
 
-#: inc/builder/sections/builder-templates/text.php:108
+#: inc/builder/sections/builder-templates/text.php:119
 msgid "Drag-and-drop this column into place"
 msgstr "Versleep-en-plaats deze kolom op z'n plek"
 
-#: inc/builder/sections/builder-templates/text.php:157
+#: inc/builder/sections/builder-templates/text.php:175
 msgid "Enter column title"
 msgstr "Kolom titel hier invoeren"
 
-#: inc/builder/sections/builder-templates/text.php:164
+#: inc/builder/sections/builder-templates/text.php:182
 msgid "Image link URL"
 msgstr "Afbeelding link URL"
 
@@ -334,7 +334,7 @@ msgid "Choose how the banner will respond to varying screen widths."
 msgstr "Kies hoe de banner zal reageren op verschillende scherm breedtes."
 
 #: inc/builder/sections/section-definitions.php:224
-#: inc/customizer/helpers.php:148
+#: inc/customizer/helpers.php:133
 msgid "Default"
 msgstr "Standaard"
 
@@ -399,16 +399,32 @@ msgid "Background style"
 msgstr "Achtergrond stijl"
 
 #: inc/builder/sections/section-definitions.php:385
-#: inc/customizer/helpers.php:117
+#: inc/customizer/helpers.php:102
 msgid "Tile"
 msgstr "Tegel"
 
 #: inc/builder/sections/section-definitions.php:386
-#: inc/customizer/helpers.php:142
+#: inc/customizer/helpers.php:127
 msgid "Cover"
 msgstr "Cover"
 
-#: inc/customizer/bootstrap.php:67 inc/customizer/bootstrap.php:340
+#: inc/compatibility.php:35
+msgid ""
+"The uploaded package appears to be a plugin. PLEASE INSTALL AS A PLUGIN."
+msgstr ""
+"Het ge&uuml;ploade pakket is een plugin. INSTALLEER HET ALS EEN PLUGIN."
+
+#: inc/compatibility.php:350
+msgid ""
+"Please <a href=\"%1$s\"><em>update to Make Plus 1.4.0 or later</em></a> for "
+"compatibility with your version of Make. <a href=\"#\" data-nonce=\"%2$s\" "
+"class=\"%3$s\">hide</a>"
+msgstr ""
+"<a href=\"%1$s\"><em>Update naar Make Plus 1.4.0 or nieuwer</em></a> voor "
+"compatibiliteit met jouw versie van Make. <a href=\"#\" data-nonce=\"%2$s\" "
+"class=\"%3$s\">verberg</a>"
+
+#: inc/customizer/bootstrap.php:67 inc/customizer/bootstrap.php:377
 #: inc/customizer/sections/color-scheme.php:24
 msgid "General"
 msgstr "Algemeen"
@@ -421,7 +437,7 @@ msgstr "Typografie"
 msgid "Color Scheme"
 msgstr "Kleurschema"
 
-#: inc/customizer/bootstrap.php:70 inc/customizer/bootstrap.php:344
+#: inc/customizer/bootstrap.php:70 inc/customizer/bootstrap.php:381
 #: inc/customizer/sections/color-scheme.php:89
 msgid "Header"
 msgstr "Header"
@@ -430,60 +446,60 @@ msgstr "Header"
 msgid "Content & Layout"
 msgstr "Content & Layout"
 
-#: inc/customizer/bootstrap.php:72 inc/customizer/bootstrap.php:352
+#: inc/customizer/bootstrap.php:72 inc/customizer/bootstrap.php:389
 #: inc/customizer/sections/color-scheme.php:177
 msgid "Footer"
 msgstr "Footer"
 
-#: inc/customizer/bootstrap.php:113
+#: inc/customizer/bootstrap.php:120
 msgid "Sidebars & Widgets"
 msgstr "Sidebar & Widgets"
 
-#: inc/customizer/bootstrap.php:341 inc/customizer/sections/stylekit.php:23
+#: inc/customizer/bootstrap.php:378 inc/customizer/sections/stylekit.php:23
 msgid "Style Kits"
 msgstr "Stijl Kits"
 
-#: inc/customizer/bootstrap.php:342
+#: inc/customizer/bootstrap.php:379
 msgid "Fonts"
 msgstr "Fonts"
 
-#: inc/customizer/bootstrap.php:343
+#: inc/customizer/bootstrap.php:380
 msgid "Colors"
 msgstr "Kleuren"
 
-#: inc/customizer/bootstrap.php:345 inc/customizer/sections/general.php:31
+#: inc/customizer/bootstrap.php:382 inc/customizer/sections/general.php:31
 msgid "Logo"
 msgstr "Logo"
 
-#: inc/customizer/bootstrap.php:346
+#: inc/customizer/bootstrap.php:383
 msgid "Main"
 msgstr "Hoofd"
 
-#: inc/customizer/bootstrap.php:347
+#: inc/customizer/bootstrap.php:384
 msgid "Layout: Blog (Posts Page)"
 msgstr "Layout: Blog (Berichten Pagina)"
 
-#: inc/customizer/bootstrap.php:348
+#: inc/customizer/bootstrap.php:385
 msgid "Layout: Archives"
 msgstr "Layout: Archieven"
 
-#: inc/customizer/bootstrap.php:349
+#: inc/customizer/bootstrap.php:386
 msgid "Layout: Search Results"
 msgstr "Layout: Zoekresultaten"
 
-#: inc/customizer/bootstrap.php:350
+#: inc/customizer/bootstrap.php:387
 msgid "Layout: Posts"
 msgstr "Layout: Berichten"
 
-#: inc/customizer/bootstrap.php:351
+#: inc/customizer/bootstrap.php:388
 msgid "Layout: Pages"
 msgstr "Layout: Pagina's"
 
-#: inc/customizer/bootstrap.php:353 inc/customizer/sections/general.php:92
+#: inc/customizer/bootstrap.php:390 inc/customizer/sections/general.php:92
 msgid "Social Profiles &amp; RSS"
 msgstr "Sociale Profielen &amp; RSS"
 
-#: inc/customizer/bootstrap.php:492
+#: inc/customizer/bootstrap.php:529
 #: inc/customizer/legacy_sections/stylekit.php:32
 #: inc/customizer/sections/stylekit.php:29
 msgid "Upgrade to Make Plus"
@@ -497,156 +513,160 @@ msgstr "Menu"
 msgid "Featured"
 msgstr "Uitgelicht"
 
-#: inc/customizer/helpers-fonts.php:556
+#: inc/customizer/helpers-fonts.php:573
 msgid "All"
 msgstr "Alle"
 
-#: inc/customizer/helpers-fonts.php:557
+#: inc/customizer/helpers-fonts.php:574
 msgid "Cyrillic"
 msgstr "Cyrillisch"
 
-#: inc/customizer/helpers-fonts.php:558
+#: inc/customizer/helpers-fonts.php:575
 msgid "Cyrillic Extended"
 msgstr "Cyrillisch Uitgebreid"
 
-#: inc/customizer/helpers-fonts.php:559
+#: inc/customizer/helpers-fonts.php:576
 msgid "Devanagari"
 msgstr "Devanagari"
 
-#: inc/customizer/helpers-fonts.php:560
+#: inc/customizer/helpers-fonts.php:577
 msgid "Greek"
 msgstr "Grieks"
 
-#: inc/customizer/helpers-fonts.php:561
+#: inc/customizer/helpers-fonts.php:578
 msgid "Greek Extended"
 msgstr "Grieks Uitgebreid"
 
-#: inc/customizer/helpers-fonts.php:562
+#: inc/customizer/helpers-fonts.php:579
 msgid "Khmer"
 msgstr "Khmer"
 
-#: inc/customizer/helpers-fonts.php:563
+#: inc/customizer/helpers-fonts.php:580
 msgid "Latin"
 msgstr "Latijns"
 
-#: inc/customizer/helpers-fonts.php:564
+#: inc/customizer/helpers-fonts.php:581
 msgid "Latin Extended"
 msgstr "Latijns Uitgebreid"
 
-#: inc/customizer/helpers-fonts.php:565
+#: inc/customizer/helpers-fonts.php:582
+msgid "Telugu"
+msgstr "Telugu"
+
+#: inc/customizer/helpers-fonts.php:583
 msgid "Vietnamese"
 msgstr "Vietnamees"
 
-#: inc/customizer/helpers-fonts.php:610
+#: inc/customizer/helpers-fonts.php:628
 msgid "Loading&hellip;"
 msgstr "Laden&hellip;"
 
-#: inc/customizer/helpers-fonts.php:672
+#: inc/customizer/helpers-fonts.php:690
 msgid "Standard Fonts"
 msgstr "Standaard Fonts"
 
-#: inc/customizer/helpers-fonts.php:674
+#: inc/customizer/helpers-fonts.php:692
 msgid "Google Fonts"
 msgstr "Google Fonts"
 
-#: inc/customizer/helpers.php:74
+#: inc/customizer/helpers.php:59
 msgid "Full-width"
 msgstr "Volledige breedte"
 
-#: inc/customizer/helpers.php:75
+#: inc/customizer/helpers.php:60
 msgid "Boxed"
 msgstr "Gekaderd"
 
-#: inc/customizer/helpers.php:84
+#: inc/customizer/helpers.php:69
 msgid "Post header"
 msgstr "Bericht header"
 
-#: inc/customizer/helpers.php:85
+#: inc/customizer/helpers.php:70
 msgid "Thumbnail"
 msgstr "Thumbnail"
 
-#: inc/customizer/helpers.php:96
+#: inc/customizer/helpers.php:81
 msgid "Absolute (%s)"
 msgstr "Absoluut (%s)"
 
-#: inc/customizer/helpers.php:97
+#: inc/customizer/helpers.php:82
 msgid "Relative (1 week ago)"
 msgstr "Relatief (1 week geleden)"
 
-#: inc/customizer/helpers.php:107
+#: inc/customizer/helpers.php:92
 msgid "With avatar"
 msgstr "Met avatar"
 
-#: inc/customizer/helpers.php:108
+#: inc/customizer/helpers.php:93
 msgid "Without avatar"
 msgstr "Zonder avatar"
 
-#: inc/customizer/helpers.php:116
+#: inc/customizer/helpers.php:101
 msgid "No Repeat"
 msgstr "Niet Herhalen"
 
-#: inc/customizer/helpers.php:118
+#: inc/customizer/helpers.php:103
 msgid "Tile Horizontally"
 msgstr "Horizontaal tegelen"
 
-#: inc/customizer/helpers.php:119
+#: inc/customizer/helpers.php:104
 msgid "Tile Vertically"
 msgstr "Verticaal tegelen"
 
-#: inc/customizer/helpers.php:132
+#: inc/customizer/helpers.php:117
 msgid "Center"
 msgstr "Centreren"
 
-#: inc/customizer/helpers.php:141
+#: inc/customizer/helpers.php:126
 msgid "Auto"
 msgstr "Auto"
 
-#: inc/customizer/helpers.php:143
+#: inc/customizer/helpers.php:128
 msgid "Contain"
 msgstr "Omvatten"
 
-#: inc/customizer/helpers.php:149
+#: inc/customizer/helpers.php:134
 msgid "Flipped"
 msgstr "Gedraaid"
 
-#: inc/customizer/helpers.php:154 inc/customizer/helpers.php:176
+#: inc/customizer/helpers.php:139 inc/customizer/helpers.php:161
 msgid "Traditional"
 msgstr "Traditioneel"
 
-#: inc/customizer/helpers.php:155 inc/customizer/helpers.php:177
+#: inc/customizer/helpers.php:140 inc/customizer/helpers.php:162
 msgid "Centered"
 msgstr "Gecentreerd"
 
-#: inc/customizer/helpers.php:156
+#: inc/customizer/helpers.php:141
 msgid "Navigation Below"
 msgstr "Navigatie Onder"
 
-#: inc/customizer/helpers.php:196
+#: inc/customizer/helpers.php:181
 msgid "Top"
 msgstr "Top"
 
-#: inc/customizer/helpers.php:197
+#: inc/customizer/helpers.php:182
 msgid "Before content"
 msgstr "V&oacute;&oacute;r content"
 
-#: inc/customizer/helpers.php:198
+#: inc/customizer/helpers.php:183
 msgid "Post footer"
 msgstr "Bericht footer"
 
-#: inc/customizer/helpers.php:207
+#: inc/customizer/helpers.php:192
 msgid "With icon"
 msgstr "Met pictogram"
 
-#: inc/customizer/helpers.php:208
+#: inc/customizer/helpers.php:193
 msgid "With text"
 msgstr "Met tekst"
 
-#: inc/customizer/helpers.php:326
+#: inc/customizer/helpers.php:311
 #: inc/customizer/legacy_sections/social.php:261
 msgid "Email"
 msgstr "E-mail"
 
-#: inc/customizer/helpers.php:330
+#: inc/customizer/helpers.php:315
 msgid "RSS"
 msgstr "RSS"
 
@@ -682,6 +702,7 @@ msgstr "Secundaire kleur"
 
 #: inc/customizer/legacy_sections/color.php:84
 #: inc/customizer/sections/color-scheme.php:50
+#: inc/formatting/formatting.php:186
 msgid "Text Color"
 msgstr "Tekst kleur"
 
@@ -1183,6 +1204,7 @@ msgstr ""
 "<strong>152px x 152px</strong>."
 
 #: inc/customizer/legacy_sections/main.php:38
+#: inc/formatting/formatting.php:185
 msgid "Background Color"
 msgstr "Achtergrondkleur"
 
@@ -1349,19 +1371,19 @@ msgstr "Globaal"
 msgid "Blog (Posts Page)"
 msgstr "Blog (berichten pagina)"
 
-#: inc/customizer/sections/content-layout.php:253 inc/extras.php:360
+#: inc/customizer/sections/content-layout.php:253 inc/extras.php:400
 msgid "Archives"
 msgstr "Archieven"
 
-#: inc/customizer/sections/content-layout.php:434 inc/extras.php:361
+#: inc/customizer/sections/content-layout.php:434 inc/extras.php:401
 msgid "Search Results"
 msgstr "Zoekresultaten"
 
-#: inc/customizer/sections/content-layout.php:615 inc/extras.php:362
+#: inc/customizer/sections/content-layout.php:615 inc/extras.php:402
 msgid "Posts"
 msgstr "Berichten"
 
-#: inc/customizer/sections/content-layout.php:780 inc/extras.php:363
+#: inc/customizer/sections/content-layout.php:780 inc/extras.php:403
 msgid "Pages"
 msgstr "Pagina's"
 
@@ -1594,7 +1616,7 @@ msgstr "Wil je een unieke layout voor deze %1$s instellen? %2$s."
 msgid "Page %s"
 msgstr "Pagina %s"
 
-#: inc/extras.php:320
+#: inc/extras.php:360
 msgid ""
 "This widget area is currently disabled. Enable it in the \"Footer\" panel of "
 "the Customizer."
@@ -1602,7 +1624,7 @@ msgstr ""
 "Dit widgetgebied is niet actief. Schakel het in in het \"Footer\" paneel of "
 "in de Bewerker."
 
-#: inc/extras.php:331
+#: inc/extras.php:371
 msgid ""
 "This widget area is currently disabled. Enable it in the \"Content & Layout"
 "\" panel of the Customizer."
@@ -1610,7 +1632,7 @@ msgstr ""
 "Dit widgetgebied is niet actief. Schakel het in in het \"Content & Layout\" "
 "paneel of in de Bewerker."
 
-#: inc/extras.php:336
+#: inc/extras.php:376
 msgid ""
 "This widget area is currently enabled for the following views: %s. Change "
 "this in the \"Content & Layout\" panel of the Customizer."
@@ -1618,25 +1640,205 @@ msgstr ""
 "Dit widgetgebied is ingeschakeld voor de volgende weergaven: %s. Wijzig dit "
 "in het \"Content & Layout\" paneel of in de Bewerker."
 
-#: inc/extras.php:359
+#: inc/extras.php:399
 msgid "Blog (Post Page)"
 msgstr "Blog (berichten pagina)"
 
-#: inc/extras.php:427
-msgid ""
-"The uploaded package appears to be a plugin. PLEASE INSTALL AS A PLUGIN."
-msgstr ""
-"Het ge&uuml;ploade pakket is een plugin. INSTALLEER HET ALS EEN PLUGIN."
+#: inc/formatting/formatting.php:178
+msgid "Format Builder"
+msgstr "Formaat Bouwer"
 
-#: inc/extras.php:739
-msgid ""
-"Please <a href=\"%1$s\"><em>update to Make Plus 1.4.0 or later</em></a> for "
-"compatibility with your version of Make. <a href=\"#\" data-nonce=\"%2$s\" "
-"class=\"%3$s\">hide</a>"
-msgstr ""
-"<a href=\"%1$s\"><em>Update naar Make Plus 1.4.0 or nieuwer</em></a> voor "
-"compatibiliteit met jouw versie van Make. <a href=\"#\" data-nonce=\"%2$s\" "
-"class=\"%3$s\">verberg</a>"
+#: inc/formatting/formatting.php:179
+msgid "Choose a format"
+msgstr "Kies een formaat"
+
+#: inc/formatting/formatting.php:180
+msgid "Insert"
+msgstr "Invoegen"
+
+#: inc/formatting/formatting.php:181
+msgid "Update"
+msgstr "Update"
+
+#: inc/formatting/formatting.php:182
+msgid "Remove"
+msgstr "Verwijder"
+
+#: inc/formatting/formatting.php:183
+msgid "Add icon"
+msgstr "Pictogram toevoegen"
+
+#: inc/formatting/formatting.php:184
+msgid "Notice"
+msgstr "Bericht"
+
+#: inc/formatting/formatting.php:187
+msgid "Font Size (px)"
+msgstr "Font grootte (px)"
+
+#: inc/formatting/formatting.php:188
+msgid "Icon"
+msgstr "Pictogram"
+
+#: inc/formatting/formatting.php:189
+msgid "Icon Size (px)"
+msgstr "Pictogram grootte (px)"
+
+#: inc/formatting/formatting.php:190
+msgid "Icon Color"
+msgstr "Pictogram kleur"
+
+#: inc/formatting/formatting.php:191
+msgid "Icon Position"
+msgstr "Pictogram positie"
+
+#: inc/formatting/formatting.php:192
+msgid "left"
+msgstr "links"
+
+#: inc/formatting/formatting.php:193
+msgid "right"
+msgstr "rechts"
+
+#: inc/formatting/formatting.php:194
+msgid "Horizontal Padding (px)"
+msgstr "Horizontale padding (px)"
+
+#: inc/formatting/formatting.php:195
+msgid "Vertical Padding (px)"
+msgstr "Verticale padding (px)"
+
+#: inc/formatting/formatting.php:196
+msgid "Border Style"
+msgstr "Randstijl"
+
+#: inc/formatting/formatting.php:197
+msgid "none"
+msgstr "geen"
+
+#: inc/formatting/formatting.php:206
+msgid "Border Width (px)"
+msgstr "Rand dikte (px)"
+
+#: inc/formatting/formatting.php:207
+msgid "Border Color"
+msgstr "Randkleur"
+
+#: inc/formatting/formatting.php:208
+msgid "Button"
+msgstr "Button"
+
+#: inc/formatting/formatting.php:209
+msgid "URL"
+msgstr "URL"
+
+#: inc/formatting/formatting.php:210
+msgid "Open link in a new window/tab"
+msgstr "Open link in nieuw venster/tab"
+
+#: inc/formatting/formatting.php:211
+msgid "Font Weight"
+msgstr "Font gewicht"
+
+#: inc/formatting/formatting.php:214
+msgid "Background Color (hover)"
+msgstr "Achtergrondkleur (hover)"
+
+#: inc/formatting/formatting.php:215
+msgid "Text Color (hover)"
+msgstr "Tekst kleur (hover)"
+
+#: inc/formatting/formatting.php:216
+msgid "Border Radius (px)"
+msgstr "Rand radius (px)"
+
+#: inc/formatting/formatting.php:217
+msgid "List"
+msgstr "Lijst"
+
+#: inc/formatting/formatting.php:219
+msgid "Insert Icon"
+msgstr "Pictogram invoegen"
+
+#: inc/formatting/formatting.php:220
+msgid "Choose an icon"
+msgstr "Kies een pictogram"
+
+#: inc/formatting/formatting.php:221
+msgid "Web Application Icons"
+msgstr "Web applicatie pictogrammen"
+
+#: inc/formatting/formatting.php:222
+msgid "Text Editor Icons"
+msgstr "Textverwerker pictogrammen"
+
+#: inc/formatting/formatting.php:223
+msgid "Spinner Icons"
+msgstr "Spinner pictogrammen"
+
+#: inc/formatting/formatting.php:224
+msgid "File Type Icons"
+msgstr "Bestandtype pictogrammen"
+
+#: inc/formatting/formatting.php:225
+msgid "Directional Icons"
+msgstr "Directionele pictogrammen"
+
+#: inc/formatting/formatting.php:226
+msgid "Video Player Icons"
+msgstr "Videospeler pictogrammen"
+
+#: inc/formatting/formatting.php:227
+msgid "Form Control Icons"
+msgstr "Formulier controle pictogrammen"
+
+#: inc/formatting/formatting.php:228
+msgid "Chart Icons"
+msgstr "Grafiek pictogrammen"
+
+#: inc/formatting/formatting.php:229
+msgid "Brand Icons"
+msgstr "Merk pictogrammen"
+
+#: inc/formatting/formatting.php:230
+msgid "Payment Icons"
+msgstr "Betaling pictogrammen"
+
+#: inc/formatting/formatting.php:231
+msgid "Currency Icons"
+msgstr "Valuta pictogrammen"
+
+#: inc/formatting/formatting.php:232
+msgid "Medical Icons"
+msgstr "Medische pictogrammen"
+
+#: inc/formatting/formatting.php:233
+msgid "Choose"
+msgstr "Kies"
+
+#: inc/formatting/formatting.php:235
+msgid "Insert Horizontal Line"
+msgstr "Horizontale lijn invoegen"
+
+#: inc/formatting/formatting.php:236
+msgid "Choose a line style"
+msgstr "Kies een lijn stijl"
+
+#: inc/formatting/formatting.php:399
+msgid "Big"
+msgstr "Groot"
+
+#: inc/formatting/formatting.php:404
+msgid "Small"
+msgstr "Klein"
+
+#: inc/formatting/formatting.php:409
+msgid "Citation"
+msgstr "Citaat"
+
+#: inc/formatting/formatting.php:414
+msgid "Testimonial"
+msgstr "Getuigenis"
 
 #: inc/gallery-slider/gallery-slider.php:91
 msgid "Slider Settings"
@@ -1669,118 +1871,6 @@ msgstr "Je reactie wacht op goedkeuring."
 #: inc/template-tags.php:164
 msgid "Read more"
 msgstr "Lees meer"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:144
-msgid "Add button"
-msgstr "Button toevoegen"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:145
-msgid "Insert Button"
-msgstr "Button invoegen"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:146
-msgid "Button text"
-msgstr "Button tekst"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:147
-msgid "Button URL"
-msgstr "Button URL"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:148
-msgid "Normal"
-msgstr "Normaal"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:149 inc/tinymce.php:59
-msgid "Alert"
-msgstr "Alert"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:150
-msgid "Download"
-msgstr "Download"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:151
-msgid "Color"
-msgstr "Kleur"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:152
-msgid "Primary"
-msgstr "Primair"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:153
-msgid "Secondary"
-msgstr "Secundair"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:154
-msgid "Green"
-msgstr "Groen"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:155
-msgid "Red"
-msgstr "Rood"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:156
-msgid "Orange"
-msgstr "Oranje"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:157
-msgid "Style"
-msgstr "Stijl"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:158
-msgid "Dotted"
-msgstr "Gestippeld"
-
-#: inc/tinymce-buttons/tinymce-buttons.php:159
-msgid "Double"
-msgstr "Dubbel"
-
-#: inc/tinymce.php:37
-msgid "Big"
-msgstr "Groot"
-
-#: inc/tinymce.php:42
-msgid "Small"
-msgstr "Klein"
-
-#: inc/tinymce.php:47
-msgid "Citation"
-msgstr "Citaat"
-
-#: inc/tinymce.php:52
-msgid "Blockquote: testimonial"
-msgstr "Quote: testimonial"
-
-#: inc/tinymce.php:63
-msgid "Success (Green)"
-msgstr "Succes (groen)"
-
-#: inc/tinymce.php:71
-msgid "Error (Red)"
-msgstr "Fout (rood)"
-
-#: inc/tinymce.php:79
-msgid "Important (Orange)"
-msgstr "Belangrijk (oranje)"
-
-#: inc/tinymce.php:89
-msgid "List"
-msgstr "Lijst"
-
-#: inc/tinymce.php:92
-msgid "Checkmark 1"
-msgstr "Vinkje 1"
-
-#: inc/tinymce.php:99
-msgid "Checkmark 2"
-msgstr "Vinkje 2"
-
-#: inc/tinymce.php:106
-msgid "Star"
-msgstr "Ster"
-
-#: inc/tinymce.php:113
-msgid "Dot"
-msgstr "Stip"
 
 #: partials/content-attachment.php:11
 msgid "Download this file:"
@@ -1816,10 +1906,6 @@ msgid ""
 msgstr ""
 "Het lijkt erop dat wij niet kunnen vinden waar je naar zoekt. Misschien "
 "helpt een zoekopdracht."
-
-#: partials/entry-date.php:18
-msgid "%s ago"
-msgstr "%s geleden"
 
 #: partials/entry-pagination.php:12
 msgid "Pages:"
@@ -1894,8 +1980,8 @@ msgid "Make"
 msgstr "Make"
 
 #. Theme URI of the plugin/theme
-msgid "https://thethemefoundry.com/wordpress-themes/make/"
-msgstr "https://thethemefoundry.com/wordpress-themes/make/"
+msgid "https://thethemefoundry.com/make/"
+msgstr "https://thethemefoundry.com/make/"
 
 #. Description of the plugin/theme
 msgid ""
@@ -1958,50 +2044,100 @@ msgctxt "section name"
 msgid "Gallery"
 msgstr "Galerij"
 
-#: inc/customizer/helpers-fonts.php:706
+#: inc/customizer/helpers-fonts.php:724
 msgctxt "font style"
 msgid "Serif"
 msgstr "Serif"
 
-#: inc/customizer/helpers-fonts.php:710
+#: inc/customizer/helpers-fonts.php:728
 msgctxt "font style"
 msgid "Sans Serif"
 msgstr "Sans Serif"
 
-#: inc/customizer/helpers-fonts.php:714
+#: inc/customizer/helpers-fonts.php:732
 msgctxt "font style"
 msgid "Monospaced"
 msgstr "Monospaced"
 
-#: inc/customizer/helpers.php:167
+#: inc/customizer/helpers.php:152
 msgctxt "footer widget area number"
 msgid "0"
 msgstr "0"
 
-#: inc/customizer/helpers.php:168
+#: inc/customizer/helpers.php:153
 msgctxt "footer widget area number"
 msgid "1"
 msgstr "1"
 
-#: inc/customizer/helpers.php:169
+#: inc/customizer/helpers.php:154
 msgctxt "footer widget area number"
 msgid "2"
 msgstr "2"
 
-#: inc/customizer/helpers.php:170
+#: inc/customizer/helpers.php:155
 msgctxt "footer widget area number"
 msgid "3"
 msgstr "3"
 
-#: inc/customizer/helpers.php:171
+#: inc/customizer/helpers.php:156
 msgctxt "footer widget area number"
 msgid "4"
 msgstr "4"
 
-#: inc/extras.php:337
+#: inc/extras.php:377
 msgctxt "list item separator"
 msgid ", "
 msgstr ","
+
+#: inc/formatting/formatting.php:198
+msgctxt "border style"
+msgid "solid"
+msgstr "solide"
+
+#: inc/formatting/formatting.php:199
+msgctxt "border style"
+msgid "dotted"
+msgstr "gestippeld"
+
+#: inc/formatting/formatting.php:200
+msgctxt "border style"
+msgid "dashed"
+msgstr "gestreept"
+
+#: inc/formatting/formatting.php:201
+msgctxt "border style"
+msgid "double"
+msgstr "dubbel"
+
+#: inc/formatting/formatting.php:202
+msgctxt "border style"
+msgid "groove"
+msgstr "groove"
+
+#: inc/formatting/formatting.php:203
+msgctxt "border style"
+msgid "ridge"
+msgstr "ribbel"
+
+#: inc/formatting/formatting.php:204
+msgctxt "border style"
+msgid "inset"
+msgstr "inzet"
+
+#: inc/formatting/formatting.php:205
+msgctxt "border style"
+msgid "outset"
+msgstr "begin"
+
+#: inc/formatting/formatting.php:212
+msgctxt "font weight"
+msgid "normal"
+msgstr "normaal"
+
+#: inc/formatting/formatting.php:213
+msgctxt "font weight"
+msgid "bold"
+msgstr "vet"
 
 #: inc/template-tags.php:44
 msgctxt "1: date, 2: time"
@@ -2068,6 +2204,11 @@ msgctxt "author byline"
 msgid "by %s"
 msgstr "door %s"
 
+#: partials/entry-date.php:13
+msgctxt "time period"
+msgid "%s ago"
+msgstr "%s geleden"
+
 #: partials/footer-credit.php:27
 msgctxt "attribution"
 msgid "by"
@@ -2097,3 +2238,99 @@ msgstr "Zoek&hellip;"
 msgctxt "submit button"
 msgid "Search"
 msgstr "Zoek"
+
+#~ msgid "Hide"
+#~ msgstr "Verberg"
+
+#~ msgid ""
+#~ "Make is designed to work with WordPress 3.9 and above. Please %s to "
+#~ "ensure compatibility."
+#~ msgstr ""
+#~ "Make is ontwikkeld om met WordPress 3.9 of hoger te werken. %s om "
+#~ "compatibiliteit te verzekeren."
+
+#~ msgid "update WordPress"
+#~ msgstr "update WordPress"
+
+#~ msgid ""
+#~ "A new version of Make Plus is available. Please %s to ensure "
+#~ "compatibility with the Make theme."
+#~ msgstr ""
+#~ "Er is een nieuwe versie van Make Plus beschikbaar. %s om compatibiliteit "
+#~ "met het Make thema te verzekeren."
+
+#~ msgid "update to the latest version"
+#~ msgstr "update naar de laatste versie"
+
+#~ msgid ""
+#~ "A new version of Make Plus is available. If you encounter problems "
+#~ "updating through %1$s, please %2$s to update manually."
+#~ msgstr ""
+#~ "Er is een nieuwe versie van Make Plus beschikbaar. Als je tegen problemen "
+#~ "aanloopt via %1$s, %2$s om handmatig te updaten."
+
+#~ msgid "the WordPress interface"
+#~ msgstr "de WordPress interface"
+
+#~ msgid "follow these steps"
+#~ msgstr "volg deze stappen"
+
+#~ msgid "Add Media"
+#~ msgstr "Media toevoegen"
+
+#~ msgid "Button text"
+#~ msgstr "Button tekst"
+
+#~ msgid "Alert"
+#~ msgstr "Alert"
+
+#~ msgid "Download"
+#~ msgstr "Download"
+
+#~ msgid "Color"
+#~ msgstr "Kleur"
+
+#~ msgid "Primary"
+#~ msgstr "Primair"
+
+#~ msgid "Secondary"
+#~ msgstr "Secundair"
+
+#~ msgid "Green"
+#~ msgstr "Groen"
+
+#~ msgid "Red"
+#~ msgstr "Rood"
+
+#~ msgid "Orange"
+#~ msgstr "Oranje"
+
+#~ msgid "Style"
+#~ msgstr "Stijl"
+
+#~ msgid "Blockquote: testimonial"
+#~ msgstr "Quote: testimonial"
+
+#~ msgid "Success (Green)"
+#~ msgstr "Succes (groen)"
+
+#~ msgid "Error (Red)"
+#~ msgstr "Fout (rood)"
+
+#~ msgid "Important (Orange)"
+#~ msgstr "Belangrijk (oranje)"
+
+#~ msgid "Checkmark 1"
+#~ msgstr "Vinkje 1"
+
+#~ msgid "Checkmark 2"
+#~ msgstr "Vinkje 2"
+
+#~ msgid "Star"
+#~ msgstr "Ster"
+
+#~ msgid "Dot"
+#~ msgstr "Stip"
+
+#~ msgid "https://thethemefoundry.com/wordpress-themes/make/"
+#~ msgstr "https://thethemefoundry.com/wordpress-themes/make/"

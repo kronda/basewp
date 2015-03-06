@@ -1,5 +1,5 @@
 /*!
-* jQuery Cycle2; version: 2.1.3 build: 20140314
+* jQuery Cycle2; version: 2.1.6 build: 20141007
 * http://jquery.malsup.com/cycle2/
 * Copyright (c) 2014 M. Alsup; Dual licensed: MIT/GPL
 */
@@ -8,7 +8,7 @@
 ;(function($) {
 "use strict";
 
-var version = '2.1.2';
+var version = '2.1.6';
 
 $.fn.cycle = function( options ) {
     // fix mistakes with the ready state
@@ -285,10 +285,17 @@ $.fn.cycle.API = {
     calcTx: function( slideOpts, manual ) {
         var opts = slideOpts;
         var tx;
-        if ( manual && opts.manualFx )
+
+        if ( opts._tempFx )
+            tx = $.fn.cycle.transitions[opts._tempFx];
+        else if ( manual && opts.manualFx )
             tx = $.fn.cycle.transitions[opts.manualFx];
+
         if ( !tx )
             tx = $.fn.cycle.transitions[opts.fx];
+
+        opts._tempFx = null;
+        this.opts()._tempFx = null;
 
         if (!tx) {
             tx = $.fn.cycle.transitions.fade;
@@ -856,7 +863,7 @@ $(document).on( 'cycle-destroyed', function( e, opts ) {
 
 })(jQuery);
 
-/*! command plugin for Cycle2;  version: 20130707 */
+/*! command plugin for Cycle2;  version: 20140415 */
 (function($) {
 "use strict";
 
@@ -907,7 +914,7 @@ $.extend( c2.API, {
         var opts = this.opts();
         if ( opts.busy && ! opts.manualTrump )
             return;
-        
+
         var count = opts.reverse ? -1 : 1;
         if ( opts.allowWrap === false && ( opts.currSlide + count ) >= opts.slideCount )
             return;
@@ -947,12 +954,14 @@ $.extend( c2.API, {
             opts.slides.removeClass( opts.slideActiveClass );
         }
         opts.slides.each(function() {
-            $(this).removeData();
+            var slide = $(this);
+            slide.removeData();
+            slide.removeClass( opts.slideClass );
             clean( this, 'parsedAttrs', false );
         });
     },
 
-    jump: function( index ) {
+    jump: function( index, fx ) {
         // go to the requested slide
         var fwd;
         var opts = this.opts();
@@ -972,6 +981,7 @@ $.extend( c2.API, {
         opts.timeoutId = 0;
         opts.API.log('goto: ', num, ' (zero-index)');
         fwd = opts.currSlide < opts.nextSlide;
+        opts._tempFx = fx;
         opts.API.prepareTx( true, fwd );
     },
 
@@ -1199,7 +1209,7 @@ $(document).on( 'cycle-bootstrap', function( e, opts ) {
 
 })(jQuery);
 
-/*! pager plugin for Cycle2;  version: 20140324 */
+/*! pager plugin for Cycle2;  version: 20140415 */
 (function($) {
 "use strict";
 
@@ -1209,7 +1219,7 @@ $.extend($.fn.cycle.defaults, {
     pagerEvent:       'click.cycle',
     pagerEventBubble: undefined,
     pagerTemplate:    '<span>&bull;</span>'
-});    
+});
 
 $(document).on( 'cycle-bootstrap', function( e, opts, API ) {
     // add method to API
@@ -1288,14 +1298,14 @@ function page( pager, target ) {
         return; // no op, clicked pager for the currently displayed slide
     }
     opts.nextSlide = nextSlide;
+    opts._tempFx = opts.pagerFx;
     opts.API.prepareTx( true, fwd );
     opts.API.trigger('cycle-pager-activated', [opts, pager, target ]);
 }
 
 })(jQuery);
 
-
-/*! prevnext plugin for Cycle2;  version: 20130709 */
+/*! prevnext plugin for Cycle2;  version: 20140408 */
 (function($) {
 "use strict";
 
@@ -1323,9 +1333,11 @@ $(document).on( 'cycle-initialized', function( e, opts ) {
         var nextEvent = opts.swipeVert ? 'swipeUp.cycle' : 'swipeLeft.cycle swipeleft.cycle';
         var prevEvent = opts.swipeVert ? 'swipeDown.cycle' : 'swipeRight.cycle swiperight.cycle';
         opts.container.on( nextEvent, function(e) {
+            opts._tempFx = opts.swipeFx;
             opts.API.next();
         });
         opts.container.on( prevEvent, function() {
+            opts._tempFx = opts.swipeFx;
             opts.API.prev();
         });
     }

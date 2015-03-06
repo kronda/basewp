@@ -22,18 +22,18 @@ function ttfmake_customizer_navigation() {
 	$section = $wp_customize->get_section( $section_id );
 	$priority = new TTFMAKE_Prioritizer( 10, 5 );
 
-	// Move Navigation section to Header panel
-	$section->panel = $theme_prefix . 'header';
+	// Move Navigation section to General panel
+	$section->panel = $theme_prefix . 'general';
 
 	// Set Navigation section priority
-	$layout_priority = $wp_customize->get_section( $theme_prefix . 'header' )->priority;
-	$section->priority = $layout_priority - 5;
+	$logo_priority = $wp_customize->get_section( $theme_prefix . 'logo' )->priority;
+	$section->priority = $logo_priority + 5;
 
 	// Adjust section title if no panel support
 	if ( ! ttfmake_customizer_supports_panels() ) {
 		$panels = ttfmake_customizer_get_panels();
-		if ( isset( $panels['header']['title'] ) ) {
-			$section->title = $panels['header']['title'] . ': ' . $section->title;
+		if ( isset( $panels['general']['title'] ) ) {
+			$section->title = $panels['general']['title'] . ': ' . $section->title;
 		}
 	}
 
@@ -60,24 +60,6 @@ function ttfmake_customizer_navigation() {
 	} else {
 		$section->description = '';
 	}
-
-	// Add new options
-	$options = array(
-		'navigation-mobile-label' => array(
-			'setting' => array(
-				'sanitize_callback' => 'esc_html',
-				'theme_supports'    => 'menus',
-				'transport'         => 'postMessage',
-			),
-			'control' => array(
-				'label'             => __( 'Mobile Menu Label', 'make' ),
-				'description'       => __( 'Resize your browser window to preview the mobile menu label.', 'make' ),
-				'type'              => 'text',
-			),
-		),
-	);
-	$new_priority = ttfmake_customizer_add_section_options( $section_id, $options, $priority->add() );
-	$priority->set( $new_priority );
 }
 endif;
 

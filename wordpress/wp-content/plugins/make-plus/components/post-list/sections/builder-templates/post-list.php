@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 ttfmake_load_section_header();
 
@@ -25,19 +28,6 @@ $defaults = array(
 );
 $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 ?>
-
-	<div class="ttfmake-columns-select-wrapper">
-		<label for="<?php echo $section_name; ?>[columns]"><?php _e( 'Columns:', 'make-plus' ); ?></label>
-		<select id="<?php echo $section_name; ?>[columns]" name="<?php echo $section_name; ?>[columns]">
-			<?php foreach ( ttfmake_get_section_choices( 'columns', 'post-list' ) as $value => $label ) : ?>
-				<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['columns'] ); ?>>
-					<?php echo esc_html( $label ); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-	</div>
-
-	<div class="clear"></div>
 
 	<div class="ttfmake-titlediv">
 		<div class="ttfmake-titlewrap">
@@ -69,7 +59,7 @@ $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 		</div>
 
 		<div class="ttfmake-sortby-select-wrapper">
-			<h4><?php _e( 'Sort by', 'make-plus' ); ?></h4>
+			<h4><?php _e( 'Sort', 'make-plus' ); ?></h4>
 			<select id="<?php echo $section_name; ?>[sortby]" name="<?php echo $section_name; ?>[sortby]">
 				<?php foreach ( ttfmake_get_section_choices( 'sortby', 'post-list' ) as $value => $label ) : ?>
 					<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['sortby'] ); ?>>
@@ -86,11 +76,22 @@ $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 	</div>
 
 	<div class="ttfmake-post-list-options-container">
+		<div class="ttfmake-columns-select-wrapper">
+			<h4><?php _e( 'Columns', 'make-plus' ); ?></h4>
+			<select id="<?php echo $section_name; ?>[columns]" name="<?php echo $section_name; ?>[columns]">
+				<?php foreach ( ttfmake_get_section_choices( 'columns', 'post-list' ) as $value => $label ) : ?>
+					<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['columns'] ); ?>>
+						<?php echo esc_html( $label ); ?>
+					</option>
+				<?php endforeach; ?>
+			</select>
+		</div>
+
 		<h4 class="ttfmake-post-list-options-title">
-			<?php _e( 'Number of items to show', 'make-plus' ); ?>
+			<?php _e( 'Number to show', 'make-plus' ); ?>
 		</h4>
 		<input id="<?php echo $section_name; ?>[count]" class="code" type="number" name="<?php echo $section_name; ?>[count]" value="<?php echo (int) $data['count']; ?>" />
-		<p><?php _e( 'To show all items, set to <code>-1</code>.', 'make-plus' ); ?></p>
+		<p><?php _e( 'To show all, set to <code>-1</code>.', 'make-plus' ); ?></p>
 		<h4 class="ttfmake-post-list-options-title">
 			<?php _e( 'Item offset', 'make-plus' ); ?>
 		</h4>
@@ -108,7 +109,7 @@ $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 	</div>
 
 	<div class="ttfmake-post-list-options-container">
-		<h4><?php _e( 'Item display', 'make-plus' ); ?></h4>
+		<h4><?php _e( 'Display', 'make-plus' ); ?></h4>
 
 		<p>
 			<input id="<?php echo $section_name; ?>[show-title]" type="checkbox" name="<?php echo $section_name; ?>[show-title]" value="1"<?php checked( absint( $data['show-title'] ) ); ?> />

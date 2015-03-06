@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! class_exists( 'TTFMP_Style_Kits' ) ) :
 /**
@@ -103,6 +106,10 @@ class TTFMP_Style_Kits {
 		} else {
 			add_filter( 'ttfmake_customizer_sections', array( $this, 'legacy_customizer_sections' ) );
 		}
+
+		// Definition filters
+		add_filter( 'ttfmp_style_kit_definitions', array( $this, 'parse_definitions' ), 98 );
+		add_filter( 'ttfmp_style_kit_definitions', array( $this, 'add_default_kit' ), 99 );
 	}
 
 	/**
@@ -188,14 +195,14 @@ class TTFMP_Style_Kits {
 	}
 
 	/**
-	 * Enqueue scripts for handling Design Pack choices
+	 * Enqueue scripts for handling Style Kits choices
 	 *
 	 * @since 1.1.0.
 	 *
 	 * @return void
 	 */
 	public function enqueue_scripts() {
-		// Enqueue Design Packs script
+		// Enqueue Style Kits script
 		wp_enqueue_script(
 			'ttfmp-style-kits',
 			trailingslashit( $this->url_base ) . 'js/customizer-style-kits.js',
@@ -204,8 +211,8 @@ class TTFMP_Style_Kits {
 			true
 		);
 
-		// Localize Design Packs script
-		$defaults = array( 'defaults' => ttfmake_option_defaults() );
+		// Localize Style Kits script
+		$defaults = array( 'defaults' => $this->get_defaults() );
 		$definitions = ttfmp_style_kit_definitions();
 		$data = array_merge( $defaults, $definitions );
 		wp_localize_script(
@@ -275,12 +282,184 @@ class TTFMP_Style_Kits {
 		$output = '<option selected="selected" disabled="disabled">--- ' . __( "Choose a kit", 'make-plus' ) . ' ---</option>';
 
 		$definitions = ttfmp_style_kit_definitions();
-		foreach ( $definitions as $key => $pack ) {
-			$label = ( isset( $pack['label'] ) ) ? $pack['label'] : ucwords( preg_replace( '/[\-_]/', ' ', $key ) );
-			$output .= '<option value="' . esc_attr( $key ) . '">' . esc_html( $label ) . '</option>';
+		$options = array();
+		foreach ( $definitions as $key => $kit ) {
+			$label = ( isset( $kit['label'] ) ) ? $kit['label'] : ucwords( preg_replace( '/[\-_]/', ' ', $key ) );
+			$priority = ( isset( $kit['priority'] ) ) ? absint( $kit['priority'] ) : 0;
+
+			if ( ! isset( $options[$priority] ) || ! is_array( $options[$priority] ) ) {
+				$options[$priority] = array();
+			}
+
+			$options[$priority][] = '<option value="' . esc_attr( $key ) . '">' . esc_html( $label ) . '</option>';
 		}
 
-		return $output;
+		ksort( $options );
+		foreach ( $options as $priority => $array ) {
+			$options[$priority] = implode( '', $array );
+		}
+
+		return implode( '', $options );
+	}
+
+	/**
+	 * Return an array of keys for the options that Style Kits are allowed to change.
+	 *
+	 * @since 1.4.7
+	 *
+	 * @return mixed    The array of allowed keys.
+	 */
+	private function get_allowed_option_keys() {
+		// List of options that Style Kits won't touch.
+		$blacklist = array(
+			'hide-site-title',
+			'hide-tagline',
+			'logo-regular',
+			'logo-retina',
+			'logo-favicon',
+			'logo-apple-touch',
+			'navigation-mobile-label',
+			'general-sticky-label',
+			'label-read-more',
+			'social-facebook-official',
+			'social-twitter',
+			'social-google-plus-square',
+			'social-linkedin',
+			'social-instagram',
+			'social-flickr',
+			'social-youtube',
+			'social-vimeo-square',
+			'social-pinterest',
+			'social-email',
+			'social-hide-rss',
+			'social-custom-rss',
+			'background_repeat',
+			'background_position_x',
+			'background_attachment',
+			'background_size',
+			'header-background-repeat',
+			'header-background-position',
+			'header-background-attachment',
+			'header-background-size',
+			'main-background-repeat',
+			'main-background-position',
+			'main-background-attachment',
+			'main-background-size',
+			'footer-background-repeat',
+			'footer-background-position',
+			'footer-background-attachment',
+			'footer-background-size',
+			'header-branding-position',
+			'header-bar-content-layout',
+			'header-text',
+			'header-show-social',
+			'header-show-search',
+			'footer-widget-areas',
+			'footer-text',
+			'footer-show-social',
+			'layout-blog-hide-header',
+			'layout-blog-hide-footer',
+			'layout-blog-sidebar-left',
+			'layout-blog-sidebar-right',
+			'layout-archive-hide-header',
+			'layout-archive-hide-footer',
+			'layout-archive-sidebar-left',
+			'layout-archive-sidebar-right',
+			'layout-search-hide-header',
+			'layout-search-hide-footer',
+			'layout-search-sidebar-left',
+			'layout-search-sidebar-right',
+			'layout-post-hide-header',
+			'layout-post-hide-footer',
+			'layout-post-sidebar-left',
+			'layout-post-sidebar-right',
+			'layout-page-hide-header',
+			'layout-page-hide-footer',
+			'layout-page-sidebar-left',
+			'layout-page-sidebar-right',
+			'layout-page-hide-title',
+		);
+
+		// Get the master options list.
+		$keys = array_keys( ttfmake_option_defaults() );
+
+		// Remove blacklisted options.
+		foreach ( $blacklist as $option ) {
+			if ( isset( $keys[ $option ] ) ) {
+				unset( $keys[ $option ] );
+			}
+		}
+
+		/**
+		 * Filter to modify the array of option keys that Style Kits is allowed to modify.
+		 *
+		 * @since 1.5.0.
+		 *
+		 * @param array    $keys    Array of option keys that Style Kits is allowed to modify.
+		 */
+		return apply_filters( 'ttfmp_style_kit_allowed_option_keys', $keys );
+	}
+
+	/**
+	 * Return an array of allowed keys matched with their default values.
+	 *
+	 * @since 1.4.7.
+	 *
+	 * @return array    The array of defaults.
+	 */
+	private function get_defaults() {
+		$all_defaults = ttfmake_option_defaults();
+		$allowed_keys = $this->get_allowed_option_keys();
+
+		$defaults = array();
+		foreach ( $allowed_keys as $key ) {
+			if ( isset( $all_defaults[$key] ) ) {
+				$defaults[$key] = $all_defaults[$key];
+			}
+		}
+
+		return $defaults;
+	}
+
+	/**
+	 * Filter the style kit definitions to add a Default kit.
+	 *
+	 * @since 1.4.7
+	 *
+	 * @param  array    $definitions    The original array of kit definitions.
+	 * @return mixed                    The modified array of kit definitions.
+	 */
+	public function add_default_kit( $definitions ) {
+		$defaults = $this->get_defaults();
+
+		$definitions['default'] = array(
+			'label' => __( 'Default', 'make-plus' ),
+			'priority' => 1,
+			'definitions' => $defaults,
+		);
+
+		return $definitions;
+	}
+
+	/**
+	 * Filter to parse the style kit definitions to fill gaps with default values and remove
+	 * non-matching keys.
+	 *
+	 * @since 1.4.7.
+	 *
+	 * @param  array    $definitions    The original array of kit definitions.
+	 * @return mixed                    The modified array of kit definitions.
+	 */
+	public function parse_definitions( $definitions ) {
+		$defaults = $this->get_defaults();
+
+		foreach ( $definitions as $kit => $data ) {
+			// Use shortcode_atts so that non-matching option keys are removed.
+			$parsed_definitions = shortcode_atts( $defaults, $data['definitions'] );
+			$definitions[$kit]['definitions'] = $parsed_definitions;
+		}
+
+		return $definitions;
 	}
 }
 endif;

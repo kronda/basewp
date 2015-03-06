@@ -1,3 +1,41 @@
+## 1.5.0
+
+* Customizer overhaul
+  * Added new typography options: line height, font weight, font style, letter spacing, word spacing, link underlining.
+  * Added new typography option elements: widget title (separate from widget body), footer widget title, footer widget body.
+  * Added font weight option for links.
+  * Added Chosen.js for improved font choice UI.
+  * Improved UI for other typography choices.
+  * Added new color options: global link hover/focus, header bar links, footer links, sidebar color options, main menu color options.
+  * Improved background image positioning options to account for both horizontal and vertical positioning.
+  * Added opacity dimension to background colors.
+  * Added option to customize "Read more" link text.
+  * Added new main menu options: font weight and background color for current item.
+  * Added options to change social icon size in header and footer.
+  * Reorganized files and functions in Make's customizer module.
+  * Reorganized Customizer panels, sections, and controls.
+* Improved social profiles custom menu by enabling email and RSS icons.
+* Improved handling of long content in Gallery section's item descriptions.
+* Improved display of Banner section in narrow view.
+* Fixed differing container widths on narrow view in Boxed mode.
+* Deprecated function ttfmake_display_favicons.
+* Deprecated function ttfmake_body_layout_classes.
+* Added style support for Postmatic.
+* Fixed styling of WooCommerce coupon field.
+* Updated Cycle2 to 2.1.6.
+* Updated FontAwesome to 4.3.0.
+* Added Russian translation.
+* Updated Dutch translation.
+
+## 1.4.9
+
+* Fixed bug that displayed page duplication info on custom post type screens.
+* Fixed undefined function error in WP versions less than 4.0.
+* Fixed doubled content in document title tag.
+* Added formal system for showing/hiding admin notices.
+* Added a notice when Make is installed on a site running a WordPress version older than 3.9.
+* Added notices for when an older version of Make Plus is installed.
+
 ## 1.4.8
 
 * Fixed bug preventing Builder section duplication in some cases

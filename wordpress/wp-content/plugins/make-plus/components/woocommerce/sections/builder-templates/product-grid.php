@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 ttfmake_load_section_header();
 
@@ -19,19 +22,6 @@ $defaults = array(
 );
 $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 ?>
-
-	<div class="ttfmake-columns-select-wrapper">
-		<label for="<?php echo $section_name; ?>[columns]"><?php _e( 'Columns:', 'make-plus' ); ?></label>
-		<select id="<?php echo $section_name; ?>[columns]" name="<?php echo $section_name; ?>[columns]">
-			<?php foreach ( ttfmake_get_section_choices( 'columns', 'woocommerce-product-grid' ) as $value => $label ) : ?>
-				<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['columns'] ); ?>>
-					<?php echo esc_html( $label ); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-	</div>
-
-	<div class="clear"></div>
 
 	<div class="ttfmake-titlediv">
 		<div class="ttfmake-titlewrap">
@@ -63,7 +53,7 @@ $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 		</div>
 
 		<div class="ttfmake-sortby-select-wrapper">
-			<h4><?php _e( 'Sort by', 'make-plus' ); ?></h4>
+			<h4><?php _e( 'Sort', 'make-plus' ); ?></h4>
 			<select id="<?php echo $section_name; ?>[sortby]" name="<?php echo $section_name; ?>[sortby]">
 				<?php foreach ( ttfmake_get_section_choices( 'sortby', 'woocommerce-product-grid' ) as $value => $label ) : ?>
 					<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['sortby'] ); ?>>
@@ -75,16 +65,27 @@ $data = wp_parse_args( $ttfmake_section_data['data'], $defaults );
 	</div>
 
 	<div class="ttfmake-woocommerce-product-grid-options-container">
+		<div class="ttfmake-columns-select-wrapper">
+			<h4><?php _e( 'Columns', 'make-plus' ); ?></h4>
+			<select id="<?php echo $section_name; ?>[columns]" name="<?php echo $section_name; ?>[columns]">
+				<?php foreach ( ttfmake_get_section_choices( 'columns', 'woocommerce-product-grid' ) as $value => $label ) : ?>
+					<option value="<?php echo esc_attr( $value ); ?>"<?php selected( $value, $data['columns'] ); ?>>
+						<?php echo esc_html( $label ); ?>
+					</option>
+				<?php endforeach; ?>
+			</select>
+		</div>
+
 		<h4 class="ttfmake-woocommerce-product-grid-options-title">
-			<?php _e( 'Number of products to show', 'make-plus' ); ?>
+			<?php _e( 'Number to show', 'make-plus' ); ?>
 		</h4>
 		<input id="<?php echo $section_name; ?>[count]" class="code" type="number" name="<?php echo $section_name; ?>[count]" value="<?php echo (int) $data['count']; ?>" />
-		<p><?php _e( 'To show all available products,<br> set to <code>-1</code>.', 'make-plus' ); ?></p>
+		<p><?php _e( 'To show all, set to <code>-1</code>.', 'make-plus' ); ?></p>
 	</div>
 
 	<div class="ttfmake-woocommerce-product-grid-options-container">
 		<p>
-			<h4><?php _e( 'Product display', 'make-plus' ); ?></h4>
+			<h4><?php _e( 'Display', 'make-plus' ); ?></h4>
 			<input id="<?php echo $section_name; ?>[thumb]" type="checkbox" name="<?php echo $section_name; ?>[thumb]" value="1"<?php checked( absint( $data['thumb'] ) ); ?> />
 			<label for="<?php echo $section_name; ?>[thumb]">
 				<?php _e( 'Show product image', 'make-plus' ); ?>

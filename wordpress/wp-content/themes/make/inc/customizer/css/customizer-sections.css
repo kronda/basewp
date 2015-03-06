@@ -1,0 +1,167 @@
+/* General Customizer style tweaks */
+.customize-control-title {
+	font-weight: normal;
+	margin-top: 5px;
+}
+span.description {
+	margin-bottom: 10px;
+}
+
+/* Misc control styles */
+.ttfmake-control-group-title {
+	color: #222222;
+	font-size: 18px;
+	font-weight: bold;
+	margin: 14px 0 6px;
+}
+.customize-control.customize-control-heading {
+	margin-top: 6px;
+	margin-bottom: -2px;
+}
+.customize-control.customize-control-line {
+	margin-top: 10px;
+	margin-bottom: 6px;
+}
+
+/* Radio control styles */
+.customize-control-radio-buttonset,
+.customize-control-radio-image,
+.customize-control-radio-background-position {
+	padding: 0;
+}
+.customize-control-radio-buttonset .customize-control-title,
+.customize-control-radio-image .customize-control-title,
+.customize-control-radio-background-position .customize-control-title {
+	line-height: 24px;
+	margin-bottom: 5px;
+}
+.ttfmake-control-buttonset label {
+	line-height: 28px;
+	padding: 5px 10px;
+}
+.image.ui-buttonset label.ui-button {
+	padding: 2px;
+	line-height: 0;
+	border-radius: 0;
+	margin-right: 0;
+	background: #999;
+	border: 0;
+}
+li .image.ui-buttonset label.ui-button {
+	margin-bottom: 10px;
+	margin-right: 15px;
+}
+.ttfmake-control-buttonset label,
+.ttfmake-control-background-position label {
+	border-color: #eee;
+}
+.ttfmake-control-buttonset label.ui-state-default,
+.ttfmake-control-background-position label.ui-state-default {
+	background: #eee;
+}
+.ttfmake-control-buttonset label.ui-state-hover,
+.ttfmake-control-background-position label.ui-state-hover {
+	color: #0074a2;
+}
+.ttfmake-control-buttonset label.ui-state-active,
+.ttfmake-control-background-position label.ui-state-active {
+	color: #212121;
+	background: #fff;
+}
+
+/* Background Position Button Set */
+.ttfmake-control-background-position.ui-buttonset {
+	float: left;
+	height: 90px;
+	width: 90px;
+}
+.ttfmake-control-background-position.ui-buttonset .ui-button {
+	margin-right: 0;
+}
+.ttfmake-control-background-position label {
+	display: block;
+	float: left;
+	height: 28px;
+	width: 28px;
+}
+.ttfmake-control-background-position .choice-1 {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 0px;
+}
+.ttfmake-control-background-position .choice-2 {
+	border-left-color: #cccccc;
+	border-right-color: #cccccc;
+}
+.ttfmake-control-background-position .choice-3 {
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 0px;
+}
+.ttfmake-control-background-position .choice-4 {
+	border-top-color: #cccccc;
+	border-bottom-color: #cccccc;
+}
+.ttfmake-control-background-position .choice-5 {
+	border-color: #cccccc;
+}
+.ttfmake-control-background-position .choice-6 {
+	border-top-color: #cccccc;
+	border-bottom-color: #cccccc;
+}
+.ttfmake-control-background-position .choice-7 {
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 4px;
+}
+.ttfmake-control-background-position .choice-8 {
+	border-left-color: #cccccc;
+	border-right-color: #cccccc;
+}
+.ttfmake-control-background-position .choice-9 {
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 4px;
+}
+.background-position-caption {
+	font-size: 12px;
+	line-height: 12px;
+	padding-top: 39px;
+	padding-left: 5px;
+}
+
+/* Range control styles */
+li.customize-control.customize-control-range .ttfmake-control-range {
+	float: left;
+	width: 25%;
+}
+li.customize-control.customize-control-range .ttfmake-range-slider {
+	float: right;
+	width: 70%;
+	margin-top: 8px;
+}
+li.customize-control.customize-control-range .ui-slider-handle {
+	top: -.4em;
+	border-color: #777;
+	background: #777;
+}
+li.customize-control.customize-control-range .ui-slider-horizontal {
+	height: .6em;
+	border-color: #eee;
+	background: #eee;
+}
+
+/* jQuery UI theme tweaks */
+.ui-widget {
+	font-family: inherit;
+	font-size: 0.85em;
+}
+.ui-button-text-only .ui-button-text {
+	padding: 0;
+}
+
+/* Chosen tweaks */
+.chosen-container .chosen-drop {
+	box-shadow: none;
+}
+.chosen-container-active .chosen-choices,
+.chosen-container-active .chosen-single {
+	border: 1px solid #aaaaaa;
+	box-shadow: none;
+}

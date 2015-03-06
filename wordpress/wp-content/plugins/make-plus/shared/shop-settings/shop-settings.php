@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! class_exists( 'TTFMP_Shop_Settings' ) ) :
 /**
@@ -89,6 +92,23 @@ class TTFMP_Shop_Settings {
 	 * @return void
 	 */
 	public function init() {
+		// Check for theme support
+		add_action( 'after_setup_theme', array( $this, 'check_theme_support' ), 99 );
+
+		// Detect and update old settings
+		if ( true === $this->has_old_settings() ) {
+			$this->update_settings();
+		}
+	}
+
+	/**
+	 * Check for theme support after Make Plus modules have had a chance to load.
+	 *
+	 * @since 1.5.0.
+	 *
+	 * @return void
+	 */
+	public function check_theme_support() {
 		// Layout: Shop & Layout: Product
 		if ( current_theme_supports( 'ttfmp-shop-layout-shop' ) || current_theme_supports( 'ttfmp-shop-layout-product' ) ) {
 			if ( ttfmake_customizer_supports_panels() && function_exists( 'ttfmake_customizer_add_panels' ) ) {
@@ -115,11 +135,6 @@ class TTFMP_Shop_Settings {
 			add_action( 'customize_register', array( $this, 'color_highlight' ), 20 );
 			add_filter( 'ttfmake_setting_defaults', array( $this, 'color_highlight_setting_default' ) );
 		}
-
-		// Detect and update old settings
-		if ( true === $this->has_old_settings() ) {
-			$this->update_settings();
-		}
 	}
 
 	/**
@@ -142,7 +157,9 @@ class TTFMP_Shop_Settings {
 			'panel' => $panel,
 			'title' => __( 'Shop', 'make-plus' ),
 			'description' => ttfmake_sanitize_text( apply_filters( 'ttfmp_shop_layout_shop_description', '' ) ),
-			'options' => array(
+			'options' => ( function_exists( 'ttfmake_customizer_layout_region_group_definitions' ) ) ?
+				ttfmake_customizer_layout_region_group_definitions( 'shop' ) :
+				array(
 				$prefix . 'sidebars-heading' => array(
 					'control' => array(
 						'control_type'		=> 'TTFMAKE_Customize_Misc_Control',
@@ -197,7 +214,9 @@ class TTFMP_Shop_Settings {
 			'panel' => $panel,
 			'title' => __( 'Product', 'make-plus' ),
 			'description' => ttfmake_sanitize_text( apply_filters( 'ttfmp_shop_layout_product_description', '' ) ),
-			'options' => array(
+			'options' => ( function_exists( 'ttfmake_customizer_layout_region_group_definitions' ) ) ?
+				ttfmake_customizer_layout_region_group_definitions( 'product' ) :
+				array(
 				$prefix . 'sidebars-heading' => array(
 					'control' => array(
 						'control_type'		=> 'TTFMAKE_Customize_Misc_Control',
@@ -326,15 +345,22 @@ class TTFMP_Shop_Settings {
 	 *
 	 * @return void
 	 */
-	public function color_highlight() {
-		global $wp_customize;
-
+	public function color_highlight( $wp_customize ) {
 		$color_detail = $wp_customize->get_control( 'ttfmake_color-detail' );
 
 		$priority       = new TTFMAKE_Prioritizer( $color_detail->priority + 1, 1 );
-		$section        = 'ttfmake_color';
+		$section        = $color_detail->section;
 		$control_prefix = 'ttfmake_';
 		$setting_prefix = 'color';
+
+		/**
+		 * Filter the description of the Highlight Color control.
+		 *
+		 * @since 1.5.0.
+		 *
+		 * @param string    $description    The control description.
+		 */
+		$description = apply_filters( 'ttfmp_color_highlight_description', '' );
 
 		// Highlight Color
 		$setting_id = $setting_prefix . '-highlight';
@@ -354,6 +380,7 @@ class TTFMP_Shop_Settings {
 					'settings' => $setting_id,
 					'section'  => $section,
 					'label'    => __( 'Highlight Color', 'make-plus' ),
+					'description' => $description,
 					'priority' => $priority->add()
 				)
 			)

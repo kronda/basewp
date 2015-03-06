@@ -219,7 +219,7 @@ class TTFMAKE_Section_Definitions {
 					'label'       => __( 'Responsive behavior', 'make' ),
 					'name'        => 'responsive',
 					'default'     => 'balanced',
-					'description' => __( 'Choose how the banner will respond to varying screen widths.', 'make' ),
+					'description' => __( 'Choose how the Banner will respond to varying screen widths. Default is ideal for large amounts of written content, while Aspect is better for showing your images.', 'make' ),
 					'options'     => array(
 						'balanced' => __( 'Default', 'make' ),
 						'aspect'   => __( 'Aspect', 'make' ),

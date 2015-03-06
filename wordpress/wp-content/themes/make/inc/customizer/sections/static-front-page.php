@@ -22,7 +22,7 @@ function ttfmake_customizer_staticfrontpage() {
 	$section->panel = $theme_prefix . 'general';
 
 	// Set Static Front Page section priority
-	$social_priority = $wp_customize->get_section( $theme_prefix . 'social' )->priority;
+	$social_priority = $wp_customize->get_section( $theme_prefix . 'rss' )->priority;
 	$section->priority = $social_priority + 5;
 
 	// Adjust section title if no panel support

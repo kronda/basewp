@@ -13,7 +13,7 @@
 $sidebar_id = apply_filters( 'make_sidebar_left', 'sidebar-left' );
 $sidebar_id = esc_attr( $sidebar_id );
 ?>
-<section id="sidebar-left" class="widget-area <?php echo $sidebar_id; ?> <?php echo ( is_active_sidebar( $sidebar_id ) ) ? 'active' : 'inactive'; ?>" role="complementary">
+<section id="sidebar-left" class="widget-area sidebar <?php echo $sidebar_id; ?> <?php echo ( is_active_sidebar( $sidebar_id ) ) ? 'active' : 'inactive'; ?>" role="complementary">
 	<?php if ( ! dynamic_sidebar( $sidebar_id ) ) : ?>
 		&nbsp;
 	<?php endif; ?>

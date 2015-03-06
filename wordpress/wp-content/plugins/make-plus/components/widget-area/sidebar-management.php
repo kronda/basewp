@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! class_exists( 'TTFMP_Sidebar_Management' ) ) :
 /**
@@ -173,7 +176,14 @@ class TTFMP_Sidebar_Management {
 	 * @return array    The list of sidebars registered for the builder.
 	 */
 	public function get_registered_sidebars() {
-		return get_theme_mod( 'builder-sidebars', array() );
+		$sidebars = get_option( 'ttfmp-builder-sidebars', false );
+		if ( false === $sidebars ) {
+			// Check for old theme mod
+			$sidebars = get_theme_mod( 'builder-sidebars', array() );
+			update_option( 'ttfmp-builder-sidebars', $sidebars );
+		}
+
+		return $sidebars;
 	}
 
 	/**
@@ -243,7 +253,7 @@ class TTFMP_Sidebar_Management {
 	 * @return void
 	 */
 	public function save_sidebars( $sidebars ) {
-		set_theme_mod( 'builder-sidebars', $sidebars );
+		update_option( 'ttfmp-builder-sidebars', $sidebars );
 	}
 
 	/**

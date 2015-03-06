@@ -58,6 +58,14 @@
 		} );
 	} );
 
+	// Read More Label
+	api( 'label-read-more', function( value ) {
+		value.bind( function( to ) {
+			var $content = $('.read-more');
+			$content.text( to );
+		} );
+	} );
+
 	// Header Text
 	api( 'header-text', function( value ) {
 		value.bind( function( to ) {

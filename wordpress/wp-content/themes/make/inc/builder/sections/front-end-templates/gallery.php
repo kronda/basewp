@@ -31,20 +31,22 @@ $aspect   = ( isset( $ttfmake_section_data[ 'aspect' ] ) ) ? esc_attr( $ttfmake_
 			<?php endif; ?>
 			<?php if ( 'none' !== $captions && ( '' !== $item['title'] || '' !== $item['description'] || has_excerpt( $item['image-id'] ) ) ) : ?>
 			<div class="builder-gallery-content">
-				<?php if ( '' !== $item['title'] ) : ?>
-				<h4 class="builder-gallery-title">
-					<?php echo apply_filters( 'the_title', $item['title'] ); ?>
-				</h4>
-				<?php endif; ?>
-				<?php if ( '' !== $item['description'] ) : ?>
-				<div class="builder-gallery-description">
-					<?php ttfmake_get_builder_save()->the_builder_content( $item['description'] ); ?>
+				<div class="builder-gallery-content-inner">
+					<?php if ( '' !== $item['title'] ) : ?>
+					<h4 class="builder-gallery-title">
+						<?php echo apply_filters( 'the_title', $item['title'] ); ?>
+					</h4>
+					<?php endif; ?>
+					<?php if ( '' !== $item['description'] ) : ?>
+					<div class="builder-gallery-description">
+						<?php ttfmake_get_builder_save()->the_builder_content( $item['description'] ); ?>
+					</div>
+					<?php elseif ( has_excerpt( $item['image-id'] ) ) : ?>
+					<div class="builder-gallery-description">
+						<?php echo ttfmake_sanitize_text( get_post( $item['image-id'] )->post_excerpt ); ?>
+					</div>
+					<?php endif; ?>
 				</div>
-				<?php elseif ( has_excerpt( $item['image-id'] ) ) : ?>
-				<div class="builder-gallery-description">
-					<?php echo ttfmake_sanitize_text( get_post( $item['image-id'] )->post_excerpt ); ?>
-				</div>
-				<?php endif; ?>
 			</div>
 			<?php endif; ?>
 		</div>

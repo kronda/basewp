@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 global $ttfmake_section_data, $ttfmake_sections;
 

@@ -1,5 +1,8 @@
+/*---------------------------------------------------------
+ Quick start (quick-start.css)
+-------------------------------------------------------- */
 .ttfmp-import-message-hide {
-	display: none;
+	display: none; /*reset*/
 }
 .ttfmp-import-message-left {
 	float: left;
@@ -16,5 +19,5 @@
 	margin-right: 8px;
 }
 .ttfmake-default-active .ttfmp-import-message {
-	display: none;
+	display: none; /*reset*/
 }

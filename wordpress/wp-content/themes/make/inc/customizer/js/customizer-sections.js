@@ -5,7 +5,7 @@
 /* global jQuery, ttfmakeCustomizerL10n */
 ( function( $ ) {
 	var api = wp.customize,
-		fontChoices,
+		fontChoices, customControls,
 		upgrade;
 
 	/**
@@ -16,6 +16,7 @@
 
 		init: function() {
 			// Cache elements
+			fontChoices.cache.rtl = $('body').hasClass('rtl');
 			fontChoices.cache.options = {};
 			$.each(ttfmakeCustomizerL10n.fontOptions, function(index, key) {
 				fontChoices.cache.options[key] = $('select', '#customize-control-ttfmake_' + key);
@@ -42,10 +43,98 @@
 		// Insert the HTML into each font family select
 		insertChoices: function() {
 			$.each(fontChoices.cache.options, function(key, element) {
+				if (fontChoices.cache.rtl) {
+					element.addClass('chosen-rtl');
+				}
 				api( key, function( setting ) {
-					var v = setting.get();
-					element.html(fontChoices.cache.choices).val( v );
+					element.on('chosen:ready', function() {
+						var v = setting.get();
+						$(this)
+							.html(fontChoices.cache.choices)
+							.val( v )
+							.trigger('chosen:updated');
+					});
+					element.chosen({
+						no_results_text          : ttfmakeCustomizerL10n.chosen_no_results_fonts,
+						search_contains          : true,
+						width                    : '100%'
+					});
 				} );
+			});
+		}
+	};
+
+	/**
+	 *
+	 */
+	customControls = {
+		cache: {},
+
+		//
+		init: function() {
+			// Populate cache
+			this.cache.$buttonset  = $('.ttfmake-control-buttonset, .ttfmake-control-image');
+			this.cache.$bgposition = $('.ttfmake-control-background-position');
+			this.cache.$range      = $('.ttfmake-control-range');
+
+			// Initialize Button sets
+			if (this.cache.$buttonset.length > 0) {
+				this.buttonset();
+			}
+
+			// Initialize Background Position
+			if (this.cache.$bgposition.length > 0) {
+				this.bgposition();
+			}
+
+			// Initialize ranges
+			if (this.cache.$range.length > 0) {
+				this.range();
+			}
+		},
+
+		//
+		buttonset: function() {
+			this.cache.$buttonset.buttonset();
+		},
+
+		//
+		bgposition: function() {
+			// Initialize button sets
+			this.cache.$bgposition.buttonset({
+				create : function(event) {
+					var $control = $(event.target),
+						$positionButton = $control.find('label'),
+						$caption = $control.parent().find('.background-position-caption');
+
+					$positionButton.on('click', function() {
+						var label = $(this).data('label');
+						$caption.text(label);
+					});
+				}
+			});
+		},
+
+		//
+		range: function() {
+			this.cache.$range.each(function() {
+				var $input = $(this),
+					$slider = $input.parent().find('.ttfmake-range-slider'),
+					value = parseFloat( $input.val() ),
+					min = parseFloat( $input.attr('min') ),
+					max = parseFloat( $input.attr('max') ),
+					step = parseFloat( $input.attr('step') );
+
+				$slider.slider({
+					value : value,
+					min   : min,
+					max   : max,
+					step  : step,
+					slide : function(e, ui) {
+						$input.val(ui.value).keyup().trigger('change');
+					}
+				});
+				$input.val( $slider.slider('value') );
 			});
 		}
 	};
@@ -53,6 +142,7 @@
 	// Load font choices after Customizer initialization is complete.
 	$(document).ready(function() {
 		fontChoices.init();
+		customControls.init();
 	});
 
 	/**
@@ -63,24 +153,48 @@
 			controls: [ 'ttfmake_background-info' ],
 			callback: function( to ) { return 'full-width' === to; }
 		},
+		'main-background-color-transparent': {
+			controls: [ 'ttfmake_main-background-color' ],
+			callback: function( to ) { return ! to; }
+		},
+		'header-background-transparent': {
+			controls: [ 'ttfmake_header-background-color' ],
+			callback: function( to ) { return ! to; }
+		},
+		'header-bar-background-transparent': {
+			controls: [ 'ttfmake_header-bar-background-color' ],
+			callback: function( to ) { return ! to; }
+		},
+		'footer-background-transparent': {
+			controls: [ 'ttfmake_footer-background-color' ],
+			callback: function( to ) { return ! to; }
+		},
 		'background_image': {
-			controls: [ 'ttfmake_background_size' ],
+			controls: [ 'ttfmake_background_position_x', 'ttfmake_background_attachment', 'ttfmake_background_size' ],
 			callback: function( to ) { return !! to; }
 		},
 		'header-background-image': {
-			controls: [ 'ttfmake_header-background-repeat', 'ttfmake_header-background-position', 'ttfmake_header-background-size' ],
+			controls: [ 'ttfmake_header-background-repeat', 'ttfmake_header-background-position', 'ttfmake_header-background-attachment', 'ttfmake_header-background-size' ],
+			callback: function( to ) { return !! to; }
+		},
+		'main-background-image': {
+			controls: [ 'ttfmake_main-background-repeat', 'ttfmake_main-background-position', 'ttfmake_main-background-attachment', 'ttfmake_main-background-size' ],
+			callback: function( to ) { return !! to; }
+		},
+		'footer-background-image': {
+			controls: [ 'ttfmake_footer-background-repeat', 'ttfmake_footer-background-position', 'ttfmake_footer-background-attachment', 'ttfmake_footer-background-size' ],
 			callback: function( to ) { return !! to; }
 		},
 		'header-layout': {
 			controls: [ 'ttfmake_header-branding-position' ],
 			callback: function( to ) { return ( '1' == to || '3' == to ); }
 		},
-		'main-background-image': {
-			controls: [ 'ttfmake_main-background-repeat', 'ttfmake_main-background-position', 'ttfmake_main-background-size' ],
+		'header-show-social': {
+			controls: [ 'ttfmake_font-size-header-bar-icon' ],
 			callback: function( to ) { return !! to; }
 		},
-		'footer-background-image': {
-			controls: [ 'ttfmake_footer-background-repeat', 'ttfmake_footer-background-position', 'ttfmake_footer-background-size' ],
+		'footer-show-social': {
+			controls: [ 'ttfmake_font-size-footer-icon' ],
 			callback: function( to ) { return !! to; }
 		},
 		'layout-blog-featured-images': {

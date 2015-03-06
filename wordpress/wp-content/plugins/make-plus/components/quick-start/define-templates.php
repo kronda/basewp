@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 $images = array(
 	'800x600' => array(

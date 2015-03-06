@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-12-28 21:24+0300\n"
+"PO-Revision-Date: 2015-01-04 10:32+0300\n"
 "Last-Translator: Leo Oosterloo <leo.oosterloo@gmail.com>\n"
 "Language-Team: \n"
 "X-Generator: Poedit 1.7.1\n"
@@ -22,11 +22,11 @@ msgstr "Страница не найдена!"
 
 #: 404.php:18
 msgid "Maybe try searching this website:"
-msgstr "Возможно вы пожелаете попробовать другой метод:"
+msgstr "Может быть, попробовать поискать этот сайт:"
 
 #: comments.php:24 comments.php:40
 msgid "Comment navigation"
-msgstr "Навигация"
+msgstr "Навигация по комментариям"
 
 #: comments.php:49
 msgid "Comments are closed."
@@ -38,7 +38,7 @@ msgstr "Главное меню"
 
 #: functions.php:146
 msgid "Social Profile Links"
-msgstr "Профили"
+msgstr "Профили в социальных сетях"
 
 #: functions.php:147
 msgid "Header Bar Menu"
@@ -114,7 +114,7 @@ msgstr "Хотите чего-то нового?"
 
 #: inc/builder/core/base.php:1113
 msgid "%s and get a quick start with pre-made designer builder templates."
-msgstr "%s and get a quick start with pre-made designer builder templates."
+msgstr "Получить быстрый старт с готовых шаблонов конструктора дизайна."
 
 #: inc/builder/core/base.php:1118
 #: inc/builder/sections/builder-templates/text.php:27 inc/edit-page.php:96
@@ -247,7 +247,7 @@ msgstr "Добавить новый элемент"
 
 #: inc/builder/sections/builder-templates/text.php:22
 msgid "%s and convert any column into an area for widgets."
-msgstr "%s and convert any column into an area for widgets."
+msgstr "Преобразовать любую колонку в зону для виджета"
 
 #: inc/builder/sections/builder-templates/text.php:81
 #: inc/builder/sections/builder-templates/text.php:149
@@ -654,15 +654,15 @@ msgstr "RSS"
 #: inc/customizer/legacy_sections/background.php:22
 #: inc/customizer/sections/color-scheme.php:70
 msgid "Background"
-msgstr "Бэкграунд:"
+msgstr "Фон"
 
 #: inc/customizer/legacy_sections/background.php:36
 msgid ""
 "With the Site Layout option (under <em>General</em>) set to \"Full Width\", "
 "the background color and image will not be visible."
 msgstr ""
-"With the Site Layout option (under <em>General</em>) set to \"Full Width\", "
-"the background color and image will not be visible."
+"С опцией Site Layout (under <em>General</em>) укажите \"Full Width\", цвет "
+"фона и изображения не будут видны."
 
 #: inc/customizer/legacy_sections/background.php:64
 #: inc/customizer/legacy_sections/footer.php:231
@@ -759,7 +759,7 @@ msgstr "Размер шрифта страницы (в px)"
 #: inc/customizer/legacy_sections/font.php:319
 #: inc/customizer/sections/typography.php:58
 msgid "Character Subset"
-msgstr "Подможество персонажей"
+msgstr "Подможество символов"
 
 #: inc/customizer/legacy_sections/font.php:335
 #: inc/customizer/sections/typography.php:67
@@ -1586,7 +1586,7 @@ msgstr "Запись"
 
 #: inc/edit-page.php:90
 msgid "Looking to configure a unique layout for this %1$s? %2$s."
-msgstr "Wil je een unieke layout voor deze %1$s instellen? %2$s."
+msgstr "Искать настройки уникального расположения для этого % 1$S? %2$S."
 
 #: inc/extras.php:78
 msgid "Page %s"
@@ -1597,24 +1597,24 @@ msgid ""
 "This widget area is currently disabled. Enable it in the \"Footer\" panel of "
 "the Customizer."
 msgstr ""
-"Dit widgetgebied is niet actief. Schakel het in in het \"Footer\" paneel of "
-"in de Bewerker."
+"Этот виджет области в настоящее время отключен. Включите его в \"Footer\" в "
+"панели настроект"
 
 #: inc/extras.php:331
 msgid ""
 "This widget area is currently disabled. Enable it in the \"Content & Layout"
 "\" panel of the Customizer."
 msgstr ""
-"Dit widgetgebied is niet actief. Schakel het in in het \"Content & Layout\" "
-"paneel of in de Bewerker."
+"Этот виджет области в настоящее время отключен. Включите его в \"Content & "
+"Layout\" в панели настроект"
 
 #: inc/extras.php:336
 msgid ""
 "This widget area is currently enabled for the following views: %s. Change "
 "this in the \"Content & Layout\" panel of the Customizer."
 msgstr ""
-"Dit widgetgebied is ingeschakeld voor de volgende weergaven: %s. Wijzig dit "
-"in het \"Content & Layout\" paneel of in de Bewerker."
+"Этот виджет области в настоящее время включен для следующих представлений: "
+"%S. Изменить это в \"Content & Layout\" в панели настройки."
 
 #: inc/extras.php:359
 msgid "Blog (Post Page)"
@@ -1921,7 +1921,7 @@ msgstr ""
 
 #. Author of the plugin/theme
 msgid "The Theme Foundry"
-msgstr ""
+msgstr "The Theme Foundry"
 
 #. Author URI of the plugin/theme
 msgid "https://thethemefoundry.com"

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! class_exists( 'TTFMP_Widget_Area' ) ) :
 /**
@@ -68,7 +71,7 @@ class TTFMP_Widget_Area {
 	}
 
 	/**
-	 * Create a new section.
+	 * Bootstrap the module
 	 *
 	 * @since  1.0.0.
 	 *
@@ -79,27 +82,53 @@ class TTFMP_Widget_Area {
 		$this->component_root = ttfmp_get_app()->component_base . '/' . $this->component_slug;
 		$this->file_path      = $this->component_root . '/' . basename( __FILE__ );
 		$this->url_base       = untrailingslashit( plugins_url( '/', __FILE__ ) );
+	}
 
-		// Add additional files
-		require_once $this->component_root . '/sidebar-management.php';
+	/**
+	 * Initialize the components of the module
+	 *
+	 * @since  1.4.3.
+	 *
+	 * @return void
+	 */
+	public function init() {
+		// Passive mode
+		if ( true === ttfmp_get_app()->passive ) {
+			// Add additional files
+			require_once $this->component_root . '/sidebar-management.php';
 
-		// Add the JS/CSS
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+			// Set up the shortcode
+			add_shortcode( 'ttfmp_widget_area', array( $this, 'widget_area' ) );
+		}
+		// Active mode
+		else {
+			// Add additional files
+			require_once $this->component_root . '/sidebar-management.php';
 
-		// Add inputs before the text section
-		add_action( 'ttfmake_section_text_before_column', array( $this, 'section_text_before_column' ), 10, 2 );
+			// Add the JS/CSS
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
-		// Add content after the column
-		add_action( 'ttfmake_section_text_after_column', array( $this, 'section_text_after_column' ), 10, 2 );
+			// Add inputs before the text section
+			add_action( 'ttfmake_section_text_before_column', array( $this, 'section_text_before_column' ), 10, 2 );
 
-		// Add more data to the save data routine
-		add_filter( 'ttfmake_prepare_data_section', array( $this, 'prepare_data_section' ), 10, 3 );
+			// Add button for widget area in Make 1.4.0+
+			add_action( 'make_column_buttons', array( $this, 'make_column_buttons' ), 10, 2 );
 
-		// Replace content with shortcode when saving the post content
-		add_filter( 'ttfmake_insert_post_data_sections', array( $this, 'insert_post_data_sections' ) );
+			// Add content after the column
+			add_action( 'ttfmake_section_text_after_column', array( $this, 'section_text_after_column' ), 10, 2 );
 
-		// Set up the shortcode
-		add_shortcode( 'ttfmp_widget_area', array( $this, 'widget_area' ) );
+			// Add more data to the save data routine
+			add_filter( 'ttfmake_prepare_data_section', array( $this, 'prepare_data_section' ), 10, 3 );
+
+			// Replace content with shortcode when saving the post content
+			add_filter( 'ttfmake_insert_post_data_sections', array( $this, 'insert_post_data_sections' ) );
+
+			// Save widgets
+			add_action( 'save_post', array( $this, 'save_widget_data' ), 10, 2 );
+
+			// Set up the shortcode
+			add_shortcode( 'ttfmp_widget_area', array( $this, 'widget_area' ) );
+		}
 	}
 
 	/**
@@ -132,7 +161,7 @@ class TTFMP_Widget_Area {
 			'ttfmpWidgetArea',
 			array(
 				'widgetAreaString' => __( 'Convert to widget area', 'make-plus' ),
-				'textColumnString' => __( 'Revert to regular column', 'make-plus' ),
+				'textColumnString' => __( 'Revert to column', 'make-plus' ),
 			)
 		);
 
@@ -159,7 +188,9 @@ class TTFMP_Widget_Area {
 		$section_name .= '[columns][' . $column_number . ']';
 		$widget_area   = ( isset( $data['data']['columns'][ $column_number ]['widget-area'] ) ) ? $data['data']['columns'][ $column_number ]['widget-area'] : 0;
 		$class         = ( 1 === (int) $widget_area ) ? 'active' : 'inactive';
-	?>
+
+		// Only show the button for Make versions less than 1.4.0.
+		if ( defined( 'TTFMAKE_VERSION' ) && false === version_compare( TTFMAKE_VERSION, '1.3.99', '>=' ) ) : ?>
 		<a href="#" class="ttfmp-create-widget-area button button-small widefat">
 			<?php if ( 1 === (int) $widget_area ) : ?>
 				<?php _e( 'Revert to regular column', 'make-plus' ); ?>
@@ -167,9 +198,30 @@ class TTFMP_Widget_Area {
 				<?php _e( 'Convert to widget area', 'make-plus' ); ?>
 			<?php endif; ?>
 		</a>
+		<?php endif; ?>
 		<div class="ttfmp-widget-area-overlay-region ttfmp-widget-area-overlay-region-<?php echo esc_attr( $class ); ?>">
 		<input type="hidden" class="ttfmp-text-widget-area" name="<?php echo esc_attr( $section_name ); ?>[widget-area]" value="<?php echo absint( $widget_area ); ?>" />
 	<?php
+	}
+
+	/**
+	 * Add the convert to widget area button to the builder.
+	 *
+	 * @since  1.4.0.
+	 *
+	 * @param  array    $column_buttons          The list of buttons for the column.
+	 * @param  array    $ttfmake_section_data    All of the section data.
+	 * @return array                             The modified list of buttons.
+	 */
+	public function make_column_buttons( $column_buttons, $ttfmake_section_data ) {
+		$column_buttons[300] = array(
+			'label' => __( 'Convert text column to widget area', 'make' ),
+			'href'  => '#',
+			'class' => 'convert-widget-area-link ttfmp-create-widget-area',
+			'title' => __( 'Convert to widget area', 'make' ),
+		);
+
+		return $column_buttons;
 	}
 
 	/**
@@ -186,6 +238,7 @@ class TTFMP_Widget_Area {
 		$section_name  = ttfmake_get_section_name( $data, $ttfmake_is_js_template );
 		$section_name .= '[columns][' . $column_number . ']';
 		$sidebar_label = ( isset( $data['data']['columns'][ $column_number ]['sidebar-label'] ) ) ? $data['data']['columns'][ $column_number ]['sidebar-label'] : '';
+		$order         = array();
 
 		// Get the sidebar widgets
 		if ( true !== $ttfmake_is_js_template ) {
@@ -196,31 +249,116 @@ class TTFMP_Widget_Area {
 
 			// Get the data needed for display
 			$widget_data = $this->get_widget_data_for_display( $sidebar_id );
+
+			// Parse out the ordering data
+			foreach ( $widget_data as $widget ) {
+				$order[] = $widget['id'];
+			}
+		}
+
+		// Get the Customizer url
+		$customize_url = add_query_arg( 'return', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), admin_url( 'customize.php' ) );
+		if ( false !== $permalink = get_permalink() ) {
+			$customize_url = add_query_arg( 'url', urlencode( wp_unslash( $permalink ) ), $customize_url );
 		}
 	?>
 			<div class="ttfmp-widget-area-overlay">
 				<div class="ttfmp-widget-area-display">
 					<div class="ttfmake-titlediv">
 						<input placeholder="<?php esc_attr_e( 'Enter name here', 'make-plus' ); ?>" type="text" name="<?php echo $section_name; ?>[sidebar-label]" class="ttfmake-title" value="<?php echo sanitize_text_field( $sidebar_label ); ?>" autocomplete="off" />
+						<a href="#" class="ttfmp-revert-widget-area ttfmp-create-widget-area" title="<?php esc_attr_e( 'Revert to column', 'make-plus' ); ?>">
+							<span>
+								<?php _e( 'Revert to column', 'make-plus' ); ?>
+							</span>
+						</a>
+					</div>
+
+					<div class="ttfmp-widget-area-text">
 						<?php if ( true === $ttfmake_is_js_template || ! isset( $widget_data ) || empty( $widget_data ) ) : ?>
-							<p><?php _e( 'There are no widgets in this area. After saving this page, go to the Theme Customizer to manage your widgets.', 'make-plus' ); ?></p>
+							<p>
+								<?php
+								printf(
+									__( 'No widgets added yet. To add widgets, save this page, then go to the <a href="%s">Customizer</a>.', 'make-plus' ),
+									esc_url( $customize_url )
+								);
+								?>
+							</p>
 						<?php elseif ( isset( $widget_data ) && ! empty( $widget_data ) ): ?>
-							<p><?php _e( 'To manage your widgets, please go to the Theme Customizer.', 'make-plus' ); ?></p>
-							<br />
-							<p><strong><?php _e( 'Widgets in this area:', 'make-plus' ); ?></strong></p>
+							<p>
+								<?php
+								printf(
+									__( 'To add new widgets, please go to the <a href="%s">Customizer</a>.', 'make-plus' ),
+									esc_url( $customize_url )
+								);
+								?>
+							</p>
 							<ul class="ttfmp-widget-list">
 							<?php foreach ( $widget_data as $widget ) : ?>
-								<li>
-									<span class="ttfmp-widget-list-type"><?php echo wp_strip_all_tags( $widget['type'] ); ?></span><?php if ( '' !== $widget['title'] ) : ?>: <span class="ttfmp-widget-list-title"><?php echo wp_strip_all_tags( $widget['title'] ); ?></span><?php endif; ?>
+								<li data-id="<?php echo esc_attr( $widget['id'] ); ?>">
+									<div title="<?php esc_attr_e( 'Drag-and-drop this widget into place', 'make' ); ?>" class="ttfmake-sortable-handle">
+										<div class="sortable-background"></div>
+									</div>
+									<div class="ttfmp-widget-list-container">
+										<span class="ttfmp-widget-list-type"><?php echo wp_strip_all_tags( $widget['type'] ); ?></span><?php if ( '' !== $widget['title'] ) : ?>: <span class="ttfmp-widget-list-title"><?php echo wp_strip_all_tags( $widget['title'] ); ?></span><?php endif; ?>
+										<a href="#" class="edit-widget-link ttfmake-overlay-open" data-overlay="#ttfmake-overlay-<?php echo esc_attr( $widget['id'] ); ?>" title="<?php esc_attr_e( 'Configure widget', 'make' ); ?>">
+											<span>
+												<?php _e( 'Configure widget', 'make' ); ?>
+											</span>
+										</a>
+										<a href="#" class="remove-widget-link ttfmake-widget-remove" title="<?php esc_attr_e( 'Delete widget', 'make' ); ?>">
+											<span>
+												<?php _e( 'Delete widget', 'make' ); ?>
+											</span>
+										</a>
+									</div>
 								</li>
-							<?php endforeach; ?>
+								<?php endforeach; ?>
 							</ul>
 						<?php endif; ?>
 					</div>
+					<input class="widgets" type="hidden" name="<?php echo $section_name; ?>[widgets]" value="<?php echo implode( ',', $order ); ?>" />
 				</div>
 			</div>
+			<?php if ( isset( $widget_data ) && ! empty( $widget_data ) ) : ?>
+				<?php foreach ( $widget_data as $widget ) : ?>
+					<?php echo $this->overlay_template( $widget['form'], $widget['id_base'], $widget['id'], $widget['type'] ); ?>
+				<?php endforeach; ?>
+			<?php endif; ?>
 		</div>
 	<?php
+	}
+
+	/**
+	 * Get the template for displaying a widget form.
+	 *
+	 * @since  1.4.1
+	 *
+	 * @param  string    $form       The HTML for the widget form.
+	 * @param  string    $id_base    The base ID for the widget.
+	 * @return string                The overlay template for the widget form.
+	 */
+	public function overlay_template( $form, $id_base, $id, $title ) {
+		ob_start();
+
+		global $ttfmake_overlay_class, $ttfmake_section_data, $ttfmake_overlay_title, $ttfmake_overlay_id;
+		$ttfmake_overlay_class = 'ttfmake-configuration-overlay ttfmake-widget-configuration-overlay';
+		$ttfmake_overlay_title = __( 'Configure ', 'make-plus' ) . $title;
+		$ttfmake_overlay_id    = 'ttfmake-overlay-' . $id;
+
+		// Include the header
+		get_template_part( '/inc/builder/core/templates/overlay', 'header' );
+
+		// Sort the config in case 3rd party code added another input
+		ksort( $ttfmake_section_data['section']['config'], SORT_NUMERIC );
+		?>
+		<div class="widget-form">
+			<?php echo $form; ?>
+			<input type="hidden" name="ttfmp-widgets[]" value="widget-<?php echo esc_attr( $id_base ); ?>" />
+		</div>
+		<?php
+		get_template_part( '/inc/builder/core/templates/overlay', 'footer' );
+
+		return ob_get_clean();
 	}
 
 	/**
@@ -237,10 +375,20 @@ class TTFMP_Widget_Area {
 		// Collector for the widget data
 		$widgets_data = array();
 
-		foreach ( $widgets as $widget ) {
+		foreach ( $widgets as $id => $widget ) {
+			$number = $widget['params'][0]['number'];
+
+			ob_start();
+			$widget['callback'][0]->form_callback( $number );
+			$widget_form = ob_get_clean();
+
 			$widgets_data[] = array(
-				'type'  => $widget['name'],
-				'title' => $this->get_widget_title( $widget['callback'][0]->number, $widget['callback'][0]->option_name ),
+				'type'    => $widget['name'],
+				'title'   => $this->get_widget_title( $number, $widget['callback'][0]->option_name ),
+				'id'      => $id,
+				'number'  => $number,
+				'id_base' => $widget['callback'][0]->id_base,
+				'form'    => $widget_form,
 			);
 		}
 
@@ -268,7 +416,7 @@ class TTFMP_Widget_Area {
 		if ( isset( $all_sidebars[ $sidebar_id ] ) ) {
 			foreach ( $all_sidebars[ $sidebar_id ] as $widget_id ) {
 				if ( isset( $wp_registered_widgets[ $widget_id ] ) ) {
-					$widgets[] = $wp_registered_widgets[ $widget_id ];
+					$widgets[ $widget_id ] = $wp_registered_widgets[ $widget_id ];
 				}
 			}
 		}
@@ -309,6 +457,24 @@ class TTFMP_Widget_Area {
 					if ( isset( $item['sidebar-label'] ) ) {
 						$clean_data['columns'][ $id ]['sidebar-label'] = ( 0 === $clean_data['columns'][ $id ]['widget-area'] ) ? '' : esc_html( $item['sidebar-label'] );
 					}
+
+					/**
+					 * Note that this value is being set merely as a method of convenience so that
+					 * `insert_post_data_sections()` can access the widget data and set the proper widgets and order.
+					 * DO NOT RELY ON THIS DATABASE VALUE FOR ANY OTHER PURPOSE. Since widgets can be administered in
+					 * a number of places, this data will only be correct during a save routine and should otherwise be
+					 * considered to be outdated. Use `wp_get_sidebars_widgets()` to get the correct values.
+					 */
+					if ( ! empty( $item['widgets'] ) ) {
+						$clean_widgets = array();
+						$widgets       = explode( ',', $item['widgets'] );
+
+						foreach ( $widgets as $widget ) {
+							$clean_widgets[] = sanitize_title( $widget );
+						}
+
+						$clean_data['columns'][ $id ]['widgets'] = $widgets;
+					}
 				}
 			}
 		}
@@ -348,6 +514,24 @@ class TTFMP_Widget_Area {
 
 							// Register the sidebar
 							ttfmp_register_sidebar( get_the_ID(), $section_id, $column_id, $sidebar_label );
+
+							// Save the current widgets in the correct order.
+							$widget_area_id  = 'ttfmp-' . absint( get_the_ID() ) . '-' . ttfmake_get_builder_save()->clean_section_id( $section_id ) . '-' . absint( $column_id );
+							$current_widgets = wp_get_sidebars_widgets();
+
+							if ( isset( $column['widgets'] ) ) {
+								// Set the current widgets
+								$new_widgets = $column['widgets'];
+							} else {
+								// If there are no widgets in the column, make sure that the array is set as empty
+								$new_widgets = array();
+							}
+
+							// Update the widgets array with the new widgets
+							$current_widgets[ $widget_area_id ] = $new_widgets;
+
+							// Update the widgets array
+							wp_set_sidebars_widgets( $current_widgets );
 						}
 					}
 				}
@@ -355,6 +539,116 @@ class TTFMP_Widget_Area {
 		}
 
 		return $sections;
+	}
+
+	/**
+	 * Save the individual widget data
+	 *
+	 * @since  1.4.1.
+	 *
+	 * @param  int        $post_id    The ID of the saved post.
+	 * @param  WP_Post    $post       The post being saved.
+	 * @return void
+	 */
+	public function save_widget_data( $post_id, $post ) {
+		global $wp_registered_widgets;
+
+		if ( ! isset( $_POST[ 'ttfmake-builder-nonce' ] ) || ! wp_verify_nonce( $_POST[ 'ttfmake-builder-nonce' ], 'save' ) ) {
+			return;
+		}
+
+		// Don't do anything during autosave
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		// Only check permissions for pages since it can only run on pages
+		if ( ! current_user_can( 'edit_page', $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		// Don't save data if we're not using the Builder template
+		if ( ! ttfmake_will_be_builder_page() ) {
+			return;
+		}
+
+		// Don't save widgets if there are none to save
+		if ( ! isset( $_POST['ttfmp-widgets'] ) ) {
+			return;
+		}
+
+		$widgets = array_unique( $_POST['ttfmp-widgets'] );
+
+		foreach ( $widgets as $widget_name ) {
+			if ( isset( $_POST[ $widget_name ] ) ) {
+				$settings = $_POST[ $widget_name ];
+
+				$all_instances = array();
+
+				foreach ( $settings as $number => $new_instance ) {
+					$new_instance = stripslashes_deep( $new_instance );
+
+					if ( isset( $widget_class_instance ) ) {
+						unset( $widget_class_instance );
+					}
+
+					// Get the widget instance
+					$widget_id = str_replace( 'widget-', '', $widget_name . '-' . $number );
+
+					if ( isset( $wp_registered_widgets[ $widget_id ] ) ) {
+						$widget_class_instance = $wp_registered_widgets[ $widget_id ];
+						$widget_class_instance = $widget_class_instance['callback'][0];
+
+						if ( empty( $all_instances ) ) {
+							$all_instances = $widget_class_instance->get_settings();
+						}
+
+						if ( $widget_class_instance->updated ) {
+							break;
+						}
+
+						$widget_class_instance->_set( $number );
+
+						$old_instance = isset( $all_instances[ $number ] ) ? $all_instances[ $number ] : array();
+
+						$was_cache_addition_suspended = wp_suspend_cache_addition();
+						if ( $widget_class_instance->is_preview() && ! $was_cache_addition_suspended ) {
+							wp_suspend_cache_addition( true );
+						}
+
+						$instance = $widget_class_instance->update( $new_instance, $old_instance );
+
+						if ( $widget_class_instance->is_preview() ) {
+							wp_suspend_cache_addition( $was_cache_addition_suspended );
+						}
+
+						/**
+						 * Filter a widget's settings before saving.
+						 *
+						 * Returning false will effectively short-circuit the widget's ability
+						 * to update settings.
+						 *
+						 * @since 2.8.0
+						 *
+						 * @param array     $instance     The current widget instance's settings.
+						 * @param array     $new_instance Array of new widget settings.
+						 * @param array     $old_instance Array of old widget settings.
+						 * @param WP_Widget $this         The current widget instance.
+						 */
+						$instance = apply_filters( 'widget_update_callback', $instance, $new_instance, $old_instance, $this );
+
+						if ( false !== $instance ) {
+							$all_instances[ $number ] = $instance;
+						}
+					}
+				}
+			}
+
+			if ( isset( $widget_class_instance ) && isset( $all_instances ) ) {
+				$widget_class_instance->save_settings( $all_instances );
+				$widget_class_instance->updated = true;
+			}
+		}
 	}
 
 	/**
@@ -390,4 +684,4 @@ function ttfmp_get_widget_area() {
 }
 endif;
 
-ttfmp_get_widget_area();
+ttfmp_get_widget_area()->init();

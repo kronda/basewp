@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Make Plus
+ */
 
 if ( ! class_exists( 'TTFMP_Post_List' ) ) :
 /**
@@ -89,21 +92,32 @@ class TTFMP_Post_List {
 	 * @return void
 	 */
 	public function init() {
-		// Includes
-		require_once $this->component_root . '/class-section-definitions.php';
-		require_once $this->component_root . '/class-widget.php';
+		// Passive mode
+		if ( true === ttfmp_get_app()->passive ) {
+			// Enqueue
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
 
-		// Enqueue
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
+			// Shortcode
+			add_shortcode( 'ttfmp_post_list', array( $this, 'handle_shortcode' ) );
+		}
+		// Active mode
+		else {
+			// Includes
+			require_once $this->component_root . '/class-section-definitions.php';
+			require_once $this->component_root . '/class-widget.php';
 
-		// Shortcode
-		add_shortcode( 'ttfmp_post_list', array( $this, 'handle_shortcode' ) );
+			// Enqueue
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
 
-		// Widget
-		register_widget( 'TTFMP_Post_List_Widget' );
+			// Shortcode
+			add_shortcode( 'ttfmp_post_list', array( $this, 'handle_shortcode' ) );
 
-		// Hook up color customizations
-		add_action( 'ttfmake_css', array( $this, 'color' ) );
+			// Widget
+			register_widget( 'TTFMP_Post_List_Widget' );
+
+			// Hook up color customizations
+			add_action( 'ttfmake_css', array( $this, 'color' ) );
+		}
 	}
 
 	/**
@@ -235,17 +249,51 @@ class TTFMP_Post_List {
 			}
 		}
 
+		// Important numbers
+		$post_count = $query->post_count;
+		$columns = $ttfmp_data['columns'];
+		$col_count = 1;
+
 		// Generate the markup
-		ob_start();
-		$i = 1;
-		?>
+		ob_start(); ?>
 		<div class="<?php echo esc_attr( $classes ); ?>">
-			<?php while ( $query->have_posts() ) : $query->the_post(); ?>
-				<div class="ttfmp-post-list-item<?php if ( 0 === $i % $ttfmp_data['columns'] ) echo ' last'; ?>">
+		<?php
+		// Loop starts here
+		while ( $query->have_posts() ) : $query->the_post(); ?>
+		<?php
+		// Multiple columns
+		if ( $columns > 1 ) : ?>
+			<?php
+			// Start a new row
+			if ( 1 === $col_count ) : ?>
+			<div class="ttfmp-post-list-row">
+			<?php endif; ?>
+				<div class="ttfmp-post-list-item<?php if ( 0 === $col_count % $columns ) echo ' last'; ?>">
 					<?php require( $template ); ?>
 				</div>
-				<?php $i++; ?>
-			<?php endwhile; wp_reset_postdata(); ?>
+			<?php
+			// End a row
+			if ( 0 === $col_count % $columns || $query->current_post + 1 === $post_count ) : ?>
+			</div>
+			<?php endif; ?>
+			<?php
+			// Adjust the column counter
+			if ( $col_count === $columns ) :
+				$col_count = 1;
+			else :
+				$col_count++;
+			endif;
+			?>
+		<?php
+		// Only one column
+		else : ?>
+			<div class="ttfmp-post-list-item">
+				<?php require( $template ); ?>
+			</div>
+		<?php endif; ?>
+		<?php
+		// Loop ends here
+		endwhile; wp_reset_postdata(); ?>
 		</div>
 		<?php
 		$output = ob_get_clean();
@@ -286,34 +334,40 @@ class TTFMP_Post_List {
 		$color_detail          = maybe_hash_hex_color( get_theme_mod( 'color-detail', ttfmake_get_default( 'color-detail' ) ) );
 
 		// Output the rules
-		ttfmake_get_css()->add( array(
-			'selectors'    => array(
-				'.builder-section-postlist .ttfmp-post-list-item-footer a:hover',
-				'.ttfmp-widget-post-list .ttfmp-post-list-item-comment-link:hover'
-			),
-			'declarations' => array(
-				'color' => $color_primary
-			)
-		) );
-		ttfmake_get_css()->add( array(
-			'selectors'    => array(
-				'.ttfmp-widget-post-list .ttfmp-post-list-item-date a',
-				'.builder-section-postlist .ttfmp-post-list-item-date a'
-			),
-			'declarations' => array(
-				'color' => $color_text
-			)
-		) );
-		ttfmake_get_css()->add( array(
-			'selectors'    => array(
-				'.builder-section-postlist .ttfmp-post-list-item-footer',
-				'.builder-section-postlist .ttfmp-post-list-item-footer a',
-				'.ttfmp-widget-post-list .ttfmp-post-list-item-comment-link'
-			),
-			'declarations' => array(
-				'color' => $color_detail
-			)
-		) );
+		if ( $color_primary !== ttfmake_get_default( 'color-primary' ) ) {
+			ttfmake_get_css()->add( array(
+				'selectors'    => array(
+					'.builder-section-postlist .ttfmp-post-list-item-footer a:hover',
+					'.ttfmp-widget-post-list .ttfmp-post-list-item-comment-link:hover'
+				),
+				'declarations' => array(
+					'color' => $color_primary
+				)
+			) );
+		}
+		if ( $color_text !== ttfmake_get_default( 'color-text' ) ) {
+			ttfmake_get_css()->add( array(
+				'selectors'    => array(
+					'.ttfmp-widget-post-list .ttfmp-post-list-item-date a',
+					'.builder-section-postlist .ttfmp-post-list-item-date a'
+				),
+				'declarations' => array(
+					'color' => $color_text
+				)
+			) );
+		}
+		if ( $color_detail !== ttfmake_get_default( 'color-detail' ) ) {
+			ttfmake_get_css()->add( array(
+				'selectors'    => array(
+					'.builder-section-postlist .ttfmp-post-list-item-footer',
+					'.builder-section-postlist .ttfmp-post-list-item-footer a',
+					'.ttfmp-widget-post-list .ttfmp-post-list-item-comment-link'
+				),
+				'declarations' => array(
+					'color' => $color_detail
+				)
+			) );
+		}
 	}
 }
 endif;

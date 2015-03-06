@@ -1,5 +1,6 @@
 (function($) {
-	var ttfmpTypekit = {
+	var api = wp.customize,
+		ttfmpTypekit = {
 		cache: {},
 
 		init: function() {
@@ -23,7 +24,8 @@
 			ttfmpTypekit.cache.$reset.addClass('button reset-fonts');
 			ttfmpTypekit.cache.$load.addClass('button load-fonts');
 
-			ttfmpTypekit.cache.$wrapper.on('click', '.load-fonts', function(evt) {console.log('click');
+			// Load Fonts
+			ttfmpTypekit.cache.$wrapper.on('click', '.load-fonts', function(evt) {
 				evt.preventDefault();
 
 				// Add the loading status
@@ -40,11 +42,17 @@
 				}
 			});
 
+			// Reset
 			ttfmpTypekit.cache.$wrapper.on('click', '.reset-fonts', function(evt) {
 				evt.preventDefault();
-				ttfmpTypekit.reset();
+
+				// Add the loading status
+				ttfmpTypekit.showSpinner();
+
+				// Remove errors
 				ttfmpTypekit.removeMessages();
-				ttfmpTypekit.hideSpinner();
+
+				ttfmpTypekit.resetRequest(ttfmpTypekitData.nonce);
 			});
 		},
 
@@ -73,7 +81,7 @@
 						id: id
 					}
 				}
-			)
+			);
 		},
 
 		handleSuccess: function(data) {
@@ -95,7 +103,7 @@
 
 			// Set the correct current vals
 			$.each(ttfmpTypekit.cache.options, function(key, element) {
-				element.val( optionsVal[key] );
+				element.val( optionsVal[key] ).trigger('chosen:updated');
 			});
 
 			// Add success message
@@ -112,13 +120,13 @@
 
 		prependFonts: function(optionsHTML) {
 			$.each(ttfmpTypekit.cache.options, function(key, element) {
-				element.prepend(optionsHTML);
+				element.prepend(optionsHTML).trigger('chosen:updated');
 			});
 		},
 
 		removeFonts: function() {
 			$.each(ttfmpTypekit.cache.options, function(key, element) {
-				$('.ttfmp-typekit-choice', element).remove();
+				$('.ttfmp-typekit-choice', element).trigger('chosen:updated');
 			});
 		},
 
@@ -149,19 +157,37 @@
 			$('.error, .success', ttfmpTypekit.cache.$descriptionText).remove();
 		},
 
-		reset: function() {
-			// Remove the text input
-			ttfmpTypekit.cache.$textInput.attr('value', '').change();
+		resetRequest: function(nonce) {
+			wp.ajax.send(
+				'ttfmp_reset_preview', {
+					success: function(data) {
+						ttfmpTypekit.removeFonts();
+						ttfmpTypekit.resetFontOptions(data);
+						ttfmpTypekit.addSuccess(ttfmpTypekitData.resetSuccess);
+						ttfmpTypekit.hideSpinner();
+					},
+					error: ttfmpTypekit.handleError,
+					data: {
+						nonce: nonce
+					}
+				}
+			);
+		},
 
-			// Remove the Typekit fonts
-			ttfmpTypekit.removeFonts();
-
-			// Set the default fonts
-			$.each(ttfmpTypekit.cache.options, function(key, element) {
-				element.val('sans-serif');
+		resetFontOptions: function(data) {
+			$.each(data, function(index, value) {
+				api(index, function(setting) {
+					setting.set(value);
+					api.control('ttfmake_'+index, function(control) {
+						var $element = $('select', control.selector);
+						$element.val(value).trigger('chosen:updated');
+					});
+				});
 			});
 		}
 	};
 
-	ttfmpTypekit.init();
+	$(document).ready(function() {
+		ttfmpTypekit.init();
+	});
 })(jQuery);
