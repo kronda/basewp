@@ -4,9 +4,9 @@
  *
  * Since Types 1.2
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/includes/module-manager.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/includes/module-manager.php $
+ * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
+ * $LastChangedRevision: 1120400 $
  * $LastChangedBy: iworks $
  *
  */
@@ -775,7 +775,7 @@ function wpcf_admin_export_selected_data ( array $items, $_type = 'all', $return
  *
  * Import selected items given by xmlstring.
  *
- * @global type $wpdb
+ * @global object $wpdb
  * @global type $iclTranslationManagement
  * @param type $data
  * @param type $_type
@@ -850,10 +850,13 @@ function wpcf_admin_import_data_from_xmlstring( $data = '', $_type = 'types',
                 'post_content' => !empty( $group['post_content'] ) ? $group['post_content'] : '',
             );
             if ( (isset( $group['add'] ) && $group['add'] ) ) {
-                $post_to_update = $wpdb->get_var( $wpdb->prepare(
-                                "SELECT ID FROM $wpdb->posts
-                    WHERE post_title = %s AND post_type = %s",
-                                $group['post_title'], 'wp-types-group' ) );
+                $post_to_update = $wpdb->get_var(
+                    $wpdb->prepare(
+                        "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type = %s",
+                        $group['post_title'],
+                        'wp-types-group'
+                    )
+                );
                 // Update (may be forced by bulk action)
                 if ( $group['update'] || (!empty( $post_to_update )) ) {
                     if ( !empty( $post_to_update ) ) {

@@ -4,10 +4,10 @@
  *
  * Returns HTML formatted output for elements and handles form submission.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/classes/forms.php $
- * $LastChangedDate: 2014-08-22 01:02:43 +0000 (Fri, 22 Aug 2014) $
- * $LastChangedRevision: 970205 $
- * $LastChangedBy: brucepearson $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/classes/forms.php $
+ * $LastChangedDate: 2015-03-16 12:03:31 +0000 (Mon, 16 Mar 2015) $
+ * $LastChangedRevision: 1113864 $
+ * $LastChangedBy: iworks $
  *
  *
  * @version 1.0
@@ -125,8 +125,10 @@ class Enlimbo_Forms_Wpcf
         if ( empty( $id ) ) {
             $id = $this->_id;
         }
-        return (isset( $_REQUEST['_wpnonce_wpcf'] )
-                && wp_verify_nonce( $_REQUEST['_wpnonce_wpcf'], $id ));
+        return (
+            isset( $_REQUEST['_wpnonce_wpcf'] )
+            && wp_verify_nonce( $_REQUEST['_wpnonce_wpcf'], $id )
+        );
     }
 
     /**
@@ -920,9 +922,15 @@ class Enlimbo_Forms_Wpcf
                             array('textfield', 'textarea') ) ? '' : 0;
         }
 
+        if ( !function_exists('getSubmittedDataTrim')) {
+            function getSubmittedDataTrim($a)
+            {
+                return trim($a, ']');
+            }
+        }
+
         $parts = explode( '[', $name );
-        $parts = array_map( create_function( '&$a', 'return trim($a, \']\');' ),
-                $parts );
+        $parts = array_map( 'getSubmittedDataTrim', $parts );
         if ( !isset( $_REQUEST[$parts[0]] ) ) {
             return in_array( $element['#type'], array('textfield', 'textarea') ) ? '' : 0;
         }

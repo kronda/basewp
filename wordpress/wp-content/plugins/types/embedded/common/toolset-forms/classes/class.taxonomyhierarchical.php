@@ -1,25 +1,24 @@
 <?php
+
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/classes/class.taxonomyhierarchical.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.taxonomyhierarchical.php $
+ * $LastChangedDate: 2015-03-16 12:03:31 +0000 (Mon, 16 Mar 2015) $
+ * $LastChangedRevision: 1113864 $
  * $LastChangedBy: iworks $
  *
  */
-
 include_once 'class.textfield.php';
 
-class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
-{
+class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield {
+
     protected $child;
     protected $names;
     protected $values = array();
     protected $valuesId = array();
     protected $objValues;
 
-    public function init()
-    {
+    public function init() {
         global $post;
 
         $this->objValues = array();
@@ -32,17 +31,17 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
             }
         }
 
-        $all = $this->buildTerms(get_terms($this->getName(),array('hide_empty'=>0,'fields'=>'all')));
+        $all = $this->buildTerms(get_terms($this->getName(), array('hide_empty' => 0, 'fields' => 'all')));
 
 
 
-        $childs=array();
-        $names=array();
+        $childs = array();
+        $names = array();
         foreach ($all as $term) {
-            $names[$term['term_id']]=$term['name'];
+            $names[$term['term_id']] = $term['name'];
             if (!isset($childs[$term['parent']]) || !is_array($childs[$term['parent']]))
-                $childs[$term['parent']]=array();
-            $childs[$term['parent']][]=$term['term_id'];
+                $childs[$term['parent']] = array();
+            $childs[$term['parent']][] = $term['term_id'];
         }
 
 //        ksort($childs);
@@ -51,24 +50,23 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
         $this->names = $names;
     }
 
-    public function enqueueScripts()
-    {
+    public function enqueueScripts() {
+        
     }
 
-    public function enqueueStyles()
-    {
+    public function enqueueStyles() {
+        
     }
 
-    public function metaform()
-    {
-        $use_bootstrap = array_key_exists( 'use_bootstrap', $this->_data ) && $this->_data['use_bootstrap'];
+    public function metaform() {
+        $use_bootstrap = array_key_exists('use_bootstrap', $this->_data) && $this->_data['use_bootstrap'];
         $attributes = $this->getAttr();
-		$taxname = $this->getName();
+        $taxname = $this->getName();
         $res = '';
         $metaform = array();
         $build_what = '';
 
-        if ( array_key_exists( 'display', $this->_data ) && 'select' == $this->_data['display'] ) {
+        if (array_key_exists('display', $this->_data) && 'select' == $this->_data['display']) {
             $metaform = $this->buildSelect();
             $build_what = 'select';
         } else {
@@ -77,14 +75,13 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
             $build_what = 'checkboxes';
         }
 
-		/**
-		* TODO
-		*
-		* Use this to get the taxonomy labels for the "Add new" event
-		*
-		* $taxobject = get_taxonomy( $taxname );
-		*/
-
+        /**
+         * TODO
+         *
+         * Use this to get the taxonomy labels for the "Add new" event
+         *
+         * $taxobject = get_taxonomy( $taxname );
+         */
         /**
          * "Add new" button
          */
@@ -92,49 +89,47 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
             '#type' => 'button',
             '#title' => '',
             '#description' => '',
-            '#name' => "btn_".$taxname,
-            '#value' => apply_filters('toolset_button_add_new_text', esc_attr( $attributes['add_new_text'] )),
+            '#name' => "btn_" . $taxname,
+            '#value' => apply_filters('toolset_button_add_new_text', esc_attr($attributes['add_new_text'])),
             '#attributes' => array(
                 'style' => 'display:none;',
                 'data-taxonomy' => $taxname,
                 'data-build_what' => $build_what,
                 'data-after-selector' => 'js-wpt-hierarchical-taxonomy-add-new-' . $taxname,
-                'data-open' => apply_filters('toolset_button_add_new_text', esc_attr( $attributes['add_new_text'] )),
-				'data-close' => apply_filters('toolset_button_cancel_text', esc_attr( __( 'Cancel', 'wpv-views' ) )),// TODO adjust the button value depending on open/close action
-				'class' => $use_bootstrap? 'btn btn-default wpt-hierarchical-taxonomy-add-new-show-hide js-wpt-hierarchical-taxonomy-add-new-show-hide' : 'wpt-hierarchical-taxonomy-add-new-show-hide js-wpt-hierarchical-taxonomy-add-new-show-hide',
+                'data-open' => apply_filters('toolset_button_add_new_text', esc_attr($attributes['add_new_text'])),
+                'data-close' => apply_filters('toolset_button_cancel_text', esc_attr(__('Cancel', 'wpv-views'))), // TODO adjust the button value depending on open/close action
+                'class' => $use_bootstrap ? 'btn btn-default wpt-hierarchical-taxonomy-add-new-show-hide js-wpt-hierarchical-taxonomy-add-new-show-hide' : 'wpt-hierarchical-taxonomy-add-new-show-hide js-wpt-hierarchical-taxonomy-add-new-show-hide',
             ),
-
             '#validate' => $this->getValidationData(),
         );
 
         // Input for new taxonomy
 
-		if ( $use_bootstrap ) {
-			$container = '<div style="display:none" class="form-group wpt-hierarchical-taxonomy-add-new js-wpt-hierarchical-taxonomy-add-new-' . $taxname . '" data-taxonomy="' . $taxname . '">';
-		} else {
-			$container = '<div style="display:none" class="wpt-hierarchical-taxonomy-add-new js-wpt-hierarchical-taxonomy-add-new-' . $taxname . '" data-taxonomy="' . $taxname . '">';
-		}
+        if ($use_bootstrap) {
+            $container = '<div style="display:none" class="form-group wpt-hierarchical-taxonomy-add-new js-wpt-hierarchical-taxonomy-add-new-' . $taxname . '" data-taxonomy="' . $taxname . '">';
+        } else {
+            $container = '<div style="display:none" class="wpt-hierarchical-taxonomy-add-new js-wpt-hierarchical-taxonomy-add-new-' . $taxname . '" data-taxonomy="' . $taxname . '">';
+        }
 
-		/**
-		* The textfield input
-		*/
+        /**
+         * The textfield input
+         */
         $metaform[] = array(
             '#type' => 'textfield',
             '#title' => '',
             '#description' => '',
-            '#name' => "new_tax_text_".$taxname,
+            '#name' => "new_tax_text_" . $taxname,
             '#value' => '',
             '#attributes' => array(
                 'data-taxonomy' => $taxname,
-				'data-taxtype' => 'hierarchical',
-				'class' => $use_bootstrap ? 'inline wpt-new-taxonomy-title js-wpt-new-taxonomy-title' : 'wpt-new-taxonomy-title js-wpt-new-taxonomy-title',
+                'data-taxtype' => 'hierarchical',
+                'class' => $use_bootstrap ? 'inline wpt-new-taxonomy-title js-wpt-new-taxonomy-title' : 'wpt-new-taxonomy-title js-wpt-new-taxonomy-title',
             ),
             '#validate' => $this->getValidationData(),
             '#before' => $container,
-
         );
 
-		/**
+        /**
          * The select for parent
          */
         $metaform[] = array(
@@ -146,13 +141,12 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
                 )),
             '#default_value' => 0,
             '#description' => '',
-            '#name' => "new_tax_select_".$taxname,
+            '#name' => "new_tax_select_" . $taxname,
             '#attributes' => array(
                 'data-parent-text' => $attributes['parent_text'],
                 'data-taxonomy' => $taxname,
                 'class' => 'js-taxonomy-parent wpt-taxonomy-parent'
             ),
-
             '#validate' => $this->getValidationData(),
         );
 
@@ -163,39 +157,35 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
             '#type' => 'button',
             '#title' => '',
             '#description' => '',
-            '#name' => "new_tax_button_".$taxname,
-            '#value' => apply_filters('toolset_button_add_text', esc_attr( $attributes['add_text'] )),
+            '#name' => "new_tax_button_" . $taxname,
+            '#value' => apply_filters('toolset_button_add_text', esc_attr($attributes['add_text'])),
             '#attributes' => array(
                 'data-taxonomy' => $taxname,
                 'data-build_what' => $build_what,
-				'class' => $use_bootstrap ? 'btn btn-default wpt-hierarchical-taxonomy-add-new js-wpt-hierarchical-taxonomy-add-new' : 'wpt-hierarchical-taxonomy-add-new js-wpt-hierarchical-taxonomy-add-new',
+                'class' => $use_bootstrap ? 'btn btn-default wpt-hierarchical-taxonomy-add-new js-wpt-hierarchical-taxonomy-add-new' : 'wpt-hierarchical-taxonomy-add-new js-wpt-hierarchical-taxonomy-add-new',
             ),
-
             '#validate' => $this->getValidationData(),
-			'#after' => '</div>',
+            '#after' => '</div>',
         );
 
         return $metaform;
-
     }
 
-    private function buildTerms($obj_terms)
-    {
-        $tax_terms=array();
+    private function buildTerms($obj_terms) {
+        $tax_terms = array();
         foreach ($obj_terms as $term) {
-            $tax_terms[]=array(
-                'name'=>$term->name,
-                'count'=>$term->count,
-                'parent'=>$term->parent,
-                'term_taxonomy_id'=>$term->term_taxonomy_id,
-                'term_id'=>$term->term_id
+            $tax_terms[] = array(
+                'name' => $term->name,
+                'count' => $term->count,
+                'parent' => $term->parent,
+                'term_taxonomy_id' => $term->term_taxonomy_id,
+                'term_id' => $term->term_id
             );
         }
         return $tax_terms;
     }
 
-    private function buildSelect()
-    {
+    private function buildSelect() {
         $attributes = $this->getAttr();
 
         $multiple = !isset($attributes['single_select']) || !$attributes['single_select'];
@@ -203,9 +193,8 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
         $curr_options = $this->getOptions();
         $values = $this->valuesId;
         $options = array();
-        if( $curr_options )
-        {
-            foreach ($curr_options as $name=>$data) {
+        if ($curr_options) {
+            foreach ($curr_options as $name => $data) {
                 $option = array(
                     '#value' => $name,
                     '#title' => $data['value'],
@@ -223,7 +212,7 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
          * default_value
          */
         $default_value = null;
-        if ( count( $this->valuesId) ) {
+        if (count($this->valuesId)) {
             $default_value = $this->valuesId[0];
         }
         /**
@@ -236,7 +225,7 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
             '#description' => $this->getDescription(),
             '#name' => $this->getName() . '[]',
             '#options' => $options,
-            '#default_value' => isset( $data['default_value'] ) && !empty( $data['default_value'] ) ? $data['default_value'] : $default_value,
+            '#default_value' => isset($data['default_value']) && !empty($data['default_value']) ? $data['default_value'] : $default_value,
             '#validate' => $this->getValidationData(),
             '#class' => 'form-inline',
             '#repetitive' => $this->isRepetitive(),
@@ -258,18 +247,17 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
         return $form;
     }
 
-    private function getOptions($index = 0, $level = 0, $parent = -1)
-    {
-        if ( !isset($this->childs[$index]) || empty( $this->childs[$index] ) ) {
+    private function getOptions($index = 0, $level = 0, $parent = -1) {
+        if (!isset($this->childs[$index]) || empty($this->childs[$index])) {
             return;
         }
         $options = array();
 
-        foreach( $this->childs[$index] as $one ) {
-            $options[$one] = array('value' => sprintf('%s%s', str_repeat('&nbsp;', 2*$level ), $this->names[$one]),
-                                   'parent' => $parent);
-            if ( isset($this->childs[$one]) && count($this->childs[$one])) {
-                foreach( $this->getOptions( $one, $level + 1, $one ) as $id => $data ) {
+        foreach ($this->childs[$index] as $one) {
+            $options[$one] = array('value' => sprintf('%s%s', str_repeat('&nbsp;', 2 * $level), $this->names[$one]),
+                'parent' => $parent);
+            if (isset($this->childs[$one]) && count($this->childs[$one])) {
+                foreach ($this->getOptions($one, $level + 1, $one) as $id => $data) {
                     $options[$id] = $data;
                 }
             }
@@ -277,24 +265,23 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
         return $options;
     }
 
-    private function buildCheckboxes( $index, &$childs, &$names, &$metaform, $level = 0, $parent = -1 )
-    {
+    private function buildCheckboxes($index, &$childs, &$names, &$metaform, $level = 0, $parent = -1) {
         if (isset($childs[$index])) {
-            $level_count = count( $childs[$index] );
-            foreach ( $childs[$index] as $tkey => $tid ) {
+            $level_count = count($childs[$index]);
+            foreach ($childs[$index] as $tkey => $tid) {
                 $name = $names[$tid];
                 /**
                  * check for "checked"
                  */
                 $default_value = false;
-                if ( isset( $this->valuesId ) && is_array( $this->valuesId ) && !empty($this->valuesId)) {
-                    $default_value = in_array( $tid, $this->valuesId );
-                } else if ( is_array( $this->getValue() ) ) {
-                    $default_value = in_array( $tid, $this->getValue() );
+                if (isset($this->valuesId) && is_array($this->valuesId) && !empty($this->valuesId)) {
+                    $default_value = in_array($tid, $this->valuesId);
+                } else if (is_array($this->getValue())) {
+                    $default_value = in_array($tid, $this->getValue());
                 }
                 $clases = array();
-                $clases[] = 'tax-'.sanitize_title($names[$tid]);
-                $clases[] = 'tax-'.$this->_data['name'].'-'.$tid;
+                $clases[] = 'tax-' . sanitize_title($names[$tid]);
+                $clases[] = 'tax-' . $this->_data['name'] . '-' . $tid;
                 /**
                  * filter: cred_checkboxes_class
                  * @param array $clases current array of classes
@@ -303,17 +290,17 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
                  *
                  * @return array
                  */
-                $clases = apply_filters( 'cred_item_li_class', $clases, array( 'id' => $tid, 'name' => $name ), 'taxonomyhierarchical' );
+                $clases = apply_filters('cred_item_li_class', $clases, array('id' => $tid, 'name' => $name), 'taxonomyhierarchical');
 
                 $item = array(
                     '#type' => 'checkbox',
                     '#title' => $names[$tid],
                     '#description' => '',
-                    '#name' => $this->getName()."[]",
+                    '#name' => $this->getName() . "[]",
                     '#value' => $tid,
                     '#default_value' => $default_value,
                     '#validate' => $this->getValidationData(),
-                    '#before' => sprintf( '<li class="%s">', implode( ' ', $clases )),
+                    '#before' => sprintf('<li class="%s">', implode(' ', $clases)),
                     '#after' => '</li>',
                     '#attributes' => array(
                         'data-parent' => $parent
@@ -321,34 +308,34 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield
                     '#pattern' => '<BEFORE><PREFIX><ELEMENT><LABEL><ERROR><SUFFIX><DESCRIPTION><AFTER>',
                 );
 
-                if ( $tkey == 0 ) {
+                if ($tkey == 0) {
                     if ($level > 0) {
-                        $item['#before'] = '<li class="tax-children-of-'.$parent.'"><ul class="wpt-form-set-children wpt-form-set-children-level-' . $level . '" data-level="' . $level . '">'.$item['#before'];
-                    } else  {
-                        $item['#before'] = '<ul class="wpt-form-set wpt-form-set-checkboxes wpt-form-set-checkboxes-' . $this->getName() . '" data-level="0">'.$item['#before'];
+                        $item['#before'] = '<li class="tax-children-of-' . $parent . '"><ul class="wpt-form-set-children wpt-form-set-children-level-' . $level . '" data-level="' . $level . '">' . $item['#before'];
+                    } else {
+                        $item['#before'] = '<ul class="wpt-form-set wpt-form-set-checkboxes wpt-form-set-checkboxes-' . $this->getName() . '" data-level="0">' . $item['#before'];
                     }
                 }
-                if ( $tkey == ( $level_count - 1 ) ) {
+                if ($tkey == ( $level_count - 1 )) {
                     $item['#after'] = '</li>';
                 }
 
                 $metaform[] = $item;
 
-                if ( isset( $childs[$tid] ) ) {
-                    $metaform = $this->buildCheckboxes( $tid, $childs, $names, $metaform, $level + 1, $tid );
+                if (isset($childs[$tid])) {
+                    $metaform = $this->buildCheckboxes($tid, $childs, $names, $metaform, $level + 1, $tid);
                 }
-
             }
         }
 
         if (count($metaform)) {
             if ($level == 0) {
                 $metaform[count($metaform) - 1]['#after'] .= '</ul>';
-            } else  {
+            } else {
                 $metaform[count($metaform) - 1]['#after'] .= '</ul></li>';
             }
         }
 
         return $metaform;
     }
+
 }

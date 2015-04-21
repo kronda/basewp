@@ -4,9 +4,9 @@
  *
  * @author Srdjan
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/classes/class.checkboxes.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.checkboxes.php $
+ * $LastChangedDate: 2015-01-16 14:28:15 +0000 (Fri, 16 Jan 2015) $
+ * $LastChangedRevision: 1069430 $
  * $LastChangedBy: iworks $
  *
  */
@@ -20,7 +20,8 @@ class WPToolset_Field_Checkboxes extends FieldFactory
         global $post;
         $value = $this->getValue();
         $data = $this->getData();
-        $name = $this->getName();
+        $name = $this->getName();               
+
         $form = array();
         $_options = array();
         if (isset($data['options'])) {

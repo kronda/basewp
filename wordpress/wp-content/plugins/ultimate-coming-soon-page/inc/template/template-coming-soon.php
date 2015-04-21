@@ -79,8 +79,14 @@ global $seedprod_comingsoon;
         <?php } ?>
     }
     <?php endif;?>
+
     <?php echo $sc_jdt['comingsoon_custom_css'];?>
   </style>
+  <?php
+  if(!empty($sc_jdt['comingsoon_headerscripts'])){
+      echo $sc_jdt['comingsoon_headerscripts'];
+  }
+  ?>
 </head>
 
 <body id="coming-soon-page">

@@ -31,7 +31,7 @@ function wpcf_cd_form_field_filter( $form, $data ) {
         parse_str( $_SERVER['HTTP_REFERER'], $vars );
     } else if ( isset( $_GET['group_id'] ) ) {
         $vars = array();
-        $vars['group_id'] = $_GET['group_id'];
+        $vars['group_id'] = sanitize_text_field( $_GET['group_id'] );
     }
     if ( !isset( $vars['group_id'] ) ) {
         return $form + array(
@@ -165,7 +165,7 @@ function wpcf_cd_admin_form_filter( $data, $group = false ) {
                             'wpcf' ), $count_text ) . '</strong><br />'
             . __( "Specify additional filters that control this group's display, based on values of custom fields.",
                     'wpcf' )
-            . '<br /><a class="button-secondary" onclick="jQuery(this).css(\'display\',\'none\').next().slideToggle();" ' . $wpcf_button_style30 . '  href="javascript:void(0);">'
+            . '<br /><a class="button-secondary" id="conditional-logic-button-open" onclick="jQuery(this).css(\'display\',\'none\').next().slideToggle();" ' . $wpcf_button_style30 . '  href="javascript:void(0);">'
             . __( 'Edit', 'wpcf' ) . '</a><div id="wpcf-cd-group" class="wpcf-cd-fieldset" style="display:none;">',
         );
     }
@@ -197,7 +197,7 @@ function wpcf_cd_admin_form_filter( $data, $group = false ) {
     $_add_id .= $group ? 'group' : 'field_' . $data['id'];
 
     // Set link param
-    $_temp_group_id = isset( $_GET['group_id'] ) ? '&group_id=' . $_GET['group_id'] : '';
+    $_temp_group_id = isset( $_GET['group_id'] ) ? '&group_id=' . sanitize_text_field( $_GET['group_id'] ) : '';
     $_url = admin_url( 'admin-ajax.php?action=wpcf_ajax&wpcf_action=add_condition'
             . $_temp_group_id . '&_wpnonce='
             . wp_create_nonce( 'add_condition' ) );
@@ -313,10 +313,21 @@ function wpcf_cd_admin_form_filter( $data, $group = false ) {
         ),
     );
     if ( $group ) {
+        $form['cd']['wrap_close_button'] = array(
+            '#name' => 'button',
+            '#type' => 'button',
+            '#value' => __('OK', 'wpcf'),
+            '#id' => 'conditional-logic-button-ok',
+            '#attributes' => array(
+                'class' => 'button-primary',
+                'href' => '#',
+            ),
+            '#before' => '<br />',
+
+        );
         $form['cd']['wrap_close'] = array(
             '#type' => 'markup',
-            '#markup' => '<br /><a class="button-primary" onclick="jQuery(this).parent().slideUp().prev().css(\'display\',\'static\');" ' . $wpcf_button_style30 . '  href="javascript:void(0);">'
-            . __( 'OK', 'wpcf' ) . '</a></div>',
+            '#markup' => '</div>',
         );
     }
     return $group ? $form['cd'] : $form;

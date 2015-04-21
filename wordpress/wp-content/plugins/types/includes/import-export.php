@@ -2,9 +2,9 @@
 /*
  * Import/export data.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/includes/import-export.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/includes/import-export.php $
+ * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
+ * $LastChangedRevision: 1120400 $
  * $LastChangedBy: iworks $
  *
  */
@@ -29,7 +29,7 @@ function wpcf_admin_import_export_form()
         $show_first_screen = false;
         if ( isset( $_POST['import-final'] ) ) {
             if ( $_POST['mode'] == 'file' && !empty( $_POST['file'] ) ) {
-                $file = get_transient( $_POST['file'] );
+                $file = get_transient( sanitize_text_field( $_POST['file'] ) );
                 if ( file_exists($file) ) {
                     $info = pathinfo($file);
                     $is_zip = $info['extension'] == 'zip' ? true : false;
@@ -70,7 +70,7 @@ function wpcf_admin_import_export_form()
                 }
             }
             if ( $_POST['mode'] == 'text' && !empty( $_POST['text'] ) ) {
-                $charset = !empty( $_POST['text-encoding'] ) ? $_POST['text-encoding'] : get_option( 'blog_charset' );
+                $charset = !empty( $_POST['text-encoding'] ) ? sanitize_text_field( $_POST['text-encoding'] ) : get_option( 'blog_charset' );
                 wpcf_admin_import_data( stripslashes( html_entity_decode( $_POST['text'],
                                         ENT_QUOTES, $charset ) ) );
             }
@@ -143,7 +143,7 @@ function wpcf_admin_import_export_form()
                                 $match ) ) {
                     $charset = trim( $match[1], '"' );
                 } else {
-                    $charset = !empty( $_POST['text-encoding'] ) ? $_POST['text-encoding'] : get_option( 'blog_charset' );
+                    $charset = !empty( $_POST['text-encoding'] ) ? sanitize_text_field( $_POST['text-encoding'] ) : get_option( 'blog_charset' );
                 }
                 $form['text'] = array(
                     '#type' => 'hidden',
@@ -303,7 +303,7 @@ function wpcf_admin_import_export_file_upload_error($file, $error_msg)
 /**
  * Import settings.
  *
- * @global type $wpdb
+ * @global object $wpdb
  * @param SimpleXMLElement $data
  * @return string
  */
@@ -385,10 +385,13 @@ function wpcf_admin_import_export_settings($data)
                 '#inline' => true,
                 '#after' => '<br />',
             );
-            $post = $wpdb->get_var( $wpdb->prepare(
-                            "SELECT ID FROM $wpdb->posts
-                    WHERE post_title = %s AND post_type = %s",
-                            $group['post_title'], $group['post_type'] ) );
+            $post = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type = %s",
+                    $group['post_title'],
+                    $group['post_type']
+                )
+            );
             if ( !empty( $post ) ) {
                 $form['group-add-' . $group['ID']]['#after'] = wpcf_form_simple(
                         array('group-add-update-' . $group['ID'] => array(
@@ -491,10 +494,13 @@ function wpcf_admin_import_export_settings($data)
                 '#inline' => true,
                 '#after' => '<br /><br />',
             );
-            $post = $wpdb->get_var( $wpdb->prepare(
-                            "SELECT ID FROM $wpdb->posts
-                    WHERE post_title = %s AND post_type = %s",
-                            $group['post_title'], $group['post_type'] ) );
+            $post = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type = %s",
+                    $group['post_title'],
+                    $group['post_type']
+                )
+            );
             if ( !empty( $post ) ) {
                 $form['user-group-add-' . $group['ID']]['#after'] = wpcf_form_simple(
                         array('user-group-add-update-' . $group['ID'] => array(

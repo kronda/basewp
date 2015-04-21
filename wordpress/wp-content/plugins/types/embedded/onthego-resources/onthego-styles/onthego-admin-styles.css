@@ -11,6 +11,7 @@ li#toplevel_page_dd_layouts div.wp-menu-image:before, li#toplevel_page_dd_layout
   padding-left: 3px;
   padding-top: 5px; }
 
+li#toplevel_page_embedded-views div.wp-menu-image:before,
 li#toplevel_page_views div.wp-menu-image:before {
   font-family: "onthegosystems-icons"!important;
   content: "\f11e";
@@ -54,6 +55,14 @@ li#toplevel_page_types_access div.wp-menu-image:before {
 li#toplevel_page_CRED_Commerce div.wp-menu-image:before {
     font-family: "onthegosystems-icons"!important;
     content: "\f115";
+    font-size: 23px!important;
+    width: 30px;
+    padding-left: 3px;
+    padding-top: 3px; }
+
+li#toplevel_page_toolset-packager div.wp-menu-image:before {
+    font-family: "onthegosystems-icons"!important;
+    content: "\f121";
     font-size: 23px!important;
     width: 30px;
     padding-left: 3px;

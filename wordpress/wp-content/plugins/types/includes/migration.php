@@ -2,9 +2,9 @@
 /*
  * Migration functions
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/includes/migration.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/includes/migration.php $
+ * $LastChangedDate: 2015-04-01 14:15:17 +0000 (Wed, 01 Apr 2015) $
+ * $LastChangedRevision: 1125405 $
  * $LastChangedBy: iworks $
  *
  */
@@ -12,11 +12,12 @@
 /**
  * Migration form.
  *
+ * @global object $wpdb
+ *
  * @return array
  */
-function wpcf_admin_migration_form() {
-
-
+function wpcf_admin_migration_form()
+{
     global $wpdb;
     $wpcf_types = get_option('wpcf-custom-types', array());
     $wpcf_taxonomies = get_option('wpcf-custom-taxonomies', array());
@@ -35,7 +36,7 @@ function wpcf_admin_migration_form() {
     if (!empty($cfui_types)) {
         $form['types_title'] = array(
             '#type' => 'markup',
-            '#markup' => '<h3>' . __('Custom Types UI Post Types') . '</h3>',
+            '#markup' => '<h3>' . __('Custom Types UI Post Types', 'wpcf') . '</h3>',
         );
 
         foreach ($cfui_types as $key => $cfui_type) {
@@ -43,8 +44,6 @@ function wpcf_admin_migration_form() {
                     $wpcf_types);
             if ($exists) {
                 $attributes = array('readonly' => 'readonly', 'disabled' => 'disabled');
-//                wpcf_admin_message(sprintf(__("Custom Post Type %s will not be imported because post type with same name exist in Types",
-//                                        'wpcf'), $cfui_type['label']), 'error');
                 $add = __('(exists)', 'wpcf');
             } else {
                 $attributes = array();
@@ -76,8 +75,6 @@ function wpcf_admin_migration_form() {
                     $wpcf_taxonomies);
             if ($exists) {
                 $attributes = array('readonly' => 'readonly', 'disabled' => 'disabled');
-//                wpcf_admin_message(sprintf(__("Custom Taxonomy %s will not be imported because taxonomy with same name exist in Types",
-//                                        'wpcf'), $title), 'error');
                 $add = __('(exists)', 'wpcf');
             } else {
                 $attributes = array();
@@ -107,9 +104,6 @@ function wpcf_admin_migration_form() {
                     'wpcf'),
         );
     };
-
-
-
 
     // ACF
 
@@ -149,8 +143,12 @@ function wpcf_admin_migration_form() {
         }
 
         foreach ($acf_groups as $acf_key => $acf_post) {
-            $group_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type='wp-types-group'",
-                            $acf_post->post_title));
+            $group_id = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type='wp-types-group'",
+                    $acf_post->post_title
+                )
+            );
             if (empty($group_id)) {
                 $add = __('Group will be created', 'wpcf');
             } else {
@@ -234,12 +232,6 @@ function wpcf_admin_migration_form() {
                         '#name' => 'acf_posts[' . $acf_post->ID . '][fields][' . $meta_name . '][slug]',
                         '#value' => esc_attr($data['name']),
                     );
-                    // @todo Not supported yet
-//                $form[$acf_post->ID . '_acf_field_' . $meta_name . '_details_order'] = array(
-//                    '#type' => 'hidden',
-//                    '#name' => 'acf_posts[' . $acf_post->ID . '][fields][' . $meta_name . '][order]',
-//                    '#value' => esc_attr($data['order']),
-//                );
                     // Add options for radios and select
                     if (in_array($data['type'], array('radio', 'select'))
                             && !empty($data['choices'])) {
@@ -253,9 +245,9 @@ function wpcf_admin_migration_form() {
                                 $option_value = trim($temp[0]);
                                 $option_title = trim($temp[1]);
                             }
-                            
+
                             $_key = sanitize_title($option_value);
-                            
+
                             $form[$acf_post->ID . '_acf_field_' . $meta_name . '_option_' . $_key . '_value'] = array(
                                 '#type' => 'hidden',
                                 '#name' => 'acf_posts[' . $acf_post->ID . '][fields][' . $meta_name . '][options][' . $_key . '][value]',
@@ -278,9 +270,6 @@ function wpcf_admin_migration_form() {
                     if (($exists && !$outsider) || !$supported) {
                         $attributes = array('disabled' => 'disabled');
                         if ($exists) {
-//                            wpcf_admin_message(sprintf(__("Field %s will not be imported because field with same name exist in Types",
-//                                                    'wpcf'), $data['label']),
-//                                    'error');
                         }
                     } else {
                         $attributes = array();
@@ -369,6 +358,7 @@ function wpcf_admin_migration_form_submit() {
                                     $wpcf_types[$types_slug]['taxonomies'] = array();
                                 }
                                 $wpcf_types[$types_slug]['taxonomies'][$tax_slug] = 1;
+                                $wpcf_types[$types_slug][TOOLSET_EDIT_LAST] = time();
                             }
                         }
 
@@ -389,9 +379,14 @@ function wpcf_admin_migration_form_submit() {
                 continue;
             }
             global $wpdb;
-            $group = $wpdb->get_row($wpdb->prepare("SELECT ID, post_title FROM $wpdb->posts WHERE post_title = %s AND post_type='wp-types-group'",
-                            $_POST['acf_posts'][$acf_group_id]['post_title']));
+            $group = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT ID, post_title FROM $wpdb->posts WHERE post_title = %s AND post_type='wp-types-group'",
+                    $_POST['acf_posts'][$acf_group_id]['post_title']
+                )
+            );
             if (empty($group)) {
+				// @todo Maybe sanitize here
                 $group = array();
                 $group['name'] = $_POST['acf_posts'][$acf_group_id]['post_title'];
                 $group['description'] = $_POST['acf_posts'][$acf_group_id]['post_content'];
@@ -449,9 +444,9 @@ function wpcf_admin_migration_form_submit() {
 
 /**
  * Gets types data.
- * 
+ *
  * @param type $cfui_type
- * @return type 
+ * @return type
  */
 function wpcf_admin_migrate_get_cfui_type_data($cfui_type) {
     $cfui_types_migrated = array();
@@ -538,9 +533,9 @@ function wpcf_admin_migrate_get_cfui_type_data($cfui_type) {
 
 /**
  * Gets taxonomies data.
- * 
+ *
  * @param type $cfui_tax
- * @return type 
+ * @return type
  */
 function wpcf_admin_migrate_get_cfui_tax_data($cfui_tax) {
     $cfui_tax_migrated = array();

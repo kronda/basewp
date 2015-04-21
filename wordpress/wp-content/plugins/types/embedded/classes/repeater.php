@@ -1,29 +1,29 @@
 <?php
 /*
- * 
- * 
+ *
+ *
  * Repeater fields class.
  */
 
 /**
  * Repater class
- * 
+ *
  * Very useful, should be used to finish small tasks for repeater field.
- * 
+ *
  * Example:
- * 
+ *
  * // Setup field
  * global $wpcf;
  * $my_field = new WPCF_Repeater();
  * $my_field->set($wpcf->post, wpcf_admin_fields_get_field('image'));
- * 
+ *
  * // Use it
  * $my_field->save();
- * 
+ *
  * Generic instance can be found in global $wpcf.
  * global $wpcf;
  * $wpcf->repeater->set(...);
- * 
+ *
  * @since Types 1.2
  * @package Types
  * @subpackage Classes
@@ -36,30 +36,30 @@ class WPCF_Repeater extends WPCF_Field
 
     /**
      * Field order
-     * 
-     * @var type 
+     *
+     * @var type
      */
     var $order;
 
     /**
      * Indexing
-     * 
+     *
      * Set counts when processing fields.
-     * 
-     * @var type 
+     *
+     * @var type
      */
     var $index = 0;
 
     /**
      * Field title
-     * @var type 
+     * @var type
      */
     var $title = '';
 
     /**
      * Field description.
-     * 
-     * @var type 
+     *
+     * @var type
      */
     var $description = '';
 
@@ -73,9 +73,9 @@ class WPCF_Repeater extends WPCF_Field
 
     /**
      * Calls parent set func.
-     * 
+     *
      * @param type $post
-     * @param type $field 
+     * @param type $field
      */
     function set( $post, $field ) {
         parent::set( $post, $field );
@@ -84,12 +84,12 @@ class WPCF_Repeater extends WPCF_Field
 
     /**
      * Save fields
-     * 
+     *
      * If $data empty, $_POST will be checked
-     * 
+     *
      * @global type $wpcf
      * @param type $data
-     * @return boolean 
+     * @return boolean
      */
     function save( $data = null ) {
 
@@ -107,7 +107,7 @@ class WPCF_Repeater extends WPCF_Field
 
         // Set data
         if ( !empty( $data ) ) {
-            
+
             do_action('wpcf_postmeta_before_add_repetitive', $this->post, $this->cf);
 
             // Insert new meta and collect all new mids
@@ -116,7 +116,7 @@ class WPCF_Repeater extends WPCF_Field
             foreach ( $data as $meta_value ) {
 
                 /*
-                 * 
+                 *
                  * Deprecated!
                  */
                 if ( is_array( $meta_value ) && isset( $meta_value['new_value'] ) ) {
@@ -142,7 +142,7 @@ class WPCF_Repeater extends WPCF_Field
                 // Call insert post actions on each field
                 $this->_action_save( $this->cf, $_meta_value, $mid, $meta_value );
             }
-            
+
             do_action('wpcf_postmeta_after_add_repetitive', $this->post, $this->cf);
 
             // Save order
@@ -160,8 +160,8 @@ class WPCF_Repeater extends WPCF_Field
 
     /**
      * Fetch and sort fields.
-     * 
-     * @global type $wpdb 
+     *
+     * @global object $wpdb
      */
     function _get_meta() {
         global $wpdb;
@@ -169,7 +169,7 @@ class WPCF_Repeater extends WPCF_Field
         $cache_key = md5( 'repeater::_get_meta' . $this->post->ID . $this->slug );
         $cache_group = 'types_cache';
         $cached_object = wp_cache_get( $cache_key, $cache_group );
-        
+
         if ( $this->use_cache ) {
 			if ( false != $cached_object && is_array( $cached_object ) ) {
 				return $cached_object;
@@ -181,10 +181,10 @@ class WPCF_Repeater extends WPCF_Field
         $ordered = array();
         $this->order = get_post_meta( $this->post->ID, $this->order_meta_name,
                 true );
-		
+
 		$cache_key_field = md5( 'field::_get_meta' . $this->post->ID . $this->slug );
         $cached_object_field = wp_cache_get( $cache_key_field, $cache_group );
-        
+
         if ( $this->use_cache ) {
 			if ( false != $cached_object_field && is_array( $cached_object_field ) ) {// WordPress cache
 				$r = $cached_object_field;
@@ -265,8 +265,8 @@ class WPCF_Repeater extends WPCF_Field
     }
 
     /**
-     * Sets repetitive field form. 
-     * 
+     * Sets repetitive field form.
+     *
      * @todo Make more distinction between $field_form and $form_field
      */
     function get_fields_form() {
@@ -315,8 +315,8 @@ class WPCF_Repeater extends WPCF_Field
 
         // Set style
         /*
-         * 
-         * 
+         *
+         *
          * Hide if field not passed check
          * TODO Move this to WPCF_Conditional
          */
@@ -328,17 +328,17 @@ class WPCF_Repeater extends WPCF_Field
         $css_cd = !$show ? 'display:none;' : '';
 
         /**
-         * 
-         * 
-         * 
-         * 
+         *
+         *
+         *
+         *
          * Set title and description
          * TODO See if can be improved getting main element
-         * 
+         *
          * Get first element and extract details
          * Pass emty string as value to avoid using meta as array
          */
-        // 
+        //
         $_c = array_values( parent::_get_meta_form( '' ) );
         array_shift( $_c );
         $_main_element = array_shift( $_c );
@@ -351,8 +351,8 @@ class WPCF_Repeater extends WPCF_Field
         }
 
         /*
-         * 
-         * 
+         *
+         *
          * Start wrapper
          */
         $form[$unique_id . '_repetitive_wrapper_open'] = array(
@@ -372,12 +372,12 @@ class WPCF_Repeater extends WPCF_Field
 
         // Set hidden mark field
         /*
-         * 
-         * 
-         * 
+         *
+         *
+         *
          * This actually marks field as repetitive
          * IMPORTANT!!! IF NOT marked field won't be saved at all!
-         * 
+         *
          * @see wpcf_admin_post_save_post_hook()
          */
         $form[$form_id . '_hidden_mark'] = array(
@@ -443,9 +443,9 @@ class WPCF_Repeater extends WPCF_Field
 
     /**
      * Sete repetitive form for single field.
-     * 
+     *
      * @param type $meta
-     * @return string 
+     * @return string
      */
     function get_field_form( $meta_value = null, $meta_id = null ) {
 
@@ -456,8 +456,8 @@ class WPCF_Repeater extends WPCF_Field
             $key = 'wpcf_field_' . md5( maybe_serialize( $meta_value ) . $meta_id );
         }
         /*
-         * 
-         * 
+         *
+         *
          * TODO We prevented array because of some fails we had before.
          * Now it should work fine
          * Add debug log if meta_value['custom_order'] passed.
@@ -480,7 +480,7 @@ class WPCF_Repeater extends WPCF_Field
         $field_form = parent::_get_meta_form( $meta_value, $meta_id, false );
 
         /*
-         * 
+         *
          * Apply filters to each form element.
          * Here we add specific properties
          * e.g. Skype alters fields.
@@ -489,7 +489,7 @@ class WPCF_Repeater extends WPCF_Field
         foreach ( $field_form as $k => $field ) {
 
             /*
-             * 
+             *
              * IMPORTANT
              * We change name to hold array
              */
@@ -579,7 +579,7 @@ class WPCF_Repeater extends WPCF_Field
     }
 
     /**
-     * Set counting elements. 
+     * Set counting elements.
      */
     function _set_form_count() {
         if ( $this->index === 0 ) {
@@ -592,8 +592,11 @@ class WPCF_Repeater extends WPCF_Field
 
     /**
      * Deletes meta.
-     * 
-     * @param type $meta_key 
+     *
+     * @global object $wpdb
+     *
+     * @param type $meta_key
+     *
      */
     function delete( $meta_id ) {
         global $wpdb;

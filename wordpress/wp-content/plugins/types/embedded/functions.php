@@ -3,24 +3,24 @@
  * Basic and init functions.
  * Since Types 1.2 moved from /embedded/types.php
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/functions.php $
- * $LastChangedDate: 2014-10-23 10:33:39 +0000 (Thu, 23 Oct 2014) $
- * $LastChangedRevision: 1012677 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/functions.php $
+ * $LastChangedDate: 2015-04-03 10:15:58 +0000 (Fri, 03 Apr 2015) $
+ * $LastChangedRevision: 1126927 $
  * $LastChangedBy: iworks $
  *
  */
 
 /**
  * Caches get_post_meta() calls.
- * 
+ *
  * @staticvar array $cache
  * @param type $post_id
  * @param type $meta_key
  * @param type $single
  * @return string
  */
-function wpcf_get_post_meta( $post_id, $meta_key, $single ) {
-
+function wpcf_get_post_meta($post_id, $meta_key, $single)
+{
     static $cache = array();
 
     if ( !isset( $cache[$post_id] ) ) {
@@ -29,7 +29,7 @@ function wpcf_get_post_meta( $post_id, $meta_key, $single ) {
     if ( isset( $cache[$post_id][$meta_key] ) ) {
         if ( $single && isset( $cache[$post_id][$meta_key][0] ) ) {
             return maybe_unserialize( $cache[$post_id][$meta_key][0] );
-        } else if ( !$single && !empty( $cache[$post_id][$meta_key] ) ) {
+        } elseif ( !$single && !empty( $cache[$post_id][$meta_key] ) ) {
             return maybe_unserialize( $cache[$post_id][$meta_key] );
         }
     }
@@ -38,11 +38,12 @@ function wpcf_get_post_meta( $post_id, $meta_key, $single ) {
 
 /**
  * Calculates relative path for given file.
- * 
+ *
  * @param type $file Absolute path to file
  * @return string Relative path
  */
-function wpcf_get_file_relpath( $file ) {
+function wpcf_get_file_relpath($file)
+{
     $is_https = isset( $_SERVER['HTTPS'] ) && strtolower( $_SERVER['HTTPS'] ) == 'on';
     $http_protocol = $is_https ? 'https' : 'http';
     $base_root = $http_protocol . '://' . $_SERVER['HTTP_HOST'];
@@ -67,7 +68,8 @@ function wpcf_get_file_relpath( $file ) {
 /**
  * after_setup_theme hook.
  */
-function wpcf_embedded_after_setup_theme_hook() {
+function wpcf_embedded_after_setup_theme_hook()
+{
     $custom_types = get_option( 'wpcf-custom-types', array() );
     if ( !empty( $custom_types ) ) {
         foreach ( $custom_types as $post_type => $data ) {
@@ -87,7 +89,8 @@ function wpcf_embedded_after_setup_theme_hook() {
 /**
  * Inits custom types and taxonomies.
  */
-function wpcf_init_custom_types_taxonomies() {
+function wpcf_init_custom_types_taxonomies()
+{
     $custom_taxonomies = get_option( 'wpcf-custom-taxonomies', array() );
     if ( !empty( $custom_taxonomies ) ) {
         require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-taxonomies.php';
@@ -101,12 +104,23 @@ function wpcf_init_custom_types_taxonomies() {
 }
 
 /**
- * Returns meta_key type for specific field type.
- * 
- * @param type $type
- * @return type 
+ * bind build-in taxonomies
  */
-function types_get_field_type( $type ) {
+
+function wpcf_init_build_in_taxonomies()
+{
+    require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-types.php';
+    wpcf_init_bind_build_in_taxonomies();
+}
+
+/**
+ * Returns meta_key type for specific field type.
+ *
+ * @param type $type
+ * @return type
+ */
+function types_get_field_type($type)
+{
     require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields.php';
     $data = wpcf_fields_type_action( $type );
     if ( !empty( $data['meta_key_type'] ) ) {
@@ -118,7 +132,8 @@ function types_get_field_type( $type ) {
 /**
  * Imports settings.
  */
-function wpcf_embedded_check_import() {
+function wpcf_embedded_check_import()
+{
     if ( file_exists( WPCF_EMBEDDED_ABSPATH . '/settings.php' ) ) {
         require_once WPCF_EMBEDDED_ABSPATH . '/admin.php';
         require_once WPCF_EMBEDDED_ABSPATH . '/settings.php';
@@ -144,10 +159,6 @@ function wpcf_embedded_check_import() {
                     $_POST['overwrite-fields'] = 1;
                     $_POST['overwrite-types'] = 1;
                     $_POST['overwrite-tax'] = 1;
-//                    $_POST['delete-groups'] = 0;
-//                    $_POST['delete-fields'] = 0;
-//                    $_POST['delete-types'] = 0;
-//                    $_POST['delete-tax'] = 0;
                     $_POST['post_relationship'] = 1;
                     require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields.php';
                     require_once WPCF_EMBEDDED_INC_ABSPATH . '/import-export.php';
@@ -165,40 +176,9 @@ function wpcf_embedded_check_import() {
 }
 
 /**
- * Display information about upgrading to the plugin version of types.
- *
- */
-function wpcf_promote_types_admin() {
-    $custom_types = get_option( 'wpcf-custom-types', array() );
-
-    ?>
-
-    <?php
-    if ( sizeof( $custom_types ) > 0 ) {
-        echo '<p>' . __( 'Types creates Custom Post Types. These are user-defined WordPress content types. On your theme the following types are defined:',
-                'wpcf' ) . "</p>\n";
-        echo "<ul style='margin-left:20px;'>\n";
-        foreach ( $custom_types as $type ) {
-            echo "<li>" . $type['labels']['name'] . "</li>\n";
-        }
-        echo "</ul>\n";
-    }
-
-    ?>
-    <p><?php
-        echo sprintf( __( 'If you want to edit these or create your own you can download the full version of <strong>Types</strong> from <a href="%s">%s</a>',
-                        'wpcf' ), 'http://wordpress.org/extend/plugins/types/',
-                'http://wordpress.org/extend/plugins/types/' );
-
-        ?></p>
-
-    <?php
-}
-
-/**
  * Actions for outside fields control.
- * 
- * @param type $action 
+ *
+ * @param type $action
  */
 function wpcf_types_cf_under_control( $action = 'add', $args = array(),
         $post_type = 'wp-types-group', $meta_name = 'wpcf-fields' ) {
@@ -214,7 +194,7 @@ function wpcf_types_cf_under_control( $action = 'add', $args = array(),
                     $field_id_name = str_replace( '_' . md5( 'wpcf_not_controlled' ), '', $field_id );
                     $field_id_add = preg_replace( '/^wpcf\-/', '', $field_id_name );
                     $adding_field_with_wpcf_prefix = $field_id_add != $field_id_name;
-                    
+
                     // Activating field that previously existed in Types
                     if ( array_key_exists( $field_id_add, $fields ) ) {
                         $fields[$field_id_add]['data']['disabled'] = 0;
@@ -277,10 +257,11 @@ function wpcf_types_cf_under_control( $action = 'add', $args = array(),
 
 /**
  * Controlls meta prefix.
- * 
+ *
  * @param array $field
  */
-function wpcf_types_get_meta_prefix( $field = array() ) {
+function wpcf_types_get_meta_prefix( $field = array() )
+{
     if ( empty( $field ) ) {
         return WPCF_META_PREFIX;
     }
@@ -295,54 +276,59 @@ function wpcf_types_get_meta_prefix( $field = array() ) {
  * @global type $wp_version
  * @param type $version
  * @param type $operator
- * @return type 
+ * @return type
  */
-function wpcf_compare_wp_version( $version = '3.2.1', $operator = '>' ) {
+function wpcf_compare_wp_version($version = '3.2.1', $operator = '>')
+{
     global $wp_version;
     return version_compare( $wp_version, $version, $operator );
 }
 
 /**
  * Gets post type with data to which belongs.
- * 
+ *
  * @param type $post_type
- * @return type 
+ * @return type
  */
-function wpcf_pr_get_belongs( $post_type ) {
+function wpcf_pr_get_belongs($post_type)
+{
     require_once WPCF_EMBEDDED_ABSPATH . '/includes/post-relationship.php';
     return wpcf_pr_admin_get_belongs( $post_type );
 }
 
 /**
  * Gets all post types and data that owns.
- * 
+ *
  * @param type $post_type
- * @return type 
+ * @return type
  */
-function wpcf_pr_get_has( $post_type ) {
+function wpcf_pr_get_has($post_type)
+{
     require_once WPCF_EMBEDDED_ABSPATH . '/includes/post-relationship.php';
     return wpcf_pr_admin_get_has( $post_type );
 }
 
 /**
  * Gets individual post ID to which queried post belongs.
- * 
+ *
  * @param type $post_id
  * @param type $post_type Post type of owner
- * @return type 
+ * @return type
  */
-function wpcf_pr_post_get_belongs( $post_id, $post_type ) {
+function wpcf_pr_post_get_belongs($post_id, $post_type)
+{
     return get_post_meta( $post_id, '_wpcf_belongs_' . $post_type . '_id', true );
 }
 
 /**
  * Gets all posts that belong to queried post, grouped by post type.
- * 
+ *
  * @param type $post_id
  * @param type $post_type
- * @return type 
+ * @return type
  */
-function wpcf_pr_post_get_has( $post_id, $post_type_q = null ) {
+function wpcf_pr_post_get_has($post_id, $post_type_q = null)
+{
     $post_type = get_post_type( $post_id );
     $has = array_keys( wpcf_pr_get_has( $post_type ) );
     $add = is_null( $post_type_q ) ? '&post_type=any' : '&post_type=' . $post_type_q;
@@ -362,7 +348,8 @@ function wpcf_pr_post_get_has( $post_id, $post_type_q = null ) {
 /**
  * Gets settings.
  */
-function wpcf_get_settings( $specific = false ) {
+function wpcf_get_settings($specific = false)
+{
     $defaults = array(
         'add_resized_images_to_library' => 0,
         'register_translations_on_import' => 1,
@@ -381,16 +368,18 @@ function wpcf_get_settings( $specific = false ) {
 /**
  * Saves settings.
  */
-function wpcf_save_settings( $settings ) {
+function wpcf_save_settings($settings)
+{
     update_option( 'wpcf_settings', $settings );
 }
 
 /**
  * Check if it can be repetitive
  * @param type $field
- * @return type 
+ * @return type
  */
-function wpcf_admin_can_be_repetitive( $type ) {
+function wpcf_admin_can_be_repetitive($type)
+{
     return !in_array( $type,
                     array('checkbox', 'checkboxes', 'wysiwyg', 'radio', 'select') );
 }
@@ -398,9 +387,10 @@ function wpcf_admin_can_be_repetitive( $type ) {
 /**
  * Check if field is repetitive
  * @param type $type
- * @return type 
+ * @return type
  */
-function wpcf_admin_is_repetitive( $field ) {
+function wpcf_admin_is_repetitive($field)
+{
     if ( !isset( $field['data']['repetitive'] ) || !isset( $field['type'] ) ) {
         return false;
     }
@@ -410,12 +400,13 @@ function wpcf_admin_is_repetitive( $field ) {
 
 /**
  * Returns unique ID.
- * 
+ *
  * @staticvar array $cache
  * @param type $cache_key
- * @return type 
+ * @return type
  */
-function wpcf_unique_id( $cache_key ) {
+function wpcf_unique_id($cache_key)
+{
     $cache_key = md5( strval( $cache_key ) . strval( time() ) . rand() );
     static $cache = array();
     if ( !isset( $cache[$cache_key] ) ) {
@@ -428,10 +419,11 @@ function wpcf_unique_id( $cache_key ) {
 
 /**
  * Determine if platform is Win
- * 
+ *
  * @return type
  */
-function wpcf_is_windows() {
+function wpcf_is_windows()
+{
     global $wpcf;
     $is_windows = PHP_OS == "WIN32" || PHP_OS == "WINNT";
     if ( isset( $wpcf->debug ) ) {
@@ -442,10 +434,11 @@ function wpcf_is_windows() {
 
 /**
  * Parses array as string
- * 
+ *
  * @param type $array
  */
-function wpcf_parse_array_to_string( $array ) {
+function wpcf_parse_array_to_string($array)
+{
     $s = '';
     foreach ( (array) $array as $param => $value ) {
         $s .= strval( $param ) . '=' . urlencode( strval( $value ) ) . '&';
@@ -455,14 +448,15 @@ function wpcf_parse_array_to_string( $array ) {
 
 /**
  * Get main post ID.
- * 
+ *
  * @param type $context
  * @return type
  */
-function wpcf_get_post_id( $context = 'group' ) {
+function wpcf_get_post_id($context = 'group')
+{
     if ( !is_admin() ) {
         /*
-         * 
+         *
          * TODO Check if frontend is fine (rendering children).
          * get_post() previously WP 3.5 requires $post_id
          */
@@ -484,40 +478,36 @@ function wpcf_get_post_id( $context = 'group' ) {
 /**
  * Basic scripts
  */
-function wpcf_enqueue_scripts() {
-
+function wpcf_enqueue_scripts()
+{
     if ( !wpcf_is_embedded() ) {
-        /*
-         * 
+        /**
          * Basic JS
          */
-        wp_enqueue_script( 'wpcf-js', WPCF_RES_RELPATH . '/js/basic.js',
-                array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs'),
-                WPCF_VERSION );
-        /*
-         * 
-         * Basic CSS
-         */
-        wp_enqueue_style( 'wpcf-css', WPCF_RES_RELPATH . '/css/basic.css',
-                array(), WPCF_VERSION );
+        wp_enqueue_script(
+            'wpcf-js',
+            WPCF_RES_RELPATH . '/js/basic.js',
+            array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs'),
+            WPCF_VERSION
+        );
     }
-    /*
-     * 
+    /**
      * Basic JS
      */
-    wp_enqueue_script( 'wpcf-js-embedded',
-            WPCF_EMBEDDED_RES_RELPATH . '/js/basic.js',
-            array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs'),
-            WPCF_VERSION );
+    wp_enqueue_script(
+        'wpcf-js-embedded',
+        WPCF_EMBEDDED_RES_RELPATH . '/js/basic.js',
+        array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs'),
+        WPCF_VERSION
+    );
     /*
-     * 
+     *
      * Basic CSS
      */
-    wp_enqueue_style( 'wpcf-css-embedded',
-            WPCF_EMBEDDED_RES_RELPATH . '/css/basic.css', array(), WPCF_VERSION );
+    wp_enqueue_style( 'wpcf-css-embedded' );
 
     /*
-     * 
+     *
      * Other components
      */
     if ( !defined( 'WPTOOLSET_FORMS_ABSPATH' ) ) {
@@ -553,11 +543,12 @@ function wpcf_enqueue_scripts() {
 
 /**
  * Load all scripts required on edit post screen.
- * 
+ *
  * @since 1.2.1
  * @todo Make loading JS more clear for all components.
  */
-function wpcf_edit_post_screen_scripts() {
+function wpcf_edit_post_screen_scripts()
+{
     wpcf_enqueue_scripts();
     wp_enqueue_script( 'wpcf-fields-post',
             WPCF_EMBEDDED_RES_RELPATH . '/js/fields-post.js', array('jquery'),
@@ -589,47 +580,50 @@ function wpcf_edit_post_screen_scripts() {
 
 /**
  * Check if running embedded version.
- * 
+ *
  * @return type
  */
-function wpcf_is_embedded() {
+function wpcf_is_embedded()
+{
     return defined( 'WPCF_RUNNING_EMBEDDED' ) && WPCF_RUNNING_EMBEDDED;
 }
 
 /**
  * Returns custom post type settings.
- * 
+ *
  * @param type $post_type
  * @return type
  */
-function wpcf_get_custom_post_type_settings( $item ) {
+function wpcf_get_custom_post_type_settings($item)
+{
     $custom = get_option( 'wpcf-custom-types', array() );
     return !empty( $custom[$item] ) ? $custom[$item] : array();
 }
 
 /**
  * Returns taxonomy settings.
- * 
+ *
  * @param type $taxonomy
  * @return type
  */
-function wpcf_get_custom_taxonomy_settings( $item ) {
+function wpcf_get_custom_taxonomy_settings($item)
+{
     $custom = get_option( 'wpcf-custom-taxonomies', array() );
     return !empty( $custom[$item] ) ? $custom[$item] : array();
 }
 
 /**
  * Load JS and CSS for field type.
- * 
+ *
  * Core function. Works and stable. Do not move or change.
  * If required, add hooks only.
- * 
+ *
  * @staticvar array $cache
  * @param string $type
- * @return string 
+ * @return string
  */
-function wpcf_field_enqueue_scripts( $type ) {
-
+function wpcf_field_enqueue_scripts($type)
+{
     global $wpcf;
     static $cache = array();
 
@@ -658,33 +652,36 @@ function wpcf_field_enqueue_scripts( $type ) {
 
 /**
  * Get file URL.
- * 
- * @uses WPCF_Path (functions taken from CRED_Loader) 
+ *
+ * @uses WPCF_Path (functions taken from CRED_Loader)
  * @param type $file
  * @return type
  */
-function wpcf_get_file_url( $file, $use_baseurl = true ) {
+function wpcf_get_file_url($file, $use_baseurl = true)
+{
     WPCF_Loader::loadClass( 'path' );
     return WPCF_Path::getFileUrl( $file, $use_baseurl );
 }
 
 /**
  * Checks if timestamp supports negative values.
- * 
+ *
  * @return type
  */
-function fields_date_timestamp_neg_supported() {
+function fields_date_timestamp_neg_supported()
+{
     return strtotime( 'Fri, 13 Dec 1950 20:45:54 UTC' ) === -601010046;
 }
 
 /**
  * Returns media size.
- * 
+ *
  * @global type $content_width
  * @param type $widescreen
  * @return type
  */
-function wpcf_media_size( $widescreen = false ) {
+function wpcf_media_size($widescreen = false)
+{
     global $content_width;
     if ( !empty( $content_width ) ) {
         $height = $widescreen ? round( $content_width * 9 / 16 ) : round( $content_width * 3 / 4 );
@@ -695,12 +692,13 @@ function wpcf_media_size( $widescreen = false ) {
 
 /**
  * Validation wrapper.
- * 
+ *
  * @param type $method
  * @param type $args
  * @return boolean
  */
-function types_validate( $method, $args ) {
+function types_validate($method, $args)
+{
     WPCF_Loader::loadClass( 'validation-cakephp' );
     if ( is_callable( array('Wpcf_Cake_Validation', $method) ) ) {
         if ( !is_array( $args ) ) {

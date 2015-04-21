@@ -53,17 +53,6 @@
             <?php
         endif;
 
-            ?>
-<script type="text/javascript">
-//<![CDATA[
-jQuery(document).ready(function(){
-    if ( 'undefined' != typeof(wptFile)) {
-        wptFile.initRow('#types-child-row-<?php echo $child_id; ?>');
-    }
-});
-//]]>
-</script>
-            <?php
         // Trigger Conditional
         // TODO Move to conditional.php
         if ( defined( 'DOING_AJAX' ) && !defined( 'WPTOOLSET_FORMS_VERSION' ) ):

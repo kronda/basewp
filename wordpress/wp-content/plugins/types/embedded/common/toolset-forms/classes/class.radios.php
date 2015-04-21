@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/classes/class.radios.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.radios.php $
+ * $LastChangedDate: 2015-02-18 14:28:53 +0000 (Wed, 18 Feb 2015) $
+ * $LastChangedRevision: 1093394 $
  * $LastChangedBy: iworks $
  *
  */
@@ -64,7 +64,15 @@ class WPToolset_Field_Radios extends FieldFactory
              */
             $options[] = $one_option_data;
         }
-        $options = apply_filters( 'wpt_field_options', $options, $this->getTitle(), 'select' );
+        /**
+         * for user fields we reset title and description to avoid double 
+         * display
+         */
+        $title = $this->getTitle();
+        if ( empty($title) ) {
+            $title = $this->getTitle(true);
+        }
+        $options = apply_filters( 'wpt_field_options', $options, $title, 'select' );
         /**
          * default_value
          */

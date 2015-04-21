@@ -59,20 +59,29 @@ if ( ! class_exists( 'SeedProd_Ultimate_Coming_Soon_Page' ) ) {
          * Display the coming soon page
          */
         function render_comingsoon_page() {
+                $seedprod_comingsoon_options = get_option('seedprod_comingsoon_options');
+
+
                 // Return if a login page
-                if(preg_match("/login/i",$_SERVER['REQUEST_URI']) > 0){
+                if(empty($seedprod_comingsoon_options['disable_default_exclude_terms'])){
+                    if(preg_match("/login|admin|dashboard|account/i",$_SERVER['REQUEST_URI']) > 0){
+                        return false;
+                    }
+                }
+
+
+                // Show feed if feedburner is in use
+                if(!empty($seedprod_comingsoon_options['comingsoon_feedburner_address']) && is_feed()){
                     return false;
                 }
 
-	            if(!is_admin()){
-	                if(!is_feed()){
-	                    if ( !is_user_logged_in() || (isset($_GET['cs_preview']) && $_GET['cs_preview'] == 'true')) {
-	                        $this->coming_soon_rendered = true;
-							$file = plugin_dir_path(__FILE__).'template/template-coming-soon.php';
-	                        include($file);
-	                    }
-	                }
-	            }
+
+                if ( !is_user_logged_in() || (isset($_GET['cs_preview']) && $_GET['cs_preview'] == 'true')) {
+                    $this->coming_soon_rendered = true;
+					$file = plugin_dir_path(__FILE__).'template/template-coming-soon.php';
+                    include($file);
+                }
+
         }
 
         /**
@@ -439,6 +448,15 @@ $seedprod_comingsoon->options[] = array( "type" => "textbox",
                 );
 
 $seedprod_comingsoon->options[] = array( "type" => "textarea",
+                "id" => "comingsoon_headerscripts",
+				"label" => __("Header Scripts", 'ultimate-coming-soon-page'),
+				"desc" => __("Enter any scripts that need to be outputted in the html head.", 'ultimate-coming-soon-page'),
+				"class" => "large-text",
+				"section_id" => "seedprod_section_coming_soon",
+				"setting_id" => "seedprod_comingsoon_options",
+				);
+
+$seedprod_comingsoon->options[] = array( "type" => "textarea",
                 "id" => "comingsoon_customhtml",
 				"label" => __("Custom HTML", 'ultimate-coming-soon-page'),
 				"desc" => __("Enter any custom html or javascript that you want outputted. You can also enter you Google Analytics code.", 'ultimate-coming-soon-page'),
@@ -446,6 +464,16 @@ $seedprod_comingsoon->options[] = array( "type" => "textarea",
 				"section_id" => "seedprod_section_coming_soon",
 				"setting_id" => "seedprod_comingsoon_options",
 				);
+
+$seedprod_comingsoon->options[] = array( "type" => "checkbox",
+                "id" => "disable_default_exclude_terms",
+                "label" => __("Disable Default Excluded URLs", 'ultimate-coming-soon-page'),
+                "desc" => sprintf(__("By default urls with the terms: login, admin, dashboard and account are excluded. Check to disbale. ", 'ultimate-coming-soon-page'),home_url()),
+                "option_values" => array('1'=>__('Yes', 'ultimate-coming-soon-page')),
+                "section_id" => "seedprod_section_coming_soon",
+                "setting_id" => "seedprod_comingsoon_options",
+                );
+
 
 $seedprod_comingsoon->options[] = array( "type" => "section",
                 "id" => "seedprod_section_style",

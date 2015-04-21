@@ -1,13 +1,13 @@
 {
   "checksum": {
-    "previous": "33da83f67be9c5797490c4baa29104c1311787053a2711571308c2562fc16af7",
-    "current": "33da83f67be9c5797490c4baa29104c1311787053a2711571308c2562fc16af7"
+    "previous": "ea0d501b723f7b75d3147cf08210b5cf2c0c279dff82e74a178b3badd9bf0318",
+    "current": "ea0d501b723f7b75d3147cf08210b5cf2c0c279dff82e74a178b3badd9bf0318"
   },
   "fonts": [
-    "fonts/onthegosystems-icons_33da83f67be9c5797490c4baa29104c1.ttf",
-    "fonts/onthegosystems-icons_33da83f67be9c5797490c4baa29104c1.svg",
-    "fonts/onthegosystems-icons_33da83f67be9c5797490c4baa29104c1.woff",
-    "fonts/onthegosystems-icons_33da83f67be9c5797490c4baa29104c1.eot"
+    "fonts/onthegosystems-icons_ea0d501b723f7b75d3147cf08210b5cf.ttf",
+    "fonts/onthegosystems-icons_ea0d501b723f7b75d3147cf08210b5cf.svg",
+    "fonts/onthegosystems-icons_ea0d501b723f7b75d3147cf08210b5cf.woff",
+    "fonts/onthegosystems-icons_ea0d501b723f7b75d3147cf08210b5cf.eot"
   ],
   "glyphs": {
     "access": {
@@ -50,6 +50,14 @@
       "codepoint": 61721,
       "source": "vectors/module-logo.svg"
     },
+    "packager": {
+      "codepoint": 61728,
+      "source": "vectors/packager.svg"
+    },
+    "packager-logo": {
+      "codepoint": 61729,
+      "source": "vectors/packager-logo.svg"
+    },
     "toolset-logo": {
       "codepoint": 61722,
       "source": "vectors/toolset-logo.svg"
@@ -72,37 +80,37 @@
     },
     "wpml-logo": {
       "codepoint": 61727,
-      "source": "vectors/wpml logo.svg"
+      "source": "vectors/wpml-logo.svg"
     }
   },
   "options": {
+    "autowidth": false,
+    "config": "fontcustom.yml",
+    "css_selector": ".icon-{{glyph}}",
+    "debug": false,
+    "file_hash": false,
+    "font_name": "onthegosystems-icons",
+    "force": false,
     "input": {
-      "vectors": "vectors",
-      "templates": "vectors"
+      "templates": "vectors",
+      "vectors": "vectors"
     },
+    "no_hash": false,
     "output": {
-      "fonts": "fonts",
       "css": "css",
+      "fonts": "fonts",
       "preview": "fonts"
     },
-    "config": "fontcustom.yml",
+    "preprocessor_path": null,
+    "project_root": {
+      "pwd": null
+    },
+    "quiet": false,
     "templates": [
       "css",
       "scss",
       "preview"
-    ],
-    "font_name": "onthegosystems-icons",
-    "css_selector": ".icon-{{glyph}}",
-    "preprocessor_path": null,
-    "autowidth": false,
-    "no_hash": false,
-    "debug": false,
-    "force": false,
-    "quiet": false,
-    "project_root": {
-      "pwd": null
-    },
-    "file_hash": false
+    ]
   },
   "templates": [
     "css/onthegosystems-icons.css",

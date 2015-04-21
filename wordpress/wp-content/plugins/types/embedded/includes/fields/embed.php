@@ -2,8 +2,8 @@
 
 /**
  * Register data (called automatically).
- * 
- * @return type 
+ *
+ * @return type
  */
 function wpcf_fields_embed() {
     return array(
@@ -17,9 +17,9 @@ function wpcf_fields_embed() {
 
 /**
  * Meta box form.
- * 
+ *
  * @param type $field
- * @return string 
+ * @return string
  */
 function wpcf_fields_embed_meta_box_form( $field ) {
     $form = array();
@@ -32,7 +32,7 @@ function wpcf_fields_embed_meta_box_form( $field ) {
 
 /**
  * View function.
- * 
+ *
  * @global type $wp_embed
  * @param type $field
  * @return string
@@ -59,10 +59,10 @@ function wpcf_fields_embed_view( $params ) {
     return $output;
 }
 
-
-
 /**
  * Editor callback form.
+ *
+ * @global object $wpdb
  */
 function wpcf_fields_embed_editor_callback( $field, $data, $meta_type, $post ) {
 
@@ -79,9 +79,12 @@ function wpcf_fields_embed_editor_callback( $field, $data, $meta_type, $post ) {
         if ( !empty( $file ) ) {
             // Get attachment by guid
             global $wpdb;
-            $attachment_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts}
-    WHERE post_type = 'attachment' AND guid=%s",
-                            $file ) );
+            $attachment_id = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'attachment' AND guid=%s",
+                    $file
+                )
+            );
         }
     }
 

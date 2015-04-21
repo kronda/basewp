@@ -1639,14 +1639,14 @@ class Toolset_Parser
                 if ($varTmp != "RAND")
                 {
                     if (count($arrArgs) < 1)
-                        throw new Exception($varTmp . " requires atleast one argument!");
+                        throw new Exception($varTmp . " requires at least one argument!");
                     else if (count($arrArgs) > 1)
                         throw new Exception($varTmp . " requires only one argument!");
                 }
                 else
                 {
                     if (count($arrArgs) < 1)
-                        throw new Exception($varTmp . " requires atleast one argument!");
+                        throw new Exception($varTmp . " requires at least one argument!");
                     else if (count($arrArgs) > 2)
                         throw new Exception($varTmp . " requires at most two arguments!");
                 }
@@ -1717,7 +1717,7 @@ class Toolset_Parser
                 break;
             case "STR" :
                 if (count($arrArgs) < 1)
-                    throw new Exception($varTmp . " requires atleast one argument!");
+                    throw new Exception($varTmp . " requires at least one argument!");
                 else if (count($arrArgs) > 2)
                     throw new Exception($varTmp . " requires at most two arguments!");
                 $varTerm = $arrArgs[count($arrArgs)-1];
@@ -1756,7 +1756,7 @@ class Toolset_Parser
                 if (count($arrArgs) > 1)
                     throw new Exception($varTmp . " requires only one argument!");
                 else if (count($arrArgs) < 1)
-                    throw new Exception($varTmp . " requires atleast one argument!");
+                    throw new Exception($varTmp . " requires at least one argument!");
                 $varTerm = $arrArgs[0];
                 if ($varTerm->isVariable)
                 {
@@ -1791,7 +1791,7 @@ class Toolset_Parser
                 break;
             case "REGEX" :
                 if (count($arrArgs) < 1)
-                    throw new Exception($varTmp . " requires atleast one argument!");
+                    throw new Exception($varTmp . " requires at least one argument!");
                 else if (count($arrArgs) > 2)
                     throw new Exception($varTmp . " requires at most two arguments!");
 
@@ -1828,7 +1828,7 @@ class Toolset_Parser
             case "UCASE" :
             case "NUM" :
                 if (count($arrArgs) < 1)
-                    throw new Exception($varTmp . " requires atleast one argument!");
+                    throw new Exception($varTmp . " requires at least one argument!");
                 else if (count($arrArgs) > 1)
                     throw new Exception($varTmp . " requires only one argument!");
 
@@ -1870,7 +1870,7 @@ class Toolset_Parser
                 break;
             case "LEN" :
                 if (count($arrArgs) < 1)
-                    throw new Exception($varTmp . " requires atleast one argument!");
+                    throw new Exception($varTmp . " requires at least one argument!");
                 else if (count($arrArgs) > 1)
                     throw new Exception($varTmp . " requires only one argument!");
 
@@ -1895,7 +1895,7 @@ class Toolset_Parser
                 break;
             case "USER" :
                 if (count($arrArgs) < 1)
-                    throw new Exception($varTmp . " requires atleast one argument!");
+                    throw new Exception($varTmp . " requires at least one argument!");
                 else if (count($arrArgs) > 1)
                     throw new Exception($varTmp . " requires only one argument!");
 
@@ -1917,7 +1917,7 @@ class Toolset_Parser
                 break;
             case "COOKIE" :
                 if (count($arrArgs) < 1)
-                    throw new Exception($varTmp . " requires atleast one argument!");
+                    throw new Exception($varTmp . " requires at least one argument!");
                 else if (count($arrArgs) > 1)
                     throw new Exception($varTmp . " requires only one argument!");
 
@@ -1939,7 +1939,7 @@ class Toolset_Parser
                 break;
             case "CONTAINS" :
                 if (count($arrArgs) < 2)
-                    throw new Exception($varTmp . " requires atleast two arguments!");
+                    throw new Exception($varTmp . " requires at least two arguments!");
                 else if (count($arrArgs) > 2)
                     throw new Exception($varTmp . " requires only two arguments!");
 
@@ -1970,7 +1970,7 @@ class Toolset_Parser
                 break;
             case "DATE" :
                 if (count($arrArgs) < 2)
-                    throw new Exception($varTmp . " requires atleast two arguments!");
+                    throw new Exception($varTmp . " requires at least two arguments!");
                 else if (count($arrArgs) > 2)
                     throw new Exception($varTmp . " requires only two arguments!");
 
@@ -2010,7 +2010,7 @@ class Toolset_Parser
             case "empty" :
             case "EMPTY" :
                 if (count($arrArgs) < 1)
-                    throw new Exception($varTmp . " requires atleast one argument!");
+                    throw new Exception($varTmp . " requires at least one argument!");
                 else if (count($arrArgs) > 1)
                     throw new Exception($varTmp . " requires only one arguments!");
 
@@ -2041,7 +2041,7 @@ class Toolset_Parser
             case "LEFT" :
             case "RIGHT" :
                 if (count($arrArgs) < 2)
-                    throw new Exception($varTmp . " requires atleast two arguments!");
+                    throw new Exception($varTmp . " requires at least two arguments!");
                 else if (count($arrArgs) > 2)
                     throw new Exception($varTmp . " requires only two arguments!");
 
@@ -2082,7 +2082,7 @@ class Toolset_Parser
             case "MID" :
             case "IIF" :
                 if (count($arrArgs) < 3)
-                    throw new Exception($varTmp . " requires atleast three arguments!");
+                    throw new Exception($varTmp . " requires at least three arguments!");
                 else if (count($arrArgs) > 3)
                     throw new Exception($varTmp . " requires only three arguments!");
 
@@ -2132,7 +2132,7 @@ class Toolset_Parser
             case "MAX" :
             case "MIN" :
                 if (count($arrArgs) < 1)
-                    throw new Exception($varTmp . " requires atleast one operand!");
+                    throw new Exception($varTmp . " requires at least one operand!");
 
                 $_arr=array();
                 $intCntr = count($arrArgs);

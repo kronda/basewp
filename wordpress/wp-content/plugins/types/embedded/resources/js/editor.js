@@ -159,6 +159,7 @@ var tedFrame = (function(window, $){
             window.parent.wpcfFieldsEditorCallback_redirect = null;
         } else {
             // Use default handler
+            
             window.parent.icl_editor.insert(shortcode);
         }
         window.parent.jQuery.colorbox.close();

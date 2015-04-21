@@ -119,12 +119,18 @@ function wpcf_fields_checkbox_insert_form( $form_data ) {
         '#name' => 'display_value_not_selected',
         '#value' => '',
         '#inline' => true,
+        '#attributes' => array(
+            'placeholder' => __('Enter not selected value', 'wpcf'),
+        ),
     );
     $form['display-value-2'] = array(
         '#type' => 'textfield',
         '#title' => __( 'Selected:', 'wpcf' ),
         '#name' => 'display_value_selected',
         '#value' => '',
+        '#attributes' => array(
+            'placeholder' => __('Enter selected value', 'wpcf'),
+        ),
     );
     $form['help'] = array(
         '#type' => 'markup',

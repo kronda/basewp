@@ -4,12 +4,12 @@
  * 
  * 
  * 
- Plugin Name: Wordpress Logger
- Plugin URI: http://www.turingtarpit.com/2009/05/wordpress-logger-a-plugin-to-display-php-log-messages-in-safari-and-firefox/
- Description: Displays log messages in the browser console in Safari, Firefox and Opera. Useful for plugin and theme developers to debug PHP code.
- Version: 0.3
- Author: Chandima Cumaranatunge
- Author URI: http://www.turingtarpit.com
+ Wordpress Logger
+ http://www.turingtarpit.com/2009/05/wordpress-logger-a-plugin-to-display-php-log-messages-in-safari-and-firefox/
+ Displays log messages in the browser console in Safari, Firefox and Opera. Useful for plugin and theme developers to debug PHP code.
+ 0.3
+ Chandima Cumaranatunge
+ http://www.turingtarpit.com
  
 	 This program is free software; you can redistribute it and/or modify
 	 it under the terms of the GNU General Public License as published by

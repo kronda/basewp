@@ -195,6 +195,29 @@ class Wpcf_Cake_Validation
         return $return;
     }
 
+    function skype( $check ) {
+        $_this = &Wpcf_Cake_Validation::getInstance();
+        $_this->__reset();
+        $_this->check = $check;
+
+        if ( is_array( $check ) ) {
+            $_this->_extract( $check );
+        }
+
+        if ( empty( $_this->check ) && $_this->check != '0' ) {
+            return false;
+        }
+        $_this->regex = '/^[a-zA-Z0-9\s\-\_]*$/mu';
+        $return = $_this->_check();
+
+        if ( !$return ) {
+            $_this->regex = '/^[\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{Nd}\s\-\_]+$/mu';
+            $return = $_this->_check();
+        }
+
+        return $return;
+    }
+
     /**
      * Checks that a string length is within s specified range.
      * Spaces are included in the character count.

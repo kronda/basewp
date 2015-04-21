@@ -28,10 +28,6 @@ $data = array_merge( array(
 			<label for="date-calendar"><?php _e( 'Show as calendar ', 'wpcf' ); ?></label>
 		</li>
 		<li>
-			<input id="date-human-time-diff" type="radio" name="style" value="human-time-diff" data-bind="checked: date_mode, click: dateStyling" />
-			<label for="date-human-time-diff"><?php _e( 'Show as human time diff ', 'wpcf' ); ?></label>
-		</li>
-		<li>
 			<input id="date-text" type="radio" name="style" value="text" data-bind="checked: date_mode, click: dateStyling" />
 			<label for="date-text"><?php _e( 'Show as text', 'wpcf' ); ?></label>
 

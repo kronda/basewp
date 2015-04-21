@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/includes/fields/skype.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/includes/fields/skype.php $
+ * $LastChangedDate: 2015-02-18 14:28:53 +0000 (Wed, 18 Feb 2015) $
+ * $LastChangedRevision: 1093394 $
  * $LastChangedBy: iworks $
  *
  */
@@ -18,7 +18,12 @@ function wpcf_fields_skype() {
         'id' => 'wpcf-skype',
         'title' => __( 'Skype', 'wpcf' ),
         'description' => __( 'Skype', 'wpcf' ),
-        'validate' => array('required'),
+        'validate' => array(
+            'required',
+            'skype',
+            'maxlength' => array('value' => 32),
+            'minlength' => array('value' => 6)
+        ),
     );
 }
 

@@ -8,8 +8,9 @@ class WPCF_Relationship_Model
 
     /**
      * Fetch children by post type.
-     * 
-     * @global type $wpdb
+     *
+     * @global object $wpdb
+     *
      * @param type $post
      * @param type $post_type
      * @param string $data
@@ -17,8 +18,9 @@ class WPCF_Relationship_Model
      * @param array $user_query - Override default query
      * @return type
      */
-    public static function getChildrenByPostType( $post, $post_type, $data,
-            $params = array(), $user_query = array() ) {
+    public static function getChildrenByPostType( $post, $post_type, $data, $params = array(), $user_query = array() )
+    {
+
         if ( empty( $post->ID ) ) {
             return array();
         }
@@ -28,15 +30,16 @@ class WPCF_Relationship_Model
         $items = array();
 
         // Merge with user query
-        $query = wp_parse_args( $user_query,
-                array(
-            'post_type' => $post_type,
-            'numberposts' => -1,
-            'post_status' => array('publish', 'pending', 'draft', 'future', 'private'),
-            'meta_key' => '_wpcf_belongs_' . $post->post_type . '_id',
-            'meta_value' => $post->ID,
-            'suppress_filters' => 0,
-                )
+        $query = wp_parse_args(
+            $user_query,
+            array(
+                'post_type' => $post_type,
+                'numberposts' => -1,
+                'post_status' => array('publish', 'pending', 'draft', 'future', 'private'),
+                'meta_key' => '_wpcf_belongs_' . $post->post_type . '_id',
+                'meta_value' => $post->ID,
+                'suppress_filters' => 0,
+            )
         );
 
         // Cleanup data
@@ -49,9 +52,12 @@ class WPCF_Relationship_Model
 
             // Set sorting
             $query['order'] = esc_attr( strtoupper( strval( $params['sort'] ) ) );
+            if ( !preg_match('/^(A|DE)SC$/', $query['order']) ) {
+                $query['order'] = 'ASC';
+            }
 
             /*
-             * 
+             *
              * Order by title
              */
             if ( $params['field'] == '_wp_title' ) {
@@ -61,7 +67,7 @@ class WPCF_Relationship_Model
                         esc_attr( $params['field'] ) );
                 $items = get_posts( $query );
                 /*
-                 * 
+                 *
                  * Order by parents
                  */
             } else if ( $params['field'] == '_wpcf_pr_parent' ) {
@@ -98,7 +104,7 @@ class WPCF_Relationship_Model
                     }
                 }
                 /*
-                 * 
+                 *
                  * Order by body
                  */
             } else if ( $params['field'] == '_wp_body' ) {
@@ -107,9 +113,8 @@ class WPCF_Relationship_Model
                     FROM $wpdb->posts p
                     WHERE p.post_type = %s
                     AND p.post_status NOT IN ('auto-draft', 'trash', 'inherit')
-                    ORDER BY p.post_content " . $query['order'];
-                $sorted = $wpdb->get_results( $wpdb->prepare( $_query,
-                                $post_type ) );
+                    ORDER BY p.post_content " . ( ( 'ASC' == $query['order'] ) ? 'ASC' : 'DESC' );
+                $sorted = $wpdb->get_results( $wpdb->prepare( $_query, $post_type ) );
                 if ( !empty( $sorted ) ) {
                     $query['orderby'] = 'post__in';
                     foreach ( $sorted as $key => $value ) {
@@ -121,8 +126,8 @@ class WPCF_Relationship_Model
                         esc_attr( $params['field'] ) );
                 $items = get_posts( $query );
                 /*
-                 * 
-                 * 
+                 *
+                 *
                  * Order by custom field
                  */
             } else {
@@ -175,18 +180,15 @@ class WPCF_Relationship_Model
                     }
                 }
             }
-            /*
-             * 
-             * 
+            /**
+             *
              * Regular
+             *
              */
         } else {
-            $query = apply_filters( 'wpcf_relationship_get_children_query',
-                    $query, $post, $post_type, $data );
+            $query = apply_filters( 'wpcf_relationship_get_children_query', $query, $post, $post_type, $data );
             $items = get_posts( $query );
         }
-
         return $items;
     }
-
 }

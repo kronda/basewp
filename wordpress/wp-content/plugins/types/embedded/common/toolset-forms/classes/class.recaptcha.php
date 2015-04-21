@@ -43,7 +43,7 @@ class WPToolset_Field_Recaptcha extends WPToolset_Field_Textfield
 	$capture = '';
         if ($this->pubkey || !is_admin()) {
             try {
-                $capture = recaptcha_get_html($this->pubkey);
+                $capture = recaptcha_get_html($this->pubkey,null,is_ssl());
             } catch(Exception $e ) {
                 //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/188424989/comments
                 if ( current_user_can( 'manage_options' ) ) {

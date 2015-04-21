@@ -11,19 +11,23 @@ if( !class_exists( 'Editor_addon_generic' ) )
         define( 'EDITOR_ADDON_RELPATH', icl_get_file_relpath( __FILE__ ) );
     }
 
-    add_action( 'admin_print_styles', 'add_menu_css' );
+    add_action( 'admin_enqueue_scripts', 'icl_editor_admin_enqueue_styles' );
 	
-	if( !function_exists('add_menu_css') )
-	{
-		function add_menu_css() {
+	if ( ! function_exists( 'icl_editor_admin_enqueue_styles' ) ) {
+		function icl_editor_admin_enqueue_styles() {
 	        global $pagenow;
-
-	        if ( $pagenow == 'post.php' ||
-					$pagenow == 'post-new.php' || 
-					( $pagenow == 'admin.php' && ( isset( $_GET['page'] ) &&
-												  ( $_GET['page'] == 'views-editor' ||
-												    $_GET['page'] == 'view-archives-editor' ||
-													$_GET['page'] == 'dd_layouts_edit') ) ) // add the new Views edit screens
+	        if ( 
+				$pagenow == 'post.php'
+				|| $pagenow == 'post-new.php'
+				|| (
+					$pagenow == 'admin.php'
+					&& isset( $_GET['page'] )
+					&& (
+						$_GET['page'] == 'views-editor'
+						|| $_GET['page'] == 'view-archives-editor'
+						|| $_GET['page'] == 'dd_layouts_edit'
+					) 
+				) // add the new Views edit screens
 	        ) {
 	            wp_enqueue_style( 'editor_addon_menu',
 	                    EDITOR_ADDON_RELPATH . '/res/css/pro_dropdown_2.css' );
@@ -34,8 +38,47 @@ if( !class_exists( 'Editor_addon_generic' ) )
 	}
     
 
-    if ( is_admin() ) {
-        add_action( 'admin_print_scripts', 'editor_add_js' );
+    add_action( 'admin_enqueue_scripts', 'icl_editor_admin_enqueue_scripts' );
+	
+	if ( ! function_exists( 'icl_editor_admin_enqueue_scripts' ) ) {
+        function icl_editor_admin_enqueue_scripts() {
+            global $pagenow;
+			if ( 
+				$pagenow == 'post.php'
+				|| $pagenow == 'post-new.php'
+				|| ( 
+					$pagenow == 'admin.php' 
+					&& isset( $_GET['page'] )
+					&& (
+						$_GET['page'] == 'views-editor'
+						|| $_GET['page'] == 'view-archives-editor'
+						|| $_GET['page'] == 'dd_layouts_edit'
+					) 
+				)
+            ) {
+				wp_register_script( 'icl_editor-script', EDITOR_ADDON_RELPATH . '/res/js/icl_editor_addon_plugin.js', array( 'jquery', 'quicktags', 'wplink' ) );
+                wp_enqueue_script( 'icl_editor-script' );
+            }
+			if (
+				$pagenow == 'admin.php' 
+				&& isset( $_GET['page'] )
+				&& (
+					$_GET['page'] == 'views-editor'
+					|| $_GET['page'] == 'view-archives-editor'
+					|| $_GET['page'] == 'dd_layouts_edit' 
+				)
+				&& !wp_script_is( 'views-redesign-media-manager-js', 'enqueued' )
+			) {
+				$media_manager_translations = array(
+					'only_img_allowed_here' => __( "You can only use an image file here", 'wpv-views' )
+				);
+				wp_enqueue_media();
+				wp_enqueue_script( 'icl_media-manager-js',
+						EDITOR_ADDON_RELPATH . '/res/js/icl_media_manager.js',
+						array( 'jquery', 'icl_editor-script' ) );
+				wp_localize_script( 'icl_media-manager-js', 'icl_media_manager', $media_manager_translations );
+			}
+        }
     }
     
     class Editor_addon_generic

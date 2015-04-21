@@ -3,7 +3,7 @@
  * Libraries
  * - CakePHP library for PHP validation
  * - jQuery Validation plugin for JS validation
- * 
+ *
  * Flow
  * - Hooks to form filtering to collect data
  * - Filters data-wpt-validation (adds array of rules) to form element
@@ -15,7 +15,7 @@
 
 /**
  * Class description
- * 
+ *
  * @author Srdjan
  */
 class WPToolset_Forms_Validation
@@ -50,7 +50,7 @@ class WPToolset_Forms_Validation
                 array($this, 'filterFormField'), 10, 2 );
         // Render classes
         add_action('wptoolset_field_class', array($this, 'actionFieldClass') );
-        
+
         // Render settings
         add_action( 'admin_print_footer_scripts', array($this, 'renderJsonData'), 30 );
         add_action( 'wp_footer', array($this, 'renderJsonData'), 30 );
@@ -60,7 +60,7 @@ class WPToolset_Forms_Validation
 
     /**
      * Adjusts validation data for JS processing (data-wpt-validate HTML attribute)
-     * 
+     *
      * @param type $rules
      * @return type
      */
@@ -91,11 +91,11 @@ class WPToolset_Forms_Validation
 
     /**
      * Form PHP validation.
-     * 
+     *
      * Called from Form_Factory or save_post hook.
      * Form Factory should check if element has 'error' property (WP_Error)
      * and use WP_Error::get_error_message() to display error message
-     * 
+     *
      * @param type $element
      * @param type $value
      * @return type
@@ -126,26 +126,26 @@ class WPToolset_Forms_Validation
 
     /**
      * Bulk PHP validation.
-     * 
+     *
      * @param type $field Field class instance
      * @param type $value
      * @return \WP_Error|boolean
      * @throws Exception
      */
-    public function validateField( $field ) {        
-        $value = apply_filters( 'wptoolset_validation_value_' . $field->getType(),
-                $field->getValue() );
+    public function validateField( $field ) {
+        $value = apply_filters( 'wptoolset_validation_value_' . $field->getType(), $field->getValue() );
         $rules = $this->_parseRules( $field->getValidationData(), $value );
         // If not required but empty - skip
         if ( !isset( $rules['required'] )
                 && ( is_null( $value ) || $value === false || $value === '' ) ) {
             return true;
         }
+
         try {
-            $errors = array();            
+            $errors = array();
             foreach ( $rules as $rule => $args ) {
                 if ( !$this->validate( $rule, $args['args'] ) ) {
-                    $errors[] = $field->getTitle() .  ' ' . $args['message'];                    
+                    $errors[] = $field->getTitle() .  ' ' . $args['message'];
                 }
             }
             if ( !empty( $errors ) ) {
@@ -157,7 +157,7 @@ class WPToolset_Forms_Validation
         }
         return true;
     }
-    
+
     protected function _parseRules( $rules, $value ) {
         $_rules = array();
         foreach ( $rules as $rule => $args ) {
@@ -178,9 +178,9 @@ class WPToolset_Forms_Validation
 
     /**
      * Single rule PHP validation.
-     * 
+     *
      * Accepts e.g. validate('maxlength', array($value, '15'))
-     * 
+     *
      * @param type $method
      * @param type $args
      * @return boolean
@@ -188,6 +188,11 @@ class WPToolset_Forms_Validation
     public function validate( $rule, $args ) {
         $validator = $this->_cake();
         $rule = $this->_map_rule_js_to_php( $rule );
+
+        if ( 'skype' == $rule ) {
+            return $validator->custom($args[0]['skypename'], '/^([a-zA-Z0-9\,\.\-\_]+)$/');
+        }
+
         if ( is_callable( array($validator, $rule) ) ) {
             return call_user_func_array( array($validator, $rule), $args );
         }
@@ -196,7 +201,7 @@ class WPToolset_Forms_Validation
 
     /**
      * Loads CakePHP Validation class.
-     * 
+     *
      * @return type
      */
     protected function _cake() {
@@ -209,7 +214,7 @@ class WPToolset_Forms_Validation
 
     /**
      * Maps rules between JS and PHP.
-     * 
+     *
      * @param type $rule
      * @return type
      */
@@ -221,10 +226,9 @@ class WPToolset_Forms_Validation
      * Renders JSON data.
      */
     public function renderJsonData() {
-        echo '<script type="text/javascript">wptValidationForms.push("#'
-            . $this->__formID . '");</script>';
+        printf('<script type="text/javascript">wptValidationForms.push("#%s");</script>', $this->__formID);
     }
-    
+
     public function actionFieldClass( $config ) {
         if ( !empty( $config['validation'] ) ) {
             foreach ($config['validation'] as $rule => $data) {

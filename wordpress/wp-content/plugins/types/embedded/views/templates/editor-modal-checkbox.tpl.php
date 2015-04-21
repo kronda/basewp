@@ -34,11 +34,11 @@ $data = array_merge( array(
 			<div id="cb-states" class="group-nested" data-bind="visible: cb_mode() == 'value'">
 				<p>
 					<label for="cb-sel" class="input-title"><?php _e( 'Selected:', 'wpcf' ); ?></label>
-					<input id="cb-sel" type="text" name="selected" value="<?php echo $data['selected']; ?>" />
+					<input id="cb-sel" type="text" name="selected" value="<?php echo $data['selected']; ?>"placeholder="<?php _e('Enter selected value', 'wpcf'); ?>" />
 				</p>
 				<p>
 					<label for="cb-not-sel" class="input-title"><?php _e( 'Not selected:', 'wpcf' ); ?></label>
-					<input id="cb-not-sel" type="text" name="not_selected" value="<?php echo $data['not_selected']; ?>" />
+                    <input id="cb-not-sel" type="text" name="not_selected" value="<?php echo $data['not_selected']; ?>" placeholder="<?php _e('Enter not selected value', 'wpcf'); ?>" />
 				</p>
 			</div>
 

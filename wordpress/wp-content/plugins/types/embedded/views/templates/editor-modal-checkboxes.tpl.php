@@ -42,11 +42,11 @@ $data = array_merge( array(
 							<h3><?php echo $cb[ 'title' ]; ?></h3>
 							<p>
 								<label for="cbs-sel-<?php echo $key ?>" class="input-title"><?php _e( 'Selected:', 'wpcf' ); ?></label>
-								<input id="cbs-sel-<?php echo $key ?>" type="text" name="options[<?php echo $cb[ 'id' ]; ?>][selected]" value="<?php echo $cb[ 'selected' ]; ?>" />
+								<input id="cbs-sel-<?php echo $key ?>" type="text" name="options[<?php echo $cb[ 'id' ]; ?>][selected]" value="<?php echo $cb[ 'selected' ]; ?>" placeholder="<?php _e('Enter selected value', 'wpcf'); ?>" />
 							</p>
 							<p>
 								<label for="cbs-not-sel-<?php echo $key ?>" class="input-title"><?php _e( 'Not selected:', 'wpcf' ); ?></label>
-								<input id="cbs-not-sel-<?php echo $key ?>" type="text" name="options[<?php echo $cb[ 'id' ]; ?>][not_selected]" value="<?php echo $cb[ 'not_selected' ]; ?>" />
+								<input id="cbs-not-sel-<?php echo $key ?>" type="text" name="options[<?php echo $cb[ 'id' ]; ?>][not_selected]" value="<?php echo $cb[ 'not_selected' ]; ?>" placeholder="<?php _e('Enter not selected value', 'wpcf'); ?>" />
 							</p>
 						</div>
 					<?php endforeach; ?>

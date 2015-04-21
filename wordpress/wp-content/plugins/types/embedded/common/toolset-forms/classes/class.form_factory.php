@@ -10,9 +10,9 @@ define( "CLASS_NAME_PREFIX", "WPToolset_Field_" );
  * Creation Form Class
  * @author onTheGo System
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/classes/class.form_factory.php $
- * $LastChangedDate: 2014-10-23 10:33:39 +0000 (Thu, 23 Oct 2014) $
- * $LastChangedRevision: 1012677 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.form_factory.php $
+ * $LastChangedDate: 2015-04-01 14:15:17 +0000 (Wed, 01 Apr 2015) $
+ * $LastChangedRevision: 1125405 $
  * $LastChangedBy: iworks $
  *
  *
@@ -37,8 +37,12 @@ class FormFactory extends FormAbstract
 
         wp_register_script( 'wptoolset-forms',
             WPTOOLSET_FORMS_RELPATH . '/js/main.js',
-            array('jquery', 'underscore'), WPTOOLSET_FORMS_VERSION, false );
+            array('jquery', 'underscore', 'suggest'), WPTOOLSET_FORMS_VERSION, false );
         wp_enqueue_script( 'wptoolset-forms' );
+		$wptoolset_forms_localization = array(
+			'ajaxurl' => admin_url( 'admin-ajax.php', null )
+		);
+		wp_localize_script( 'wptoolset-forms', 'wptoolset_forms_local', $wptoolset_forms_localization );
 
         if ( is_admin() ) {
             wp_register_style( 'wptoolset-forms-admin',
@@ -189,10 +193,17 @@ class FormFactory extends FormAbstract
         if ( empty( $value ) ) $value = array(null);
         elseif ( !is_array( $value ) ) $value = array($value);
         $count = 0;
-        foreach ( $value as $val ) {
+               
+        //Fix if i get skype i receive skype i have 2 elements array in $value !!
+        if ($config['type']=='skype') {
+            if (isset($value['style'])) unset($value['style']);
+            if (isset($value['button_style'])) unset($value['button_style']);
+        }
+        
+        foreach ( $value as $val ) {            
             if ( !empty( $config['repetitive'] ) ) {
                 $_gnf = $_cfg['name'] = "{$global_name_field}[{$count}]";
-            }
+            }     
             //CHECKGEN			
             if ( isset($_cfg['validation']) && 
                  is_array($_cfg['validation'])  && 
@@ -200,7 +211,7 @@ class FormFactory extends FormAbstract
                  !is_admin() && $_SERVER['REQUEST_METHOD'] == 'POST' &&
                  isset( $_GET['_tt'] ) && 
                  !isset( $_GET['_success'] ) && 
-                 !isset( $_GET['_success_message'] )  ) 
+                 !isset( $_GET['_success_message'] )  )
             {
                 $_cfg['validate'] = 1;	
             }
@@ -224,22 +235,24 @@ class FormFactory extends FormAbstract
                 }
                 $this->form[$global_name_field] = $form;
                 $this->field_count++;
-                $htmlArray[] = $this->theForm->renderElements( $form );
+                $htmlArray[] = $this->theForm->renderElements( $form );                
                 if ( empty( $config['repetitive'] ) ) break;
                 $count++;
             } else {
                 if ( current_user_can('manage_options') ) {
                     $htmlArray[] = sprintf(
                         '<div id="message" class="error"><p>%s</p><p>%s</p></div>',
+                        //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/196628627/comments#310360880
+                        //changed render to rendering
                         sprintf(
-                            __('There is a problem with render <strong>%s (%s)</strong> field.', 'wpv-views'),
+                            __('There is a problem rendering field <strong>%s (%s)</strong>.', 'wpv-views'),
                             $_cfg['title'],
                             $_cfg['type']
                         ),
                         $field->get_error_message()
                     );
                 }
-            }
+            }            
         }
         if ( !empty( $htmlArray ) && isset($config['repetitive']) && $config['repetitive'] ) {
             $_gnf = $_cfg['name'] = "{$global_name_field}[%%{$count}%%]";
@@ -378,7 +391,7 @@ class FormFactory extends FormAbstract
                 {
                     $mess = $field->getTitle().' Field is required';
                     return new WP_Error( 'wptoolset_forms', $mess,
-                                array($field->getTitle().' Field is required') );;
+                                array($field->getTitle().' Field is required') );
                 }
             }     
         }

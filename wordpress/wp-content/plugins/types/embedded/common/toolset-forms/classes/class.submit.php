@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/classes/class.submit.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.submit.php $
+ * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
+ * $LastChangedRevision: 1120400 $
  * $LastChangedBy: iworks $
  *
  */
@@ -22,7 +22,7 @@ class WPToolset_Field_Submit extends WPToolset_Field_Textfield
             '#title' => $this->getTitle(),
             '#description' => $this->getDescription(),
             '#name' => $this->getName(),
-            '#value' => $this->getValue(),
+            '#value' => esc_attr(__($this->getValue(), 'wpv-views')),
             '#validate' => $this->getValidationData(),
             '#attributes' => array(
                 'class' => '',

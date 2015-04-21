@@ -173,6 +173,8 @@ var typesPostScreen = (function($){
                     $this.bind('blur', previewWarningShow);
                 }
             });
+            $('.js-wpt-repadd,.js-wpt-repdelete,.js-wpt-date-clear').on('click', previewWarningShow);
+            $('.js-wpt-repdrag').on('mouseup', previewWarningShow);
         });
     }
     function previewWarning(header, content) {

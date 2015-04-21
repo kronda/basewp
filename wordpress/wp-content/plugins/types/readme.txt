@@ -4,8 +4,8 @@ Donate link: http://wp-types.com
 Tags: CMS, custom field, custom fields, custom post type, custom post types, post, post type, post types, cck, taxonomy, fields
 License: GPLv2
 Requires at least: 3.4
-Tested up to: 4.0
-Stable tag: 1.6.4
+Tested up to: 4.1.1
+Stable tag: 1.6.6.2
 
 The complete and reliable plugin for managing custom post types, custom taxonomy and custom fields.
 
@@ -143,16 +143,73 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 
 == Screenshots ==
 
-1. Defining custom post types and taxonomy
-2. Defining custom fields (meta-groups)
-3. Editing custom fields
-4. Inserting custom fields to content
-5. Bulk editing child content using Field Tables
+1. Custom post types list
+2. Defining custom taxonomy list
+3. Defining custom post type
+4. Defining custom fields (meta-groups)
+5. Editing custom fields
+6. Inserting custom fields to content
+7. Bulk editing child content using Field Tables
+8. Edit Custom Post Type
+9. Edit Taxonomy
 
 == Changelog ==
 
+= 1.6.6.2 =
+
+* Release date: 2015-04-10
+* Fixed problem with File Field which do not work when edited from the Parent Post Type. https://wp-types.com/forums/topic/1-6-6-seems-to-break-child-fields-when-parent-has-an-image-field/
+
+= 1.6.6.1 =
+
+* Release date: 2015-04-03
+* Fixed problem with archive page for custom post type.
+
+= 1.6.6 =
+
+* Release date: 2015-04-02
+* Fixed problem with shortcode "playlist" used in WYSIWYG field.  http://wp-types.com/forums/topic/media-play-list-not-outputting-from-custom-wysiwyg-field-js-error/
+* Fixed empty title problem for filter "wpt_field_options" on user edit/add screen https://wp-types.com/forums/topic/populate-select-field-in-wpcf-um-group/
+* Added ability to create CPT without title and editor. https://wp-types.com/forums/topic/inaccurate-warning-message-when-creatingediting-a-cpt/
+* Added Skype field validation.
+* Fixed problem with loading custom CSS when user meta group is inactive or not assign to certain user role.
+* Added ability to add to menu link to archive of post type.
+* Added ability to setup meta box callback function. https://wp-types.com/forums/topic/add-support-for-meta_box_cb-in-custom-taxonomy/
+* Added ability to add HTML5 placeholder attribute for custom post fields.
+* Fixed problem with CPT labels.  https://wp-types.com/forums/topic/after-save-cpts-cutom-labels-always-revert-to-default-label/
+* Added a filters to the post title as option text in the select dropdown for post parents. wpcf_pr_belongs_items for array of options and wpcf_pr_belongs_item for one option. https://wp-types.com/forums/topic/help-to-distinguish-duplicate-titles-in-post-relationship/
+* Added ability to choose custom fields to display it on custom posts admin list.
+* Fixed problem with saving parent data into child data. On parent edit screen.
+* Added check group name for Custom Fields and User Fields.
+* Fixed missing "Edit" button on group edit screen when we close custom logic form.
+
+= 1.6.5.1 =
+
+* Release date: 2015-02-24
+* Fixed Installer patch to plugins.
+* Fixed problem with "Access Control and User Roles" menu in Types, when Access is active http://wp-types.com/forums/topic/update-issues-fatal-error-require_once-failed-opening-required-wpcf_access_/
+* Changed utm_media used in links on "Getting Started" pages.
+
+= 1.6.5 =
+
+* Release date: 2015-02-10
+* Change in relationships, now all posts are showed, even those which have show_ui to false.
+* Added ability to hide custom post types on post relationships list. https://wp-types.com/forums/topic/post-relationship-doesnt-show-post-type-events-created-by-events-espresso/ using filter add_filter('wpcf_show_ui_hide_in_relationships', '__return_false');
+* Fixed a problem with deleting last children on post relationships table.
+* Added filter to allow use "?" in image url. https://wp-types.com/forums/topic/image-custom-field-is-not-storing-image-path-with-parameters/
+* Added option for child table, when editing parent to allow show only list of children instead edit form. http://wp-types.com/forums/topic/miss-settings-for-post-relationship-child-options/
+* Fixed a problem with slug in custom fields, when field have special chars.
+* Fixed wrong display message about custom fields not manageable by Types.
+* Fixed a conflict with Formidable-Pro plugin https://wp-types.com/forums/topic/plugin-conflict/
+* Fixed creating new post in relationships. WP 4.1 need real title not faked by one space.
+* Fixed problem with validate fields on user create page. http://wp-types.com/forums/topic/custom-usermeta-bypassed-even-required-is-set/
+* Improve Edit CPT and Edit CT screens to be more compatible with WP Admin UI
+* Fixed problem with default label which contains single quote character (eg. French) https://wp-types.com/forums/topic/default-label-always-shown/
+* Improve display list of custom fields groups.
+
 = 1.6.4 =
 
+* Release date: 2014-11-17
 * Fixed an issue with dependency between custom taxonomy and custom posts when importing data from the "Custom Post Type UI" plugin.
 * Fixed an issue with editing checkboxes with the option "save 0 to the database" selected, created for Custom Posts. http://wp-types.com/forums/topic/checkbox-custom-field-doesnt-save-value-since-upgrade-to-version-1-6-2/ http://wp-types.com/forums/topic/types-checkbox-field-not-saving-after-save-0-to-the-database/
 * Fixed an issue with PHP notices being thrown when relative URLs to images were used. http://wp-types.com/forums/topic/php-notice-undefined-index-host-in-image-php/
@@ -165,7 +222,7 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 * Fixed embedding OTGS CSS for the admin area. https://wordpress.org/support/topic/four-stylesheets-being-loaded-at-frontend
 * Fixed a problem with Checkbox field value not being saved. https://wp-types.com/forums/topic/checkbox-value-not-saved/
 * Added the option to select posts with the "Private" post status as parents in a parent-child Custom Post Types relationships. http://wp-types.com/forums/topic/cred-child-form-not-working-with-private-ctp/
-* Fixed a problem with the date-picker.  https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/191190651/comments
+* Fixed a problem with the date-picker. https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/191190651/comments
 * Fixed a problem with label menu in wp-admin for child posts.
 * Fixed a problem with child table when edit parent post and children do not have title.
 * Prevent to chose repetitive field in child table on edit parent screen. http://wp-types.com/forums/topic/wp-types-select-child-fields-to-be-displayed-specific-fields-not-working/
@@ -175,31 +232,27 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 
 = 1.6.3 =
 
+* Release date: 2014-10-23
 * Added the message to ask users to answer a short survey for feedback on their work using the Types plugin.
-
 * Fixed a problem where the custom field group’s description was missing from the post/page editing page. http://wp-types.com/forums/topic/custom-field-group-descriptions-no-longer-visible-in-cpt-add-newedit-screen/
-
 * Fixed a problem where the field descriptions weren’t displayed on the user profile editing page. http://wp-types.com/forums/topic/checkbox-description-fields-no-longer-display-in-types-1-6-2/
-
 * Fixed a problem where users weren’t able to untick the single and multiple checkbox fields on the user profile editing page.
-
 * Fixed a problem where the value of date field couldn’t be cleared and added new button which clears the date field value. http://wp-types.com/forums/topic/problem-2-after-update/
-
 * Replaced the deprecated like_escape function with the wpdb::esc_like function.
-
 * Fixed a problem where the parent-child relations between custom post types persisted after deleting and re-creating a custom post type.
-
 * Fixed a problem where date picker scripts were being enqueued in the front end. https://wordpress.org/support/topic/datepicker-css-enqueued-on-public
 
 
 = 1.6.2 =
 
+* Release date: 2014-08-29
 * Fix addslashes warning
 * Fix display problems with Types shortcodes
 * Fix PHP error for checkboxes
 
 = 1.6.1 =
 
+* Release date: 2014-08-22
 * Fix Formfactory::createForm and Formfactory::displayForm errors on some systems
 * Fix anonymous function problem with wysiwyg field
 * Fix datepicker.css so it only styles the datepicker popup
@@ -207,9 +260,10 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 
 = 1.6 =
 
+* Release date: 2014-08-22
 * Added ability to add extra options by filter *wpt_field_options* to fields with "options".
 * Added ability to create custom post type with the same singular and plural name.
-* Added ability to select menu icon for custom post type.
+* Added ability to select menu icon (WordPress dashicon) for custom post type.
 * Added delete attached repetitive files.
 * Added filter "wpcf_pr_belongs_post_status" that allows to change post_status for parent/child posts.
 * Added sanitization for uploaded file names, to remove non-latin1 characters.

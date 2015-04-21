@@ -4,9 +4,9 @@
  * Edit post page functions
  *
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/includes/fields-post.php $
- * $LastChangedDate: 2014-10-29 15:57:36 +0000 (Wed, 29 Oct 2014) $
- * $LastChangedRevision: 1016002 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/includes/fields-post.php $
+ * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
+ * $LastChangedRevision: 1120400 $
  * $LastChangedBy: iworks $
  *
  * Core file with stable and working functions.
@@ -521,7 +521,7 @@ function wpcf_admin_post_meta_box( $post, $group, $echo = '', $open_style_editor
                 $field['type'] = 'wysiwyg';
                 $group_output .= '</div>';
                 $group_output .= isset( $field['#after'] ) ? $field['#after'] : '';
-                $group_output .= '</div><br /><br />';
+                $group_output .= '</div>';
             } else {
                 if (
                     array_key_exists( '#type', $field )
@@ -1515,9 +1515,8 @@ function wpcf_admin_post_process_field( $field_object ) {
  * @param type $post_ID
  * @return type
  */
-function wpcf_admin_post_get_post_groups_fields( $post = false,
-        $context = 'group' ) {
-
+function wpcf_admin_post_get_post_groups_fields( $post = false, $context = 'group' )
+{
     // Get post_type
     /*
      *
@@ -1533,8 +1532,7 @@ function wpcf_admin_post_get_post_groups_fields( $post = false,
     } else {
         if ( !isset( $_GET['post_type'] ) ) {
             $post_type = 'post';
-        } else if ( in_array( $_GET['post_type'],
-                        get_post_types( array('show_ui' => true) ) ) ) {
+        } else if ( in_array( $_GET['post_type'], get_post_types( array('show_ui' => true) ) ) ) {
             $post_type = $_GET['post_type'];
         } else {
             $post_type = 'post';
@@ -1568,10 +1566,8 @@ function wpcf_admin_post_get_post_groups_fields( $post = false,
         $post->_wpcf_post_template = false;
         $post->_wpcf_post_views_template = false;
     } else {
-        $post->_wpcf_post_template = get_post_meta( $post->ID,
-                '_wp_page_template', true );
-        $post->_wpcf_post_views_template = get_post_meta( $post->ID,
-                '_views_template', true );
+        $post->_wpcf_post_template = get_post_meta( $post->ID, '_wp_page_template', true );
+        $post->_wpcf_post_views_template = get_post_meta( $post->ID, '_views_template', true );
     }
 
     if ( empty( $post->_wpcf_post_terms ) ) {
@@ -1855,7 +1851,7 @@ function wpcf_admin_post_marketing_meta_box() {
         $output .= '<p><a href="' . admin_url( 'edit.php?post_type=view' ) . '">' . __( 'Create <strong>Views</strong> for content lists &raquo;',
                         'wpcf' ) . '</a></p>';
     } else {
-        $output .= '<p><strong>' . sprintf( __( "%sViews%s let's you build complete websites without coding.",
+        $output .= '<p><strong>' . sprintf( __( "%sViews%s lets you build complete websites without coding.",
                                 'wpcf' ),
                         '<a href="http://wp-types.com/home/views-create-elegant-displays-for-your-content/?utm_source=typesplugin&utm_medium=postedit&utm_term=views&utm_content=promobox&utm_campaign=types" title="Views" target="_blank">',
                         '</a>' )

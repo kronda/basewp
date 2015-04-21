@@ -649,10 +649,12 @@ class Types_Image_Utils
         $upload_dir = self::uploadInfo();
         if ( $upload_dir ) {
             $parsed = parse_url( $imgUrl );
+            if ( !isset($upload_dir['baseurl'] ) ) {
+                return false;
+            }
             $upload_dir_parsed = parse_url( $upload_dir['baseurl'] );
             // This works for regular installation and main blog on multisite
-            if ( (!is_multisite() || is_main_site()) && strpos( $parsed['path'],
-                            $upload_dir_parsed['path'] ) === 0 ) {
+            if ( (!is_multisite() || is_main_site()) && strpos( $parsed['path'], $upload_dir_parsed['path'] ) === 0 ) {
                 return true;
                 // Check Multisite
             } else if ( is_multisite() && !is_main_site() ) {

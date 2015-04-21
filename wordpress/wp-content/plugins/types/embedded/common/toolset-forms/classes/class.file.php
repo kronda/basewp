@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/classes/class.file.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.file.php $
+ * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
+ * $LastChangedRevision: 1120400 $
  * $LastChangedBy: iworks $
  *
  */
@@ -22,38 +22,55 @@ class WPToolset_Field_File extends WPToolset_Field_Textfield
 
     public function init() {
         WPToolset_Field_File::file_enqueue_scripts();
+        $this->set_placeholder_as_attribute();
     }
 
-    public static function file_enqueue_scripts() {
-        wp_register_script( 'wptoolset-field-file',
-                WPTOOLSET_FORMS_RELPATH . '/js/file.js', array('jquery'),
-                WPTOOLSET_FORMS_VERSION, true );
-        
+    public static function file_enqueue_scripts(){
+        wp_register_script(
+            'wptoolset-field-file',
+            WPTOOLSET_FORMS_RELPATH . '/js/file-wp35.js',
+            array('jquery', 'jquery-masonry'),
+            WPTOOLSET_FORMS_VERSION,
+            true
+        );
+
         if ( !wp_script_is( 'wptoolset-field-file', 'enqueued' ) ) {
-			wp_enqueue_script( 'wptoolset-field-file' );
-			add_thickbox();
+            wp_enqueue_script( 'wptoolset-field-file' );
+            wp_enqueue_media();
+
+//			add_thickbox();
 			global $post;
 			$for_post = (!empty( $post->ID ) ? 'post_id=' . $post->ID . '&' : '');
-			$js_data = array('title' => esc_js( __( 'Select file', 'wpv-views' ) ), 'for_post' => $for_post, 'adminurl' => admin_url());
+			$js_data = array('title' => esc_js( __( 'Select', 'wpv-views' ) )." File", 'for_post' => $for_post, 'adminurl' => admin_url());
 			wp_localize_script( 'wptoolset-field-file', 'wptFileData', $js_data );
 		}
 	}
 
     public function enqueueStyles() {
-        
+
     }
 
+    /**
+     *
+     * @global object $wpdb
+     *
+     */
     public function metaform() {
         $value = $this->getValue();
 		$type = $this->getType();
 		$translated_type = '';
         $form = array();
         $preview = '';
-        
+
         // Get attachment by guid
         if ( !empty( $value ) ) {
             global $wpdb;
-            $attachment_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'attachment' AND guid=%s", $value ) );
+            $attachment_id = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT ID FROM {$wpdb->posts} WHERE post_type = 'attachment' AND guid=%s",
+                    $value
+                )
+            );
         }
 
         // Set preview
@@ -102,6 +119,7 @@ class WPToolset_Field_File extends WPToolset_Field_Textfield
             '#suffix' => '&nbsp;' . $button,
             '#validate' => $this->getValidationData(),
             '#repetitive' => $this->isRepetitive(),
+            '#attributes' => $this->getAttr(),
         );
 
         $form[] = array(
@@ -128,10 +146,10 @@ class WPToolset_Field_File extends WPToolset_Field_Textfield
 
     /**
      * Adds column to media item table.
-     * 
+     *
      * @param type $form_fields
      * @param type $post
-     * @return type 
+     * @return type
      */
     public static function attachmentFieldsToEditFilter( $form_fields, $post ) {
         // Reset form
@@ -152,9 +170,9 @@ class WPToolset_Field_File extends WPToolset_Field_Textfield
 
     /**
      * Filters media TABs.
-     * 
+     *
      * @param type $tabs
-     * @return type 
+     * @return type
      */
     public static function mediaUploadTabsFilter( $tabs ) {
         unset( $tabs['type_url'] );

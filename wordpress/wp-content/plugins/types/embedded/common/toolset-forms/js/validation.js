@@ -7,9 +7,9 @@
  *
  * @see class WPToolset_Validation
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/js/validation.js $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/js/validation.js $
+ * $LastChangedDate: 2015-04-01 14:15:17 +0000 (Wed, 01 Apr 2015) $
+ * $LastChangedRevision: 1125405 $
  * $LastChangedBy: iworks $
  *
  */
@@ -24,18 +24,33 @@ var wptValidation = (function($) {
         $.validator.addMethod("extension", function(value, element, param) {
             param = typeof param === "string" ? param.replace(/,/g, "|") : param;
             return this.optional(element) || value.match(new RegExp(".(" + param + ")$", "i"));
-        });      
-        
+        });
+
+        /**
+         * add hexadecimal to validator method
+         */
+        $.validator.addMethod("hexadecimal", function(value, element, param) {
+            return value=="" || /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(value);
+        });
+
+        /**
+         * add skype to validator method
+         */
+        $.validator.addMethod("skype", function(value, element, param) {
+            return value=="" || /^([a-z0-9\.\_\,\-\#]+)$/i.test(value);
+        });
+
         /**
          * add extension to validator method require
          */
-        $.validator.addMethod("required", function(value, element, param) {                                     
+        $.validator.addMethod("required", function(value, element, param) {
                 // check if dependency is met
                 if ( !this.depend(param, element) )
                         return "dependency-mismatch";
+
                 switch( element.nodeName.toLowerCase() ) {
-                case 'select':                        
-                        var val = $(element).val();                      
+                case 'select':
+                        var val = $(element).val();
                         //Fix https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/189231348/comments
                         // we have data-types-value that in select contains the exactly value
                         $(element).find('option').each(function(index, option){
@@ -48,13 +63,25 @@ var wptValidation = (function($) {
                         //#########################################################################
                         return val && $.trim(val).length > 0;
                 case 'input':
+//                        if (jQuery(element).hasClass("hasDatepicker")) {
+//                            element = jQuery(element).siblings( 'input[type="hidden"]' );
+//                            value = element.val();
+//                            element = element[0];
+//                            console.log(value+" -> "+this.getLength(value, element));
+//                            return this.getLength(value, element) > 0;
+//                        }
+
+                        if (jQuery(element).hasClass("hasDatepicker")) {
+                            return false;
+                        }
+
                         if ( this.checkable(element) )
                                 return this.getLength(value, element) > 0;
                 default:
                         return $.trim(value).length > 0;
                 }
         });
-        
+
         /**
          * Add validation method for datepicker adodb_xxx format for date fields
          */
@@ -144,7 +171,7 @@ var wptValidation = (function($) {
                     var _rule = {messages: {}};
                     _rule[rule] = value.args;
                     if (value.message !== 'undefined') {
-                        _rule.messages[rule] = value.message;                        
+                        _rule.messages[rule] = value.message;
                     }
                     element.rules('add', _rule);
                     element.addClass('js-wpt-validate');

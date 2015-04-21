@@ -8,30 +8,30 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
 
     /**
      * Field order
-     * 
-     * @var type 
+     *
+     * @var type
      */
     var $order;
 
     /**
      * Indexing
-     * 
+     *
      * Set counts when processing fields.
-     * 
-     * @var type 
+     *
+     * @var type
      */
     var $index = 0;
 
     /**
      * Field title
-     * @var type 
+     * @var type
      */
     var $title = '';
 
     /**
      * Field description.
-     * 
-     * @var type 
+     *
+     * @var type
      */
     var $description = '';
 
@@ -45,9 +45,9 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
 
     /**
      * Calls parent set func.
-     * 
+     *
      * @param type $post
-     * @param type $field 
+     * @param type $field
      */
     function set( $user_id, $field ) {
         parent::set( $user_id, $field );
@@ -56,12 +56,12 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
 
     /**
      * Save fields
-     * 
+     *
      * If $data empty, $_POST will be checked
-     * 
+     *
      * @global type $wpcf
      * @param type $data
-     * @return boolean 
+     * @return boolean
      */
     function save( $data = null ) {
 
@@ -83,7 +83,7 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
             foreach ( $data as $meta_value ) {
 
                 /*
-                 * 
+                 *
                  * Deprecated!
                  */
                 if ( is_array( $meta_value ) && isset( $meta_value['new_value'] ) ) {
@@ -123,8 +123,8 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
 
     /**
      * Fetch and sort fields.
-     * 
-     * @global type $wpdb 
+     *
+     * @global object $wpdb
      */
     function _get_meta() {
         global $wpdb;
@@ -132,7 +132,7 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
         $cache_key = md5( 'usermetarepeater::_get_meta' . $this->currentUID . $this->slug );
         $cache_group = 'types_cache';
         $cached_object = wp_cache_get( $cache_key, $cache_group );
-        
+
         if ( $this->use_cache ) {
 			if ( false != $cached_object && is_array( $cached_object ) ) {
 				return $cached_object;
@@ -146,10 +146,10 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
         $ordered = array();
         $this->order = get_user_meta( $this->currentUID, $this->order_meta_name,
                 true );
-		
+
 		$cache_key_userfield = md5( 'usermeta::_get_meta' . $this->currentUID . $this->slug );
         $cached_object_userfield = wp_cache_get( $cache_key_userfield, $cache_group );
-        
+
         if ( $this->use_cache ) {
 			if ( false != $cached_object_userfield && is_array( $cached_object_userfield ) ) {// WordPress cache
 				$r = $cached_object_userfield;
@@ -221,8 +221,8 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
     }
 
     /**
-     * Sets repetitive field form. 
-     * 
+     * Sets repetitive field form.
+     *
      * @todo Make more distinction between $field_form and $form_field
      */
     function get_fields_form( $is_profile = '' ) {
@@ -273,8 +273,8 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
 
         // Set style
         /*
-         * 
-         * 
+         *
+         *
          * Hide if field not passed check
          * TODO Move this to WPCF_Conditional
          */
@@ -286,17 +286,17 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
         $css_cd = !$show ? 'display:none;' : '';
 
         /**
-         * 
-         * 
-         * 
-         * 
+         *
+         *
+         *
+         *
          * Set title and description
          * TODO See if can be improved getting main element
-         * 
+         *
          * Get first element and extract details
          * Pass emty string as value to avoid using meta as array
          */
-        // 
+        //
         $_c = array_values( parent::_get_meta_form( '' ) );
         array_shift( $_c );
         $_main_element = array_shift( $_c );
@@ -319,8 +319,8 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
         );
 
         /*
-         * 
-         * 
+         *
+         *
          * Start wrapper
          */
         $form[$unique_id . '_repetitive_wrapper_open'] = array(
@@ -334,12 +334,12 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
 
         // Set hidden mark field
         /*
-         * 
-         * 
-         * 
+         *
+         *
+         *
          * This actually marks field as repetitive
          * IMPORTANT!!! IF NOT marked field won't be saved at all!
-         * 
+         *
          * @see wpcf_admin_post_save_post_hook()
          */
         $form[$form_id . '_hidden_mark'] = array(
@@ -406,9 +406,9 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
 
     /**
      * Sete repetitive form for single field.
-     * 
+     *
      * @param type $meta
-     * @return string 
+     * @return string
      */
     function get_field_form( $meta_value = null, $meta_id = null ) {
 
@@ -435,7 +435,7 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
         $field_form = parent::_get_meta_form( $meta_value, $meta_id, false );
 
         /*
-         * 
+         *
          * Apply filters to each form element.
          * Here we add specific properties
          * e.g. Skype alters fields.
@@ -444,7 +444,7 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
         foreach ( $field_form as $k => $field ) {
 
             /*
-             * 
+             *
              * IMPORTANT
              * We change name to hold array
              */
@@ -534,7 +534,7 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
     }
 
     /**
-     * Set counting elements. 
+     * Set counting elements.
      */
     function _set_form_count() {
         if ( $this->index === 0 ) {
@@ -547,8 +547,11 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
 
     /**
      * Deletes meta.
-     * 
-     * @param type $meta_key 
+     *
+     * @global object $wpdb
+     *
+     * @param type $meta_key
+     *
      */
     function delete( $meta_id ) {
         global $wpdb;

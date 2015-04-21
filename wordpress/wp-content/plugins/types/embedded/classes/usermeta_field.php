@@ -1,7 +1,5 @@
 <?php
 /*
- * 
- * 
  * Usermeta Field class extends Field.
  */
 
@@ -13,16 +11,16 @@ class WPCF_Usermeta_Field extends WPCF_Field
 
     /**
      * Set current post and field.
-     * 
+     *
      * @param type $post
-     * @param type $cf 
+     * @param type $cf
      */
     function set( $user_id, $cf ) {
 
         global $wpcf;
 
         /*
-         * 
+         *
          * Check if $cf is string
          */
         if ( is_string( $cf ) ) {
@@ -63,9 +61,9 @@ class WPCF_Usermeta_Field extends WPCF_Field
 
     /**
      * Save usermeta field.
-     * 
-     * 
-     * @param type $value 
+     *
+     *
+     * @param type $value
      */
     function usermeta_save( $value = null ) {
 
@@ -74,8 +72,8 @@ class WPCF_Usermeta_Field extends WPCF_Field
             $value = $this->get_submitted_data();
         }
         /*
-         * 
-         * 
+         *
+         *
          * Since Types 1.2
          * We completely rewrite meta.
          * It has no impact on frontend and covers a lot of cases
@@ -105,17 +103,17 @@ class WPCF_Usermeta_Field extends WPCF_Field
 
     /**
      * Fetch and sort fields.
-     * 
-     * 
+     *
+     * @global object $wpdb
+     *
      */
     function _get_meta() {
         global $wpdb;
 
-
         $cache_key = md5( 'usermeta::_get_meta' . $this->currentUID . $this->slug );
         $cache_group = 'types_cache';
         $cached_object = wp_cache_get( $cache_key, $cache_group );
-        
+
         if ( $this->use_cache ) {
 			if ( false != $cached_object && is_array( $cached_object ) && isset( $cached_object[0] ) ) {// WordPress cache
 				$r = $cached_object[0];
@@ -173,7 +171,7 @@ class WPCF_Usermeta_Field extends WPCF_Field
         $this->__meta = $meta;
 
         /*
-         * 
+         *
          * Apply filters
          * !!! IMPORTANT !!!
          * TODO Make this only place where field meta value is filtered

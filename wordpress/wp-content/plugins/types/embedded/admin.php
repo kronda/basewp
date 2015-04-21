@@ -1,10 +1,10 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/admin.php $
- * $LastChangedDate: 2014-08-22 01:02:43 +0000 (Fri, 22 Aug 2014) $
- * $LastChangedRevision: 970205 $
- * $LastChangedBy: brucepearson $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/admin.php $
+ * $LastChangedDate: 2015-04-01 14:15:17 +0000 (Wed, 01 Apr 2015) $
+ * $LastChangedRevision: 1125405 $
+ * $LastChangedBy: iworks $
  *
  */
 require_once(WPCF_EMBEDDED_ABSPATH . '/common/visual-editor/editor-addon.class.php');
@@ -52,11 +52,8 @@ function wpcf_embedded_admin_init_hook() {
         require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields/file.php';
         // Add types button
         add_filter( 'attachment_fields_to_edit', 'wpcf_fields_file_attachment_fields_to_edit_filter', PHP_INT_MAX, 2 );
-        // Add JS
-        add_action( 'admin_head', 'wpcf_fields_file_media_admin_head' );
         // Filter media TABs
-        add_filter( 'media_upload_tabs',
-                'wpcf_fields_file_media_upload_tabs_filter' );
+        add_filter( 'media_upload_tabs', 'wpcf_fields_file_media_upload_tabs_filter' );
     }
 
     register_post_type( 'wp-types-group',
@@ -157,14 +154,15 @@ function wpcf_admin_fields_postfields_styles(){
 
 //    $groups = wpcf_admin_fields_get_groups();
     $groups = wpcf_admin_post_get_post_groups_fields( wpcf_admin_get_edited_post() );
-    echo '<style type="text/css">';
+
     if ( !empty( $groups ) ) {
+		echo '<style type="text/css">';
         foreach ( $groups as $group ) {
             echo str_replace( "}", "}\n",
                     wpcf_admin_get_groups_admin_styles_by_group( $group['id'] ) );
         }
+		echo '</style>';
     }
-    echo '</style>';
 }
 
 /**
@@ -185,42 +183,6 @@ function wpcf_form( $id, $form = array() ) {
     $new_form->autoHandle( $id, $form );
     $wpcf_forms[$id] = $new_form;
     return $wpcf_forms[$id];
-}
-
-/**
- * Add submit button, cancel button and help link to the popup.
- *
- */
-function wpcf_form_popup_helper( $form, $submit_text = '', $cancel_text = '',
-        $help = array() ) {
-    if ( $submit_text ) {
-        $form['submit'] = array(
-            '#type' => 'submit',
-            '#name' => 'submit',
-            '#value' => $submit_text,
-            '#attributes' => array('class' => 'button-primary'),
-        );
-    }
-    if ( $cancel_text ) {
-        $form['cancel'] = array(
-            '#type' => 'button',
-            '#name' => 'cancel',
-            '#value' => $cancel_text,
-            '#attributes' => array('class' => 'button-secondary',
-                'onclick' => 'window.parent.jQuery(\'#TB_closeWindowButton\').click();return true;'),
-            '#before' => ' ',
-        );
-    }
-    if ( $help ) {
-        $form = array_reverse( $form, true );
-        $form['help'] = array(
-            '#type' => 'markup',
-            '#markup' => '<a class="wpcf-help-link" href="' . $help['url'] . '" target="_blank">' . $help['text'] . '</a>',
-        );
-        $form = array_reverse( $form, true );
-    }
-
-    return $form;
 }
 
 /**
@@ -329,16 +291,17 @@ function wpcf_admin_validation_messages( $method = false, $sprintf = '' ) {
         'date' => __( 'Please enter a valid date', 'wpcf' ),
         'digits' => __( 'Please enter numeric data', 'wpcf' ),
         'number' => __( 'Please enter numeric data', 'wpcf' ),
-        'alphanumeric' => __( 'Letters, numbers, spaces or underscores only please',
-                'wpcf' ),
-        'nospecialchars' => __( 'Letters, numbers, spaces, underscores and dashes only please',
-                'wpcf' ),
-        'rewriteslug' => __( 'Letters, numbers, slashes, underscores and dashes only please',
-                'wpcf' ),
-        'negativeTimestamp' => __( 'Please enter a date after 1 January 1970.',
-                'wpcf' ),
-        'maxlength' => sprintf( __( 'Maximum of %s characters exceeded.', 'wpcf' ),
-                strval( $sprintf ) ),
+        'alphanumeric' => __( 'Letters, numbers, spaces or underscores only please', 'wpcf' ),
+        'nospecialchars' => __( 'Letters, numbers, spaces, underscores and dashes only please', 'wpcf' ),
+        'rewriteslug' => __( 'Letters, numbers, slashes, underscores and dashes only please', 'wpcf' ),
+        'negativeTimestamp' => __( 'Please enter a date after 1 January 1970.', 'wpcf' ),
+        'maxlength' => sprintf( __( 'Maximum of %s characters exceeded.', 'wpcf' ), strval( $sprintf ) ),
+        'minlength' => sprintf( __( 'Minimum of %s characters exceeded.', 'wpcf' ), strval( $sprintf ) ),
+        /**
+         * see 
+         * https://support.skype.com/en/faq/FA10858/what-is-a-skype-name-and-how-do-i-find-mine
+         */
+        'skype' => __( 'Letters, numbers, dashes, underscores, commas and periods only please.', 'wpcf' ),
     );
     if ( $method ) {
         return isset( $messages[$method] ) ? $messages[$method] : '';
@@ -387,8 +350,20 @@ function wpcf_show_admin_messages() {
  * @param type $class
  * @return type 
  */
-function wpcf_admin_message_store( $message, $class = 'updated',
-        $keep_id = false ) {
+function wpcf_admin_message_store( $message, $class = 'updated', $keep_id = false )
+{
+    /**
+     * Allow to store or note
+     *
+     * Filter allow to turn off storing messages in Types
+     *
+     * @since 1.6.6
+     *
+     * @param boolean $var default value is true to show messages
+     */
+    if (!apply_filters('wpcf_admin_message_store', true) ) {
+        return;
+    }
     $messages = get_option( 'wpcf-messages', array() );
     $messages[get_current_user_id()][md5( $message )] = array(
         'message' => $message,

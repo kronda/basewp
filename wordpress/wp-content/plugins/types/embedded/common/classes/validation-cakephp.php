@@ -754,6 +754,17 @@ if (!class_exists('Wpcf_Cake_Validation')) {
         function integer($check) {
             return is_int(intval($check));
         }
+        
+        /**
+         * Checks if a value is valid hexadecimal.
+         *
+         * @param string $check Value to check
+         * @return boolean Succcess
+         * @access public
+         */
+        function hexadecimal($check) {
+            return preg_match('/^#[a-f0-9]{6}$/i', $check);
+        }
 
         /**
          * Check that a value is a valid phone number.

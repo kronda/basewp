@@ -2,9 +2,9 @@
 /**
  * Types fields specific
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/classes/class.types.php $
- * $LastChangedDate: 2014-10-23 10:33:39 +0000 (Thu, 23 Oct 2014) $
- * $LastChangedRevision: 1012677 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.types.php $
+ * $LastChangedDate: 2015-03-02 10:49:00 +0000 (Mon, 02 Mar 2015) $
+ * $LastChangedRevision: 1103173 $
  * $LastChangedBy: iworks $
  *
  */
@@ -68,6 +68,7 @@ class WPToolset_Types
          *
          * Main settings that are returned.
          */
+
         $_field = array(
             'id' => $prefix . $field['id'] . $suffix, // Used as main ID (raw date wpt-id), used to connect conditional relations
             'meta_key' => $prefix . $field['id'], // Used by Types (meta key of field saved to DB)
@@ -82,6 +83,7 @@ class WPToolset_Types
             'repetitive' => self::isRepetitive( $field ), // Is repetitive?
             'validation' => self::filterValidation( $field ), // Validation settings
             'conditional' => self::filterConditional( $field, $post_id, $_post_wpcf ), // Conditional settings
+            'placeholder' => isset($field['data']) && isset($field['data']['placeholder'])? $field['data']['placeholder']:null, // HTML5 placeholder
         );
 
         /* Specific field settings
@@ -140,6 +142,7 @@ class WPToolset_Types
         if ( $field['type'] == 'radio' ) {
             $_field['type'] = 'radios';
         }
+
         return $cache[$cache_key] = $_field;
     }
 

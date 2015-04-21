@@ -2,7 +2,7 @@
  *
  * Custom Types form JS
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/resources/js/custom-types-form.js $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/resources/js/custom-types-form.js $
  * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
  * $LastChangedRevision: 1027712 $
  * $LastChangedBy: iworks $

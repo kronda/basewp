@@ -502,23 +502,6 @@ function __wpcf_fields_date_check_leftover( $value, $field, $use_cache = true ) 
                     && $meta['minute'] != adodb_date( 'i', $meta['timestamp'] ) ) ) {
 
                 $value = wpcf_fields_date_calculate_time( $meta );
-
-                /*
-                 * 
-                 * If enabling clearing old values here,
-                 * pay attention if field is repetitive.
-                 * 
-                 * For now - old data is cleared on date save.
-                 * wpcf_fields_date_value_save_filter()
-                 */
-
-                // Update meta
-//                    $success = update_post_meta( $post_id, $field_slug, $value );
-                // Remove additional meta
-//                    if ( $success ) {
-//                        delete_post_meta( $post_id,
-//                                '_wpcf_' . $field_id . '_hour_and_minute' );
-//                    }
             }
         }
     }

@@ -1,9 +1,9 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/toolset-forms/classes/class.textfield.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.textfield.php $
+ * $LastChangedDate: 2015-03-02 10:49:00 +0000 (Mon, 02 Mar 2015) $
+ * $LastChangedRevision: 1103173 $
  * $LastChangedBy: iworks $
  *
  */
@@ -22,8 +22,6 @@ class WPToolset_Field_Textfield extends FieldFactory
 {
     public function metaform()
     {
-        $attributes =  $this->getAttr();
-
         $metaform = array();
         $metaform[] = array(
             '#type' => 'textfield',
@@ -33,7 +31,7 @@ class WPToolset_Field_Textfield extends FieldFactory
             '#value' => $this->getValue(),
             '#validate' => $this->getValidationData(),
             '#repetitive' => $this->isRepetitive(),
-            '#attributes' => $attributes,
+            '#attributes' => $this->getAttr(),
             'wpml_action' => $this->getWPMLAction(),
         );
         return $metaform;

@@ -2,9 +2,9 @@
 /*
  * Custom Fields Control Screen
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/includes/usermeta-control.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/includes/usermeta-control.php $
+ * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
+ * $LastChangedRevision: 1120400 $
  * $LastChangedBy: iworks $
  *
  */
@@ -14,6 +14,9 @@
 class WPCF_User_Fields_Control_Table extends WP_List_Table
 {
 
+    /**
+     * @global object $wpdb
+     */
     function prepare_items() {
         global $wpdb;
         $wpcf_per_page = 15;
@@ -109,10 +112,14 @@ class WPCF_User_Fields_Control_Table extends WP_List_Table
             $sorted_keys = array();
             $new_array = array();
             foreach ($cf_types as $cf_id_temp => $cf_temp) {
-                $sorted_keys[$cf_temp['id']] = strtolower( $cf_temp[$sort_matches[$_REQUEST['orderby']]] );
+                if ( isset($sort_matches[$_REQUEST['orderby']] ) ) {
+                    $sorted_keys[$cf_temp['id']] = strtolower( $cf_temp[$sort_matches[$_REQUEST['orderby']]] );
+                } else {
+                    $sorted_keys[$cf_temp['id']] = strtolower( $cf_temp[$sort_matches['c']] );
+                }
             }
             asort($sorted_keys, SORT_STRING);
-            if ($_REQUEST['order'] == 'desc') {
+            if ('desc' == $_REQUEST['order']) {
                 $sorted_keys = array_reverse($sorted_keys, true);
             }
             foreach ($sorted_keys as $cf_id_temp => $groups_txt) {
@@ -125,8 +132,7 @@ class WPCF_User_Fields_Control_Table extends WP_List_Table
         if (!empty($_REQUEST['s'])) {
             $search_results = array();
             foreach ($cf_types as $search_id => $search_field) {
-                if (strpos(strval($search_field['name']),
-                                strval(trim(stripslashes($_REQUEST['s'])))) !== false) {
+                if (strpos(strval($search_field['name']), strval(trim(stripslashes($_REQUEST['s'])))) !== false) {
                     $search_results[$search_id] = $cf_types[$search_id];
                 }
             }
@@ -233,14 +239,28 @@ class WPCF_User_Fields_Control_Table extends WP_List_Table
         return $actions;
     }
 
-    function view_switcher($current_mode = '') {
-        echo '<div style="clear:both; margin: 20px 0 10px 0; float: right;"><a class="button button-secondary" href="';
+    function view_switcher($current_mode = '')
+    {
+        $display = 0;
+        $text = __('Show pagination', 'wpcf');
         if (empty($_GET['display_all'])) {
-            echo esc_url($_SERVER['REQUEST_URI']) . '&amp;display_all=1">' . __('Display all items', 'wpcf');
-        } else {
-            echo esc_url($_SERVER['REQUEST_URI']) . '&amp;display_all=0">' . __('Show pagination', 'wpcf');
+            $display = 1;
+            $text = __('Display all items', 'wpcf');
         }
-        echo '</a></div>';
+        $url = add_query_arg(
+            array(
+                'page' => 'wpcf-user-fields-control',
+                'display_all' => $display,
+            ),
+            admin_url('admin.php')
+        );
+        echo '<div style="clear:both; margin: 20px 0 10px 0; float: right;">';
+        printf(
+            '<a class="button button-secondary" href="%s">%s</a>',
+            $url,
+            $text
+        );
+        echo '</div>';
     }
 
 }
@@ -249,16 +269,23 @@ class WPCF_User_Fields_Control_Table extends WP_List_Table
 /**
  * Submitted Bulk actions.
  */
-function wpcf_admin_user_fields_control_bulk_actions($action = '') {
+function wpcf_admin_user_fields_control_bulk_actions($action = '')
+{
+    if (
+        !isset($_POST['_wpnonce'])
+        || !wp_verify_nonce($_POST['_wpnonce'], 'user_fields_control_bulk')
+    ) {
+        return;
+    }
 
     if ($action == 'wpcf-deactivate-bulk') {
 
         $fields = wpcf_admin_fields_get_fields(false, true, false, 'wpcf-usermeta');
         foreach ($_POST['fields'] as $field_id) {
+			$field_id = sanitize_text_field( $field_id );
             if (isset($fields[$field_id])) {
                 $fields[$field_id]['data']['disabled'] = 1;
-                wpcf_admin_message_store(sprintf(__('Removed from Types control: %s',
-                                        'wpcf'), $fields[$field_id]['name']));
+                wpcf_admin_message_store(sprintf(__('Removed from Types control: %s', 'wpcf'), $fields[$field_id]['name']));
             }
         }
         wpcf_admin_fields_save_fields($fields, false, 'wpcf-usermeta');
@@ -266,13 +293,12 @@ function wpcf_admin_user_fields_control_bulk_actions($action = '') {
 
         $fields = wpcf_admin_fields_get_fields(false, true, false, 'wpcf-usermeta');
         $fields_bulk = wpcf_types_cf_under_control('add',
-                array('fields' => $_POST['fields']), 'wp-types-user-group', 'wpcf-usermeta');
+            array('fields' => $_POST['fields']), 'wp-types-user-group', 'wpcf-usermeta');
         foreach ($fields_bulk as $field_id) {
             if (isset($fields[$field_id])) {
                 $fields[$field_id]['data']['disabled'] = 0;
             }
-            wpcf_admin_message_store(sprintf(__('Added to Types control: %s',
-                                    'wpcf'), $field_id));
+            wpcf_admin_message_store(sprintf(__('Added to Types control: %s', 'wpcf'), $field_id));
         }
         wpcf_admin_fields_save_fields($fields, false, 'wpcf-usermeta');
     } else if ($action == 'wpcf-delete-bulk') {
@@ -280,24 +306,36 @@ function wpcf_admin_user_fields_control_bulk_actions($action = '') {
         $failed = array();
         $success = array();
         foreach ($_POST['fields'] as $field_id) {
+			$field_id = sanitize_text_field( $field_id );
             $response = wpcf_admin_fields_delete_field($field_id, 'wp-types-user-group', 'wpcf-usermeta');
             if (!$response) {
-                $failed[] = str_replace('_' . md5('wpcf_not_controlled'), '',
-                        $field_id);
+                $failed[] = str_replace('_' . md5('wpcf_not_controlled'), '', $field_id);
             } else {
                 $success[] = $field_id;
             }
         }
         if (!empty($success)) {
-            wpcf_admin_message_store(sprintf(__('Fields %s have been deleted.',
-                                    'wpcf'), implode(', ', $success)));
+            wpcf_admin_message_store(sprintf(__('Fields %s have been deleted.', 'wpcf'), implode(', ', $success)));
         }
         if (!empty($failed)) {
-            wpcf_admin_message_store(sprintf(__('Fields %s are not Types fields. Types wont delete these fields.',
-                                    'wpcf'), implode(', ', $failed)));
+            wpcf_admin_message_store(
+                sprintf(
+                    __('Fields %s are not Types fields. Types wont delete these fields.', 'wpcf'),
+                    implode(', ', $failed)
+                ),
+                'error'
+            );
         }
     }
-    wp_redirect($_SERVER['REQUEST_URI']);
+
+    $url = add_query_arg(
+        array(
+            'page' => 'wpcf-user-fields-control',
+            'display_all' => isset($_REQUEST['display_all'])? 1:0,
+        ),
+        admin_url('admin.php')
+    );
+    wp_redirect($url);
     die();
 }
 
@@ -358,8 +396,9 @@ function wpcf_admin_user_fields_control_bulk_ajax() {
     }
     if (!empty($_POST)) {
         if (!empty($_POST['groups']) && !empty($_POST['fields'])) {
-            $action = isset($_POST['wpcf_action_control']) ? $_POST['wpcf_action_control'] : 'wpcf-add-to-group-bulk';
+            $action = isset($_POST['wpcf_action_control']) ? sanitize_text_field( $_POST['wpcf_action_control'] ) : 'wpcf-add-to-group-bulk';
             foreach ($_POST['groups'] as $group_id) {
+				$group_id = sanitize_text_field( $group_id );
                 switch ($action) {
                     case 'wpcf-add-to-group-bulk':
                         wpcf_admin_fields_save_group_fields($group_id,
@@ -377,7 +416,7 @@ function wpcf_admin_user_fields_control_bulk_ajax() {
             }
         } else if (!empty($_POST['type']) && !empty($_POST['fields'])) {
             wpcf_admin_custom_fields_change_type($_POST['fields'],
-                    $_POST['type'], 'wp-types-user-group', 'wpcf-usermeta');
+                    sanitize_text_field( $_POST['type'] ), 'wp-types-user-group', 'wpcf-usermeta');
         }
         echo '<script type="text/javascript">
             window.parent.jQuery("#TB_closeWindowButton").click();
@@ -409,6 +448,7 @@ function wpcf_admin_user_fields_control_bulk_ajax() {
     }
 
     foreach ($_GET['fields'] as $field_id) {
+		$field_id = sanitize_text_field( $field_id );
         $output[$field_id] = array(
             '#type' => 'hidden',
             '#name' => 'fields[]',

@@ -2,14 +2,12 @@
 /*
  * Post relationship code.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/includes/post-relationship.php $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/includes/post-relationship.php $
+ * $LastChangedDate: 2015-04-01 14:15:17 +0000 (Wed, 01 Apr 2015) $
+ * $LastChangedRevision: 1125405 $
  * $LastChangedBy: iworks $
  *
  */
-require_once WPCF_EMBEDDED_INC_ABSPATH . '/editor-support/post-relationship-editor-support.php';
-
 add_action( 'wpcf_admin_post_init', 'wpcf_pr_admin_post_init_action', 10, 4 );
 add_action( 'save_post', 'wpcf_pr_admin_save_post_hook', 20, 2 ); // Trigger afer main hook
 
@@ -139,7 +137,6 @@ function wpcf_pr_admin_post_meta_box( $post, $args )
             _e( 'You will be able to manage child posts after saving this post.', 'wpcf' );
         } else {
             _e( 'You will be able to add parent posts after saving this post.', 'wpcf' );
-//            add_action( 'admin_footer', 'wpcf_admin_notice_post_locked_no_parent');
         }
     }
 }
@@ -200,7 +197,7 @@ function wpcf_admin_notice_post_locked_no_parent() {
  */
 function wpcf_pr_admin_post_meta_box_output( $post, $args )
 {
-    if ( empty( $post->ID ) ) {
+    if ( empty($post) || empty( $post->ID ) ) {
         return array();
     }
 
@@ -210,12 +207,17 @@ function wpcf_pr_admin_post_meta_box_output( $post, $args )
     $relationships = $args;
     $post_id = !empty( $post->ID ) ? $post->ID : -1;
     $current_post_type = wpcf_admin_get_edited_post_type( $post );
+
     /*
      * Render has form (child form)
      */
     if ( !empty( $relationships['has'] ) ) {
         foreach ( $relationships['has'] as $post_type => $data ) {
-            $output .= $wpcf->relationship->child_meta_form( $post, $post_type, $data );
+            if ( isset($data['fields_setting']) && 'only_list' == $data['fields_setting'] ) {
+                $output .= $wpcf->relationship->child_list( $post, $post_type, $data );
+            } else {
+                $output .= $wpcf->relationship->child_meta_form( $post, $post_type, $data );
+            }
         }
     }
     /*
@@ -233,20 +235,18 @@ function wpcf_pr_admin_post_meta_box_output( $post, $args )
                 }
             }
         }
-        $output_temp = '';
         foreach ( $relationships['belongs'] as $post_type => $data ) {
-            $output_temp .= wpcf_form_simple(
-                wpcf_pr_admin_post_meta_box_belongs_form( $post, $post_type, $belongs )
-            );
-        }
-        if ( !empty( $output_temp ) ) {
-            $types_existing = get_option( 'wpcf-custom-types', array() );
             $output .= '<div style="margin: 20px 0 10px 0">';
-            $output .= sprintf(
-                __( 'This <i>%s</i> belongs to:', 'wpcf' ),
-                $types_existing[$current_post_type]['labels']['singular_name']
-            );
-            $output .= '</div>' . $output_temp;
+            if ( $x = wpcf_form_simple( wpcf_pr_admin_post_meta_box_belongs_form( $post, $post_type, $belongs ) ) ) {
+                $output .= sprintf(
+                    __( 'This <i>%s</i> belongs to:', 'wpcf' ),
+                    get_post_type_object($current_post_type)->labels->singular_name
+                );
+                $output .= $x;
+            } else {
+                $output .= get_post_type_object($post_type)->labels->not_found;
+            }
+            $output .= '</div>';
         }
     }
     return $output;
@@ -255,12 +255,28 @@ function wpcf_pr_admin_post_meta_box_output( $post, $args )
 /**
  * AJAX delete child item call.
  *
- * @param type $post_id
+ * @param int $post_id
  * @return string
  */
 function wpcf_pr_admin_delete_child_item( $post_id ) {
     wp_delete_post( $post_id, true );
     return __( 'Post deleted', 'wpcf' );
+}
+
+/**
+ *
+ * Belongs form helper to build correct SQL string to prepare.
+ *
+ * Belongs form helper to build correct SQL string to $wpdb->prepare - replace 
+ * any item by digital placeholder.
+ *
+ * @param any $item
+ * @return string
+ *
+ */
+function wpcf_pr_admin_post_meta_box_belongs_form_items_helper( $item )
+{
+    return '%d';
 }
 
 /**
@@ -298,20 +314,59 @@ function wpcf_pr_admin_post_meta_box_belongs_form( $post, $type, $belongs )
     if ( empty( $items ) ) {
         return array();
     }
-
-    $_titles = $wpdb->get_results( $wpdb->prepare(
-                    "SELECT ID, post_title FROM $wpdb->posts
-                        WHERE post_type=%s AND post_status<>%s",
-                    $type, 'auto-draft'
-            ), OBJECT_K );
+    /**
+     * Filter array of parent objects.
+     *
+     * Allow to change array of parent objects, modyfiy titles, remove
+     * or add some data from list of avaiable post parents.
+     *
+     * @since 1.6.6
+     *
+     * @param array $args {
+     *     Array of objects with all possible parents
+     *
+     *     @param int    $ID   Post ID
+     *     @param string $type Post title.
+     * }
+     * @param string $type Post Type of parent.
+     */
+    $_titles = apply_filters(
+        'wpcf_pr_belongs_items',
+        $wpdb->get_results(
+            $wpdb->prepare(
+                sprintf(
+                    'SELECT ID, post_title FROM %s WHERE ID IN (%s)',
+                    $wpdb->posts,
+                    implode(', ', array_map( 'wpcf_pr_admin_post_meta_box_belongs_form_items_helper', $items))
+                ),
+                $items
+            ),
+            OBJECT_K
+        ),
+        $type
+    );
 
     foreach ( $items as $temp_post ) {
         if ( !isset( $_titles[$temp_post]->post_title ) ) {
             continue;
         }
-        $options[] = array(
-            '#title' => $_titles[$temp_post]->post_title,
-            '#value' => $temp_post,
+        /**
+         * Filter single parent data
+         *
+         * Allow change singla parent data.
+         *
+         * @since 1.6.6
+         *
+         * @param array $args Single parent title and id
+         * @param string $type Post Type of parent.
+         */
+        $options[] = apply_filters(
+            'wpcf_pr_belongs_item',
+            array(
+                '#title' => $_titles[$temp_post]->post_title,
+                '#value' => $temp_post,
+            ),
+            $type
         );
     }
 
@@ -336,7 +391,7 @@ function wpcf_pr_admin_post_meta_box_belongs_form( $post, $type, $belongs )
 /**
  * Updates belongs data.
  *
- * @param type $post_id
+ * @param int $post_id
  * @param array $data $post_type => $post_id
  * @return string
  */
@@ -411,13 +466,13 @@ function wpcf_pr_admin_has_pagination( $post, $post_type, $page, $prev, $next,
     $link = '';
     $add = '';
     if ( isset( $_GET['sort'] ) ) {
-        $add .= '&sort=' . $_GET['sort'];
+        $add .= '&sort=' . sanitize_text_field( $_GET['sort'] );
     }
     if ( isset( $_GET['field'] ) ) {
-        $add .= '&field=' . $_GET['field'];
+        $add .= '&field=' . sanitize_text_field( $_GET['field'] );
     }
     if ( isset( $_GET['post_type_sort_parent'] ) ) {
-        $add .= '&post_type_sort_parent=' . $_GET['post_type_sort_parent'];
+        $add .= '&post_type_sort_parent=' . sanitize_text_field( $_GET['post_type_sort_parent'] );
     }
 
     /**

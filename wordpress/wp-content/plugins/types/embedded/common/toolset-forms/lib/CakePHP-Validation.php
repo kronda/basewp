@@ -55,7 +55,7 @@ class WPToolset_Cake_Validation {
      * @access private
      */
     var $__pattern = array(
-        'hostname' => '(?:[a-z0-9][-a-z0-9]*\.)*(?:[a-z0-9][-a-z0-9]{0,62})\.(?:(?:[a-z]{2}\.)?[a-z]{2,4}|museum|travel)'
+        'hostname' => '(?:[_\p{L}0-9][-_\p{L}0-9]*\.)*(?:[\p{L}0-9][-\p{L}0-9]{0,62})\.(?:(?:[a-z]{2}\.)?[a-z]{2,})'
     );
 
     /**
@@ -134,6 +134,17 @@ class WPToolset_Cake_Validation {
         }
         $_this->regex = '/[^\s]+/m';
         return $_this->_check();
+    }
+
+    /**
+     * Checks if a value is valid hexadecimal.
+     *
+     * @param string $check Value to check
+     * @return boolean Succcess
+     * @access public
+     */
+    function hexadecimal($check) {
+        return preg_match('/^#[a-f0-9]{6}$/i', $check);
     }
 
     /**
@@ -760,7 +771,7 @@ class WPToolset_Cake_Validation {
      * @return boolean Succcess
      * @access public
      */
-    function integer($check) {        
+    function integer($check) {
         return is_int(intval($check));
     }
 
@@ -939,13 +950,12 @@ class WPToolset_Cake_Validation {
         $_this = &WPToolset_Cake_Validation::getInstance();
         $_this->__populateIp();
         $_this->check = $check;
-        $validChars = '([' . preg_quote('!"$&\'()*+,-.@_:;=~[]') . '\/0-9a-z\p{L}\p{N}]|(%[0-9a-f]{2}))';
-        $_this->regex = '/^(?:(?:https?|ftps?|file|news|gopher):\/\/)' . (!empty($strict) ? '' : '?') .
-                '(?:' . $_this->__pattern['IPv4'] . '|\[' . $_this->__pattern['IPv6'] . '\]|' . $_this->__pattern['hostname'] . ')' .
-                '(?::[1-9][0-9]{0,4})?' .
-                '(?:\/?|\/' . $validChars . '*)?' .
-                '(?:\?' . $validChars . '*)?' .
-                '(?:#' . $validChars . '*)?$/iu';
+        $validChars = '([' . preg_quote('!"$&\'()*+,-.@_:;=~[]') . '\/0-9\p{L}\p{N}]|(%[0-9a-f]{2}))';
+        $_this->regex = '/^(?:(?:https?|ftps?|sftp|file|news|gopher):\/\/)' . (!empty($strict) ? '' : '?') .
+            '(?:' . $_this->__pattern['IPv4'] . '|\[' . $_this->__pattern['IPv6'] . '\]|' . $_this->__pattern['hostname'] . ')(?::[1-9][0-9]{0,4})?' .
+            '(?:\/?|\/' . $validChars . '*)?' .
+            '(?:\?' . $validChars . '*)?' .
+            '(?:#' . $validChars . '*)?$/iu';
         return $_this->_check();
     }
 

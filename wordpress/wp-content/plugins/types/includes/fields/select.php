@@ -93,8 +93,7 @@ function wpcf_fields_select_get_option( $parent_name = '', $form_data = array() 
     $id = isset( $form_data['key'] ) ? $form_data['key'] : 'wpcf-fields-select-option-'
             . wpcf_unique_id( serialize( $form_data ) );
     $form = array();
-    $value = isset( $_GET['count'] ) ? __( 'Option title', 'wpcf' ) . ' ' . $_GET['count'] : __( 'Option title',
-                    'wpcf' ) . ' 1';
+    $value = isset( $_GET['count'] ) ? __( 'Option title', 'wpcf' ) . ' ' . intval( $_GET['count'] ) : __( 'Option title', 'wpcf' ) . ' 1';
     $value = isset( $form_data['title'] ) ? $form_data['title'] : $value;
     $form[$id . '-title'] = array(
         '#type' => 'textfield',
@@ -102,7 +101,10 @@ function wpcf_fields_select_get_option( $parent_name = '', $form_data = array() 
         '#name' => $parent_name . '[options][' . $id . '][title]',
         '#value' => $value,
         '#inline' => true,
-        '#attributes' => array('style' => 'width:80px;'),
+        '#attributes' => array(
+            'style' => 'width:80px;',
+            'placeholder' => __('Title', 'wpcf'),
+        ),
         '#before' => '<div class="js-types-sortable"><img src="'
         . WPCF_RES_RELPATH
         . '/images/move.png" class="js-types-sort-button" alt="'
@@ -113,7 +115,7 @@ function wpcf_fields_select_get_option( $parent_name = '', $form_data = array() 
         . '\')) { jQuery(this).parent().fadeOut(function(){jQuery(this).remove();}); }"'
         . 'alt="' . __( 'Delete this option', 'wpcf' ) . '" />',
     );
-    $value = isset( $_GET['count'] ) ? $_GET['count'] : 1;
+    $value = isset( $_GET['count'] ) ? intval( $_GET['count'] ) : 1;
     $value = isset( $form_data['value'] ) ? $form_data['value'] : $value;
     $form[$id . '-value'] = array(
         '#type' => 'textfield',
@@ -124,6 +126,7 @@ function wpcf_fields_select_get_option( $parent_name = '', $form_data = array() 
         '#attributes' => array(
             'style' => 'width:80px;',
             'class' => 'wpcf-compare-unique-value',
+            'placeholder' => __('Value', 'wpcf'),
         ),
     );
     $form[$id . '-default'] = array(

@@ -1602,14 +1602,14 @@ window.ToolsetParser=window.ToolsetParser ||
                     if (varTmp != "RAND")
                     {
                         if (arrArgs.length < 1)
-                            throw varTmp + " requires atleast one argument!";
+                            throw varTmp + " requires at least one argument!";
                         else if (arrArgs.length > 1)
                             throw varTmp + " requires only one argument!";
                     }
                     else
                     {
                         if (arrArgs.length < 1)
-                            throw varTmp + " requires atleast one argument!";
+                            throw varTmp + " requires at least one argument!";
                         else if (arrArgs.length > 2)
                             throw varTmp + " requires at most two arguments!";
                     }
@@ -1687,7 +1687,7 @@ window.ToolsetParser=window.ToolsetParser ||
                     break;
                 case "STR" :
                     if (arrArgs.length < 1)
-                        throw varTmp + " requires atleast one argument!";
+                        throw varTmp + " requires at least one argument!";
                     else if (arrArgs.length > 2)
                         throw varTmp + " requires at most two arguments!";
                     varTerm = arrArgs[arrArgs.length-1];
@@ -1729,7 +1729,7 @@ window.ToolsetParser=window.ToolsetParser ||
                     if (arrArgs.length > 1)
                         throw varTmp + " requires only one argument!";
                     else if (arrArgs.length < 1)
-                        throw varTmp + " requires atleast one argument!";
+                        throw varTmp + " requires at least one argument!";
                     varTerm = arrArgs[0];
                     if (varTerm.isVariable)
                     {
@@ -1758,7 +1758,7 @@ window.ToolsetParser=window.ToolsetParser ||
                     break;
                 case "REGEX" :
                     if (arrArgs.length < 1)
-                        throw varTmp + " requires atleast one argument!";
+                        throw varTmp + " requires at least one argument!";
                     else if (arrArgs.length > 2)
                         throw varTmp + " requires at most two arguments!";
                     
@@ -1798,7 +1798,7 @@ window.ToolsetParser=window.ToolsetParser ||
                 case "NUM" :
 
                     if (arrArgs.length < 1)
-                        throw varTmp + " requires atleast one argument!";
+                        throw varTmp + " requires at least one argument!";
                     else if (arrArgs.length > 1)
                         throw varTmp + " requires only one argument!";
 
@@ -1841,7 +1841,7 @@ window.ToolsetParser=window.ToolsetParser ||
                     break;
                 case "LEN" :
                     if (arrArgs.length < 1)
-                        throw varTmp + " requires atleast one argument!";
+                        throw varTmp + " requires at least one argument!";
                     else if (arrArgs.length > 1)
                         throw varTmp + " requires only one argument!";
 
@@ -1864,7 +1864,7 @@ window.ToolsetParser=window.ToolsetParser ||
                     break;
                 case "USER" :
                     if (arrArgs.length < 1)
-                        throw varTmp + " requires atleast one argument!";
+                        throw varTmp + " requires at least one argument!";
                     else if (arrArgs.length > 1)
                         throw varTmp + " requires only one argument!";
 
@@ -1887,7 +1887,7 @@ window.ToolsetParser=window.ToolsetParser ||
                     break;
                 case "COOKIE" :
                     if (arrArgs.length < 1)
-                        throw varTmp + " requires atleast one argument!";
+                        throw varTmp + " requires at least one argument!";
                     else if (arrArgs.length > 1)
                         throw varTmp + " requires only one argument!";
 
@@ -1912,7 +1912,7 @@ window.ToolsetParser=window.ToolsetParser ||
                 case "CONTAINS" :
                  //   console.log( 'testing functions ', varTmp, arrArgs );
                     if (arrArgs.length < 2)
-                        throw varTmp + " requires atleast two arguments!";
+                        throw varTmp + " requires at least two arguments!";
                     else if (arrArgs.length > 2)
                         throw varTmp + " requires only two arguments!";
 
@@ -1955,7 +1955,7 @@ window.ToolsetParser=window.ToolsetParser ||
                     break;
                 case "DATE" :
                     if (arrArgs.length < 2)
-                        throw varTmp + " requires atleast two arguments!";
+                        throw varTmp + " requires at least two arguments!";
                     else if (arrArgs.length > 2)
                         throw varTmp + " requires only two arguments!";
 
@@ -2030,7 +2030,7 @@ window.ToolsetParser=window.ToolsetParser ||
                 case "LEFT" :
                 case "RIGHT" :
                     if (arrArgs.length < 2)
-                        throw varTmp + " requires atleast two arguments!";
+                        throw varTmp + " requires at least two arguments!";
                     else if (arrArgs.length > 2)
                         throw varTmp + " requires only two arguments!";
 
@@ -2073,7 +2073,7 @@ window.ToolsetParser=window.ToolsetParser ||
                 case "IIF" :
 
                     if (arrArgs.length < 3)
-                        throw varTmp + " requires atleast three arguments!";
+                        throw varTmp + " requires at least three arguments!";
                     else if (arrArgs.length > 3)
                         throw varTmp + " requires only three arguments!";
 
@@ -2134,7 +2134,7 @@ window.ToolsetParser=window.ToolsetParser ||
                 case "MAX" :
                 case "MIN" :
                     if (arrArgs.length < 1)
-                        throw varTmp + " requires atleast one operand!";
+                        throw varTmp + " requires at least one operand!";
 
                     var _arr=[];
                     intCntr = arrArgs.length;

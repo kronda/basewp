@@ -5,13 +5,13 @@
   Description: Define custom post types, custom taxonomy and custom fields.
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com
-  Version: 1.6.4
+  Version: 1.6.6.2
  */
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/wpcf.php $
- * $LastChangedDate: 2014-11-18 06:52:14 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027716 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/wpcf.php $
+ * $LastChangedDate: 2015-04-10 07:30:43 +0000 (Fri, 10 Apr 2015) $
+ * $LastChangedRevision: 1131818 $
  * $LastChangedBy: iworks $
  *
  */
@@ -20,7 +20,7 @@ if ( !defined( 'WPCF_VERSION' ) ) {
     /**
      * make sure that WPCF_VERSION in embedded/bootstrap.php is the same!
      */
-    define( 'WPCF_VERSION', '1.6.4' );
+    define( 'WPCF_VERSION', '1.6.6.2' );
 }
 
 define( 'WPCF_REPOSITORY', 'http://api.wp-types.com/' );
@@ -32,23 +32,30 @@ define( 'WPCF_INC_RELPATH', WPCF_RELPATH . '/includes' );
 define( 'WPCF_RES_ABSPATH', WPCF_ABSPATH . '/resources' );
 define( 'WPCF_RES_RELPATH', WPCF_RELPATH . '/resources' );
 
-//Add installer
-include dirname( __FILE__ ) . '/embedded/common/installer/loader.php';
-WP_Installer_Setup($wp_installer_instance,  
-array(
-    'plugins_install_tab' => '1',
-    'repositories_include' => array('toolset', 'wpml')	
-));
-		
+// Add installer
+$installer = dirname( __FILE__ ) . '/plus/installer/loader.php';
+if ( file_exists($installer) ) {
+    include_once $installer;
+    if ( class_exists('WP_Installer_Setup') ) {
+        WP_Installer_Setup(
+            $wp_installer_instance,
+            array(
+                'plugins_install_tab' => '1',
+                'repositories_include' => array('toolset', 'wpml')
+            )
+        );
+    }
+}
+
 require_once WPCF_INC_ABSPATH . '/constants.php';
 /*
  * Since Types 1.2 we load all embedded code without conflicts
  */
 require_once WPCF_ABSPATH . '/embedded/types.php';
 
-require_once WPCF_ABSPATH . '/embedded/onthego-resources/onthegosystems-branding-loader.php';
-ont_set_on_the_go_systems_uri_and_start(WPCF_RELPATH . '/embedded/onthego-resources/' );
-
+require_once WPCF_ABSPATH . '/embedded/onthego-resources/loader.php';
+onthego_initialize(WPCF_ABSPATH . '/embedded/onthego-resources/',
+                                   WPCF_RELPATH . '/embedded/onthego-resources/' );
 
 // Plugin mode only hooks
 add_action( 'plugins_loaded', 'wpcf_init' );
@@ -56,10 +63,8 @@ add_action( 'plugins_loaded', 'wpcf_init' );
 // init hook for module manager
 add_action( 'init', 'wpcf_wp_init' );
 
-register_activation_hook( __FILE__, 'wpcf_upgrade_init' );
 register_deactivation_hook( __FILE__, 'wpcf_deactivation_hook' );
-
-add_filter( 'plugin_action_links', 'wpcf_types_plugin_action_links', 10, 2 );
+register_activation_hook( __FILE__, 'wpcf_activation_hook' );
 
 /**
  * Deactivation hook.
@@ -68,11 +73,38 @@ add_filter( 'plugin_action_links', 'wpcf_types_plugin_action_links', 10, 2 );
  */
 function wpcf_deactivation_hook()
 {
-    // Reset redirection
-    delete_option( 'wpcf_types_plugin_do_activation_redirect', true );
-
     // Delete messages
     delete_option( 'wpcf-messages' );
+    delete_option( 'WPCF_VERSION' );
+    /**
+     * check site kind and if do not exist, delete types_show_on_activate
+     */
+    if ( !get_option('types-site-kind') ) {
+        delete_option('types_show_on_activate');
+    }
+}
+
+/**
+ * Activation hook.
+ *
+ * Reset some of data.
+ */
+function wpcf_activation_hook()
+{
+    $version = get_option('WPCF_VERSION');
+    if ( empty($version) ) {
+        $version = 0;
+        add_option('WPCF_VERSION', 0, null, 'no');
+    }
+    if ( version_compare($version, WPCF_VERSION) < 0 ) {
+        update_option('WPCF_VERSION', WPCF_VERSION);
+    }
+    if( 0 == version_compare(WPCF_VERSION, '1.6.5')) {
+        add_option('types_show_on_activate', 'show', null, 'no');
+        if ( get_option('types-site-kind') ) {
+            update_option('types_show_on_activate', 'hide');
+        }
+    }
 }
 
 /**
@@ -85,19 +117,25 @@ function wpcf_init()
     }
 
     if ( is_admin() ) {
-	
         require_once WPCF_ABSPATH . '/admin.php';
     }
-	
-    
+    /**
+     * remove unused option
+     */
+    $version_from_db = get_option('wpcf-version', 0);
+    if ( version_compare(WPCF_VERSION, $version_from_db) > 0 ) {
+        delete_option('wpcf-survey-2014-09');
+        update_option('wpcf-version', WPCF_VERSION);
+    }
 }
 
 //Render Installer packages
-function installer_content(){			
-	echo '<div class="wrap">';
-	$config['repository'] = array(); // required
-	WP_Installer_Show_Products($config);			
-	echo "</div>";			
+function installer_content()
+{
+    echo '<div class="wrap">';
+    $config['repository'] = array(); // required
+    WP_Installer_Show_Products($config);
+    echo "</div>";
 }
 
 /**
@@ -106,74 +144,21 @@ function installer_content(){
 function wpcf_wp_init()
 {
     if ( is_admin() ) {
-	
-		require_once WPCF_ABSPATH . '/admin.php';
-		add_action('admin_menu', 'setup_installer');
-		//Add submenu Installer to Types
-		function setup_installer(){
-			add_submenu_page('wpcf', 'Installer', 'Installer', 'manage_options', 'installer', 'installer_content');
-		}
-	}
-}
-
-/**
- * Include embedded code if not used in theme.
- *
- * We are actually calling this hook on after_setup_theme which is called
- * immediatelly before 'init'. However WP issues warnings because for some
- * action it strictly required 'init' hook to be used.
- *
- * @todo Revise this!
- */
-/*
- * TODO 1.2.1 remove
- */
-//function wpcf_init_embedded_code() {
-//    if ( !defined( 'WPCF_EMBEDDED_ABSPATH' ) ) {
-//        require_once WPCF_ABSPATH . '/embedded/types.php';
-//    } else {
-//        require_once WPCF_EMBEDDED_ABSPATH . '/types.php';
-//    }
-//
-//    // TODO Better bootstrapping is ready to be added
-//    // Make this check for now.
-//    if ( did_action( 'init' ) > 0 ) {
-//        wpcf_embedded_init();
-//    } else {
-//        add_action( 'init', 'wpcf_embedded_init' );
-//    }
-//}
-
-/**
- * Upgrade hook.
- */
-function wpcf_upgrade_init()
-{
-    wpcf_types_plugin_activate();
-}
-
-function wpcf_types_plugin_activate()
-{
-    add_option( 'wpcf_types_plugin_do_activation_redirect', true );
-}
-
-function wpcf_types_plugin_redirect()
-{
-    if ( get_option( 'wpcf_types_plugin_do_activation_redirect', false ) ) {
-        delete_option( 'wpcf_types_plugin_do_activation_redirect' );
-        wp_redirect( admin_url() . 'admin.php?page=wpcf-help' );
-        exit;
+        require_once WPCF_ABSPATH . '/admin.php';
+        add_action('wpcf_menu_plus', 'setup_installer');
+        //Add submenu Installer to Types
+        function setup_installer()
+        {
+            wpcf_admin_add_submenu_page(
+                array(
+                    'page_title' => __('Installer', 'wpcf'),
+                    'menu_title' => __('Installer', 'wpcf'),
+                    'menu_slug' => 'installer',
+                    'function' => 'installer_content'
+                )
+            );
+        }
     }
-}
-
-function wpcf_types_plugin_action_links($links, $file)
-{
-    $this_plugin = basename( WPCF_ABSPATH ) . '/wpcf.php';
-    if ( $file == $this_plugin ) {
-        $links[] = '<a href="admin.php?page=wpcf-help">' . __( 'Getting started',
-                        'wpcf' ) . '</a>';
-    }
-    return $links;
 }
 
 /**
@@ -191,8 +176,12 @@ function wpcf_is_reserved_name($name, $context, $check_pages = true)
      */
     if ( $check_pages && !empty( $name ) ) {
         global $wpdb;
-        $page = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type='page'",
-                        sanitize_title( $name ) ) );
+        $page = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type='page'",
+                sanitize_title( $name )
+            )
+        );
         if ( !empty( $page ) ) {
             return new WP_Error( 'wpcf_reserved_name', __( 'You cannot use this slug because there is already a page by that name. Please choose a different slug.',
                                     'wpcf' ) );
@@ -333,4 +322,3 @@ function wpcf_fix_translated_post_relationships($post_id)
     wpcf_post_relationship_set_translated_parent( $post_id );
     wpcf_post_relationship_set_translated_children( $post_id );
 }
-

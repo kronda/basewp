@@ -10,8 +10,9 @@
 
 /**
  * Gets field.
- * 
- * @param type $field
+ *
+ * @param string $field
+ * @param string $meta_type
  * @return array
  */
 function types_get_field( $field, $meta_type = 'postmeta' ) {

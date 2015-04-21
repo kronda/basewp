@@ -11,7 +11,7 @@ var wptSkype = (function($) {
             $('.js-wpt-skypename-popup', $popup).val($skypename.val());
             $('[name="wpt-skypestyle-popup"][value="' + $style.val() + '"]', $popup)
                     .attr('checked', true);
-            tb_show(wptSkypeData.title, "#TB_inline?inlineId=tpl-wpt-skype-edit-button", "");
+            tb_show(wptSkypeData.title, "#TB_inline?inlineId=tpl-wpt-skype-edit-button&height=500&width=600", "");
         });
         $('#wpt-skype-edit-button-popup').on('click', '.js-wpt-close-thickbox', function() {
             $skypename.val($('.js-wpt-skypename-popup', $popup).val());

@@ -106,6 +106,18 @@ class WPCF_Relationship_Child_Form
                 $this->__urlParams[$__param] = $_GET[$__param];
             }
         }
+        /**
+         * build-in types
+         */
+        if ( in_array($child_post_type, array('page', 'post', 'attachment', 'revision', 'nav_menu_item') ) ) {
+            foreach( array_keys($this->child_supports) as $key ) {
+                $this->child_supports[$key] = post_type_supports($child_post_type, $key);
+            }
+            return;
+        }
+        /**
+         * custom post types
+         */
         $post_types = get_option( 'wpcf-custom-types', array() );
         if (
             array_key_exists($child_post_type, $post_types )
@@ -194,10 +206,10 @@ class WPCF_Relationship_Child_Form
          */
         $options = array(__( 'All', 'wpcf' ) => 'all', 5 => 5, 10 => 10, 15 => 15);
 // Add sorting
-        $add_data = isset( $_GET['sort'] ) && isset( $_GET['field'] ) ? '&sort=' . strval( $_GET['sort'] ) . '&field='
-                . strval( $_GET['field'] ) : '';
+        $add_data = isset( $_GET['sort'] ) && isset( $_GET['field'] ) ? '&sort=' . sanitize_text_field( $_GET['sort'] ) . '&field='
+                . sanitize_text_field( $_GET['field'] ) : '';
         if ( isset( $_GET['post_type_sort_parent'] ) ) {
-            $add_data .= '&post_type_sort_parent=' . $_GET['post_type_sort_parent'];
+            $add_data .= '&post_type_sort_parent=' . sanitize_text_field( $_GET['post_type_sort_parent'] );
         }
         $this->pagination_bottom = wpcf_form_simple( array(
             'pagination' => array(
@@ -690,7 +702,7 @@ class WPCF_Relationship_Child_Form
         // Sorting
         $dir = isset( $_GET['sort'] ) && $_GET['sort'] == 'ASC' ? 'DESC' : 'ASC';
         $dir_default = 'ASC';
-        $sort_field = isset( $_GET['field'] ) ? $_GET['field'] : '';
+        $sort_field = isset( $_GET['field'] ) ? sanitize_text_field( $_GET['field'] ) : '';
 
         // Set values
         $post = $this->parent;

@@ -2,9 +2,9 @@
 /**
   * produce debug information
   *
-  * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/common/debug/functions_debug_information.php $
-  * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
-  * $LastChangedRevision: 1027712 $
+  * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/debug/functions_debug_information.php $
+  * $LastChangedDate: 2015-03-16 12:03:31 +0000 (Mon, 16 Mar 2015) $
+  * $LastChangedRevision: 1113864 $
   * $LastChangedBy: iworks $
   *
   */
@@ -23,7 +23,7 @@ class ICL_Debug_Information
 		if (empty($info)) {
 			$info = array('core', 'plugins', 'theme', 'extra-debug');
 		}
-	
+
 		$output = array();
 		foreach ($info as $type) {
 			switch ($type) {
@@ -42,12 +42,17 @@ class ICL_Debug_Information
 			}
 		}
 		return $output;
-	}
-	
+    }
+
+    /**
+     *
+     * @global object $wpdb
+     *
+     */
 	function get_core_info() {
-		
+
 		global $wpdb;
-		
+
 		$core = array(
 			'Wordpress' => array(
 				'Multisite' => is_multisite() ? 'Yes' : 'No',
@@ -77,12 +82,12 @@ class ICL_Debug_Information
 	}
 
 	function get_plugins_info() {
-		
+
 		if ( ! function_exists( 'get_plugins' ) ) {
 			$admin_includes_path = str_replace( site_url('/', 'admin'), ABSPATH, admin_url('includes/', 'admin') );
 			require_once $admin_includes_path . 'plugin.php';
 		}
-		
+
 		$plugins = get_plugins();
 		$active_plugins = get_option('active_plugins');
 		$active_plugins_info = array();
@@ -92,7 +97,7 @@ class ICL_Debug_Information
 				$active_plugins_info[$plugin] = $plugins[$plugin];
 			}
 		}
-		
+
 		$mu_plugins = get_mu_plugins();
 
 		$dropins = get_dropins();
@@ -102,12 +107,12 @@ class ICL_Debug_Information
 			'mu_plugins' => $mu_plugins,
 			'dropins' => $dropins,
 		);
-		
+
 		return $output;
 	}
-	
+
 	function get_theme_info() {
-		
+
 		if ( get_bloginfo( 'version' ) < '3.4' ) {
 			$current_theme = get_theme_data( get_stylesheet_directory() . '/style.css' );
 			$theme = $current_theme;
@@ -127,7 +132,7 @@ class ICL_Debug_Information
 				'DomainPath' => $current_theme->DomainPath,
 			);
 		}
-		
+
 		return $theme;
 	}
 

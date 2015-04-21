@@ -2,37 +2,37 @@
 /*
  * Field class.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/classes/field.php $
- * $LastChangedDate: 2014-10-23 10:33:39 +0000 (Thu, 23 Oct 2014) $
- * $LastChangedRevision: 1012677 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/classes/field.php $
+ * $LastChangedDate: 2015-04-01 14:15:17 +0000 (Wed, 01 Apr 2015) $
+ * $LastChangedRevision: 1125405 $
  * $LastChangedBy: iworks $
  *
  */
 
 /**
  * Base class.
- * 
+ *
  * Fields are our core items and we'll use this class to sort them out a little.
  * Very useful, should be used to finish small tasks for field.
- * 
+ *
  * Example:
- * 
+ *
  * // Setup field
  * global $wpcf;
  * $my_field = new WPCF_Field();
  * $my_field->set($wpcf->post, wpcf_admin_fields_get_field('image'));
- * 
+ *
  * // Use it
  * $my_field->save();
- * 
+ *
  * // Generic instance can be found in global $wpcf.
  * global $wpcf;
  * $wpcf->field->set(...);
- * 
+ *
  * !! BE CAREFUL !! not to disturb global instance if you suspect processing
  * current item is not finished. Core code sometimes use same instance over
  * few functions and places.
- * 
+ *
  * @since Types 1.2
  * @package Types
  * @subpackage Classes
@@ -45,18 +45,18 @@ class WPCF_Field
 
     /**
      * Field structure
-     * 
+     *
      * This is actually a form array collected from files per specific field:
      * /embedded/includes/fields/$field_type.php
      * /includes/fields/$field_type.php
-     * 
+     *
      * @var type array
      */
     var $cf = array();
 
     /**
      * All Types created fields
-     * @var type 
+     * @var type
      */
     var $fields = null;
 
@@ -68,9 +68,9 @@ class WPCF_Field
 
     /**
      * Field config.
-     * 
+     *
      * Use it to set default configuration.
-     * 
+     *
      * @var type array
      */
     var $config = array(
@@ -102,8 +102,8 @@ class WPCF_Field
 
     /**
      * Cache.DEPRECATED
-     * 
-     * @var type 
+     *
+     * @var type
      */
     var $cache = array();
 
@@ -115,25 +115,25 @@ class WPCF_Field
 
     /**
      * Context in which class is called
-     * @var type 
+     * @var type
      */
     var $context = 'group';
 
     /**
      * Invalid fields
-     * 
+     *
      * @todo Revise
-     * @var type 
+     * @var type
      */
     var $invalid_fields = array();
 
     /**
-     * ID 
+     * ID
      */
     var $ID = '';
 
     /**
-     * Unique ID 
+     * Unique ID
      */
     var $unique_id = '';
 
@@ -144,16 +144,16 @@ class WPCF_Field
 
     /**
      * Set current post and field.
-     * 
+     *
      * @param type $post
-     * @param type $cf 
+     * @param type $cf
      */
     function set( $post, $cf ) {
 
         global $wpcf;
 
         /*
-         * 
+         *
          * Check if $cf is string
          */
         if ( is_string( $cf ) ) {
@@ -218,8 +218,8 @@ class WPCF_Field
 
     /**
      * Set needed but not required form elements.
-     * 
-     * @param string $cf 
+     *
+     * @param string $cf
      */
     function _parse_cf_form_element( $cf ) {
         $p = array('#before' => '', '#after' => '', '#description' => '');
@@ -233,8 +233,9 @@ class WPCF_Field
 
     /**
      * Fetch and sort fields.
-     * 
-     * @global type $wpdb 
+     *
+     * @global object $wpdb
+     *
      */
     function _get_meta() {
         global $wpdb;
@@ -309,8 +310,8 @@ class WPCF_Field
 
     /**
      * Gets $_POST data.
-     * 
-     * @return type 
+     *
+     * @return type
      */
     function get_submitted_data() {
         $posted = isset( $_POST['wpcf'][$this->cf['slug']] ) ? $_POST['wpcf'][$this->cf['slug']] : null;
@@ -320,12 +321,12 @@ class WPCF_Field
 
     /**
      * Save field.
-     * 
+     *
      * If $value is empty, $_POST will be checked.
      * 1.3.2 Reverted saving empty fields
      * removed - if ( !empty( $value ) || is_numeric( $value ) ) {
-     * 
-     * @param type $value 
+     *
+     * @param type $value
      */
     function save( $value = null )
     {
@@ -394,9 +395,9 @@ class WPCF_Field
 
     /**
      * Apply filters to saved value.
-     * 
+     *
      * @param type $value
-     * @return type 
+     * @return type
      */
     function _filter_save_value( $value )
     {
@@ -411,7 +412,7 @@ class WPCF_Field
     /**
      * Use these hooks to add future functionality.
      * Do not add any more code to core.
-     * 
+     *
      * @param type $field
      * @param type $value
      * @param type $meta_id
@@ -442,8 +443,8 @@ class WPCF_Field
 
     /**
      * Sets field config.
-     * 
-     * @return type 
+     *
+     * @return type
      */
     function _get_config() {
         $this->_include_file_by_field_type($this->cf['type']);
@@ -456,7 +457,7 @@ class WPCF_Field
 
     /**
      * Discouraged usage.
-     * 
+     *
      * @return type
      */
     function _deprecated_inherited_allowed() {
@@ -471,8 +472,8 @@ class WPCF_Field
 
     /**
      * Sets field meta box form.
-     * 
-     * @return type 
+     *
+     * @return type
      */
     function _get_meta_form( $meta_value = null, $meta_id = null, $wrap = true ) {
 
@@ -484,7 +485,7 @@ class WPCF_Field
 
         /*
          * Set value
-         * 
+         *
          * IMPORTANT
          * Here we set values for form elements
          */
@@ -506,10 +507,10 @@ class WPCF_Field
         }
 
         /*
-         * 
-         * 
-         * 
-         * 
+         *
+         *
+         *
+         *
          * Since Types 1.2
          * Avoid using parent (inherited) type
          * $this->config->inherited_field_type
@@ -549,7 +550,7 @@ class WPCF_Field
         $func = 'wpcf_fields_' . $this->cf['type'] . '_meta_box_form';
         if ( is_callable( $func ) ) {
             /*
-             * 
+             *
              * From Types 1.2 use complete form setup
              */
             $form_meta_box = call_user_func_array( 'wpcf_fields_'
@@ -576,7 +577,7 @@ class WPCF_Field
             foreach ( $form as $element_key => $element ) {
 
                 /*
-                 * 
+                 *
                  * Start using __ in keys to skip element
                  */
                 // Skip protected
@@ -696,10 +697,17 @@ class WPCF_Field
 
     /**
      * Use this function to add final filters to HTML output.
-     * 
-     * @param type $output 
+     *
+     * @param type $output
      */
-    function html( $html, $params ) {
+    function html( $html, $params )
+    {
+        /**
+         * check input
+         */
+        if ( is_array($html) || is_object($html) ) {
+            return '';
+        }
         /**
          *
          * Exception when RAW = TRUE.
@@ -712,20 +720,18 @@ class WPCF_Field
             $html = htmlspecialchars( $html );
         }
         // Process shortcodes too
-//        $shortcode = do_shortcode( $html );
         $html = do_shortcode( htmlspecialchars_decode( stripslashes( $html ) ) );
-
         return $html;
     }
 
     /**
      * Determines if field is created with Types.
-     * 
+     *
      * @param type $field_key
      */
     function is_under_control( $field_key ) {
         /*
-         * 
+         *
          * We force checking our meta prefix
          */
         $key = $this->__get_slug_no_prefix( $field_key );
@@ -734,7 +740,7 @@ class WPCF_Field
 
     /**
      * Return slug.
-     * 
+     *
      * @param type $meta_key
      * @return type
      */
@@ -745,14 +751,14 @@ class WPCF_Field
 
     /**
      * Returns altered element form name.
-     * 
+     *
      * Use $prefix to set name like:
      * wpcf_post_relationship[214][wpcf-my-checkbox]
-     * 
+     *
      * Or if multi array
      * wpcf_post_relationship[214][wpcf-my-date][datepicker]
      * wpcf_post_relationship[214][wpcf-my-date][hour]
-     * 
+     *
      * @param type $prefix
      * @param type $name
      * @return type
@@ -769,7 +775,7 @@ class WPCF_Field
                     . $this->post->ID
                     . '][' . $this->slug . ']';
             /*
-             * 
+             *
              * Multi array case
              */
         } else {

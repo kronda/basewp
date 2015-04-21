@@ -149,7 +149,7 @@ var tChildTable = (function($) {
 
     tTagBox = {
         clean: function(tags) {
-            var comma = postL10n.comma;
+            var comma = postL10n.comma || window.tagsBoxL10n.tagDelimiter;
             if (',' !== comma)
                 tags = tags.replace(new RegExp(comma, 'g'), ',');
             tags = tags.replace(/\s*,\s*/g, ',').replace(/,+/g, ',').replace(/[,\s]+$/, '').replace(/^[,\s]+/, '');
@@ -159,7 +159,7 @@ var tChildTable = (function($) {
         },
         parseTags: function(el) {
             var id = el.id, num = id.split('-check-num-')[1], taxbox = $(el).closest('.js-types-child-tagsdiv'),
-                    thetags = taxbox.find('.the-tags'), comma = postL10n.comma,
+                    thetags = taxbox.find('.the-tags'), comma = postL10n.comma || window.tagsBoxL10n.tagDelimiter,
                     current_tags = thetags.val().split(comma), new_tags = [];
             delete current_tags[num];
 
@@ -179,14 +179,15 @@ var tChildTable = (function($) {
             var thetags = $('.the-tags', el),
                     tagchecklist = $('.tagchecklist', el),
                     id = $(el).attr('id'),
-                    current_tags, disabled;
+                    current_tags, disabled,
+					comma = postL10n.comma || window.tagsBoxL10n.tagDelimiter;
 
             if (!thetags.length)
                 return;
 
             disabled = thetags.prop('disabled');
 
-            current_tags = thetags.val().split(postL10n.comma);
+            current_tags = thetags.val().split(comma);
             tagchecklist.empty();
 
             $.each(current_tags, function(key, val) {
@@ -217,7 +218,7 @@ var tChildTable = (function($) {
             a = a || false;
             var tags = $('.the-tags', el),
                     newtag = $('input.js-types-newtag', el),
-                    comma = postL10n.comma,
+                    comma = postL10n.comma || window.tagsBoxL10n.tagDelimiter,
                     newtags, text;
 
             text = a ? $(a).text() : newtag.val();
@@ -286,8 +287,9 @@ var tChildTable = (function($) {
                 }
             }).each(function() {
 //			var tax = $(this).closest('div.tagsdiv').attr('id');
-                var tax = $(this).data('types-tax');
-                $(this).suggest(ajaxurl + '?action=ajax-tag-search&tax=' + tax, {delay: 500, minchars: 2, multiple: true, multipleSep: postL10n.comma + ' '});
+                var tax = $(this).data('types-tax'),
+				comma = postL10n.comma || window.tagsBoxL10n.tagDelimiter;
+                $(this).suggest(ajaxurl + '?action=ajax-tag-search&tax=' + tax, {delay: 500, minchars: 2, multiple: true, multipleSep: comma + ' '});
             });
 
             // save tags on post save/publish
@@ -426,6 +428,7 @@ jQuery(document).ready(function($) {
         return false;
     });
     jQuery('.wpcf-pr-delete-ajax').live('click', function() {
+        var $button = $(this), $table = $button.parents('.js-types-relationship-child-posts').find('table');
         var answer = confirm(wpcf_pr_del_warning);
         if (answer == false) {
             return false;
@@ -452,6 +455,17 @@ jQuery(document).ready(function($) {
                 object.next().fadeOut(function() {
                     jQuery(this).remove();
                 });
+                /**
+                 * reload
+                 */
+                selectedIndex = $('#wpcf-post-relationship .wpcf-pr-pagination-select').prop('selectedIndex');
+                if ( $('tbody tr', $table).length < 2 ) {
+                    if ( selectedIndex ) {
+                        selectedIndex--;
+                        $('#wpcf-post-relationship .wpcf-pr-pagination-select').prop( 'selectedIndex', selectedIndex);
+                    }
+                }
+                $('#wpcf-post-relationship .wpcf-pr-pagination-select').trigger('change');
             }
         });
         return false;

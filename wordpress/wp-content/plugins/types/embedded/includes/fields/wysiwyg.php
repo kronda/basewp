@@ -140,11 +140,21 @@ function wpcf_fields_wysiwyg_view( $params ) {
         }
         $output .= $content;
     } else {
-        $output .= apply_filters( 'the_content',
-            htmlspecialchars_decode( stripslashes( $params['field_value'] ) ) );
+        /**
+         * remove_shortcode playlist to avoid htmlspecialchars_decode on json 
+         * data
+         */
+        remove_shortcode('playlist', 'wp_playlist_shortcode');
+        $output .= apply_filters( 'the_content', htmlspecialchars_decode( stripslashes( $params['field_value'] ) ) );
+        if ( preg_match_all('/playlist[^\]]+/', $output, $matches ) ) {
+            foreach( $matches[0] as $one ) {
+                $re = '/'.$one.'/';
+                $one = preg_replace('/\&\#(8221|8243);/', '"', $one);
+                $output = preg_replace($re, $one, $output);
+            }
+        }
+        add_shortcode( 'playlist', 'wp_playlist_shortcode' );
     }
-    
-    
     if ( !empty( $params['style'] ) || !empty( $params['class'] ) ) {
         $output .= '</div>';
     }

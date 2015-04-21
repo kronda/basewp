@@ -1,20 +1,20 @@
 <?php
 /*
- * 
+ *
  * Calendar view.
  */
 
 /**
  * Calendar view.
- * 
- * @global type $wpdb
+ *
+ * @global object $wpdb
  * @global type $m
  * @global type $wp_locale
  * @global type $posts
  * @param type $params
  * @param type $initial
  * @param type $echo
- * @return type 
+ * @return type
  */
 function wpcf_fields_date_get_calendar( $params, $initial = true, $echo = true ) {
 
@@ -55,7 +55,13 @@ function wpcf_fields_date_get_calendar( $params, $initial = true, $echo = true )
         // We need to get the month from MySQL
         $thisyear = '' . intval( substr( $m, 0, 4 ) );
         $d = (($w - 1) * 7) + 6; //it seems MySQL's weeks disagree with PHP's
-        $thismonth = $wpdb->get_var( "SELECT DATE_FORMAT((DATE_ADD('{$thisyear}0101', INTERVAL $d DAY) ), '%m')" );
+        $thismonth = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT DATE_FORMAT((DATE_ADD(%s, INTERVAL %d DAY) ), '%%m')",
+                sprintf('%d0101', $thisyear),
+                $d
+            )
+        );
     } elseif ( !empty( $m ) ) {
         $thisyear = '' . intval( substr( $m, 0, 4 ) );
         if ( strlen( $m ) < 6 )

@@ -7,9 +7,9 @@
  *
  * @since Types 1.2
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.4/embedded/bootstrap.php $
- * $LastChangedDate: 2014-11-18 06:52:14 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027716 $
+ * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/bootstrap.php $
+ * $LastChangedDate: 2015-04-10 07:30:43 +0000 (Fri, 10 Apr 2015) $
+ * $LastChangedRevision: 1131818 $
  * $LastChangedBy: iworks $
  *
  */
@@ -42,6 +42,13 @@ if ( !defined( 'TYPES_INIT_PRIORITY' ) ) {
  * Init
  */
 add_action( 'init', 'wpcf_embedded_init', TYPES_INIT_PRIORITY );
+add_action( 'init', 'wpcf_init_custom_types_taxonomies', TYPES_INIT_PRIORITY );
+
+/**
+ * register_post_type & register_taxonomy - must be with default pririty to 
+ * handle defult taxonomies
+ */
+add_action('init', 'wpcf_init_build_in_taxonomies');
 
 /*
  *
@@ -131,7 +138,7 @@ function wpcf_embedded_init() {
     // Define necessary constants if plugin is not present
     // This ones are skipped if used as embedded code!
     if ( !defined( 'WPCF_VERSION' ) ) {
-        define( 'WPCF_VERSION', '1.6.4' );
+        define( 'WPCF_VERSION', '1.6.6.2' );
         define( 'WPCF_META_PREFIX', 'wpcf-' );
     }
 
@@ -300,15 +307,19 @@ function wpcf_embedded_init() {
     // 'attachment' = Media
     //
     $wpcf->excluded_post_types = array(
-        'revision', 'view', 'view-template', 'cred-form', 'nav_menu_item', 'mediapage',
+        'dd_layouts',
+        'cred-form',
+        'mediapage',
+        'nav_menu_item',
+        'revision',
+        'view',
+        'view-template',
+        'wp-types-group',
+        'wp-types-user-group',
     );
 
     // Init loader
     WPCF_Loader::init();
-
-    // Init custom types and taxonomies
-    wpcf_init_custom_types_taxonomies();
-
 
     /*
      * TODO Check why we enabled this
