@@ -87,6 +87,22 @@ function ttfmake_customizer_define_contentlayout_sections( $sections ) {
 					'choices' => ttfmake_get_choices( 'header-bar-content-layout' ),
 				),
 			),
+			'header-padding-heading'    => array(
+				'control' => array(
+					'control_type' => 'TTFMAKE_Customize_Misc_Control',
+					'type'         => 'heading',
+					'label'        => __( 'Padding', 'make' ),
+				),
+			),
+			'header-hide-padding-bottom'        => array(
+				'setting' => array(
+					'sanitize_callback' => 'absint',
+				),
+				'control' => array(
+					'label' => __( 'Remove padding beneath header', 'make' ),
+					'type'  => 'checkbox',
+				),
+			),
 			'header-options-group' => array(
 				'control' => array(
 					'control_type' => 'TTFMAKE_Customize_Misc_Control',
@@ -189,6 +205,22 @@ function ttfmake_customizer_define_contentlayout_sections( $sections ) {
 					'label'				=> __( 'Footer Layout', 'make' ),
 					'type'				=> 'select',
 					'choices'			=> ttfmake_get_choices( 'footer-layout' ),
+				),
+			),
+			'footer-padding-heading'    => array(
+				'control' => array(
+					'control_type' => 'TTFMAKE_Customize_Misc_Control',
+					'type'         => 'heading',
+					'label'        => __( 'Padding', 'make' ),
+				),
+			),
+			'footer-hide-padding-top'        => array(
+				'setting' => array(
+					'sanitize_callback' => 'absint',
+				),
+				'control' => array(
+					'label' => __( 'Remove padding above footer', 'make' ),
+					'type'  => 'checkbox',
 				),
 			),
 			'footer-options-group' => array(

@@ -113,7 +113,7 @@ if (!class_exists('SeedProd_Framework')) {
         	    <?php screen_icon(); ?>
         		<h2><?php echo $this->plugin_name; ?> </h2>
                 <a href="http://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=plugin&utm_medium=banner&utm_campaign=coming-soon-pro-in-plugin-banner" target="_blank">
-                <img src="http://static.seedprod.com.s3.amazonaws.com/ads/ultimate-coming-soon-page-banner-772x250.jpg" style="max-width:100%">
+                <img src="//s3.amazonaws.com/static.seedprod.com/ads/ultimate-coming-soon-page-banner-772x250.jpg" style="max-width:100%">
                 </a>
         		<?php //settings_errors(); ?>
                 <h2 class="nav-tab-wrapper" style="padding-left:20px">
@@ -152,9 +152,71 @@ if (!class_exists('SeedProd_Framework')) {
                         </div>
 						<div id="postbox-container-1" class="postbox-container">
 							<div id="side-sortables" class="meta-box-sortables ui-sortable">
+								<div class="postbox rss-postbox" style="background-color: #fcf8e3">
+									<div class="handlediv" title="Click to toggle"><br /></div>
+									<h3 class="hndle"><span><?php _e("How to launch a site that's successful on Day One", 'ultimate-coming-soon-page') ?></span></h3>
+									<div class="inside">
+
+
+											<p >There's nothing more disappointing than launching a new site and not get
+												enough visitors to support it. Find out how to build an audience before you
+												launch in this free 5-part course.</p>
+												<!-- Begin MailChimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-081711.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+	/* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup" style="background: transparent">
+<form action="//seedprod.us2.list-manage.com/subscribe/post?u=b917d2a79917ec125d6934c5b&amp;id=34383bb48a" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+    <div id="mc_embed_signup_scroll">
+
+<div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+<div class="mc-field-group">
+	<label for="mce-EMAIL"><strong>Email Address</strong>  <span class="asterisk">*</span>
+</label>
+	<input type="email" value="<?php echo get_option( 'admin_email' ); ?>" name="EMAIL" class="required email" id="mce-EMAIL">
+</div>
+<div class="mc-field-group">
+	<label for="mce-FNAME">First Name </label>
+	<input type="text" value="" name="FNAME" class="" id="mce-FNAME">
+</div>
+
+	<input type="hidden" value="Ultimate Coming Soon Plugin" name="SOURCE">
+
+	<div id="mce-responses" class="clear">
+		<div class="response" id="mce-error-response" style="display:none"></div>
+		<div class="response" id="mce-success-response" style="display:none"></div>
+	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;"><input type="text" name="b_b917d2a79917ec125d6934c5b_34383bb48a" tabindex="-1" value=""></div>
+    <div class="clear"><input type="submit" value="Sign Up" name="subscribe" id="mc-embedded-subscribe" class="button" style="background-color:#82bb42"></div>
+    </div>
+</form>
+</div>
+<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';fnames[3]='DV_VAR_1';ftypes[3]='text';fnames[4]='SOURCE';ftypes[4]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+<!--End mc_embed_signup-->
+
+										<!-- <div class="rss-widget">
+											<?php
+											wp_widget_rss_output(array(
+												'url' => 'http://seedprod.com/feed/',
+												'title' => 'SeedProd Blog',
+												'items' => 3,
+												'show_summary' => 0,
+												'show_author' => 0,
+												'show_date' => 1,
+												));
+												?>
+												<ul>
+													<li>&raquo; <a href="http://seedprod.com/subscribe/"><?php _e('Subscribe by Email', 'ultimate-coming-soon-page') ?></a></li>
+												</ul>
+											</div> -->
+										</div>
+									</div>
 								<!-- <a href="http://www.seedprod.com/plugins/wordpress-coming-soon-pro-plugin/?utm_source=plugin&utm_medium=banner&utm_campaign=coming-soon-pro-in-plugin-banner" target="_blank"><img src="http://static.seedprod.com/ads/coming-soon-pro-sidebar.png" /></a>
 								<br><br> -->
-								<div class="postbox support-postbox" style="background-color: #fcf8e3">
+								<div class="postbox support-postbox" style="background-color:#d9edf7">
 									<div class="handlediv" title="Click to toggle"><br /></div>
 									<h3 class="hndle"><span><?php _e('Plugin Support', 'ultimate-coming-soon-page') ?></span></h3>
 									<div class="inside">
@@ -171,7 +233,7 @@ if (!class_exists('SeedProd_Framework')) {
 									</div>
 								</div>
 								<?php if($this->plugin_type != 'pro'){ ?>
-									<div class="postbox like-postbox" style="background-color:#dff0d8">
+									<div class="postbox like-postbox" style="background-color:#d9edf7">
 										<div class="handlediv" title="Click to toggle"><br /></div>
 										<h3 class="hndle"><span><?php _e('Show Some Love', 'ultimate-coming-soon-page') ?></span></h3>
 										<div class="inside">
@@ -190,47 +252,9 @@ if (!class_exists('SeedProd_Framework')) {
 										</div>
 									</div>
 									<?php } ?>
-									<div class="postbox rss-postbox" style="background-color:#d9edf7">
-										<div class="handlediv" title="Click to toggle"><br /></div>
-										<h3 class="hndle"><span><?php _e("How to launch a site that's successful on Day One", 'ultimate-coming-soon-page') ?></span></h3>
-										<div class="inside">
-											<form action="https://www.getdrip.com/forms/7838563/submissions" method="post" target="_blank" data-drip-embedded-form="1541">
 
-												<p data-drip-attribute="description">There's nothing more disappointing than launching a new site and not get
-													enough visitors to support it. Find out how to build an audience before you
-													launch in this free 5-part course.</p>
-													<div>
-														<label for="fields[first_name]">First Name</label><br />
-														<input type="text" name="fields[first_name]" value="" />
-													</div>
-													<div>
-														<label for="fields[email]">Email Address</label><br />
-														<input type="text" name="fields[email]" value="" />
-													</div>
-													<br>
-													<div>
-														<input type="submit" name="submit" value="Learn How" data-drip-attribute="sign-up-button" class="button-primary" />
-													</div>
-												</form>
-											<!-- <div class="rss-widget">
-												<?php
-												wp_widget_rss_output(array(
-													'url' => 'http://seedprod.com/feed/',
-													'title' => 'SeedProd Blog',
-													'items' => 3,
-													'show_summary' => 0,
-													'show_author' => 0,
-													'show_date' => 1,
-													));
-													?>
-													<ul>
-														<li>&raquo; <a href="http://seedprod.com/subscribe/"><?php _e('Subscribe by Email', 'ultimate-coming-soon-page') ?></a></li>
-													</ul>
-												</div> -->
-											</div>
-										</div>
 
-										<div class="postbox rss-postbox" style="background-color:#f2dede">
+										<div class="postbox rss-postbox" style="background-color:#d9edf7">
 											<div class="handlediv" title="Click to toggle"><br /></div>
 											<h3 class="hndle"><span><?php _e('SeedProd Blog', 'ultimate-coming-soon-page') ?></span></h3>
 											<div class="inside">
@@ -238,7 +262,7 @@ if (!class_exists('SeedProd_Framework')) {
 												<div class="rss-widget">
 													<?php
 													wp_widget_rss_output(array(
-													'url' => 'http://seedprod.com/feed/',
+													'url' => 'http://feeds.feedburner.com/seedprod/',
 													'title' => 'SeedProd Blog',
 													'items' => 3,
 													'show_summary' => 0,
@@ -248,7 +272,7 @@ if (!class_exists('SeedProd_Framework')) {
 												?>
 												<ul>
 													<br>
-												<li>&raquo; <a href="https://feedburner.google.com/fb/a/mailverify?uri=seedprod"><?php _e('Subscribe by Email', 'ultimate-coming-soon-page') ?></a></li>
+												<li>&raquo; <a href="http://eepurl.com/PgbQf"><?php _e('Subscribe by Email', 'ultimate-coming-soon-page') ?></a></li>
 											</ul>
 										</div>
 									</div>

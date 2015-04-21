@@ -323,12 +323,14 @@ function ttfmake_option_defaults() {
 		'header-layout'                            => 1,
 		'header-branding-position'                 => 'left',
 		'header-bar-content-layout'                => 'default',
+		'header-hide-padding-bottom'               => 0,
 		'header-text'                              => '',
 		'header-show-social'                       => 0,
 		'header-show-search'                       => 1,
 		// Footer
 		'footer-widget-areas'                      => 3,
 		'footer-layout'                            => 1,
+		'footer-hide-padding-top'                  => 0,
 		'footer-text'                              => '',
 		'footer-show-social'                       => 1,
 		// Blog (Posts Page)

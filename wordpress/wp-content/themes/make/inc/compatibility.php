@@ -364,6 +364,24 @@ function ttfmake_upgrade_notices() {
 			)
 		);
 	}
+	if ( version_compare( $wp_version, '4.0', '<' ) ) {
+		ttfmake_register_admin_notice(
+			'make-wp-lt-40-dropping-39',
+			sprintf(
+				__( 'In the next release, Make will officially drop support for WordPress 3.9.x. Please %s to 4.0 or newer to maintain compatibility.', 'make' ),
+				sprintf(
+					'<a href="%1$s">%2$s</a>',
+					admin_url( 'update-core.php' ),
+					__( 'update WordPress', 'make' )
+				)
+			),
+			array(
+				'cap'    => 'update_core',
+				'screen' => array( 'index.php', 'themes.php', 'update-core.php' ),
+				'type'   => 'error',
+			)
+		);
+	}
 }
 
 add_action( 'admin_init', 'ttfmake_upgrade_notices' );
@@ -419,26 +437,6 @@ function ttfmake_plus_upgrade_notices() {
 				)
 			);
 		}
-		/*
-		else if ( version_compare( $make_plus_version, '1.5.0', '<' ) ) {
-			ttfmake_register_admin_notice(
-				'make-plus-lt-150',
-				sprintf(
-					__( 'A new version of Make Plus is available. Please %s to ensure compatibility with the Make theme.', 'make' ),
-					sprintf(
-						'<a href="%1$s" target="_blank">%2$s</a>',
-						esc_url( 'https://thethemefoundry.com/tutorials/updating-your-existing-theme/' ),
-						__( 'update to the latest version', 'make' )
-					)
-				),
-				array(
-					'cap'    => 'update_plugins',
-					'screen' => array( 'index.php', 'update-core.php', 'plugins.php' ),
-					'type'   => 'error',
-				)
-			);
-		}
-		*/
 	}
 }
 

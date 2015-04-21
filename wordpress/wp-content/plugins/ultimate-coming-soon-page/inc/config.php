@@ -69,15 +69,19 @@ if ( ! class_exists( 'SeedProd_Ultimate_Coming_Soon_Page' ) ) {
                     }
                 }
 
-	            if(!is_admin()){
-	                if(!is_feed()){
-	                    if ( !is_user_logged_in() || (isset($_GET['cs_preview']) && $_GET['cs_preview'] == 'true')) {
-	                        $this->coming_soon_rendered = true;
-							$file = plugin_dir_path(__FILE__).'template/template-coming-soon.php';
-	                        include($file);
-	                    }
-	                }
-	            }
+
+                // Show feed if feedburner is in use
+                if(!empty($seedprod_comingsoon_options['comingsoon_feedburner_address']) && is_feed()){
+                    return false;
+                }
+
+
+                if ( !is_user_logged_in() || (isset($_GET['cs_preview']) && $_GET['cs_preview'] == 'true')) {
+                    $this->coming_soon_rendered = true;
+					$file = plugin_dir_path(__FILE__).'template/template-coming-soon.php';
+                    include($file);
+                }
+
         }
 
         /**
@@ -442,6 +446,15 @@ $seedprod_comingsoon->options[] = array( "type" => "textbox",
                 "section_id" => "seedprod_section_coming_soon",
                 "setting_id" => "seedprod_comingsoon_options",
                 );
+
+$seedprod_comingsoon->options[] = array( "type" => "textarea",
+                "id" => "comingsoon_headerscripts",
+				"label" => __("Header Scripts", 'ultimate-coming-soon-page'),
+				"desc" => __("Enter any scripts that need to be outputted in the html head.", 'ultimate-coming-soon-page'),
+				"class" => "large-text",
+				"section_id" => "seedprod_section_coming_soon",
+				"setting_id" => "seedprod_comingsoon_options",
+				);
 
 $seedprod_comingsoon->options[] = array( "type" => "textarea",
                 "id" => "comingsoon_customhtml",

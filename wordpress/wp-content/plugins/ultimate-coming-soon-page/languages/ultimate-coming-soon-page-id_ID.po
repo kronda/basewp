@@ -1,0 +1,258 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultimate Coming Soon Page\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-12 12:02-0500\n"
+"PO-Revision-Date: 2015-04-01 22:23+0800\n"
+"Last-Translator: John Turner <john@seedprod.com>\n"
+"Language-Team:  <john@seedprod.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-Basepath: ../\n"
+"X-Generator: Poedit 1.7.5\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: id_ID\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: ultimate-coming-soon-page.php:38
+msgid ""
+"WordPress 3.0 and higher required. The plugin has now disabled itself. On a "
+"side note why are you running an old version :( Upgrade!"
+msgstr ""
+"WordPress 3.0 dan lebih tinggi diperlukan. Plugin sekarang telah "
+"dinonaktifkan sendiri. Di samping catatan Mengapa Anda menjalankan versi "
+"lama :( Upgrade!"
+
+#: framework/framework.php:289
+msgid "Media Image Library"
+msgstr "Media Image Library"
+
+#: framework/framework.php:403
+#, php-format
+msgid "Settings saved.  <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+msgstr ""
+"Pengaturan disimpan.  <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+
+#: framework/framework.php:514
+msgid "Save Changes"
+msgstr "Simpan Perubahan"
+
+#: inc/config.php:49
+msgid "Coming Soon Mode Active"
+msgstr "Mode Datang Segera Aktif"
+
+#: inc/config.php:78
+msgid "Enter Your Email"
+msgstr "Masukkan Email Anda"
+
+#: inc/config.php:79
+msgid "Error :( Please try again."
+msgstr "Salah :( Harap coba lagi."
+
+#: inc/config.php:80
+msgid "Please enter a valid email."
+msgstr "Masukkan email yang berlaku."
+
+#: inc/config.php:81
+msgid "You'll be notified soon!"
+msgstr "Anda akan disampaikan segera!"
+
+#: inc/config.php:138
+msgid "Unable to load lists, check your API Key!"
+msgstr "Tidak dapat memuat daftar, periksa kunci API anda!"
+
+#: inc/config.php:259
+msgid ""
+"Offer your visitors incentives such as coupons codes, free ebook, free "
+"software, etc. in exchange for their email.\n"
+"        \tJust fill out either or both of the fileds below and the "
+"information will be displayed after you have succesfully captured their "
+"email.\n"
+"        \t"
+msgstr ""
+"Tawarkan pengunjung anda berupa kode kupon, ebook gratis, software gratis, "
+"dst. agar mendapatkan email mereka.\n"
+"        \tIsi salah satu atau kedua area dibawah dan informasi akan "
+"ditampilkan setelah anda berhasil mendapatkan email mereka.\n"
+"        \t"
+
+#: inc/config.php:307
+msgid "Are you sure you want to DELETE all emails?"
+msgstr "Anda yakin ingin MENGHAPUS seluruh email?"
+
+#: inc/config.php:351 inc/config.php:353 inc/config.php:354
+msgid "Coming Soon"
+msgstr "Datang Segera"
+
+#: inc/config.php:376
+msgid "Settings"
+msgstr "Pengaturan"
+
+#: inc/config.php:388
+msgid "Enable"
+msgstr "Aktifkan"
+
+#: inc/config.php:389
+#, php-format
+msgid ""
+"Enable if you want to display a coming soon page to visitors. Users who are "
+"logged in will not see the coming soon page, this means you.  <a href='%s/?"
+"cs_preview=true'>Preview</a>"
+msgstr ""
+"Aktifkan jika anda ingin menampilkan halaman datang segera ke pengunjung. "
+"Pengguna yang tidak login tidak dapat melihat halaman datang segera, artinya "
+"anda.  <a href='%s/?cs_preview=true'>Pratinjau</a>"
+
+#: inc/config.php:390 inc/config.php:466
+msgid "Yes"
+msgstr "Ya"
+
+#: inc/config.php:396
+msgid "Image"
+msgstr "Gambar"
+
+#: inc/config.php:397
+msgid "Upload a logo or teaser image (or) enter the url to your image."
+msgstr "Unggah logo atau gambar menggoda (atau) masukkan url di gambar anda."
+
+#: inc/config.php:403
+msgid "Headline"
+msgstr "Judul"
+
+#: inc/config.php:404
+msgid ""
+"Write a headline for your coming soon page. Tip: Avoid using 'Coming Soon'."
+msgstr ""
+"Tulis judul untuk datang segera halaman anda. Tip: Hindari menggunakan "
+"'Datang Segera'."
+
+#: inc/config.php:410
+msgid "Description"
+msgstr "Deskripsi"
+
+#: inc/config.php:411
+msgid "Tell the visitor what to expect from your site."
+msgstr "Sampaikan ke pengunjung yang bisa diharapkan dari situs anda."
+
+#: inc/config.php:419
+msgid "Mailing List"
+msgstr "Milis"
+
+#: inc/config.php:427
+msgid "FeedBurn Address"
+msgstr "Alamat FeedBurn"
+
+#: inc/config.php:428
+msgid ""
+"Enter the part after http://feeds2.feedburner.com/ <a href='http://wordpress."
+"org/extend/plugins/ultimate-coming-soon-page/faq/'' target='_blanks'> Learn "
+"how</a> to use FeedBurner to collect emails."
+msgstr ""
+"Basukkan bagian setelah http://feeds2.feedburner.com/ <a href='http://"
+"wordpress.org/extend/plugins/ultimate-coming-soon-page/faq/'' "
+"target='_blanks'> Pelajari</a> cara menggunakan FeedBurner mengumpulkan "
+"email."
+
+#: inc/config.php:435
+msgid "Custom HTML"
+msgstr "Kustomisasi HTML"
+
+#: inc/config.php:436
+msgid ""
+"Enter any custom html or javascript that you want outputted. You can also "
+"enter you Google Analytics code."
+msgstr ""
+"Masukkan kustomisasi html atau javascript yang ingin anda keluarkan. Anda "
+"juga bisa memaskkan kode Google Analytics."
+
+#: inc/config.php:444
+msgid "Style"
+msgstr "Gaya"
+
+#: inc/config.php:449
+msgid "Background Color"
+msgstr "Warna Latar"
+
+#: inc/config.php:457
+msgid "Background Image"
+msgstr "Gambar Latar"
+
+#: inc/config.php:460
+msgid ""
+"Upload an optional background image (or) enter the url to your image. This "
+"will override the color above if set."
+msgstr ""
+"Unggah pilihan gambar latar (atau) masukkan url ke gambar anda. Ini akan "
+"mengesampingkan warna diatas jika diatur."
+
+#: inc/config.php:464
+msgid "Stretch Background Image"
+msgstr "Regangkan Gambar Latar"
+
+#: inc/config.php:465
+msgid "This will stretch your background image to match any browser size."
+msgstr "Ini akan meregangkan gambar latar agar sesuai dengan ukuran browser."
+
+#: inc/config.php:473
+msgid "Font Color"
+msgstr "Warna Huruf"
+
+#: inc/config.php:474
+msgid "Black"
+msgstr "Hitam"
+
+#: inc/config.php:474
+msgid "Gray"
+msgstr "Abu Abu"
+
+#: inc/config.php:474
+msgid "White"
+msgstr "Putih"
+
+#: inc/config.php:483
+msgid "Headline Font"
+msgstr "Huruf Judul"
+
+#: inc/config.php:487 inc/config.php:496
+msgid ""
+"View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html"
+"\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google "
+"Fonts</a>"
+msgstr ""
+"Lihat <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html"
+"\">System Fonts</a> - Lihat <a href=\"http://www.google.com/webfonts"
+"\">Google Fonts</a>"
+
+#: inc/config.php:491
+msgid "Body Font"
+msgstr "Huruf Body"
+
+#: inc/config.php:501
+msgid "Custom CSS"
+msgstr "Kustom CSS"
+
+#: inc/config.php:506
+msgid "Need to tweaks the styles? Add your custom CSS here."
+msgstr "Ingin men-tweak styles tambahkan kostumisasi CSS disini."
+
+#: inc/config.php:511
+msgid "Powered By SeedProd"
+msgstr "Didukung oleh SeedProd"
+
+#: inc/config.php:512
+msgid "Nope - Got No Love"
+msgstr "Tidak - Tidak Mendapat Cinta"
+
+#: inc/config.php:512
+msgid "Yep - I Love You Man"
+msgstr "Ya - Aku Mencintaimu"
+
+#: inc/config.php:513
+msgid ""
+"Can we show a <strong>cool stylish</strong> footer credit at the bottom the "
+"page."
+msgstr ""
+"Bolehkah kami menampilkan <strong>gaya keren</strong> catatan kaki kredit "
+"dihalaman bagian bawah."

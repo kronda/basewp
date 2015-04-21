@@ -1,7 +1,14 @@
 <?php
+/**
+ * @package GoogleAnalytics\Includes
+ */
 
+/**
+ * Options class.
+ */
 class Yoast_GA_Options {
 
+	/** @var array  */
 	public $options;
 
 	/**
@@ -59,7 +66,6 @@ class Yoast_GA_Options {
 	 */
 	public function __construct() {
 		$this->options = $this->get_options();
-		$this->options = $this->check_options( $this->options );
 
 		$this->plugin_path = plugin_dir_path( GAWP_FILE );
 		$this->plugin_url  = trailingslashit( plugin_dir_url( GAWP_FILE ) );
@@ -89,8 +95,8 @@ class Yoast_GA_Options {
 	 * @return bool
 	 */
 	public function update_option( $val ) {
-		$options                       = get_option( $this->option_name );
-		$options[$this->option_prefix] = $val;
+		$options                         = get_option( $this->option_name );
+		$options[ $this->option_prefix ] = $val;
 
 		return update_option( $this->option_name, $options );
 	}
@@ -103,32 +109,7 @@ class Yoast_GA_Options {
 	public function get_options() {
 		$options = get_option( $this->option_name );
 
-		return $options[$this->option_prefix];
-	}
-
-	/**
-	 * Check if all the options are set, to prevent a notice if debugging is enabled
-	 * When we have new changes, the settings are saved to the options class
-	 *
-	 * @param $options
-	 *
-	 * @return mixed
-	 */
-	public function check_options( $options ) {
-
-		$changes = 0;
-		foreach ( $this->default_ga_values() as $key => $value ) {
-			if ( ! isset( $options[$key] ) ) {
-				$options[$key] = $value;
-				$changes ++;
-			}
-		}
-
-		if ( $changes >= 1 ) {
-			$this->update_option( $options );
-		}
-
-		return $options;
+		return $options[ $this->option_prefix ];
 	}
 
 	/**
@@ -142,7 +123,8 @@ class Yoast_GA_Options {
 
 		if ( ! empty( $this->options['analytics_profile'] ) && ! empty( $this->options['analytics_profile_code'] ) ) {
 			$tracking_code = $this->options['analytics_profile_code'];
-		} elseif ( ! empty( $this->options['analytics_profile'] ) && empty( $this->options['analytics_profile_code'] ) ) {
+		}
+		elseif ( ! empty( $this->options['analytics_profile'] ) && empty( $this->options['analytics_profile_code'] ) ) {
 			// Analytics profile is still holding the UA code
 			$tracking_code = $this->options['analytics_profile'];
 		}
@@ -157,14 +139,14 @@ class Yoast_GA_Options {
 	/**
 	 * Convert a option value to a bool
 	 *
-	 * @param $option_name
+	 * @param string $option_name
 	 *
 	 * @return bool
 	 */
 	public function option_value_to_bool( $option_name ) {
 		$this->options = $this->get_options();
 
-		if ( isset( $this->options[$option_name] ) && $this->options[$option_name] == 1 ) {
+		if ( isset( $this->options[ $option_name ] ) && $this->options[ $option_name ] == 1 ) {
 			return true;
 		}
 
@@ -209,7 +191,7 @@ class Yoast_GA_Options {
 			}
 		}
 		// 5.2.8+ Add disabled dashboards option
-		if ( ! isset ( $this->options['dashboards_disabled'] ) || version_compare( $this->options['version'], '5.2.8', '>' ) ) {
+		if ( ( ! isset( $this->options['version'] ) || ! isset ( $this->options['dashboards_disabled'] ) || version_compare( $this->options['version'], '5.2.8', '>' ) ) && ! empty( $_POST ) ) {
 			$this->options['dashboards_disabled'] = 0;
 		}
 		// Check is API option already exists - if not add it
@@ -220,9 +202,9 @@ class Yoast_GA_Options {
 		// Fallback to make sure every default option has a value
 		$defaults = $this->default_ga_values();
 		if ( is_array( $defaults ) ) {
-			foreach ( $defaults[$this->option_prefix] as $key => $value ) {
-				if ( ! isset( $this->options[$key] ) ) {
-					$this->options[$key] = $value;
+			foreach ( $defaults[ $this->option_prefix ] as $key => $value ) {
+				if ( ! isset( $this->options[ $key ] ) ) {
+					$this->options[ $key ] = $value;
 				}
 			}
 		}
@@ -248,7 +230,7 @@ class Yoast_GA_Options {
 				'anonymous_data'             => 0,
 				'enable_universal'           => 1,
 				'demographics'               => 0,
-				'ignore_users'               => array( 'editor' ),
+				'ignore_users'               => array( 'administrator', 'editor' ),
 				'dashboards_disabled'        => 0,
 				'anonymize_ips'              => 0,
 				'track_download_as'          => 'event',

@@ -4,7 +4,7 @@
  * Author:      The Theme Foundry
  * Author URI:  https://thethemefoundry.com
  * Description: Create your website without touching a line of code. Make's flexible customization features and a powerful drag and drop page builder make designing your site fun and easy. Build almost anything: a simple portfolio or photography site, an ecommerce business site, a minimalist blog, or even a professional magazine. You'll start by customizing your background, layouts, fonts, colors, and logo. Next, add and organize your content using the drag and drop page builder. Add a photo, a video, a gallery, or even a slider to any page on your website. Make is responsive, so your website will naturally look great on phones, tablets, and desktop screens. It's also fully compatible with popular plugins like WooCommerce, Gravity Forms, Contact Form 7, Jetpack, and WP PageNavi.
- * Version:     1.5.0
+ * Version:     1.5.1
  * License:     GNU General Public License v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: make
@@ -174,12 +174,12 @@ a img {
 /*---------------------------------------------------------
  Extends (_preboot.scss)
 -------------------------------------------------------- */
-.clear, .site-header, .site-header-main, .header-bar, .site-content, .site-footer, .gallery, .entry-content, .builder-section, .site-content .container, .site-content .infinite-footer-container, #comments-nav, div.sharedaddy {
+.clear, .site-header, .site-header-main, .header-bar, .site-content, .site-footer, .gallery, .entry-content, .builder-section, .site-content .container, .site-content .infinite-footer-container, .site-content .page-template-template-builder-php .entry-content > .twitter-share, .page-template-template-builder-php .site-content .entry-content > .twitter-share, #comments-nav, div.sharedaddy {
 	zoom: 1; }
-.clear:before, .site-header:before, .site-header-main:before, .header-bar:before, .site-content:before, .site-footer:before, .gallery:before, .entry-content:before, .builder-section:before, .site-content .container:before, .site-content .infinite-footer-container:before, #comments-nav:before, div.sharedaddy:before, .clear:after, .site-header:after, .site-header-main:after, .header-bar:after, .site-content:after, .site-footer:after, .gallery:after, .entry-content:after, .builder-section:after, .site-content .container:after, .site-content .infinite-footer-container:after, #comments-nav:after, div.sharedaddy:after {
+.clear:before, .site-header:before, .site-header-main:before, .header-bar:before, .site-content:before, .site-footer:before, .gallery:before, .entry-content:before, .builder-section:before, .site-content .container:before, .site-content .infinite-footer-container:before, .site-content .page-template-template-builder-php .entry-content > .twitter-share:before, .page-template-template-builder-php .site-content .entry-content > .twitter-share:before, #comments-nav:before, div.sharedaddy:before, .clear:after, .site-header:after, .site-header-main:after, .header-bar:after, .site-content:after, .site-footer:after, .gallery:after, .entry-content:after, .builder-section:after, .site-content .container:after, .site-content .infinite-footer-container:after, .site-content .page-template-template-builder-php .entry-content > .twitter-share:after, .page-template-template-builder-php .site-content .entry-content > .twitter-share:after, #comments-nav:after, div.sharedaddy:after {
 	display: table;
 	content: ""; }
-.clear:after, .site-header:after, .site-header-main:after, .header-bar:after, .site-content:after, .site-footer:after, .gallery:after, .entry-content:after, .builder-section:after, .site-content .container:after, .site-content .infinite-footer-container:after, #comments-nav:after, div.sharedaddy:after {
+.clear:after, .site-header:after, .site-header-main:after, .header-bar:after, .site-content:after, .site-footer:after, .gallery:after, .entry-content:after, .builder-section:after, .site-content .container:after, .site-content .infinite-footer-container:after, .site-content .page-template-template-builder-php .entry-content > .twitter-share:after, .page-template-template-builder-php .site-content .entry-content > .twitter-share:after, #comments-nav:after, div.sharedaddy:after {
 	clear: both; }
 
 .break, p, ul, ol, dl, blockquote, h1, h2, h3, h4, h5, h6, pre, table {
@@ -234,7 +234,7 @@ body.boxed .site-wrapper {
 	width: 100%;
 	margin: 0 auto; }
 
-.container, .infinite-footer-container {
+.container, .infinite-footer-container, .page-template-template-builder-php .entry-content > .twitter-share {
 	max-width: 1024px;
 	margin: 0 auto;
 	padding: 0 32px;
@@ -1242,8 +1242,11 @@ img {
 	margin: 0 auto; }
 
 .screen-reader-text, .social-links li i span {
-	position: absolute !important; 
-	clip: rect(1px, 1px, 1px, 1px);}
+	position: absolute !important;
+	overflow: hidden; 
+	clip: rect(1px, 1px, 1px, 1px);
+	width: 1px;
+	height: 1px;}
 
 img.wp-smiley {
 	margin-top: 0;
@@ -1600,7 +1603,7 @@ iframe[src*="google.com/maps"] {
 	position: relative;
 	z-index: 2; }
 
-.page-template-template-builder-php .site-content > .container, .page-template-template-builder-php .site-content > .infinite-footer-container {
+.page-template-template-builder-php .site-content > .container, .page-template-template-builder-php .site-content > .infinite-footer-container, .page-template-template-builder-php .entry-content.site-content > .twitter-share {
 	width: 100%;
 	max-width: none;
 	padding: 0; }
@@ -1936,7 +1939,7 @@ iframe[src*="google.com/maps"] {
 	#sidebar-right {
 		float: right; } }
 
-.site-content .container, .site-content .infinite-footer-container {
+.site-content .container, .site-content .infinite-footer-container, .site-content .page-template-template-builder-php .entry-content > .twitter-share, .page-template-template-builder-php .site-content .entry-content > .twitter-share {
 	clear: both;
 	padding-bottom: 44px;
 	padding-bottom: 4.4rem; }
@@ -2327,6 +2330,20 @@ div.sharedaddy {
 	display: block; }
 
 /*---------------------------------------------------------
+ Postmatic (_support.scss)
+-------------------------------------------------------- */
+.widget_prompt_subscribe_widget input {
+	display: block; }
+.widget_prompt_subscribe_widget input, .widget_prompt_subscribe_widget div.subscribe.prompt, .widget_prompt_subscribe_widget div.unsubscribe.prompt {
+	margin-bottom: 1em; }
+.widget_prompt_subscribe_widget div.unsubscribe.prompt h5 {
+	margin-bottom: 0;
+	text-transform: none; }
+
+/*---------------------------------------------------------
+ Twitter (_support.scss)
+-------------------------------------------------------- */
+/*---------------------------------------------------------
  WooCommerce (_support.scss)
 -------------------------------------------------------- */
 .coupon #coupon_code {
@@ -2337,12 +2354,7 @@ div.sharedaddy {
 	border: none; }
 
 /*---------------------------------------------------------
- Postmatic (_support.scss)
+ Twitter (_support.scss)
 -------------------------------------------------------- */
-.widget_prompt_subscribe_widget input {
-	display: block; }
-.widget_prompt_subscribe_widget input, .widget_prompt_subscribe_widget div.subscribe.prompt, .widget_prompt_subscribe_widget div.unsubscribe.prompt {
-	margin-bottom: 1em; }
-.widget_prompt_subscribe_widget div.unsubscribe.prompt h5 {
-	margin-bottom: 0;
-	text-transform: none; }
+.twitter-tweet.twitter-tweet-rendered, .twitter-share-button.twitter-tweet-button {
+	margin-bottom: 22px !important; }

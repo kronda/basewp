@@ -486,7 +486,7 @@ function ttfmake_get_social_links() {
 		if ( '' !== $url ) {
 			$services_with_links[ $service ] = array(
 				'title' => $details['title'],
-				'url'   => esc_url( $url ),
+				'url'   => $url,
 				'class' => $details['class'],
 			);
 		}
@@ -497,7 +497,7 @@ function ttfmake_get_social_links() {
 	if ( 0 === $hide_rss ) {
 		$custom_rss = get_theme_mod( 'social-custom-rss', ttfmake_get_default( 'social-custom-rss' ) );
 		if ( ! empty( $custom_rss ) ) {
-			$services_with_links['rss']['url'] = esc_url( $custom_rss );
+			$services_with_links['rss']['url'] = $custom_rss;
 		} else {
 			$services_with_links['rss']['url'] = get_feed_link();
 		}
@@ -507,7 +507,7 @@ function ttfmake_get_social_links() {
 
 	// Properly set the email
 	if ( isset( $services_with_links['email']['url'] ) ) {
-		$services_with_links['email']['url'] = esc_url( 'mailto:' . $services_with_links['email']['url'] );
+		$services_with_links['email']['url'] = 'mailto:' . $services_with_links['email']['url'];
 	}
 
 	/**

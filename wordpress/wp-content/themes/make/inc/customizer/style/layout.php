@@ -13,6 +13,26 @@ if ( ! function_exists( 'ttfmake_css_layout' ) ) :
  */
 function ttfmake_css_layout() {
 	/**
+	 * Header & Footer
+	 */
+	$header_hide_padding_bottom = absint( get_theme_mod( 'header-hide-padding-bottom', ttfmake_get_default( 'header-hide-padding-bottom' ) ) );
+	$footer_hide_padding_top = absint( get_theme_mod( 'footer-hide-padding-top', ttfmake_get_default( 'footer-hide-padding-top' ) ) );
+	if ( $header_hide_padding_bottom || $footer_hide_padding_top ) {
+		$declarations = array();
+		if ( $header_hide_padding_bottom ) {
+			$declarations['padding-top'] = 0;
+		}
+		if ( $footer_hide_padding_top ) {
+			$declarations['padding-bottom'] = 0;
+		}
+		ttfmake_get_css()->add( array(
+			'selectors'    => array( '.site-content' ),
+			'declarations' => $declarations
+		) );
+	}
+
+
+	/**
 	 * Featured image alignment
 	 */
 	$views = array(

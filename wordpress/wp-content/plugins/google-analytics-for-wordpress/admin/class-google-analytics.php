@@ -1,6 +1,11 @@
 <?php
+/**
+ * @package GoogleAnalytics\Admin
+ */
 
-
+/**
+ * Google Analytics class.
+ */
 class Yoast_Google_Analytics {
 
 	/**
@@ -238,7 +243,7 @@ class Yoast_Google_Analytics {
 	/**
 	 * Format the accounts request
 	 *
-	 * @param $response
+	 * @param array $response
 	 *
 	 * @return mixed
 	 */
@@ -254,7 +259,7 @@ class Yoast_Google_Analytics {
 						$profiles = array();
 
 						foreach ( $item['webProperties'] as $property_key => $property ) {
-							$profiles[$property_key] = array(
+							$profiles[ $property_key ] = array(
 								'id'    => $property['id'],
 								'name'  => $property['name'],
 								'items' => array(),
@@ -263,7 +268,7 @@ class Yoast_Google_Analytics {
 							// Check if profiles is set
 							if ( isset( $property['profiles'] ) ) {
 								foreach ( $property['profiles'] as $key => $profile ) {
-									$profiles[$property_key]['items'][$key] = array_merge(
+									$profiles[ $property_key ]['items'][ $key ] = array_merge(
 										$profile,
 										array(
 											'name'    => $profile['name'] . ' (' . $property['id'] . ')',
@@ -274,7 +279,7 @@ class Yoast_Google_Analytics {
 							}
 						}
 
-						$accounts[$item['id']] = array(
+						$accounts[ $item['id'] ] = array(
 							'id'          => $item['id'],
 							'ua_code'     => $property['id'],
 							'parent_name' => $item['name'],
@@ -300,7 +305,9 @@ class Yoast_Google_Analytics {
 
 }
 
-
+/**
+ * Notice class.
+ */
 class Yoast_Google_Analytics_Notice {
 
 	/**
@@ -344,7 +351,7 @@ class Yoast_Google_Analytics_Notice {
 	/**
 	 * Showing the given error as an error div
 	 *
-	 * @param $error_message
+	 * @param string $error_message
 	 */
 	private static function show_error( $error_message ) {
 		echo '<div class="error"><p>' . $error_message . '</p></div>';

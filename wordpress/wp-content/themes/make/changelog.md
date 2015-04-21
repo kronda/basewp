@@ -1,3 +1,11 @@
+## 1.5.1
+
+* Added Customizer options to remove header and footer boundary padding.
+* Added style support for the new official Twitter plugin.
+* Fixed broken mailto link for email icon in header/footer social icons.
+* Fixed extra space added below footer in Chrome browsers.
+* Added a notice that Make will drop support for WP 3.9 soon.
+
 ## 1.5.0
 
 * Customizer overhaul

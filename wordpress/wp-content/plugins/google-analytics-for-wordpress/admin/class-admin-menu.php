@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package GoogleAnalytics\AdminMenu
+ */
 
 /**
  * This class is for the backend, extendable for all child classes
@@ -6,16 +9,12 @@
 class Yoast_GA_Admin_Menu {
 
 	/**
-	 * The property used for storing target object (class admin)
-	 *
-	 * @var
+	 * @var object $target_object The property used for storing target object (class admin)
 	 */
 	private $target_object;
 
 	/**
-	 * The dashboards disabled bool
-	 *
-	 * @var
+	 * @var boolean $dashboard_disabled The dashboards disabled bool
 	 */
 	private $dashboards_disabled;
 
@@ -45,8 +44,8 @@ class Yoast_GA_Admin_Menu {
 			add_action( 'network_admin_menu', array( $this, 'create_admin_menu' ), 5 );
 		}
 
-		$this->dashboards_disabled = Yoast_GA_Settings::get_instance()->dashboards_disabled();
-		$this->parent_slug = ( $this->dashboards_disabled ? 'yst_ga_settings' : 'yst_ga_dashboard' );
+		$this->dashboards_disabled = Yoast_GA_Options_Utils::get_instance()->dashboards_disabled();
+		$this->parent_slug         = ( ( $this->dashboards_disabled ) ? 'yst_ga_settings' : 'yst_ga_dashboard' );
 	}
 
 	/**
@@ -92,7 +91,9 @@ class Yoast_GA_Admin_Menu {
 
 		if ( $on_top ) {
 			$position = $this->get_menu_position_value( 'top' );
-		} else {
+
+		}
+		else {
 			$position = $this->get_menu_position_value( 'bottom' );
 		}
 
@@ -107,7 +108,7 @@ class Yoast_GA_Admin_Menu {
 	/**
 	 * Get the top or bottom menu location number
 	 *
-	 * @param $location
+	 * @param string $location
 	 *
 	 * @return string
 	 */
@@ -122,8 +123,9 @@ class Yoast_GA_Admin_Menu {
 	/**
 	 * Prepares an array that can be used to add a submenu page to the Google Analytics for Wordpress menu
 	 *
-	 * @param $submenu_name
-	 * @param $font_color
+	 * @param string $submenu_name
+	 * @param string $submenu_slug
+	 * @param string $font_color
 	 *
 	 * @return array
 	 */
@@ -157,27 +159,27 @@ class Yoast_GA_Admin_Menu {
 	/**
 	 * Adds a submenu page to the Google Analytics for WordPress menu
 	 *
-	 * @param $submenu_page
+	 * @param array $submenu_page
 	 */
 	private function add_submenu_page( $submenu_page ) {
-		$page             = add_submenu_page( $submenu_page['parent_slug'], $submenu_page['page_title'], $submenu_page['menu_title'], $submenu_page['capability'], $submenu_page['menu_slug'], $submenu_page['submenu_function'] );
-		$is_not_dashboard = ( 'yst_ga_settings' === $submenu_page['menu_slug'] || 'yst_ga_extensions' === $submenu_page['menu_slug'] );
+		$page         = add_submenu_page( $submenu_page['parent_slug'], $submenu_page['page_title'], $submenu_page['menu_title'], $submenu_page['capability'], $submenu_page['menu_slug'], $submenu_page['submenu_function'] );
+		$is_dashboard = ( 'yst_ga_dashboard' === $submenu_page['menu_slug'] );
 
-		$this->add_assets( $page, $is_not_dashboard );
+		$this->add_assets( $page, $is_dashboard );
 	}
 
 	/**
 	 * Adding stylesheets and based on $is_not_dashboard maybe some more styles and scripts.
 	 *
 	 * @param string  $page
-	 * @param boolean $is_not_dashboard
+	 * @param boolean $is_dashboard
 	 */
-	private function add_assets( $page, $is_not_dashboard ) {
+	private function add_assets( $page, $is_dashboard ) {
 		add_action( 'admin_print_styles-' . $page, array( 'Yoast_GA_Admin_Assets', 'enqueue_styles' ) );
 
 		add_action( 'admin_print_styles-' . $page, array( 'Yoast_GA_Admin_Assets', 'enqueue_settings_styles' ) );
 		add_action( 'admin_print_scripts-' . $page, array( 'Yoast_GA_Admin_Assets', 'enqueue_scripts' ) );
-		if ( ! $is_not_dashboard ) {
+		if ( ! $is_dashboard && filter_input( INPUT_GET, 'page' ) === 'yst_ga_dashboard' ) {
 			Yoast_GA_Admin_Assets::enqueue_dashboard_assets();
 		}
 	}
@@ -188,13 +190,14 @@ class Yoast_GA_Admin_Menu {
 	 * - Settings
 	 * - Extensions
 	 *
-	 * @return array
+	 * @return void
 	 */
 	private function add_submenu_pages() {
 		foreach ( $this->get_submenu_types() as $submenu ) {
 			if ( isset( $submenu['color'] ) ) {
 				$submenu_page = $this->prepare_submenu_page( $submenu['label'], $submenu['slug'], $submenu['color'] );
-			} else {
+			}
+			else {
 				$submenu_page = $this->prepare_submenu_page( $submenu['label'], $submenu['slug'] );
 			}
 			$this->add_submenu_page( $submenu_page );
