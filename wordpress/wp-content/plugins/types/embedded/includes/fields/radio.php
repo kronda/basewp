@@ -89,8 +89,8 @@ function wpcf_fields_radio_editor_callback( $field, $data ) {
         'supports' => array('style'),
         'tabs' => array(
             'display' => array(
-                'menu_title' => __( 'Display', 'wpcf' ),
-                'title' => __( 'Display', 'wpcf' ),
+                'menu_title' => __( 'Display options', 'wpcf' ),
+                'title' => __( 'Display options for this field:', 'wpcf' ),
                 'content' => WPCF_Loader::template( 'editor-modal-radio', $data ),
             )
         ),

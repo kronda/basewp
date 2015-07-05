@@ -4,10 +4,6 @@
  *
  * Returns HTML formatted output for elements and handles form submission.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/classes/forms.php $
- * $LastChangedDate: 2015-03-16 12:03:31 +0000 (Mon, 16 Mar 2015) $
- * $LastChangedRevision: 1113864 $
- * $LastChangedBy: iworks $
  *
  *
  * @version 1.0

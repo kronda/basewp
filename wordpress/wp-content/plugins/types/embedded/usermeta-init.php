@@ -10,10 +10,6 @@ $fields_access = new Post_Fields_Access;
  * @author Gen gen.i@icanlocalize.com
  * @since Types 1.3
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/usermeta-init.php $
- * $LastChangedDate: 2015-04-01 14:15:17 +0000 (Wed, 01 Apr 2015) $
- * $LastChangedRevision: 1125405 $
- * $LastChangedBy: iworks $
  *
  */
 function wpcf_admin_menu_edit_user_fields_hook() {
@@ -257,7 +253,7 @@ if ( !isset( $_GET['post_type'] ) && isset( $_GET['post'] ) ) {
 if ( isset( $post_type ) && in_array( $post_type,
                 array('view', 'view-template', 'cred-form') ) ) {
     add_filter( 'editor_addon_menus_wpv-views',
-            'wpcf_admin_post_add_usermeta_to_editor_js' );
+            'wpcf_admin_post_add_usermeta_to_editor_js', 20 );
     require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields-post.php';
     add_action( 'admin_footer', 'wpcf_admin_post_js_validation' );
     //wpcf_enqueue_scripts();
@@ -284,7 +280,7 @@ function wpcf_usermeta_get_user( $method = '' ){
  * @author Gen gen.i@icanlocalize.com
  * @since Types 1.3
  */
-function wpcf_admin_post_add_usermeta_to_editor_js( $items, $views_callback = false ){
+function wpcf_admin_post_add_usermeta_to_editor_js( $menu, $views_callback = false ){
     global $wpcf;
 
     $post = wpcf_admin_get_edited_post();
@@ -294,14 +290,13 @@ function wpcf_admin_post_add_usermeta_to_editor_js( $items, $views_callback = fa
 
     $groups = wpcf_admin_fields_get_groups( 'wp-types-user-group' );
     $user_id = wpcf_usermeta_get_user();
-    $add = array();
     if ( !empty( $groups ) ) {
         $item_styles = array();
         foreach ( $groups as $group_id => $group ) {
             if ( empty( $group['is_active'] ) ) {
                 continue;
             }
-            $group['name'] .= ' (User meta fields)';
+			$group_name = sprintf( __( '%s (Usermeta fields)', 'wpcf' ) , $group['name'] );
             $fields = wpcf_admin_fields_get_fields_by_group( $group['id'],
                     'slug', true, false, true, 'wp-types-user-group',
                     'wpcf-usermeta' );
@@ -328,8 +323,8 @@ function wpcf_admin_post_add_usermeta_to_editor_js( $items, $views_callback = fa
                             . '\', \'views-usermeta\', ' . $post->ID . ')';
                     }
 
-                    $add[$group['name']][stripslashes( $field['name'] )] = array(stripslashes( $field['name'] ), trim( wpcf_usermeta_get_shortcode( $field ),
-                                '[]' ), $group['name'], $callback);
+                    $menu[$group_name][stripslashes( $field['name'] )] = array(stripslashes( $field['name'] ), trim( wpcf_usermeta_get_shortcode( $field ),
+                                '[]' ), $group_name, $callback);
                 }
                 /*
                  * Since Types 1.2
@@ -341,8 +336,7 @@ function wpcf_admin_post_add_usermeta_to_editor_js( $items, $views_callback = fa
         }
     }
 
-    $items = $items + $add;
-    return $items;
+    return $menu;
 
 }
 

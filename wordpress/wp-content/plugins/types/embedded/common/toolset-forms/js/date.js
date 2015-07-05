@@ -3,10 +3,12 @@ var wptDate = (function ($) {
     function init(parent) {
         if ($.isFunction($.fn.datepicker)) {
             $('input.js-wpt-date', $(parent)).each(function (index) {
-                if (!$(this).is(':disabled') && !$(this).hasClass('hasDatepicker')) {
+                //removed !$(this).is(':disabled') && 
+                //https://onthegosystems.myjetbrains.com/youtrack/issue/cred-64
+                if (/*!$(this).is(':disabled') &&*/ !$(this).hasClass('hasDatepicker')) {
                     a = wptDate.add($(this));
                     //a.next().after('<span style="margin-left:10px"><i>' + wptDateData.dateFormatNote + '</i></span>').data( 'dateFormatNote', true );
-                }
+                } 
             });
         }
 

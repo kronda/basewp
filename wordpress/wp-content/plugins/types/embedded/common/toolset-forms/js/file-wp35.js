@@ -1,9 +1,5 @@
 /**
  *
- * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/js/file-wp35.js $
- * $LastChangedDate: 2015-02-18 12:50:24 +0100 (śro, 18 lut 2015) $
- * $LastChangedRevision: 31718 $
- * $LastChangedBy: marcin $
  *
  */
 var wptFile = (function($, w) {
@@ -31,10 +27,18 @@ var wptFile = (function($, w) {
         */
         // Build the choose from library frame.
         $('.js-wpt-field').on('click', 'a.js-wpt-file-upload', function( event ) {
-            var $el = $(this);
+            wptFile.bindOpen($(this), event);
+        });
+    }
+
+    function bindOpen($el, event)
+    {
             var $type = $el.data('wpt-type');
             var $id = $el.parent().attr('id');
-            event.preventDefault();
+
+            if ( event ) {
+                event.preventDefault();
+            }
 
             // If the media frame already exists, reopen it.
             if ( frame[$id] ) {
@@ -78,6 +82,10 @@ var wptFile = (function($, w) {
                         } else {
                             $('.wpt-file-preview img', $parent.parent()).attr('src', attachment.attributes.sizes.full.url);
                         }
+                        $('.wpt-file-preview img', $parent.parent()).data('full-src', attachment.attributes.sizes.full.url);
+                        if ( 'function' == typeof bind_colorbox_to_thumbnail_preview) {
+                            bind_colorbox_to_thumbnail_preview();
+                        }
                         break;
                     default:
                         $('.textfield', $parent).val(attachment.attributes.url);
@@ -87,10 +95,11 @@ var wptFile = (function($, w) {
             });
 
             frame[$id].open();
-        });
     }
+
     return {
         init: init,
+        bindOpen: bindOpen,
     };
 })(jQuery);
 

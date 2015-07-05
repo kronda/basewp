@@ -52,7 +52,11 @@ var typesValidation = (function($) {
                 $("input#save-post").addClass("button-disabled");
                 $("#save-action .ajax-loading").css("visibility", "hidden");
                 $("#publishing-action #ajax-loading").css("visibility", "hidden");
-                // $.validator.defaults.highlight(element, errorClass, validClass); // Do not add class to element
+                /**
+                 * remove colorbox
+                 */
+                $('#cboxOverlay').remove();
+                $('#colorbox').remove();
             },
             unhighlight: function(element, errorClass, validClass) {
                 $("input#publish, input#save-post").removeClass("button-primary-disabled").removeClass("button-disabled");

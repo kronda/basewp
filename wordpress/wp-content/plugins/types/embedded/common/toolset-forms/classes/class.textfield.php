@@ -1,10 +1,6 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.textfield.php $
- * $LastChangedDate: 2015-03-02 10:49:00 +0000 (Mon, 02 Mar 2015) $
- * $LastChangedRevision: 1103173 $
- * $LastChangedBy: iworks $
  *
  */
 require_once "class.field_factory.php";

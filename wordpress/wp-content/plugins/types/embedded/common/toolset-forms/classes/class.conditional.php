@@ -117,8 +117,8 @@ class WPToolset_Forms_Conditional {
                 //Fix REGEX conditions that contains \ that is stripped out
                 if (strpos($evaluate, "REGEX") === false) {
                     $evaluate = wpv_filter_parse_date($evaluate);
-                    $evaluate = self::handle_user_function($evaluate);                    
-                }   
+                    $evaluate = self::handle_user_function($evaluate);
+                }
                 //###############################################################################################
                 $fields = self::extractFields($evaluate);
 
@@ -271,11 +271,11 @@ class WPToolset_Forms_Conditional {
      * @param type $evaluate
      * @return boolean
      */
-    public static function evaluateCustom($evaluate, $values) {       
+    public static function evaluateCustom($evaluate, $values) {
         //###############################################################################################
         //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/193583580/comments
         //Fix REGEX conditions that contains \ that is stripped out
-        if (strpos($evaluate, "REGEX") === false) {            
+        if (strpos($evaluate, "REGEX") === false) {
             $evaluate = trim(stripslashes($evaluate));
             // Check dates
             $evaluate = wpv_filter_parse_date($evaluate);
@@ -301,7 +301,6 @@ class WPToolset_Forms_Conditional {
     }
 
     private static function _update_values_in_expression($evaluate, $fields, $values) {
-
         // use string replace to replace any fields with their values.
         // Sort by length just in case a field name contians a shorter version of another field name.
         // eg.  $my-field and $my-field-2
@@ -310,15 +309,19 @@ class WPToolset_Forms_Conditional {
         usort($keys, 'WPToolset_Forms_Conditional::sortByLength');
 
         foreach ($keys as $key) {
+            $is_numeric = false;
+            $is_array = false;
             $value = isset($values[$fields[$key]]) ? $values[$fields[$key]] : '';
             if ($value == '') {
                 $value = "''";
             }
             if (is_numeric($value)) {
                 $value = '\'' . $value . '\'';
+                $is_numeric = true;
             }
 
             if ('array' === gettype($value)) {
+                $is_array = true;
                 // workaround for datepicker data to cover all cases
                 if (array_key_exists('timestamp', $value)) {
                     if (is_numeric($value['timestamp'])) {
@@ -337,13 +340,15 @@ class WPToolset_Forms_Conditional {
                 }
             }
 
+            if (!empty($value) && $value != "''" && !$is_numeric && !$is_array) {
+                $value = '\'' . $value . '\'';
+            }
 
             // First replace the $(field_name) format
             $evaluate = str_replace('$(' . $fields[$key] . ')', $value, $evaluate);
             // next replace the $field_name format
             $evaluate = str_replace('$' . $fields[$key], $value, $evaluate);
         }
-
         return $evaluate;
     }
 
@@ -353,11 +358,11 @@ class WPToolset_Forms_Conditional {
      * @param type $evaluate
      * @return type
      */
-    public static function extractFields($evaluate) {        
+    public static function extractFields($evaluate) {
         //###############################################################################################
         //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/193583580/comments
         //Fix REGEX conditions that contains \ that is stripped out
-        if (strpos($evaluate, "REGEX") === false) {   
+        if (strpos($evaluate, "REGEX") === false) {
             $evaluate = trim(stripslashes($evaluate));
             // Check dates
             $evaluate = wpv_filter_parse_date($evaluate);
@@ -493,8 +498,7 @@ if (!class_exists('WPV_Handle_Users_Functions')) {
             return false;
         }
 
-        private static function get_info()
-        {
+        private static function get_info() {
             if (!is_user_logged_in()) {
                 return false;
             }

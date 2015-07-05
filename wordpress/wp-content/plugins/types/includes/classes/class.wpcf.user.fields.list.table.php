@@ -82,7 +82,7 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
         switch($column_name){
             case 'title':
             case 'description':
-                return $item[$column_name];
+                return stripslashes($item[$column_name]);
             case 'show_for':
                 $show_for = wpcf_admin_get_groups_showfor_by_group($item['id']);
                 if (function_exists('wpcf_access_register_caps')){
@@ -138,7 +138,6 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
                         'wpcf_action' => 'delete_usermeta_group',
                         'group_id' => $item['id'],
                         'wpcf_ajax_update' => 'wpcf_list_ajax_response_'.$item['id'],
-                        'wpcf_ajax_callback' => 'wpcfRefresh',
                         '_wpnonce' => wp_create_nonce('delete_usermeta_group'),
                         'wpcf_warning' => urlencode(__('Are you sure?', 'wpcf')),
                     ),
@@ -369,7 +368,7 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
                     'slug' => $group['slug'],
                     'status' => (isset($group['is_active']) && $group['is_active'])? 'active':'inactive',
                     'supports' => isset($group['supports'])? $group['supports']:array(),
-                    'title' => $group['name'],
+                    'title' => stripslashes($group['name']),
                 );
                 $add_one = true;
                 if ( $s ) {

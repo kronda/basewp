@@ -15,13 +15,13 @@ if (
     $marketing->delete_option_kind();
 ?>
 <div class="wrap wp-types select-kind">
-    <h2><?php _e('What kind of site are you building?', 'wcpf') ?></h2>
+    <h2><?php _e('What kind of site are you building?', 'wpcf') ?></h2>
     <?php settings_errors(); ?>
-    <p><?php _e('Types plugin includes a lot of features and there are many possibilities. By selecting what kind of site you are building, you allow Types to advise you about what features are needed and how to use them.', 'wcpf'); ?></p>
+    <p><?php _e('Types plugin includes a lot of features and there are many possibilities. By selecting what kind of site you are building, you allow Types to advise you about what features are needed and how to use them.', 'wpcf'); ?></p>
     <form method="post">
         <?php wp_nonce_field('update', 'marketing'); ?>
         <?php $marketing->kind_list(); ?>
-        <a href="#" id="wcpf-getting-started-button" class="button"><?php _e('Continue', 'wcpf'); ?></a>
+        <a href="#" id="wcpf-getting-started-button" class="button"><?php _e('Continue', 'wpcf'); ?></a>
     </form>
 </div>
 <?php } else {

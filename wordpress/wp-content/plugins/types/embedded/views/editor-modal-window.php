@@ -12,21 +12,24 @@ if ( !isset( $data ) ) {
     $data = array();
 }
 
-$data = array_merge( array(
-    'field_name' => $data['field_type_data']['title'],
-    'title' => sprintf( __( 'Insert %s', 'wpcf' ),
-            $data['field_type_data']['title'] ),
-    'submit_button_title' => __('Insert shortcode', 'wpcf'),
-    'tabs' => array(),
-    'supports' => array(),
-    'user_form' => '',
-    'parents' => array(),
-    'post_types' => array(),
-    'style' => '',
-    'class' => '',
-    'is_repetitive' => false,
-    'show_name' => false,
-        ), (array) $data );
+$data = array_merge(
+    array(
+        'field_name' => $data['field_type_data']['title'],
+        'title' => sprintf('%s %s', $data['field']['name'], __('field', 'wpcf')),
+        'submit_button_title' => __('Insert shortcode', 'wpcf'),
+        'tabs' => array(),
+        'supports' => array(),
+        'user_form' => '',
+        'parents' => array(),
+        'post_types' => array(),
+        'style' => '',
+        'class' => '',
+        'is_repetitive' => false,
+        'show_name' => false,
+    ),
+    (array) $data
+);
+
 
 ?>
 
@@ -43,11 +46,11 @@ $data = array_merge( array(
         'wpcf' ); ?></a>
                     <a class="types-media-menu-item" data-bind="tedSupports: 'separator'" href="#"><?php _e( 'Separator', 'wpcf' ); ?></a>
                     <a class="types-media-menu-item" data-bind="tedSupports: 'user_id'" href="#"><?php _e( 'User','wpcf' ); ?></a>
-                    <a class="types-media-menu-item" data-bind="tedSupports: 'post_id'" href="#"><?php _e( 'Post ID', 'wpcf' ); ?></a>
+                    <a class="types-media-menu-item" data-bind="tedSupports: 'post_id'" href="#"><?php _e( 'Post selection', 'wpcf' ); ?></a>
                     <div class="separator"></div>
                     <p class="form-inline">
                         <input type="checkbox" id="types-modal-raw" name="raw_mode" value="1" data-bind="checked: raw, click: rawDisableAll" />
-                        <label for="types-modal-raw"><?php _e( 'RAW field output', 'wpcf' ); ?></label>
+                        <label for="types-modal-raw"><?php _e( 'Display this field without any formatting', 'wpcf' ); ?></label>
                         <i class="icon-question-sign js-show-tooltip" data-header="<?php _e( 'RAW mode', 'wpv-views' ) ?>" data-content="<?php _e( 'When checked, displays raw data stored in database.', 'wpv-views' ) ?>"></i>
                     </p>
                 </div>
@@ -154,7 +157,7 @@ $data = array_merge( array(
 <!-- POST ID FORM -->
 <script id="tpl-types-editor-modal-post_id" type="text/html">
 
-    <h2><?php _e( ' Display this field for :', 'wpcf' ); ?></h2>
+    <h2><?php _e( 'Display this field for:', 'wpcf' ); ?></h2>
 
     <p class="form-inline">
         <input type="radio" id="post-id-current" name="post_id" value="current" data-bind="checked: relatedPost"	/>
@@ -169,7 +172,7 @@ $data = array_merge( array(
     <?php if ( !empty( $data['parents'] ) ): ?>
     <p class="form-inline">
         <input type="radio" id="post-id-related" name="post_id" value="related" data-bind="checked: relatedPost" />
-        <label for="post-id-related"><?php _e( 'A related post to the current post', 'wpcf' ); ?></label>
+        <label for="post-id-related"><?php _e( 'The parent of this post, set by Types (parent/child relationship)', 'wpcf' ); ?></label>
     </p>
     <div class="group-nested" data-bind="visible: relatedPost() == 'related'">
         <p class="form-inline"><?php foreach ( $data['parents'] as $post ): ?>
@@ -182,7 +185,7 @@ $data = array_merge( array(
     <?php if ( empty( $data['parents'] ) ): ?>
     <p class="form-inline">
         <input type="radio" id="post-id-related" name="post_id" value="related" data-bind="checked: relatedPost" />
-        <label for="post-id-related"><?php _e( 'A related post to the current post',
+        <label for="post-id-related"><?php _e( 'The parent of this post, set by Types (parent/child relationship)',
         'wpcf' ); ?></label>
     </p>
     <div class="group-nested">
@@ -203,7 +206,7 @@ $data = array_merge( array(
     </p>
     <div class="group-nested" data-bind="visible: relatedPost() == 'post_id'">
         <p class="form-inline">
-            <label for="post-id-post_id"><?php _e( 'Post ID', 'wpcf' ); ?></label>
+            <label for="post-id-post_id"><?php _e( 'Post selection', 'wpcf' ); ?></label>
             <input type="text" id="post-id-post_id" name="specific_post_id" data-bind="value: specificPostID" />
         </p>
     </div>

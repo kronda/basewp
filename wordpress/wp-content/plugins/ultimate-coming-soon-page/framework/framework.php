@@ -154,48 +154,26 @@ if (!class_exists('SeedProd_Framework')) {
 							<div id="side-sortables" class="meta-box-sortables ui-sortable">
 								<div class="postbox rss-postbox" style="background-color: #fcf8e3">
 									<div class="handlediv" title="Click to toggle"><br /></div>
-									<h3 class="hndle"><span><?php _e("How to launch a site that's successful on Day One", 'ultimate-coming-soon-page') ?></span></h3>
-									<div class="inside">
+									<form action="https://www.getdrip.com/forms/2650489/submissions" method="post" target="_blank" data-drip-embedded-form="2650489">
+	  <h3 class="hndle" data-drip-attribute="headline"><span>How to launch a site that&#x27;s successful on Day One</span></h3>
+						<div class="inside">
 
 
-											<p >There's nothing more disappointing than launching a new site and not get
-												enough visitors to support it. Find out how to build an audience before you
-												launch in this free 5-part course.</p>
-												<!-- Begin MailChimp Signup Form -->
-<link href="//cdn-images.mailchimp.com/embedcode/classic-081711.css" rel="stylesheet" type="text/css">
-<style type="text/css">
-	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
-	/* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
-	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-</style>
-<div id="mc_embed_signup" style="background: transparent">
-<form action="//seedprod.us2.list-manage.com/subscribe/post?u=b917d2a79917ec125d6934c5b&amp;id=34383bb48a" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-    <div id="mc_embed_signup_scroll">
+							<p data-drip-attribute="description">There&#x27;s nothing more disappointing than launching a new site and not get enough visitors to support it. Find out how to build an audience before you launch in this free 5-part course.</p>
+							<div>
+								<label for="fields[email]">Email Address</label><br />
+								<input class="regular-text" style="width:100%" type="email" name="fields[email]" value="<?php echo get_option( 'admin_email' ); ?>" />
+							</div>
 
-<div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
-<div class="mc-field-group">
-	<label for="mce-EMAIL"><strong>Email Address</strong>  <span class="asterisk">*</span>
-</label>
-	<input type="email" value="<?php echo get_option( 'admin_email' ); ?>" name="EMAIL" class="required email" id="mce-EMAIL">
-</div>
-<div class="mc-field-group">
-	<label for="mce-FNAME">First Name </label>
-	<input type="text" value="" name="FNAME" class="" id="mce-FNAME">
-</div>
+							<div style="margin-top:10px">
+								<label for="fields[first_name]">First Name</label><br />
+								<input class="regular-text" style="width:100%" type="text" name="fields[first_name]" value="" />
+							</div>
 
-	<input type="hidden" value="Ultimate Coming Soon Plugin" name="SOURCE">
+						<div style="margin-top:10px">
+							<input type="submit" name="submit" value="Subscribe Now" style="background-color:red; border-color:firebrick;" data-drip-attribute="sign-up-button" class="button-primary" />
+						</div>
 
-	<div id="mce-responses" class="clear">
-		<div class="response" id="mce-error-response" style="display:none"></div>
-		<div class="response" id="mce-success-response" style="display:none"></div>
-	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-    <div style="position: absolute; left: -5000px;"><input type="text" name="b_b917d2a79917ec125d6934c5b_34383bb48a" tabindex="-1" value=""></div>
-    <div class="clear"><input type="submit" value="Sign Up" name="subscribe" id="mc-embedded-subscribe" class="button" style="background-color:#82bb42"></div>
-    </div>
-</form>
-</div>
-<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';fnames[3]='DV_VAR_1';ftypes[3]='text';fnames[4]='SOURCE';ftypes[4]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
-<!--End mc_embed_signup-->
 
 										<!-- <div class="rss-widget">
 											<?php
@@ -213,6 +191,9 @@ if (!class_exists('SeedProd_Framework')) {
 												</ul>
 											</div> -->
 										</div>
+									</form>
+
+
 									</div>
 								<!-- <a href="http://www.seedprod.com/plugins/wordpress-coming-soon-pro-plugin/?utm_source=plugin&utm_medium=banner&utm_campaign=coming-soon-pro-in-plugin-banner" target="_blank"><img src="http://static.seedprod.com/ads/coming-soon-pro-sidebar.png" /></a>
 								<br><br> -->

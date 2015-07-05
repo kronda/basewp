@@ -2,10 +2,6 @@
  *
  * Custom Types form JS
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/resources/js/custom-types-form.js $
- * $LastChangedDate: 2014-11-18 06:47:25 +0000 (Tue, 18 Nov 2014) $
- * $LastChangedRevision: 1027712 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -27,26 +23,35 @@ jQuery(document).ready(function(){
         /*
          * Check if singular and plural are same
          */
-        if (jQuery('#name-singular').val().toLowerCase() == jQuery('#name-plural').val().toLowerCase()) {
-            if (jQuery('#wpcf_warning_same_as_slug input[type=checkbox]').is(':checked')) {
-                return true;
-            }
-            jQuery('#wpcf_warning_same_as_slug').fadeOut();
-            alert(jQuery('#name-plural').data('wpcf_warning_same_as_slug'));
-            jQuery('#name-plural').after(
-                '<div class="wpcf-error message updated" id="wpcf_warning_same_as_slug"><p>'
-                + jQuery('#name-plural').data('wpcf_warning_same_as_slug')
-                + '</p><p><input type="checkbox" name="ct[labels][ignore]" />'
-                + jQuery('#name-plural').data('wpcf_warning_same_as_slug_ignore')
-                + '</p></div>'
-                ).focus().bind('click', function(){
+        if ( jQuery('#name-singular').val().length > 0 ) {
+            if ( jQuery('#name-singular').val().toLowerCase() == jQuery('#name-plural').val().toLowerCase()) {
+                if (jQuery('#wpcf_warning_same_as_slug input[type=checkbox]').is(':checked')) {
+                    return true;
+                }
                 jQuery('#wpcf_warning_same_as_slug').fadeOut();
-            });
-            wpcfLoadingButtonStop();
-            jQuery('html, body').animate({
-                scrollTop: 0
-            }, 500);
-            return false;
+                alert(jQuery('#name-plural').data('wpcf_warning_same_as_slug'));
+                jQuery('#name-plural').after(
+                    '<div class="wpcf-error message updated" id="wpcf_warning_same_as_slug"><p>'
+                    + jQuery('#name-plural').data('wpcf_warning_same_as_slug')
+                    + '</p><p><input type="checkbox" name="ct[labels][ignore]" />'
+                    + jQuery('#name-plural').data('wpcf_warning_same_as_slug_ignore')
+                    + '</p></div>'
+                    ).focus().bind('click', function(){
+                        jQuery('#wpcf_warning_same_as_slug').fadeOut();
+                    });
+                wpcfLoadingButtonStop();
+                jQuery('html, body').animate({
+                    scrollTop: 0
+                }, 500);
+                return false;
+            }
+            jQuery(this).removeClass('js-types-do-not-show-modal');
         }
     });
+    /**
+     * modal advertising
+     */
+    if(jQuery.isFunction(jQuery.fn.types_modal_box)) {
+        jQuery('.wpcf-types-form').types_modal_box();
+    }
 });

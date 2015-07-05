@@ -9,47 +9,35 @@
             width : 525
         },prop);
 
-        return this.click(function(e){
+        return this.submit(function(e){
+            if ( $(this).hasClass('js-types-do-not-show-modal')) {
+                return;
+            }
             add_block_page();
-            add_popup_box();
-            add_styles();
-
-            $('.types_modal_box').fadeIn();
+            pop_up = add_popup_box();
+            add_styles(pop_up);
+            $.colorbox({
+                html: pop_up.html(),
+                fixed: true,
+                closeButton: false
+            });
         });
 
-        function add_styles(){
-            $('.types_modal_box').css({
-                position: "absolute",
-                display: "none",
-                height: options.height.toString() + "px",
-                width: options.width.toString() + "px",
+        function add_styles(pop_up){
+            $('.types_modal_box', pop_up).css({
                 background: "#fff none no-repeat 0 0",
-                zIndex: 151,
                 border: "1px solid #888",
                 boxShadow: "7px 7px 20px 0px rgba(50, 50, 50, 0.75)",
             });
-            /*Block page overlay*/
-            var pageHeight = $(document).height();
-            var pageWidth = $(window).width();
 
-            $('.types_block_page').css({
-                position: "absolute",
-                top: 0,
-                left: 0,
-                backgroundColor: "transparent",
-                height: pageHeight,
-                width: pageWidth,
-                zIndex: 101
-            });
-
-            $('.types_modal_box .message').css({
+            $('.types_modal_box .message', pop_up).css({
                 color: "#f05a28",
                 fontFamily: "'Open Sans', Helvetica, Arial, sans-serif",
                 fontSize: "25px",
                 padding: "0 10px",
                 textAlign: "center"
             });
-            $('.types_modal_box .message span').css({
+            $('.types_modal_box .message span', pop_up).css({
                 background: "transparent url("+types_modal.spinner+") no-repeat 0 50%",
                 paddingLeft: "30px",
                 lineHeight: "105px"
@@ -69,7 +57,8 @@
                 return;
             }
 
-            var html = '<div class="types_modal_box '+types_modal.class+'">';
+            var html = '<div class="types_block_page">';
+            html += '<div class="types_modal_box '+types_modal.class+'">';
             html += '<div class="message"><span>'+types_modal.message+'</span></div>';
             if ( 'endabled' == types_modal.state ) {
                 html += '<div class="header"><div>';
@@ -83,15 +72,10 @@
                 options.height = 106;
             }
             html += '</div>';
+            html += '</div>';
+
             var pop_up = $(html);
 
-            pop_up.appendTo('.types_block_page');
-            $('#post-body .wpcf-loading').detach();
-
-            pop_up.css({
-                top: ($('body').scrollTop() + $('body').height()/2 - options.height/2).toString()+"px",
-                left: ($('body').width()/2 - options.width/2).toString()+"px",
-            });
             $('.header', pop_up).css({
                 height: "259px",
                 textAlign: "center",
@@ -144,6 +128,7 @@
                 fontSize: "14px",
                 marginBottom: "5px"
             });
+            return pop_up;
         }
 
         return this;

@@ -3,10 +3,6 @@
  *
  * Types Marketing Class
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/classes/class.wpcf-marketing.php $
- * $LastChangedDate: 2015-02-18 14:28:53 +0000 (Wed, 18 Feb 2015) $
- * $LastChangedRevision: 1093394 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -33,6 +29,78 @@ class WPCF_Types_Marketing
         $this->adverts = include WPCF_ABSPATH.'/marketing/etc/types.php';
         add_filter('admin_body_class', array($this, 'admin_body_class'));
         add_action( 'wpcf_menu_plus', array( $this, 'add_getting_started_to_admin_menu'), PHP_INT_MAX);
+        add_filter('editor_addon_dropdown_after_title', array($this, 'add_views_advertising'));
+    }
+
+    /**
+     * Add Views advertising on modal shortcode window.
+     *
+     * Add Views advertising on modal shortcode window. Advertisng will be 
+     * added only when Views plugin is not active.
+     *
+     * @since 1.7
+     * @param string $content Content of this filter.
+     * @return string Content with advert or not.
+     */
+    public function add_views_advertising($content)
+    {
+        /**
+         * do not load advertising if Views are active
+         */
+        if ( defined('WPV_VERSION') ) {
+            return $content;
+        }
+        /**
+         * Allow to turn off views advert.
+         *
+         * This filter allow to turn off views advert even Viwes plugin is not 
+         * avaialbe.
+         *
+         * @since 1.7
+         *
+         * @param boolean $show Show adver?
+         */
+        if ( !apply_filters('show_views_advertising', true )) {
+            return;
+        }
+        $content .= '<div class="types-marketing types-marketing-views">';
+        $content .= sprintf(
+            '<h4><span class="icon-toolset-logo ont-color-orange"></span>%s</h4>',
+            __('Want to create templates with fields?', 'wpcf')
+        );
+        $content .= sprintf(
+            '<p>%s</p>',
+            __('The full Toolset package allows you to design templates for content and insert fields using the WordPress editor.', 'wpcf')
+        );
+        $content .= sprintf(
+            '<p class="buttons"><a href="%s" class="button" target="_blank">%s</a> <a href="%s" class="more" target="_blank">%s</a></p>',
+            esc_attr(
+                add_query_arg(
+                    array(
+                        'utm_source' => 'typesplugin',
+                        'utm_medium' => 'insert-fields',
+                        'utm_campaig' => 'postedit',
+                        'utm_term' => 'meet-toolset',
+                    ),
+                    'http://wp-types.com/'
+                )
+            ),
+            __('Meet Toolset', 'wpcf'),
+            esc_attr(
+                add_query_arg(
+                    array(
+                        'utm_source' => 'typesplugin',
+                        'utm_medium' => 'insert-fields',
+                        'utm_campaig' => 'postedit',
+                        'utm_term' => 'creating-content-templates',
+                    ),
+                    'http://wp-types.com/documentation/user-guides/view-templates/'
+                )
+            ),
+            __('Creating Templates for Content', 'wpcf')
+        );
+        $content .= '</div>';
+        return $content;
     }
 
     public function admin_body_class($classes)

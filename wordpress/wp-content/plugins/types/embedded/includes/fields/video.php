@@ -1,10 +1,6 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/includes/fields/video.php $
- * $LastChangedDate: 2015-03-16 12:03:31 +0000 (Mon, 16 Mar 2015) $
- * $LastChangedRevision: 1113864 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -102,8 +98,8 @@ function wpcf_fields_video_editor_callback( $field, $data, $meta_type, $post ) {
         'supports' => array(),
         'tabs' => array(
             'display' => array(
-                'menu_title' => __( 'Display', 'wpcf' ),
-                'title' => __( 'Display', 'wpcf' ),
+                'menu_title' => __( 'Display options', 'wpcf' ),
+                'title' => __( 'Display options for this field:', 'wpcf' ),
                 'content' => WPCF_Loader::template( 'editor-modal-video', $data ),
             )
         ),

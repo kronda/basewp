@@ -57,7 +57,7 @@ class WPCF_Custom_Taxonomies_List_Table extends WP_List_Table
             'ajax'      => true        //does this table support ajax?
         ) );
 
-        $this->custom_taxonomies = get_option('wpcf-custom-taxonomies', array());
+        $this->custom_taxonomies = get_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array());
     }
 
     /** ************************************************************************
@@ -86,7 +86,7 @@ class WPCF_Custom_Taxonomies_List_Table extends WP_List_Table
         switch($column_name){
             case 'title':
             case 'description':
-                return $item[$column_name];
+                return stripslashes($item[$column_name]);
             case 'supports':
                 $rows = array();
                 if (!empty($item[$column_name])) {
@@ -132,15 +132,28 @@ class WPCF_Custom_Taxonomies_List_Table extends WP_List_Table
         $actions = array(
             'edit'      => sprintf('<a href="%s">%s</a>', $edit_link, __('Edit', 'wpcf')),
             'status' => 'active' == $item['status']? wpcf_admin_custom_taxonomies_get_ajax_deactivation_link($item['slug']):wpcf_admin_custom_taxonomies_get_ajax_activation_link($item['slug']),
+            'duplicate'     => sprintf(
+                '<a href="%s" class="wpcf-ajax-link">%s</a>',
+                add_query_arg(
+                    array(
+                        'action' => 'wpcf_ajax',
+                        'wpcf_action' => 'taxonomy_duplicate',
+                        'wpcf-tax' => $item['slug'],
+                        'wpcf_ajax_update' => 'wpcf_list_ajax_response_'.$item['slug'],
+                        '_wpnonce' => wp_create_nonce('taxonomy_duplicate'),
+                    ),
+                    admin_url('admin-ajax.php')
+                ),
+                __('Duplicate', 'wpcf')
+            ),
             'delete'     => sprintf(
-                '<a href="%s" class="submitdelete wpcf-ajax-link" id="wpcf-list-delete-%s"">%s</a>',
+                '<a href="%s" class="submitdelete wpcf-ajax-link" id="wpcf-list-delete-%s">%s</a>',
                 add_query_arg(
                     array(
                         'action' => 'wpcf_ajax',
                         'wpcf_action' => 'delete_taxonomy',
                         'wpcf-tax' => $item['slug'],
                         'wpcf_ajax_update' => 'wpcf_list_ajax_response_'.$item['slug'],
-                        'wpcf_ajax_callback' => 'wpcfRefresh',
                         '_wpnonce' => wp_create_nonce('delete_taxonomy'),
                         'wpcf_warning' => urlencode(__('Are you sure?', 'wpcf')),
                     ),
@@ -246,6 +259,7 @@ class WPCF_Custom_Taxonomies_List_Table extends WP_List_Table
         $actions = array(
             'activate'   => __('Activate', 'wpcf'),
             'deactivate' => __('Deactivate', 'wpcf'),
+            'delete' => __('Delete permanently', 'wpcf'),
         );
         return $actions;
     }
@@ -262,6 +276,40 @@ class WPCF_Custom_Taxonomies_List_Table extends WP_List_Table
         $action = $this->current_action();
         //Detect when a bulk action is being triggered...
         switch($action) {
+        case 'delete':
+            if (
+                !empty($this->custom_taxonomies)
+                && isset($_POST[$this->bulk_action_field_name])
+                && !empty($_POST[$this->bulk_action_field_name])
+            ) {
+                $slugs_to_delete = array();
+                foreach( $_POST[$this->bulk_action_field_name] as $key ) {
+                    if ( !isset($this->custom_taxonomies[$key]) ) {
+                        continue;
+                    }
+                    unset($this->custom_taxonomies[$key]);
+                    $slugs_to_delete[] = $key;
+                }
+                /**
+                 * update custom post types
+                 */
+                update_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $this->custom_taxonomies);
+                $custom_types = get_option(WPCF_OPTION_NAME_CUSTOM_TYPES, array());
+                if ( !empty($custom_types) ) {
+                    foreach ( $slugs_to_delete as $slug ) {
+                        foreach ( $custom_types as $custom_key => $data ) {
+                            if ( !isset($data['taxonomies'] ) ) {
+                                continue;
+                            }
+                            if ( isset($data['taxonomies'][$slug]) ) {
+                                unset($custom_types[$custom_key]['taxonomies'][$slug]);
+                            }
+                        }
+                    }
+                    update_option(WPCF_OPTION_NAME_CUSTOM_TYPES, $custom_types);
+                }
+            }
+            break;
         case 'deactivate':
             if (
                 !empty($this->custom_taxonomies)
@@ -274,7 +322,7 @@ class WPCF_Custom_Taxonomies_List_Table extends WP_List_Table
                     }
                     $this->custom_taxonomies[$key]['disabled'] = 1;
                 }
-                update_option('wpcf-custom-taxonomies', $this->custom_taxonomies);
+                update_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $this->custom_taxonomies);
             }
             break;
         case 'activate':
@@ -291,7 +339,7 @@ class WPCF_Custom_Taxonomies_List_Table extends WP_List_Table
                         unset($this->custom_taxonomies[$key]['disabled']);
                     }
                 }
-                update_option('wpcf-custom-taxonomies', $this->custom_taxonomies);
+                update_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $this->custom_taxonomies);
             }
             break;
         }
@@ -363,7 +411,7 @@ class WPCF_Custom_Taxonomies_List_Table extends WP_List_Table
                     'supports' => isset($taxonomy['supports'])? $taxonomy['supports']:array(),
                     'slug' => $taxonomy['slug'],
                     'status' => (isset($taxonomy['disabled']) && $taxonomy['disabled'])? 'inactive':'active',
-                    'title' => $taxonomy['labels']['singular_name'],
+                    'title' => stripslashes($taxonomy['labels']['singular_name']),
                 );
                 $add_one = true;
                 if ( $s ) {

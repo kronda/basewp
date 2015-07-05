@@ -3,10 +3,6 @@
  *
  * Types Marketing Class
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/classes/class.wpcf-marketing-messages.php $
- * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
- * $LastChangedRevision: 1120400 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -120,8 +116,8 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
                 is_array($_GET)
                 && array_key_exists('wpcf-post-type', $_GET)
             ) {
-                $types = get_option('wpcf-custom-types', array());
-				$candidate_key = sanitize_text_field( $_GET['wpcf-post-type'] );
+                $types = get_option(WPCF_OPTION_NAME_CUSTOM_TYPES, array());
+                $candidate_key = sanitize_text_field( $_GET['wpcf-post-type'] );
                 if ( array_key_exists($candidate_key, $types ) ) {
                     $text = preg_replace( '/PPP/', $types[$candidate_key]['labels']['name'], $text);
                 }
@@ -133,12 +129,12 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
                 is_array($_GET)
                 && array_key_exists('wpcf-tax', $_GET)
             ) {
-                $taxonomies = get_option('wpcf-custom-taxonomies', array());
-				$candidate_key = sanitize_text_field( $_GET['wpcf-tax'] );
+                $taxonomies = get_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array());
+                $candidate_key = sanitize_text_field( $_GET['wpcf-tax'] );
                 if ( array_key_exists($candidate_key, $taxonomies) ) {
                     $text = preg_replace( '/TTT/', $taxonomies[$candidate_key]['labels']['name'], $text);
                     if ( array_key_exists('supports', $taxonomies[$candidate_key]) ) {
-                        $types = get_option('wpcf-custom-types', array());
+                        $types = get_option(WPCF_OPTION_NAME_CUSTOM_TYPES, array());
                         $post_type = array_keys($taxonomies[$candidate_key]['supports']);
                         if ( !empty($post_type) ) {
                             $post_type = $post_type[array_rand($post_type)];
@@ -173,7 +169,7 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
          */
         $data['message'] = __('Saving your changes', 'wpcf');
         $data['spinner'] = apply_filters('wpcf_marketing_message', admin_url('/images/spinner.gif'), $data, 'spinner');
-        $data['question'] = apply_filters('wpcf_marketing_message', __('Did you know?', 'wcpf'), $data, 'question');
+        $data['question'] = apply_filters('wpcf_marketing_message', __('Did you know?', 'wpcf'), $data, 'question');
         /**
          * random image & class
          */
@@ -196,7 +192,7 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
             $data[$key] = apply_filters('wpcf_marketing_message', $value, $data, $key );
             $data['state'] = $this->state;
         }
-        wp_register_script( 'types-modal', WPCF_EMBEDDED_RES_RELPATH.'/js/modal.js', array('jquery'), WPCF_VERSION, true);
+        wp_register_script( 'types-modal', WPCF_EMBEDDED_RES_RELPATH.'/js/modal.js', array('toolset-colorbox'), WPCF_VERSION, true);
         wp_localize_script( 'types-modal', 'types_modal', $data);
         wp_enqueue_script('types-modal');
     }

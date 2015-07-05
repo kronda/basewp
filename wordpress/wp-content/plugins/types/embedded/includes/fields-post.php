@@ -4,10 +4,6 @@
  * Edit post page functions
  *
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/includes/fields-post.php $
- * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
- * $LastChangedRevision: 1120400 $
- * $LastChangedBy: iworks $
  *
  * Core file with stable and working functions.
  * Please add hooks if adjustment needed, do not add any more new code here.
@@ -59,7 +55,7 @@ function wpcf_admin_post_init( $post ) {
     if ( !in_array( $post_type, array('post', 'page', 'cred-form') ) && !defined( 'WPCF_RUNNING_EMBEDDED' ) ) {
         $hide_help_box = true;
         $help_box = wpcf_get_settings( 'help_box' );
-        $custom_types = get_option( 'wpcf-custom-types', array() );
+        $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
         if ( $help_box != 'no' ) {
             if ( $help_box == 'by_types' && array_key_exists( $post_type,
                             $custom_types ) ) {
@@ -1664,7 +1660,13 @@ function wpcf_admin_post_add_to_editor( $field ) {
     if ( $field == 'get' ) {
         return $fields;
     }
-    if ( empty( $fields ) ) {
+    if ( 
+		empty( $fields ) 
+		&& ! (
+			apply_filters( 'toolset_is_views_available', false )
+			|| apply_filters( 'toolset_is_views_embedded_available', false )
+		)
+	) {
         add_action( 'admin_enqueue_scripts', 'wpcf_admin_post_add_to_editor_js' );
     }
     $fields[$field['id']] = $field;
@@ -1723,10 +1725,10 @@ function wpcf_admin_post_add_to_editor_js() {
  *
  * @todo Remove (to WPCF_WPViews)
  *
- * @param type $items
+ * @param type $menu
  * @return type
  */
-function wpcf_admin_post_editor_addon_menus_filter( $items ) {
+function wpcf_admin_post_editor_addon_menus_filter( $menu ) {
 
     global $wpcf;
 
@@ -1772,7 +1774,7 @@ function wpcf_admin_post_editor_addon_menus_filter( $items ) {
                     $callback = 'wpcfFieldsEditorCallback(\'' . $field['id']
                             . '\', \'postmeta\', ' . $post->ID . ')';
 
-                    $add[$group['name']][stripslashes( $field['name'] )] = array(
+                    $menu[$group['name']][stripslashes( $field['name'] )] = array(
                         stripslashes( $field['name'] ), trim( wpcf_fields_get_shortcode( $field ),
                                 '[]' ), $group['name'], $callback);
 
@@ -1786,7 +1788,8 @@ function wpcf_admin_post_editor_addon_menus_filter( $items ) {
             }
         }
     }
-
+	
+	/*
     $search_key = '';
 
     // Iterate all items to be displayed in the "V" menu
@@ -1821,8 +1824,9 @@ function wpcf_admin_post_editor_addon_menus_filter( $items ) {
             $items[$key]['css'] = $all_post_types;
         }
     }
+	*/
 
-    return $items;
+    return $menu;
 }
 
 /**

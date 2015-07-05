@@ -126,8 +126,7 @@ function wpcf_ajax_embedded() {
                             $wpcf->relationship->_set( $parent, $child, $data );
 
                             // Render new row
-                            $output = $wpcf->relationship->child_row( $parent_post->ID,
-                                    $id, $data );
+                            $output = $wpcf->relationship->child_row( $parent_post->ID, $id, $data );
                         } else {
                             $output = __( 'Error creating post relationship', 'wpcf' );
                         }
@@ -138,13 +137,14 @@ function wpcf_ajax_embedded() {
             }
             if ( !defined( 'WPTOOLSET_FORMS_VERSION' ) ) {
                 echo json_encode( array(
-                    'output' => $output . wpcf_form_render_js_validation( '#post',
-                            false ),
+                    'output' => $output . wpcf_form_render_js_validation( '#post', false ),
+                    'child_id' => $id,
                 ) );
             } else {
                 echo json_encode( array(
                     'output' => $output,
                     'conditionals' => array('#post' => wptoolset_form_get_conditional_data( 'post' )),
+                    'child_id' => $id,
                 ) );
             }
             break;

@@ -2,10 +2,6 @@
 /*
  * Frontend functions.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/frontend.php $
- * $LastChangedDate: 2015-03-10 06:46:08 +0000 (Tue, 10 Mar 2015) $
- * $LastChangedRevision: 1109249 $
- * $LastChangedBy: iworks $
  *
  */
 

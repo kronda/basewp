@@ -198,11 +198,13 @@ img.ui-datepicker-trigger {
 }
 
 /* File */
-.wpt-file-preview img {
+.wpt-file-preview img
+{
     border: 1px solid #A0A0A0;
     height: 50px;
     margin-top: 10px;
     width: auto;
+    cursor: zoom-in;
 }
 .wpt-file .textfield,
 .wpt-image .textfield,

@@ -1,10 +1,6 @@
 /** * * Use this file only for scripts needed in full version.
  * Before moving from embedded JS - make sure it's needed only here.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/resources/js/basic.js $
- * $LastChangedDate: 2015-01-16 14:28:15 +0000 (Fri, 16 Jan 2015) $
- * $LastChangedRevision: 1069430 $
- * $LastChangedBy: iworks $
  *
  */
 jQuery(document).ready(function($){
@@ -35,4 +31,31 @@ jQuery(document).ready(function($){
             $('.spinner', parent).hide().after(response);
         });
     });
+    /**
+     * allow to sort CF
+     */
+    $("#custom_fields ul").sortable();
+    /**
+     * colorbox for images
+     */
+    bind_colorbox_to_thumbnail_preview();
 });
+
+/**
+ * colorbox for images
+ */
+function bind_colorbox_to_thumbnail_preview() {
+    jQuery('.js-wpt-file-preview img').each(function(){
+        if ( jQuery(this).data('full-src')) {
+            jQuery(this).on('click', function() {
+                jQuery.colorbox({
+                    href: jQuery(this).data('full-src'),
+                    maxWidth: "75%",
+                    maxHeight: "75%",
+                    close: wpcf_js.close
+                });
+            });
+        }
+    });
+}
+

@@ -3,7 +3,7 @@
     <repository>
         <id>wpml</id>
         <apiurl>http://api.wpml.org/</apiurl>
-        <products>http://d2salfytceyqoe.cloudfront.net/wpml-products.json</products>
+        <products>http://d2salfytceyqoe.cloudfront.net/wpml32-products.json</products>
     </repository>
     <repository>
         <id>toolset</id>

@@ -15,6 +15,9 @@
  * author: srdjan@icanlocalize.com
  */
 
+define('WPCF_OPTION_NAME_CUSTOM_TYPES', 'wpcf-custom-types');
+define('WPCF_OPTION_NAME_CUSTOM_TAXONOMIES', 'wpcf-custom-taxonomies');
+
 /*
  * Record all instances.
  * Used to track all active Types code.

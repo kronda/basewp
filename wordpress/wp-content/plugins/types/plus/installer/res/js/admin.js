@@ -18,7 +18,7 @@
 
         otgs_wp_installer.scroll_to_repository();
 
-        if( pagenow == 'plugins'){
+        if( typeof pagenow != 'undefined' && pagenow == 'plugins'){
 
             jQuery(document).ajaxSuccess(function(event, xhr, settings) {
                 var data = otgs_wp_installer.getQueryParameters(settings.data);

@@ -57,7 +57,7 @@ function wpcf_custom_taxonomies_default() {
  * Inits custom taxonomies.
  */
 function wpcf_custom_taxonomies_init() {
-    $custom_taxonomies = get_option( 'wpcf-custom-taxonomies', array() );
+    $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
     if ( !empty( $custom_taxonomies ) ) {
         foreach ( $custom_taxonomies as $taxonomy => $data ) {
             wpcf_custom_taxonomies_register( $taxonomy, $data );
@@ -160,7 +160,7 @@ function wpcf_custom_taxonomies_register( $taxonomy, $data ) {
  * @return type
  */
 function wpcf_get_active_custom_taxonomies() {
-    $taxonomies = get_option('wpcf-custom-taxonomies', array());
+    $taxonomies = get_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array());
     foreach ($taxonomies as $taxonomy => $data) {
         if (!empty($data['disabled'])) {
             unset($taxonomies[$taxonomy]);

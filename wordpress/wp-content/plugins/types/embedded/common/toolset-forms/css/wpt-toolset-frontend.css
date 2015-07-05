@@ -100,6 +100,17 @@ ul.wpt-form-set, ul.wpt-form-set-children {
     margin: 10px 0;
     display: block;
 }
+
+.wpt-form-success {
+    color:#eee;
+    background-color: #666600;
+    border: 1px solid #aaaa00;
+    padding: 5px 10px;
+    width: auto;
+    margin: 10px 0;
+    display: block;
+}
+
 input.wpt-form-error {
     background-color: #F8F8F8;
     border-color: red !important;

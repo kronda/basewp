@@ -2,10 +2,6 @@
 /*
  * Fields and groups form functions.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/includes/usermeta-form.php $
- * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
- * $LastChangedRevision: 1120400 $
- * $LastChangedBy: iworks $
  *
  */
 require_once WPCF_EMBEDDED_ABSPATH . '/classes/validate.php';
@@ -520,7 +516,7 @@ function wpcf_admin_usermeta_form() {
         '#id' => 'wpcf-form-groups-css-fields-editor',
         '#after' => '
         <div class="wpcf-update-preview-btn"><input type="button" value="Update preview" onclick="wpcfPreviewHtml()" style="float:right;" class="button-secondary"></div>
-        <h3>Field group preview</h3>
+        <h3>'.__('Field group preview', 'wpcf').'</h3>
         <div id="wpcf-update-preview-div">Preview here</div>
         <script type="text/javascript">
             var wpcfReadOnly = ' .  json_encode($preview_profile) . ';
@@ -528,14 +524,10 @@ function wpcf_admin_usermeta_form() {
             var wpcfDefaultCss = ' .  json_encode($admin_styles_value) . ';
         </script>
         ',
-        '#before' => '<h3>Your CSS</h3>'
+        '#before' => sprintf('<h3>%s</h3>', __('Your CSS', 'wpcf')),
     );
 
-
-
-
-    $admin_styles = _wpcf_filter_wrap( 'admin_styles',
-            __('Admin styles for fields:', 'wpcf'), '', '', $temp, __( 'Open style editor', 'wpcf' ) );
+    $admin_styles = _wpcf_filter_wrap( 'admin_styles', __('Admin styles for fields:', 'wpcf'), '', '', $temp, __( 'Open style editor', 'wpcf' ) );
     $form['p_wrap_1_' . wpcf_unique_id(serialize($admin_styles))] = array(
         '#type' => 'markup',
         '#markup' => '<p class="wpcf-filter-wrap">',
@@ -546,8 +538,6 @@ function wpcf_admin_usermeta_form() {
         '#markup' => '</td></tr></tbody></table><br />',
     );
     /** End admin Styles **/
-
-
 
 
     // Group fields

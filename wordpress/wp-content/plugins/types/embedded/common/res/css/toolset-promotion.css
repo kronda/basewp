@@ -5,7 +5,7 @@
     font-size: 15px;
     width: 550px;
     background-color: #fff;
-    padding: 45px 0 42px 0;
+    padding: 45px 0 20px 0;
     position: relative;
 
     -webkit-box-shadow: 5px 5px 15px 0px rgba(50, 50, 50, 0.38);
@@ -19,7 +19,7 @@
     color: #fff;
     position: relative;
     background-color: #333;
-    padding: 15px 30px;
+    padding: 10px 30px;
     font-size: 24px;
     line-height: 30px;
     font-weight: 300;
@@ -33,6 +33,15 @@
     top: 6px;
     left: 23px;
     font-size: 53px;
+    background: transparent url(../images/toolset.promotion/toolset.png) no-repeat 7px 3px;
+    width: 55px;
+    height: 55px;
+}
+
+.toolset-modal .icon-toolset-logo:before
+{
+    content: none;
+    display: none;
 }
 
 .toolset-modal ul:before
@@ -73,7 +82,7 @@
     display: table-cell;
     font-size: 13px;
     font-weight: 700;
-    height: 52px;
+    height: 46px;
     padding: 0 20px 0 38px;
 }
 
@@ -93,23 +102,23 @@
 {
     background: transparent url(../images/toolset.promotion/full.jpg) no-repeat;
     padding-left: 298px;
-    min-height: 165px;
+    min-height: 160px;
     font-size: 15px;
-    margin-bottom: 0;
+    margin: 10px 0 0 0;
 }
 
 .toolset-modal .icons
 {
     border: 1px solid #777;
     border-width: 1px 0;
-    padding-top: 18px;
+    padding-top: 10px;
 }
 
 .toolset-modal .description
 {
     font-size: 13px;
     color: #4d4d4d;
-    margin: 30px 0;
+    margin: 10px 0 20px 0;
 }
 
 .toolset-modal em

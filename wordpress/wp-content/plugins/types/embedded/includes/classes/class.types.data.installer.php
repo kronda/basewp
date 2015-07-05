@@ -38,8 +38,8 @@ if ( !class_exists('Types_Data_Installer') ) {
             $data->fields->field = $this->get_data_by_field_type('fields');
             $data->user_fields->field = $this->get_data_by_field_type('user_fields');
 
-            $data->types->type = $this->get_data_by_type('wpcf-custom-types');
-            $data->taxonomies->taxonomy = $this->get_data_by_type('wpcf-custom-taxonomies');
+            $data->types->type = $this->get_data_by_type(WPCF_OPTION_NAME_CUSTOM_TYPES);
+            $data->taxonomies->taxonomy = $this->get_data_by_type(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES);
 
             return $data;
         }
@@ -177,7 +177,7 @@ if ( !class_exists('Types_Data_Installer') ) {
         {
             $group = 'types';
             $element = 'type';
-            if ( 'wpcf-custom-taxonomies' == $group_name ) {
+            if ( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES == $group_name ) {
                 $group = 'taxonomies';
                 $element = 'taxonomy';
             }
@@ -246,8 +246,8 @@ if ( !class_exists('Types_Data_Installer') ) {
                             }
                         }
                         break;
-                    case 'wpcf-custom-types':
-                    case 'wpcf-custom-taxonomies':
+                    case WPCF_OPTION_NAME_CUSTOM_TYPES:
+                    case WPCF_OPTION_NAME_CUSTOM_TAXONOMIES:
                         $options = get_option( $group, array() );
                         $new = array();
                         foreach ( $options as $one ) {

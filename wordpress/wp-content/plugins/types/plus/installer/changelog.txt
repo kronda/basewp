@@ -1,3 +1,17 @@
+= 1.5.6 =
+* Updated the translations
+* Fix for WPML 3.2 conditional upgrade logic
+
+= 1.5.5 =
+* Fixed the logic for the high_priority parameter
+* Fixed js bug causing a conflict with NextGen
+* Fixed bug preventing users to install and upgrade Types when they didn't have a Toolset subscription
+* Fixed bug preventing users to upgrade from the embedded Types to the full version
+
+= 1.5.4 =
+* Option to disable auto-updates
+* Escaped urls generated with add_query_arg
+
 = 1.5.3 =
 * Fixed bug in WP_Installer::custom_plugins_api_call (filter for plugins_api) causing conflicts with other filters for plugins_api
 

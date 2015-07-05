@@ -69,8 +69,8 @@ function wpcf_fields_url_editor_callback( $field, $settings ) {
         'supports' => array('styling', 'style'),
         'tabs' => array(
             'display' => array(
-                'menu_title' => __( 'Display', 'wpcf' ),
-                'title' => __( 'Display', 'wpcf' ),
+                'menu_title' => __( 'Display options', 'wpcf' ),
+                'title' => __( 'Display options for this field:', 'wpcf' ),
                 'content' => WPCF_Loader::template( 'editor-modal-url',
                         $settings ),
             ),

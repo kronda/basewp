@@ -3,10 +3,6 @@
  * Basic and init functions.
  * Since Types 1.2 moved from /embedded/types.php
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/functions.php $
- * $LastChangedDate: 2015-04-03 10:15:58 +0000 (Fri, 03 Apr 2015) $
- * $LastChangedRevision: 1126927 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -70,7 +66,7 @@ function wpcf_get_file_relpath($file)
  */
 function wpcf_embedded_after_setup_theme_hook()
 {
-    $custom_types = get_option( 'wpcf-custom-types', array() );
+    $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
     if ( !empty( $custom_types ) ) {
         foreach ( $custom_types as $post_type => $data ) {
             if ( !empty( $data['supports']['thumbnail'] ) ) {
@@ -91,26 +87,16 @@ function wpcf_embedded_after_setup_theme_hook()
  */
 function wpcf_init_custom_types_taxonomies()
 {
-    $custom_taxonomies = get_option( 'wpcf-custom-taxonomies', array() );
+    $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
     if ( !empty( $custom_taxonomies ) ) {
         require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-taxonomies.php';
         wpcf_custom_taxonomies_init();
     }
-    $custom_types = get_option( 'wpcf-custom-types', array() );
+    $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
     if ( !empty( $custom_types ) ) {
         require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-types.php';
         wpcf_custom_types_init();
     }
-}
-
-/**
- * bind build-in taxonomies
- */
-
-function wpcf_init_build_in_taxonomies()
-{
-    require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-types.php';
-    wpcf_init_bind_build_in_taxonomies();
 }
 
 /**
@@ -484,12 +470,20 @@ function wpcf_enqueue_scripts()
         /**
          * Basic JS
          */
-        wp_enqueue_script(
+        wp_register_script(
             'wpcf-js',
             WPCF_RES_RELPATH . '/js/basic.js',
-            array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs'),
+            array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs', 'toolset-colorbox'),
             WPCF_VERSION
         );
+        wp_localize_script(
+            'wpcf-js',
+            'wpcf_js',
+            array(
+                'close' => __('Close', 'wpcf'),
+            )
+        );
+        wp_enqueue_script('wpcf-js');
     }
     /**
      * Basic JS
@@ -565,14 +559,14 @@ function wpcf_edit_post_screen_scripts()
                 . 'jquery-form-validation/additional-methods.min.js',
                 array('jquery'), WPCF_VERSION );
     }
-    wp_enqueue_style( 'wpcf-fields-basic',
+    wp_enqueue_style( 'wpcf-css-embedded',
             WPCF_EMBEDDED_RES_RELPATH . '/css/basic.css', array(), WPCF_VERSION );
     wp_enqueue_style( 'wpcf-fields-post',
             WPCF_EMBEDDED_RES_RELPATH . '/css/fields-post.css',
-            array('wpcf-fields-basic'), WPCF_VERSION );
+            array('wpcf-css-embedded'), WPCF_VERSION );
     wp_enqueue_style( 'wpcf-usermeta',
             WPCF_EMBEDDED_RES_RELPATH . '/css/usermeta.css',
-            array('wpcf-fields-basic'), WPCF_VERSION );
+            array('wpcf-css-embedded'), WPCF_VERSION );
     wp_enqueue_script( 'toolset-colorbox' );
     wp_enqueue_style( 'toolset-colorbox' );
     wp_enqueue_style( 'toolset-font-awesome' );
@@ -596,7 +590,7 @@ function wpcf_is_embedded()
  */
 function wpcf_get_custom_post_type_settings($item)
 {
-    $custom = get_option( 'wpcf-custom-types', array() );
+    $custom = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
     return !empty( $custom[$item] ) ? $custom[$item] : array();
 }
 
@@ -608,7 +602,7 @@ function wpcf_get_custom_post_type_settings($item)
  */
 function wpcf_get_custom_taxonomy_settings($item)
 {
-    $custom = get_option( 'wpcf-custom-taxonomies', array() );
+    $custom = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
     return !empty( $custom[$item] ) ? $custom[$item] : array();
 }
 

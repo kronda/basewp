@@ -7,10 +7,6 @@
  *
  * @see class WPToolset_Validation
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/js/validation.js $
- * $LastChangedDate: 2015-04-01 14:15:17 +0000 (Wed, 01 Apr 2015) $
- * $LastChangedRevision: 1125405 $
- * $LastChangedBy: iworks $
  *
  */
 //var wptValidationData = {};

@@ -48,8 +48,7 @@ class WPCF_Relationship_Child_Form
     var $children;
     var $headers = array();
     var $_dummy_post = false;
-    private $__params = array('page', '_wpcf_relationship_items_per_page', 'sort',
-            'field');
+    private $__params = array('page', '_wpcf_relationship_items_per_page', 'sort', 'field');
     private $__urlParams = array();
 
     /**
@@ -93,8 +92,7 @@ class WPCF_Relationship_Child_Form
 
         // If no children - use dummy post
         if ( empty( $this->children ) ) {
-            $_dummy_post = get_default_post_to_edit( $this->child_post_type,
-                    false );
+            $_dummy_post = get_default_post_to_edit( $this->child_post_type, false );
             $this->children = array($_dummy_post);
             $this->_dummy_post = true;
         }
@@ -118,7 +116,7 @@ class WPCF_Relationship_Child_Form
         /**
          * custom post types
          */
-        $post_types = get_option( 'wpcf-custom-types', array() );
+        $post_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
         if (
             array_key_exists($child_post_type, $post_types )
             && array_key_exists('supports', $post_types[$child_post_type] )
@@ -131,8 +129,7 @@ class WPCF_Relationship_Child_Form
     }
 
     function getParamsQuery() {
-        return count( $this->__urlParams ) ? '&amp;' . http_build_query( $this->__urlParams,
-                        '', '&amp;' ) : '';
+        return count( $this->__urlParams ) ? '&amp;' . http_build_query( $this->__urlParams, '', '&amp;' ) : '';
     }
 
     /**
@@ -263,51 +260,70 @@ class WPCF_Relationship_Child_Form
          * LOOP over fields
          * Custom settings (specific)
          */
-        if ( $this->data['fields_setting'] == 'specific'
-                && !empty( $this->data['fields'] ) ) {
+        if ( $this->data['fields_setting'] == 'specific' && !empty( $this->data['fields'] ) ) {
             // Set title
-            if ( isset( $this->data['fields']['_wp_title'] ) ) {
+            if (
+                isset( $this->data['fields']['_wp_title'] ) 
+                && isset( $this->child_post_type_object->slug)
+                && post_type_supports( $this->child_post_type_object->slug, 'title')
+            ) {
                 $this->headers[] = '_wp_title';
                 $row[] = $this->title();
             }
             // Set body
-            if ( isset( $this->data['fields']['_wp_body'] ) ) {
+            if (
+                isset( $this->data['fields']['_wp_body'] )
+                && post_type_supports( $this->child_post_type_object->slug, 'editor')
+            ) {
                 $this->headers[] = '_wp_body';
                 $row[] = $this->body();
             }
+            // Set excerpt
+            if (
+                isset( $this->data['fields']['_wp_excerpt'] )
+                && post_type_supports( $this->child_post_type_object->slug, 'excerpt' )
+            ) {
+                $this->headers[] = '_wp_excerpt';
+                $row[] = $this->excerpt();
+            }
+
+            /**
+             * get allowed fields for this post type
+             */
+            $allowed_fields = array();
+            if ( isset( $this->child_post_type_object->slug) ) {
+                $allowed_fields = wpcf_admin_get_allowed_fields_by_post_type($this->child_post_type_object->slug);
+            }
+
             // Loop over Types fields
             foreach ( $this->data['fields'] as $field_key => $true ) {
-                // If field belongs only to disabled group - remove it.
-                $groups = wpcf_admin_fields_get_groups_by_field( $this->cf->__get_slug_no_prefix( $field_key ) );
-                if ( empty($groups ) ) {
-                    continue;
-                }
-                $_continue = false;
-                // If at least one active - proceed
-                foreach ( $groups as $group ) {
-                    if ( $group['is_active'] ) {
-                        $_continue = true;
-                    }
-                }
-                if ( !$_continue ) {
-                    continue;
-                }
                 // Skip parents
                 if ( in_array( $field_key,
-                                array('_wp_title', '_wp_body', '_wpcf_pr_parents', '_wpcf_pr_taxonomies') ) ) {
+                    array(
+                        '_wp_title',
+                        '_wp_body',
+                        '_wp_excerpt',
+                        '_wpcf_pr_parents',
+                        '_wpcf_pr_taxonomies',
+                    ) ) ) 
+                {
                     continue;
-                } else {
-                    /*
-                     * Set field
-                     */
-//                    $field_key = $this->cf->__get_slug_no_prefix( $field_key );
-                    $this->cf->set( $this->child, $field_key );
-                    $row[] = $this->field_form();
-                    $this->_field_triggers();
-                    // Add to header
-//                    $this->headers[] = WPCF_META_PREFIX . $field_key;
-                    $this->headers[] = $field_key;
                 }
+                /**
+                 * check field
+                 */
+                if ( !in_array($field_key, $allowed_fields) ) {
+                    continue;
+                }
+
+                /*
+                 * Set field
+                 */
+                $this->cf->set( $this->child, $field_key );
+                $row[] = $this->field_form();
+                $this->_field_triggers();
+                // Add to header
+                $this->headers[] = $field_key;
             }
             // Add parent forms
             if ( !empty( $this->data['fields']['_wpcf_pr_parents'] ) ) {
@@ -346,13 +362,14 @@ class WPCF_Relationship_Child_Form
             if ( $this->data['fields_setting'] == 'all_cf_standard' ) {
                 $this->headers[] = '_wp_body';
                 $row[] = $this->body();
+                $this->headers[] = '_wp_excerpt';
+                $row[] = $this->excerpt();
             }
             /*
              * Loop over groups and fields
              */
             // Get groups
-            $groups = wpcf_admin_post_get_post_groups_fields( $this->child,
-                    'post_relationships' );
+            $groups = wpcf_admin_post_get_post_groups_fields( $this->child, 'post_relationships' );
             foreach ( $groups as $group ) {
                 if ( empty( $group['fields'] ) ) {
                     continue;
@@ -469,6 +486,28 @@ class WPCF_Relationship_Child_Form
                             )
                         )
         );
+    }
+
+    /**
+     * Returns HTML formatted excerpt field.
+     *
+     * @return type
+     */
+    function excerpt() {
+        return wpcf_form_simple(
+            array('field' => array(
+                '#type' => 'textarea',
+                '#id' => 'wpcf_post_relationship_'
+                . $this->child->ID . '_wp_excerpt',
+                '#name' => 'wpcf_post_relationship['
+                . $this->parent->ID . ']['
+                . $this->child->ID . '][_wp_excerpt]',
+                '#value' => $this->child->post_excerpt,
+                '#attributes' => array('style' => 'width:300px;height:100px;'),
+                '#inline' => true,
+            )
+        )
+    );
     }
 
     /**
@@ -738,6 +777,8 @@ class WPCF_Relationship_Child_Form
                                 . '_wp_body&amp;sort=' . $body_dir . '&amp;post_id=' . $post->ID . '&amp;post_type='
                                 . $post_type . '&amp;_wpnonce='
                                 . wp_create_nonce( 'pr_sort' ) ) . '">' . __( 'Post Body' ) . '</a>';
+            } else if ( $header == '_wp_excerpt' ) {
+                $headers[$header] = __( 'Post excerpt' );
             } else if ( strpos( $header, WPCF_META_PREFIX ) === 0
                     && isset( $wpcf_fields[str_replace( WPCF_META_PREFIX, '',
                                     $header )] ) ) {

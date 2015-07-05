@@ -3,10 +3,6 @@
  *
  * Custom types form - common functions
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/includes/common-functions.php $
- * $LastChangedDate: 2015-01-16 14:28:15 +0000 (Fri, 16 Jan 2015) $
- * $LastChangedRevision: 1069430 $
- * $LastChangedBy: iworks $
  *
  */
 

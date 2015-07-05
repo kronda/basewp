@@ -3,10 +3,6 @@
  *
  * Custom types form
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/includes/custom-types-form.php $
- * $LastChangedDate: 2015-04-01 14:15:17 +0000 (Wed, 01 Apr 2015) $
- * $LastChangedRevision: 1125405 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -31,7 +27,7 @@ function wpcf_admin_custom_types_form()
     }
 
     if ( $id ) {
-        $custom_types = get_option( 'wpcf-custom-types', array() );
+        $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
         if ( isset( $custom_types[$id] ) ) {
             $ct = $custom_types[$id];
             $update = true;
@@ -73,7 +69,7 @@ function wpcf_admin_custom_types_form()
         /**
          * update taxonomy too
          */
-        $custom_taxonomies = get_option( 'wpcf-custom-taxonomies', array() );
+        $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
         foreach( $custom_taxonomies as $slug => $data ) {
             if ( !array_key_exists('supports', $data)) {
                 continue;
@@ -89,7 +85,7 @@ function wpcf_admin_custom_types_form()
             }
             unset($custom_taxonomies[$slug]['supports'][$id]);
         }
-        update_option( 'wpcf-custom-taxonomies', $custom_taxonomies);
+        update_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $custom_taxonomies);
     }
 
     /**
@@ -115,7 +111,7 @@ function wpcf_admin_custom_types_form()
 
     $form['table-1-open'] = array(
         '#type' => 'markup',
-        '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat"><thead><tr><th colspan="2">' . __( 'Name and description',
+        '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Name and description',
                 'wpcf' ) . '</th></tr></thead><tbody>',
     );
     $table_row = '<tr><td><LABEL></td><td><ERROR><ELEMENT></td></tr>';
@@ -156,6 +152,7 @@ function wpcf_admin_custom_types_form()
         '#id' => 'name-singular',
         '#attributes' => array(
             'placeholder' => __('Enter post type name singular', 'wpcf' ),
+            'class' => 'js-wpcf-slugize-source',
         ),
     );
 
@@ -188,7 +185,8 @@ function wpcf_admin_custom_types_form()
         '#attributes' => $attributes + array(
             'maxlength' => '20',
             'placeholder' => __('Enter post type slug', 'wpcf' ),
-            ),
+            'class' => 'js-wpcf-slugize',
+        ),
         '#id' => 'slug',
     );
     $form['description'] = array(
@@ -427,6 +425,7 @@ function wpcf_admin_custom_types_form()
     global $sitepress;
     if (
         $update && isset( $sitepress )
+        && defined('ICL_SITEPRESS_VERSION')
         && version_compare( ICL_SITEPRESS_VERSION, '2.6.2', '>=' )
         && function_exists( 'wpml_custom_post_translation_options' )
     ) {
@@ -599,7 +598,7 @@ function wpcf_admin_custom_types_form_submit($form)
     }
 
     $data['slug'] = $post_type;
-    $custom_types = get_option( 'wpcf-custom-types', array() );
+    $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
 
     // Check reserved name
     $reserved = wpcf_is_reserved_name( $post_type, 'post_type' );
@@ -696,7 +695,7 @@ function wpcf_admin_custom_types_form_submit($form)
         /**
          * update option "wpcf-custom-taxonomies"
          */
-        $wpcf_custom_taxonomies = get_option( 'wpcf-custom-taxonomies', true );
+        $wpcf_custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, true );
         if ( is_array( $wpcf_custom_taxonomies ) ) {
             $update_wpcf_custom_taxonomies = false;
             foreach( $wpcf_custom_taxonomies as $key => $value ) {
@@ -706,7 +705,7 @@ function wpcf_admin_custom_types_form_submit($form)
                 }
             }
             if ( $update_wpcf_custom_taxonomies ) {
-                update_option( 'wpcf-custom-taxonomies', $wpcf_custom_taxonomies );
+                update_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $wpcf_custom_taxonomies );
             }
         }
 
@@ -730,7 +729,7 @@ function wpcf_admin_custom_types_form_submit($form)
 
     // Sync taxes with custom taxes
     if ( !empty( $data['taxonomies'] ) ) {
-        $taxes = get_option( 'wpcf-custom-taxonomies', array() );
+        $taxes = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
         foreach ( $taxes as $id => $tax ) {
             if ( array_key_exists( $id, $data['taxonomies'] ) ) {
                 $taxes[$id]['supports'][$data['slug']] = 1;
@@ -738,7 +737,7 @@ function wpcf_admin_custom_types_form_submit($form)
                 unset( $taxes[$id]['supports'][$data['slug']] );
             }
         }
-        update_option( 'wpcf-custom-taxonomies', $taxes );
+        update_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $taxes );
     }
 
     // Preserve protected data
@@ -756,7 +755,7 @@ function wpcf_admin_custom_types_form_submit($form)
     // Merging protected data
     $custom_types[$post_type] = array_merge( $protected_data_check, $data );
 
-    update_option( 'wpcf-custom-types', $custom_types );
+    update_option( WPCF_OPTION_NAME_CUSTOM_TYPES, $custom_types );
 
     // WPML register strings
     wpcf_custom_types_register_translation( $post_type, $data );
@@ -843,7 +842,7 @@ function wpcf_admin_metabox_wpcf_visibility($ct)
      */
     $form['dashboard_glance'] = array(
         '#type' => 'checkbox',
-        '#before' => sprintf('<h4>%s</h4>', __( 'Show in Right Now', 'wpcf' )),
+        '#before' => sprintf('<h4>%s</h4>', __( 'Show on "At a Glance"', 'wpcf' )),
         '#name' => 'ct[dashboard_glance]',
         '#title' => __( 'Show number of entries on "At a Glance" admin widget.', 'wpcf' ),
         '#default_value' => !empty( $ct['dashboard_glance'] ),
@@ -900,35 +899,63 @@ function wpcf_admin_metabox_labels($ct)
     $form = array();
     $form['table-4-open'] = wpcf_admin_metabox_begin(__( 'Labels', 'wpcf' ), 'labels', 'wpcf-types-form-table');
     $labels = array(
-        'add_new' => array('title' => __( 'Add New', 'wpcf' ), 'description' => __( 'The add new text. The default is Add New for both hierarchical and non-hierarchical types.',
-                    'wpcf' )),
-        'add_new_item' => array('title' => __( 'Add New %s', 'wpcf' ), 'description' => __( 'The add new item text. Default is Add New Post/Add New Page.',
-                    'wpcf' )),
-//        'edit' => array('title' => __('Edit', 'wpcf'), 'description' => __('The edit item text. Default is Edit Post/Edit Page.', 'wpcf')),
-        'edit_item' => array('title' => __( 'Edit %s', 'wpcf' ), 'description' => __( 'The edit item text. Default is Edit Post/Edit Page.',
-                    'wpcf' )),
-        'new_item' => array('title' => __( 'New %s', 'wpcf' ), 'description' => __( 'The view item text. Default is View Post/View Page.',
-                    'wpcf' )),
-//        'view' => array('title' => __('View', 'wpcf'), 'description' => __('', 'wpcf')),
-        'view_item' => array('title' => __( 'View %s', 'wpcf' ), 'description' => __( 'The view item text. Default is View Post/View Page.',
-                    'wpcf' )),
-        'search_items' => array('title' => __( 'Search %s', 'wpcf' ), 'description' => __( 'The search items text. Default is Search Posts/Search Pages.',
-                    'wpcf' )),
-        'not_found' => array('title' => __( 'No %s found', 'wpcf' ), 'description' => __( 'The not found text. Default is No posts found/No pages found.',
-                    'wpcf' )),
-        'not_found_in_trash' => array('title' => __( 'No %s found in Trash',
-                    'wpcf' ), 'description' => __( 'The not found in trash text. Default is No posts found in Trash/No pages found in Trash.',
-                    'wpcf' )),
-        'parent_item_colon' => array('title' => __( 'Parent text', 'wpcf' ), 'description' => __( "The parent text. This string isn't used on non-hierarchical types. In hierarchical ones the default is Parent Page.",
-                    'wpcf' )),
-        'all_items' => array('title' => __( 'All items', 'wpcf' ), 'description' => __( 'The all items text used in the menu. Default is the Name label.',
-                    'wpcf' )),
+        'add_new' => array(
+            'title' => __( 'Add New', 'wpcf' ),
+            'description' => __( 'The add new text. The default is Add New for both hierarchical and non-hierarchical types.', 'wpcf' ),
+            'label' => __('Add New', 'wpcf'),
+        ),
+        'add_new_item' => array(
+            'title' => __( 'Add New %s', 'wpcf' ),
+            'description' => __( 'The add new item text. Default is Add New Post/Add New Page.', 'wpcf' ),
+            'label' => __('Add New Item', 'wpcf'),
+        ),
+        'edit_item' => array(
+            'title' => __( 'Edit %s', 'wpcf' ),
+            'description' => __( 'The edit item text. Default is Edit Post/Edit Page.',
+            'wpcf' ),
+            'label' => __('Edit Item', 'wpcf'),
+        ),
+        'new_item' => array(
+            'title' => __( 'New %s', 'wpcf' ),
+            'description' => __( 'The view item text. Default is View Post/View Page.', 'wpcf' ),
+            'label' => __('New Item', 'wpcf'),
+        ),
+        'view_item' => array(
+            'title' => __( 'View %s', 'wpcf' ),
+            'description' => __( 'The view item text. Default is View Post/View Page.', 'wpcf' ),
+            'label' => __('View Item', 'wpcf'),
+        ),
+        'search_items' => array(
+            'title' => __( 'Search %s', 'wpcf' ),
+            'description' => __( 'The search items text. Default is Search Posts/Search Pages.', 'wpcf' ),
+            'label' => __('Search Items', 'wpcf'),
+        ),
+        'not_found' => array(
+            'title' => __( 'No %s found', 'wpcf' ),
+            'description' => __( 'The not found text. Default is No posts found/No pages found.', 'wpcf' ),
+            'label' => __('Not Found', 'wpcf'),
+        ),
+        'not_found_in_trash' => array(
+            'title' => __( 'No %s found in Trash', 'wpcf' ),
+            'description' => __( 'The not found in trash text. Default is No posts found in Trash/No pages found in Trash.', 'wpcf' ),
+            'label' => __('Not Found In Trash', 'wpcf'),
+        ),
+        'parent_item_colon' => array(
+            'title' => __( 'Parent text', 'wpcf' ),
+            'description' => __( "The parent text. This string isn't used on non-hierarchical types. In hierarchical ones the default is Parent Page.", 'wpcf' ),
+            'label' => __('Parent Description', 'wpcf'),
+        ),
+        'all_items' => array(
+            'title' => __( 'All items', 'wpcf' ),
+            'description' => __( 'The all items text used in the menu. Default is the Name label.', 'wpcf' ),
+            'label' => __('All Items', 'wpcf'),
+        ),
     );
     foreach ( $labels as $name => $data ) {
         $form['labels-' . $name] = array(
             '#type' => 'textfield',
             '#name' => 'ct[labels][' . $name . ']',
-            '#title' => ucwords( str_replace( '_', ' ', $name ) ),
+            '#title' => $data['label'],
             '#description' => $data['description'],
             '#value' => empty($ct['slug'])? $data['title']:(isset( $ct['labels'][$name] ) ? $ct['labels'][$name] : ''),
             '#inline' => true,
@@ -940,12 +967,12 @@ function wpcf_admin_metabox_labels($ct)
 }
 
     /**
-     * Display Sections
+     * custom post type properites
      */
 function wpcf_admin_metabox_display_sections($ct)
 {
     $form = array();
-    $form['table-5-open'] = wpcf_admin_metabox_begin(__( 'Display Sections', 'wpcf' ), 'display_sections', 'wpcf-types-form-supports-table');
+    $form['table-5-open'] = wpcf_admin_metabox_begin(__( 'Custom Post Properites', 'wpcf' ), 'display_sections', 'wpcf-types-form-supports-table');
     $options = array(
         'title' => array(
             '#name' => 'ct[supports][title]',
@@ -1053,7 +1080,7 @@ function wpcf_admin_metabox_display_sections($ct)
 function wpcf_admin_metabox_options($ct)
 {
     $form = array();
-    $form['table-6-open'] = wpcf_admin_metabox_begin( __( 'Options', 'wpcf' ), 'options', 'wpcf-types-form-table');
+    $form['table-6-open'] = wpcf_admin_metabox_begin( __( 'Options', 'wpcf' ), 'options', 'wpcf-types-form-options-table');
     $form['rewrite-enabled'] = array(
         '#type' => 'checkbox',
         '#title' => __( 'Rewrite', 'wpcf' ),
@@ -1116,6 +1143,10 @@ function wpcf_admin_metabox_options($ct)
     );
     $show_in_menu_page = isset( $ct['show_in_menu_page'] ) ? $ct['show_in_menu_page'] : '';
     $hidden = !empty( $ct['show_in_menu'] ) ? '' : ' class="hidden"';
+
+    $has_archive_slug = isset( $ct['has_archive_slug'] ) ? $ct['has_archive_slug'] : '';
+    $has_archive_slug_show = empty( $ct['has_archive'] )? ' class="hidden"':'';
+
     $form['vars'] = array(
         '#type' => 'checkboxes',
         '#name' => 'ct[vars]',
@@ -1125,9 +1156,9 @@ function wpcf_admin_metabox_options($ct)
                 '#name' => 'ct[has_archive]',
                 '#default_value' => !empty( $ct['has_archive'] ),
                 '#title' => __( 'has_archive', 'wpcf' ),
-                '#description' => __( 'Allow custom post type to have index page.',
-                        'wpcf' ) . '<br />' . __( 'Default: not set.', 'wpcf' ),
+                '#description' => __( 'Allow to have custom archive slug for CPT.', 'wpcf' ) . '<br />' . __( 'Default: not set.', 'wpcf' ),
                 '#inline' => true,
+                '#after' => '<div id="wpcf-types-form-has_archive-toggle"' . $has_archive_slug_show . '><input type="text" name="ct[has_archive_slug]" style="width:50%;" value="' . $has_archive_slug . '" /><div class="description wpcf-form-description wpcf-form-description-checkbox description-checkbox">' . __( 'Optional.', 'wpcf' ) . ' ' . __( 'Default is value of rewrite or CPT slug.', 'wpcf' ) . '</div></div>',
             ),
             'show_in_menu' => array(
                 '#name' => 'ct[show_in_menu]',

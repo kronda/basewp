@@ -3,10 +3,6 @@
  *
  * Post Types Class
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/classes/class.wpcf-post-types.php $
- * $LastChangedDate: 2015-03-16 12:03:31 +0000 (Mon, 16 Mar 2015) $
- * $LastChangedRevision: 1113864 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -42,17 +38,65 @@ class WPCF_Post_Types
      * Check custom post type for custom fields to display on custom post edit 
      * screen.
      *
-     * @since 1.6.6
-     * @access (for functions: only use if private)
+     * @since 1.7
+     *
+     * @param array $data CPT data
+     * @param string $field name of field to check
      *
      * @return bool It has some fields?
      */
-    private function check_has_custom_fields($data)
+    private function check_has_custom_fields($data, $field = false)
     {
-        return
-            isset($data['custom_fields'])
-            && is_array($data['custom_fields'])
-            && !empty($data['custom_fields']);
+        $value = isset($data['custom_fields']) && is_array($data['custom_fields']) && !empty($data['custom_fields']);
+        if ( false == $value ) {
+            return $value;
+        }
+        if ( true == $value && false == $field ) {
+            return $value;
+        }
+        return isset($data['custom_fields'][$field]);
+    }
+
+    /**
+     * Add sort to admin table list.
+     *
+     * Add sort by custom field to admin table with list of entries
+     *
+     * @since 1.7
+     *
+     * @param object $query QP Query object
+     *
+     */
+    public function pre_get_posts($query)
+    {
+        /**
+         * do not run in admin
+         */
+        if ( !is_admin() ) {
+            return;
+        }
+        /**
+         * check is main query and is set orderby and post_type
+         */
+        if (
+            $query->is_main_query()
+            && ( $orderby = $query->get( 'orderby' ) ) 
+            && ( $post_type = $query->get( 'post_type' ) ) 
+        ) {
+            $custom_post_types = wpcf_get_active_custom_types();
+            /**
+             * this CPT exists as a Types CPT?
+             */
+            if (!isset($custom_post_types[$post_type])) {
+                return;
+            }
+            /**
+             * set up meta_key if this CPT has this field to sort
+             */
+            if ($this->check_has_custom_fields($custom_post_types[$post_type], $orderby)) {
+                $query->set('meta_key',$orderby);
+            }
+        }
     }
 
     /**
@@ -64,15 +108,111 @@ class WPCF_Post_Types
      */
     public function admin_init()
     {
+        add_action('pre_get_posts', array($this, 'pre_get_posts'));
         $custom_post_types = wpcf_get_active_custom_types();
         foreach( $custom_post_types as $post_type => $data ) {
             if ( $this->check_has_custom_fields($data)) {
                 $hook = sprintf('manage_edit-%s_columns', $post_type);
                 add_filter($hook, array($this, 'manage_posts_columns'));
+
+                $hook = sprintf('manage_edit-%s_sortable_columns', $post_type);
+                add_filter($hook, array($this, 'manage_posts_sortable_columns'));
+
                 $hook = sprintf('manage_%s_posts_custom_column', $post_type);
                 add_action($hook, array($this, 'manage_custom_columns'), 10, 2);
             }
         }
+    }
+
+    /**
+     * Add custom fields as a sortable columns.
+     *
+     * Add custom fields as a sortable columns on custom post admin list
+     *
+     * @since 1.7
+     *
+     * @param array $columns Hashtable of columns;
+     *
+     * @return array Hashtable of columns;
+     */
+    public function manage_posts_sortable_columns($columns)
+    {
+        return $this->manage_posts_columns_common($columns, 'sortable');
+    }
+
+    /**
+     * Add custom fields column helper.
+     *
+     * Add custom fields as a sortable columns on custom post admin list
+     *
+     * @since 1.7
+     *
+     * @param array $columns Hashtable of columns;
+     * @param string $mode Work Mode.
+     *
+     * @return array Hashtable of columns;
+     */
+    private function manage_posts_columns_common($columns, $mode = 'normal')
+    {
+        $screen = get_current_screen();
+        if ( !isset( $screen->post_type) ) {
+            return $columns;
+        }
+        $custom_post_types = wpcf_get_active_custom_types();
+        if(
+            !isset($custom_post_types[$screen->post_type])
+            || !$this->check_has_custom_fields($custom_post_types[$screen->post_type])
+            || !isset($custom_post_types[$screen->post_type]['custom_fields'])
+            || empty($custom_post_types[$screen->post_type]['custom_fields'])
+        ) {
+            return $columns;
+        }
+        $fields = wpcf_admin_fields_get_fields();
+
+        foreach( array_keys($custom_post_types[$screen->post_type]['custom_fields']) as $full_id) {
+
+            $data = array();
+            $key = null;
+
+            foreach( $fields as $field_key => $field_data ) {
+                if ( !isset($field_data['meta_key']) ) {
+                    continue;
+                }
+                if ( $full_id != $field_data['meta_key'] ) {
+                    continue;
+                }
+                $key = $field_key;
+                $data = $field_data;
+            }
+
+            if ( !isset($data['meta_key']) ) {
+                continue;
+            }
+
+            if ( isset($custom_post_types[$screen->post_type]['custom_fields'][$data['meta_key']]) ) {
+                switch($mode) {
+                case 'sortable':
+                    switch( $data['type'] ) {
+                        /**
+                         * turn of sorting for complex data
+                         */
+                    case 'date':
+                    case 'skype':
+                        $columns[$data['meta_key']] = false;;
+                        break;
+                    default:
+                        $columns[$data['meta_key']] = $data['meta_key'];
+                        break;
+                    }
+                    break;
+                case 'normal':
+                default:
+                    $columns[$data['meta_key']] = $data['name'];
+                    break;
+                }
+            }
+        }
+        return $columns;
     }
 
     /**
@@ -83,32 +223,12 @@ class WPCF_Post_Types
      * @since 1.6.6
      *
      * @param array $columns Hashtable of columns;
+     *
      * @return array Hashtable of columns;
      */
     public function manage_posts_columns($columns)
     {
-        $screen = get_current_screen();
-        if ( !isset( $screen->post_type) ) {
-            return $columns;
-        }
-        $custom_post_types = wpcf_get_active_custom_types();
-        if(
-            !isset($custom_post_types[$screen->post_type])
-            || !$this->check_has_custom_fields($custom_post_types[$screen->post_type])
-        ) {
-            return $columns;
-        }
-        $fields = wpcf_admin_fields_get_fields();
-        ksort($fields);
-        foreach( $fields as $key => $data ) {
-            if ( !isset($data['meta_key']) ) {
-                continue;
-            }
-            if ( in_array($data['meta_key'], $custom_post_types[$screen->post_type]['custom_fields']) ) {
-                $columns[$data['meta_key']] = $data['name'];
-            }
-        }
-        return $columns;
+        return $this->manage_posts_columns_common($columns, 'normal');
     }
 
     /**
@@ -131,9 +251,27 @@ class WPCF_Post_Types
         if ( isset( $field['type'] ) ) {
             switch( $field['type'] ) {
             case 'image':
+                $default_width = '100px';
+                /**
+                 * Width of image.
+                 *
+                 * Filter allow to change default image size displayed on 
+                 * admin etry list for custom field type image. Default is 
+                 * 100px - you can change it to any proper CSS width 
+                 * definition.
+                 *
+                 * @since 1.7
+                 *
+                 * @param string $var Default width "100px".
+                 */
+                $width = apply_filters('wpcf_field_image_max_width', $default_width);
+                if (empty($width)) {
+                    $width = $default_width;
+                }
                 $value = sprintf(
-                    '<img src="%s" width="120" />',
-                    $value
+                    '<img src="%s" style="max-width:%s" alt="" />',
+                    esc_attr($value),
+                    esc_attr($width)
                 );
                 break;
             case 'skype':
@@ -189,6 +327,8 @@ class WPCF_Post_Types
             'object_id' => $_nav_menu_placeholder,
             'post_title' => $post_type['args']->labels->all_items,
             'post_type' => 'nav_menu_item',
+            'post_excerpt' => '',
+            'post_content' => '',
             'type' => 'post_type_archive',
             'object' => $post_type['args']->slug,
         ) );

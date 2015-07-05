@@ -236,6 +236,8 @@ function wpcf_fields_get_field_by_slug( $slug, $meta_name = 'wpcf-fields' ) {
     return wpcf_admin_fields_get_field( $slug, false, false, false, $meta_name );
 }
 
+add_filter('wpcf_fields_by_group', 'wpcf_admin_fields_get_fields_by_group', 10, 1);
+
 /**
  * Gets all fields that belong to specific group.
  *
@@ -332,6 +334,8 @@ function wpcf_admin_fields_get_groups_by_term( $term_id = false,
     }
     return $groups;
 }
+
+add_filter('wpcf_get_groups_by_post_type', 'wpcf_admin_get_groups_by_post_type', 10, 1);
 
 /**
  * Gets groups that have specific post_type.
@@ -581,7 +585,7 @@ function wpcf_sanitize_field( $field ) {
     }
     // Sanitize slug
     if ( !empty( $field['slug'] ) ) {
-        $field['slug'] = sanitize_title( $field['slug'] );
+        $field['slug'] = sanitize_key( $field['slug'] );
     } else if ( isset( $field['name'] ) ) {
         $field['slug'] = sanitize_title( $field['name'] );
     }
@@ -647,3 +651,35 @@ function wpcf_admin_fields_get_field_last_settings( $field_id ) {
     }
     return array();
 }
+
+/**
+ * Get active fields by post type
+ *
+ * Get active fields by post type chosing it from active groups and this 
+ * groups which are connected to certain post type.
+ *
+ * @since: 1.7
+ *
+ * @param string $post_type custom post type
+ *
+ * @return array allowed meta keys
+ */
+function wpcf_admin_get_allowed_fields_by_post_type($post_type)
+{
+    $allowed_fields = $active_groups = array();
+    $all_groups = wpcf_admin_get_groups_by_post_type($post_type);
+    foreach( $all_groups as $group_id => $group_data ) {
+        $active_groups[] = $group_data['slug'];
+    }
+    $all_groups = wpcf_admin_fields_get_groups('wp-types-group', true, true);
+    foreach( $all_groups as $group ) {
+        if ( !in_array($group['slug'], $active_groups) ) {
+            continue;
+        }
+        foreach( $group['fields'] as $field_key => $field_data ) {
+            $allowed_fields[] = $field_data['meta_key'];
+        }
+    }
+    return $allowed_fields;
+}
+

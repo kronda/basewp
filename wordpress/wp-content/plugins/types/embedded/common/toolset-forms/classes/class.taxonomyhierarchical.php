@@ -2,10 +2,6 @@
 
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.taxonomyhierarchical.php $
- * $LastChangedDate: 2015-03-16 12:03:31 +0000 (Mon, 16 Mar 2015) $
- * $LastChangedRevision: 1113864 $
- * $LastChangedBy: iworks $
  *
  */
 include_once 'class.textfield.php';
@@ -303,7 +299,8 @@ class WPToolset_Field_Taxonomyhierarchical extends WPToolset_Field_Textfield {
                     '#before' => sprintf('<li class="%s">', implode(' ', $clases)),
                     '#after' => '</li>',
                     '#attributes' => array(
-                        'data-parent' => $parent
+                        'data-parent' => $parent,
+                        'data-value' => $names[$tid]
                     ),
                     '#pattern' => '<BEFORE><PREFIX><ELEMENT><LABEL><ERROR><SUFFIX><DESCRIPTION><AFTER>',
                 );

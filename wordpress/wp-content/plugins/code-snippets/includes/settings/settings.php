@@ -5,20 +5,24 @@
  * @package Code_Snippets
  */
 
+require plugin_dir_path( __FILE__ ) . '/class-settings.php';
+
 /**
  * Retrieve the default setting values
  * @return array
  */
 function code_snippets_get_default_settings() {
-	$fields = code_snippets_get_settings_fields();
-	$defaults = array();
-
-	foreach ( $fields as $section_id => $section_fields ) {
-		$defaults[ $section_id ] = wp_list_pluck( $section_fields, 'default', 'id' );
-	}
-
-	return $defaults;
+	return Code_Snippets_Settings::get_defaults();
 }
+
+/**
+ * Retrieve the settings fields
+ * @return array
+ */
+function code_snippets_get_settings_fields() {
+	return Code_Snippets_Settings::get_fields();
+}
+
 
 /*
  * Retrieve the setting values from the database.
@@ -26,9 +30,38 @@ function code_snippets_get_default_settings() {
  * @return array
  */
 function code_snippets_get_settings() {
+
+	/* Check if the settings have been cached */
+	if ( $settings = wp_cache_get( 'code_snippets_settings' ) ) {
+		return $settings;
+	}
+
+	/* Begin with the default settings */
+	$settings = Code_Snippets_Settings::get_defaults();
+
+	/* Retrieve saved settings from the database */
 	$saved = get_option( 'code_snippets_settings', array() );
-	$default = code_snippets_get_default_settings();
-	return wp_parse_args( $saved, $default );
+
+	/* Replace the default field values with the ones saved in the database */
+	if ( function_exists( 'array_replace_recursive' ) ) {
+
+		/* Use the much more efficient array_replace_recursive() function in PHP 5.3 and later */
+		$settings = array_replace_recursive( $settings, $saved );
+	} else {
+
+		/* Otherwise, do it manually */
+		foreach ( $settings as $section => $fields ) {
+			foreach ( $fields as $field => $value ) {
+
+				if ( isset( $saved[ $section ][ $field ] ) ) {
+					$settings[ $section ][ $field ] = $saved[ $section ][ $field ];
+				}
+			}
+		}
+	}
+
+	wp_cache_set( 'code_snippets_settings', $settings );
+	return $settings;
 }
 
 /**
@@ -49,111 +82,21 @@ function code_snippets_get_setting( $section, $field ) {
 function code_snippets_get_settings_sections() {
 	$sections = array(
 		'general' => __( 'General', 'code-snippets' ),
-		'editor' => __( 'Editor', 'code-snippets' ),
+		'description_editor' => __( 'Description Editor', 'code-snippets' ),
+		'editor' => __( 'Code Editor', 'code-snippets' ),
 	);
 
 	return apply_filters( 'code_snippets_settings_sections', $sections );
 }
 
 /**
- * Retrieve the settings fields
- * @return array
- */
-function code_snippets_get_settings_fields() {
-	$settings = array();
-
-	$settings['general'] = array(
-		array(
-			'id' => 'activate_by_default',
-			'name' =>__( 'Activate by Default', 'code-snippets' ),
-			'type' => 'checkbox',
-			'label' => __( "Make the 'Save and Activate' button the default action when saving a snippet.", 'code-snippets' ),
-			'default' => false,
-		),
-	);
-
-	/* Editor settings section */
-
-	$settings['editor'] = array(
-		array(
-			'id' => 'theme',
-			'name' => __( 'Theme', 'code-snippets' ),
-			'type' => 'codemirror_theme_select',
-			'default' => 'default',
-			'codemirror' => 'theme',
-		),
-
-		array(
-			'id' => 'indent_with_tabs',
-			'name' => __( 'Indent With Tabs', 'code-snippets' ),
-			'type' => 'checkbox',
-			'label' => __( 'Use hard tabs (not spaces) for indentation.', 'code-snippets' ),
-			'default' => true,
-			'codemirror' => 'indentWithTabs',
-		),
-
-		array(
-			'id' => 'tab_size',
-			'name' => __( 'Tab Size', 'code-snippets' ),
-			'type' => 'number',
-			'label' => __( 'The width of a tab character.', 'code-snippets' ),
-			'default' => 4,
-			'codemirror' => 'tabSize',
-		),
-
-		array(
-			'id' => 'indent_unit',
-			'name' => __( 'Indent Unit', 'code-snippets' ),
-			'type' => 'number',
-			'label' => __( 'How many spaces a block should be indented.', 'code-snippets' ),
-			'default' => 2,
-			'codemirror' => 'indentUnit',
-		),
-
-		array(
-			'id' => 'wrap_lines',
-			'name' => __( 'Wrap Lines', 'code-snippets' ),
-			'type' => 'checkbox',
-			'label' => __( 'Whether the editor should scroll or wrap for long lines.', 'code-snippets' ),
-			'default' => true,
-			'codemirror' => 'lineWrapping',
-		),
-
-		array(
-			'id' => 'line_numbers',
-			'name' => __( 'Line Numbers', 'code-snippets' ),
-			'type' => 'checkbox',
-			'label' => __( 'Show line numbers to the left of the editor.', 'code-snippets' ),
-			'default' => true,
-			'codemirror' => 'lineNumbers',
-		),
-
-		array(
-			'id' => 'auto_close_brackets',
-			'name' => __( 'Auto Close Brackets', 'code-snippets' ),
-			'type' => 'checkbox',
-			'label' => __( 'Auto-close brackets and quotes when typed.', 'code-snippets' ),
-			'default' => true,
-			'codemirror' => 'autoCloseBrackets',
-		),
-
-		array(
-			'id' => 'highlight_selection_matches',
-			'name' => __( 'Highlight Selection Matches', 'code-snippets' ),
-			'label' => __( 'Highlight all instances of a currently selected word.', 'code-snippets' ),
-			'type' => 'checkbox',
-			'default' => true,
-			'codemirror' => 'highlightSelectionMatches',
-		),
-	);
-
-	return apply_filters( 'code_snippets_settings_fields', $settings );
-}
-
-/**
  * Register settings sections, fields, etc
  */
 function code_snippets_register_settings() {
+
+	if ( ! get_option( 'code_snippets_settings', false ) ) {
+		add_option( 'code_snippets_settings', code_snippets_get_default_settings() );
+	}
 
 	/* Register the setting */
 	register_setting( 'code-snippets', 'code_snippets_settings', 'code_snippets_settings_validate' );
@@ -169,24 +112,25 @@ function code_snippets_register_settings() {
 	}
 
 	/* Register settings fields */
-	foreach ( code_snippets_get_settings_fields() as $section_id => $fields ) {
-
+	foreach ( Code_Snippets_Settings::get_fields() as $section_id => $fields ) {
 		foreach ( $fields as $field ) {
+			$atts = $field;
+			$atts['section'] = $section_id;
+
 			add_settings_field(
 				'code_snippets_' . $field['id'],
 				$field['name'],
 				"code_snippets_{$field['type']}_field",
 				'code-snippets',
 				'code-snippets-' . $section_id,
-				array_merge( $field, array( 'section' => $section_id ) )
+				$atts
 			);
 		}
-
 	}
 
 	/* Add editor preview as a field */
 	add_settings_field(
-		'code_snippets_' . $field['id'],
+		'code_snippets_editor_preview',
 		__( 'Editor Preview', 'code-snippets' ),
 		'code_snippets_settings_editor_preview',
 		'code-snippets',
@@ -212,21 +156,19 @@ function code_snippets_settings_validate( array $input ) {
 		foreach ( $fields as $field ) {
 			$field_id = $field['id'];
 
-			// Checkbox field
-			if ( 'checkbox' === $field['type'] ) {
+			switch ( $field['type'] ) {
 
-				$settings[ $section_id ][ $field_id ] = (
-					isset( $input[ $section_id ][ $field_id ] ) &&
-					'on' === $input[ $section_id ][ $field_id ]
-				);
+				case 'checkbox':
+					$settings[ $section_id ][ $field_id ] =
+						isset( $input[ $section_id ][ $field_id ] ) && 'on' === $input[ $section_id ][ $field_id ];
+					break;
 
-			// Number field
-			} elseif ( 'number' == $field['type'] ) {
-				$settings[ $section_id ][ $field_id ] = absint( $input[ $section_id ][ $field_id ] );
+				case 'number':
+					$settings[ $section_id ][ $field_id ] = absint( $input[ $section_id ][ $field_id ] );
+					break;
 
-			// Other fields
-			} else {
-				$settings[ $section_id ][ $field_id ] = $input[ $section_id ][ $field_id ];
+				default:
+					$settings[ $section_id ][ $field_id ] = $input[ $section_id ][ $field_id ];
 			}
 		}
 	}

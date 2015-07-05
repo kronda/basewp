@@ -6,10 +6,6 @@ require_once 'class.textarea.php';
  *
  * @author Srdjan
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.wysiwyg.php $
- * $LastChangedDate: 2014-10-29 15:57:36 +0000 (Wed, 29 Oct 2014) $
- * $LastChangedRevision: 1016002 $
- * $LastChangedBy: iworks $
  *
  */
 class WPToolset_Field_Wysiwyg extends WPToolset_Field_Textarea

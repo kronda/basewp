@@ -2,10 +2,6 @@
 /*
  * Fields and groups form functions.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/includes/fields-form.php $
- * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
- * $LastChangedRevision: 1120400 $
- * $LastChangedBy: iworks $
  *
  */
 require_once WPCF_EMBEDDED_ABSPATH . '/classes/validate.php';
@@ -104,21 +100,21 @@ function wpcf_admin_save_fields_groups_submit( $form )
         // Before anything - search unallowed characters
         foreach ( $_POST['wpcf']['fields'] as $key => $field ) {
             if ( (empty( $field['slug'] ) && preg_match( '#[^a-zA-Z0-9\s\_\-]#',
-                            $field['name'] ))
-                    || (!empty( $field['slug'] ) && preg_match( '#[^a-zA-Z0-9\s\_\-]#',
-                            $field['slug'] )) ) {
-                $form->triggerError();
-                wpcf_admin_message( sprintf( __( 'Field slugs cannot contain non-English characters. Please edit this field name %s and save again.',
-                                        'wpcf' ), $field['name'] ), 'error' );
-                return $form;
-            }
+                $field['name'] ))
+                || (!empty( $field['slug'] ) && preg_match( '#[^a-zA-Z0-9\s\_\-]#',
+                    $field['slug'] )) ) {
+                        $form->triggerError();
+                        wpcf_admin_message( sprintf( __( 'Field slugs cannot contain non-English characters. Please edit this field name %s and save again.',
+                            'wpcf' ), $field['name'] ), 'error' );
+                        return $form;
+                    }
             if ( (!empty( $field['name'] ) && is_numeric($field['name'] ))
-                    || (!empty( $field['slug'] ) && is_numeric($field['slug'] )) ) {
-                $form->triggerError();
-                wpcf_admin_message( sprintf( __( 'Field names or slugs cannot contain only numbers.',
-                                        'wpcf' ), $field['name'] ), 'error' );
-                return $form;
-            }
+                || (!empty( $field['slug'] ) && is_numeric($field['slug'] )) ) {
+                    $form->triggerError();
+                    wpcf_admin_message( sprintf( __( 'Field names or slugs cannot contain only numbers.',
+                        'wpcf' ), $field['name'] ), 'error' );
+                    return $form;
+                }
         }
         // First check all fields
         foreach ( $_POST['wpcf']['fields'] as $key => $field ) {
@@ -126,20 +122,21 @@ function wpcf_admin_save_fields_groups_submit( $form )
             if ( !empty( $field['is_new'] ) ) {
                 // Check name and slug
                 if ( wpcf_types_cf_under_control( 'check_exists',
-                                sanitize_title( $field['name'] ) ) ) {
-                    $form->triggerError();
-                    wpcf_admin_message( sprintf( __( 'Field with name "%s" already exists',
-                                            'wpcf' ), $field['name'] ), 'error' );
-                    return $form;
-                }
+                    sanitize_title( $field['name'] ) ) ) {
+                        $form->triggerError();
+                        wpcf_admin_message( sprintf( __( 'Field with name "%s" already exists',
+                            'wpcf' ), $field['name'] ), 'error' );
+                        return $form;
+                    }
                 if ( isset( $field['slug'] ) && wpcf_types_cf_under_control( 'check_exists',
-                                sanitize_title( $field['slug'] ) ) ) {
-                    $form->triggerError();
-                    wpcf_admin_message( sprintf( __( 'Field with slug "%s" already exists',
-                                            'wpcf' ), $field['slug'] ), 'error' );
-                    return $form;
-                }
+                    sanitize_title( $field['slug'] ) ) ) {
+                        $form->triggerError();
+                        wpcf_admin_message( sprintf( __( 'Field with slug "%s" already exists',
+                            'wpcf' ), $field['slug'] ), 'error' );
+                        return $form;
+                    }
             }
+            $field['submit-key'] = $key;
             // Field ID and slug are same thing
             $field_id = wpcf_admin_fields_save_field( $field );
             if ( is_wp_error( $field_id ) ) {
@@ -151,9 +148,15 @@ function wpcf_admin_save_fields_groups_submit( $form )
                 $fields[] = $field_id;
             }
             // WPML
-            if ( function_exists( 'wpml_cf_translation_preferences_store' ) ) {
-                $wpml_save_cf = wpml_cf_translation_preferences_store( $key,
-                        wpcf_types_get_meta_prefix( wpcf_admin_fields_get_field( $field_id ) ) . $field_id );
+            /** @var string $field_id */
+            if (
+                defined('ICL_SITEPRESS_VERSION')
+                && version_compare ( ICL_SITEPRESS_VERSION, '3.2', '<' )
+            ) {
+                if ( function_exists( 'wpml_cf_translation_preferences_store' ) ) {
+                    $real_custom_field_name = wpcf_types_get_meta_prefix( wpcf_admin_fields_get_field( $field_id ) ) . $field_id;
+                    wpml_cf_translation_preferences_store( $key, $real_custom_field_name );
+                }
             }
         }
     }
@@ -549,7 +552,7 @@ function wpcf_admin_fields_form() {
     }
     foreach ( $templates_views as $template_view ) {
         $options[$template_view->post_name] = array(
-            '#title' => 'View Template ' . $template_view->post_title,
+            '#title' => 'Content Template ' . $template_view->post_title,
             '#default_value' => !empty( $update['templates'] ) && in_array( $template_view->ID, $update['templates'] ),
             '#name' => 'wpcf[group][templates][]',
             '#value' => $template_view->ID,
@@ -568,7 +571,7 @@ function wpcf_admin_fields_form() {
             } else if ( strpos( $template, '.php' ) !== false ) {
                 $template = $templates[$template];
             } else {
-                $template = 'View Template ' . $templates_view_list_text[$template];
+                $template = 'Content Template ' . $templates_view_list_text[$template];
             }
             $text[] = $template;
         }
@@ -760,7 +763,7 @@ function wpcf_admin_fields_form() {
         '#id' => 'wpcf-form-groups-css-fields-editor',
         '#after' => '
         <div class="wpcf-update-preview-btn"><input type="button" value="Update preview" onclick="wpcfPreviewHtml()" style="float:right;" class="button-secondary"></div>
-        <h3>Field group preview</h3>
+        <h3>'.__('Field group preview', 'wpcf').'</h3>
         <div id="wpcf-update-preview-div">Preview here</div>
         <script type="text/javascript">
 var wpcfReadOnly = ' . json_encode( $preview_profile ) . ';
@@ -768,7 +771,7 @@ var wpcfEditMode = ' . json_encode( $edit_profile ) . ';
 var wpcfDefaultCss = ' . json_encode( $admin_styles_value ) . ';
         </script>
         ',
-        '#before' => '<h3>Your CSS</h3>'
+        '#before' => sprintf('<h3>%s</h3>', __('Your CSS', 'wpcf')),
     );
 
     $admin_styles = _wpcf_filter_wrap( 'admin_styles',
@@ -1028,6 +1031,9 @@ function wpcf_fields_get_field_form_data( $type, $form_data = array() ) {
             '#id' => 'fieldset-' . $id,
             '#collapsible' => true,
             '#collapsed' => $collapsed,
+            '#attributes' => array(
+                'class' => 'js-wpcf-slugize-container',
+            ),
         );
 
         // Get init data
@@ -1046,7 +1052,7 @@ function wpcf_fields_get_field_form_data( $type, $form_data = array() ) {
             '#type' => 'textfield',
             '#name' => 'name',
             '#attributes' => array(
-                'class' => 'wpcf-forms-set-legend wpcf-forms-field-name',
+                'class' => 'wpcf-forms-set-legend wpcf-forms-field-name js-wpcf-slugize-source',
                 'style' => 'width:100%;margin:10px 0 10px 0;',
                 'placeholder' => __( 'Enter field name', 'wpcf' ),
             ),
@@ -1057,7 +1063,7 @@ function wpcf_fields_get_field_form_data( $type, $form_data = array() ) {
             '#type' => 'textfield',
             '#name' => 'slug',
             '#attributes' => array(
-                'class' => 'wpcf-forms-field-slug',
+                'class' => 'wpcf-forms-field-slug js-wpcf-slugize',
                 'style' => 'width:100%;margin:0 0 10px 0;',
                 'maxlength' => 255,
                 'placeholder' => __( 'Enter field slug', 'wpcf' ),
@@ -1193,8 +1199,13 @@ function wpcf_fields_get_field_form_data( $type, $form_data = array() ) {
             $form['wpcf-' . $id][$k] = $v;
         }
 
-        // WPML Translation Preferences
-        if ( function_exists( 'wpml_cf_translation_preferences' ) ) {
+        /**
+         * WPML Translation Preferences
+         *
+         * only for post meta
+         *
+         */
+        if ( 'postmeta' == $form_data['meta_type'] && function_exists( 'wpml_cf_translation_preferences' ) ) {
             $custom_field = !empty( $form_data['slug'] ) ? wpcf_types_get_meta_prefix( $form_data ) . $form_data['slug'] : false;
             $suppress_errors = $custom_field == false ? true : false;
             $translatable = array('textfield', 'textarea', 'wysiwyg');

@@ -2,10 +2,6 @@
 /*
  * Post relationship class.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/classes/relationship.php $
- * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
- * $LastChangedRevision: 1120400 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -257,6 +253,7 @@ class WPCF_Relationship
 
         $post_data['post_title'] = $post_title;
         $post_data['post_content'] = isset( $save_fields['_wp_body'] ) ? $save_fields['_wp_body'] : $child->post_content;
+        $post_data['post_excerpt'] = isset( $save_fields['_wp_excerpt'] ) ? $save_fields['_wp_excerpt'] : $child->post_excerpt;
         $post_data['post_type'] = $child->post_type;
 
         // Check post status - if new, convert to 'publish' else keep remaining
@@ -290,17 +287,23 @@ class WPCF_Relationship
         unset($cf);
 
         /**
-         * avoid filters for children
-         * /
-        global $wp_filter;
-        $save_post = $wp_filter['save_post'];
-        $wp_filter['save_post'] = array();
+         * avoid send data to children
          */
+        if ( isset( $_POST['post_ID'] ) ) {
+            $temp_post_data = $_POST;
+            $_POST = array();
+            foreach( array('wpcf_post_relationship', 'post_ID', '_wptoolset_checkbox', 'wpcf', '_wpnonce') as $key ) {
+                if ( isset($temp_post_data[$key]) ) {
+                    $_POST[$key] = $temp_post_data[$key];
+                }
+            }
+        }
         $updated_id = wp_update_post( $post_data );
-        /*
-            $wp_filter['save_post'] = $save_post;
-         */
-        unset($save_post);
+        if ( isset($temp_post_data) ) {
+            $_POST = $temp_post_data;
+            unset($temp_post_data);
+        }
+
         if ( empty( $updated_id ) ) {
             return new WP_Error( 'relationship-update-post-failed', 'Updating post failed' );
         }

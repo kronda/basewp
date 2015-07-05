@@ -402,8 +402,7 @@ jQuery(document).ready(function($) {
             dataType: 'json',
             cache: false,
             beforeSend: function() {
-                $button.after('<div style="margin-top:20px;"></div>').next()
-                        .addClass('wpcf-ajax-loading-small');
+                $button.after('<div style="margin-top:20px;"></div>').next().addClass('wpcf-ajax-loading-small');
             },
             success: function(data) {
                 if (data != null) {
@@ -415,14 +414,21 @@ jQuery(document).ready(function($) {
                             wptCallbacks.reset.fire($('tbody tr', $table).first());
                         }
                     }
-                    if (typeof data.conditionals != 'undefined'
-                            && typeof wptCond != 'undefined') {
+                    if (typeof data.conditionals != 'undefined' && typeof wptCond != 'undefined') {
                         wptCond.addConditionals(data.conditionals);
+                    }
+                    if ('undefined' != typeof data.child_id) {
+                        $('#types-child-row-'+data.child_id).on('click', '.js-wpt-file-upload', function(event) {
+                            wptFile.bindOpen($(this), false);
+                        });
                     }
                 }
                 $button.next().fadeOut(function() {
                     $(this).remove();
                 });
+                if ( 'undefined' != typeof wptFile ) {
+                    wptFile.init();
+                }
             }
         });
         return false;
@@ -546,8 +552,7 @@ jQuery(document).ready(function($) {
             dataType: 'json',
             cache: false,
             beforeSend: function() {
-                $button.after('<div style="margin-top:20px;"></div>').next()
-                        .addClass('wpcf-ajax-loading-small');
+                $button.after('<div style="margin-top:20px;"></div>').next().addClass('wpcf-ajax-loading-small');
             },
             success: function(data) {
                 if (data != null) {
@@ -558,8 +563,7 @@ jQuery(document).ready(function($) {
                             wptCallbacks.reset.fire($update);
                         }
                     }
-                    if (typeof data.conditionals != 'undefined'
-                            && typeof wptCond != 'undefined') {
+                    if (typeof data.conditionals != 'undefined' && typeof wptCond != 'undefined') {
                         wptCond.addConditionals(data.conditionals);
                     }
                 }
@@ -656,10 +660,18 @@ jQuery(document).ready(function($) {
                         if (typeof wptCallbacks != 'undefined') {
                             wptCallbacks.reset.fire('#'+rowId);
                         }
+                        if ( 'undefined' != typeof wptFile ) {
+                            wptFile.init();
+                        }
                     }
-                    if (typeof data.conditionals != 'undefined'
-                            && typeof wptCond != 'undefined') {
+                    if (typeof data.conditionals != 'undefined' && typeof wptCond != 'undefined') {
                         wptCond.addConditionals(data.conditionals);
+                    }
+                    /**
+                     * rebind images
+                     */
+                    if ( 'function' == typeof bind_colorbox_to_thumbnail_preview ) {
+                        bind_colorbox_to_thumbnail_preview();
                     }
                 }
             }
@@ -719,9 +731,17 @@ jQuery(document).ready(function($) {
                             wptCallbacks.reset.fire('#'+updateId);
                         }
                     }
-                    if (typeof data.conditionals != 'undefined'
-                            && typeof wptCond != 'undefined') {
+                    if (typeof data.conditionals != 'undefined' && typeof wptCond != 'undefined') {
                         wptCond.addConditionals(data.conditionals);
+                    }
+                    if ( 'undefined' != typeof wptFile ) {
+                        wptFile.init();
+                    }
+                    /**
+                     * rebind images
+                     */
+                    if ( 'function' == typeof bind_colorbox_to_thumbnail_preview ) {
+                        bind_colorbox_to_thumbnail_preview();
                     }
                 }
             }

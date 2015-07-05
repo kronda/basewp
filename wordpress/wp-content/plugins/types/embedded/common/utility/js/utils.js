@@ -1,3 +1,9 @@
+/**
+ * @author: riccardo
+ * @version: 1.2
+ * @revision: 04/06/2015 00:35
+ */
+
 if( typeof WPV_Toolset == 'undefined' )
 {
 	var WPV_Toolset = {};
@@ -8,6 +14,47 @@ if( typeof WPV_Toolset == 'undefined' )
 if( typeof WPV_Toolset.Utils == 'undefined' ) WPV_Toolset.Utils = {};
 
 WPV_Toolset.Utils.eventDispatcher = _.extend({}, Backbone.Events);
+
+WPV_Toolset.Utils.restoreEventPropagation = function( event ){
+    if( jQuery.browser.mozilla ){
+        return event;
+    }
+    if( event.isImmediatePropagationStopped() === false && event.isPropagationStopped() === false ){
+        return event;
+    }
+
+    if( typeof event.originalEvent === undefined ){
+        return event;
+    }
+
+    var refEvent = event.originalEvent;
+
+    try{
+        refEvent.cancelBubble = false;
+        refEvent.defaultPrevented = false;
+        refEvent.returnValue = true;
+        refEvent.timeStamp = ( new Date() ).getTime();
+    } catch( e ){
+    //    console.log(e.message );
+        return event;
+    }
+
+
+    if (event.target.dispatchEvent) {
+
+        try{
+            event.target.dispatchEvent(refEvent);
+        } catch( e ){
+
+            return;
+        }
+    } else if (event.target.fireEvent) {
+
+        event.target.fireEvent(refEvent);
+    }
+
+    return refEvent;
+};
 
 WPV_Toolset.Utils.do_ajax_post = function( params, callback_object )
 {
@@ -514,10 +561,10 @@ WPV_Toolset.Utils.Loader = function()
 
         if( typeof after === 'undefined' )
         {
-            self.loader.prependTo( self.el ).show();
+            self.loader.prependTo( self.el ).css('visibility', 'visible').show();
         }
         else{
-            self.loader.insertAfter( self.el ).show();
+            self.loader.insertAfter( self.el ).css('visibility', 'visible').show();
         }
 
         return self.loader;
@@ -686,7 +733,7 @@ WPV_Toolset.Utils.editor_utf8_decode = function (utftext) {
     return string;
 };
 
-// convert unicode character to its corrsponding numeric entity
+// convert unicode character to its corresponding numeric entity
 WPV_Toolset.Utils.fixedCharCodeAt = function  (str, idx) {
     // ex. fixedCharCodeAt ('\uD800\uDC00', 0); // 65536
     // ex. fixedCharCodeAt ('\uD800\uDC00', 1); // 65536
@@ -765,10 +812,14 @@ String.prototype.regexEscape = function regexEscape() {
         init: function () {
             var self = this;
             this.$element.on('mouseenter', function(event) {
+                event.stopImmediatePropagation();
                 self.show(event);
+                jQuery(event.target).trigger('tooltip_show', event);
             });
             this.$element.on('mouseleave', function(event) {
+                event.stopImmediatePropagation();
                 self.hide(event);
+                jQuery(event.target).trigger('tooltip_hide', event);
             });
         },
         show: function (event) {
@@ -944,3 +995,73 @@ String.prototype.regexEscape = function regexEscape() {
     };
 
 }(jQuery, window, document))
+;
+
+/* http://bigwilliam.com/jquery-fire-event-after-window-resize-is-completed/ */
+var waitForFinalEvent = ( function () {
+    var timers = {};
+    return function ( callback, ms, uniqueId ) {
+        if ( ! uniqueId ) {
+            uniqueId = "Don't call this twice without a uniqueId";
+        }
+        if ( timers[uniqueId] ) {
+            clearTimeout( timers[uniqueId] );
+        }
+        
+        timers[uniqueId] = setTimeout( callback, ms );
+    };
+} )();
+
+WPV_Toolset.Utils._strip_scripts = function (data) {
+
+    if( !data ) return '';
+
+    data = data.replace(/&lt;/g, "|-lt-|");
+    data = data.replace(/&gt;/g, "|-gt-|");
+    data = data.replace(/&(\w+);/g, "&amp;$1;"); // Preserve entities (rafael.v)
+    if( data.indexOf('srcset') === -1 ){
+        var div = document.createElement('div');
+        div.innerHTML = data;
+        jQuery(div).find('script').remove();
+        var out = div.innerHTML;
+    } else {
+        var out = data.replace(/<script[^>]*>([\\S\\s]*?)<\/script>/img, "");
+    }
+
+    out = out.replace(/&lt;/g, "<");
+    out = out.replace(/&gt;/g, ">");
+    out = out.replace(/&amp;(\w+);/g, "&$1;"); // Preserve entities (rafael.v)
+    out = out.replace(/\|-lt-\|/g, '&lt;');
+    out = out.replace(/\|-gt-\|/g, '&gt;');
+    return out;
+};
+
+if (!String.prototype.trim) {
+    (function() {
+        // Make sure we trim BOM and NBSP
+        var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+        String.prototype.trim = function() {
+            return this.replace(rtrim, '');
+        };
+    })();
+}
+
+WPV_Toolset.Utils._strip_tags_and_preserve_text = function( text ){
+     var rex = /<\/?(a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont|bdi|bdo|bgsound|big|blink|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup|data|datalist|dd|del|details|dfn|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|input|ins|isindex|kbd|keygen|label|legend|li|link|listing|main|map|mark|marquee|menu|menuitem|meta|meter|nav|nobr|noframes|noscript|object|ol|optgroup|option|output|p|param|plaintext|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|spacer|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video|wbr|xmp)\b[^<>]*>/ig
+     return _.escape( text.replace(rex , "") ).trim();
+};
+
+/*
+
+// Usage
+$(window).resize(function() {
+  var output = $('.output');
+  $(output).text('RESIZING...');
+  // Wait for it...
+  waitForFinalEvent(function() {
+    $(output).text('EVENT FIRED!');
+    //...
+  }, 500, "some unique string");
+});
+
+ */

@@ -82,6 +82,8 @@ function wpv_parse_args_recursive( $arg, $defaults ) {
 
 /*
  * Extra check for date for shortcode in shortcode. Called as filter in wpv_condition bellow.
+ *
+ * @note As of 1.9 this is not used in Views anymore
  */
 
 function wpv_add_time_functions( $value ) {
@@ -103,6 +105,7 @@ function wpv_add_time_functions( $value ) {
  * empty() function that checks for blank or non-existing fields
  * 
  * 
+ * @note As of 1.9, this is not used in Views anymore, seems to be used on the toolset-forms library
  */
 function wpv_condition( $atts, $post_to_check = null ) {
     extract(
@@ -562,7 +565,8 @@ function WPV_wpcf_record_post_relationship_belongs( $content ) {
 /**
  * Form for Enlimbo calls for wpv-control shortcode calls
  *
- * @param unknown_type $elements
+ * @param mixed $elements
+ * @return string
  */
 function wpv_form_control( $elements ) {
     static $form = NULL;

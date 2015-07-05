@@ -2,10 +2,6 @@
 /**
  * Returns HTML formatted output for elements and handles form submission.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/classes/forms.php $
- * $LastChangedDate: 2015-03-16 12:03:31 +0000 (Mon, 16 Mar 2015) $
- * $LastChangedRevision: 1113864 $
- * $LastChangedBy: iworks $
  *
  * @version 1.0
  */
@@ -368,10 +364,15 @@ if (!class_exists('Enlimbo_Forms_Wpcf')) {
             if ( isset( $element['#labelclass'] ) ) {
 				$labelclass = $element['#labelclass'] . ' ';
             }
+            $labelstyle = '';
+            if ( isset( $element['#labelstyle'] ) ) {
+				$labelstyle = ' style="' . $element['#labelstyle'] . '" ';
+            }
             $element['_render']['label'] = isset($element['#title']) ? '<label class="'
 					. $labelclass
                     . $this->css_class . '-label ' . $this->css_class . '-'
-                    . $element['#type'] . '-label" for="' . $element['#id'] . '">'
+                    . $element['#type'] . '-label" for="' . $element['#id'] . '"'.
+                    $labelstyle . '>'
                     . stripslashes($element['#title'])
                     . '</label>' . "\r\n" : '';
             $element['_render']['title'] = $this->_setElementTitle($element);

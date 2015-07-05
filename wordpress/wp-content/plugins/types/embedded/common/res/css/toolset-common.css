@@ -60,3 +60,15 @@ Toolset Primary Button Style - use with .button.button-primary-toolset classname
 Generic CSS to be applied anywhere
 ---------------------------------------------------------------------------- */
 .padding-top-30{padding-top:30px;}
+
+/* ----------------------------------------------------------------------------
+Design with Toolset icon
+---------------------------------------------------------------------------- */
+#wpadminbar ul#wp-admin-bar-root-default> li.toolset-edit-link { white-space: nowrap; }
+
+#wpadminbar ul#wp-admin-bar-root-default> li.toolset-edit-link> a { position:relative; }
+#wpadminbar ul#wp-admin-bar-root-default> li.toolset-edit-link> a:before {
+    font-family: "onthegosystems-icons"!important;
+    content: "\f11a";
+    top:2px;
+}

@@ -2,10 +2,6 @@
 /*
  * Fields and groups functions
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/includes/fields.php $
- * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
- * $LastChangedRevision: 1120400 $
- * $LastChangedBy: iworks $
  *
  */
 require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields.php';
@@ -293,19 +289,17 @@ function wpcf_admin_fields_save_fields( $fields, $forced = false,
  * @param type $field
  * @return type
  */
-function wpcf_admin_fields_save_field( $field, $post_type = 'wp-types-group',
-        $meta_name = 'wpcf-fields' ) {
+function wpcf_admin_fields_save_field( $field, $post_type = 'wp-types-group', $meta_name = 'wpcf-fields' )
+{
 
     if ( !isset( $field['name'] ) || !isset( $field['type'] ) ) {
-        return new WP_Error( 'wpcf_save_field_no_name_or_type', __( "Error saving field",
-                                'wpcf' ) );
+        return new WP_Error( 'wpcf_save_field_no_name_or_type', __( "Error saving field", 'wpcf' ) );
     }
 
     $field = wpcf_sanitize_field( $field );
 
     if ( empty( $field['name'] ) || empty( $field['slug'] ) ) {
-        return new WP_Error( 'wpcf_save_field_no_name', __( "Please set name for field",
-                                'wpcf' ) );
+        return new WP_Error( 'wpcf_save_field_no_name', __( "Please set name for field", 'wpcf' ) );
     }
 
     $field['id'] = $field['slug'];
@@ -491,6 +485,26 @@ function wpcf_admin_fields_save_field( $field, $post_type = 'wp-types-group',
         }
     }
 
+    /**
+     * WPML update translation status
+     */
+    if (
+        isset($save_data['data'])
+        && isset($save_data['data']['submit-key'])
+    ) {
+        if ( isset( $_POST[ 'wpml_cf_translation_preferences' ][ $save_data['data']['submit-key'] ] ) ) {
+            do_action(
+                'wpml_config',
+                array(
+                    'section'   => 'custom-fields',
+                    'key'       => wpcf_types_get_meta_prefix( wpcf_admin_fields_get_field( $save_data['slug']) ) . $save_data['slug'],
+                    'value'     => intval( $_POST[ 'wpml_cf_translation_preferences' ][ $save_data['data']['submit-key'] ] ),
+                    'read_only' => true
+                )
+            );
+        }
+    }
+
     return $field_id;
 }
 
@@ -560,14 +574,12 @@ function wpcf_admin_custom_fields_change_type( $fields, $type,
  * @param type $group_id
  * @param type $fields
  */
-function wpcf_admin_fields_save_group_fields( $group_id, $fields, $add = false,
-        $post_type = 'wp-types-group' ) {
+function wpcf_admin_fields_save_group_fields( $group_id, $fields, $add = false, $post_type = 'wp-types-group' )
+{
     $meta_name = ($post_type == 'wp-types-group' ? 'wpcf-fields' : 'wpcf-usermeta');
-    $fields = wpcf_types_cf_under_control( 'add', array('fields' => $fields),
-            $post_type, $meta_name );
+    $fields = wpcf_types_cf_under_control( 'add', array('fields' => $fields), $post_type, $meta_name );
     if ( $add ) {
-        $existing_fields = wpcf_admin_fields_get_fields_by_group( $group_id,
-                'slug', false, true, false, $post_type, $meta_name );
+        $existing_fields = wpcf_admin_fields_get_fields_by_group( $group_id, 'slug', false, true, false, $post_type, $meta_name );
         $order = array();
         if ( !empty( $existing_fields ) ) {
             foreach ( $existing_fields as $field_id => $field ) {
@@ -1280,6 +1292,7 @@ function wpcf_admin_metabox_custom_fields($ct)
 {
     $form = array();
     $options = array();
+    $option_to_key = array();
     $groups = wpcf_admin_fields_get_groups('wp-types-group', true, true);
     foreach( $groups as $group ) {
         $post_types = wpcf_admin_get_post_types_by_group($group['id']);
@@ -1299,14 +1312,15 @@ function wpcf_admin_metabox_custom_fields($ct)
                     case 'wysiwyg':
                         continue;
                     default:
+                        $option_to_key[$data['meta_key']] = $field;
                         $options[$field] = array(
-                            '#name' => 'ct[custom_fields][]',
+                            '#name' => sprintf('ct[custom_fields][%s]', esc_attr($data['meta_key'])),
                             '#title' => sprintf( '%s <small>(%s)</small>', $data['name'], $data['type']),
-                            '#value' => $data['meta_key'],
+                            '#value' => 1,
                             '#inline' => true,
                             '#before' => '<li>',
                             '#after' => '</li>',
-                            '#default_value' => intval(isset($ct['custom_fields']) && in_array($data['meta_key'], $ct['custom_fields']))
+                            '#default_value' => intval(isset($ct['custom_fields']) && isset($ct['custom_fields'][$data['meta_key']]))
                         );
                     }
                 }
@@ -1315,15 +1329,28 @@ function wpcf_admin_metabox_custom_fields($ct)
     }
     unset($groups);
 
+    /**
+     * get custom fields order
+     */
+    $options_to_add = array();
+    if ( isset($ct['custom_fields']) && is_array($ct['custom_fields']) && !empty($ct['custom_fields'])) {
+        foreach( $ct['custom_fields'] as $key ) {
+            if ( isset( $option_to_key[$key] ) && isset( $options[$option_to_key[$key]]) ) {
+                $options_to_add[$option_to_key[$key]]= $options[$option_to_key[$key]];
+                unset($options[$option_to_key[$key]]);
+            }
+        }
+    }
+
     $form['table-custom_fields-open'] = wpcf_admin_metabox_begin(__( 'Custom Fields', 'wpcf' ), 'custom_fields', 'wpcf-types-form-visiblity-custom-fields-table', false);
 
     $form['table-custom_fields-description'] = array(
         '#type' => 'checkboxes',
-        '#options' => $options,
+        '#options' => $options_to_add + $options,
         '#name' => 'wpcf[group][supports]',
         '#inline' => true,
         '#before' => wpautop(__('Check which fields should be shown on custom post list as a column.', 'wpcf')).'<ul>',
-        '#after' => '</ul>',
+        '#after' => '</ul>'.wpautop(__('Drag and drop ticked custom fields to reorder.', 'wpcf')),
     );
 
     $form['table-custom_fields-close'] = wpcf_admin_metabox_end();

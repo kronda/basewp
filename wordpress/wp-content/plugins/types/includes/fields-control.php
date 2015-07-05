@@ -2,10 +2,6 @@
 /*
  * Custom Fields Control Screen
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/includes/fields-control.php $
- * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
- * $LastChangedRevision: 1120400 $
- * $LastChangedBy: iworks $
  *
  */
 require_once ABSPATH . '/wp-admin/includes/class-wp-list-table.php';

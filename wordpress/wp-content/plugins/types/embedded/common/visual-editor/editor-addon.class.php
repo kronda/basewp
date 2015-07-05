@@ -69,7 +69,7 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
             // add View Template links to the "Add Field" button
             if ( !$standard_v ) {
                 $this->add_view_type( $menus, 'view-template',
-                        __( 'View templates', 'wpv-views' ) );
+                        __( 'Content Template', 'wpv-views' ) );
                 $this->add_view_type( $menus, 'view',
                         __( 'Post View', 'wpv-views' ) );
                 $this->add_view_type( $menus, 'view',
@@ -134,12 +134,21 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
             // add search box
             $searchbar = $this->get_search_bar();
 
+
             // generate output content
             $out = '' .
             $addon_button . '
             <div class="editor_addon_dropdown '. $dropdown_class .'" id="editor_addon_dropdown_' . rand() . '">
-                <h3 class="title">' . $this->button_text . '</h3>
-                <div class="close">&nbsp;</div>
+            <h3 class="title">' . $this->button_text . '</h3>';
+            /**
+             * Add text after popup header.
+             *
+             * @since 1.6.7
+             *
+             * @param string $context content
+             */
+            $out .= apply_filters('editor_addon_dropdown_after_title', '');
+            $out .= '<div class="close">&nbsp;</div>
                 <div class="editor_addon_dropdown_content">
                         ' . apply_filters( 'editor_addon_dropdown_top_message_' . $this->name,
                                         '' ) . '
@@ -169,6 +178,7 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
          * @param string $context
          * @param string $text_area
          * @param boolean $standard_v is this a standard V button
+		 * DEPRECATED since Views 1.9, not used anywhere else :-)
          */
         function add_users_form_button( $context, $text_area = 'textarea#content', $codemirror_button = false ) {
             global $wp_version, $sitepress, $wpdb, $WP_Views;
@@ -205,7 +215,12 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
 
             if ( isset( $sitepress ) && function_exists( 'wpml_string_shortcode' ) ) {
 				$nonce = wp_create_nonce('wpv_editor_callback');
-				$this->items[] = array(__('Translatable string', 'wpv-views'), 'wpml-string',__('Basic', 'wpv-views'),'WPViews.shortcodes_gui.wpv_insert_translatable_string_popup(\'' . $nonce . '\')');
+				$this->items[] = array(
+					__('Translatable string', 'wpv-views'), 
+					'wpml-string',
+					__('Basic', 'wpv-views'),
+					"WPViews.shortcodes_gui.wpv_insert_popup('wpml-string', '" . __( 'Translatable string', 'wpv-views' ) . "', {}, '" . $nonce . "', this )"
+				);
 			}
 
 
@@ -354,8 +369,9 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
             $out = '' .
             $addon_button . '
             <div class="editor_addon_dropdown '. $dropdown_class .'" id="editor_addon_dropdown_' . rand() . '">
-                <h3 class="title">' . $this->button_text . '</h3>
-                <div class="close">&nbsp;</div>
+            <h3 class="title">' . $this->button_text . '</h3>';
+            $out .= apply_filters('editor_addon_dropdown_after_title', '');
+            $out .= '<div class="close">&nbsp;</div>
                 <div class="editor_addon_dropdown_content">
                         ' . apply_filters( 'editor_addon_dropdown_top_message_' . $this->name,
                                         '' ) . '
@@ -385,6 +401,16 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
          * @return string media menu
          */
         function _output_media_menu( $menu, $text_area, $standard_v ) {
+
+            /**
+             * get current post id
+             */
+            $post_id = 0;
+            global $post;
+            if ( is_object($post) && isset($post->ID) ) {
+                $post_id = $post->ID;
+            }
+
             $all_post_types = implode( ' ',
                     get_post_types( array('public' => true) ) );
 
@@ -406,7 +432,12 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
                                                 'wpv_insert_view_form_popup' ) !== false) ) {
                                     $out .= $this->wpv_parse_menu_item_from_addfield( $menu_item );
                                 } else {
-                                    $out .= '<li class="item" onclick="' . $menu_item[3] . '; return false;">' . $menu_item[0] . "</li>\n";
+                                    $out .= sprintf(
+                                        '<li class="item" onclick="%s; return false;" data-post-id="%d">%s</li>',
+                                        $menu_item[3],
+                                        $post_id,
+                                        $menu_item[0]
+                                    );
                                 }
                             }
                         } else {
@@ -509,8 +540,8 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
                 $slug = $menu_item[0];
             }
             // View Templates here
-            if ( $menu_item[2] == __( 'View templates', 'wpv-views' ) ) {
-                $param1 = 'View template';
+            if ( $menu_item[2] == __( 'Content Template', 'wpv-views' ) ) {
+                $param1 = 'Content Template';
             }
             if ( $menu_item[2] == __( 'Post View', 'wpv-views' ) || $menu_item[2] == __( 'Taxonomy View',
                             'wpv-views' ) || $menu_item[2] == __( 'User View', 'wpv-views' ) ) {
@@ -548,18 +579,23 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
             return '<li class="item" onclick="on_add_field_wpv(\'' . $param1 . '\', \'' . esc_js( $slug ) . '\', \'' . base64_encode( $menu_item[0] ) . '\')">' . $link_text . "</li>\n";
         }
 
-        // add parent items for Views and View Templates
+        // add parent items for Views and Content Templates
         function wpv_add_parent_items( $items ) {
             global $post, $pagenow;
 
+            // ct-editor-deprecate
             if ( $pagenow == 'post-new.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'view-template' ) {
                 $this->add_view_template_parent_groups( $items );
             }
+
+            // @todo this should be also deprecated, no?
             if ( $pagenow == 'post-new.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'view' ) {
 
             } else if ( $pagenow == 'post.php' && isset( $_GET['action'] ) && $_GET['action'] == 'edit' ) {
                 $post_type = $post->post_type;
 
+                // todo deprecate?
+                // ct-editor-deprecate
                 if ( $post_type == 'view' ) {
                     $items = $this->add_view_parent_groups( $items );
                 } else if ( $post_type == 'view-template' ) {
@@ -618,11 +654,11 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
             // keep main references if set (not set on every screen)
             $menu_temp = array();
             $menu_names = array(
-                __( 'Taxonomy View', 'wpv-views' ),
                 __( 'User View', 'wpv-views' ),
+				__( 'Taxonomy View', 'wpv-views' ),
                 __( 'Post View', 'wpv-views' ),
                 __( 'View', 'wpv-views' ),
-                __( 'View templates', 'wpv-views' ),
+                __( 'Content Template', 'wpv-views' ),
                 __( 'Taxonomy', 'wpv-views' ),
                 __( 'Basic', 'wpv-views' ),
                 __( 'Other Fields', 'wpv-views' )

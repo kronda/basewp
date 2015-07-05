@@ -1,13 +1,13 @@
-=== Types Embedded - Custom Fields and Custom Post Types Management ===
+=== Types Embedded ===
 Contributors: brucepearson, AmirHelzer, jozik, mihaimihai, iworks
 Donate link: http://wp-types.com
-Tags: CMS, custom field, custom fields, custom post type, custom post types, post, post type, post types, cck, taxonomy, fields
+Tags: CMS, custom field, custom fields, custom post type, custom post types, field, fields post, post type, post types, taxonomies, taxonomy
 License: GPLv2
 Requires at least: 3.4
-Tested up to: 4.1.1
-Stable tag: 1.6.6.2
+Tested up to: 4.2.2
+Stable tag: 1.6.6.6
 
-The Embedded version lets you create custom types, taxonomy and fields for your theme or plugin, without requiring any plugin.
+The Embedded version lets you create custom types, taxonomies and fields for your theme or plugin, without requiring any plugin.
 
 = Instructions =
 

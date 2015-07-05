@@ -82,7 +82,7 @@ class WPCF_Custom_Fields_List_Table extends WP_List_Table
         switch($column_name){
             case 'title':
             case 'description':
-                return $item[$column_name];
+                return stripslashes($item[$column_name]);
             case 'post_types':
                 $post_types = wpcf_admin_get_post_types_by_group($item['id']);
                 return empty($post_types) ? __('All post types', 'wpcf') : implode(', ', $post_types);
@@ -148,7 +148,6 @@ class WPCF_Custom_Fields_List_Table extends WP_List_Table
                         'wpcf_action' => 'delete_group',
                         'group_id' => $item['id'],
                         'wpcf_ajax_update' => 'wpcf_list_ajax_response_'.$item['id'],
-                        'wpcf_ajax_callback' => 'wpcfRefresh',
                         '_wpnonce' => wp_create_nonce('delete_group'),
                         'wpcf_warning' => urlencode(__('Are you sure?', 'wpcf')),
                     ),
@@ -255,6 +254,7 @@ class WPCF_Custom_Fields_List_Table extends WP_List_Table
         $actions = array(
             'activate'   => __('Activate', 'wpcf'),
             'deactivate' => __('Deactivate', 'wpcf'),
+            'delete'     => __('Delete permanently', 'wpcf'),
         );
         return $actions;
     }
@@ -274,6 +274,21 @@ class WPCF_Custom_Fields_List_Table extends WP_List_Table
         $action = $this->current_action();
         //Detect when a bulk action is being triggered...
         switch($action) {
+        case 'delete':
+            if (
+                true
+                && isset($_POST[$this->bulk_action_field_name])
+                && !empty($_POST[$this->bulk_action_field_name])
+            ) {
+                foreach( $_POST[$this->bulk_action_field_name] as $key ) {
+                    $wpdb->delete(
+                        $wpdb->posts,
+                        array( 'ID' => $key, 'post_type' => 'wp-types-group' ),
+                        array('%d', '%s')
+                    );
+                }
+            }
+            break;
         case 'deactivate':
             if (
                 true
@@ -380,7 +395,7 @@ class WPCF_Custom_Fields_List_Table extends WP_List_Table
                     'slug' => $group['slug'],
                     'status' => (isset($group['is_active']) && $group['is_active'])? 'active':'inactive',
                     'supports' => isset($group['supports'])? $group['supports']:array(),
-                    'title' => $group['name'],
+                    'title' => stripslashes($group['name']),
                 );
                 $add_one = true;
                 if ( $s ) {

@@ -5,8 +5,8 @@
 
 function wpcf_admin_ctt_list_header()
 {
-    $custom_types = get_option('wpcf-custom-types', array());
-    $custom_taxonomies = get_option('wpcf-custom-taxonomies', array());
+    $custom_types = get_option(WPCF_OPTION_NAME_CUSTOM_TYPES, array());
+    $custom_taxonomies = get_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array());
 
     if (empty($custom_types) && empty($custom_taxonomies)) {
         echo '<p>'
@@ -30,7 +30,7 @@ function wpcf_admin_custom_post_types_list()
         <form id="cpt-filter" method="post">
             <!-- For plugins, we also need to ensure that the form posts back to our current page -->
             <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page']); ?>" />
-            <?php $listTable->search_box(__('Search custom posts', 'wcpf'), 'search_id'); ?>
+            <?php $listTable->search_box(__('Search custom posts', 'wpcf'), 'search_id'); ?>
             <!-- Now we can render the completed list table -->
             <?php $listTable->display() ?>
         </form>
@@ -49,7 +49,7 @@ function wpcf_admin_custom_taxonomies_list()
         <form id="ct-filter" method="post">
             <!-- For plugins, we also need to ensure that the form posts back to our current page -->
             <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page']); ?>" />
-            <?php $listTable->search_box(__('Search custom taxonomies', 'wcpf'), 'search_id'); ?>
+            <?php $listTable->search_box(__('Search custom taxonomies', 'wpcf'), 'search_id'); ?>
             <!-- Now we can render the completed list table -->
             <?php $listTable->display() ?>
         </form>

@@ -155,15 +155,15 @@ function wpcf_admin_userprofile_init($user_id){
                 WPCF_EMBEDDED_RES_RELPATH . '/js/'
                 . 'jquery-form-validation/additional-methods.min.js',
                 array('jquery'), WPCF_VERSION );
-        wp_enqueue_style( 'wpcf-fields-basic',
+        wp_enqueue_style( 'wpcf-css-embedded',
                 WPCF_EMBEDDED_RES_RELPATH . '/css/basic.css', array(),
                 WPCF_VERSION );
         wp_enqueue_style( 'wpcf-fields-post',
                 WPCF_EMBEDDED_RES_RELPATH . '/css/fields-post.css',
-                array('wpcf-fields-basic'), WPCF_VERSION );
+                array('wpcf-css-embedded'), WPCF_VERSION );
 		wp_enqueue_style( 'wpcf-usermeta',
                 WPCF_EMBEDDED_RES_RELPATH . '/css/usermeta.css',
-                array('wpcf-fields-basic'), WPCF_VERSION );
+                array('wpcf-css-embedded'), WPCF_VERSION );
         wpcf_enqueue_scripts();
 		wpcf_field_enqueue_scripts( 'date' );
 		wpcf_field_enqueue_scripts( 'image' );

@@ -4,10 +4,6 @@
  *
  * Since Types 1.2
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/includes/module-manager.php $
- * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
- * $LastChangedRevision: 1120400 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -58,7 +54,7 @@ function wpcf_module_inline_table_fields() {
 function wpcf_module_inline_table_post_types() {
     // dont add module manager meta box on new post type form
     if ( defined( 'MODMAN_PLUGIN_NAME' ) && isset( $_GET['wpcf-post-type'] ) ) {
-        $_custom_types = get_option( 'wpcf-custom-types', array() );
+        $_custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
         if ( isset( $_custom_types[$_GET['wpcf-post-type']] ) ) {
             $_post_type = $_custom_types[$_GET['wpcf-post-type']];
             // add module manager meta box to post type form
@@ -77,7 +73,7 @@ function wpcf_module_inline_table_post_types() {
 function wpcf_module_inline_table_post_taxonomies() {
     // dont add module manager meta box on new post type form
     if ( defined( 'MODMAN_PLUGIN_NAME' ) && isset( $_GET['wpcf-tax'] ) ) {
-        $_custom_taxes = get_option( 'wpcf-custom-taxonomies', array() );
+        $_custom_taxes = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
         if ( isset( $_custom_taxes[$_GET['wpcf-tax']] ) ) {
             $_tax = $_custom_taxes[$_GET['wpcf-tax']];
             // add module manager meta box to post type form
@@ -180,7 +176,7 @@ if ( defined( 'MODMAN_PLUGIN_NAME' ) ) {
     }
 
     function wpcf_register_modules_items_types( $items ) {
-        $custom_types = get_option( 'wpcf-custom-types', array() );
+        $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
         foreach ( $custom_types as $type ) {
             $_details = sprintf( __( '%s custom post type: %s', 'wpcf' ),
                     ucfirst( $type['public'] ), $type['labels']['name'] );
@@ -258,7 +254,7 @@ if ( defined( 'MODMAN_PLUGIN_NAME' ) ) {
     }
 
     function wpcf_register_modules_items_taxonomies( $items ) {
-        $custom_taxonomies = get_option( 'wpcf-custom-taxonomies', array() );
+        $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
 
         foreach ( $custom_taxonomies as $tax ) {
             $_details = sprintf( __( 'Fields group: %s', 'wpcf' ),
@@ -549,17 +545,15 @@ function wpcf_admin_export_selected_data ( array $items, $_type = 'all', $return
 
     // Get custom types
     if ( 'types' == $_type || 'all' == $_type ) {
+        $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
         // Get custom types
         // TODO Document $items
         if ( !empty( $items ) ) {
             /*
-             *
              * This fails
              * $items are in form of:
              * 0 => array('id' => 'pt', ...)
              */
-            //            $custom_types = array_intersect_key( get_option( 'wpcf-custom-types',
-            //                            array() ), array_flip( $items ) );
             $_items = array();
             foreach ( $items as $k => $item ) {
                 if ( is_array( $item ) && isset( $item['id'] ) ) {
@@ -568,10 +562,7 @@ function wpcf_admin_export_selected_data ( array $items, $_type = 'all', $return
                     $_items[$item] = true;
                 }
             }
-            $custom_types = array_intersect_key( get_option( 'wpcf-custom-types',
-                array() ), $_items );
-        } else {
-            $custom_types = get_option( 'wpcf-custom-types', array() );
+            $custom_types = array_intersect_key( $custom_types, $_items );
         }
         // Get custom types
         if ( !empty( $custom_types ) ) {
@@ -612,6 +603,7 @@ function wpcf_admin_export_selected_data ( array $items, $_type = 'all', $return
         if ( !empty( $relationships ) ) {
             $data['post_relationships']['data'] = json_encode( $relationships );
         }
+
     }
 
     // Get custom tax
@@ -623,7 +615,7 @@ function wpcf_admin_export_selected_data ( array $items, $_type = 'all', $return
              * $items are in form of:
              * 0 => array('id' => 'pt', ...)
              */
-            //            $custom_taxonomies = array_intersect_key( get_option( 'wpcf-custom-taxonomies',
+            //            $custom_taxonomies = array_intersect_key( get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES,
             //                            array() ), array_flip( $items ) );
             $_items = array();
             foreach ( $items as $k => $item ) {
@@ -633,11 +625,11 @@ function wpcf_admin_export_selected_data ( array $items, $_type = 'all', $return
                     $_items[$item] = true;
                 }
             }
-            $custom_taxonomies = array_intersect_key( get_option( 'wpcf-custom-taxonomies',
+            $custom_taxonomies = array_intersect_key( get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES,
                 array() ), $_items );
         } else {
             // Get custom tax
-            $custom_taxonomies = get_option( 'wpcf-custom-taxonomies', array() );
+            $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
         }
         if ( !empty( $custom_taxonomies ) ) {
             foreach ( $custom_taxonomies as $key => $tax ) {
@@ -987,16 +979,13 @@ function wpcf_admin_import_data_from_xmlstring( $data = '', $_type = 'types',
     if ( !empty( $data->types ) && 'types' == $_type ) {
         $imported = true;
 
-        $types_existing = get_option( 'wpcf-custom-types', array() );
+        $types_existing = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
         $types = array();
         $types_check = array();
         // Set insert data from XML
         foreach ( $data->types->type as $type ) {
             $type = (array) $type;
             $type = wpcf_admin_import_export_simplexml2array( $type );
-            // TODO 1.2.1 Remove
-//            $_id = wpcf_modman_get_submitted_id( _TYPES_MODULE_MANAGER_KEY_,
-//                    $type['id'] );
             $_id = strval( $type['__types_id'] );
 
             // If Types check if exists in $_POST
@@ -1036,7 +1025,7 @@ function wpcf_admin_import_data_from_xmlstring( $data = '', $_type = 'types',
             $types_existing[$type_id] = $type;
             $types_check[] = $type_id;
         }
-        update_option( 'wpcf-custom-types', $types_existing );
+        update_option( WPCF_OPTION_NAME_CUSTOM_TYPES, $types_existing );
 
         // Add relationships
         /** EMERSON: Restore Types relationships when importing modules */
@@ -1061,7 +1050,7 @@ function wpcf_admin_import_data_from_xmlstring( $data = '', $_type = 'types',
     if ( !empty( $data->taxonomies ) && 'taxonomies' == $_type ) {
         $imported = true;
 
-        $taxonomies_existing = get_option( 'wpcf-custom-taxonomies', array() );
+        $taxonomies_existing = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
         $taxonomies = array();
         $taxonomies_check = array();
         // Set insert data from XML
@@ -1106,7 +1095,7 @@ function wpcf_admin_import_data_from_xmlstring( $data = '', $_type = 'types',
             $taxonomies_existing[$taxonomy_id] = $taxonomy;
             $taxonomies_check[] = $taxonomy_id;
         }
-        update_option( 'wpcf-custom-taxonomies', $taxonomies_existing );
+        update_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $taxonomies_existing );
     }
 
     if ( $imported ) {

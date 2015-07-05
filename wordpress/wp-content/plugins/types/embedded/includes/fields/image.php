@@ -1,10 +1,6 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/includes/fields/image.php $
- * $LastChangedDate: 2015-03-16 12:03:31 +0000 (Mon, 16 Mar 2015) $
- * $LastChangedRevision: 1113864 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -130,7 +126,7 @@ function wpcf_fields_image_editor_callback( $field, $data, $context, $post ) {
                 get_option( 'medium_size_w' ) . 'x' . get_option( 'medium_size_h' ) ),
         'large' => sprintf( __( 'Large - %s', 'wpcf' ),
                 get_option( 'large_size_w' ) . 'x' . get_option( 'large_size_h' ) ),
-        'full' => __( 'Full Size', 'wpcf' ),
+        'full' => __( 'Original image', 'wpcf' ),
     );
     $wp_image_sizes = (array) get_intermediate_image_sizes();
     foreach ( $wp_image_sizes as $wp_size ) {
@@ -149,8 +145,8 @@ function wpcf_fields_image_editor_callback( $field, $data, $context, $post ) {
         'supports' => array('styling', 'style'),
         'tabs' => array(
             'display' => array(
-                'menu_title' => __( 'Display', 'wpcf' ),
-                'title' => __( 'Display', 'wpcf' ),
+                'menu_title' => __( 'Display options', 'wpcf' ),
+                'title' => __( 'Display options for this field:', 'wpcf' ),
                 'content' => WPCF_Loader::template( 'editor-modal-image', $data ),
             )
         ),

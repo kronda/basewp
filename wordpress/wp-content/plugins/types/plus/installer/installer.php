@@ -1,5 +1,5 @@
 <?php 
-define('WP_INSTALLER_VERSION', '1.5.3');
+define('WP_INSTALLER_VERSION', '1.5.6');
   
 include_once dirname(__FILE__) . '/includes/installer.class.php';
 

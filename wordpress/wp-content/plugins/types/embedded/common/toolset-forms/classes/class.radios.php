@@ -1,10 +1,6 @@
 <?php
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/common/toolset-forms/classes/class.radios.php $
- * $LastChangedDate: 2015-02-18 14:28:53 +0000 (Wed, 18 Feb 2015) $
- * $LastChangedRevision: 1093394 $
- * $LastChangedBy: iworks $
  *
  */
 require_once 'class.field_factory.php';

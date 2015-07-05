@@ -88,13 +88,14 @@ way to fit your requirements.
     cursor: default;
 }
 .editor_addon_dropdown_content{
-    padding: 0 10px;
+    padding: 10px;
     max-height: 400px;
     overflow: auto;
 }
 
 .editor_addon_dropdown ul {
     list-style: none inside none;
+	margin-bottom: 5px;
 }
 
 #poststuff .editor_addon_dropdown .title,
@@ -134,6 +135,7 @@ way to fit your requirements.
 }*/
 
 .editor_addon_dropdown .group-title {
+	margin: 0.66em 0;
 }
 
 .editor-addon-link-to-top {
@@ -142,8 +144,8 @@ way to fit your requirements.
 }
 
 .editor_addon_dropdown .group {
-    margin: 0 0 20px 0;
-    padding-bottom: 10px;
+    margin: 0 0 5px 0;
+    padding-bottom: 5px;
     border-bottom: 1px solid #ededed;
 }
 .editor_addon_dropdown .group:last-child {
@@ -174,13 +176,27 @@ way to fit your requirements.
     text-decoration: underline;
 }
 
-.editor_addon_dropdown .direct-links,
-.editor_addon_dropdown .direct-links-desc {
+.editor_addon_dropdown .item.button {
+    margin: 0 5px 5px 0;
+    line-height: auto;
+    white-space: nowrap;
+    display: inline-block;
+    color: #555;
+}
+.editor_addon_dropdown .item.button:hover,
+.editor_addon_dropdown .item.button:active {
+    color: #32373c;
+    text-decoration: none;
+}
+
+.editor_addon_dropdown .direct-links {
     display: inline-block;
 }
 
 .editor_addon_dropdown .direct-links-desc {
     margin: 0 5px 0 0;
+	padding: 0 0 5px;
+	border-bottom: 1px solid #ededed;
 }
 
 .editor_addon_dropdown .direct-links {
@@ -191,17 +207,26 @@ way to fit your requirements.
 .editor_addon_dropdown .direct-links li {
     display: inline-block;
     margin: 0;
-    padding: 0 8px 0;
-    border-left: 1px solid #ccc;
+    padding: 0 10px;
+    border-right: 1px solid #ccc;
     text-decoration: none;
     font-weight: bold;
     cursor: pointer;
 }
+
 .editor_addon_dropdown .direct-links li:hover {
     color: #d54e21;
 }
 
-.editor_addon_dropdown .direct-links li:first-child {
-    border-left: 0;
-    padding-left: 0;
+.editor_addon_dropdown .direct-links li.direct-links-label,
+.editor_addon_dropdown .direct-links li.direct-links-label:hover {
+	padding: 0;
+	border: none;
+	font-weight: normal;
+	color: #666;
+	cursor: auto;
+}
+
+.editor_addon_dropdown .direct-links li:last-child {
+    border-right: 0;
 }

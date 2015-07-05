@@ -2,10 +2,6 @@
 /*
  * Plugin contextual help
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/help.php $
- * $LastChangedDate: 2014-05-29 08:44:10 +0000 (Thu, 29 May 2014) $
- * $LastChangedRevision: 922956 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -164,7 +160,7 @@ function wpcf_admin_help($page, $contextual_help) {
                     . __('Labels are the text that is attached to your custom post type name. Examples of them in use are “Add New Post” (where “Add New” is the label”) and “Edit Post” (where “Edit” is the label). In normal circumstances the defaults will suffice.',
                             'wpcf')
                     . '<br /><br />'
-                    . '<strong>' . __('Display Sections', 'wpcf') . '</strong>'
+                    . '<strong>' . __('Custom Post Properites', 'wpcf') . '</strong>'
                     . '<br /><br />'
                     . __('Choose which sections to display on your “Add New” page.',
                             'wpcf')

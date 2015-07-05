@@ -8,10 +8,6 @@
  * Values:
  * 0 nothing (ignore), 1 copy, 2 translate
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.6.2/embedded/includes/wpml.php $
- * $LastChangedDate: 2015-03-25 12:38:40 +0000 (Wed, 25 Mar 2015) $
- * $LastChangedRevision: 1120400 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -373,13 +369,13 @@ function wpcf_admin_bulk_string_translation() {
     }
 
     // Register types
-    $custom_types = get_option( 'wpcf-custom-types', array() );
+    $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
     foreach ( $custom_types as $post_type => $data ) {
         wpcf_custom_types_register_translation( $post_type, $data );
     }
 
     // Register taxonomies
-    $custom_taxonomies = get_option( 'wpcf-custom-taxonomies', array() );
+    $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
     foreach ( $custom_taxonomies as $taxonomy => $data ) {
         wpcf_custom_taxonimies_register_translation( $taxonomy, $data );
     }

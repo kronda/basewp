@@ -14,7 +14,7 @@ function wpcf_access_admin_edit_access($enabled = true) {
     $output .= '<form id="wpcf_access_admin_form" method="post" action="">';
 
     // Types
-    $types = get_option('wpcf-custom-types', array());
+    $types = get_option(WPCF_OPTION_NAME_CUSTOM_TYPES, array());
 
     // Merge with other types
     $settings_access = get_option('wpcf-access-types', array());
@@ -93,7 +93,7 @@ function wpcf_access_admin_edit_access($enabled = true) {
     }
 
     // Taxonomies
-    $taxonomies = get_option('wpcf-custom-taxonomies', array());
+    $taxonomies = get_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array());
 
     // Merge with other taxonomies
     $settings_access = get_option('wpcf-access-taxonomies', array());

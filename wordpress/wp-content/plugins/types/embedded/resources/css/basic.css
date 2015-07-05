@@ -139,7 +139,6 @@ input.wpcf-form-error {
     position: fixed;
     /*    THIS IS ALSO SET IN JS AFTER ADDING SCROLL */
     clear: both;
-    z-index: 12;
 }
 .wpcf-form-fields-align-right fieldset {
     width: 250px;
@@ -275,22 +274,38 @@ input.wpcf-form-error {
 #wpcf-types-form-visibility-table tbody table label {
     font-weight: normal;
 }
-#wpcf-types-form-labels-table tbody tr td:first-child {
+
+#wpcf-types-form-table tbody tr td:first-child
+,#wpcf-types-form-labels-table tbody tr td:first-child
+{
     text-align: right;
 }
-#wpcf-types-form-labels-table tbody label {
+
+#wpcf-types-form-table tbody label
+,#wpcf-types-form-labels-table tbody label
+{
     font-weight: normal;
 }
-#wpcf-types-form-labels-table tbody td {
+
+#wpcf-types-form-table tbody td
+,#wpcf-types-form-labels-table tbody td
+{
     vertical-align: middle;
 }
-#wpcf-types-form-labels-table .wpcf-form-description {
+
+#wpcf-types-form-table .wpcf-form-description
+,#wpcf-types-form-labels-table .wpcf-form-description
+{
     font-size: 0.9em;
     line-height: 1.2em;
 }
-#wpcf-types-form-labels-table tbody tr:first-child td {
+
+#wpcf-types-form-table tbody tr:first-child td
+,#wpcf-types-form-labels-table tbody tr:first-child td
+{
     padding-top: 15px;
 }
+
 #wpcf-types-form-rewrite-toggle {
     margin: 0 0 20px 0;
 }
@@ -578,3 +593,36 @@ input.wpcf-form-error {
 {
     margin: 1.5em 0;
 }
+
+/**
+ * code mirror RTL for CSS
+ */
+#wpcf-admin-styles-box .CodeMirror-lines
+{
+    direction: ltr;
+}
+
+/**
+ * views marketing
+ */
+
+.types-marketing-views .more
+{
+    color: #0073aa;
+    text-decoration: underline;
+}
+
+.types-marketing-views
+{
+    border: 1px solid #ddd;
+    background-color: #f5f5f5;
+    padding: 0 10px;
+    margin: 4px 4px 0;
+}
+
+#wp-content-editor-tools .types-marketing-views .ont-color-orange
+{
+    color: #f05a28;
+    font-size: 1.5em;
+}
+

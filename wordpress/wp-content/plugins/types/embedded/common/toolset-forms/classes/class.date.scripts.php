@@ -1,5 +1,5 @@
 <?php
-if (!function_exists('adodb_mktime')) {
+if (!function_exists('adodb_mktime')) { 
 	require_once WPTOOLSET_FORMS_ABSPATH . '/lib/adodb-time.inc.php';
 }
 
