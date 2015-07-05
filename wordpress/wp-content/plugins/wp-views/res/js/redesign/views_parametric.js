@@ -1,13 +1,12 @@
 var jqp = jQuery, WPV_Parametric, WPV_parametric_local = {};
 
-WPV_parametric_local.message = {
-
-};
+WPV_parametric_local.message = {};
 WPV_parametric_local.message.fadeOutLong = 300;
 WPV_parametric_local.message.fadeOutShort = 400;
 
 (function($){
-	//overrides binding handlers to support option grouping
+
+	// overrides binding handlers to support option grouping
 	ko.bindingHandlers.option = {
 		update: function(element, valueAccessor, allBindingsAccessor ) {
 			var value = ko.utils.unwrapObservable(valueAccessor()), allBindings = allBindingsAccessor();
@@ -18,406 +17,410 @@ WPV_parametric_local.message.fadeOutShort = 400;
 	jQuery(function(){
 		//this order is mandatory for dependencies
 		WPV_parametric_local.add_search = new WPV_ParametricSearchButton();
-		WPV_parametric_local.add_submit = new WPV_ParametricSubmitButton();
-		WPV_parametric_local.add_reset = new WPV_ParametricResetButton();
 		WPV_parametric_local.add_spinner = new WPV_ParametricSpinnerButton();
+		WPV_parametric_local.add_reset = new WPV_ParametricResetButton();
+		WPV_parametric_local.add_submit = new WPV_ParametricSubmitButton();
 		WPV_parametric_local.pwindow = new WPV_ParametricFilterWindow();
 		//this order reflects the button display in case of search and submit buttons
 		WPV_parametric_local.add_search.init();
-		WPV_parametric_local.add_submit.init();
-		WPV_parametric_local.add_reset.init();
 		WPV_parametric_local.add_spinner.init();
+		WPV_parametric_local.add_reset.init();
+		WPV_parametric_local.add_submit.init();
 		WPV_parametric_local.pwindow.init();
 	});
 
-	})(jQuery);
+})(jQuery);
 
-	var WPV_ParametricFilterWindow = function()
+
+var WPV_ParametricFilterWindow = function() {
+
+	//some local vars
+	var self = this
+	, buttonAdd = jqp('.js-button_parametric_filter_create')
+	, buttonEdit = jqp('.js-button_parametric_filter_edit')
+	, proxy = new JsonStore()
+	, parametricViewModel
+	, dialog = null
+	, parser
+	, buttons_visible = false;
+
+	//statics
+	WPV_ParametricFilterWindow.has_error_displayed = false;
+	WPV_ParametricFilterWindow.errorPlaceHolder = null;
+	WPV_ParametricFilterWindow.buttonEdit = buttonEdit;
+
+	//constants
+	self.MAIN_TEMPLATE = '/inc/redesign/templates/wpv-parametric-form.tpl.php';
+	WPV_ParametricFilterWindow.FADE = 'slow';
+	WPV_ParametricFilterWindow.FADE_FAST = 'fast';
+
+	//public members
+	self.editor = icl_editor ? icl_editor : undefined;
+	self.text_area = jqp('#wpv_filter_meta_html_content');
+
+	parser = new ShortCodeParser( self.text_area );
+
+	self.WIDTH = 300;
+	self.HEIGHT = 300;
+
+	self.short_tag_fields = ["field", "type", "url_param", "values", "display_values", "auto_fill_default", "auto_fill", "default_label", "title", "auto_fill_sort", "taxonomy_order", "taxonomy_orderby", "hide_empty", "ancestors", "force_zero", "format"];
+
+	self.is_edit = false;
+
+	self.short_code_editable = null;
+	self.fieldRawEditable = null;
+
+
+
+	self.init = function()
 	{
-		//some local vars
-		var self = this
-		, buttonAdd = jqp('.js-button_parametric_filter_create')
-		, buttonEdit = jqp('.js-button_parametric_filter_edit')
-		, proxy = new JsonStore()
-		, parametricViewModel
-		, dialog = null
-		, parser
-		, buttons_visible = false;
-
-		//statics
-		WPV_ParametricFilterWindow.has_error_displayed = false;
-		WPV_ParametricFilterWindow.errorPlaceHolder = null;
-		WPV_ParametricFilterWindow.buttonEdit = buttonEdit;
-
-		//constants
-		self.MAIN_TEMPLATE = '/inc/redesign/templates/wpv-parametric-form.tpl.php';
-		WPV_ParametricFilterWindow.FADE = 'slow';
-		WPV_ParametricFilterWindow.FADE_FAST = 'fast';
-
-		//public members
-		self.editor = icl_editor ? icl_editor : undefined;
-		self.text_area = jqp('#wpv_filter_meta_html_content');
-
-		parser = new ShortCodeParser( self.text_area );
-
-		self.WIDTH = 300;
-		self.HEIGHT = 300;
-
-		self.short_tag_fields = ["field", "type", "url_param", "values", "display_values", "auto_fill_default", "auto_fill", "default_label", "title", "auto_fill_sort", "taxonomy_order", "taxonomy_orderby", "hide_empty", "ancestors", "force_zero"];
-
-		self.is_edit = false;
-
-		self.short_code_editable = null;
-		self.fieldRawEditable = null;
+		button_hide();
+		self.addButtons();
+		return this;
+	};
 
 
+	var button_hide_if_tax_view = function( to_hide, button, toolbar )
+	{
+		var select = jqp('input:radio.js-wpv-query-type')
+		, view_type = select.filter(':checked').val();
 
-		self.init = function()
+		if( view_type == 'taxonomy' || view_type == 'users' )
 		{
-			button_hide();
-			self.addButtons();
-			return this;
-		};
+			jqp.each(to_hide, function( i, v ){
+				jqp.data( v, 'is_visible', true);
+				v.hide();
 
-		var button_hide_if_tax_view = function( to_hide, button, toolbar )
+			});
+		}
+		else if( view_type == 'posts' )
 		{
-			var select = jqp('input:radio.js-wpv-query-type')
-			, view_type = select.filter(':checked').val();
+			jqp.each(to_hide, function( i, v ){
+				jqp.data( v, 'is_visible', false);
+			});
+		}
 
-			if( view_type == 'taxonomy' || view_type == 'users' )
+
+		select.on('change', function(event){
+
+			if( jqp('input:radio.js-wpv-query-type:checked').val() == 'taxonomy' || jqp('input:radio.js-wpv-query-type:checked').val() == 'users' )
 			{
 				jqp.each(to_hide, function( i, v ){
 					jqp.data( v, 'is_visible', true);
 					v.hide();
-
 				});
 			}
-			else if( view_type == 'posts' )
+			else if( jqp('input:radio.js-wpv-query-type:checked').val() == 'posts' )
 			{
 				jqp.each(to_hide, function( i, v ){
 					jqp.data( v, 'is_visible', false);
-				});
-			}
-
-
-			select.on('change', function(event){
-
-				if( jqp('input:radio.js-wpv-query-type:checked').val() == 'taxonomy' || jqp('input:radio.js-wpv-query-type:checked').val() == 'users' )
-				{
-					jqp.each(to_hide, function( i, v ){
-						jqp.data( v, 'is_visible', true);
-						v.hide();
-					});
-				}
-				else if( jqp('input:radio.js-wpv-query-type:checked').val() == 'posts' )
-				{
-					jqp.each(to_hide, function( i, v ){
-						jqp.data( v, 'is_visible', false);
-						if( WPV_Parametric.view_purpose == 'full' || WPV_Parametric.view_purpose == 'parametric')
-						{
-							v.show();
-						}
-						else if( buttons_visible )
-						{
-							v.show();
-						}
-					});
-				}
-			});
-		};
-
-		var button_hide = function()
-		{
-			var add_hide = buttonAdd.parent(),
-			edit_hide = buttonEdit.parent()
-			, pag_hide = [
-			jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-v-icon'),
-			jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-cred-icon').parent().parent()
-			]
-			, slide_hide = [
-			add_hide,
-			edit_hide,
-			jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-v-icon'),
-			WPV_ParametricSearchButton.button.parent(),
-			WPV_ParametricSubmitButton.button.parent(),
-			WPV_ParametricResetButton.button.parent(),
-			WPV_ParametricSpinnerButton.button.parent(),
-			jqp('.js-wpv-filter-edit-toolbar  .js-code-editor-toolbar-button-cred-icon').parent().parent()
-			],
-			toolbar = jqp('.js-wpv-settings-filter-extra .wpv-setting'),
-			errors_cont = jqp('<div class="js-error-container"></div>')
-			, cats_hide = [
-			edit_hide,
-			add_hide,
-			WPV_ParametricSearchButton.button.parent(),
-			WPV_ParametricSubmitButton.button.parent(),
-			WPV_ParametricResetButton.button.parent(),
-			WPV_ParametricSpinnerButton.button.parent()
-			]
-
-			, button = jqp('<button class="button-secondary js-toggle-settings-button-viz-link"></button>')
-			, toolbar = jqp('.js-wpv-settings-filter-extra .wpv-setting');
-
-			switch( WPV_Parametric.view_purpose )
-			{
-				case 'full':
-				case 'parametric':
-				break;
-				case 'pagination':
-				jqp.each(pag_hide, function(i,v){
-					v.hide();
-				});
-				toogle_buttons_visibility( pag_hide, toolbar, true );
-				break;
-				case 'slider':
-				jqp.each(slide_hide, function(i,v){
-					v.hide();
-				});
-				toogle_buttons_visibility( slide_hide, toolbar, true );
-				break;
-			}
-			toolbar.prepend( errors_cont );
-
-			button_hide_if_tax_view( cats_hide, button, toolbar );
-		};
-
-		var toogle_buttons_visibility = function( buttons, t, append )
-		{
-			var toolbar = t
-			, cont = jqp('<p class="more-controls-container" />')
-			, button = jqp('<button class="button-secondary js-toggle-settings-button-viz-link"></button>');
-
-			button.empty().append('<i class="icon-expand-alt"></i> More controls');
-
-			if( append )
-			{
-				cont.append(button);
-				toolbar.prepend(cont);
-			}
-
-
-			button.on('click', function(event){
-				jqp.each(buttons, function( i, v ){
-					if( !buttons_visible )
+					if( WPV_Parametric.view_purpose == 'full' || WPV_Parametric.view_purpose == 'parametric')
 					{
-						if( !jqp.data( v, 'is_visible') )
-						v.fadeIn('fast');
+						v.show();
 					}
 					else if( buttons_visible )
 					{
-						if( !jqp.data( v, 'is_visible') )
-						v.hide();
+						v.show();
 					}
 				});
+			}
+		});
+	};
 
-				if( buttons_visible )
-				{
-					buttons_visible = false;
-					jqp(this).empty().append('<i class="icon-expand-alt"></i> More controls');
-				}
-				else if( !buttons_visible)
-				{
-					buttons_visible = true;
-					jqp(this).empty().append('<i class="icon-collapse-alt"></i> Less controls');
-				}
+	var button_hide = function()
+	{
+		var add_hide = buttonAdd.parent(),
+		edit_hide = buttonEdit.parent()
+		, pag_hide = [
+		jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-v-icon'),
+		jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-cred-icon').parent().parent()
+		]
+		, slide_hide = [
+		add_hide,
+		edit_hide,
+		jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-v-icon'),
+		WPV_ParametricSearchButton.button.parent(),
+		WPV_ParametricSubmitButton.button.parent(),
+		WPV_ParametricResetButton.button.parent(),
+		WPV_ParametricSpinnerButton.button.parent(),
+		jqp('.js-wpv-filter-edit-toolbar  .js-code-editor-toolbar-button-cred-icon').parent().parent()
+		],
+		toolbar = jqp('.js-wpv-filter-extra-section .wpv-setting'),
+		cats_hide = [
+		edit_hide,
+		add_hide,
+		WPV_ParametricSearchButton.button.parent(),
+		WPV_ParametricSubmitButton.button.parent(),
+		WPV_ParametricResetButton.button.parent(),
+		WPV_ParametricSpinnerButton.button.parent()
+		]
 
+		, button = jqp('<button class="button-secondary js-toggle-settings-button-viz-link"></button>')
+		, toolbar = jqp('.js-wpv-filter-extra-section .wpv-setting');
+
+		switch( WPV_Parametric.view_purpose )
+		{
+			case 'full':
+			case 'parametric':
+			break;
+			case 'pagination':
+			jqp.each(pag_hide, function(i,v){
+				v.hide();
 			});
+			toogle_buttons_visibility( pag_hide, toolbar, true );
+			break;
+			case 'slider':
+			jqp.each(slide_hide, function(i,v){
+				v.hide();
+			});
+			toogle_buttons_visibility( slide_hide, toolbar, true );
+			break;
 		}
 
-		self.setModelDataToBeSent = function()
+		button_hide_if_tax_view( cats_hide, button, toolbar );
+	};
+
+	var toogle_buttons_visibility = function( buttons, t, append )
+	{
+		var toolbar = t
+		, cont = jqp('<p class="more-controls-container" />')
+		, button = jqp('<button class="button-secondary js-toggle-settings-button-viz-link"></button>');
+
+		button.empty().append('<i class="icon-expand-alt"></i> More controls');
+
+		if( append )
 		{
-			var send = {}, data = ko.toJS( parametricViewModel ), values;
+			cont.append(button);
+			toolbar.prepend(cont);
+		}
 
-			if( !data || typeof data.fieldRaw == 'undefined' || !data.fieldRaw )
-			{
-				jqp('.js-errors') .wpvToolsetMessage({
-					text:WPV_Parametric.make_valid_selection,
-					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-					close:true
-				});
-				return null;
-			}
 
-			try{
-				if( data.fieldRaw.use_user_values )
+		button.on('click', function(event){
+			jqp.each(buttons, function( i, v ){
+				if( !buttons_visible )
 				{
-					values = self.setUserValuesIfAny( data.fieldRaw.user_values );
-					data.fieldRaw.values = values.values;
-					data.fieldRaw.display_values = values.display_values;
+					if( !jqp.data( v, 'is_visible') )
+					v.fadeIn('fast');
 				}
-			}
-			catch(e)
-			{
-				console.error(e.message)
-			}
-
-
-			return data.fieldRaw;
-		};
-
-		self.setUserValuesIfAny = function( user_values )
-		{
-			var ret = {values:[], display_values : [] };
-
-			if(!user_values) return ret;
-
-			jqp.each(user_values, function(i, v ){
-				if( v )
+				else if( buttons_visible )
 				{
-					try
-					{
-						if( v.values )
-						{
-							ret.values.push( v.values.replace(",", "\\\\,") );
-						}
-
-						if( v.display_values )
-						{
-							ret.display_values.push( v.display_values.replace(",", "\\\\,") );
-						}
-					}
-					catch( e )
-					{
-						//if(  WPV_Parametric.debug ) console.log( e.message )
-					}
-
+					if( !jqp.data( v, 'is_visible') )
+					v.hide();
 				}
 			});
 
-			return ret;
-		};
-
-		self.insertShortCode = function(area, fields)
-		{
-			var open = '[wpv-control', close = ']', string = [], string_aux = [], attrs = fields, txt_area = area, insert = '', nicename = '', code = [], label = '',
-			openset = '[wpv-control-set', closeset = '[/wpv-control-set]', openitem = '[wpv-control-item', ancestors_tree = '';
-			try
+			if( buttons_visible )
 			{
-				jqp.each(attrs.url_param, function(index, param){
-					string[index] = '';
-					string_aux[index] = '';
-					jqp.each(attrs, function( i, v ){
-						nicename = attrs['name'];
-						//FIXME: since we have some problem with the model 
-						if( attrs['type'] == 'textfield' || 
-						//	attrs['type'] == 'radio' || 
-						attrs['type'] == 'checkbox' ||
-						attrs['type'] == 'datepicker' ||
-						attrs['type'] == 'date'
-					) 
+				buttons_visible = false;
+				jqp(this).empty().append('<i class="icon-expand-alt"></i> More controls');
+			}
+			else if( !buttons_visible)
+			{
+				buttons_visible = true;
+				jqp(this).empty().append('<i class="icon-collapse-alt"></i> Less controls');
+			}
+
+		});
+	}
+
+	self.setModelDataToBeSent = function()
+	{
+		var send = {}, data = ko.toJS( parametricViewModel ), values;
+
+		if( !data || typeof data.fieldRaw == 'undefined' || !data.fieldRaw )
+		{
+			jqp('.js-wpv-parametric-dialog-toolset-messages') .wpvToolsetMessage({
+				text:WPV_Parametric.make_valid_selection,
+				stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
+				close:true
+			});
+			return null;
+		}
+
+		try{
+			if( data.fieldRaw.use_user_values )
+			{
+				values = self.setUserValuesIfAny( data.fieldRaw.user_values );
+				data.fieldRaw.values = values.values;
+				data.fieldRaw.display_values = values.display_values;
+			}
+		}
+		catch(e)
+		{
+			console.error(e.message)
+		}
+
+
+		return data.fieldRaw;
+	};
+
+
+	self.setUserValuesIfAny = function( user_values ) {
+		var ret = {
+				values: [],
+				display_values: [] };
+
+		if( !user_values ) {
+			return ret;
+		}
+
+		jqp.each( user_values, function( i, v ) {
+			if( v ) {
+				try	{
+					var actualValue = v.values ? v.values.replace(",", "\\\\,") : '';
+					ret.values.push( actualValue );
+
+					var actualDisplayValue = v.display_values ? v.display_values.replace(",", "\\\\,") : '';
+					ret.display_values.push( actualDisplayValue );
+				} catch( e ) {
+					//if(  WPV_Parametric.debug ) console.log( e.message )
+				}
+			}
+		});
+		return ret;
+	};
+
+
+	self.insertShortCode = function(area, fields) {
+		var open = '[wpv-control',
+			close = ']',
+			string = [],
+			string_aux = [],
+			attrs = fields,
+			txt_area = area,
+			insert = '',
+			nicename = '',
+			code = [],
+			label = '',
+			openset = '[wpv-control-set',
+			closeset = '[/wpv-control-set]',
+			openitem = '[wpv-control-item',
+			ancestors_tree = '',
+			codemirror_views = WPV_parametric_local.pwindow.editor.codemirrorGet('wpv_filter_meta_html_content'),
+			codemirror_highlight_options = {
+				className: 'wpv-codemirror-highlight'
+			};
+
+		try	{
+			jqp.each( attrs.url_param, function( index, param ) {
+				string[ index ] = '';
+				string_aux[ index ] = '';
+				jqp.each( attrs, function( i, v ) {
+					nicename = attrs['name'];
+					//FIXME: since we have some problem with the model
+					if( attrs['type'] == 'textfield'
+						//	attrs['type'] == 'radio' ||
+						|| attrs['type'] == 'checkbox'
+						|| attrs['type'] == 'datepicker'
+						|| attrs['type'] == 'date' )
 					{
 						attrs['auto_fill'] = 0;
 					}
-					if( attrs['type'] == 'Types auto style'  )
-					{
+					if( attrs['type'] == 'Types auto style' ) {
 						attrs['auto_fill'] = 0;
 						attrs['type'] = false;
 					}
-					
-					if( attrs['auto_fill'] && attrs['is_types'] && attrs['auto_fill'].indexOf('wpcf-') == -1 )
-					{
+
+					if( attrs['auto_fill'] && attrs['is_types'] && attrs['auto_fill'].indexOf('wpcf-') == -1 ) {
 						attrs['auto_fill'] = 'wpcf-'+attrs['auto_fill'];
 					}
-					if( !attrs['auto_fill'] )
-					{
+
+					if( !attrs['auto_fill'] ) {
 						attrs['auto_fill_sort'] = false;
 					}
-					
+
 					if ( attrs['force_zero'] && ( attrs['force_zero'] == true || attrs['force_zero'] == 1 || attrs['force_zero'] == "1" ) ) {
 						attrs['force_zero'] = 'true';
 					}
-					
+
 					if ( attrs['type'] != 'checkbox' || ( attrs['force_zero'] && ( attrs['force_zero'] == false || attrs['force_zero'] == 0 || attrs['force_zero'] == "0" ) ) ) {
 						attrs['force_zero'] = '';
 					}
 
-					if( ~jqp.inArray(i, self.short_tag_fields) )
-					{
-						if( v && v.length > 0 )
-						{
-							if(  i == 'field'   )
-							{
+					if( ~jqp.inArray(i, self.short_tag_fields) ) {
+						if( v && v.length > 0 ) {
+							if( i == 'field' )	{
 								i = attrs['kind'];
-								if ( i == 'relationship' )
-								{
+								if ( i == 'relationship' )	{
 									i = false;
-								}
-								else if( v.indexOf('wpcf-') != -1 )
-								{
+								} else if( v.indexOf('wpcf-') != -1 ) {
 									v = v.split('wpcf-')[1];
 								}
 							}
-							if( i == 'field' && !attrs['is_types'] )
+
+							if( i == 'url_param' ) {
+								v = param.value;
+							}
+
+							if ( attrs['type'] != 'checkbox' && i == 'title' ) {
+								i = false;
+							}
+
+							if ( attrs['kind'] == 'field'
+								&& ( i == 'hide_empty' || i == 'taxonomy_order' || i == 'taxonomy_orderby' ) )
 							{
 								i = false;
 							}
 
-							if( i == 'url_param' ) v = param.value;
-							 
-							if ( attrs['type'] != 'checkbox' && i == 'title' )
-							{
-								i = false;
-							}
-							
-							if ( attrs['kind'] == 'field' && ( i == 'hide_empty' || i == 'taxonomy_order' || i == 'taxonomy_orderby' ) )
-							{
-								i = false;
-							}
-
-							if( i )
-							{
+							if( i )	{
 								//if( WPV_Parametric.debug ) console.log( "prop ", i, " val ", v )
 								if ( attrs['kind'] == 'relationship' ) {
-									if ( i == 'ancestors' || i =='url_param' ) {
-										string[index] += ' ' + i + '="' + v + '"';
-										ancestors_tree = i == 'ancestors' ? v : '';
+									if ( i == 'ancestors' || i == 'url_param' || i == 'format' ) {
+										string[ index ] += ' ' + i + '="' + v + '"';
 									} else {
-										string_aux[index] += ' ' + i + '="' + v + '"';
+										string_aux[ index ] += ' ' + i + '="' + v + '"';
+									}
+									if ( i == 'ancestors' ) {
+										ancestors_tree = v;
 									}
 								} else {
-									string[index] += ' ' + i + '="' + v + '"';
+									string[ index ] += ' ' + i + '="' + v + '"';
 								}
 							}
 						}
 					}
 				});
 
-				label = attrs['field_type_switch'] == 'checkbox' ? '' : '\n\t[wpml-string context="wpv-views"]' + nicename + ':[/wpml-string] ';
+				label = ( attrs['field_type_switch'] == 'checkbox' )
+						? ''
+						: '[wpml-string context="wpv-views"]' + nicename + ':[/wpml-string] ';
+
 				if ( attrs['kind'] == 'relationship' ) {
-					insert += openset + string[index] + close + "\n";
+					insert += openset + string[ index ] + close + "\n";
 					ancestors_tree_items = ancestors_tree.split('>');
-					for (i = 0, l = ancestors_tree_items.length; i < l; i++) {
-						insert += '\n\t' + openitem + string_aux[index] + ' ancestor_type="' + ancestors_tree_items[i] + '" default_label=""' + close + '\n';
+					for ( i = 0, l = ancestors_tree_items.length; i < l; i++ ) {
+						insert += '\t' + openitem + string_aux[ index ] + ' ancestor_type="' + ancestors_tree_items[ i ] + '" default_label=""' + close + '\n';
 					}
-					insert += '\n' + closeset + '\n';
+					insert += closeset + '\n';
 				} else {
-					insert += label + '\n\t' + open + string[index] + close + "\n";
+					insert += label + open + string[ index ] + close + "\n";
 				}
 
 				//if( WPV_Parametric.debug ) console.log( "STRING ", string[index] );
-				code.push( string[index] );
+				code.push( string[ index ] );
 
 			});
-		}
-		catch( e )
-		{
+		} catch( e ) {
 			console.error(e.message);
-
 			return false;
 		}
 
-		if( !self.is_edit )
-		{
-			self.editor.InsertAtCursor(area, insert);
-		}
-		else
-		{
+		if( !self.is_edit ) {
+			var current_cursor = codemirror_views.getCursor( true );
+			self.editor.InsertAtCursor( area, insert );
+			var end_cursor = codemirror_views.getCursor( true ),
+			filter_shortcode_marker = codemirror_views.markText( current_cursor, end_cursor, codemirror_highlight_options );
+			setTimeout( function() {
+				  filter_shortcode_marker.clear();
+			}, 3000);
+		} else {
 			console.log( nicename, code, area, attrs );
 			return self.edit_the_field( nicename, code, area, attrs );
 		}
 
 		return insert;
 	};
+
 
 	self.get_rid_of_between = function( code, params, con, nicename, area )
 	{
@@ -426,7 +429,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 
 		wpmlo = '[wpml-string context="wpv-views"]';
 		wpmlc = ':[/wpml-string]';
-		
+
 		if( short_code.length > 1 && prev.url_param.length > 1 )
 
 		{
@@ -459,7 +462,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 					}
 					else if( i == 1)
 					{
-						append = '\n\t'+wpmlo + nicename + wpmlc +'\n\t\t'+ '['+tag+v+']\n';
+						append = wpmlo + nicename + wpmlc +'\n'+ '['+tag+v+']\n';
 						parser.append_tag_content( replace, append, content )
 					}
 
@@ -506,14 +509,14 @@ WPV_parametric_local.message.fadeOutShort = 400;
 		var content =
 		WPV_parametric_local.add_submit.get_text_area_content(),
 		rpl,
-		
+
 		tag = parser.shortCodeGetTagName(),
 		cm,
 		short_code = code,
 		params = self.fieldRawEditable,
 		newField = current,
 		pieces = [];
-		
+
 		if( ~content.indexOf( self.short_code_editable ) )
 		{
 			try
@@ -544,7 +547,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 								var ancestors = newField.ancestors.split('>');
 								jqp.each(ancestors, function(i,v){
 									if ( !~pieces[1].indexOf('ancestor_type="' + v + '"') ) {
-										var insert_missing = '\n\t[wpv-control-item type="' + newField.type + '" ancestor_type="' + v + '" default_label=""]\n';
+										var insert_missing = '\t[wpv-control-item type="' + newField.type + '" ancestor_type="' + v + '" default_label=""]\n';
 										content = content.replace('[/wpv-control-set',insert_missing + '[/wpv-control-set');
 									}
 								});
@@ -566,7 +569,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 		}
 		else
 		{
-			jqp('.js-errors').wpvToolsetMessage({
+			jqp('.js-wpv-parametric-dialog-toolset-messages').wpvToolsetMessage({
 				text:problems_inserting_new_shortcode,
 				stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 				close:true
@@ -617,7 +620,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 				//	return;
 
 				if( !shortcode ) {
-					jqp('.js-errors').wpvToolsetMessage({
+					jqp('.js-wpv-parametric-dialog-toolset-messages').wpvToolsetMessage({
 						text:WPV_Parametric.something_bad,
 						type:'error',
 						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
@@ -635,16 +638,40 @@ WPV_parametric_local.message.fadeOutShort = 400;
 		});
 	};
 
+
+	/**
+	 * Check custom (user) field options when submitting the form.
+	 *
+	 * If custom field options are being used, check whether they are valid. If not, highlight the problematic
+	 * input field and show an wpvToolsetMessage.
+	 *
+	 * The validation is successful if:
+	 * - values don't repeat themselves
+	 * - no value is only whitespace
+	 * - no display value is empty/whitespace
+	 *
+	 * @todo describe exactly what "valid" means
+	 *
+	 * @return bool True if all field option values and display values are valid.
+	 *
+	 * @since unknown
+	 */
 	self.check_user_values_on_submit = function()
 	{
-		var field = typeof parametricViewModel.fieldRaw() != 'undefined' ? parametricViewModel.fieldRaw() : undefined, options, bool = true, tmp = [], index = [];
+		var field = typeof parametricViewModel.fieldRaw() != 'undefined' ? parametricViewModel.fieldRaw() : undefined,
+			options,
+			isEverythingValid = true,
+			tmp = [],
+			badValuesIndices = [],
+			repeatingValuesIndices = [],
+			badDisplayValuesIndices = [];
 
 		try
 		{
 			if( parametricViewModel.userValuesVisible( ) )
 			{
 
-				jqp('.js-user-values').each(function( i ){
+				/*jqp('.js-user-values').each(function( i ){
 					if( jqp(this).val() && jqp(this).val() != " " )
 					{
 						tmp.push( jqp(this).val() );
@@ -653,38 +680,106 @@ WPV_parametric_local.message.fadeOutShort = 400;
 					{
 						index.push( i );
 					}
+				});*/
+
+				// Get all values into an array
+				var userValues = [];
+				jqp('.js-user-values').each( function( i ) {
+					userValues[ i ] = jqp( this ).val();
+				});
+
+				// Check for blank (whitespace) values
+				jqp.each( userValues, function( index, value ) {
+					if( ( value.length != 0 ) && ( value.trim() == '' ) ) {
+						badValuesIndices.push( index );
+						isEverythingValid = false;
+					}
+				});
+
+				// Check for repeating values
+				var repeatingTmp = [];
+				jqp.each( userValues, function( firstIndex, firstValue ) {
+					jqp.each( userValues, function( secondIndex, secondValue ) {
+						if( firstIndex < secondIndex
+							&& firstValue.trim() == secondValue.trim()
+							// this will exclude comparing empty string with whitespaces
+							&& jqp.inArray( firstValue, badValuesIndices ) === -1
+							&& jqp.inArray( secondValue, badValuesIndices ) === -1 ) {
+							repeatingTmp.push( secondIndex );
+							isEverythingValid = false;
+						}
+					});
+				});
+				jqp.each( repeatingTmp, function( indexIndex, index ) {
+					// values of repeatingTmp are indices of userValues
+					if( jqp.inArray( index, repeatingValuesIndices ) === -1 ) {
+						repeatingValuesIndices.push( index );
+					}
+				});
+
+				// Check for empty/blank display values
+				jqp('.js-user-display-values').each( function( index ) {
+					var displayValue = jqp( this ).val();
+					if( displayValue.trim() == '' ) {
+						badDisplayValuesIndices.push( index );
+						isEverythingValid = false;
+					}
 				});
 
 			}
 		}
 		catch( e )
 		{
-			//if(  WPV_Parametric.debug ) console.log( e.message );
+			// We probably don't have the "field" defined.
 			return false;
 		}
 
-		if( tmp.length == 0 )
-		{
-			jqp('.js-user-values').each(function(i){
-				if( index.length == 1 )
+		if( ! isEverythingValid ) {
+
+			// Highlight problematic fields
+			jqp('.js-user-values').each( function( fieldIndex ) {
+				if( jqp.inArray( fieldIndex, badValuesIndices ) !== -1
+					|| jqp.inArray( fieldIndex, repeatingValuesIndices ) !== -1 )
 				{
-					jqp(this).css('border-color', 'red');
+					jqp( this ).css( 'border-color', 'red' );
 				}
-				else if( index.length > 1 && i > 0 )
-				{
+
+			});
+
+			jqp('.js-user-display-values').each( function( fieldIndex ) {
+				if( jqp.inArray( fieldIndex, badDisplayValuesIndices ) !== -1 ) {
+					jqp( this ).css( 'border-color', 'red' );
+				}
+			});
+
+			// Show error message
+			WPV_ParametricFilterWindow.errorPlaceHolder = jqp( '.js-user-value-errors' ).wpvToolsetMessage({
+				text: WPV_Parametric.check_values_and_values_labels,
+				close: close,
+				stay: true,
+				fadeOut: WPV_parametric_local.message.fadeOutLong
+			});
+		}
+
+		/*if( tmp.length == 0 )
+		{
+			jqp('.js-user-values').each( function( i ) {
+				// Highlight the problematic field
+				if( ( index.length == 1 ) || ( index.length > 1 && i > 0 ) ) {
 					jqp(this).css('border-color', 'red');
 				}
 			});
-			bool = false;
+
+			isEverythingValid = false;
 			WPV_ParametricFilterWindow.errorPlaceHolder = jqp('.js-errors').wpvToolsetMessage({
 				text:WPV_Parametric.check_values_and_values_labels
 				, close: close
 				, stay:true
 				, fadeOut:WPV_parametric_local.message.fadeOutLong
 			});
-		}
+		}*/
 
-		return bool;
+		return isEverythingValid;
 	};
 
 	var validateFieldsAgainstReservedWordAndCheckIfEmpty = function( field )
@@ -716,19 +811,8 @@ WPV_parametric_local.message.fadeOutShort = 400;
 						Advanced_visible.toggle_slide_up_down_advanced( );
 					}
 				});
-
-			}
-			catch(e)
-			{
-				//if(  WPV_Parametric.debug ) console.log( e.message );
-				type = 'error';
-				has_problems = true;
-				field_with_problems = '#url_param';
-				message = e.message;
-			}
-		});
-		
-		if ( field.kind == 'relationship' ) {
+				
+				if ( field.kind == 'relationship' ) {
 			if ( !field.ancestors || field.ancestors == 0 ) {
 				message = WPV_Parametric.relationship_tree_mandatory;
 				has_problems = true;
@@ -759,15 +843,26 @@ WPV_parametric_local.message.fadeOutShort = 400;
 						}
 					},
 					error: function (ajaxContext) {
-						
+
 					},
 					complete: function() {
-						
+
 					}
 				});
 			}
-			
+
 		}
+
+			}
+			catch(e)
+			{
+				//if(  WPV_Parametric.debug ) console.log( e.message );
+				type = 'error';
+				has_problems = true;
+				field_with_problems = '#url_param';
+				message = e.message;
+			}
+		});
 
 		if( has_problems )
 		{
@@ -801,12 +896,17 @@ WPV_parametric_local.message.fadeOutShort = 400;
 		{
 			if( args.Data.insert )
 			{
+
+				jqp( '.js-wpv-missing-filter-container, .js-wpv-no-filters-container' ).hide();
+
+				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, args.Data.insert, false, 'success' );
+				/*
 				WPV_parametric_local.message.container.wpvToolsetMessage({
 					text:args.Data.insert,
 					type:'info',
 					onClose: function()
 					{
-						/*
+						
 						if( !WPV_parametric_local.add_submit.has_submit( WPV_parametric_local.add_submit.get_text_area_content() ) )
 						{
 							WPV_parametric_local.add_submit.open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
@@ -816,9 +916,10 @@ WPV_parametric_local.message.fadeOutShort = 400;
 								, fadeOut:WPV_parametric_local.message.fadeOutLong
 							});
 						}
-						*/
+						
 					}
 				});
+				*/
 
 				//tell filters section we created a new filter.
 				var params = {
@@ -831,11 +932,9 @@ WPV_parametric_local.message.fadeOutShort = 400;
 
 					if ( (typeof(response) !== 'undefined') ) {
 						decoded_response = jQuery.parseJSON(response);
-						if ( decoded_response.success === params.id ) {
+						if ( decoded_response.success == params.id ) {
 							jQuery('.js-filter-list').html(decoded_response.wpv_filter_update_filters_list);
-							jQuery('.js-wpv-dps-settings').html(decoded_response.wpv_dps_settings_structure);
-							view_settings['.js-wpv-filter-dps'] = jQuery('.js-wpv-dps-settings input, .js-wpv-dps-settings select').serialize();
-							wpv_after_update_filters_list();
+							jQuery( document ).trigger( 'js_event_wpv_query_filter_created', [ 'parametric-all' ] );
 						}
 					} else {
 						//if(  WPV_Parametric.debug ) console.log( WPV_Parametric.ajax_error, response );
@@ -851,12 +950,15 @@ WPV_parametric_local.message.fadeOutShort = 400;
 			}
 			else if( args.Data.error )
 			{
+				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.db_insert_problem + args.Data.error, true, 'error' );
+				/*
 				WPV_parametric_local.message.container.wpvToolsetMessage({
 					text:WPV_Parametric.db_insert_problem + args.Data.error,
 					type:'error',
 					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 					close:true
 				});
+				*/
 
 				console.error( args.Data.error );
 			}
@@ -864,12 +966,15 @@ WPV_parametric_local.message.fadeOutShort = 400;
 		catch( e )
 		{
 			console.error( e.message );
+			WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, e.message, true, 'error' );
+			/*
 			WPV_parametric_local.message.container.wpvToolsetMessage({
 				text:e.message,
 				type:'error',
 				stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 				close:true
 			});
+			*/
 		}
 	};
 
@@ -887,7 +992,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 
 	self.addButtons = function()
 	{
-		WPV_parametric_local.message.container = jqp(".js-wpv-settings-filter-extra .wpv-setting .js-error-container");
+		WPV_parametric_local.message.container = jqp(".js-wpv-filter-extra-section .wpv-setting .js-wpv-parametric-error-container");
 
 		self.createFilterAction();
 		self.editFilterAction();
@@ -901,17 +1006,20 @@ WPV_parametric_local.message.fadeOutShort = 400;
 			//build the data object to be sent to the server
 			if( !self.move_cursor_if_no_content_within( ) && !self.editor.cursorWithin(self.text_area, 'wpv-filter-controls', '/wpv-filter-controls') )
 			{
+				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				/*
 				WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
 					text:WPV_Parametric.place_cursor_inside_wpv_controls,
 					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 					close:true
 				});
+				*/
 				return false;
 			}
 
 			else
 			{
-				if( null != WPV_ParametricFilterWindow.errorPlaceHolder ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
+				//if( null != WPV_ParametricFilterWindow.errorPlaceHolder ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
 			}
 
 			var sendData = {
@@ -925,16 +1033,19 @@ WPV_parametric_local.message.fadeOutShort = 400;
 				proxy.loader.loadShow( jqp(this).parent().parent() );
 				jqp(this).prop('disabled', true );
 				proxy.ajaxCall( sendData, ajaxurl, 'post', ajaxCreateCallback, [jqp(this)] );
-				if( null != WPV_ParametricFilterWindow.errorPlaceHolder ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
+				//if( null != WPV_ParametricFilterWindow.errorPlaceHolder ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
 			}
 			else
 			{
+				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.select_post_types, true, 'error' );
+				/*
 				WPV_parametric_local.message.container.wpvToolsetMessage({
 					text:WPV_Parametric.select_post_types,
 					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 					close:true,
 					fadeOut:'fast'
 				});
+				*/
 
 			}
 
@@ -950,29 +1061,35 @@ WPV_parametric_local.message.fadeOutShort = 400;
 
 			if(  !short_code )
 			{
+				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
+				/*
 				WPV_parametric_local.message.container.wpvToolsetMessage({
 					text:WPV_Parametric.place_cursor_inside_valid_control_shortcodes,
 					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 					close:true
 				});
+				*/
 				return null;
 			}
-			
+
 			var current_place = parser.shortCodeGetTagName();
 
 			if( current_place == 'wpv-control' )
 			{
 				self.short_code_editable = parser.getShortCodeRawString();
 				if ( ~self.short_code_editable.indexOf(']') ) {//alert('wpv-control not valid');
+					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
+					/*
 					WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
 						text: WPV_Parametric.place_cursor_inside_valid_control_shortcodes,
 						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 						close:true
 					});
+					*/
 					return null;
 				} else {
 					ret = parser.getShortCodeObject();
-					if( WPV_ParametricFilterWindow.errorPlaceHolder != null ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
+					//if( WPV_ParametricFilterWindow.errorPlaceHolder != null ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
 					return ret;
 				}
 			}
@@ -980,42 +1097,54 @@ WPV_parametric_local.message.fadeOutShort = 400;
 			{
 				self.short_code_editable = parser.getShortCodeRawString();
 				if ( ~self.short_code_editable.indexOf(']') ) {//alert('wpv-control-set not valid');
+					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
+					/*
 					WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
 						text: WPV_Parametric.place_cursor_inside_valid_control_shortcodes,
 						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 						close:true
 					});
+					*/
 					return null;
 				} else {
 					ret = parser.getShortCodeObject();
-					if( WPV_ParametricFilterWindow.errorPlaceHolder != null ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
+					//if( WPV_ParametricFilterWindow.errorPlaceHolder != null ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
 					return ret;
 				}
 			}
 			else if ( current_place == 'wpv-control-item' ) {//alert('in wpv-control-item');
 				self.short_code_editable = parser.getShortCodeRawString();
 				if ( ~self.short_code_editable.indexOf(']') ) {//alert('wpv-control-item not valid');
+					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
+					/*
 					WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
 						text: WPV_Parametric.place_cursor_inside_valid_control_shortcodes,
 						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 						close:true
 					});
+					*/
 				} else {
+					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_control_set, true, 'error' );
+					/*
 					WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
 						text: WPV_Parametric.place_cursor_inside_wpv_control_set,
 						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 						close:true
 					});
+					*/
 				}
 				return null;
 			}
 			else
 			{
+				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
+				/*
 				WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
 					text: WPV_Parametric.place_cursor_inside_valid_control_shortcodes,
 					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 					close:true
 				});
+				*/
 				return null;
 			}
 
@@ -1032,42 +1161,63 @@ WPV_parametric_local.message.fadeOutShort = 400;
 	{
 		buttonEdit.on('mouseup', function(e){
 			var obj = getShortCodes(), params = {};
+
+			/* See WP_Views_plugin::view_parametric_create() in inc/wpv-plugin.class.php and
+			 * Editor_addon_parametric::__construct() in inc/filters/editor-addon-parametric.class.php in order
+			 * to understand where this ajax call is handled. */
 			params.action = 'set_parametric_filter_edit';
 			params.edit_field = obj;
 			params.post_types = self.handleDataRequest().join(',');
 			params.wpv_parametric_create_nonce = WPV_Parametric.wpv_parametric_create_nonce;
-			//make the field 'wpcf-' if is a types field
-			if( params.edit_field && params.edit_field.field )
+
+			// make the field 'wpcf-' if is a types field
+			// NOTE this is never executed, params.fields is not set at all... addressing this on PHP callback, where we can surely check whether it is a Types field
+			// Also, never trust wpcf- to be the prefix for all Types fields: what about fields under Types control?
+			if( params.edit_field && params.edit_field.field && params.fields && params.fields.is_types )
 			{
 				params.edit_field.field = 'wpcf-'+params.edit_field.field
 			}
 			if ( params.edit_field && params.edit_field.ancestors ) {
 				params.edit_field.relationship = 'relationship';
 			}
-			
+
 			//if(  WPV_Parametric.debug ) console.log( "THE DATA FOR EDIT FIELD TO SEND TO SERVER::: ", params.edit_field );
 			//return;
 
-			if( null != obj )
-			{
-				if( params.post_types )
-				{
-					proxy.loader.loadShow( jqp(this).parent().parent() );
-					jqp(this).prop('disabled', true );
-					proxy.ajaxCall( params, ajaxurl, 'post', ajaxCreateCallback, [jqp(this)] );
-				}
-				else
-				{
+			if ( null != obj ) {
+				if ( params.post_types ) {
+					if (
+						params.edit_field.field
+						|| params.edit_field.taxonomy
+						|| params.edit_field.ancestors
+					) {
+						proxy.loader.loadShow( jqp(this).parent().parent() );
+						jqp(this).prop('disabled', true );
+						proxy.ajaxCall( params, ajaxurl, 'post', ajaxCreateCallback, [jqp(this)] );
+					} else {
+						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.editing_manual_filter, true, 'error' );
+						/*
+						WPV_parametric_local.message.container.wpvToolsetMessage({
+							text:WPV_Parametric.editing_manual_filter,
+							stay:true,
+							fadeOut:WPV_parametric_local.message.fadeOutLong,
+							close:true
+						});
+						*/
+					}
+				} else {
+					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.select_post_types, true, 'error' );
+					/*
 					WPV_parametric_local.message.container.wpvToolsetMessage({
 						text:WPV_Parametric.select_post_types,
-						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
+						type:'error',
+						stay:true,
+						fadeOut:WPV_parametric_local.message.fadeOutLong,
 						close:true
 					});
-
+					*/
 				}
-			}
-			else
-			{
+			} else {
 				//if(  WPV_Parametric.debug ) console.log("problems in getting the shortcode")
 			}
 			return false;
@@ -1090,21 +1240,23 @@ WPV_parametric_local.message.fadeOutShort = 400;
 				//	height:self.HEIGHT,
 				onComplete: function() {
 					var cancelButton = jqp("#js_parametric_cancel");
-					
 					var extra_query = '';
-					
+
 					parametricViewModel = new WPV_ParametricViewModel();
+
 					ko.applyBindings( parametricViewModel );
+
 					self.populateFields( parametricViewModel, data );
+
 					if( data.edit_field ) {
 						//keep track of previous obj state
 						self.fieldRawEditable = jqp.extend({}, set_default_field( data.edit_field ), true );
 						self.fieldRawEditable.index = data.edit_field.index;
 						self.fieldRawEditable.can_force_zero = data.edit_field.can_force_zero;
 						self.is_edit = true;
-						
+
 						extra_query = '&field=' + data.edit_field.field;
-						
+
 						//if(  WPV_Parametric.debug ) console.log( "THE EDIT FIELD FROM SERVER::: ", data.edit_field, "\nTHE DEFAULT FIELD PROCESSED::: ", self.fieldRawEditable );
 						jqp("#parametric-box-title").text( WPV_Parametric.edit_filter_field );
 						jqp("#js_parametric_form_button").text(WPV_Parametric.update_input);
@@ -1114,13 +1266,13 @@ WPV_parametric_local.message.fadeOutShort = 400;
 						self.is_edit = false
 						jqp("#js_parametric_form_button").removeClass('button-primary').addClass('button-secondary');
 					}
-					
+
 					self.submitHandler( jqp('#js-parametric-form'), jqp("#js_parametric_form_button") );
 					cancelButton.on('click', function(event){
 						jqp.colorbox.close();
 					});
-					toggle_fieldset_hidden_viz();					
-					
+					toggle_fieldset_hidden_viz();
+
 				},
 				onCleanup:function()
 				{
@@ -1156,19 +1308,22 @@ WPV_parametric_local.message.fadeOutShort = 400;
 			Advanced_visible.toggle_slide_up_down_advanced( jqp(this) );
 		});
 	};
-	
+
 	var ajaxCreateCallback = function(args, status, additional_args )
 	{
 		var data = {}, button = additional_args[0];
 
 		if( args.Data && args.Data.error )
 		{
+			WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, args.Data.error, true, 'error' );
+			/*
 			WPV_parametric_local.message.container.wpvToolsetMessage({
 				text:args.Data.error,
 				type: 'error',
 				stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 				close:true
 			});
+			*/
 			return false;
 		}
 
@@ -1182,12 +1337,15 @@ WPV_parametric_local.message.fadeOutShort = 400;
 		catch(e)
 		{
 			console.error(WPV_Parametric.ajax_error, e.message );
+			WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.data_loading_problem + e.message, true, 'error' );
+			/*
 			WPV_parametric_local.message.container.wpvToolsetMessage({
 				text:WPV_Parametric.data_loading_problem + e.message,
 				type: 'error'
 				,stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 				close:true
 			});
+			*/
 		}
 	};
 
@@ -1212,7 +1370,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 			}
 		});
 		self.populateField( parametricViewModel, 'selectFilter',  self.groups );
-		
+
 		var myval = jqp('.js-flatten-types-relation-tree').val().split(',');
 		myval.unshift({title:WPV_Parametric.relationship_select_tree,value:0});
 		self.populateField( parametricViewModel, 'ancestors_array_func', myval );
@@ -1243,7 +1401,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 		jqp.each(data, function( index, value ){
 			try
 			{
-				
+
 				if ( kind == 'basic_filters' ) {
 					kind = value.basic_filter_type;
 				}
@@ -1277,10 +1435,11 @@ WPV_parametric_local.message.fadeOutShort = 400;
 						value.hide_empty,
 						value.ancestors,
 						value.can_force_zero,
-						value.force_zero
+						value.force_zero,
+						value.format
 					);
 					ars[group].push(field);
-					
+
 				//	console.log( "args", ars, "\n", "group", group,"\n", "current g", ars[group],"\n", 'field', field, "name", field.name, '\n\n' );
 				}
 
@@ -1318,7 +1477,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 
 			if( values && values.values && values.values.length > 0 && values.constructor.name == 'Object' )
 			{
-				
+
 				if( field.display_values === undefined && values.values[0].length === 2 )
 				{
 					jqp.each(values.values, function(i, v){
@@ -1340,7 +1499,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 			else if( values && values.length && values.constructor.name == 'Array' )
 			{
 				field.display_values = field.display_values.replace(/\\\\\\\\,/g, "|" );
-				
+
 				var display = field.display_values.split(",");
 
 				jqp.each(values, function(i, v){
@@ -1351,12 +1510,12 @@ WPV_parametric_local.message.fadeOutShort = 400;
 			jqp.each(url_params, function(i,v){
 				urls.push( new parametricViewModel.WPV_QS( v.trim() ) );
 			});
-			
+
 			if( field.type === 'false' )
 			{
 				field.type = "Types auto style";
 			}
-			
+
 			raw = new WPV_ParametricField(
 				undefined,
 				field.group,
@@ -1384,13 +1543,14 @@ WPV_parametric_local.message.fadeOutShort = 400;
 				values.hide_empty,
 				field.ancestors,
 				field.can_force_zero ? field.can_force_zero : 0,
-				values.force_zero ? values.force_zero : 0
+				values.force_zero ? values.force_zero : 0,
+				field.format
 			);
-			
+
 			check_group = _.filter(self.groups, function( v, i , l ){
 				return v.name() == field.group;
 			});
-			
+
 			if( check_group.length === 0 )
 			{
 				self.groups.push( new WPV_GroupOption(field.group, [raw] ) );
@@ -1408,12 +1568,13 @@ WPV_parametric_local.message.fadeOutShort = 400;
 			if( values.taxonomy_order ) parametricViewModel.taxonomy_order( values.taxonomy_order );
 			if( values.taxonomy_orderby ) parametricViewModel.taxonomy_orderby( values.taxonomy_orderby );
 			if( values.hide_empty ) parametricViewModel.hide_empty( values.hide_empty );
+			if ( field.format) parametricViewModel.format( field.format );
 
 			if( field.default_label )
 			{
 				parametricViewModel.default_label( field.default_label  );
 			}
-			
+
 			if( field.ancestors )
 			{
 				parametricViewModel.ancestors( field.ancestors );
@@ -1433,7 +1594,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 			if( values )
 			{
 				parametricViewModel.auto_fill_default( values.auto_fill_default );
-				
+
 
 				if( valuesValues && valuesValues.length )
 				{
@@ -1456,7 +1617,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 					parametricViewModel.title( field.title );
 					parametricViewModel.auto_fill( 1 );
 				}
-				
+
 				if( field.force_zero )
 				{
 					parametricViewModel.force_zero( 1 );
@@ -1468,7 +1629,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 					parametricViewModel.fieldRaw().force_zero( 0 );
 				//	parametricViewModel.auto_fill_default_visible( !valuesValues && !valuesValues.length ? true : false );
 				}
-				
+
 				if ( field.can_force_zero )
 				{
 					parametricViewModel.can_force_zero = 1;
@@ -1478,12 +1639,13 @@ WPV_parametric_local.message.fadeOutShort = 400;
 					parametricViewModel.can_force_zero = 0;
 					parametricViewModel.fieldRaw().can_force_zero = 0;
 				}
-				
+
 				if( values.auto_fill_sort ) parametricViewModel.auto_fill_sort( values.auto_fill_sort );
-				
+
 				if( values.taxonomy_order ) parametricViewModel.taxonomy_order( values.taxonomy_order );
 				if( values.taxonomy_orderby ) parametricViewModel.taxonomy_orderby( values.taxonomy_orderby );
 				if( values.hide_empty ) parametricViewModel.hide_empty( values.hide_empty );
+				if( field.format ) parametricViewModel.format( field.format );
 			}
 		}
 		catch( e )
@@ -1493,7 +1655,7 @@ WPV_parametric_local.message.fadeOutShort = 400;
 		}
 
 		parametricViewModel.is_populating = false;
-		
+
 		return ko.toJS( parametricViewModel.fieldRaw );
 
 	};
@@ -1576,8 +1738,8 @@ WPV_parametric_local.message.fadeOutShort = 400;
 
 /* //////// MODELS ///////*/
 ////THE FILTER MODEL /////////////////////////////////
-var WPV_ParametricField = function( control, group, kind, name, value, id, prefix, type, data_type, relation, custom, url_param, compare, is_types, default_label, index, values, auto_fill, auto_fill_default, taxonomy_order, taxonomy_orderby, title, auto_fill_sort, hide_empty, ancestors, can_force_zero, force_zero )
-{	
+var WPV_ParametricField = function( control, group, kind, name, value, id, prefix, type, data_type, relation, custom, url_param, compare, is_types, default_label, index, values, auto_fill, auto_fill_default, taxonomy_order, taxonomy_orderby, title, auto_fill_sort, hide_empty, ancestors, can_force_zero, force_zero, format )
+{
 	var self = this;
 
 	self.control = control;
@@ -1605,7 +1767,7 @@ var WPV_ParametricField = function( control, group, kind, name, value, id, prefi
 	self.user_values = ko.observableArray( values );
 
 	self.default_label = ko.observable( default_label ? default_label : null );
-	
+
 	self.ancestors = ko.observable( ancestors ? ancestors : null );
 
 	self.fieldDbName = ko.computed(function(){
@@ -1616,40 +1778,48 @@ var WPV_ParametricField = function( control, group, kind, name, value, id, prefi
 	self.relation = relation;
 
 	self.custom = custom;
+
 	//needed as a switch to avoid conflicts in knockout
 	self.field_type_switch = type;
 
 	self.auto_fill_default = ko.observable( auto_fill_default ? auto_fill_default : '' );
 
 	self.auto_fill = ko.observable( auto_fill ? auto_fill : 0 ) ;
-	
+
 	self.can_force_zero = can_force_zero;
 	self.force_zero = ko.observable( force_zero ? force_zero : 0 );
 
 	self.is_types = is_types;
 
-	self.mode = kind == 'field' ? 'cf' : 'slug';
-	self.mode = kind == 'relationship' ? 'rel' : self.mode;
+	self.mode = ( kind == 'field' ) ? 'cf' : 'slug';
+	self.mode = ( kind == 'relationship' ) ? 'rel' : self.mode;
 
 	self.taxonomy_order = ko.observable(taxonomy_order);
 
 	self.taxonomy_orderby = ko.observable(taxonomy_orderby);
-	
-	self.hide_empty = ko.observable(hide_empty ? hide_empty : '');
+
+	self.hide_empty = ko.observable(hide_empty);
+
+	self.format = ko.observable(format);
 
 	self.compare = ko.observable( compare ? compare : '' );
 
 	self.use_user_values = ko.observable( values && values.length > 0 ? true : false);
 
 	self.title = ko.observable( title );
-	
+
 	self.auto_fill_sort = ko.observable( auto_fill_sort );
 };
 
-//Compund Object to store fields by field Kind (eg. Taxonomies, Custom Fields, .... )
-var WPV_GroupOption = function(label, children) {
-	this.name = ko.observable(label);
-	this.label = ko.computed(function(){
+/**
+ * Compund Object to store fields by field Kind (eg. Taxonomies, Custom Fields, ...).
+ *
+ */
+var WPV_GroupOption = function( label, children ) {
+
+	this.name = ko.observable( label );
+
+	this.label = ko.computed( function(){
 		var $return = this.name();
 		if ( $return == 'taxonomy' ) {
 			$return = WPV_Parametric.taxonomy;
@@ -1658,1026 +1828,1040 @@ var WPV_GroupOption = function(label, children) {
 			$return = WPV_Parametric.basic_filters;
 		}
 		return $return;
-		}, this);
-		this.children = ko.observableArray(children);
+	}, this);
+
+	this.children = ko.observableArray(children);
+};
+
+
+/* ****************************************************************************\
+ *		View Model
+\* ****************************************************************************/
+
+var WPV_ParametricViewModel = function() {
+
+	// TODO:remove json store
+	var self = this,
+		meta_data_root = jqp.extend( true, {}, WPV_TypesFieldsType.Data ),
+		store = new JsonStore();
+
+	self.is_populating = false;
+
+	// url parameter observable object
+	self.WPV_QS = function(i){
+		this.value = ko.observable( i );
 	};
 
-	////View Model/////////////////////////////////
-	var WPV_ParametricViewModel = function(){
-		//TODO:remove json store
-		var self = this, meta_data_root = jqp.extend( true, {}, WPV_TypesFieldsType.Data ), store = new JsonStore();
 
-		self.is_populating = false;
+	self.WPV_Value = function(value, display) {
 
-		// url parameter observable object
-		self.WPV_QS = function(i){
-			this.value = ko.observable(i);
-		};
+		var wpv_value = this;
+		this.values = ko.observable( value );
+		this.display_values = ko.observable( display );
 
-		self.WPV_Value = function(value, display)
-		{
-			var self = this;
-			this.values = ko.observable(value);
-			this.display_values = ko.observable(display);
-
-			this.values.subscribe(function( val ){
-				if( val )
-				{
-					if( WPV_ParametricFilterWindow.errorPlaceHolder ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
-					jqp('.js-user-values').css('border-color', '#dfdfdf');
+		this.values.subscribe(function( val ){
+			if( val ) {
+				if( WPV_ParametricFilterWindow.errorPlaceHolder ) {
+					//WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
 				}
-			});
-
-			this.values_raw = ko.computed(function(){
-				if( self.values() && self.values() != " " )
-				{
-					try
-					{
-						self.values( self.values().trim() );
-					}
-					catch( e )
-					{
-						self.values( self.values()[0].trim() );
-					}
-					
-				}
-			});
-
-			self.display_values_raw = ko.computed(function(){
-				if( self.display_values() && self.display_values() != " " )
-				{
-					try
-					{
-						self.display_values( self.display_values().trim() );
-					}
-					catch( e )
-					{
-						console.error( e.message );
-					}
-				}
-			});
-		};
-
-		self.numeric_operators = ["NUMERIC", "DECIMAL", "SIGNED", "UNSIGNED"];
-
-		//the actual field selected and all its data
-		self.fieldRaw = ko.observable( );
-
-		//store here all our self.WPV_QS objects
-		self.url_param = ko.observableArray( );
-
-		//scalar place holders in model
-		self.field_data_type = ko.observable();
-		self.auto_fill_default = ko.observable( '' );
-		self.type = ko.observable();
-		self.compare = ko.observable();
-		self.title = ko.observable();
-
-		self.values = ko.observableArray();
-
-		self.userValuesVisible = ko.observable(false);
-		self.auto_fill_default_visible = ko.observable(false);
-
-
-		// data place holders
-		self.selectFilter = ko.observableArray( );
-		self.selectCompare = ko.observableArray( ['=', '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'AND', 'BETWEEN', 'NOT BETWEEN'] );
-		self.selectDataType = ko.observableArray( ['CHAR', 'NUMERIC', 'BINARY', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', 'UNSIGNED']);
-		self.selectInputKind = ko.observableArray(["textfield", "select", "multi-select", "checkboxes", "checkbox", "radios"]);
-
-		self.auto_fill = ko.observable(0);
-		self.default_label = ko.observable('');
-		
-		self.force_zero = ko.observable(0);
-		self.can_force_zero = true;
-		
-		self.ancestors_array = [{title:WPV_Parametric.relationship_select_tree,value:0}];
-		var myval = jqp('.js-flatten-types-relation-tree').val().split(',');
-			for (i = 0, l = myval.length; i < l; i++) {
-				self.ancestors_array.push({title:myval[i], value:myval[i]});
+				// remove field highlighting when this value changes
+				jqp('.js-user-values').css('border-color', '#dfdfdf');
 			}
-		
-		self.ancestors_array_func = function( data ) {
-			var myinnerval = jqp('.js-flatten-types-relation-tree').val().split(',');
-			self.ancestors_array = [{title:WPV_Parametric.relationship_select_tree,value:0}];
-			for (i = 0, l = myinnerval.length; i < l; i++) {
-				self.ancestors_array.push({title:myinnerval[i], value:myinnerval[i]});
+		});
+
+
+		this.display_values.subscribe( function ( newValue ) {
+			if( newValue ) {
+				// remove field highlighting when this value changes
+				jqp('.js-user-display-values').css( 'border-color', '#dfdfdf' );
 			}
-		};
+		});
 
-		self.ancestors = ko.observable('');
 
-		self.showPreview = ko.observable("");
+		this.values_raw = ko.computed( function() {
+			if( wpv_value.values() && wpv_value.values() != " " ) {
+				try	{
+					wpv_value.values( wpv_value.values().trim() );
+				} catch( e ) {
+					wpv_value.values( wpv_value.values()[0].trim() );
+				}
+			}
+		});
 
-		self.taxonomy_order_array = ko.observableArray(["ASC", "DESC"]);
-		self.taxonomy_orderby_array = ko.observableArray([ 'name','id', 'count', 'slug', 'term_group', 'none' ]);
-		self.taxonomy_order = ko.observable();
-		self.taxonomy_orderby = ko.observable();
-		self.hide_empty_array = ko.observableArray([ 'false','true' ]);
-		self.hide_empty = ko.observable();
-		self.show_remove_user_values_box = ko.observable(true);
-		self.checkbox_title_visible = ko.observable(false);
-		self.checkbox_force_zero_visible = ko.observable(true);
-		
-		self.selectAutoFillSort = [
+
+		wpv_value.display_values_raw = ko.computed(function(){
+			if( wpv_value.display_values() && wpv_value.display_values() != " " )
+			{
+				try	{
+					wpv_value.display_values( wpv_value.display_values().trim() );
+				} catch( e ) {
+					console.error( e.message );
+				}
+			}
+		});
+
+	};
+
+
+	self.numeric_operators = ["NUMERIC", "DECIMAL", "SIGNED", "UNSIGNED"];
+
+	// the actual field selected and all its data
+	self.fieldRaw = ko.observable();
+
+	// store here all our self.WPV_QS objects
+	self.url_param = ko.observableArray();
+
+	//scalar place holders in model
+	self.field_data_type = ko.observable();
+	self.auto_fill_default = ko.observable( '' );
+	self.type = ko.observable();
+	self.compare = ko.observable();
+	self.title = ko.observable();
+
+	self.values = ko.observableArray();
+
+	self.userValuesVisible = ko.observable(false);
+	self.auto_fill_default_visible = ko.observable(false);
+
+	// data place holders
+	self.selectFilter = ko.observableArray( );
+	self.selectCompare = ko.observableArray( ['=', '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'AND', 'BETWEEN', 'NOT BETWEEN'] );
+	self.selectDataType = ko.observableArray( ['CHAR', 'NUMERIC', 'BINARY', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', 'UNSIGNED']);
+	self.selectInputKind = ko.observableArray(["textfield", "select", "multi-select", "checkboxes", "checkbox", "radios"]);
+
+	self.auto_fill = ko.observable(0);
+	self.default_label = ko.observable('');
+
+	self.force_zero = ko.observable(0);
+	self.can_force_zero = true;
+
+	self.ancestors_array = [ {
+			title: WPV_Parametric.relationship_select_tree,
+			value : 0 } ];
+
+	// fill self.ancestors_array
+	var myval = jqp('.js-flatten-types-relation-tree').val().split(',');
+	for (i = 0, l = myval.length; i < l; i++) {
+		self.ancestors_array.push( {
+				title: myval[ i ],
+				value: myval[ i ] } );
+	}
+
+	// TODO this does the same as above - remove duplicity
+	self.ancestors_array_func = function( data ) {
+		var myinnerval = jqp('.js-flatten-types-relation-tree').val().split(',');
+		self.ancestors_array = [ {
+				title: WPV_Parametric.relationship_select_tree,
+				value: 0 } ];
+		for (i = 0, l = myinnerval.length; i < l; i++) {
+			self.ancestors_array.push( {
+					title: myinnerval[ i ],
+					value: myinnerval[ i ]});
+		}
+	};
+
+
+	self.ancestors = ko.observable('');
+
+	self.showPreview = ko.observable("");
+
+	self.taxonomyOrder = [
+			{value:"ASC", title:"Ascending"},
+			{value:"DESC", title:"Descending"} ];
+
+	self.taxonomyOrderBy = [
+			{value:"name", title:"Name"},
+			{value:"id", title:"ID"},
+			{value:"count", title:"Post count"},
+			{value:"slug", title:"Slug"},
+			{value:"term_group", title:"Term group"},
+			{value:"none", title:"None"} ];
+
+	self.taxonomy_order = ko.observable();
+	self.taxonomy_orderby = ko.observable();
+
+	/*	self.hideEmptyOptions = [
+		{value:"false", title:"Include - list terms even if no post uses them"},
+		{value:"true", title:"Exclude - only list terms which are assigned to posts"}
+	];
+	self.hide_empty_array = ko.observableArray([ 'false','true' ]);	*/
+
+	self.hide_empty = ko.observable();
+	self.format = ko.observable();
+	self.show_remove_user_values_box = ko.observable(true);
+	self.checkbox_title_visible = ko.observable(false);
+	self.checkbox_force_zero_visible = ko.observable(true);
+
+	self.selectAutoFillSort = [
 			{value:"asc", title:"Ascending"},
 			{value:"desc", title:"Descendig"},
 			{value:"ascnum", title:"Ascending Numeric"},
 			{value:"descnum", title:"Descending Numeric"},
-			{value:"none", title:"No sorting"}
-		];
-		
-		self.auto_fill_sort = ko.observable();
+			{value:"none", title:"No sorting"} ];
 
-		self.fieldRaw.subscribe(function(field){
+	self.auto_fill_sort = ko.observable();
 
-			try
-			{
-				jqp("#js_parametric_form_button").prop('disabled', false).addClass('button-primary').removeClass('button-secondary');
 
-				if( field.kind == 'field' && ( self.type() != 'textfield' || self.type() != 'checkbox' ) && self.values().length == 0  )
+	// === Subscriptions to observables and computed properties ===
+
+	self.fieldRaw.subscribe( function( field ) {
+
+		try	{
+			if ( typeof field.kind == 'undefined' ) {
+				jqp( "#js_parametric_form_button" )
+					.prop( 'disabled', true )
+					.addClass( 'button-secondary' )
+					.removeClass( 'button-primary' );
+			} else {
+				jqp( "#js_parametric_form_button" )
+					.prop( 'disabled', false )
+					.addClass( 'button-primary' )
+					.removeClass( 'button-secondary' );
+
+				if( field.kind == 'field'
+					&& ( self.type() != 'textfield' || self.type() != 'checkbox' )
+					&& self.values().length == 0  )
 				{
 					field.auto_fill( field.field() );
-				}
-				else
-				{
+				} else {
 					field.auto_fill( 0 );
 				}
-				
+
 				var extra_query = '&field=' + field.field() + '&type=' + self.type();
-				jqp('.js-wpv-auto-fill-default').unbind('keydown').suggest(ajaxurl + '?action=wpv_suggest_auto_fill_default' + extra_query, {
-					minchars: 1,
-					maxCacheSize: 0,
-					max_size: 0,
-					onSelect: function() {
-						thevalue = this.value;
-						jqp('.js-wpv-auto-fill-default').val(thevalue);
-					}
-				});
-
+				jqp('.js-wpv-auto-fill-default').unbind('keydown').suggest(
+						ajaxurl + '?action=wpv_suggest_auto_fill_default' + extra_query,
+						{
+							minchars: 1,
+							maxCacheSize: 0,
+							max_size: 0,
+							onSelect: function() {
+								thevalue = this.value;
+								jqp('.js-wpv-auto-fill-default').val( thevalue );
+							}
+						});
 			}
-			catch( e )
-			{
-				//if(  WPV_Parametric.debug ) console.log( e.message, field )
-			}
-			//if(  WPV_Parametric.debug ) console.log("\n\n______________________________\n\n");
-			//if(  WPV_Parametric.debug ) console.log("self.fieldRaw:: ", ko.toJS( field ) );
-			return field;
-		});
+		}
+		catch( e )
+		{
+			//if(  WPV_Parametric.debug ) console.log( e.message, field )
+		}
+		//if(  WPV_Parametric.debug ) console.log("\n\n______________________________\n\n");
+		//if(  WPV_Parametric.debug ) console.log("self.fieldRaw:: ", ko.toJS( field ) );
+		return field;
+	});
 
-		self.title.subscribe(function(newVal){
-			var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
 
-			try
-			{
-				field.title( newVal );
-			}
-			catch(e)
-			{
+	self.title.subscribe( function( newVal ) {
+
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
+
+		try	{
+			field.title( newVal );
+		} catch(e) {
 			//	if(  WPV_Parametric.debug ) console.log( e.message );
+		}
+		return newVal;
+	});
+
+
+	self.ancestors_visible = ko.computed(function(){
+
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined,
+			bool = false;
+
+		try	{
+			if( field.kind == 'relationship' )	{
+				bool = true;
+			} else	{
+				bool = false;
+				field.ancestors( null );
 			}
-			return newVal;
-		});
+		} catch( e )	{
+			//if(  WPV_Parametric.debug ) console.log(e.message);
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.default_label_visible:: ", bool );
+		return bool;
+	});
 
-		self.ancestors_visible = ko.computed(function(){
 
-			var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined, bool = false;
-			try
+	self.ancestors.subscribe(function(value){
+
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
+
+		try	{
+			field.ancestors(value)
+		} catch( e ) {
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.default_label.subscribe:: ", value );
+		return value;
+	});
+
+
+	self.default_label_visible = ko.computed( function() {
+
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined,
+			bool = false;
+		try	{
+			if( ( field.type() == 'select' || field.type() == 'radios' )
+				&& ( field.kind == 'taxonomy' ) )
 			{
-				if( field.kind == 'relationship' )
-				{
-					bool = true;
+				bool = true;
+			} else	{
+				bool = false;
+				field.default_label( null );
+			}
+		} catch( e ) {
+			//if(  WPV_Parametric.debug ) console.log(e.message);
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.default_label_visible:: ", bool );
+		return bool;
+	});
+
+
+	self.default_label.subscribe( function( value ){
+
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
+
+		try	{
+			field.default_label(value)
+		} catch( e ) {
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.default_label.subscribe:: ", value );
+		return value;
+	});
+
+
+	self.ancestors.subscribe( function( value ) {
+
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
+
+		try	{
+			field.ancestors(value)
+		} catch( e ) {
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.default_label.subscribe:: ", value );
+		return value;
+	});
+
+
+	/**
+	 * Computes whether settings for input values should be visible.
+	 *
+	 * That means the section under "Options for this input", and settings like "Format the options", etc.
+	 * While computing it also updates other properties related to dialog element visibility.
+	 *
+	 * @return true when Value settings should be visible, false if they shouldn't.
+	 */
+	self.show_values_settings = ko.computed( function() {
+
+		var types_with_values = ['select', 'checkboxes', 'radios','radio', "multi-select"],
+			field = ( typeof self.fieldRaw() != 'undefined' ) ? self.fieldRaw() : undefined,
+			bool = false;
+
+		try	{
+			if( field && ( field.kind == "taxonomy" || field.kind == 'relationship' ) )	{
+
+				self.userValuesVisible( false );
+				self.auto_fill_default_visible( false );
+				self.checkbox_title_visible( false );
+				self.checkbox_force_zero_visible( false );
+
+			} else if( ~types_with_values.indexOf( self.type() ) && field.kind == 'field' ) {
+				// We're editing filter for a field with defined possible values.
+
+				if( !self.is_populating ) {
+
+					self.auto_fill_default_visible(
+							field.type() == "multi-select" || field.type() == "checkboxes" || field.type() == 'select' || field.type() == 'radio' || field.type() == 'radios' );
+					self.checkbox_title_visible( field.type() == "checkbox" );
+					self.checkbox_force_zero_visible( field.type() == "checkbox" && field.can_force_zero );
+
+				} else if( self.is_populating ) {
+
+					self.auto_fill_default_visible( field.type() == "multi-select" || field.type() == "checkboxes" || field.type() == 'select' || field.type() == 'radio' || field.type() == 'radios'  );
+					self.checkbox_title_visible( field.type() == "checkbox" );
+					self.checkbox_force_zero_visible( field.type() == "checkbox" && field.can_force_zero );
 				}
-				else
-				{
-					bool = false;
-					field.ancestors( null );
+
+				// Initialize array of values with a blank one.
+				self.values( [ new self.WPV_Value( "", "Select" ) ] );
+				bool = true;
+
+			} else {
+
+				self.auto_fill_default_visible( false );
+				self.checkbox_title_visible( false );
+				//self.checkbox_force_zero_visible( false );
+
+				if( !self.is_populating ) {
+
+					self.auto_fill_default_visible( field.type() == "multi-select" || field.type() == "checkboxes" || field.type() == 'select' || field.type() == 'radio' || field.type() == 'radios' );
+					self.checkbox_title_visible( field.type() == "checkbox" );
+					self.checkbox_force_zero_visible( field.type() == "checkbox" && field.can_force_zero );
+
+				} else if( self.is_populating ) {
+
+					self.auto_fill_default_visible( field.type() == "multi-select" || field.type() == "checkboxes" || field.type() == 'select' || field.type() == 'radio' || field.type() == 'radios' );
+					self.checkbox_title_visible( field.type() == "checkbox" );
+					self.checkbox_force_zero_visible( field.type() == "checkbox" && field.can_force_zero );
+
 				}
 
+				self.auto_fill( 1 );
+				self.values();
+				bool = false;
 			}
-			catch( e )
-			{
-				//if(  WPV_Parametric.debug ) console.log(e.message);
-			}
-			//if(  WPV_Parametric.debug ) console.log("self.default_label_visible:: ", bool );
-			return bool;
-		});
-		
-		self.ancestors.subscribe(function(value){
+		} catch( e ) {
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.show_values_settings:: ", bool );
+		return bool;
+	});
 
-			var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
 
-			try
-			{
-				field.ancestors(value)
-			}
-			catch( e )
-			{
-				//if(  WPV_Parametric.debug ) console.log( e.message );
-			}
-			//if(  WPV_Parametric.debug ) console.log("self.default_label.subscribe:: ", value );
-			return value;
-		});
-		
-		self.default_label_visible = ko.computed(function(){
+	// FIXME: we have a big problem here we're patching
+	self.auto_fill.subscribe( function( val ) {
 
-			var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined, bool = false;
-			try
-			{
-				if( ( field.type() == 'select' || field.type() == 'radios' ) && ( field.kind == 'taxonomy' ) )
-				{
-					bool = true;
-				}
-				else
-				{
-					bool = false;
-					field.default_label( null );
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
+
+		if( !self.is_populating ) {
+
+			try {
+				if( self.type() == 'textfield' || self.type() == 'checkbox' ) {
+					val = 0;
 				}
 
-			}
-			catch( e )
-			{
-				//if(  WPV_Parametric.debug ) console.log(e.message);
-			}
-			//if(  WPV_Parametric.debug ) console.log("self.default_label_visible:: ", bool );
-			return bool;
-		});
+				if( field.kind == "taxonomy" || field.kind == 'relationship' ) {
 
-		self.default_label.subscribe(function(value){
-
-			var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
-
-			try
-			{
-				field.default_label(value)
-			}
-			catch( e )
-			{
-				//if(  WPV_Parametric.debug ) console.log( e.message );
-			}
-			//if(  WPV_Parametric.debug ) console.log("self.default_label.subscribe:: ", value );
-			return value;
-		});
-		
-		self.ancestors.subscribe(function(value){
-
-			var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
-
-			try
-			{
-				field.ancestors(value)
-			}
-			catch( e )
-			{
-				//if(  WPV_Parametric.debug ) console.log( e.message );
-			}
-			//if(  WPV_Parametric.debug ) console.log("self.default_label.subscribe:: ", value );
-			return value;
-		});
-
-		self.show_values_settings = ko.computed(function(){
-
-			var types_with_values = ['select', 'checkboxes', 'radios','radio', "multi-select"]
-			, field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined, bool = false;
-
-			try
-			{
-				if( field && ( field.kind == "taxonomy" || field.kind == 'relationship' ) )
-				{
-					self.userValuesVisible(false);
+					self.userValuesVisible( false );
 					self.auto_fill_default_visible( false );
 					self.checkbox_title_visible( false );
 					self.checkbox_force_zero_visible( false );
-				}
-				else if( ~types_with_values.indexOf( self.type() ) && field.kind == 'field' ){
+					field.auto_fill( 0 );
 
-					if( !self.is_populating ){
-						self.auto_fill_default_visible( field.type() == "multi-select" || field.type() == "checkboxes" || field.type() == 'select' || field.type() == 'radio' || field.type() == 'radios' ? true : false );
-						self.checkbox_title_visible( field.type() == "checkbox" );
-						self.checkbox_force_zero_visible( field.type() == "checkbox" && field.can_force_zero );
+				} else {
+
+					self.userValuesVisible( val == 1 || ( self.type() == 'textfield' || field.type() == "checkbox" ) ? false : true );
+
+					self.auto_fill_default_visible(
+							( field.type() == "multi-select" || field.type() == "checkboxes" || field.type() == 'select' || field.type() == 'radio' || field.type() == 'radios')
+							&& val == 1 );
+					self.checkbox_title_visible( field.type() == "checkbox" && val == 1 );
+					self.checkbox_force_zero_visible( field.type() == "checkbox" && field.can_force_zero );
+
+					//FIXME: make sure the commented part is not needed
+					if( val == 1 && self.values().length == 0 ) {
+						field.auto_fill( field.field() );
+						self.auto_fill_default_visible( false );
+						self.checkbox_title_visible( false );
+					} else {
+						field.auto_fill( 0 );
 					}
-					else if( self.is_populating )
-					{
-						self.auto_fill_default_visible( field.type() == "multi-select" || field.type() == "checkboxes" || field.type() == 'select' || field.type() == 'radio' || field.type() == 'radios' ? true : false );
-						self.checkbox_title_visible( field.type() == "checkbox" );
-						self.checkbox_force_zero_visible( field.type() == "checkbox" && field.can_force_zero );
-					}	
-					self.values( [new self.WPV_Value(" ", " ")] );
-					bool = true;
-
 				}
-				else
+
+				field.use_user_values( self.userValuesVisible() );
+
+				field.auto_fill( field.use_user_values() ? 0 : field.field() );
+
+				self.auto_fill_sort_visible( val == 1 ? true : false );
+
+				field.auto_fill_sort = ( val == 1 ) ? self.auto_fill_sort() : undefined;
+
+			} catch( e ) {
+				//if(  WPV_Parametric.debug ) console.log( e.message );
+			}
+
+		} else if( self.is_populating && field && ( field.type() == 'checkbox' || field.type() == 'radio' ) ) {
+			val = 1;
+		}
+
+		//	if(  WPV_Parametric.debug ) console.log("self.auto_fill.subscribe:: ", val );
+		return val;
+	});
+
+
+	self.auto_fill_default.subscribe( function( val ) {
+
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
+
+		try{
+			field.auto_fill_default( val );
+		} catch(e) {
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.auto_fill_default.subscribe:: ", val );
+		return val;
+	});
+
+
+	self.auto_fill_default_visible.subscribe( function( val ) {
+		try {
+			if( !val ) {
+				self.auto_fill_default('');
+			}
+		} catch( e ) {
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
+		return val;
+	});
+
+
+	// field string representation in viewmodel
+	self.field = ko.computed( function() {
+		var field = ( typeof self.fieldRaw() != 'undefined' ) ? self.fieldRaw() : undefined;
+
+		if( !field ) {
+			return '';
+		}
+
+		if( !field.is_types && self.selectInputKind()[0] == "Types auto style" ) {
+			self.selectInputKind.shift();
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.field:: ", field.field() ? field.field() : 'NO FIELD' );
+		return field.field() ? field.field() : '';
+	});
+
+
+	self.selectInputKind.subscribe( function( val ) {
+		return val;
+	});
+
+
+	self.values.subscribe( function( val ) {
+		var field = ( typeof self.fieldRaw() == 'object' ) ? self.fieldRaw() : undefined,
+			count = 0;
+
+		try{
+			if( ko.toJS( val ).value != '' ) {
+				field.user_values( val );
+			}
+		} catch(e) {
+			//if(  WPV_Parametric.debug ) console.log(e.message);
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.values.subscribe:: ", val );
+		return val;
+	});
+
+
+	self.add_user_values_box = function() {
+		var field = ( typeof self.fieldRaw() == 'object' ) ? self.fieldRaw() : undefined,
+			count = 0;
+
+		var newValue = new self.WPV_Value(" ", " ");
+		self.values.push( newValue );
+
+		self.show_remove_user_values_box( ( self.values().length > 0 ) ? true : false );
+		//if(  WPV_Parametric.debug ) console.log("self.add_user_values_box:: ", self.values().length > 0 ? true : false  );
+	};
+
+
+	self.remove_user_values_box = function( place ) {
+		var field = ( typeof self.fieldRaw() == 'object' ) ? self.fieldRaw() : undefined, count = 0;
+		self.values.remove( place );
+		self.show_remove_user_values_box( ( self.values().length > 0 ) ? true : false );
+		//if(  WPV_Parametric.debug ) console.log("self.remove_user_values_box:: ", self.values().length > 0 ? true : false );
+	};
+
+	self.url_param_raw = ko.computed({
+		read: function() {
+			var field = ( typeof self.fieldRaw() == 'object' ) ? self.fieldRaw() : undefined,
+				ret = '';
+
+			try	{
+				//if(  WPV_Parametric.debug ) console.log( "URLPARAM:::::::::::", ko.toJS( self.url_param ), ko.toJS( field.url_param ) );
+				if( field && field.control ) {
+					if( ~field.control.indexOf(',') ) {
+						field.url_param( [
+								new self.WPV_QS( field.control.split( ',' )[0].trim() ),
+								new self.WPV_QS( field.control.split( ',' )[1].trim() ) ] );
+						self.url_param( [
+								new self.WPV_QS( field.control.split( ',' )[0].trim() ),
+								new self.WPV_QS( field.control.split( ',' )[1].trim() ) ] );
+					} else {
+						field.url_param( [ new self.WPV_QS( field.control ) ] );
+						self.url_param( [ new self.WPV_QS( field.control ) ] );
+					}
+					//if(  WPV_Parametric.debug ) console.log("ENTERS FIRST ", ko.toJS(self.url_param), ko.toJS(field.url_param) );
+				} else if ( field && self.is_populating == true ) {
+					self.url_param( field.url_param() );
+					//if(  WPV_Parametric.debug ) console.log("ENTERS SECOND ", ko.toJS(self.url_param), ko.toJS(field.url_param) );
+				} else if( field.url_param().length == 0 ) {
+					ret = field.prefix + field.id();
+
+					field.url_param( [ new self.WPV_QS( ret ) ] );
+
+					self.url_param( field.url_param() );
+
+					//if(  WPV_Parametric.debug ) console.log("ENTERS THIRD ", ko.toJS(self.url_param), ko.toJS(field.url_param) );
+				} else if( self.url_param() != field.url_param() ) {
+					field.url_param( self.url_param() );
+
+					//if(  WPV_Parametric.debug ) console.log("ENTERS FoURTH ", ko.toJS(self.url_param), ko.toJS(field.url_param) );
+				}
+				//if(  WPV_Parametric.debug ) console.log( "::::::::::::: self.url_param_raw ::::::::::::::::", ko.toJS(self.url_param), ko.toJS(field.url_param) );
+			} catch( e ) {
+				//if(  WPV_Parametric.debug ) console.log( e.message );
+			}
+			return ret;
+		}
+	});
+
+
+	//see if our current object in array is modified and update selected object with new value
+	self.url_param.subscribe( function( val ) {
+		var field = ( typeof self.fieldRaw() == 'object' ) ? self.fieldRaw() : undefined,
+			count = 0;
+		try{
+			field.url_param( val );
+		} catch(e) {
+			//if(  WPV_Parametric.debug ) console.log(e.message);
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.url_param.subscribe:: " , ko.toJS(val) );
+		return val;
+	});
+
+
+	//FIXME: we have a big problem here we're patching
+	self.field_data_type_raw = ko.computed( function() {
+		var field = ( typeof self.fieldRaw() == 'object' ) ? self.fieldRaw() : undefined,
+			newValue = 'CHAR';
+		try	{
+			newValue = field.data_type();
+			//if(  WPV_Parametric.debug ) console.log( "Data type ", newValue, field.data_type(), jqp.inArray( newValue, self.numeric_operators ) )
+			if( ~jqp.inArray( newValue, self.numeric_operators ) ) {
+				self.selectCompare( meta_data_root[ field.kind ]['numeric']['compare'] );
+			} else {
+				self.selectDataType( meta_data_root[ field.kind ][ field.field_type_switch ]['data_type'] );
+			}
+		} catch(e) {
+			//if(  WPV_Parametric.debug ) console.log(e.message);
+		}
+
+		self.field_data_type( newValue );
+		//if(  WPV_Parametric.debug ) console.log("self.field_data_type_raw:: ", newValue );
+		return newValue;
+	});
+
+
+	self.field_data_type.subscribe( function( val ) {
+		var field = ( typeof self.fieldRaw() == 'object' ) ? self.fieldRaw() : undefined,
+			newVal = val;
+		try {
+			field.data_type( newVal );
+		} catch(e) {
+			//if(  WPV_Parametric.debug ) console.log(e.message);
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.field_data_type.subscribe:: ", newVal );
+		return newVal;
+	});
+
+
+	self.type_raw = ko.computed( function(){
+		var field = ( typeof self.fieldRaw() == 'object' ) ? self.fieldRaw() : undefined,
+			newValue = 'textfield';
+
+		try	{
+			if( self.is_populating && field.field_type_switch == "Types auto style" ) {
+				newValue = field.field_type_switch;
+				self.type( newValue );
+				return newValue;
+			}
+
+			if( field.is_types && meta_data_root[ field.kind ][ field.field_type_switch ]['type'][0] != "Types auto style" ) {
+
+				meta_data_root[ field.kind ][ field.field_type_switch ]['type'].unshift( "Types auto style" );
+
+			} else if( !field.is_types && meta_data_root[ field.kind ][ field.field_type_switch ]['type'][0] == "Types auto style" ) {
+
+				meta_data_root[ field.kind ][ field.field_type_switch ]['type'].shift();
+			}
+
+			if( !self.is_populating ) {
+				newValue = meta_data_root[ field.kind ][ field.field_type_switch ]['type'][0];
+				field.type( newValue );
+			} else {
+				newValue = field.field_type_switch;
+			}
+
+			if( newValue != 'textfield' ) {
+				field.auto_fill( field.field() );
+			}
+
+			self.selectInputKind( meta_data_root[ field.kind ][ field.field_type_switch ]['type'] );
+		} catch(e) {
+			//	if(  WPV_Parametric.debug ) console.log(e.message);
+		}
+
+		self.type( newValue );
+		//if(  WPV_Parametric.debug ) console.log("self.type_raw:: ", newValue );
+		return newValue;
+	});
+
+
+	self.compare_raw = ko.computed( function() {
+		var field = ( typeof self.fieldRaw() == 'object' ) ? self.fieldRaw() : undefined,
+			newValue = '=',
+			tmp;
+		try	{
+			tmp = ( field.field_type_switch == 'Types auto style' ) ? 'textfield' : field.field_type_switch;
+
+			if( ~jqp.inArray( field.data_type(), self.numeric_operators ) ) {
+				self.selectCompare( meta_data_root[field.kind]['numeric']['compare'] );
+			} else {
+				self.selectCompare( meta_data_root[ field.kind ][ tmp ]['compare'] );
+			}
+
+			if( !self.is_populating && !field.compare() ) {
+				newValue = jqp.inArray( self.compare(), meta_data_root[ field.kind ][ tmp ] )
+						? self.compare()
+						: meta_data_root[ field.kind ][ tmp ]['compare'][0];
+				field.compare( newValue );
+			} else {
+				newValue = field.compare();
+			}
+		} catch(e) {
+			//if(  WPV_Parametric.debug ) console.log("In compare computed", e.message);
+		}
+		//TODO:figure out if we need this one
+		//	if( self.compare() != newValue ) self.compare( newValue );
+		return newValue;
+	});
+
+
+	self.type.subscribe( function( val ) {
+		var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, newVal = val, tmp, hide_user_values = ["textfield", "checkbox", "radios", "radio"];
+
+		try	{
+			newVal = ( typeof newVal == 'undefined' ) ? field.type() : newVal;
+			tmp = ( newVal == 'Types auto style' ) ? 'textfield' : newVal;
+			field.type( newVal );
+
+			if( field.kind == 'field' && self.type() != 'textfield' && !self.is_populating ) {
+				field.auto_fill( field.field() );
+				self.auto_fill( 1 );
+			} else {
+				field.auto_fill( 0 );
+			}
+
+			self.selectCompare( meta_data_root[ field.kind ][ tmp ]['compare'] );
+
+			if( !self.is_populating && !field.compare() ) {
+				field.compare( self.compare() );
+			}
+
+			if( self.is_populating && field && ( field.type() == 'checkbox' || field.type() == 'radio' ) )	{
+				self.auto_fill( 1 );
+			}
+
+			if( ~jqp.inArray( newVal, hide_user_values ) ) {
+				self.userValuesVisible(false);
+				field.use_user_values(false);
+			}
+
+			var extra_query = '&field=' + field.field() + '&type=' + field.type();
+			jqp('.js-wpv-auto-fill-default').unbind('keydown').suggest(
+					ajaxurl + '?action=wpv_suggest_auto_fill_default' + extra_query,
+					{
+						minchars: 1,
+						maxCacheSize: 0,
+						max_size: 0,
+						onSelect: function() {
+							thevalue = this.value;
+							thevalue = thevalue.split(' #');
+							jqp('.js-wpv-auto-fill-default').val( thevalue[0] );
+						}
+					});
+
+		} catch(e) {
+			//if(  WPV_Parametric.debug ) console.log(e.message);
+		}
+
+		return newVal;
+	});
+
+
+	self.compare.subscribe( function( val ) {
+		var field = ( typeof self.fieldRaw() == 'object' ) ? self.fieldRaw() : undefined,
+			newVal = val;
+
+		try{
+			//if(  WPV_Parametric.debug ) console.log( "CHECK IT:: ", field, field.control)
+			if( !self.is_populating && ( typeof field.control == 'undefined' ) ) {
+				field.compare( newVal );
+
+				if( ko.toJS(field.compare) == 'BETWEEN' || ko.toJS(field.compare) == 'NOT BETWEEN' ) {
+
+					self.url_param( [
+							new self.WPV_QS( field.prefix + field.id() + '_min' ),
+							new self.WPV_QS( field.prefix + field.id()  + '_max' ) ] );
+
+				} else {
+					if( self.url_param().length > 1 ) {
+						self.url_param.pop();
+						self.url_param( [
+								new self.WPV_QS( field.prefix + field.id() ) ] );
+					}
+				}
+			}
+		} catch(e)	{
+			//if(  WPV_Parametric.debug ) console.log(e.message);
+		}
+		return newVal;
+	});
+
+
+	//not used now
+	self.setPreview = ko.computed({
+		read:function()
+		{
+			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, str = '';
+
+			if( !field ) return WPV_Parametric.preview_text_default;
+
+			try
+			{
+				if( field.kind == 'field' )
 				{
-					self.auto_fill_default_visible( false );
-					self.checkbox_title_visible( false );
-					//self.checkbox_force_zero_visible( false );
 
-					if( !self.is_populating ){
-						self.auto_fill_default_visible( field.type() == "multi-select" || field.type() == "checkboxes" || field.type() == 'select' || field.type() == 'radio' || field.type() == 'radios' ? true : false );
-						self.checkbox_title_visible( field.type() == "checkbox" );
-						self.checkbox_force_zero_visible( field.type() == "checkbox" && field.can_force_zero );
-					}
-					else if( self.is_populating )
+					var len = field.url_param().length;
+
+					str += field.field() + ' ' + field.compare() + ' ';
+
+					self.check_validation_for_url_param( field.url_param() );
+
+					for(var i = 0; i < len; i++)
 					{
-						self.auto_fill_default_visible( field.type() == "multi-select" || field.type() == "checkboxes" || field.type() == 'select' || field.type() == 'radio' || field.type() == 'radios' ? true : false );
-						self.checkbox_title_visible( field.type() == "checkbox" );
-						self.checkbox_force_zero_visible( field.type() == "checkbox" && field.can_force_zero );
+						str += 'URL_PARAM('+field.url_param()[i].value()+')';
+						str += i == len - 1 ? '' : ', ';
 					}
-					self.auto_fill(1);
-					self.values();
-					bool = false;
+					return str;
 				}
+				else if( field.kind == 'taxonomy' )
+				{
+					str += WPV_Parametric.select_taxonomy_alert+' <strong>'+field.field()+'</strong> '+WPV_Parametric.select_taxonomy_alert_2+' <strong>"'+field.url_param()[0].value()+'"</strong> eg. http://www.example.com/page/?<strong>'+field.url_param()[0].value()+'</strong>="xxxx"';
+				}
+				return str;
+
 			}
 			catch( e )
 			{
-				//if(  WPV_Parametric.debug ) console.log( e.message );
+				console.error( e.message );
+				return WPV_Parametric.error_building_filter + e.message;
 			}
-			//if(  WPV_Parametric.debug ) console.log("self.show_values_settings:: ", bool );
-			return bool;
-		});
+			//if(  WPV_Parametric.debug ) console.log("self.setPreview :: " );
+			return str;
+		}
 
-		//FIXME: we have a big problem here we're patching 
-		self.auto_fill.subscribe(function(val){
+	});
 
-			var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
 
-			if( !self.is_populating ){
+	self.check_validation_for_url_param = function( val )
+	{
+		if( WPV_ParametricFilterWindow.has_error_displayed == true )
+		{
+			var urls = val, against = wpv_forbidden_parameters, problems = false;
 
+			jqp.each(against, function(index, value) {
 				try
 				{
-					if( self.type() == 'textfield' || self.type() == 'checkbox' ) val = 0;
+					jqp.each( urls, function(i, p) {
+						if( ~jqp.inArray( p.value(), value ) )
+						{
+							problems = true;
+							WPV_ParametricFilterWindow.has_error_displayed = true;
+							jqp('#url_param').css('border-color', 'red');
+							return false;
+						}
+						else
+						{
+							jqp('#url_param').css('border-color', '#dfdfdf');
+							WPV_ParametricFilterWindow.has_error_displayed = false;
+							//WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
+							problems = false;
+						}
+					});
 
-					if( field.kind == "taxonomy" || field.kind == 'relationship' )
-					{
-						self.userValuesVisible(false);
-						self.auto_fill_default_visible( false );
-						self.checkbox_title_visible( false );
-						self.checkbox_force_zero_visible( false );
-						field.auto_fill(0);
+					if( problems ) return false;
+				}
+				catch( e )
+				{
+					//if(  WPV_Parametric.debug ) console.log( e.message );
+				}
+			});
+		}
+	};
+
+
+	self.taxonomy_order_visible = ko.computed(function(){
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined, bool = false;
+		try
+		{
+			if( field.kind == 'taxonomy' )
+			{
+				bool = true;
+			}
+			else
+			{
+				bool = false;
+				field.taxonomy_order( '' );
+				field.taxonomy_orderby( '' );
+				field.hide_empty( '' );
+			}
+
+			if( field.control ) field.control = undefined;
+
+		}
+		catch( e )
+		{
+			//if(  WPV_Parametric.debug ) console.log(e.message);
+		}
+		//if(  WPV_Parametric.debug ) console.log("self.taxonomy_order_visible :: ", field ? field.control : "NO FIELD" );
+		return bool;
+	});
+
+
+	self.auto_fill_sort_visible = ko.observable(false);
+
+
+	self.auto_fill_sort_visible_computed = ko.computed(function(){
+
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
+
+		if( typeof field == 'undefined') self.auto_fill_sort_visible(false);
+
+		try
+		{
+
+			if(
+				field.kind == "field"
+				&& ( field.type() == "multi-select" ||
+				field.type() == "select" ||
+				field.type() == "checkboxes" ||
+				field.type() == "radios"
+				) )
+				{
+					self.auto_fill_sort_visible( true );
+					if( !self.is_populating ){
+						field.auto_fill_sort = self.auto_fill_sort();
 					}
 					else
 					{
-
-						self.userValuesVisible( val == 1 || ( self.type() == 'textfield' || field.type() == "checkbox" ) ? false : true );
-
-						self.auto_fill_default_visible(
-							( field.type() == "multi-select" || field.type() == "checkboxes" || field.type() == 'select' || field.type() == 'radio' || field.type() == 'radios') && val == 1
-							? true
-							: false
-						);
-						self.checkbox_title_visible( field.type() == "checkbox" && val == 1 );
-						self.checkbox_force_zero_visible( field.type() == "checkbox" && field.can_force_zero );
-
-						//FIXME: make sure the commented part is not needed
-						if( val == 1 && self.values().length == 0 )
-						{
-							field.auto_fill( field.field() );
-							self.auto_fill_default_visible( false );
-							self.checkbox_title_visible( false );
-						}
-						else
-						{
-							field.auto_fill( 0 );
-						}
+						self.auto_fill_sort( field.auto_fill_sort );
 					}
-
-					field.use_user_values( self.userValuesVisible() );
-					
-					field.auto_fill( field.use_user_values() ? 0 : field.field() );
-					
-					self.auto_fill_sort_visible( val == 1 ? true : false );
-					field.auto_fill_sort = val == 1 ? self.auto_fill_sort() : undefined;
-
-				}
-				catch( e )
-				{
-					//if(  WPV_Parametric.debug ) console.log( e.message );
-				}
-			}
-			else if( self.is_populating && field && ( field.type() == 'checkbox' || field.type() == 'radio' ) )
-			{
-				val = 1;
-			}
-			
-			//	if(  WPV_Parametric.debug ) console.log("self.auto_fill.subscribe:: ", val );
-			return val;
-		});
-
-		self.auto_fill_default.subscribe(function(val){
-			var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
-
-			try{
-				field.auto_fill_default(val);
-			}
-			catch(e)
-			{
-				//if(  WPV_Parametric.debug ) console.log( e.message );
-			}
-			//if(  WPV_Parametric.debug ) console.log("self.auto_fill_default.subscribe:: ", val );
-			return val;
-		});
-
-		self.auto_fill_default_visible.subscribe(function(val){
-			try
-			{
-
-				if( !val ){
-					self.auto_fill_default('');
-				} 
-			}
-			catch( e )
-			{
-				//if(  WPV_Parametric.debug ) console.log( e.message );
-			}
-			return val;
-		});
-
-		// field string representation in viewmodel
-		self.field = ko.computed(function(){
-
-			var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
-
-			if( !field ) return '';
-
-			if( !field.is_types && self.selectInputKind()[0] == "Types auto style" )
-			{
-				self.selectInputKind.shift();
-			}
-			//if(  WPV_Parametric.debug ) console.log("self.field:: ", field.field() ? field.field() : 'NO FIELD' );
-			return field.field() ? field.field() : '';
-
-		});
-		
-		self.selectInputKind.subscribe(function(val){	
-			return val;
-		});
-
-		self.values.subscribe(function(val){
-
-			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, count = 0;
-
-			try{
-				if( ko.toJS(val).value != '' )
-				field.user_values( val );
-			}
-
-			catch(e)
-			{
-				//if(  WPV_Parametric.debug ) console.log(e.message);
-			}
-			//if(  WPV_Parametric.debug ) console.log("self.values.subscribe:: ", val );
-			return val;
-		});
-
-		self.add_user_values_box = function(){
-
-			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, count = 0;
-
-			self.values.push( new self.WPV_Value(" ", " ") );
-
-			self.show_remove_user_values_box( self.values().length > 0 ? true : false );
-
-			//if(  WPV_Parametric.debug ) console.log("self.add_user_values_box:: ", self.values().length > 0 ? true : false  );
-		};
-
-		self.remove_user_values_box = function(place){
-			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, count = 0;
-			self.values.remove(place);
-			self.show_remove_user_values_box( self.values().length > 0 ? true : false );
-			//if(  WPV_Parametric.debug ) console.log("self.remove_user_values_box:: ", self.values().length > 0 ? true : false );
-		};
-
-		self.url_param_raw = ko.computed({
-			read:function(){
-
-				var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined
-				, ret = '';
-
-				try
-				{
-					//if(  WPV_Parametric.debug ) console.log( "URLPARAM:::::::::::", ko.toJS( self.url_param ), ko.toJS( field.url_param ) );
-					if( field && field.control )
-					{
-						if( ~field.control.indexOf(',') )
-						{
-							field.url_param( [new self.WPV_QS( field.control.split(',')[0].trim() ), new self.WPV_QS( field.control.split(',')[1].trim() )] );
-							self.url_param( [new self.WPV_QS( field.control.split(',')[0].trim() ), new self.WPV_QS( field.control.split(',')[1].trim() )] );
-						}
-						else
-						{
-							field.url_param( [new self.WPV_QS(field.control)] );
-							self.url_param( [new self.WPV_QS(field.control)] );
-						}
-
-						//if(  WPV_Parametric.debug ) console.log("ENTERS FIRST ", ko.toJS(self.url_param), ko.toJS(field.url_param) );
-					}
-					else if ( field && self.is_populating == true  )
-					{ 
-						self.url_param( field.url_param() );
-
-						//if(  WPV_Parametric.debug ) console.log("ENTERS SECOND ", ko.toJS(self.url_param), ko.toJS(field.url_param) );
-					}	
-					else if( field.url_param().length == 0  )
-					{
-						ret = field.prefix + field.id();
-
-						field.url_param( [new self.WPV_QS(ret)] );
-
-						self.url_param( field.url_param() );
-
-						//if(  WPV_Parametric.debug ) console.log("ENTERS THIRD ", ko.toJS(self.url_param), ko.toJS(field.url_param) );
-					}
-					else if( self.url_param() !=  field.url_param() )
-					{
-						field.url_param( self.url_param() );
-
-						//if(  WPV_Parametric.debug ) console.log("ENTERS FoURTH ", ko.toJS(self.url_param), ko.toJS(field.url_param) );
-					}
-					//if(  WPV_Parametric.debug ) console.log( "::::::::::::: self.url_param_raw ::::::::::::::::", ko.toJS(self.url_param), ko.toJS(field.url_param) );
-				}
-
-				catch( e )
-				{
-					//if(  WPV_Parametric.debug ) console.log( e.message );
-				}
-
-
-				return ret;
-			}
-
-		});
-
-		//see if our current object in array is modified and update selected object with new value
-		self.url_param.subscribe(function( val ){	
-			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, count = 0;
-			try{
-				field.url_param( val );
-			}
-			catch(e)
-			{
-				//if(  WPV_Parametric.debug ) console.log(e.message);
-			}
-			//if(  WPV_Parametric.debug ) console.log("self.url_param.subscribe:: " , ko.toJS(val) );
-			return val;
-		});
-
-		//FIXME: we have a big problem here we're patching 
-		self.field_data_type_raw = ko.computed(function(){
-
-			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, newValue = 'CHAR';
-			try
-			{
-				newValue = field.data_type();
-
-				//if(  WPV_Parametric.debug ) console.log( "Data type ", newValue, field.data_type(), jqp.inArray( newValue, self.numeric_operators ) )
-
-				if( ~jqp.inArray( newValue, self.numeric_operators ) )
-				{
-					self.selectCompare( meta_data_root[field.kind]['numeric']['compare'] );
 				}
 				else
 				{
-					self.selectDataType(  meta_data_root[field.kind][field.field_type_switch]['data_type'] );
+					self.auto_fill_sort_visible( false );
+					field.auto_fill_sort = undefined;
 				}
 
-			}
-			catch(e)
-			{
-				//if(  WPV_Parametric.debug ) console.log(e.message);
-			}
+		}
+		catch( e )
+		{
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
+	});
 
-			self.field_data_type( newValue );
-			//if(  WPV_Parametric.debug ) console.log("self.field_data_type_raw:: ", newValue );
-			return newValue;
-		});
 
-		self.field_data_type.subscribe(function(val){
+	self.auto_fill_sort.subscribe(function(value){
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
+		try
+		{
+			field.auto_fill_sort = value;
+		}
+		catch( e )
+		{
+			//if(  WPV_Parametric.debug ) console.log(e.message)
+		}
+		return value;
+	});
 
-			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, newVal = val;
-			try{
 
-				field.data_type( newVal );
+	self.taxonomy_order.subscribe(function(value){
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
 
-			}
-			catch(e)
-			{
-				//if(  WPV_Parametric.debug ) console.log(e.message);
+		try
+		{
+			field.taxonomy_order(value)
+		}
+		catch( e )
+		{
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
 
-			}
-			//if(  WPV_Parametric.debug ) console.log("self.field_data_type.subscribe:: ", newVal );
-			return newVal;
-		});
+		return value;
+	});
 
-		self.type_raw = ko.computed(function(){
 
-			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, newValue = 'textfield';
+	self.taxonomy_orderby.subscribe(function(value){
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
 
-			try
-			{
-				if( self.is_populating && field.field_type_switch == "Types auto style" )
-				{
-					newValue = field.field_type_switch;
-					self.type( newValue );
-					return newValue;
-				}
+		try
+		{
+			field.taxonomy_orderby(value)
+		}
+		catch( e )
+		{
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
 
-				if( field.is_types && meta_data_root[field.kind][field.field_type_switch]['type'][0] != "Types auto style" )
-				{
-					meta_data_root[field.kind][field.field_type_switch]['type'].unshift( "Types auto style" );
-				}
-				else if( !field.is_types && meta_data_root[field.kind][field.field_type_switch]['type'][0] == "Types auto style" )
-				{
-					meta_data_root[field.kind][field.field_type_switch]['type'].shift();
-				}
+		return value;
+	});
 
-				if( !self.is_populating )
-				{
-					newValue = meta_data_root[field.kind][field.field_type_switch]['type'][0];
 
-					field.type( newValue );
-				}
-				else
-				{
-					newValue = field.field_type_switch;
-				}
+	self.hide_empty.subscribe(function(value){
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
 
-				if( newValue != 'textfield' ) field.auto_fill( field.field() );
+		try
+		{
+			field.hide_empty(value)
+		}
+		catch( e )
+		{
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
 
-				self.selectInputKind(  meta_data_root[field.kind][field.field_type_switch]['type'] );
+		return value;
+	});
 
-			}
-			catch(e)
-			{
-			//	if(  WPV_Parametric.debug ) console.log(e.message);
-			}
 
-			self.type( newValue );
-			//if(  WPV_Parametric.debug ) console.log("self.type_raw:: ", newValue );
-			return newValue;
-		});
+	self.format.subscribe(function(value){
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
 
-		self.compare_raw = ko.computed(function(){
+		try
+		{
+			field.format(value)
+		}
+		catch( e )
+		{
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
 
-			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, newValue = '=', tmp;
+		return value;
+	});
 
-			try
-			{
-				tmp = field.field_type_switch == 'Types auto style' ? 'textfield' : field.field_type_switch;
 
-				if( ~jqp.inArray( field.data_type(), self.numeric_operators ) )
-				{
-					self.selectCompare( meta_data_root[field.kind]['numeric']['compare'] );
-				}
-				else
-				{
-					self.selectCompare( meta_data_root[field.kind][tmp]['compare'] );
-				}
-				if( !self.is_populating && !field.compare() )
-				{
-					newValue = jqp.inArray( self.compare(), meta_data_root[field.kind][tmp] ) ? self.compare() : meta_data_root[field.kind][tmp]['compare'][0];
-					field.compare( newValue );
-				}
-				else
-				{
-					newValue = field.compare();
-				}
+	self.force_zero.subscribe(function(value){
+		var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
 
-			}
-			catch(e)
-			{
-				//if(  WPV_Parametric.debug ) console.log("In compare computed", e.message);
-			}
-			
-			//TODO:figure out if we need this one
-		//	if( self.compare() != newValue ) self.compare( newValue );	
-			
-			return newValue;
-		});
+		try
+		{
+			field.force_zero(value)
+		}
+		catch( e )
+		{
+			//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
 
-		self.type.subscribe(function(val){
+		return value;
+	});
 
-			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, newVal = val, tmp, hide_user_values = ["textfield", "checkbox", "radios", "radio"];
+};
 
-			try
-			{
-				newVal = typeof newVal == 'undefined' ? field.type() : newVal;
-				tmp = newVal == 'Types auto style' ? 'textfield' : newVal;
-				field.type( newVal );
-
-				if( field.kind == 'field' && self.type() != 'textfield' && !self.is_populating )
-				{
-					field.auto_fill( field.field() );
-					self.auto_fill( 1 );
-				}
-				else
-				{
-					field.auto_fill( 0 );
-				}
-
-				self.selectCompare( meta_data_root[field.kind][tmp]['compare'] );
-				
-				if( !self.is_populating && !field.compare() ) field.compare( self.compare() );
-				
-
-				if( self.is_populating && field && ( field.type() == 'checkbox' || field.type() == 'radio' ) )
-				{
-					self.auto_fill(1)
-				}
-				
-				
-				if( ~jqp.inArray(newVal, hide_user_values) )
-				{
-					self.userValuesVisible(false);
-					
-					field.use_user_values(false);
-				}
-				
-				var extra_query = '&field=' + field.field() + '&type=' + field.type();
-				jqp('.js-wpv-auto-fill-default').unbind('keydown').suggest(ajaxurl + '?action=wpv_suggest_auto_fill_default' + extra_query, {
-					minchars: 1,
-					maxCacheSize: 0,
-					max_size: 0,
-					onSelect: function() {
-						thevalue = this.value;
-						thevalue = thevalue.split(' #');
-						jqp('.js-wpv-auto-fill-default').val(thevalue[0]);
-					}
-				});
-				
-			}
-			catch(e)
-			{
-				//if(  WPV_Parametric.debug ) console.log(e.message);
-			}
-			
-			return newVal;
-
-		});
-
-		self.compare.subscribe(function(val){
-			var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, newVal = val;
-			
-			try{
-				//if(  WPV_Parametric.debug ) console.log( "CHECK IT:: ", field, field.control)
-				if( !self.is_populating && typeof field.control == 'undefined' )
-
-				{		
-					field.compare( newVal );
-					
-					if( ( ko.toJS(field.compare) == 'BETWEEN' || ko.toJS(field.compare) == 'NOT BETWEEN' ) )
-					{
-
-						self.url_param([
-							new self.WPV_QS( field.prefix + field.id() + '_min' ),
-							new self.WPV_QS( field.prefix + field.id()  + '_max' )
-							]);
-							
-						}
-						else
-						{
-							if( self.url_param().length > 1 )
-							{
-								
-								self.url_param.pop();
-								self.url_param([
-									new self.WPV_QS( field.prefix + field.id() )
-									]);
-								}
-							}
-						}
-
-					}
-					catch(e)
-					{
-						//if(  WPV_Parametric.debug ) console.log(e.message);
-
-					}
-					
-					return newVal;
-
-				});
-				//not used now
-				self.setPreview = ko.computed({
-					read:function()
-					{
-						var field = typeof self.fieldRaw() == 'object' ? self.fieldRaw() : undefined, str = '';
-
-						if( !field ) return WPV_Parametric.preview_text_default;
-
-						try
-						{
-							if( field.kind == 'field' )
-							{
-
-								var len = field.url_param().length;
-
-								str += field.field() + ' ' + field.compare() + ' ';
-
-								self.check_validation_for_url_param( field.url_param() );
-
-								for(var i = 0; i < len; i++)
-								{
-									str += 'URL_PARAM('+field.url_param()[i].value()+')';
-									str += i == len - 1 ? '' : ', ';
-								}
-								return str;
-							}
-							else if( field.kind == 'taxonomy' )
-							{
-								str += WPV_Parametric.select_taxonomy_alert+' <strong>'+field.field()+'</strong> '+WPV_Parametric.select_taxonomy_alert_2+' <strong>"'+field.url_param()[0].value()+'"</strong> eg. http://www.example.com/page/?<strong>'+field.url_param()[0].value()+'</strong>="xxxx"';
-							}
-							return str;
-
-						}
-						catch( e )
-						{
-							console.error( e.message );
-							return WPV_Parametric.error_building_filter + e.message;
-						}
-						//if(  WPV_Parametric.debug ) console.log("self.setPreview :: " );
-						return str;
-					}
-
-				});
-
-				self.check_validation_for_url_param = function( val )
-				{
-					if( WPV_ParametricFilterWindow.has_error_displayed == true )
-					{
-						var urls = val, against = wpv_forbidden_parameters, problems = false;
-
-						jqp.each(against, function(index, value) {
-							try
-							{
-								jqp.each( urls, function(i, p) {
-									if( ~jqp.inArray( p.value(), value ) )
-									{
-										problems = true;
-										WPV_ParametricFilterWindow.has_error_displayed = true;
-										jqp('#url_param').css('border-color', 'red');
-										return false;
-									}
-									else
-									{
-										jqp('#url_param').css('border-color', '#dfdfdf');
-										WPV_ParametricFilterWindow.has_error_displayed = false;
-										WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
-										problems = false;
-									}
-								});
-
-								if( problems ) return false;
-							}
-							catch( e )
-							{
-								//if(  WPV_Parametric.debug ) console.log( e.message );
-							}
-						});
-					}
-				};
-
-				self.taxonomy_order_visible = ko.computed(function(){
-					var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined, bool = false;
-					try
-					{
-						if( field.kind == 'taxonomy' )
-						{
-							bool = true;
-						}
-						else
-						{
-							bool = false;
-							field.taxonomy_order( '' );
-							field.taxonomy_orderby( '' );
-							field.hide_empty( '' );
-						}
-
-						if( field.control ) field.control = undefined;
-
-					}
-					catch( e )
-					{
-						//if(  WPV_Parametric.debug ) console.log(e.message);
-					}
-					//if(  WPV_Parametric.debug ) console.log("self.taxonomy_order_visible :: ", field ? field.control : "NO FIELD" );
-					return bool;
-				});
-				
-				self.auto_fill_sort_visible = ko.observable(false);
-				
-				self.auto_fill_sort_visible_computed = ko.computed(function(){
-					
-					var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
-					
-					if( typeof field == 'undefined') self.auto_fill_sort_visible(false);
-					
-					try
-					{
-						
-						if( 
-							field.kind == "field" 
-							&& ( field.type() == "multi-select" || 
-							field.type() == "select" ||
-							field.type() == "checkboxes" ||
-							field.type() == "radios" 
-							) )
-							{
-								self.auto_fill_sort_visible( true );
-								if( !self.is_populating ){
-									field.auto_fill_sort = self.auto_fill_sort();
-								}
-								else
-								{
-									self.auto_fill_sort( field.auto_fill_sort );
-								}
-							}
-							else
-							{
-								self.auto_fill_sort_visible( false );
-								field.auto_fill_sort = undefined;
-							}
-							
-					}
-					catch( e )
-					{
-						//if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-				});
-				
-				self.auto_fill_sort.subscribe(function(value){
-					var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
-					try
-					{
-						field.auto_fill_sort = value;
-					}
-					catch( e )
-					{
-						//if(  WPV_Parametric.debug ) console.log(e.message)
-					}
-					return value;
-				});
-
-				self.taxonomy_order.subscribe(function(value){
-					var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
-
-					try
-					{
-						field.taxonomy_order(value)
-					}
-					catch( e )
-					{
-						//if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-
-					return value;
-				});
-				self.taxonomy_orderby.subscribe(function(value){
-					var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
-
-					try
-					{
-						field.taxonomy_orderby(value)
-					}
-					catch( e )
-					{
-						//if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-
-					return value;
-				});
-				self.hide_empty.subscribe(function(value){
-					var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
-
-					try
-					{
-						field.hide_empty(value)
-					}
-					catch( e )
-					{
-						//if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-
-					return value;
-				});
-				
-				self.force_zero.subscribe(function(value){
-					var field = typeof self.fieldRaw() != 'undefined' ? self.fieldRaw() : undefined;
-
-					try
-					{
-						field.force_zero(value)
-					}
-					catch( e )
-					{
-						//if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-
-					return value;
-				});
-
-			};
-
-			var WPV_TypesFieldsType = 
+			var WPV_TypesFieldsType =
 			{
 				"Data" : {
 					"relationship" : {
@@ -2875,12 +3059,15 @@ var WPV_GroupOption = function(label, children) {
 							{
 								if( self.loading ) self.loader.loadHide();
 
+								WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, "Error: " + textStatus + " " + errorThrown, true, 'error' );
+								/*
 								WPV_parametric_local.message.container.wpvToolsetMessage({
 									text:"Error: " + textStatus +" "+ errorThrown,
 									type: 'error',
 									stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 									close:true
 								});
+								*/
 
 								console.error( "Error: ", textStatus, errorThrown );
 								return false;
@@ -2910,22 +3097,28 @@ var WPV_GroupOption = function(label, children) {
 								if( data.Data && data.Data.error )
 								{
 									console.error( data.Data.error );
+									WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, data.Data.error, true, 'error' );
+									/*
 									WPV_parametric_local.message.container.wpvToolsetMessage({
 										text:data.Data.error,
 										type:'error',
 										stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 										close:true
 									});
+									*/
 
 								}
 								else if( data.Data && data.Data.message )
 								{
+									WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, data.Data.message, true, 'success' );
+									/*
 									WPV_parametric_local.message.container.wpvToolsetMessage({
 										text:data.Data.message,
 										type:'info',
 										stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 										close:true
 									});
+									*/
 
 								}
 								else if( data.Data && !data.Data.error)
@@ -2938,9 +3131,12 @@ var WPV_GroupOption = function(label, children) {
 									}
 									else
 									{
+										WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.ajax_callback_undefined, true, 'error' );
+										/*
 										WPV_parametric_local.message.container.wpvToolsetMessage({
 											text:WPV_Parametric.ajax_callback_undefined
 										});
+										*/
 									}
 
 								}
@@ -3149,7 +3345,7 @@ var WPV_GroupOption = function(label, children) {
 
 					jQuery.each(tmp.split('" '), function( i, v ){
 						try{
-							var prop = v.split("=");		
+							var prop = v.split("=");
 							jQuery.each( prop, function(index, value){
 							if( typeof prop[1] == 'undefined' /*&& ( prev == 'values' || prev == 'display_values' )*/ )
 							{
@@ -3158,7 +3354,7 @@ var WPV_GroupOption = function(label, children) {
 							else
 							{
 								obj[prop[0].trim()] = prop[1].replace(/"/g, '');
-							}	
+							}
 							prev = prop[0].trim();
 						});
 					}
@@ -3389,15 +3585,24 @@ jqp.fn.caret = function (begin, end)
 				var self = this
 				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-search-short-tag" />')
 				, icon = jqp('<i class="icon-search" />')
+				, title = WPV_Parametric.add_toolbar_search_button_title
+				, icon_complete = jqp('<i class="icon-bookmark flow-complete js-ps-button-complete" style="display:none" />')
+				, title_complete = WPV_Parametric.add_toolbar_search_button_title_complete
+				, icon_filter_missing = jqp('<i class="icon-bookmark flow-warning js-ps-button-filter-missing" style="display:none" />')
+				, title_filter_missing = WPV_Parametric.add_toolbar_search_button_title_missing
+				, title_filter_wrong = WPV_Parametric.add_toolbar_search_button_title_wrong
 				, label = jqp('<span class="button-label" />')
 				, toolbar = jqp('.js-wpv-filter-edit-toolbar')
 				, list = jqp('<li class="js-editor-addon-button-wrapper" />')
-				, filter_box = jqp('#js-row-post_search')
-				, open_message;
+				, filter_box = jqp('#js-row-post_search');
+
+				self.codemirror_highlight_options = {
+					className: 'wpv-codemirror-highlight'
+				};
 
 
-				self.WIDTH = 300;
-				self.HEIGHT = 200;
+				self.WIDTH = 450;
+				self.search_where = 'full_content';
 				//static reference
 				WPV_ParametricSearchButton.button = button;
 				self.dialog = null;
@@ -3406,13 +3611,14 @@ jqp.fn.caret = function (begin, end)
 				{
 					label.text( WPV_Parametric.add_search_shortcode_button );
 					list.append(button);
-					button.append(icon, label);
+					button.append(icon, label, icon_complete, icon_filter_missing);
 					if( toolbar.find('button.js-button_parametric_filter_edit') ){
 						toolbar.find('button.js-button_parametric_filter_edit').parent().after( list );
 					}
 					else{
 						toolbar.append(list);
 					}
+					list.toolsetTooltip();
 				};
 
 				self.init = function()
@@ -3427,68 +3633,71 @@ jqp.fn.caret = function (begin, end)
 
 					self.area = jqp("#wpv_filter_meta_html_content");
 
-					if( self.is_button_disabled() )
-					{
-						button.prop('disabled','disabled');
-					}
-					else
-					{
-						self.create_search("on_ready");
-					}
+					self.handle_flags();
+
+					self.create_search();
 
 					self.codeMirrorChange();
-
-					button.on('search_box_removed_inner', function(event, element){
-						button.prop('disabled',false);
-					});
-
-
-					button.on('search_box_created_inner', function( event ){
-
-						if( self.has_search( self.get_text_area_content() ) )
-						button.prop('disabled','disabled');
-						if( null != self.dialog ) jqp.colorbox.close();
-					});
-
-					filter_box.live('search_box_removed', function(event, element){
-						button.prop('disabled',false);
-					});
-
-
-					filter_box.live('search_box_created', function( event ){
-						if( self.has_search( self.get_text_area_content() ) )
-						button.prop('disabled','disabled');
-					});
 				};
 
 				self.is_button_disabled = function()
 				{
-					return self.has_search( self.get_text_area_content() ) && self.has_filter() /*( filter_box.is('li') || jqp('.js-wpv-filter-search-summary').is('li') )*/;
+					return self.has_search( self.get_text_area_content() ) && self.has_filter() && ( ! self.has_specific_filter() ) /*( filter_box.is('li') || jqp('.js-wpv-filter-search-summary').is('li') )*/;
 				};
 
 				self.has_filter = function()
 				{
-					return  jqp('input[value="manual"]').prop('checked');
+					return  ( jqp('input.js-wpv-post-search-mode').length > 0 );
 				};
 
 				self.has_specific_filter = function()
 				{
-					return  jqp('input[value="specific"]').prop('checked');
+					return  jqp('input#wpv-search-mode-specific').prop('checked');
 				};
 
 				self.codeMirrorChange = function()
 				{
 					self.codemirror_views.on('change', function(){
 
-						if( self.is_button_disabled() )
-						{
-							button.prop('disabled','disabled');
-						}
-						else
-						{
-							button.prop('disabled',false);
-						}
+						self.handle_flags();
 					});
+				};
+
+				self.handle_flags = function() {
+					button
+						.removeClass( 'wpv-button-flagged' )
+						.find( '.js-ps-button-complete, .js-ps-button-filter-missing' )
+							.hide();
+					if( self.is_button_disabled() )
+					{
+						button
+							.addClass( 'disabled' )
+							.addClass( 'wpv-button-flagged' )
+							.find( '.js-ps-button-complete' )
+								.show();
+						list.data( 'tooltip-text', title_complete );
+					}
+					else
+					{
+						button
+							.removeClass( 'disabled' );
+						list.data( 'tooltip-text', title );
+						if ( self.has_search( self.get_text_area_content() ) ) {
+							if ( ! self.has_filter() ) {
+								button
+									.addClass( 'wpv-button-flagged' )
+									.find( '.js-ps-button-filter-missing' )
+										.show();
+								list.data( 'tooltip-text', title_filter_missing );
+							} else if ( self.has_specific_filter() ) {
+								button
+									.addClass( 'wpv-button-flagged' )
+									.find( '.js-ps-button-filter-missing' )
+										.show();
+								list.data( 'tooltip-text', title_filter_wrong );
+							}
+						}
+					}
 				};
 
 				self.get_text_area_content = function()
@@ -3499,8 +3708,8 @@ jqp.fn.caret = function (begin, end)
 				};
 
 				self.has_search = function( area )
-				{	
-					return ~area.search( /\[wpv-filter-search-box]/ ) == 0 ? false : true ;
+				{
+					return ( ~area.search( /\[wpv-filter-search-box/ ) == 0 && ~area.search( /\url_param=\"wpv_post_search\"/ ) == 0 ) ? false : true ;
 				};
 
 				self.cursorInside = function( area, start, end )
@@ -3516,61 +3725,140 @@ jqp.fn.caret = function (begin, end)
 					return false;
 				};
 
-				self.create_search = function(label)
+				self.create_search = function()
 				{
 					button.on('click', function(event){
-						if( !self.pwin.move_cursor_if_no_content_within( ) && !self.cursorInside() )
+						event.stopImmediatePropagation();
+						if ( button.hasClass( 'disabled' ) ) {
+							return false;
+						}
+						if ( self.has_search( self.get_text_area_content()  ) )
 						{
+							self.open_override_specific_dialog();
+						}
+						else if( !self.pwin.move_cursor_if_no_content_within( ) && !self.cursorInside() )
+						{
+							WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+							/*
 							open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
 								text:WPV_Parametric.place_cursor_inside_wpv_controls,
 								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 								close:true
 							});
+							*/
 							return false;
 						}
-						if( self.has_specific_filter() )
+						else if( self.has_filter() )
 						{
-							open_dialog();
+							self.open_override_specific_dialog();
 						}
 						else
 						{
-							//Check if Sumbit button added
-							/*
-							if( !WPV_parametric_local.add_submit.has_submit( WPV_parametric_local.add_submit.get_text_area_content() ) )
-							{
-								WPV_parametric_local.add_submit.open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-									text:WPV_Parametric.no_submit_button
-									, stay:true
-									, close:true
-									, fadeOut:WPV_parametric_local.message.fadeOutLong
-								});
-							}
-							*/
-							return self.create_and_insert();
+							self.open_set_options_dialog();
 						}
 						return false;
 					});
 				};
 
-				self.create_and_insert = function( )
+				self.open_override_specific_dialog = function()
+				{
+					self.dialog = jqp.colorbox({
+						inline : true,
+						href:'#js-wpv-parametric-search-dialogs .js-search-override-dialog',
+						open: true,
+						width:self.WIDTH,
+						onComplete: function() {
+							jqp( '.js-wpv-search-filter-override-var' ).hide();
+							jqp( '.js-wpv-post-search-override-dialog' ).attr( 'checked', false );
+							jqp( '#search-override-full' ).attr( 'checked', true );
+							jqp( '.js-parametric-add-search-override' )
+								.addClass( 'button-primary' )
+								.removeClass( 'button-secondary' )
+								.prop( 'disabled', false );
+							if ( self.has_filter() )
+							{
+								if ( self.has_specific_filter() ) {
+									jqp( '.js-wpv-search-filter-override-specific' ).show();
+								} else {
+									jqp( '.js-wpv-search-filter-override-valid' ).show();
+								}
+							}
+							else{
+								jqp( '.js-wpv-search-filter-override-missing' ).show();
+							}
+						},
+						onClosed:function()
+						{
+							self.dialog = null;
+						}
+					});
+				};
+
+				jqp('.js-search-override-dialog .js-parametric-add-search-override').on( 'click', function( event ){
+					var thiz = jqp( this );
+					thiz
+						.addClass( 'button-secondary' )
+						.removeClass( 'button-primary' )
+						.prop( 'disabled', true );
+					jqp( '<div class="spinner ajax-loader">' ).insertAfter( thiz ).show();
+					self.search_where = jqp( '.js-wpv-post-search-override-dialog:checked' ).val();
+					return self.create_and_insert( self.close_dialog_callback );
+				});
+
+				self.open_set_options_dialog = function()
+				{
+					dialog = jqp.colorbox({
+						inline: true,
+						href:'#js-wpv-parametric-search-dialogs .js-search-box-dialog',
+						open: true,
+						width:self.WIDTH,
+						onComplete: function() {
+							jqp( '.js-parametric-add-search-box' )
+								.addClass( 'button-primary' )
+								.removeClass( 'button-secondary' )
+								.prop( 'disabled', false );
+						},
+						onClosed:function()
+						{
+							self.dialog = null;
+						}
+					});
+				};
+
+				jqp('.js-search-box-dialog .js-parametric-add-search-box').on( 'click', function( event ) {
+					var thiz = jqp( this );
+					thiz
+						.addClass( 'button-secondary' )
+						.removeClass( 'button-primary' )
+						.prop( 'disabled', true );
+					jqp( '<div class="spinner ajax-loader">' ).insertAfter( thiz ).show();
+					self.search_where = jqp( '.js-wpv-post-search-options-dialog:checked' ).val();
+					return self.create_and_insert( self.close_dialog_callback );
+				});
+
+				self.create_and_insert = function( callback, args )
 				{
 					var ret = false;
 
-					if( !self.has_search( self.get_text_area_content() )  && !self.has_filter() )
+					if( ! self.has_search( self.get_text_area_content() ) )
 					{
 						self.create_filter(function(){
 							self.insert_search_shortcode(self.area);
+							if( typeof callback == 'function' )
+							{
+								callback.apply( self, args ? args : [] )
+							}
 						});
 						ret = true;
 					}
-					else if( self.has_search( self.get_text_area_content() )  && !self.has_filter() )
+					else
 					{
-						self.create_filter();
-						return true;
-					}
-					else if( !self.has_search( self.get_text_area_content() )  && self.has_filter() )
-					{
-						self.insert_search_shortcode(self.area);
+						self.create_filter(function(){
+							if( typeof callback == 'function' )
+							{
+								callback.apply( self, args ? args : [] )
+							}
+						});
 						ret = true;
 					}
 					return ret;
@@ -3579,13 +3867,11 @@ jqp.fn.caret = function (begin, end)
 				self.create_filter = function( callback, args )
 				{
 					var params = {
-						action:'wpv_filter_search_update',
+						action:'wpv_filter_post_search_update',
 						id: WPV_Parametric.view_id,
-						filter_search: 'filter_by_search=1&post_search_value=&search_mode%5B%5D=manual&post_search_content=full_content',
+						filter_options: 'filter_by_search=1&post_search_value=&search_mode%5B%5D=manual&post_search_content=' + self.search_where,
 						wpnonce:WPV_Parametric.wpv_view_filter_search_nonce
 					};
-
-
 					jqp.post(ajaxurl, params, function( response ) {
 						var prms = {
 							action: 'wpv_filter_update_filters_list',
@@ -3593,17 +3879,18 @@ jqp.fn.caret = function (begin, end)
 							query_type: jQuery('input:radio.js-wpv-query-type:checked').val(),
 							nonce: jQuery('.js-wpv-filter-update-filters-list-nonce').val()
 						};
-
 						jQuery.post(ajaxurl, prms, function(response) {
 
 							if ( (typeof(response) !== 'undefined') ) {
 								decoded_response = jQuery.parseJSON(response);
 								if ( decoded_response.success === prms.id ) {
 									jQuery('.js-filter-list').html(decoded_response.wpv_filter_update_filters_list);
-									jQuery('.js-wpv-dps-settings').html(decoded_response.wpv_dps_settings_structure);
-									view_settings['.js-wpv-filter-dps'] = jQuery('.js-wpv-dps-settings input, .js-wpv-dps-settings select').serialize();
-									wpv_after_update_filters_list();
+									if( typeof callback == 'function' )
+									{
+										callback.apply( self, args ? args : [] )
+									}
 								}
+								jQuery( document ).trigger( 'js_event_wpv_query_filter_created', [ 'post_search' ] );
 							} else {
 								//if(  WPV_Parametric.debug ) console.log( WPV_Parametric.ajax_error, response );
 							}
@@ -3612,13 +3899,8 @@ jqp.fn.caret = function (begin, end)
 							//if(  WPV_Parametric.debug ) console.log( WPV_Parametric.error_generic, textStatus, errorThrown );
 						})
 						.always(function() {
-
+							self.handle_flags();
 						});
-
-						if( typeof callback == 'function' )
-						{
-							callback.apply( self, args ? args : [] )
-						}
 
 					})
 					.fail(function(jqXHR, textStatus, errorThrown){
@@ -3628,96 +3910,289 @@ jqp.fn.caret = function (begin, end)
 						//
 					});
 
-					button.trigger( 'search_box_created_inner' );
+					if( null != self.dialog ) jqp.colorbox.close();
 				};
 
 				self.insert_search_shortcode = function( area )
 				{
-					var shortcode = '[wpv-filter-search-box]';
+					var shortcode = '[wpv-filter-search-box]',
+					current_cursor = self.codemirror_views.getCursor( true );
 
-					self.pwin.editor.InsertAtCursor(area, "\n"+shortcode+"\n");
+					self.pwin.editor.InsertAtCursor(area, shortcode);
 
-					if( open_message ) open_message.wpvMessageRemove();
+					var end_cursor = self.codemirror_views.getCursor( true ),
+					search_marker = self.codemirror_views.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+					setTimeout( function() {
+						  search_marker.clear();
+					}, 3000);
+					self.handle_flags();
+
 					return shortcode;
 				};
-
-				var open_dialog = function()
-				{// TODO not sure if this is use at all
-					var button_inner = jqp('<button class="button-primary js-code-editor-toolbar-button js-parametric-add-submit-short-tag-label" />')
-					, icon = jqp('<i class="icon-filter-mod" />')
-					, label = jqp('<span class="button-label" />')
-					, div = jqp('<div class="js-submit_shortcode_label-wrap wpv-dialog-content js-disable-scrollbar" />')
-					, header = jqp('<div class="wpv-dialog-header" />')
-					, close_button = '<i class="icon-remove js-dialog-close"></i>'
-					, h2 = jqp("<h2 />")
-					, footer = jqp('<div class="wpv-dialog-footer" />')
-					, cancel = jqp('<button class="button js-dialog-close" id="js_parametric_cancel" />')
-					, wrap = '<div class="wpv-dialog wpv-dialog-parametric-filter js-submit-create-box-wrap"></div>';
-
-					h2.text( WPV_Parametric.add_submit_button_to_shortcode_header );
-					label.text( WPV_Parametric.add_submit_button_to_shortcode_label);
-					cancel.text( WPV_Parametric.cancel );
-					cancel.css('margin-right', '5px');
-					div.text(WPV_Parametric.view_has_already_a_search);
-
-					self.dialog = jqp.colorbox({
-						html: wrap,
-						inline : false,
-						width:self.WIDTH,
-						height:self.HEIGHT,
-						onComplete: function() {
-							button_inner.append( label );
-							header.append( h2, close_button );
-
-							button_inner.on('click', function(event){
-								return self.create_and_insert();
-							});
-
-							footer.append( cancel, button_inner );
-
-							jqp('.js-submit-create-box-wrap').append(header, div, footer);
-							div.css('min-width', '200px');
-
-						},
-						//this is the place where you want to reset your values
-						onClosed:function()
-						{
-							self.dialog = null;
-						}
-					});
+				
+				self.close_dialog_callback = function()
+				{
+					jqp( '.js-wpv-missing-filter-container, .js-wpv-no-filters-container' ).hide();
+					jqp( '.js-search-box-dialog, .js-search-override-dialog' ).find( '.spinner.ajax-loader' ).remove();
+					jqp.colorbox.close();
 				};
-
 
 				return this;
 
 			};
 
-			var WPV_ParametricSubmitButton = function()
+			var WPV_ParametricSpinnerButton = function()
 			{
 				var self = this
-				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-submit-short-tag" />')
-				, icon = jqp('<i class="icon-chevron-right" />')
+				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-spinner-short-tag" />')
+				, icon = jqp('<i class="icon-spinner" />')
+				, title = WPV_Parametric.add_toolbar_spinner_button_title
+				, icon_flag = jqp('<i class="icon-bookmark flow-complete js-ps-button-flag" style="display:none" />')
+				, title_complete = WPV_Parametric.add_toolbar_spinner_button_title_complete
+				, title_useless = WPV_Parametric.add_toolbar_spinner_button_title_useless
 				, label = jqp('<span class="button-label" />')
 				, toolbar = jqp('.js-wpv-filter-edit-toolbar')
 				, list = jqp('<li class="js-editor-addon-button-wrapper" />')
-				, open_message
 				, dialog = null;
+
+				self.codemirror_highlight_options = {
+					className: 'wpv-codemirror-highlight'
+				};
+
+				self.container = 'div';
+				self.classname = '';
+				self.spinner_position = 'before';
+				self.content_text = '';
+				self.spinner = '';
 
 				self.reanabled = false;
 				//export button for external use
-				WPV_ParametricSubmitButton.button = button;
+				WPV_ParametricSpinnerButton.button = button;
 
 				self.createButton = function()
 				{
-					label.text( WPV_Parametric.add_submit_shortcode_button );
+					label.text( WPV_Parametric.add_spinner_shortcode_button );
 					list.append(button);
-					button.append(icon, label);
+					button.append(icon, label, icon_flag);
 					if( toolbar.find('button.js-parametric-add-search-short-tag') ){
 						toolbar.find('button.js-parametric-add-search-short-tag').parent().after( list );
 					}
 					else{
 						toolbar.append(list);
 					}
+					list.toolsetTooltip();
+				};
+
+				self.init = function()
+				{
+					self.pwin = WPV_parametric_local.pwindow;
+
+					self.short_code_container_text = '';
+
+					self.codemirror_views = self.pwin.editor.codemirrorGet('wpv_filter_meta_html_content');
+
+					self.createButton();
+
+					self.area = jqp("#wpv_filter_meta_html_content");
+
+					self.create_dialog();
+
+					self.handle_flags()
+
+					self.codemirror_views.on('change', function(){
+						self.handle_flags();
+					});
+				};
+
+				self.handle_flags = function()
+				{
+					var update_mode = jqp( '.js-wpv-dps-ajax-results:checked' ).val(),
+					update_action = jqp( '.js-wpv-ajax-results-submit:checked' ).val(),
+					dependency_mode = jqp( '.js-wpv-dps-enable:checked' ).val();
+
+					if (
+						( update_mode != 'disable' || ( update_mode == 'disable' && update_action != 'reload' ) )
+						|| dependency_mode != 'disable'
+					) {
+						button.removeClass('disabled');
+						if( self.has_spinner( self.get_text_area_content() ) ) {
+							button
+								.addClass( 'wpv-button-flagged' )
+								.find( '.js-ps-button-flag' )
+									.show();
+							list.data('tooltip-text', title_complete );
+						} else {
+							button
+								.removeClass( 'wpv-button-flagged' )
+								.find( '.js-ps-button-flag' )
+									.hide();
+							list.data('tooltip-text', title );
+						}
+					} else {
+						button
+							.addClass('disabled')
+							.removeClass( 'wpv-button-flagged' )
+							.find( '.js-ps-button-flag' )
+							.hide();
+						list.data('tooltip-text', title_useless );
+					}
+				};
+
+				self.get_text_area_content = function()
+				{
+					var c = '';
+					c = self.codemirror_views.getValue();
+					return c;
+				};
+
+				self.has_spinner = function( area )
+				{
+					return ~area.search(/\[wpv-filter-spinner/) == 0 ? false : true ;
+				};
+
+				self.create_dialog = function(label)
+				{
+					button.on('click', function(event){
+						event.stopImmediatePropagation();
+						if ( button.hasClass( 'disabled' ) ) {
+							return false;
+						}
+						dialog = null;
+						if( !self.cursorInside() )
+						{
+							WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+							/*
+							open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
+								text:WPV_Parametric.place_cursor_inside_wpv_controls,
+								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
+								close:true
+							});
+							*/
+							return false;
+						} else {
+							self.openDialog();
+						}
+					});
+				};
+
+				self.insert_spinner_shortcode = function( area, container, classname, position, content_text, spinner )
+				{
+					var classtext = '',
+					spinnertext = '';
+					if ( classname != '') {
+						classtext = ' class="' + classname + '"'
+					}
+					if ( spinner != '') {
+						spinnertext = ' spinner="' + spinner + '"'
+					}
+					if ( content_text != '' ) {
+						content_text = '[wpml-string context="wpv-views"]' + content_text + '[/wpml-string]';
+					}
+					var shortcode = '[wpv-filter-spinner container="'+container+'" position="' +position + '"' + classtext + spinnertext + ']' + content_text + '[/wpv-filter-spinner]',
+					current_cursor = self.codemirror_views.getCursor( true );
+
+					self.pwin.editor.InsertAtCursor(area, shortcode);
+
+					var end_cursor = self.codemirror_views.getCursor( true ),
+					spinner_marker = self.codemirror_views.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+					setTimeout( function() {
+						  spinner_marker.clear();
+					}, 3000);
+
+					return shortcode;
+				};
+
+				self.cursorInside = function( area, start, end )
+				{
+					try
+					{
+						return self.pwin.editor.cursorWithin(self.pwin.text_area, 'wpv-filter-start', 'wpv-filter-end');
+					}
+					catch( e )
+					{
+						if(  WPV_Parametric.debug ) console.log( e.message );
+					}
+					return false;
+				};
+
+				jqp('.js-spinner-button-dialog .js-parametric-add-spinner-short-tag-label').on('click', function( event ){
+					self.container = jqp('.js-spinner-button-dialog #spinner_shortcode_container_type').val();
+					self.classname = jqp('.js-spinner-button-dialog #spinner_shortcode_container_classname').val();
+					self.spinner_position = jqp('.js-spinner-button-dialog #spinner_shortcode_spinner_position').val();
+					self.content_text = jqp('.js-spinner-button-dialog #spinner_shortcode_content').val();
+					self.spinner = jqp('.js-spinner-button-dialog .js-wpv-ps-spinner-image:checked').val();
+					if( self.insert_spinner_shortcode(self.area, self.container, self.classname, self.spinner_position, self.content_text, self.spinner) )
+					{
+					//	button.prop('disabled','disabled');
+						jqp.colorbox.close();
+					}
+				});
+
+				self.openDialog = function()
+				{
+
+					if ( self.cursorInside() ) {
+						dialog = jqp.colorbox({
+							inline: true,
+							href:'.js-spinner-button-dialog',
+							open: true,
+							onComplete: function() {
+								jqp('.js-spinner-button-dialog #spinner_shortcode_container_type').val('div');
+								jqp('.js-spinner-button-dialog #spinner_shortcode_container_classname').val('');
+								jqp('.js-spinner-button-dialog #spinner_shortcode_spinner_position').val('before');
+								jqp('.js-spinner-button-dialog #spinner_shortcode_content').val('');
+								jqp('.js-spinner-button-dialog .js-wpv-ps-spinner-image:checked').prop( 'checked', false );
+								jqp('.js-spinner-button-dialog .js-wpv-ps-spinner-image:first').prop( 'checked', true );
+							}
+						});
+					} else {
+						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_filter, true, 'error' );
+						/*
+						open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
+								text:WPV_Parametric.place_cursor_inside_wpv_filter,
+								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
+								close:true
+							});
+						*/
+					}
+				};
+				return this;
+			};
+
+			var WPV_ParametricResetButton = function()
+			{
+				var self = this
+				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-reset-short-tag" />')
+				, icon = jqp('<i class="icon-eraser" />')
+				, title = WPV_Parametric.add_toolbar_reset_button_title
+				, icon_complete = jqp('<i class="icon-bookmark flow-complete js-ps-button-complete" style="display:none" />')
+				, title_complete = WPV_Parametric.add_toolbar_reset_button_title_complete
+				, title_incomplete = WPV_Parametric.add_toolbar_reset_button_title_incomplete
+				, label = jqp('<span class="button-label" />')
+				, toolbar = jqp('.js-wpv-filter-edit-toolbar')
+				, list = jqp('<li class="js-editor-addon-button-wrapper" />')
+				, dialog = null;
+
+				self.codemirror_highlight_options = {
+					className: 'wpv-codemirror-highlight'
+				};
+
+				self.reanabled = false;
+				//export button for external use
+				WPV_ParametricResetButton.button = button;
+
+				self.createButton = function()
+				{
+					label.text( WPV_Parametric.add_reset_shortcode_button );
+					list.append(button);
+					button.append(icon, label, icon_complete);
+					if( toolbar.find('button.js-parametric-add-spinner-short-tag') ){
+						toolbar.find('button.js-parametric-add-spinner-short-tag').parent().after( list );
+					}
+					else{
+						toolbar.append(list);
+					}
+					list.toolsetTooltip();
 				};
 
 				self.init = function()
@@ -3732,28 +4207,251 @@ jqp.fn.caret = function (begin, end)
 
 					self.area = jqp("#wpv_filter_meta_html_content");
 
-					if( self.has_submit( self.get_text_area_content() ) )
+					button.prop('disabled',false);
+					self.create_dialog();
+
+					self.handle_flags();
+
+					self.codemirror_views.on('change', function(){
+						//self.create_dialog();
+
+						self.handle_flags();
+					});
+				};
+
+				self.handle_flags = function()
+				{
+					if( self.has_reset( self.get_text_area_content() ) )
 					{
-						button.prop('disabled','disabled');
+						button
+							.addClass( 'wpv-button-flagged' )
+							.find( '.js-ps-button-complete' )
+								.show();
+						list.data('tooltip-text',title_complete);
 					}
 					else
 					{
-						self.create_dialog();
+						button
+							.removeClass( 'wpv-button-flagged' )
+							.find( '.js-ps-button-complete' )
+								.hide();
+						list.data('tooltip-text',title);
 					}
+				};
 
-					self.codemirror_views.on('change', function(){
+				self.get_text_area_content = function()
+				{
+					var c = '';
+					c = self.codemirror_views.getValue();
+					return c;
+				};
 
-						if( self.has_submit( self.get_text_area_content() ) )
+				self.has_reset = function( area )
+				{
+					return ~area.search(/\[wpv-filter-reset/) == 0 ? false : true ;
+				};
+
+				self.create_dialog = function(label)
+				{
+					button.on('click', function(event){
+						event.stopImmediatePropagation();
+						dialog = null;
+						if( !self.cursorInside() )
 						{
-							button.prop('disabled','disabled');
-						}
-						else
-						{
-							button.prop('disabled',false);
-							self.create_dialog();
+							WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+							/*
+							open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
+								text:WPV_Parametric.place_cursor_inside_wpv_controls,
+								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
+								close:true
+							});
+							*/
+							return false;
+						} else {
+							self.openDialog();
 						}
 					});
 				};
+
+				self.insert_reset_shortcode = function( area, label, classname, tag )
+				{
+					var classtext = '',
+					tagtext = '';
+					if( classname != '') {
+						classtext = ' class="' + classname + '"'
+					}
+					if ( tag == 'button' ) {
+						tagtext = ' type="button"';
+					} else {
+						tagtext = ' type="input"';
+					}
+					var shortcode = '[wpv-filter-reset reset_label="'+label+'"' + classtext + tagtext +']',
+					current_cursor = self.codemirror_views.getCursor( true );
+
+					self.pwin.editor.InsertAtCursor(area, shortcode);
+
+					var end_cursor = self.codemirror_views.getCursor( true ),
+					reset_marker = self.codemirror_views.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+					setTimeout( function() {
+						  reset_marker.clear();
+					}, 3000);
+
+					return shortcode;
+				};
+
+				self.cursorInside = function( area, start, end )
+				{
+					try
+					{
+						return self.pwin.editor.cursorWithin(self.pwin.text_area, 'wpv-filter-controls', '/wpv-filter-controls');
+					}
+					catch( e )
+					{
+						if(  WPV_Parametric.debug ) console.log( e.message );
+					}
+					return false;
+				};
+
+				jqp('.js-reset-button-dialog .js-parametric-add-reset-short-tag-label').on('click', function(event){
+					if( jqp('.js-reset-button-dialog #reset_shortcode_label').val() != '')
+					{
+						self.short_code_label_text = jqp('.js-reset-button-dialog #reset_shortcode_label').val();
+						self.short_code_classname_text = jqp('.js-reset-button-dialog #reset_shortcode_button_classname').val();
+						self.short_code_tag_text = jqp('.js-reset-button-dialog #reset_shortcode_button_tag').val();
+						if( self.insert_reset_shortcode(self.area, self.short_code_label_text, self.short_code_classname_text, self.short_code_tag_text) )
+						{
+							button.prop('disabled',false);
+							jqp.colorbox.close();
+						}
+					}
+					else
+					{
+						jqp('.js-reset-button-dialog .js-errors-in-parametric-box').wpvToolsetMessage({
+							text:WPV_Parametric.consider_adding_label_to_button_shortcode
+						});
+					}
+				});
+
+				self.openDialog = function()
+				{
+
+					if ( self.cursorInside() ) {
+						dialog = jqp.colorbox({
+							inline: true,
+							href:'.js-reset-button-dialog',
+							open: true,
+							onComplete: function() {
+								jqp('.js-reset-button-dialog #reset_shortcode_label').val(WPV_Parametric.add_reset_shortcode_button_label);
+								jqp('.js-reset-button-dialog #reset_shortcode_button_classname').val('');
+								jqp('.js-reset-button-dialog #reset_shortcode_button_tag').val('input');
+							}
+						});
+					} else {
+						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+						/*
+						open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
+								text:WPV_Parametric.place_cursor_inside_wpv_controls,
+								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
+								close:true
+							});
+						*/
+					}
+				};
+				return this;
+			};
+
+			var WPV_ParametricSubmitButton = function()
+			{
+				var self = this
+				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-submit-short-tag" />')
+				, icon = jqp('<i class="icon-chevron-right" />')
+				, title = WPV_Parametric.add_toolbar_submit_button_title
+				, icon_complete = jqp('<i class="icon-bookmark flow-complete js-ps-button-complete" style="display:none" />')
+				, title_complete = WPV_Parametric.add_toolbar_submit_button_title_complete
+				, icon_incomplete = jqp('<i class="icon-bookmark flow-warning js-ps-button-incomplete" style="display:none" />')
+				, title_incomplete = WPV_Parametric.add_toolbar_submit_button_title_incomplete
+				, icon_irrelevant = jqp('<i class="icon-bookmark flow-info js-ps-button-irrelevant" style="display:none" />')
+				, title_irrelevant = WPV_Parametric.add_toolbar_submit_button_title_irrelevant
+				, title_irrelevant_but_added = WPV_Parametric.add_toolbar_submit_button_title_irrelevant_added
+				, label = jqp('<span class="button-label" />')
+				, toolbar = jqp('.js-wpv-filter-edit-toolbar')
+				, list = jqp('<li class="js-editor-addon-button-wrapper" />')
+				, dialog = null;
+
+				self.codemirror_highlight_options = {
+					className: 'wpv-codemirror-highlight'
+				};
+
+				self.reanabled = false;
+				//export button for external use
+				WPV_ParametricSubmitButton.button = button;
+
+				self.createButton = function()
+				{
+					label.text( WPV_Parametric.add_submit_shortcode_button );
+					list.append(button);
+					button.append(icon, label, icon_complete, icon_incomplete, icon_irrelevant);
+					if( toolbar.find('button.js-parametric-add-reset-short-tag') ){
+						toolbar.find('button.js-parametric-add-reset-short-tag').parent().after( list );
+					}
+					else{
+						toolbar.append(list);
+					}
+					list.toolsetTooltip();
+				};
+
+				self.init = function()
+				{
+					self.pwin = WPV_parametric_local.pwindow;
+
+					self.short_code_label_text = '';
+
+					self.codemirror_views = self.pwin.editor.codemirrorGet('wpv_filter_meta_html_content');
+
+					self.createButton();
+
+					self.area = jqp("#wpv_filter_meta_html_content");
+
+					self.handle_flags();
+
+					self.create_dialog();
+
+					self.codemirror_views.on('change', function(){
+						self.handle_flags();
+					});
+				};
+
+				self.handle_flags = function()
+				{
+					var update_mode = jqp( '.js-wpv-dps-ajax-results:checked' ).val();
+					button.addClass( 'wpv-button-flagged' );
+					if ( update_mode == 'enable' ) {
+						button
+							.addClass('disabled')
+							.find( '.js-ps-button-irrelevant' )
+								.show();
+						button
+							.find( '.js-ps-button-incomplete, .js-ps-button-complete' )
+								.hide();
+						if( self.has_submit( self.get_text_area_content() ) ) {
+							list.data('tooltip-text',title_irrelevant_but_added);
+						} else {
+							list.data('tooltip-text',title_irrelevant);
+						}
+					} else {
+						button
+							.removeClass('disabled')
+							.find( '.js-ps-button-irrelevant, .js-ps-button-incomplete, .js-ps-button-complete' )
+								.hide();
+						if( self.has_submit( self.get_text_area_content() ) ) {
+							button.find( '.js-ps-button-complete' ).show();
+							list.data('tooltip-text',title_complete);
+						} else {
+							button.find( '.js-ps-button-incomplete' ).show();
+							list.data('tooltip-text',title_incomplete);
+						}
+					}
+				}
 
 				self.get_text_area_content = function()
 				{
@@ -3771,13 +4469,19 @@ jqp.fn.caret = function (begin, end)
 				{
 					button.on('click', function(event){
 						event.stopImmediatePropagation();
+						if ( button.hasClass( 'disabled' ) ) {
+							return false;
+						}
 						if( !!self.pwin.move_cursor_if_no_content_within( ) && !self.cursorInside() )
 						{
+							WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+							/*
 							open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
 								text:WPV_Parametric.place_cursor_inside_wpv_controls,
 								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 								close:true
 							});
+							*/
 							return false;
 						}
 						dialog = null;
@@ -3785,15 +4489,30 @@ jqp.fn.caret = function (begin, end)
 					});
 				};
 
-				self.insert_submit_shortcode = function( area, label, classname )
+				self.insert_submit_shortcode = function( area, label, classname, tag )
 				{
-					var classtest = '';
+					var classtext = '',
+					tagtext = '';
 					if( classname != '') {
-						classtest = ' class="' + classname + '"'
+						classtext = ' class="' + classname + '"'
 					}
-					var shortcode = '[wpv-filter-submit name="'+label+'"' + classtest + ']';
+					
+					if ( tag == 'button' ) {
+						tagtext = ' type="button"';
+					} else {
+						tagtext = ' type="input"';
+					}
+					
+					var shortcode = '[wpv-filter-submit name="'+label+'"' + classtext + tagtext + ']',
+					current_cursor = self.codemirror_views.getCursor( true );
 
-					self.pwin.editor.InsertAtCursor(area, "\n\t"+shortcode+"\n");
+					self.pwin.editor.InsertAtCursor(area, shortcode);
+
+					var end_cursor = self.codemirror_views.getCursor( true ),
+					reset_marker = self.codemirror_views.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+					setTimeout( function() {
+						  reset_marker.clear();
+					}, 3000);
 
 					return shortcode;
 				};
@@ -3810,15 +4529,15 @@ jqp.fn.caret = function (begin, end)
 					}
 					return false;
 				};
-				
+
 				jqp('.js-submit-button-dialog .js-parametric-add-submit-short-tag-label').on('click', function(event){
 					if( jqp('.js-submit-button-dialog #submit_shortcode_label').val() != '')
 					{
 						self.short_code_label_text = jqp('.js-submit-button-dialog #submit_shortcode_label').val();
 						self.short_code_classname_text = jqp('.js-submit-button-dialog #submit_shortcode_button_classname').val();
-						if( self.insert_submit_shortcode(self.area, self.short_code_label_text, self.short_code_classname_text) )
+						self.short_code_tag_text = jqp('.js-submit-button-dialog #submit_shortcode_button_tag').val();
+						if( self.insert_submit_shortcode(self.area, self.short_code_label_text, self.short_code_classname_text, self.short_code_tag_text) )
 						{
-							button.prop('disabled','disabled');
 							jqp.colorbox.close();
 						}
 					}
@@ -3832,356 +4551,27 @@ jqp.fn.caret = function (begin, end)
 
 				self.openDialog = function()
 				{
-					
+
 					if ( self.cursorInside() ) {
 						dialog = jqp.colorbox({
 							inline: true,
 							href:'.js-submit-button-dialog',
 							open: true,
 							onComplete: function() {
-								open_message = open_message || WPV_parametric_local.add_submit.open_message;
-								if( open_message && !self.has_submit( self.get_text_area_content() ) ) {
-									open_message.wpvMessageRemove();
-								}
+								jqp('.js-submit-button-dialog #submit_shortcode_label').val(WPV_Parametric.add_submit_shortcode_button_label);
+								jqp('.js-submit-button-dialog #submit_shortcode_button_classname').val('');
+								jqp('.js-submit-button-dialog #submit_shortcode_button_tag').val('input');
 							}
 						});
 					} else {
+						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+						/*
 						open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
 								text:WPV_Parametric.place_cursor_inside_wpv_controls,
 								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
 								close:true
 							});
-					}
-				};
-				return this;
-			};
-
-			var WPV_ParametricResetButton = function()
-			{
-				var self = this
-				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-reset-short-tag" />')
-				, icon = jqp('<i class="icon-eraser" />')
-				, label = jqp('<span class="button-label" />')
-				, toolbar = jqp('.js-wpv-filter-edit-toolbar')
-				, list = jqp('<li class="js-editor-addon-button-wrapper" />')
-				, open_message
-				, dialog = null;
-
-				self.reanabled = false;
-				//export button for external use
-				WPV_ParametricResetButton.button = button;
-
-				self.createButton = function()
-				{
-					label.text( WPV_Parametric.add_reset_shortcode_button );
-					list.append(button);
-					button.append(icon, label);
-					if( toolbar.find('button.js-parametric-add-submit-short-tag') ){
-						toolbar.find('button.js-parametric-add-submit-short-tag').parent().after( list );
-					}
-					else{
-						toolbar.append(list);
-					}
-				};
-
-				self.init = function()
-				{
-					self.pwin = WPV_parametric_local.pwindow;
-
-					self.short_code_label_text = '';
-
-					self.codemirror_views = self.pwin.editor.codemirrorGet('wpv_filter_meta_html_content');
-
-					self.createButton();
-
-					self.area = jqp("#wpv_filter_meta_html_content");
-
-					self.create_dialog();
-					
-					button.prop('disabled',false);
-
-					self.codemirror_views.on('change', function(){
-						button.prop('disabled',false);
-						self.create_dialog();
-					});
-				};
-
-				self.get_text_area_content = function()
-				{
-					var c = '';
-					c = self.codemirror_views.getValue();
-					return c;
-				};
-
-				self.create_dialog = function(label)
-				{
-					button.on('click', function(event){
-						event.stopImmediatePropagation();
-						dialog = null;
-						if( !self.cursorInside() )
-						{
-							open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_controls,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
-							return false;
-						} else {
-							self.openDialog();
-						}
-					});
-				};
-
-				self.insert_reset_shortcode = function( area, label, classname )
-				{
-					var classtest = '';
-					if( classname != '') {
-						classtest = ' class="' + classname + '"'
-					}
-					var shortcode = '[wpv-filter-reset reset_label="'+label+'"' + classtest + ']';
-
-					self.pwin.editor.InsertAtCursor(area, "\n\t"+shortcode+"\n");
-
-					return shortcode;
-				};
-
-				self.cursorInside = function( area, start, end )
-				{
-					try
-					{
-						return self.pwin.editor.cursorWithin(self.pwin.text_area, 'wpv-filter-controls', '/wpv-filter-controls');
-					}
-					catch( e )
-					{
-						if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-					return false;
-				};
-				
-				jqp('.js-reset-button-dialog .js-parametric-add-reset-short-tag-label').on('click', function(event){
-					if( jqp('.js-reset-button-dialog #reset_shortcode_label').val() != '')
-					{
-						self.short_code_label_text = jqp('.js-reset-button-dialog #reset_shortcode_label').val();
-						self.short_code_classname_text = jqp('.js-reset-button-dialog #reset_shortcode_button_classname').val();
-						if( self.insert_reset_shortcode(self.area, self.short_code_label_text, self.short_code_classname_text) )
-						{
-							button.prop('disabled',false);
-							jqp.colorbox.close();
-						}
-					}
-					else
-					{
-						jqp('.js-reset-button-dialog .js-errors-in-parametric-box').wpvToolsetMessage({
-							text:WPV_Parametric.consider_adding_label_to_button_shortcode
-						});
-					}
-				});
-
-				self.openDialog = function()
-				{
-					
-					if ( self.cursorInside() ) {
-						dialog = jqp.colorbox({
-							inline: true,
-							href:'.js-reset-button-dialog',
-							open: true,
-							onComplete: function() {
-								open_message = open_message || WPV_parametric_local.add_submit.open_message;
-								if( open_message ) {
-									open_message.wpvMessageRemove();
-								}
-								jqp('.js-reset-button-dialog #reset_shortcode_label').val(WPV_Parametric.add_reset_shortcode_button_label);
-								jqp('.js-reset-button-dialog #reset_shortcode_button_classname').val('');
-							}
-						});
-					} else {
-						open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_controls,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
-					}
-				};
-				return this;
-			};
-			
-			var WPV_ParametricSpinnerButton = function()
-			{
-				var self = this
-				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-spinner-short-tag" />')
-				, icon = jqp('<i class="icon-spinner" />')
-				, label = jqp('<span class="button-label" />')
-				, toolbar = jqp('.js-wpv-filter-edit-toolbar')
-				, list = jqp('<li class="js-editor-addon-button-wrapper" />')
-				, open_message
-				, dialog = null;
-
-				self.reanabled = false;
-				//export button for external use
-				WPV_ParametricSpinnerButton.button = button;
-
-				self.createButton = function()
-				{
-					label.text( WPV_Parametric.add_spinner_shortcode_button );
-					list.append(button);
-					button.append(icon, label);
-					if( toolbar.find('button.js-parametric-add-reset-short-tag') ){
-						toolbar.find('button.js-parametric-add-reset-short-tag').parent().after( list );
-					}
-					else{
-						toolbar.append(list);
-					}
-				};
-
-				self.init = function()
-				{
-					self.pwin = WPV_parametric_local.pwindow;
-
-					self.short_code_container_text = '';
-
-					self.codemirror_views = self.pwin.editor.codemirrorGet('wpv_filter_meta_html_content');
-
-					self.createButton();
-
-					self.area = jqp("#wpv_filter_meta_html_content");
-
-					if( self.has_spinner( ) )
-					{
-						button.prop('disabled','disabled');
-					}
-					else
-					{
-						self.create_dialog();
-					}
-
-					self.codemirror_views.on('change', function(){
-
-						if( self.has_spinner( ) )
-						{
-							button.prop('disabled','disabled');
-						}
-						else
-						{
-							button.prop('disabled',false);
-							self.create_dialog();
-						}
-					});
-					
-					jqp(document).on('change', 'input[name="wpv-dps-spinner"]', function() {
-						if( jqp(this).val() == 'none' )
-						{
-							button.prop('disabled','disabled');
-						}
-						else
-						{
-							button.prop('disabled',false);
-							self.create_dialog();
-						}
-					});
-				};
-
-				self.get_text_area_content = function()
-				{
-					var c = '';
-					c = self.codemirror_views.getValue();
-					return c;
-				};
-
-				self.has_spinner = function( )
-				{// check the spinner hability
-					//return ~area.search(/\[wpv-filter-spinner/) == 0 ? false : true ;
-					if ( jqp('input[name="wpv-dps-spinner"]').val() == 'none' ) {
-						return false;
-					} else {
-						return true;
-					}
-				};
-
-				self.create_dialog = function(label)
-				{
-					button.on('click', function(event){
-						event.stopImmediatePropagation();
-						dialog = null;
-						if( !self.cursorInside() )
-						{
-							open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_controls,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
-							return false;
-						} else {
-							self.openDialog();
-						}
-					});
-				};
-
-				self.insert_spinner_shortcode = function( area, container, classname, position, content )
-				{
-					var classtest = '';
-					if ( classname != '') {
-						classtest = ' class="' + classname + '"'
-					}
-					if ( content != '' ) {
-						content = '[wpml-string context="wpv-views"]' + content + '[/wpml-string]';
-					}
-					var shortcode = '[wpv-filter-spinner container="'+container+'" position="' +position + '"' + classtest + ']' + content + '[/wpv-filter-spinner]';
-
-					self.pwin.editor.InsertAtCursor(area, "\n\t"+shortcode+"\n");
-
-					return shortcode;
-				};
-
-				self.cursorInside = function( area, start, end )
-				{
-					try
-					{
-						return self.pwin.editor.cursorWithin(self.pwin.text_area, 'wpv-filter-start', 'wpv-filter-end');
-					}
-					catch( e )
-					{
-						if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-					return false;
-				};
-				
-				jqp('.js-spinner-button-dialog .js-parametric-add-spinner-short-tag-label').on('click', function(event){
-					self.short_code_container_text = jqp('.js-spinner-button-dialog #spinner_shortcode_container_type').val();
-					self.short_code_classname_text = jqp('.js-spinner-button-dialog #spinner_shortcode_container_classname').val();
-					self.short_code_spinner_position_text = jqp('.js-spinner-button-dialog #spinner_shortcode_spinner_position').val();
-					self.short_code_content_text = jqp('.js-spinner-button-dialog #spinner_shortcode_content').val();
-					if( self.insert_spinner_shortcode(self.area, self.short_code_container_text, self.short_code_classname_text, self.short_code_spinner_position_text, self.short_code_content_text) )
-					{
-					//	button.prop('disabled','disabled');
-						jqp.colorbox.close();
-					}
-				});
-
-				self.openDialog = function()
-				{
-					
-					if ( self.cursorInside() ) {
-						dialog = jqp.colorbox({
-							inline: true,
-							href:'.js-spinner-button-dialog',
-							open: true,
-							onComplete: function() {
-								open_message = open_message || WPV_parametric_local.add_submit.open_message;
-								if( open_message ) {
-									open_message.wpvMessageRemove();
-								}
-								jqp('.js-spinner-button-dialog #spinner_shortcode_container_type').val('div');
-								jqp('.js-spinner-button-dialog #spinner_shortcode_container_classname').val('');
-								jqp('.js-spinner-button-dialog #spinner_shortcode_spinner_position').val('before');
-								jqp('.js-spinner-button-dialog #spinner_shortcode_content').val('');
-							}
-						});
-					} else {
-						open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_filter,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
+						*/
 					}
 				};
 				return this;

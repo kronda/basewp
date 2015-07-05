@@ -1,24 +1,31 @@
 <?php
 
-// check for an import
-$wpv_theme_import = '';
-$wpv_theme_import_xml = '';
-if (file_exists(dirname(__FILE__) . '/settings.php')) {
-    
-    $wpv_theme_import = dirname(__FILE__) . '/settings.php';
-    $wpv_theme_import_xml = dirname(__FILE__) . '/settings.xml';
-}
-
-if(defined('WPV_VERSION')) {
- 
+if ( defined( 'WPV_VERSION' ) ) {
     // the plugin version is present.
-    
     return; 
 }
 
-// THEME VERSION
+// EMBEDDED VERSION
 
-define('WPV_VERSION', '1.6.1');
+define('WPV_VERSION', '1.8');
+
+/*
+ * Note: This modification was not authorized, but might be in the future. I'll dare to just leave it here. --Jan
+ *
+ * WPV_PATH and WPV_PATH_EMBEDDED can be overriden, if WPV_PATH_OVERRIDE is also defined.
+ *
+ * If those constants are defined at this point, Views will not try to redefine them. This may be helpful in some weird
+ * scenarios (like using symlinks on dev site) and will not affect anyone who doesn't make an effort to use this
+ * feature.
+ */
+/*if( !defined( 'WPV_PATH_OVERRIDE' ) || !defined( 'WPV_PATH' ) ) {
+    define( 'WPV_PATH', dirname( __FILE__ ) );
+}
+
+if( !defined( 'WPV_PATH_OVERRIDE' ) || !defined( 'WPV_PATH_EMBEDDED' ) ) {
+    define( 'WPV_PATH_EMBEDDED', dirname( __FILE__ ) );
+}*/
+
 define('WPV_PATH', dirname(__FILE__));
 define('WPV_PATH_EMBEDDED', dirname(__FILE__));
 
@@ -31,6 +38,9 @@ require WPV_PATH_EMBEDDED . '/inc/wpv-module-manager.php';
 
 if(strpos(str_replace('\\', '/', WPV_PATH_EMBEDDED), str_replace('\\', '/', WP_PLUGIN_DIR)) !== false){
 	$wpv_url = plugins_url('embedded-views' , dirname(__FILE__));
+	if ( defined( 'WPV_EMBEDDED_ALONE' ) ) {
+		$wpv_url = plugins_url() . '/' . WPV_FOLDER;
+	}
 	if ( ( defined( 'FORCE_SSL_ADMIN' ) && FORCE_SSL_ADMIN ) || is_ssl() ) {
 		$wpv_url = str_replace( 'http://', 'https://', $wpv_url );
 	}
@@ -39,6 +49,17 @@ if(strpos(str_replace('\\', '/', WPV_PATH_EMBEDDED), str_replace('\\', '/', WP_P
 } else {
 	define('WPV_URL', get_stylesheet_directory_uri() . '/' . WPV_FOLDER);
 	define('WPV_URL_EMBEDDED', WPV_URL);
+}
+if ( is_ssl() ) {
+	define('WPV_URL_EMBEDDED_FRONTEND', WPV_URL_EMBEDDED );
+} else {
+	define('WPV_URL_EMBEDDED_FRONTEND', str_replace( 'https://', 'http://', WPV_URL_EMBEDDED ) );
+}
+
+if( defined('WPV_URL_EMBEDDED') ){
+    // load on the go resources
+	require WPV_PATH_EMBEDDED . '/onthego-resources/loader.php';
+	onthego_initialize(WPV_PATH_EMBEDDED . '/onthego-resources/', WPV_URL_EMBEDDED . '/onthego-resources/');
 }
 
 if (!defined('EDITOR_ADDON_RELPATH')) {
@@ -53,6 +74,8 @@ if ( !function_exists( 'wpv_debuger' ) ) {
 	require_once(WPV_PATH_EMBEDDED) . '/inc/wpv-query-debug.class.php';
 }
 
+require WPV_PATH_EMBEDDED . '/inc/constants-embedded.php';
+require WPV_PATH_EMBEDDED . '/inc/wpv-admin-messages.php';
 require WPV_PATH_EMBEDDED . '/inc/functions-core-embedded.php';
 
 require_once WPV_PATH_EMBEDDED . '/common/wp-pointer.php';
@@ -74,12 +97,14 @@ require WPV_PATH_EMBEDDED . '/inc/wpv-filter-author-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-users-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-usermeta-field-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-id-embedded.php';
+require WPV_PATH_EMBEDDED . '/inc/wpv-filter-date-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-parent-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-types-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-post-relationship-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-taxonomy-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-limit-embedded.php';
 
+require_once( WPV_PATH_EMBEDDED . '/inc/third-party/wpv-framework-api.php');
 
 require WPV_PATH_EMBEDDED . '/inc/wpv-user-functions.php';
 
@@ -106,61 +131,52 @@ require WPV_PATH . '/inc/views-templates/wpv-template.class.php';
 global $WPV_templates;
 $WPV_templates = new WPV_template();
 
-function wpv_get_affiliate_url() {
-    global $wpv_theme_import;
-    
-    $affiliate_url = '';
-    if ($wpv_theme_import != '') {
-		include $wpv_theme_import;
-        
-        if (isset($affiliate_id) && isset($affiliate_key)) {
-            $affiliate_url = '?aid=' . $affiliate_id . '&affiliate_key=' . $affiliate_key;
-        }
-        
-    }
-    
-    return $affiliate_url;
+// Views Settings (Read-Only)
+require_once WPV_PATH_EMBEDDED . '/inc/wpv-settings-embedded.php';
 
-}
-function wpv_promote_views_admin() {
-    global $wpdb, $wpv_theme_import;
-    
-    $view_template_available = $wpdb->get_results("SELECT ID, post_name FROM {$wpdb->posts} WHERE post_type='view-template' AND post_status in ('publish')");
-    $view_available = $wpdb->get_results("SELECT ID, post_name FROM {$wpdb->posts} WHERE post_type='view' AND post_status in ('publish')");
-    
-    $affiliate_url = wpv_get_affiliate_url();
+global $WPV_settings;
+$WPV_settings = new WPV_Settings_Embedded;
 
-    ?>
-    
-    <?php
-        if (sizeof($view_available) > 0) {
-            echo '<p>' . __('Views are lists and groups of content, like a listing or showcase page. On your theme the following Views are defined:', 'wpv-views') . "</p>\n";
-            echo "<ul style='margin-left:20px;'>\n";
-            foreach($view_available as $view) {
-                echo "<li>" . $view->post_name . "</li>\n";
-            }
-            echo "</ul>\n";
-        }
-        if (sizeof($view_template_available) > 0) {
-            echo '<p>' . __('Content Templates are applied to pages to create different layouts. On your theme the following Content Templates are defined:', 'wpv-views') . "</p>\n";
-            echo "<ul style='margin-left:20px;'>\n";
-            foreach($view_template_available as $template) {
-                echo "<li>" . $template->post_name . "</li>\n";
-            }
-            echo "</ul>\n";
-        }
-    ?>
-    <p><?php echo sprintf(__('If you want to edit these or create your own you can purchase the full version of <strong>Views</strong> from %s', 'wpv-views'),
-                            '<a href="http://wp-types.com/' . $affiliate_url . '" target="_blank">http://wp-types.com/ &raquo;</a>'); ?></p>
-    
-    <?php
-    
-}
+// WPV_View
+require_once WPV_PATH_EMBEDDED . '/inc/wpv-view.class.php';
+
+require WPV_PATH_EMBEDDED . '/inc/wpv-summary-embedded.php';
+require WPV_PATH_EMBEDDED . '/inc/wpv-readonly-embedded.php';
+
+require WPV_PATH_EMBEDDED . '/inc/wpv-api.php';
 
 if (!is_admin()) {
+
 	add_action('init', 'wpv_add_jquery');
 
     function wpv_add_jquery() {
 		wp_enqueue_script('jquery');
 	}
+}
+
+
+/* ************************************************************************* *\
+        Add Toolset promotion pop-up.
+\* ************************************************************************* */
+
+include_once( WPV_PATH_EMBEDDED . '/common/classes/class.toolset.promo.php' );
+
+new Toolset_Promotion;
+
+/**
+ * Register screen IDs where Toolset promotion pop-up should be available.
+ *
+ * Currently we use it on embedded listing pages.
+ *
+ * @since 1.8
+ */
+add_filter( 'toolset_promotion_screen_ids', 'wpv_register_toolset_promotion_screen_ids' );
+
+function wpv_register_toolset_promotion_screen_ids( $screen_ids ) {
+    if( is_array( $screen_ids ) ) {
+        $screen_ids = array_merge(
+            $screen_ids,
+            array( 'toplevel_page_embedded-views', 'views_page_embedded-views-templates', 'views_page_embedded-views-archives' ) );
+    }
+    return $screen_ids;
 }

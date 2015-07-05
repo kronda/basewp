@@ -80,3 +80,7 @@ a.wpv-header-asc:hover .wpv-sorting-indicator {
 div.ui-datepicker {
 	font-size: 12px;
 }
+
+.ui-datepicker-trigger, .wpv_date_input, .wpv-date-front-end-clear {
+	cursor: pointer;
+}

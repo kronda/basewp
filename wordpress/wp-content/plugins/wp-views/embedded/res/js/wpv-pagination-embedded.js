@@ -7,48 +7,85 @@ window.wpvPaginationQueue = {};
 // General helper functions
 //////////////////////////////////////////////////////////////////////////
 
+// DEPRECATED in favor of wpv_add_url_query_parameters
+
 function add_url_query_parameters( data ) {
-	var qs = ( function( a ) {
-		if ( a === "" ) {
+    var qs = ( function( a ) {
+        if ( a == "" ) {
 			return {};
 		}
-		var b = {},
-		alength = a.length,
-		i = 0,
-		p = '';
-		for ( i = 0; i < alength; ++i ) {
-			p = a[i].split( '=' );
-			if ( p.length !== 2 ) {
-				continue;
-			}
-			p[0] = p[0].replace( "[]", "" ); // needed for pagination on the author filter to work
-			if ( b.hasOwnProperty( p[0] ) ) {
-				if ( b[p[0]] !== decodeURIComponent( p[1].replace( /\+/g, " " ) ) ) {
-					b[p[0]] += ',' + decodeURIComponent( p[1].replace( /\+/g, " " ) );
+        var b = {};
+        for ( var i = 0; i < a.length; ++i ) {
+            var p=a[i].split( '=' );
+            if (p.length != 2) continue;
+			p[0] = p[0].replace("[]",""); // needed for pagination on the author filter to work
+			if (b.hasOwnProperty(p[0])){
+				if (b[p[0]] != decodeURIComponent(p[1].replace(/\+/g, " "))) {
+					b[p[0]] += ','+decodeURIComponent(p[1].replace(/\+/g, " "));
 				} else {
-					b[p[0]] = decodeURIComponent( p[1].replace( /\+/g, " " ) );
+					b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
 				}
 			} else {
-				b[p[0]] = decodeURIComponent( p[1].replace( /\+/g, " " ) );
+				b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
 			}
-		}
-		return b;
-	}( window.location.search.substr( 1 ).split( '&' ) ) );
-	data['get_params'] = {};
-	var prop = '',
-	prop2 = '',
-	qslength = qs.length,
-	j = 0;
-	//for ( var prop in qs ) {
-	for ( j = 0; j < qslength; ++j ) {
-		prop = qs[j];
-		if ( qs.hasOwnProperty( prop ) ) {
-			if ( !data.hasOwnProperty( prop ) ) {
-				prop2 = prop.replace( "%5B%5D", "" );
-				data['get_params'][prop2] = qs[prop];
+        }
+        return b;
+    })( window.location.search.substr(1).split( '&' ) );
+    data['get_params'] = {};
+    for ( var prop in qs ) {
+        if ( qs.hasOwnProperty( prop ) ) {
+            if ( !data.hasOwnProperty( prop ) ) {
+				var prop2 = prop.replace( "%5B%5D","" );
+                data['get_params'][prop2] = qs[prop];
+            }
+        }
+    }
+    
+    return data;
+}
+
+function wpv_extract_url_query_parameters( query_string ) {
+	var query_string_pairs = {};
+	if ( query_string == "" ) {
+		return query_string_pairs;
+	}
+	var query_string_split = query_string.split( '&' ),
+	query_string_split_length = query_string_split.length;
+	for ( var i = 0; i < query_string_split_length; ++i ) {
+		var qs_part = query_string_split[i].split( '=' );
+		if ( qs_part.length != 2 ) {
+			continue;
+		};
+		var thiz_key = qs_part[0],
+		thiz_val = decodeURIComponent( qs_part[1].replace( /\+/g, " " ) );
+		// Adjust thiz_key to work with POSTed arrays
+		thiz_key = thiz_key.replace( "[]", "" );
+		thiz_key = thiz_key.replace( "%5B%5D", "" );
+		if ( query_string_pairs.hasOwnProperty( thiz_key ) ) {
+			if ( query_string_pairs[thiz_key] != thiz_val ) {
+				// @hack alert!! WE can not avoid using this :-(
+				query_string_pairs[thiz_key] += '##URLARRAYVALHACK##' + thiz_val;
+			} else {
+				query_string_pairs[thiz_key] = thiz_val;
 			}
+		} else {
+			query_string_pairs[thiz_key] = thiz_val;
 		}
 	}
+	return query_string_pairs;
+}
+
+function wpv_add_url_query_parameters( data ) {
+    var query_s = wpv_extract_url_query_parameters( window.location.search.substr( 1 ) );
+    data['get_params'] = {};
+    for ( var prop in query_s ) {
+        if ( 
+			query_s.hasOwnProperty( prop ) 
+			&& ! data.hasOwnProperty( prop )
+		) {
+            data['get_params'][prop] = query_s[prop];
+        }
+    }
     return data;
 }
 
@@ -166,6 +203,36 @@ function wpv_serialize_array(data) {
     return encodeToHex(array2json(data));
 }
 
+// Textarea and select clone() bug workaround | Spencer Tipping
+// Licensed under the terms of the MIT source code license
+// Motivation.
+// jQuery's clone() method works in most cases, but it fails to copy the value of textareas and select elements. This patch replaces jQuery's clone() method with a wrapper that fills in the
+// values after the fact.
+// An interesting error case submitted by Piotr Przybyl: If two <select> options had the same value, the clone() method would select the wrong one in the cloned box. The fix, suggested by Piotr
+// and implemented here, is to use the selectedIndex property on the <select> box itself rather than relying on jQuery's value-based val().
+;(function (original) {
+	jQuery.fn.clone = function () {
+		var result = original.apply(this, arguments),
+		my_textareas = this.find('textarea').add(this.filter('textarea')),
+		result_textareas = result.find('textarea').add(result.filter('textarea')),
+		my_selects = this.find('select').add(this.filter('select')),
+		result_selects = result.find('select').add(result.filter('select'));
+		for (var i = 0, l = my_textareas.length; i < l; ++i) {
+			$(result_textareas[i]).val($(my_textareas[i]).val());
+		}
+		for (var i = 0, l = my_selects.length; i < l; ++i) {
+			for (var j = 0, m = my_selects[i].options.length; j < m; ++j) {
+				if (my_selects[i].options[j].selected === true) {
+					result_selects[i].options[j].selected = true;
+				} else {
+					result_selects[i].options[j].selected = false;
+				}
+			}
+		}
+		return result;
+	};
+})(jQuery.fn.clone);
+
 //////////////////////////////////////////////////////////////////////////
 // Datepicker script
 //////////////////////////////////////////////////////////////////////////
@@ -176,19 +243,23 @@ function wpv_render_frontend_datepicker() {
 			onSelect: function( dateText, inst ) {
 			//	var control = this,
 				var url_param = jQuery( this ).data( 'param' ),
-				data = 'date=' + dateText;
+				data = 'date=' + dateText,
+				form = jQuery( this ).closest( 'form' );
 				data += '&date-format=' + jQuery( '.js-wpv-date-param-' + url_param + '-format' ).val();
 				data += '&action=wpv_format_date';
-				jQuery.post( front_ajaxurl, data, function( response ) {
+				jQuery.post( wpv_pagination_local.front_ajaxurl, data, function( response ) {
 					response = jQuery.parseJSON( response );
-					jQuery( '.js-wpv-date-param-' + url_param + '-value' ).val( response['timestamp'] ).trigger( 'change' );
-					jQuery( '.js-wpv-date-param-' + url_param ).html( response['display'] );
+					form.find('.js-wpv-date-param-' + url_param ).html( response['display'] );
+					form.find('.js-wpv-date-front-end-clear-' + url_param ).show();
+					form.find('.js-wpv-date-param-' + url_param + '-value' ).val( response['timestamp'] ).trigger( 'change' );
 				});
 			},
 			dateFormat: 'ddmmyy',
+			minDate: wpv_pagination_local.datepicker_min_date,
+			maxDate: wpv_pagination_local.datepicker_max_date,
 			showOn: "button",
-			buttonImage: wpv_calendar_image,
-			buttonText: wpv_calendar_text,
+			buttonImage: wpv_pagination_local.calendar_image,
+			buttonText: wpv_pagination_local.calendar_text,
 			buttonImageOnly: true,
 			changeMonth: true,
 			changeYear: true
@@ -204,16 +275,26 @@ jQuery( document ).on( 'click', '.js-wpv-date-display', function() {
 	jQuery( '.js-wpv-date-front-end-' + url_param ).datepicker( 'show' );
 });
 
+jQuery( document ).on( 'click', '.js-wpv-date-front-end-clear', function(e) {
+	e.preventDefault();
+	var url_param = jQuery( this ).data( 'param' ),
+	form = jQuery(this).closest( 'form' );
+	form.find('.js-wpv-date-param-' + url_param ).html( '' );
+	form.find('.js-wpv-date-front-end-' + url_param ).val( '' );
+	jQuery(this).hide();
+	form.find('.js-wpv-date-param-' + url_param + '-value' ).val( '' ).trigger( 'change' );
+});
+
 //////////////////////////////////////////////////////////////////////////
 // Helper functions for pagination
 //////////////////////////////////////////////////////////////////////////
 
 function wpv_get_ajax_pagination_url( data ) {
 	var url;
-	if ( wpv_ajax_pagination_url.slice( -'.php'.length ) === '.php' ) {
-		url = wpv_ajax_pagination_url + '?wpv-ajax-pagination=' + wpv_serialize_array( data );
+	if ( wpv_pagination_local.ajax_pagination_url.slice( -'.php'.length ) === '.php' ) {
+		url = wpv_pagination_local.ajax_pagination_url + '?wpv-ajax-pagination=' + wpv_serialize_array( data );
 	} else {
-		url = wpv_ajax_pagination_url + wpv_serialize_array( data );
+		url = wpv_pagination_local.ajax_pagination_url + wpv_serialize_array( data );
 	}
 	return url;
 }
@@ -237,7 +318,7 @@ function add_view_parameters( data, page, view_number ) {
 		data['dps_pr'] = this_prelements.serializeArray();
 	}
 	if ( this_form.hasClass( 'js-wpv-dps-enabled' ) || this_form.hasClass( 'js-wpv-ajax-results-enabled' ) ) {
-		data['dps_general'] = this_form.find( '.js-wpv-filter-trigger' ).serializeArray();
+		data['dps_general'] = this_form.find( '.js-wpv-filter-trigger, .js-wpv-filter-trigger-delayed' ).serializeArray();
 	}
 	return data;
 }
@@ -263,9 +344,6 @@ function wpv_pagination_replace_view( view_number, page, ajax, effect, max_pages
 		wpv_stop_rollover[view_number] = true;
 	}
 	var data = {},
-	datalength,
-	count,
-	prop,
 	wpvPaginatorLayout = jQuery( '#wpv-view-layout-' + view_number ),
 	wpvPaginatorFilter = jQuery( 'form[name=wpv-filter-' + view_number + ']' ),
 	speed = 500,
@@ -273,23 +351,37 @@ function wpv_pagination_replace_view( view_number, page, ajax, effect, max_pages
 	max_reach = 1,
 	img;
 	if ( ajax !== true ) {
-		// add elements for the current url parameters
-		// So any views that filter by url parameters will still work.
+		// Add elements for the current url parameters
+		// so any views that filter by url parameters will still work
+		// We do not need to add the shortcode attributes
+		// because basically passing them in the view_hash
+		// @todo why not use wpv_add_url_controls_for_column_sort()
 		data = {};
-		data = add_url_query_parameters( data );
-		datalength = data['get_params'].length;
-		for ( count = 0; count < datalength; count++ ) {
-	//	for (var prop in data['get_params']) {
-			prop = data['get_params'][count];
-			if ( ! ( jQuery( 'form[name=wpv-filter-' + view_number + '] > input[name=' + prop + ']' ).length > 0 ) ) {
-				jQuery( '<input>' ).attr({
+		data = wpv_add_url_query_parameters( data );
+		jQuery.each( data['get_params'], function( key, value ) {
+			if ( wpvPaginatorFilter.find( '[name=' + key + '], [name=' + key + '\\[\\]]' ).length === 0 ) {
+				var pieces = value.split( '##URLARRAYVALHACK##' ),
+				pieces_length = pieces.length;
+				if ( pieces_length < 2 ) {
+					jQuery( '<input>' ).attr({
 						type: 'hidden',
-						name: prop,
-						value: data['get_params'][prop]
+						name: key,
+						value: value
 					})
-					.appendTo( 'form[name=wpv-filter-' + view_number + ']' );
+					.appendTo( wpvPaginatorFilter );
+				} else {
+					for ( var iter = 0; iter < pieces_length; iter++ ) {
+						jQuery( '<input>' ).attr({
+							type: 'hidden',
+							name: key + "[]",
+							value: pieces[iter]
+						})
+						.appendTo( wpvPaginatorFilter );
+					}
+				}
 			}
-		}
+		});
+		// Adjust the wpv_paged hidden input to the page that we want to show
 		if ( jQuery( 'input[name=wpv_paged]' ).length > 0 ) {
 			jQuery( 'input[name=wpv_paged]' ).attr( 'value', page );
 		} else {
@@ -298,36 +390,12 @@ function wpv_pagination_replace_view( view_number, page, ajax, effect, max_pages
 					name: 'wpv_paged',
 					value: page
 				})
-				.appendTo( 'form[name=wpv-filter-' + view_number + ']' );
+				.appendTo( wpvPaginatorFilter );
 		}
 		wpvPaginatorFilter[0].submit();
 		return false;
 	}
-	// add url sorting parameters to allow custom sorting using ajax and table sorting parameters
-	data = add_url_query_parameters( data );
-	datalength = data['get_params'].length;
-	for ( count = 0; count < datalength; count++ ) {
-//	for (var prop in data['get_params']) {
-		prop = data['get_params'][count];
-		if ( ! ( jQuery( 'form[name=wpv-filter-' + view_number + '] > input[name=' + prop + ']' ).length > 0 ) ) {
-			jQuery( '<input>' ).attr({
-					type: 'hidden',
-					name: prop,
-					value: data['get_params'][prop]
-				})
-			.appendTo( 'form[name=wpv-filter-' + view_number + ']' );
-		}
-	}
 	window.wpvPaginationAjaxLoaded[view_number] = false;
-//    if (typeof this.historyP == 'undefined' ) {
-//       this.historyP = [];
-//  }
-//    if (typeof window.wpvCachedPages == 'undefined' ) {
-//       window.wpvCachedPages = new Array();
-//  }
-//    if (typeof window.wpvCachedPages[view_number] == 'undefined' ) {
-//       window.wpvCachedPages[view_number] = new Array();
-//  }
 	this.historyP = ( typeof this.historyP == 'undefined' ) ? [] : this.historyP;
 	window.wpvCachedPages = ( typeof window.wpvCachedPages == 'undefined' ) ? [] : window.wpvCachedPages;
 	window.wpvCachedPages[view_number] = ( typeof window.wpvCachedPages[view_number] == 'undefined' ) ? [] : window.wpvCachedPages[view_number];
@@ -368,12 +436,37 @@ function wpv_pagination_replace_view( view_number, page, ajax, effect, max_pages
 			};
 		}
 		data = add_view_parameters( data, page, view_number );
-		data = add_url_query_parameters( data );
+		// add url sorting parameters to allow custom sorting using ajax and table sorting parameters
+		// @why not use wpv_add_url_controls_for_column_sort()
+		data = wpv_add_url_query_parameters( data );
+		jQuery.each( data['get_params'], function( key, value ) {
+			if ( wpvPaginatorFilter.find( '[name=' + key + '], [name=' + key + '\\[\\]]' ).length === 0 ) {
+				var pieces = value.split( '##URLARRAYVALHACK##' ),
+				pieces_length = pieces.length;
+				if ( pieces_length < 2 ) {
+					jQuery( '<input>' ).attr({
+						type: 'hidden',
+						name: key,
+						value: value
+					})
+					.appendTo( wpvPaginatorFilter );
+				} else {
+					for ( var iter = 0; iter < pieces_length; iter++ ) {
+						jQuery( '<input>' ).attr({
+							type: 'hidden',
+							name: key + "[]",
+							value: pieces[iter]
+						})
+						.appendTo( wpvPaginatorFilter );
+					}
+				}
+			}
+		});
 		icl_lang = ( typeof icl_lang == 'undefined' ) ? false : icl_lang;
 		if ( icl_lang !== false ) {
 				data['lang'] = icl_lang;
 			}
-		jQuery.get( wpv_get_ajax_pagination_url( data ), function(response) {
+		jQuery.get( wpv_get_ajax_pagination_url( data ), '', function(response) {
 			wpv_pagination_get_page( view_number, next, effect, speed, response, wpvPaginatorLayout, wpvPaginatorFilter, callback_next );
 		});
 		wpv_pagination_preload_pages( view_number, page, max_pages, cache_pages, preload_pages, max_reach );
@@ -421,7 +514,8 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 	new_height,
 	is_callback = false;
 	if ( callback_next !== '' ) {
-		if ( eval( 'typeof(' + callback_next + ') === \'function\'' ) ) {
+		var callback_next_func = window[callback_next];
+		if ( typeof callback_next_func === "function" ) {
 			is_callback = true;
 		}
 	}
@@ -448,7 +542,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 					window.wpvPaginationAjaxLoaded[view_number] = true;
 					window.wpvPaginationAnimationFinished[view_number] = true;
 					if ( is_callback ) {
-						eval( callback_next + '();' );
+						callback_next_func();
 					}
 					wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 				});
@@ -460,7 +554,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 						window.wpvPaginationAjaxLoaded[view_number] = true;
 						window.wpvPaginationAnimationFinished[view_number] = true;
 						if ( is_callback ) {
-							eval( callback_next + '();' );
+							callback_next_func();
 						}
 						wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 					});
@@ -473,7 +567,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 						window.wpvPaginationAjaxLoaded[view_number] = true;
 						window.wpvPaginationAnimationFinished[view_number] = true;
 						if ( is_callback ) {
-							eval( callback_next + '();' );
+							callback_next_func();
 						}
 						wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 					});
@@ -495,7 +589,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 					window.wpvPaginationAjaxLoaded[view_number] = true;
 					window.wpvPaginationAnimationFinished[view_number] = true;
 					if ( is_callback ) {
-						eval( callback_next + '();' );
+						callback_next_func();
 					}
 					wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 				});
@@ -507,7 +601,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 						window.wpvPaginationAjaxLoaded[view_number] = true;
 						window.wpvPaginationAnimationFinished[view_number] = true;
 						if ( is_callback ) {
-							eval( callback_next + '();' );
+							callback_next_func();
 						}
 						wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 					});
@@ -520,7 +614,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 						window.wpvPaginationAjaxLoaded[view_number] = true;
 						window.wpvPaginationAnimationFinished[view_number] = true;
 						if ( is_callback ) {
-							eval( callback_next + '();' );
+							callback_next_func();
 						}
 						wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 					});
@@ -548,7 +642,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 					window.wpvPaginationAjaxLoaded[view_number] = true;
 					window.wpvPaginationAnimationFinished[view_number] = true;
 					if ( is_callback ) {
-						eval( callback_next + '();' );
+						callback_next_func();
 					}
 					wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 				});
@@ -560,7 +654,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 						window.wpvPaginationAjaxLoaded[view_number] = true;
 						window.wpvPaginationAnimationFinished[view_number] = true;
 						if ( is_callback ) {
-							eval( callback_next + '();' );
+							callback_next_func();
 						}
 						wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 					});
@@ -573,7 +667,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 						window.wpvPaginationAjaxLoaded[view_number] = true;
 						window.wpvPaginationAnimationFinished[view_number] = true;
 						if ( is_callback ) {
-							eval( callback_next + '();' );
+							callback_next_func();
 						}
 						wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 					});
@@ -595,7 +689,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 					window.wpvPaginationAjaxLoaded[view_number] = true;
 					window.wpvPaginationAnimationFinished[view_number] = true;
 					if ( is_callback ) {
-						eval( callback_next + '();' );
+						callback_next_func();
 					}
 					wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 				});
@@ -607,7 +701,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 						window.wpvPaginationAjaxLoaded[view_number] = true;
 						window.wpvPaginationAnimationFinished[view_number] = true;
 						if ( is_callback ) {
-							eval( callback_next + '();' );
+							callback_next_func();
 						}
 						wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 					});
@@ -620,7 +714,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 						window.wpvPaginationAjaxLoaded[view_number] = true;
 						window.wpvPaginationAnimationFinished[view_number] = true;
 						if ( is_callback ) {
-							eval( callback_next + '();' );
+							callback_next_func();
 						}
 						wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 					});
@@ -640,7 +734,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 				window.wpvPaginationAjaxLoaded[view_number] = true;
 				window.wpvPaginationAnimationFinished[view_number] = true;
 				if ( is_callback ) {
-					eval( callback_next + '();' );
+					callback_next_func();
 				}
 				wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 			});
@@ -652,7 +746,7 @@ function wpv_pagination_slide( view_number, width, height, next, effect, speed, 
 					window.wpvPaginationAjaxLoaded[view_number] = true;
 					window.wpvPaginationAnimationFinished[view_number] = true;
 					if ( is_callback ) {
-						eval( callback_next + '();' );
+						callback_next_func();
 					}
 					wpvPaginationQueueTrigger( view_number, next, wpvPaginatorFilter );
 					responseView.hide().css( 'visibility', 'visible' ).fadeIn( speed );
@@ -685,14 +779,14 @@ function wpv_pagination_load_next_page( view_number, page, max_pages, reach ) {
 		if ( ( next_page - 1 ) < max_pages ) {
 			var dataNext = {};
 			dataNext = add_view_parameters( dataNext, next_page, view_number );
-			dataNext = add_url_query_parameters( dataNext );
+			dataNext = wpv_add_url_query_parameters( dataNext );
 		//	if ( typeof( icl_lang ) !== 'undefined' ) {
 		//		dataNext['lang'] = icl_lang;
 		//	}
 			if ( icl_lang !== false ) {
 				dataNext['lang'] = icl_lang;
 			}
-			jQuery.get( wpv_get_ajax_pagination_url( dataNext ), function( response ) {
+			jQuery.get( wpv_get_ajax_pagination_url( dataNext ), '', function( response ) {
 				window.wpvCachedPages[view_number][next_page] = response;
 				var content = jQuery( response ).find( 'img' );
 				content.each( function() {
@@ -727,11 +821,11 @@ function wpv_pagination_load_previous_page(view_number, page, max_pages, reach) 
 		// LOAD PREVIOUS
 		if ( ( previous_page + 1 ) > 1 ) {
 			dataPrevious = add_view_parameters( dataPrevious, previous_page, view_number );
-			dataPrevious = add_url_query_parameters( dataPrevious );
+			dataPrevious = wpv_add_url_query_parameters( dataPrevious );
 			if ( icl_lang !== false ) {
 				dataPrevious['lang'] = icl_lang;
 			}
-			jQuery.get( wpv_get_ajax_pagination_url( dataPrevious ), function( response ) {
+			jQuery.get( wpv_get_ajax_pagination_url( dataPrevious ), '', function( response ) {
 			window.wpvCachedPages[view_number][previous_page] = response;
 			content = jQuery( response ).find( 'img' );
 				content.each( function() {
@@ -740,11 +834,11 @@ function wpv_pagination_load_previous_page(view_number, page, max_pages, reach) 
 			});
 		} else if ( (previous_page + 1 ) === 1 ) { // LOAD LAST PAGE IF ON FIRST PAGE
 			dataPrevious = add_view_parameters( dataPrevious, max_pages, view_number );
-			dataPrevious = add_url_query_parameters( dataPrevious );
+			dataPrevious = wpv_add_url_query_parameters( dataPrevious );
 			if ( icl_lang !== false ) {
 				dataPrevious['lang'] = icl_lang;
 			}
-			jQuery.get( wpv_get_ajax_pagination_url( dataPrevious ), function( response ) {
+			jQuery.get( wpv_get_ajax_pagination_url( dataPrevious ), '', function( response ) {
 				window.wpvCachedPages[view_number][max_pages] = response;
 				window.wpvCachedPages[view_number][0] = response;
 				content = jQuery( response ).find( 'img' );
@@ -851,11 +945,11 @@ function wpv_pagination_cache_current_page( view_number, page ) {
 	// Cache current page
 //    if (page in window.wpvCachedPages[view_number] == false) {
 		dataCurrent = add_view_parameters( dataCurrent, page, view_number );
-		dataCurrent = add_url_query_parameters( dataCurrent );
+		dataCurrent = wpv_add_url_query_parameters( dataCurrent );
 		if ( icl_lang !== false ) {
 			dataCurrent['lang'] = icl_lang;
 		}
-		jQuery.get( wpv_get_ajax_pagination_url( dataCurrent ), function( response ) {
+		jQuery.get( wpv_get_ajax_pagination_url( dataCurrent ), '', function( response ) {
 			window.wpvCachedPages[view_number][page] = response;
 			content = jQuery( response ).find( 'img' );
 			content.each( function() {
@@ -887,22 +981,33 @@ function wpv_pagination_preload_pages( view_number, page, max_pages, cache_pages
 //////////////////////////////////////////////////////////////////////////
 
 function wpv_add_url_controls_for_column_sort( form ) {
-	var data = [],
-	param,
-	datalength,
-	l = 0;
-	data = add_url_query_parameters( data );
-	datalength = data['get_params'].length;
-//	for ( var param in data['get_params'] ) {
-	for ( l = 0; l < datalength; l++ ) {
-		param = data['get_params'][l];
-		if ( data['get_params'].hasOwnProperty( param ) ) {
-			if ( form.find( 'input[name=' + param + ']' ).length === 0 ) {
-				// we need to add an input element
-				form.append( '<input type="hidden" name="' + param + '" value="' + data['get_params'][param] + '" />' );
+	var data = {},
+	data = wpv_add_url_query_parameters( data );
+	jQuery.each( data['get_params'], function( key, value ) {
+		if ( form.find( '[name=' + key + '], [name=' + key + '\\[\\]]' ).length === 0 ) {
+			// @hack alert!! WE can not avoid this :-(
+			var pieces = value.split( '##URLARRAYVALHACK##' ),
+			pieces_length = pieces.length;
+			if ( pieces_length < 2 ) {
+				jQuery( '<input>' ).attr({
+					type: 'hidden',
+					name: key,
+					value: value
+				})
+				.appendTo( form );
+			} else {
+				for ( var iter = 0; iter < pieces_length; iter++ ) {
+					jQuery( '<input>' ).attr({
+						type: 'hidden',
+						name: key + "[]",
+						value: pieces[iter]
+					})
+					.appendTo( form );
+				}
 			}
 		}
-	}
+	});
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -1007,7 +1112,7 @@ jQuery.fn.wpvRollover = function() {
 	wpvInfiniteLoop;
 	if ( count > 1 ) {
 		if ( window.wpvPaginationAjaxLoaded.hasOwnProperty( id ) && window.wpvPaginationAjaxLoaded[id] === false ) {
-			setTimeout( 'jQuery(this).wpvRollover({id:' + id + ', effect:\'' + effect + '\', speed:' + ( speed/1000 ) + ', page:' + page + ', count:' + count + ', cache_pages:' + cache_pages + ', preload_pages:' + preload_pages + ', spinner:\'' + spinner + '\', spinner_image:\'' + spinner_image + '\', callback_next:\'' + callback_next + '\'})', 100 );
+			setTimeout( 'jQuery(this).wpvRollover({id: "' + id + '", effect:\'' + effect + '\', speed:' + ( speed/1000 ) + ', page:' + page + ', count:' + count + ', cache_pages:' + cache_pages + ', preload_pages:' + preload_pages + ', spinner:\'' + spinner + '\', spinner_image:\'' + spinner_image + '\', callback_next:\'' + callback_next + '\'})', 100 );
 			return false;
 		}
 		window.wpvPaginationAjaxLoaded[id] = false;
@@ -1090,94 +1195,393 @@ function wpv_dependant_form_clear_pagination_cache( view_number ) {
 	window.wpvCachedPages[view_number] = [];
 }
 
-function wpv_manage_advanced_form( thiz, force_filter_update, force_layout_update ) {
-	var fil = thiz.closest( 'form' ),
-	view_num = fil.data( 'viewnumber' ),
+// @todo we are not handling 3rd party URL parameters here
+
+function wpv_manage_update_form( fil, ajax_get ) {
+	var view_num = fil.data( 'viewnumber' ),
 	view_id = fil.data( 'viewid' ),
+	aux_fil,
+	data = {
+		action: 'wpv_update_parametric_search',
+		valz: fil.serializeArray(),
+		viewid: view_id,
+		getthis: ajax_get
+	},
+	attr_data = fil.find('.js-wpv-view-attributes');
+	wpv_stop_rollover[view_num] = true;
+	if ( attr_data.length > 0 ) {
+		data['attributes'] = attr_data.data();
+	}
+	
+	if ( fil.attr( 'data-targetid' ) ) {
+		data.targetid = fil.data( 'targetid' );
+	} else if ( ajax_get == 'both' ) {
+		aux_fil = jQuery( '.js-wpv-form-only.js-wpv-filter-form-' + view_num );
+		data.targetid = aux_fil.data( 'targetid' );
+	}
+	
+	return jQuery.ajax({
+		type: "POST",
+		url: wpv_pagination_local.front_ajaxurl,
+		data: data
+	});
+}
+
+function wpv_manage_update_results( lay, new_lay, view_num, ajax_before, ajax_after ) {
+	if ( ajax_before !== '' ) {
+		var ajax_before_func = window[ajax_before];
+		if ( typeof ajax_before_func === "function" ) {
+			ajax_before_func( view_num );
+		}
+	}
+	lay.fadeOut( 200, function() {
+		lay.html( new_lay ).fadeIn( 'fast', function() {
+			var ajax_after_func = window[ajax_after];
+			if ( typeof ajax_after_func === "function" ) {
+				ajax_after_func( view_num );
+			}
+		});		
+	});
+}
+
+function wpv_clone_form( fil, targets ) {
+	var cloned = fil.clone();
+	targets.each( function() {
+		jQuery( this ).replaceWith( cloned );
+	});
+}
+
+function wpv_manage_changed_form( fil, force_form_update, force_results_update ) {
+	if ( typeof force_form_update == "undefined" ) {
+        force_form_update = false;
+    }
+	if ( typeof force_results_update == "undefined" ) {
+        force_results_update = false;
+    }
+	var view_num = fil.data( 'viewnumber' ),
 	lay = jQuery( '#wpv-view-layout-' + view_num ),
 	full_data = fil.find( '.js-wpv-filter-data-for-this-form' ),
-	spinnerContainer = fil.find( '.js-wpv-dps-spinner' ),
+	ajax_pre_before = full_data.data( 'ajaxprebefore' ),
 	ajax_before = full_data.data( 'ajaxbefore' ),
 	ajax_after = full_data.data( 'ajaxafter' ),
-	data = {
-		action: 'wpv_update_filter_form',
-		valz: fil.serializeArray(),
-		viewid: view_id
-	},
-	spinnerItems = spinnerContainer.length,
-	spinnerImage,
-	i;
-	
-	if ( full_data.data( 'spinnerimage' ) ) {
-		spinnerImage = '<img src="' +  full_data.data( 'spinnerimage' ) + '" />';
-	} else {
-		spinnerImage = '';
+	view_type = 'full',
+	additional_forms = jQuery( '.js-wpv-filter-form-' + view_num ).not( fil ),
+	additional_forms_only,
+	additional_forms_full,
+	ajax_get = 'both',
+	new_content_form,
+	new_content_form_filter,
+	new_content_full,
+	new_content_full_filter,
+	new_content_full_layout,
+	spinnerContainer = fil.find( '.js-wpv-dps-spinner' ).add( additional_forms.find( '.js-wpv-dps-spinner' ) ),//TODO maybe add a view_num here to select all spinnerContainers
+	spinnerItems = spinnerContainer.length;
+	if ( fil.hasClass( 'js-wpv-form-only' ) ) {
+		view_type = 'form';
 	}
-	if ( spinnerItems ) {
-		for ( i = 0; i < spinnerItems; i++ ) {
-			if ( jQuery( spinnerContainer[i] ).hasClass( 'js-wpv-dps-spinner-after' ) ) {
-				jQuery( spinnerContainer[i] ).append( spinnerImage ).fadeIn( 'fast' );
-			} else if ( jQuery( spinnerContainer[i] ).hasClass( 'js-wpv-dps-spinner-before' ) ) {
-				jQuery( spinnerContainer[i] ).prepend( spinnerImage ).fadeIn( 'fast' );
-			} else {
-				jQuery( spinnerContainer[i] ).fadeIn( 'fast' );
-			}
-		}
-	}
-	
-	if ( fil.hasClass( 'js-wpv-dps-only-form' ) ) {
-		data.targetid = fil.data( 'targetid' );
-	}
-	
-	jQuery.ajax({
-		type: "POST",
-		url: front_ajaxurl,
-		data: data,
-		success: function( response ) {
-			var response_content = jQuery( '<div></div>' ).append( response ),
-			new_filter_content = response_content.find( '.js-wpv-filter-form' ).html(),
-			new_layout_content = response_content.find( '.js-wpv-view-layout' ).html();
-			if ( force_filter_update || fil.hasClass( 'js-wpv-dps-enabled' ) || fil.hasClass( 'js-wpv-ajax-results-enabled' ) ) {
-				fil.html( new_filter_content );
-				wpv_render_frontend_datepicker();
-				wpv_dependant_form_clear_pagination_cache( view_num );
-			}
-			fil.find( '[data-viewnumber]' ).each( function() {
-				jQuery(this).attr( 'data-viewnumber', view_num );
-			});
-			// Adjust hidden inputs
-			fil.find( 'input[name="wpv_paged_max"]' ).attr( 'id', 'wpv_paged_max-' + view_num );
-			fil.find( 'input[name="wpv_paged_preload_reach"]' ).attr( 'id', 'wpv_paged_preload_reach-' + view_num );
-			fil.find( 'input[name="wpv_widget_view_id"]' ).attr( 'id', 'wpv_widget_view-' + view_num );
-			fil.find( 'input[name="wpv_view_hash"]' ).attr( 'id', 'wpv_view_hash-' + view_num );
-			fil.find( 'input[name="wpv_view_count"]' ).attr( 'id', 'wpv_view_count-' + view_num ).val( view_num );
-			if ( fil.hasClass( 'js-wpv-ajax-results-enabled' ) ) {
-				if ( ajax_before !== '' ) {
-					if ( eval( 'typeof(' + ajax_before + ' ) === \'function\'' ) ) {
-						eval( ajax_before + '(' + view_num + ');' );
+	if ( fil.hasClass( 'js-wpv-dps-enabled' ) || force_form_update === true ) {//alert('dependency');
+		if ( additional_forms.length > 0 ) {//alert('multiple');
+			additional_forms_only = additional_forms.not( '.js-wpv-form-full' );
+			additional_forms_full = additional_forms.not( '.js-wpv-form-only' );
+			if ( view_type == 'form' ) {
+				if ( additional_forms_full.length > 0 || ( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 ) ) {
+					ajax_get = 'both';					
+				} else {
+					ajax_get = 'form';
+				}
+				if (
+					( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+					|| force_results_update
+				) {
+					if ( ajax_pre_before !== '' ) {
+						var ajax_pre_before_func = window[ajax_pre_before];
+						if ( typeof ajax_pre_before_func === "function" ) {
+							ajax_pre_before_func( view_num );
+						}
 					}
 				}
-				lay.fadeOut( 200, function() {
-					lay.html( new_layout_content ).fadeIn( 'fast', function() {
-						lay.find( '[data-viewnumber]' ).each( function() {
-							jQuery(this).attr( 'data-viewnumber', view_num );
-						});
-						if ( ajax_after !== '' ) {
-							if ( eval( 'typeof(' + ajax_after + ' ) === \'function\'' ) ) {
-								eval( ajax_after + '(' + view_num + ');' );
-							}
-						}
+				if ( spinnerItems ) {// TODO maybe only when updating results
+					jQuery( spinnerContainer ).fadeIn( 'fast' );
+				}
+				wpv_manage_update_form( fil, ajax_get ).done(function(result) {
+					decoded_response = jQuery.parseJSON(result);
+					new_content_form = jQuery( '<div></div>' ).append( decoded_response.form );
+					new_content_full = jQuery( '<div></div>' ).append( decoded_response.full );
+					new_content_form_filter = new_content_form.find( '.js-wpv-filter-form' ).html();
+					new_content_full_filter = new_content_full.find( '.js-wpv-filter-form' ).html();
+					new_content_full_layout = new_content_full.find( '.js-wpv-view-layout' ).html();
+					
+					fil.html( new_content_form_filter );
+					jQuery( ".wpv-date-front-end" ).datepicker( "destroy" );
+					wpv_clone_form( fil, additional_forms_only );
+					additional_forms_full.each( function() {
+						jQuery( this ).html( new_content_full_filter );
 					});
+					wpv_render_frontend_datepicker();
+					if (
+						( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+						|| force_results_update
+					) {
+						wpv_manage_update_results( lay, new_content_full_layout, view_num, ajax_before, ajax_after );
+					}
+					spinnerContainer.hide();
+				}).fail(function() {
+					// an error occurred
+				});
+			} else {
+				if ( additional_forms_only.length > 0 ) {
+					ajax_get = 'both';
+				} else {
+					ajax_get = 'full';
+				}
+				if (
+					( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+					|| force_results_update
+				) {
+					if ( ajax_pre_before !== '' ) {
+						var ajax_pre_before_func = window[ajax_pre_before];
+						if ( typeof ajax_pre_before_func === "function" ) {
+							ajax_pre_before_func( view_num );
+						}
+					}
+				}
+				if ( spinnerItems ) {// TODO maybe only when updating results
+					jQuery( spinnerContainer ).fadeIn( 'fast' );
+				}
+				wpv_manage_update_form( fil, ajax_get ).done(function(result) {
+					decoded_response = jQuery.parseJSON(result);
+					new_content_form = jQuery( '<div></div>' ).append( decoded_response.form );
+					new_content_full = jQuery( '<div></div>' ).append( decoded_response.full );
+					new_content_form_filter = new_content_form.find( '.js-wpv-filter-form' ).html();
+					new_content_full_filter = new_content_full.find( '.js-wpv-filter-form' ).html();
+					new_content_full_layout = new_content_full.find( '.js-wpv-view-layout' ).html();
+					
+					fil.html( new_content_full_filter );
+					jQuery( ".wpv-date-front-end" ).datepicker( "destroy" );
+					wpv_clone_form( fil, additional_forms_full );
+					additional_forms_only.each( function() {
+						jQuery( this ).html( new_content_form_filter );
+					});
+					wpv_render_frontend_datepicker();
+					if (
+						( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+						|| force_results_update
+					) {
+						wpv_manage_update_results( lay, new_content_full_layout, view_num, ajax_before, ajax_after );
+					}
+					spinnerContainer.hide();
+				}).fail(function() {
+					// an error occurred
 				});
 			}
-		},
-		error: function ( ajaxContext ) {
-		//	i = 2;
-		},
-		complete: function() {
-			spinnerContainer.hide();
+		} else {//alert('single');alert(view_type);
+			if ( view_type == 'form' ) {//alert( 'form' );
+				if ( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 ) {
+					ajax_get = 'both';
+					// NOTE this should never happen:
+					// If change is done on an only-form and there is no extra form, there is no full form thus there is no layout
+					// WARNING this can be executed on an only-form form from a View with automatic results
+					// I might want to avoid this branch completely
+					// NOTE-2 might be a good idea to keep-on-clear// As we might be displaying the layout in non-standard ways
+					// So keeping the check for lay.length should suffice
+					
+				} else {
+					ajax_get = 'form';
+				}
+				
+				if (
+					( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+					|| force_results_update
+				) {
+					if ( ajax_pre_before !== '' ) {
+						var ajax_pre_before_func = window[ajax_pre_before];
+						if ( typeof ajax_pre_before_func === "function" ) {
+							ajax_pre_before_func( view_num );
+						}
+					}
+				}
+				if ( spinnerItems ) {// TODO maybe only when updating results
+					jQuery( spinnerContainer ).fadeIn( 'fast' );
+				}
+				wpv_manage_update_form( fil, ajax_get ).done(function(result) {
+					decoded_response = jQuery.parseJSON(result);
+					new_content_form = jQuery( '<div></div>' ).append( decoded_response.form );
+					new_content_full = jQuery( '<div></div>' ).append( decoded_response.full );
+					new_content_form_filter = new_content_form.find( '.js-wpv-filter-form' ).html();
+					//new_content_full_filter = new_content_full.find( '.js-wpv-filter-form' ).html();
+					new_content_full_layout = new_content_full.find( '.js-wpv-view-layout' ).html();
+					fil.html( new_content_form_filter );
+					wpv_render_frontend_datepicker();
+					if (
+						( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+						|| force_results_update
+					) {
+						wpv_manage_update_results( lay, new_content_full_layout, view_num, ajax_before, ajax_after );
+					}
+					spinnerContainer.hide();
+				}).fail(function() {
+					// an error occurred
+				});
+			} else {//alert( 'full' );
+				if (
+					( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+					|| force_results_update
+				) {
+					if ( ajax_pre_before !== '' ) {
+						var ajax_pre_before_func = window[ajax_pre_before];
+						if ( typeof ajax_pre_before_func === "function" ) {
+							ajax_pre_before_func( view_num );
+						}
+					}
+				}
+				if ( spinnerItems ) {// TODO maybe only when updating results
+					jQuery( spinnerContainer ).fadeIn( 'fast' );
+				}
+				wpv_manage_update_form( fil, 'full' ).done(function(result) {
+					decoded_response = jQuery.parseJSON(result);
+					//new_content_form = jQuery( '<div></div>' ).append( ajax_result.form );
+					new_content_full = jQuery( '<div></div>' ).append( decoded_response.full );
+					//new_content_form_filter = new_content_form.find( '.js-wpv-filter-form' ).html();
+					new_content_full_filter = new_content_full.find( '.js-wpv-filter-form' ).html();
+					new_content_full_layout = new_content_full.find( '.js-wpv-view-layout' ).html();
+					
+					fil.html( new_content_full_filter );
+					wpv_render_frontend_datepicker();
+					if (
+						( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+						|| force_results_update
+					) {
+						wpv_manage_update_results( lay, new_content_full_layout, view_num, ajax_before, ajax_after );
+					}
+					spinnerContainer.hide();
+				}).fail(function() {
+					// an error occurred
+				});
+			}
 		}
-	});
+	} else {//alert('no dependency');
+		if ( additional_forms.length > 0 ) {//alert('multiple');
+			additional_forms_only = additional_forms.not( '.js-wpv-form-full' );
+			additional_forms_full = additional_forms.not( '.js-wpv-form-only' );
+			if ( view_type == 'form' ) {
+				jQuery( ".wpv-date-front-end" ).datepicker( "destroy" );
+				wpv_clone_form( fil, additional_forms_only );
+				wpv_render_frontend_datepicker();
+				if ( additional_forms_full.length > 0 || ( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 ) ) {
+					if (
+						( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+						|| force_results_update
+					) {
+						if ( ajax_pre_before !== '' ) {
+							var ajax_pre_before_func = window[ajax_pre_before];
+							if ( typeof ajax_pre_before_func === "function" ) {
+								ajax_pre_before_func( view_num );
+							}
+						}
+					}
+					if ( spinnerItems ) {// TODO maybe only when updating results
+						jQuery( spinnerContainer ).fadeIn( 'fast' );
+					}
+					wpv_manage_update_form( fil, 'full' ).done(function(result) {
+						decoded_response = jQuery.parseJSON(result);
+						//new_content_form = jQuery( '<div></div>' ).append( decoded_response.form );
+						new_content_full = jQuery( '<div></div>' ).append( decoded_response.full );
+						//new_content_form_filter = new_content_form.find( '.js-wpv-filter-form' ).html();
+						new_content_full_filter = new_content_full.find( '.js-wpv-filter-form' ).html();
+						new_content_full_layout = new_content_full.find( '.js-wpv-view-layout' ).html();
+						
+						additional_forms_full.each( function() {
+							jQuery( this ).html( new_content_full_filter );
+						});
+						wpv_render_frontend_datepicker();
+						if (
+							( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+							|| force_results_update
+						) {
+							wpv_manage_update_results( lay, new_content_full_layout, view_num, ajax_before, ajax_after );
+						}
+						spinnerContainer.hide();
+					}).fail(function() {
+						// an error occurred
+					});
+				}
+			} else {
+				jQuery( ".wpv-date-front-end" ).datepicker( "destroy" );
+				wpv_clone_form( fil, additional_forms_full );
+				wpv_render_frontend_datepicker();
+				if ( additional_forms_only.length > 0 || ( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 ) ) {
+					if ( additional_forms_only.length > 0 ) {
+						ajax_get = 'both';
+					} else {
+						ajax_get = 'full';
+					}
+					
+					if (
+						( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+						|| force_results_update
+					) {
+						if ( ajax_pre_before !== '' ) {
+							var ajax_pre_before_func = window[ajax_pre_before];
+							if ( typeof ajax_pre_before_func === "function" ) {
+								ajax_pre_before_func( view_num );
+							}
+						}
+					}
+					if ( spinnerItems ) {// TODO maybe only when updating results
+						jQuery( spinnerContainer ).fadeIn( 'fast' );
+					}
+					wpv_manage_update_form( fil, ajax_get ).done(function(result) {
+						decoded_response = jQuery.parseJSON(result);
+						new_content_form = jQuery( '<div></div>' ).append( decoded_response.form );
+						new_content_full = jQuery( '<div></div>' ).append( decoded_response.full );
+						new_content_form_filter = new_content_form.find( '.js-wpv-filter-form' ).html();
+						//new_content_full_filter = new_content_full.find( '.js-wpv-filter-form' ).html();
+						new_content_full_layout = new_content_full.find( '.js-wpv-view-layout' ).html();
+						additional_forms_only.each( function() {
+							jQuery( this ).html( new_content_form_filter );
+						});
+						wpv_render_frontend_datepicker();
+						if (
+							( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+							|| force_results_update
+						) {
+							wpv_manage_update_results( lay, new_content_full_layout, view_num, ajax_before, ajax_after );
+						}
+						spinnerContainer.hide();
+					}).fail(function() {
+						// an error occurred
+					});
+				}
+			}
+		} else {
+			if (
+				( fil.hasClass( 'js-wpv-ajax-results-enabled' ) && lay.length > 0 )
+				|| force_results_update
+			) {
+				if ( ajax_pre_before !== '' ) {
+					var ajax_pre_before_func = window[ajax_pre_before];
+					if ( typeof ajax_pre_before_func === "function" ) {
+						ajax_pre_before_func( view_num );
+					}
+				}
+				if ( spinnerItems ) {// TODO maybe only when updating results
+					jQuery( spinnerContainer ).fadeIn( 'fast' );
+				}
+				wpv_manage_update_form( fil, 'full' ).done(function(result) {
+					decoded_response = jQuery.parseJSON(result);
+					//new_content_form = jQuery( '<div></div>' ).append( decoded_response.form );
+					new_content_full = jQuery( '<div></div>' ).append( decoded_response.full );
+					//new_content_form_filter = new_content_form.find( '.js-wpv-filter-form' ).html();
+					//new_content_full_filter = new_content_full.find( '.js-wpv-filter-form' ).html();
+					new_content_full_layout = new_content_full.find( '.js-wpv-view-layout' ).html();
+					wpv_manage_update_results( lay, new_content_full_layout, view_num, ajax_before, ajax_after );
+					spinnerContainer.hide();
+				}).fail(function() {
+					// an error occurred
+				});
+			}
+		}
+	}
 }
 
 // Dependant post relationship
@@ -1185,8 +1589,10 @@ function wpv_manage_advanced_form( thiz, force_filter_update, force_layout_updat
 jQuery( document ).on( 'change', '.js-wpv-post-relationship-update', function() {
 	var thiz = jQuery( this ),
 	fil = thiz.closest( 'form' ),
+	view_num = fil.data( 'viewnumber' ),
+	additional_forms = jQuery( '.js-wpv-filter-form-' + view_num ).not( fil ),
 	currentposttype = thiz.data( 'currentposttype' ),
-	watchers = fil.find( '.js-wpv-' + currentposttype + '-watch' ),
+	watchers = fil.find( '.js-wpv-' + currentposttype + '-watch' ).add( additional_forms.find( '.js-wpv-' + currentposttype + '-watch' ) ),
 	watcherslength = watchers.length,
 	i;
 	if ( watcherslength ) {
@@ -1199,215 +1605,69 @@ jQuery( document ).on( 'change', '.js-wpv-post-relationship-update', function() 
 				.val( '0' );
 		}
 	}
-	wpv_manage_advanced_form( thiz, true, false );
+	wpv_manage_changed_form( fil, true );
+	
 });
 
-jQuery( document ).on( 'change', '.js-wpv-dps-enabled .js-wpv-filter-trigger, .js-wpv-ajax-results-enabled .js-wpv-filter-trigger', function() {
-	var thiz = jQuery( this );
-	wpv_manage_advanced_form( thiz, false, false );
+jQuery( document ).on( 'change', '.js-wpv-filter-trigger', function() {
+	var thiz = jQuery( this ),
+	fil = thiz.closest( 'form' );
+	wpv_manage_changed_form( fil );
 });
 
-jQuery( document ).on( 'click', '.js-wpv-ajax-results-enabled .js-wpv-submit-trigger', function( e ) {
+jQuery( document ).on( 'click', '.js-wpv-ajax-results-enabled .js-wpv-submit-trigger, .js-wpv-ajax-results-submit-enabled .js-wpv-submit-trigger', function( e ) {
 	e.preventDefault();
-	var thiz = jQuery( this );
-	wpv_manage_advanced_form( thiz, false, true );
+	var thiz = jQuery( this ),
+	fil = thiz.closest( 'form' );
+	wpv_manage_changed_form( fil, false, true );
+});
+
+jQuery( document).on( 'keypress', '.js-wpv-ajax-results-enabled .js-wpv-filter-trigger-delayed, .js-wpv-ajax-results-submit-enabled .js-wpv-filter-trigger-delayed', function( e ) {
+	// Enter pressed?
+	if ( e.which == 13 ) {
+		var thiz = jQuery( this ),
+		fil = thiz.closest( 'form' );
+		wpv_manage_changed_form( fil );
+	}
 });
 
 jQuery( document ).on( 'click', '.js-wpv-reset-trigger', function( e ) {
 	e.preventDefault();
 	var thiz = jQuery( this ),
 	fil = thiz.closest( 'form' ),
-	watchers = fil.find('input, select'),
-	watcherslength = watchers.length,
+	view_num = fil.data( 'viewnumber' ),
+	additional_forms = jQuery( '.js-wpv-filter-form-' + view_num ).not( fil ),
+	watchers,
+	watcherslength,
 	i,
 	target = fil.attr( 'action' );
-	if ( fil.hasClass( 'js-wpv-ajax-results-enabled' ) || fil.hasClass( 'js-wpv-dps-only-form' ) ) {
+	if ( fil.hasClass( 'js-wpv-ajax-results-enabled' ) || fil.hasClass( 'js-wpv-ajax-results-submit-enabled' ) ) {
+		watchers = fil.find( 'input, select' ).add( additional_forms.find( 'input, select' ) );
+		watcherslength = watchers.length;
 		if ( watcherslength ) {
 			for ( i = 0; i < watcherslength; i++ ) {
-				jQuery( watchers[i] )
-					.attr( 'disabled', true )
-					.removeAttr( 'checked' )
-					.removeAttr( 'selected' )
-					.not( ':button, :submit, :reset, :hidden, :radio, :checkbox' )
-					.val( '' );
+				if ( !jQuery( watchers[i] ).hasClass( 'js-wpv-keep-on-clear' ) ) {
+					jQuery( watchers[i] )
+						.attr( 'disabled', true )
+						.removeAttr( 'checked' )
+						.removeAttr( 'selected' )
+						.not( ':button, :submit, :reset, :hidden, :radio, :checkbox' )
+						.val( '' );
+				}
 			}
 		}
-		wpv_manage_advanced_form( thiz, false, false );
+		wpv_manage_changed_form( fil, true, true );
 	} else {
 		window.location.href = target;
 	}
 });
 
-////////////////////////////////////////////////////
-// Front end utils
-////////////////////////////////////////////////////
+// Also, stop the rollover if we do any modification on the parametric search form
 
-( function( $ ) {
-	$( function() {
-		manage_checkboxes_and_multi();
-	});
-	
-	function WPV_ManageDefaultValueForCheckBoxes( container ) {
-		var self = this;
-		self.element = null;
-		self.container = container;
-		self.others = null;
-		
-		self.init = function() {
-			self.element = self.element_is_place_holder();
-			if ( !self.element ) {
-				return false;
-			}
-			self.others = self.getOthers();
-			self.manage_clicks();
-		};
-		
-		self.getOthers = function() {
-			var all = self.container.find( "input.wpcf-form-checkbox" ),
-			others = [];
-			$.each( all, function( i, v ) {
-				if ( i > 0 ) {
-					others.push( v );
-				}
-			});
-			return others;
-		};
-		
-		self.getCheckedLen = function() {
-			var count = 0;
-			$.each( self.others, function( i, v ) { 
-				if ( $( v ).prop( 'checked' ) === true ) {
-					count++;
-				}
-			});
-			return count;
-		};
-		
-		self.element_is_place_holder = function() {
-			var check_cont = self.container.children( '.wpcf-form-item-checkbox' )[0],
-			check = $( check_cont ).find( 'input' );
-			if ( $(check).val() ) {
-				return false; 
-			}
-			return $( check );
-		};
-		
-		self.manage_clicks = function() {
-			$.each( self.others, function( i, v ) {
-				$( v ).on( 'click', function( event ) {
-					if ( $( event.target ).prop( 'checked' ) ) {
-						self.element.prop( 'checked', false );
-					} else if ( self.container.find( "input:checked" ).length === 0 ) {
-						self.element.prop( 'checked', true );
-					}
-				});
-			});
-			self.element.on( 'click', function( event ) {
-				if( $( event.target ).prop( 'checked' ) ) {
-					$.each( self.others, function( i, v ) {
-						$( v ).prop( 'checked', false );
-					});
-				}
-			});
-		};
-		
-		self.init();
-	}
-	
-	function WPV_ManageDefaultValueForMultiple( select ) {
-		var self = this;
-		self.element = null;
-		self.select = select;
-		self.others = null;
-		
-		self.init = function() {
-			self.element = self.element_is_place_holder();
-			if ( !self.element ) {
-				if ( !self.is_query() ) {
-					$( self.select.find( 'option' )[0] ).prop( "selected", false );
-				}
-				return false;
-			}
-			self.others = self.getOthers();
-			self.manage_clicks();
-		};
-
-		self.getOthers = function() {
-			var all = self.select.find( "option" ),
-			others = [];
-			$.each( all, function( i, v ) {
-				if ( i > 0 ) {
-					others.push( v );
-				}
-			});
-			return others;
-		};
-
-		self.getCheckedLen = function() {
-			var count = 0;
-			$.each( self.others, function( i, v ) {
-				if( $( v ).prop( 'selected' ) === true ) {
-					count++;
-				}
-			});
-			return count;
-		};
-
-		self.element_is_place_holder = function() {
-			var opt = self.select.find( 'option' );
-			if ( $( opt[0] ).val() ) {
-				return false;
-			}
-			return $( opt[0] );
-		};
-
-		self.manage_clicks = function() {
-			$.each( self.others, function( i, v ) {
-				$( v ).on( 'click', function( event ) {
-					if( $( event.target ).prop( 'selected' ) ) {
-						self.element.prop( 'selected', false );
-					} else if( self.select.find( 'option:selected' ).length === 0 ) {
-						self.element.prop( 'selected', true );
-					}
-				});
-			});
-			self.element.on( 'click', function( event ) {
-				if( $( event.target ).prop( 'selected' ) ) {
-					$.each( self.others, function( i, v ) {
-						$( v ).prop( 'selected', false );
-					});
-				}
-			});
-		};
-		
-		self.is_query = function() {
-			var sel_name = self.select.prop( "name" ).split( '[]' )[0],
-			qs = location.search;
-			if ( ~qs.indexOf( sel_name ) === true ) {
-				return true;
-			} else {
-				return false;
-			}
-		};
-
-		self.init();
-	}
-	
-	function manage_checkboxes_and_multi() {
-		var checkboxes_groups = [],
-		multiselects = [];
-		//Do not execute if there's not a view form, and at least 2 check boxes
-		if ($( '.wpv-filter-form' ).is( 'form' ) && 
-			$( '.wpcf-form-checkbox' ).is( 'input' ) && 
-			$( '.wpv-filter-form' ).find( 'input.wpcf-form-checkbox' ).length > 1 ) {
-			$( 'div.wpcf-checboxes-group' ).each( function( i, element ) {
-				checkboxes_groups.push( new WPV_ManageDefaultValueForCheckBoxes( $( element ) ) );
-			});
-		}
-		if( $( '.wpv-filter-form' ).is( 'form' ) && $( 'select.wpcf-form-select' ) && $( 'select.wpcf-form-select' ).prop( 'multiple' ) ) {
-			$( 'select.wpcf-form-select' ).each( function( i, element ) {
-				multiselects.push( new WPV_ManageDefaultValueForMultiple( $( element ) ) );
-			});
-		}
-	}
-}( jQuery ) );
+jQuery( document ).on( 'change', '.js-wpv-filter-trigger, .js-wpv-filter-trigger-delayed', function() {
+	var thiz = jQuery( this ),
+	fil = thiz.closest( 'form' ),
+	view_num = fil.data( 'viewnumber' );
+	wpv_stop_rollover[view_num] = true;
+	wpv_dependant_form_clear_pagination_cache( view_num );
+});

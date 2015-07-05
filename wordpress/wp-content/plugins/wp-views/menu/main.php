@@ -5,18 +5,15 @@
 
     <?php
     
-        global $views_plugins, $WP_Views;
+        global $views_plugins, $WPV_settings;
 
-        $options = $WP_Views->get_options();
-        
         if (isset($_POST['wpv_subscription_form_nonce'])
                 && $_POST['wpv_subscription_form_nonce']
                 == wp_create_nonce('wpv_subscription_form')) {
 
-            $options['subscription_email'] = trim($_POST['sub']['subscription_email'], ' ');
-            $options['subscription_key'] = trim($_POST['sub']['subscription_key'], ' ');
-            
-            $WP_Views->save_options($options);
+            $WPV_settings->subscription_email = trim($_POST['sub']['subscription_email'], ' ');
+            $WPV_settings->subscription_key = trim($_POST['sub']['subscription_key'], ' ');
+            $WPV_settings->save();
             
         }
         
@@ -59,12 +56,12 @@
                 <tr class="form-field">
                     <th scope="row"><?php _e('wp-types.com subscription email', 'wpv-views'); ?></th>
                     <td><input name="sub[subscription_email]" type="text" value="<?php echo isset($_POST['sub']['subscription_email']) ? $_POST['sub']['subscription_email'] : 
-                        isset($options['subscription_email']) ? $options['subscription_email'] : ''; ?>" /></td>
+                        isset($WPV_settings->subscription_email) ? $WPV_settings->subscription_email : ''; ?>" /></td>
                 </tr>
                 <tr class="form-field">
                     <th scope="row"><?php _e('wp-types.com subscription key', 'wpv-views'); ?></th>
                     <td><input name="sub[subscription_key]" type="password" value="<?php echo isset($_POST['sub']['subscription_key']) ? $_POST['sub']['subscription_key'] :
-                        isset($options['subscription_key']) ? $options['subscription_key'] : ''; ?>" /></td>
+                        isset($WPV_settings->subscription_key) ? $WPV_settings->subscription_key : ''; ?>" /></td>
                 </tr>
                 
             </tbody>

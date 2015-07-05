@@ -1,10 +1,10 @@
 <?php
 /**
  *
- * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/Views-1.6.1-Types-1.5.7/toolset-forms/classes/class.checkbox.php $
- * $LastChangedDate: 2014-05-09 11:24:35 +0000 (Fri, 09 May 2014) $
- * $LastChangedRevision: 22197 $
- * $LastChangedBy: marcin $
+ * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/classes/class.checkbox.php $
+ * $LastChangedDate: 2014-12-22 13:08:03 +0000 (Mon, 22 Dec 2014) $
+ * $LastChangedRevision: 30499 $
+ * $LastChangedBy: francesco $
  *
  */
 require_once 'class.field_factory.php';
@@ -19,27 +19,52 @@ class WPToolset_Field_Checkbox extends FieldFactory
     public function metaform()
     {
         global $post;
-
         $value = $this->getValue();
-        $data = $this->getData();
-        /**
-         * turn off autocheck for saved posts
-         */
-        if ( 'auto-draft' != $post->post_status && empty( $data['value'] )) {
-            $data['checked'] = false;
+        $data = $this->getData();        
+        $checked = null;
 
+        /**
+         * autocheck for new posts
+         */
+        if (isset($post) && 'auto-draft' == $post->post_status && array_key_exists( 'checked', $data ) && $data['checked']) {
+            $checked = true;
         }
-        $form = array();
-        $form[] = array(
+        /**
+         * is checked?
+         */
+        if ( isset($data['options']) && array_key_exists( 'checked', $data['options'] ) ) {
+            $checked = $data['options']['checked'];
+        }                
+        /**
+         * if is a default value, there value is 1 or default_value
+         */
+        if (
+            array_key_exists('default_value', $data)
+            && ( 'y' === $value || $value === $data['default_value'])
+        ) {
+            $checked = true;
+        }
+
+        // Comment out broken code. This tries to set the previous state after validation fails
+        //if (!$checked&&$this->getValue()==1) {
+        //    $checked=true;
+        //}
+
+        /**
+         * metaform
+         */
+        $form = array(
             '#type' => 'checkbox',
             '#value' => $value,
-            '#default_value' => $data['default_value'],
+            '#default_value' => array_key_exists( 'default_value', $data )? $data['default_value']:null,
             '#name' => $this->getName(),
+            '#description' => $this->getDescription(),
             '#title' => $this->getTitle(),
             '#validate' => $this->getValidationData(),
             '#after' => '<input type="hidden" name="_wptoolset_checkbox[' . $this->getId() . ']" value="1" />',
-            '#checked' => array_key_exists( 'checked', $data ) ? $data['checked']:null,
+            '#checked' => $checked,
+            '#repetitive' => $this->isRepetitive(),
         );
-        return $form;
+        return array($form);
     }
 }

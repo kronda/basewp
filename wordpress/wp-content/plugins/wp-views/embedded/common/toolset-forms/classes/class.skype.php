@@ -1,4 +1,12 @@
 <?php
+/**
+ *
+ * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/classes/class.skype.php $
+ * $LastChangedDate: 2015-03-20 10:02:23 +0000 (Fri, 20 Mar 2015) $
+ * $LastChangedRevision: 32518 $
+ * $LastChangedBy: francesco $
+ *
+ */
 require_once 'class.textfield.php';
 
 class WPToolset_Field_Skype extends WPToolset_Field_Textfield
@@ -6,41 +14,49 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
 
     protected $_defaults = array('skypename' => '', 'button_style' => 'btn2');
 
-    public function init(){
-        wp_register_script( 'wptoolset-field-skype',
-                WPTOOLSET_FORMS_RELPATH . '/js/skype.js', array('jquery'),
-                WPTOOLSET_FORMS_VERSION, true );
-        wp_register_style( 'wptoolset-field-skype',
-                WPTOOLSET_FORMS_RELPATH . '/css/skype.css', array(),
-                WPTOOLSET_FORMS_VERSION );
-    }
-
-    public function enqueueScripts() {
-        wp_enqueue_script( 'wptoolset-field-skype' );
-        add_thickbox();
-        $translation = array('title' => __( 'Edit Skype button' ));
-        wp_localize_script( 'wptoolset-field-skype', 'wptSkypeData',
-                $translation );
+    public function init()
+    {
         add_action( 'admin_footer', array($this, 'editButtonTemplate') );
         add_action( 'wp_footer', array($this, 'editButtonTemplate') );
+
+        wp_register_script(
+            'wptoolset-field-skype',
+            WPTOOLSET_FORMS_RELPATH . '/js/skype.js',
+            array('jquery'),
+            WPTOOLSET_FORMS_VERSION,
+            true
+        );
+        wp_enqueue_script( 'wptoolset-field-skype' );
+        add_thickbox();
+        $translation = array('title' => esc_js( __( 'Edit Skype button', 'wpv-views' ) ) );
+        wp_localize_script( 'wptoolset-field-skype', 'wptSkypeData', $translation );
+        $this->set_placeholder_as_attribute();
     }
 
     public function enqueueStyles() {
-        wp_enqueue_style( 'wptoolset-field-skype' );
+
     }
 
     public function metaform() {
         $value = wp_parse_args( $this->getValue(), $this->_defaults );
+        $attributes = $this->getAttr();
+        if ( isset($attributes['class'] ) ) {
+            $attributes['class'] .= ' ';
+        } else {
+            $attributes['class'] = '';
+        }
+        $attributes['class'] = 'js-wpt-skypename js-wpt-cond-trigger';// What is this js-wpt-cond-trigger classname for?
         $form = array();
         $form[] = array(
             '#type' => 'textfield',
             '#title' => $this->getTitle(),
             '#description' => $this->getDescription(),
-            '#name' => $this->getName() . '[skypename]',
+            '#name' => $this->getName() . "[skypename]",
             '#attributes' => array(),
             '#value' => $value['skypename'],
             '#validate' => $this->getValidationData(),
-            '#attributes' => array('class' => 'js-wpt-skypename js-wpt-cond-trigger'), // Mark to be checked as conditional
+            '#attributes' => $attributes,
+            '#repetitive' => $this->isRepetitive(),
         );
         $form['style'] = array(
             '#type' => 'hidden',
@@ -48,20 +64,25 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
             '#name' => $this->getName() . '[button_style]',
             '#attributes' => array('class' => 'js-wpt-skypestyle'),
         );
-        $form[] = array(
-            '#type' => 'markup',
-            '#markup' => $this->getButtonImage( $value['skypename'], $value['button_style'], 'js-wpt-skype-preview' ),
-        );
-        $button_element = array(
-            '#name' => '',
-            '#type' => 'button',
-            '#value' => __( 'Edit Skype button' ),
-            '#attributes' => array('class' => 'js-wpt-skype-edit-button button-secondary'),
-        );
-        if ( array_key_exists( 'use_bootstrap', $this->_data ) && $this->_data['use_bootstrap'] ) {
-            $button_element['#attributes']['class'] .= ' btn btn-default btn-sm';
+		if (is_admin()) {
+			$form[] = array(
+				'#type' => 'markup',
+				'#markup' => $this->getButtonImage( $value['skypename'], $value['button_style'], 'js-wpt-skype-preview' ),
+			);
+            $button_element = array(
+                '#name' => '',
+                '#type' => 'button',
+                '#value' => esc_attr( __( 'Edit', 'wpv-views' ) )." Skype button",
+                '#attributes' => array('class' => 'js-wpt-skype-edit-button button button-small button-secondary'),
+            );
+			/*
+			We only need to add Bootstrap classnames to the frontend, and here we are just in is_admin()
+            if ( !is_admin() && array_key_exists( 'use_bootstrap', $this->_data ) && $this->_data['use_bootstrap'] ) {// TODO check if is_Admin() is enough as we might want to load forms using AJAX
+                $button_element['#attributes']['class'] .= ' btn btn-default btn-sm';
+            }
+			*/
+            $form[] = $button_element;
         }
-        $form[] = $button_element;
         return $form;
     }
 
@@ -69,13 +90,13 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
         $output = '';
         $output .= '<div id="tpl-wpt-skype-edit-button" style="display:none;">'
                 . '<div id="wpt-skype-edit-button-popup">'
-                . '<h3>' .__( 'Enter your Skype Name' ) . '</h3>'
+                . '<h3>' .__( 'Enter your Skype Name', 'wpv-views' ) . '</h3>'
                 . '<input type="textfield" value="" class="js-wpt-skypename-popup">&nbsp;'
-                . '<h3>' . __( 'Select a button from below' ) . '</h3>';
+                . '<h3>' . __( 'Select a button from below', 'wpv-views' ) . '</h3>';
         for ( $index = 1; $index < 7; $index++ ) {
             if ( $index == 5 ) {
-                $output .= '<h3>' . __( 'Skype buttons with status' ) . '</h3>'
-                        . '<p>' . __( 'If you choose to show your Skype status, your Skype button will always reflect your availability on Skype. This status will be shown to everyone, whether they’re in your contact list or not.' )
+                $output .= '<h3>' . __( 'Skype buttons with status', 'wpv-views' ) . '</h3>'
+                        . '<p>' . __( 'If you choose to show your Skype status, your Skype button will always reflect your availability on Skype. This status will be shown to everyone, whether they’re in your contact list or not.', 'wpv-views' )
                         . '</p>';
             }
             $output .= '<div><label><input type="radio" name="wpt-skypestyle-popup" value="btn'
@@ -84,13 +105,13 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
                             'js-wpt-skype-preview' )
                     . '</label></div>';
         }
-        $output .= '<input type="button" class="button-secondary js-wpt-close-thickbox" value="' . __( 'Save' ) . '">'
+        $output .= '<input type="button" class="button-secondary js-wpt-close-thickbox" value="' . __( 'Save', 'wpv-views' ) . '">'
                 . '</div></div>';
         echo $output;
     }
 
     public function editform( $config = null ) {
-        
+
     }
 
     public function mediaEditor(){
@@ -99,11 +120,11 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
 
     /**
      * Returns HTML formatted skype button.
-     * 
+     *
      * @param type $skypename
      * @param type $template
      * @param type $class
-     * @return type 
+     * @return type
      */
     function getButton( $skypename, $template = '', $class = false ) {
 
@@ -167,10 +188,10 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
 
     /**
      * Returns HTML formatted skype button image.
-     * 
+     *
      * @param type $skypename
      * @param type $template
-     * @return type 
+     * @return type
      */
     public function getButtonImage( $skypename = '', $template = '', $class = '' ) {
 

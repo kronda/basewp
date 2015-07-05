@@ -1,352 +1,516 @@
-jQuery(document).ready(function(){
-	// filter compare: init and change
-	wpv_usermeta_field_initialize_compare();
+/**
+* Views Usermeta Field Filter GUI - script
+*
+* Adds basic interaction for the Usermeta Field Filter
+*
+* @package Views
+*
+* @since 1.7.0
+*/
 
-	// filter compare mode: init and change
-	wpv_usermeta_field_initialize_compare_mode();
 
-	// filter relationship
-	wpv_usermeta_field_initialize_relationship();
-})
+var WPViews = WPViews || {};
 
-function wpv_usermeta_field_initialize_compare() {
-	var wpv_allowed_values = 0;
-	jQuery('.js-filter-list .js-wpv-usermeta-field-compare-select').each(function(){
-		var wpv_single_row = jQuery(this).parents('.js-filter-row-multiple-element');
-		/*
-		 / /T*his section commented before we found better way filter by usermeta and wp_users fields.
-		 if ( jQuery(wpv_single_row).data('field') == 'user_email' ||
-			 jQuery(wpv_single_row).data('field') == 'user_url' ||
-			 jQuery(wpv_single_row).data('field') == 'user_login' || jQuery(wpv_single_row).data('field') == 'display_name' ){
-		jQuery(wpv_single_row).find('.js-wpv-usermeta-comare-box').hide();
-		jQuery(wpv_single_row).find('.js-wpv-usermeta-field-compare-mode option').each(function(){
-			if ( jQuery(this).val() != 'constant' && jQuery(this).val() != 'url' && jQuery(this).val() != 'attribute' ){
-				jQuery(this).remove();
-			 }
-			 
-			 });
-			 }*/
-		
-		wpv_clear_validate_messages('.js-filter-list .js-filter-usermeta-field');
-		jQuery(this).parents('.js-filter-usermeta-field').find('.filter-input-error').removeClass('filter-input-error');
-		if (jQuery(this).val() == 'BETWEEN' || jQuery(this).val() == 'NOT BETWEEN') {
-			wpv_allowed_values = 2;
-			jQuery(this).parents('.js-filter-row-multiple-element').find('.js-wpv-usermeta-field-add-value').addClass('hidden');
-			jQuery(this).parents('.js-filter-row-multiple-element').find('.js-wpv-usermeta-field-remove-value').addClass('hidden');
-			divs = jQuery(this).parents('.js-filter-row-multiple-element').find('.js-wpv-usermeta-field-value-div');
-			if (divs.length < 2) {
-				// add another one.
-				var clone = jQuery(divs[0]).clone();
-				clone.find('.js-wpv-usermeta-field-value-text').val('');
-				clone.insertAfter(divs[0]);
-				wpv_usermeta_field_initialize_compare_mode();
+WPViews.UsermetaFieldFilterGUI = function( $ ) {
+	
+	var self = this;
+	
+	self.view_id = $('.js-post_ID').val();
+	
+	self.icon_edit = '<i class="icon-chevron-up"></i>&nbsp;&nbsp;';
+	self.icon_save = '<i class="icon-ok"></i>&nbsp;&nbsp;';
+	self.spinner = '<span class="spinner ajax-loader">';
+	
+	self.post_row = '.js-wpv-filter-row-usermeta-field';
+	self.post_options_container_selector = '.js-wpv-filter-row-usermeta-field .js-wpv-filter-edit';
+	self.post_edit_open_selector = '.js-wpv-filter-usermeta-field-edit-open';
+	self.post_close_save_selector = '.js-wpv-filter-usermeta-field-edit-ok';
+	
+	self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+	
+	//--------------------
+	// Functions
+	//--------------------
+	
+	self.manage_filter_changes = function() {
+		WPViews.query_filters.clear_validate_messages( self.post_row );
+		if ( self.post_current_options != $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize() ) {
+			$( self.post_close_save_selector )
+				.removeClass( 'button-secondary' )
+				.addClass( 'button-primary js-wpv-section-unsaved')
+				.html(
+					self.icon_save + $( self.post_close_save_selector ).data('save')
+				);
+			setConfirmUnload( true );
+		} else {
+			$( self.post_close_save_selector )
+			.addClass( 'button-secondary' )
+			.removeClass( 'button-primary js-wpv-section-unsaved' )
+			.html(
+				self.icon_edit + $( self.post_close_save_selector ).data('close')
+			);
+			$( self.post_row  ).find('.unsaved').remove();
+			if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
+				setConfirmUnload( false );
 			}
-		} else if (jQuery(this).val() == 'IN' || jQuery(this).val() == 'NOT IN') {
-			wpv_allowed_values = 100000;
-			jQuery(this).parents('.js-filter-row-multiple-element').find('.js-wpv-usermeta-field-add-value').removeClass('hidden');
-			jQuery(this).parents('.js-filter-row-multiple-element').find('.js-wpv-usermeta-field-value-div').each(function(index) {
-				if (index > 0) {
-					jQuery(this).find('.js-wpv-usermeta-field-remove-value').removeClass('hidden');
-				} else {
-					jQuery(this).find('.js-wpv-usermeta-field-remove-value').addClass('hidden');
+		}
+	};
+	
+	self.usermeta_field_initialize_compare = function() {
+		var wpv_allowed_values = 0;
+		WPViews.query_filters.clear_validate_messages( self.post_row );
+		$( '.js-wpv-usermeta-field-compare-select' ).each( function() {
+			var wpv_single_row = $( this ).parents( '.js-wpv-filter-multiple-element' ),
+			thiz_inner = $( this ),
+			thiz_inner_item = thiz_inner.parents( '.js-wpv-filter-multiple-element' );
+			if ( thiz_inner.val() == 'BETWEEN' || thiz_inner.val() == 'NOT BETWEEN' ) {
+				wpv_allowed_values = 2;
+				thiz_inner_item
+					.find( '.js-wpv-usermeta-field-add-value, .js-wpv-usermeta-field-remove-value' )
+					.hide();
+				divs = thiz_inner_item.find('.js-wpv-usermeta-field-value-div');
+				if ( divs.length < 2 ) {
+					// add another one.
+					var clone = $( divs[0] ).clone();
+					clone.find( '.js-wpv-usermeta-field-value-text' ).val('');
+					clone.insertAfter( divs[0] );
+					self.usermeta_field_initialize_compare_mode();
 				}
+			} else if ( thiz_inner.val() == 'IN' || thiz_inner.val() == 'NOT IN' ) {
+				wpv_allowed_values = 100000;
+				thiz_inner_item
+					.find( '.js-wpv-usermeta-field-add-value' )
+					.show();
+				thiz_inner_item
+					.find( '.js-wpv-usermeta-field-value-div' )
+						.each( function( index ) {
+							if ( index > 0 ) {
+								$( this )
+									.find( '.js-wpv-usermeta-field-remove-value' )
+									.show();
+							} else {
+								$( this )
+									.find( '.js-wpv-usermeta-field-remove-value' )
+									.hide();
+							}
+						});
+			} else {
+				wpv_allowed_values = 1;
+				thiz_inner_item
+					.find( '.js-wpv-usermeta-field-add-value, .js-wpv-usermeta-field-remove-value' )
+					.hide();
+			}
+			thiz_inner_item
+				.find( '.js-wpv-usermeta-field-value-div' )
+					.each( function() {
+						if ( wpv_allowed_values > 0 ) {
+							$( this ).show();
+						} else {
+							$( this ).remove();
+						}
+						wpv_allowed_values--;
+					});
+		});
+	};
+	
+	self.usermeta_field_initialize_compare_mode = function() {
+		$( '.js-wpv-usermeta-field-compare-mode' ).each( function() {
+			self.usermeta_field_adjust_value_controls( this );
+		});
+	};
+	
+	self.usermeta_field_adjust_value_controls = function( item ) {
+		// Show the text control depending on the compare function.
+		var mode = $( item ).val(),
+		value_div = $( item ).parents( '.js-wpv-usermeta-field-value-div' ),
+		value_input = value_div.find('.js-wpv-usermeta-field-value-text');
+		value_input
+			.removeClass( 'js-wpv-filter-validate' )
+			.data('type', 'none');
+		value_div
+			.find( '.js-wpv-usermeta-field-value-combo-input, .js-wpv-usermeta-field-value-combo-date, .js-wpv-usermeta-field-value-combo-framework' )
+				.hide();
+		switch( mode ) {
+			case 'constant':
+			case 'future_day':
+			case 'past_day':
+			case 'future_month':
+			case 'past_month':
+			case 'future_year':
+			case 'past_year':
+			case 'seconds_from_now':
+			case 'months_from_now':
+			case 'years_from_now':
+				value_div
+					.find( '.js-wpv-usermeta-field-value-combo-input' )
+						.show();
+				break;
+			case 'url':
+				value_div
+					.find( '.js-wpv-usermeta-field-value-combo-input' )
+						.show();
+				value_input
+					.addClass( 'js-wpv-filter-validate' )
+					.data('type', 'url');
+				break;
+			case 'attribute':
+				value_div
+					.find( '.js-wpv-usermeta-field-value-combo-input' )
+						.show();
+				value_input
+					.addClass( 'js-wpv-filter-validate' )
+					.data('type', 'shortcode');
+				break;
+			case 'date':
+				value_div
+					.find( '.js-wpv-usermeta-field-value-combo-date' )
+						.show();
+				break;
+			case 'framework':
+				value_div
+					.find( '.js-wpv-usermeta-field-value-combo-framework' )
+						.show();
+				break;
+			default:
+				
+				break;
+		}
+	};
+	
+	self.usermeta_field_initialize_relationship = function() {
+		if ( $( '.js-wpv-usermeta-field-compare-select' ).length > 1 ) {
+			$( '.js-wpv-filter-usermeta-field-relationship-container' ).show();
+		} else if ( $( '.js-wpv-usermeta-field-compare-select' ).length == 0 ) {
+			$( '.js-filter-usermeta-field' ).remove();
+			if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
+				setConfirmUnload( false );
+			}
+		} else {
+			$( '.js-wpv-filter-usermeta-field-relationship-container' ).hide();
+		}
+	};
+	
+	self.resolve_usermeta_field_value = function() {
+		$( '.js-wpv-usermeta-field-values' ).each( function( index ) {
+			var text_box = $( this ).find( '.js-wpv-usermeta-field-values-real' ),
+			resolved_value = '';
+			$( this ).find( '.js-wpv-usermeta-field-value-div' ).each( function( index ) {
+				if ( resolved_value != '' ) {
+					resolved_value += ',';
+				}
+				var value = $( this ).find( '.js-wpv-usermeta-field-value-text' ).val(),
+				framework_value = $( this ).find( '.js-wpv-usermeta-field-framework-value' ).val(),
+				mode = $( this ).find( '.js-wpv-usermeta-field-compare-mode' ).val();
+				switch ( mode ) {
+					case 'url':
+						value = 'URL_PARAM(' + value + ')';
+						break;
+					case 'attribute':
+						value = 'VIEW_PARAM(' + value + ')';
+						break;
+					case 'framework':
+						value = 'FRAME_KEY(' + framework_value + ')';
+						break;
+					case 'now':
+						value = 'NOW()';
+						break;
+					case 'today':
+						value = 'TODAY()';
+						break;
+					case 'future_day':
+						value = 'FUTURE_DAY(' + value + ')';
+						break;
+					case 'past_day':
+						value = 'PAST_DAY(' + value + ')';
+						break;
+					case 'this_month':
+						value = 'THIS_MONTH()';
+						break;
+					case 'future_month':
+						value = 'FUTURE_MONTH(' + value + ')';
+						break;
+					case 'past_month':
+						value = 'PAST_MONTH(' + value + ')';
+						break;
+					case 'this_year':
+						value = 'THIS_YEAR()';
+						break;
+					case 'future_year':
+						value = 'FUTURE_YEAR(' + value + ')';
+						break;
+					case 'past_year':
+						value = 'PAST_YEAR(' + value + ')';
+						break;
+					case 'seconds_from_now':
+						value = 'SECONDS_FROM_NOW(' + value + ')';
+						break;
+					case 'months_from_now':
+						value = 'MONTHS_FROM_NOW(' + value + ')';
+						break;
+					case 'years_from_now':
+						value = 'YEARS_FROM_NOW(' + value + ')';
+						break;
+					case 'date':
+						var month = $( this ).find( '.js-wpv-usermeta-field-date select' ),
+						mm = month.val(),
+						jj = month.next().val(),
+						aa = month.next().next().val();
+						value = 'DATE(' + jj + ',' + mm + ',' + aa + ')';
+						break;
+				}
+				resolved_value += value;
+			})
+			text_box.val( resolved_value );
+		});
+	};
+	
+	self.remove_usermeta_field_filters = function() {
+		$( self.post_close_save_selector ).removeClass( 'js-wpv-section-unsaved' );
+		var nonce = $( '.js-wpv-filter-remove-usermeta-field' ).data( 'nonce' ),
+		usermeta_field = [],
+		spinnerContainer = $( self.spinner ).insertBefore( $( '.js-wpv-filter-remove-usermeta-field' ) ).show(),
+		error_container = $( self.post_row ).find( '.js-wpv-filter-multiple-toolset-messages' );
+		$('.js-wpv-filter-usermeta-field-multiple-element .js-filter-remove').each( function() {
+			usermeta_field.push( $( this ).data( 'field' ) );
+		});
+		var data = {
+			action: 'wpv_filter_usermeta_field_delete',
+			id: self.view_id,
+			field: usermeta_field,
+			wpnonce: nonce,
+		};
+		$.ajax({
+			type: "POST",
+			dataType: "json",
+			url: ajaxurl,
+			data: data,
+			success: function( response ) {
+				if ( response.success ) {
+					$( self.post_row )
+						.addClass( 'wpv-filter-deleted' )
+						.animate({
+						  height: "toggle",
+						  opacity: "toggle"
+						}, 400, function() {
+							$( this ).remove();
+							self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+							$( document ).trigger( 'js_event_wpv_query_filter_deleted', [ 'usermeta-field' ] );
+							self.usermeta_field_initialize_relationship();
+						});
+				} else {
+					WPViews.view_edit_screen.manage_ajax_fail( response.data, error_container );
+				}
+			 },
+			 error: function ( ajaxContext ) {
+				 console.log( "Error: ", ajaxContext.responseText );
+			 },
+			 complete: function() {
+				 spinnerContainer.remove();
+			 }
+		});
+		$( '.js-post_ID' ).trigger( 'wpv_trigger_dps_existence_intersection_missing' );
+	};
+	
+	//--------------------
+	// Events
+	//--------------------
+	
+	$( document ).on( 'change', '.js-wpv-usermeta-field-compare-select', function() {
+		self.usermeta_field_initialize_compare();
+	});
+	
+	$( document ).on( 'change', '.js-wpv-usermeta-field-compare-mode', function() {
+		self.usermeta_field_adjust_value_controls( this )
+	});
+	
+	// Add another value
+
+	$( document ).on( 'click', '.js-wpv-usermeta-field-add-value', function() {
+		var thiz_parent_item = $( this ).parents( '.js-wpv-filter-multiple-element' ),
+		clone = thiz_parent_item
+			.find( '.js-wpv-usermeta-field-value-div:last' )
+				.clone();
+		clone
+			.find( '.js-wpv-usermeta-field-value-text' )
+				.val('');
+		clone
+			.find( '.js-wpv-usermeta-field-compare-mode' )
+				.val( 'constant' );
+		clone
+			.find( '.js-wpv-usermeta-field-remove-value' )
+				.show();
+		clone
+			.insertAfter(
+				thiz_parent_item
+					.find( '.js-wpv-usermeta-field-value-div:last' )
+			);
+		self.usermeta_field_initialize_compare();
+		self.usermeta_field_initialize_compare_mode();
+		self.manage_filter_changes();
+	});
+
+	// Remove value
+
+	$( document ).on( 'click', '.js-wpv-usermeta-field-remove-value', function() {
+		$( this )
+			.parents( '.js-wpv-usermeta-field-value-div' )
+				.remove();
+		self.manage_filter_changes();
+	});
+	
+	// Watch changes
+	
+	$( document ).on( 'change keyup input cut paste', self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select', function() {
+		self.manage_filter_changes();
+	});
+	
+	$( document ).on( 'click', self.post_close_save_selector, function() {
+		WPViews.query_filters.clear_validate_messages( self.post_row );
+		if ( self.post_current_options == $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize() ) {
+			WPViews.query_filters.close_filter_row('.js-filter-usermeta-field');
+		} else {
+			var valid = true;
+			valid = WPViews.query_filters.validate_filter_options( self.post_row );
+			if ( valid ) {
+				self.resolve_usermeta_field_value();
+				var nonce = $( this ).data('nonce'),				
+				spinnerContainer = $( self.spinner ).insertBefore( $( this ) ).show(),
+				error_container = $( self.post_row ).find( '.js-wpv-filter-multiple-toolset-messages' ),
+				data = {
+					action: 'wpv_filter_usermeta_field_update',
+					id: self.view_id,
+					filter_usermeta_fields: $('.js-filter-usermeta-field input, .js-filter-usermeta-field select').not( '.js-wpv-element-not-serialize' ).serialize(),
+					wpnonce: nonce
+				};
+				self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+				$.post( ajaxurl, data, function( response ) {
+					if ( response.success ) {
+						$( '.js-post_ID' ).trigger( 'wpv_trigger_dps_existence_intersection_missing' );
+						$( document ).trigger( 'js_event_wpv_query_filter_saved', [ 'usermeta-field' ] );
+						$( '.js-wpv-filter-usermeta-field-summary' ).html( response.data.summary );
+						WPViews.query_filters.close_and_glow_filter_row( self.post_row, 'wpv-filter-saved' );
+					} else {
+						WPViews.view_edit_screen.manage_ajax_fail( response.data, error_container );
+					}
+				}, 'json' )
+				.fail(function(jqXHR, textStatus, errorThrown) {
+					console.log( "Error: %s %s", textStatus, errorThrown );
+				})
+				.always(function() {
+					spinnerContainer.remove();
+				});
+			}
+		}
+	});
+	
+	$( document ).on( 'click', '.js-wpv-filter-usermeta-field-multiple-element .js-filter-remove', function() {
+		var thiz = $( this ),
+		row = thiz.parents('.js-wpv-filter-usermeta-field-multiple-element'),
+		li_item = thiz.parents( self.post_row ),
+		field = thiz.data('field'),
+		nonce = thiz.data('nonce'),
+		spinnerContainer = $('<div class="spinner ajax-loader">').insertBefore( thiz ).hide(),
+		error_container = row.find( '.js-wpv-filter-toolset-messages' ),
+		data = {
+			action: 'wpv_filter_usermeta_field_delete',
+			id: self.view_id,
+			field: field,
+			wpnonce: nonce,
+		};
+		if ( li_item.find( '.js-wpv-filter-usermeta-field-multiple-element' ).length == 1 ) {
+			self.remove_usermeta_field_filters();
+		} else {
+			spinnerContainer.show();
+			$.post( ajaxurl, data, function( response ) {
+				if ( response.success ) {
+					row
+						.addClass( 'wpv-filter-multiple-element-removed' )
+						.fadeOut( 500, function() {
+							$( this ).remove();
+							$( document ).trigger( 'js_event_wpv_query_filter_deleted', [ 'usermeta-field' ] );
+							self.usermeta_field_initialize_relationship();
+						});
+					$( '.js-post_ID' ).trigger( 'wpv_trigger_dps_existence_intersection_missing' );
+				} else {
+					WPViews.view_edit_screen.manage_ajax_fail( response.data, error_container );
+				}
+			}, 'json' )
+			.fail( function( jqXHR, textStatus, errorThrown ) {
+				console.log( "Error: ", textStatus, errorThrown );
+			})
+			.always( function() {
+				
+			});
+		}
+	});
+	
+	$( document ).on('click', '.js-filter-usermeta-field .js-wpv-filter-remove-usermeta-field', function(e) {
+		if ( $( self.post_row ).find( '.js-wpv-filter-usermeta-field-multiple-element' ).length > 1 ) {
+			$.colorbox({
+				inline: true,
+				href:'.js-filter-usermeta-field-delete-filter-row-dialog',
+				open: true
 			});
 		} else {
-			wpv_allowed_values = 1;
-			jQuery(this).parents('.js-filter-row-multiple-element').find('.js-wpv-usermeta-field-add-value').addClass('hidden');
-			jQuery(this).parents('.js-filter-row-multiple-element').find('.js-wpv-usermeta-field-remove-value').addClass('hidden');
+			self.remove_usermeta_field_filters();
 		}
-		jQuery(this).parents('.js-filter-row-multiple-element').find('.js-wpv-usermeta-field-value-div').each(function() {
-			if (wpv_allowed_values > 0) {
-				jQuery(this).removeClass('hidden');
-			} else {
-				jQuery(this).remove();
-			}
-			wpv_allowed_values--;
-		});
 	});
-}
-
-jQuery(document).on('change', '.js-filter-list .js-wpv-usermeta-field-compare-select', function() {
-	wpv_usermeta_field_initialize_compare();
-});
-
-// Inputs based on filter compare mode
-
-function wpv_usermeta_field_initialize_compare_mode() {
-	jQuery('.js-filter-list .js-wpv-usermeta-field-compare-mode').each(function() {
-		wpv_usermeta_field_show_hide_text_date_controls(this);
-	});
-	jQuery(document).on('change', '.js-filter-list .js-wpv-usermeta-field-compare-mode', function() {
-		wpv_usermeta_field_show_hide_text_date_controls(this)
-	});
-}
-
-function wpv_usermeta_field_show_hide_text_date_controls(item) {
-	// Show the text control depending on the compare function.
-	var mode = jQuery(item).val();
-	jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').removeClass('js-wpv-filter-validate');
-	jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').data('type', 'none');
-	switch(mode) {
-		case 'constant':
-			//	case 'url':
-			//	case 'attribute':
-		case 'future_day':
-		case 'past_day':
-		case 'future_month':
-		case 'past_month':
-		case 'future_year':
-		case 'past_year':
-		case 'seconds_from_now':
-		case 'months_from_now':
-		case 'years_from_now':
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').removeClass('hidden');
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-date').addClass('hidden');
-			break;
-		case 'url':
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').addClass('js-wpv-filter-validate');
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').data('type', 'url');
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').removeClass('hidden');
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-date').addClass('hidden');
-			break;
-		case 'attribute':
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').addClass('js-wpv-filter-validate');
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').data('type', 'shortcode');
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').removeClass('hidden');
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-date').addClass('hidden');
-			break;
-		case 'date':
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').addClass('hidden');
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-date').removeClass('hidden');
-			break;
-		default:
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-value-text').addClass('hidden');
-			jQuery(item).parents('.js-wpv-usermeta-field-value-div').find('.js-wpv-usermeta-field-date').addClass('hidden');
-			break;
-
-	}
-}
-
-function wpv_usermeta_field_initialize_relationship() {
-	if (jQuery('.js-filter-list .js-wpv-usermeta-field-compare-select').length > 1) {
-		jQuery('.js-filter-list .js-wpv-filter-usermeta-field-relationship-container').removeClass('hidden');
-		jQuery('.js-filter-list .js-filter-usermeta-field-row-remove').addClass('js-multiple-items');
-	} else if (jQuery('.js-filter-list .js-wpv-usermeta-field-compare-select').length == 0) {
-		jQuery('.js-filter-list .js-filter-usermeta-field').remove();
-		if (jQuery('.js-wpv-section-unsaved').length < 1) {
-			setConfirmUnload(false);
-		}
-	} else {
-		jQuery('.js-filter-list .js-wpv-filter-usermeta-field-relationship-container').addClass('hidden');
-		jQuery('.js-filter-list .js-filter-usermeta-field-row-remove').removeClass('js-multiple-items');
-	}
-}
-
-// Add another value
-
-jQuery(document).on('click', '.js-filter-list .js-wpv-usermeta-field-add-value', function() {
-	var clone = jQuery(this).parents('.js-filter-row-multiple-element').find('.js-wpv-usermeta-field-value-div:last').clone();
 	
-	clone.find('.js-wpv-usermeta-field-value-text').val('');
-	clone.find('.js-wpv-usermeta-field-remove-value').removeClass('hidden');
+	$( document ).on( 'click', '.js-filter-usermeta-field-edit-filter-row', function() {
+		$.colorbox.close();
+		WPViews.query_filters.open_filter_row( $( self.post_row ) );
+	})
 
-	clone.insertAfter(jQuery(this).parents('.js-filter-row-multiple-element').find('.js-wpv-usermeta-field-value-div:last'));
-	
-	wpv_usermeta_field_initialize_compare();
-	wpv_usermeta_field_initialize_compare_mode();
-	wpv_filter_usermeta_field_watch_changes();
-});
-
-// Remove value
-
-jQuery(document).on('click', '.js-filter-list .js-wpv-usermeta-field-remove-value', function() {
-	jQuery(this).parents('.js-wpv-usermeta-field-value-div').remove();
-	wpv_filter_usermeta_field_watch_changes();
-});
-
-// Get value
-
-function _wpv_resolve_usermeta_field_value() {
-	// Calculate the actual value to be saved using the
-	// settings from the mode and text boxes.
-	jQuery('.js-filter-list .js-wpv-usermeta-field-values').each(function(index) {
-		var text_box = jQuery(this).find('.js-wpv-usermeta-field-values-real');
-		var _wpv_resolve_usermeta_field_value_output = '';
-		jQuery(this).find('.js-wpv-usermeta-field-value-div').each(function(index) {
-			var text_control = jQuery(this).find('.js-wpv-usermeta-field-value-text')
-			if (_wpv_resolve_usermeta_field_value_output != '') {
-				_wpv_resolve_usermeta_field_value_output += ',';
-			}
-			var value = text_control.val();
-
-			var mode = jQuery(this).children('.js-wpv-usermeta-field-compare-mode').val();
-			switch(mode) {
-				case 'url':
-					value = 'URL_PARAM(' + value + ')';
-					break;
-
-				case 'attribute':
-					value = 'VIEW_PARAM(' + value + ')';
-					break;
-
-				case 'now':
-					value = 'NOW()';
-					break;
-
-				case 'today':
-					value = 'TODAY()';
-					break;
-
-				case 'future_day':
-					value = 'FUTURE_DAY(' + value + ')';
-					break;
-
-				case 'past_day':
-					value = 'PAST_DAY(' + value + ')';
-					break;
-
-				case 'this_month':
-					value = 'THIS_MONTH()';
-					break;
-
-				case 'future_month':
-					value = 'FUTURE_MONTH(' + value + ')';
-					break;
-
-				case 'past_month':
-					value = 'PAST_MONTH(' + value + ')';
-					break;
-
-				case 'this_year':
-					value = 'THIS_YEAR()';
-					break;
-
-				case 'future_year':
-					value = 'FUTURE_YEAR(' + value + ')';
-					break;
-
-				case 'past_year':
-					value = 'PAST_YEAR(' + value + ')';
-					break;
-
-				case 'seconds_from_now':
-					value = 'SECONDS_FROM_NOW(' + value + ')';
-					break;
-
-				case 'months_from_now':
-					value = 'MONTHS_FROM_NOW(' + value + ')';
-					break;
-
-				case 'years_from_now':
-					value = 'YEARS_FROM_NOW(' + value + ')';
-					break;
-
-				case 'date':
-					var date_div = jQuery(this).find('.js-wpv-usermeta-field-date');
-					var month = jQuery(date_div).find('select');
-
-					var mm = month.val();
-					var jj = month.next().val();
-					var aa = month.next().next().val();
-
-					value = 'DATE(' + jj + ',' + mm + ',' + aa + ')';
-					break;
-
-			}
-
-			_wpv_resolve_usermeta_field_value_output += value;
-		})
-
-
-		text_box.val(_wpv_resolve_usermeta_field_value_output);
+	$( document ).on( 'click', '.js-filters-usermeta-field-delete-filter-row', function() {
+		var spinnerContainer = $( self.spinner ).insertBefore( $( this ) ).show();
+		self.remove_usermeta_field_filters();
+		spinnerContainer.remove();
+		$.colorbox.close();
 	});
-}
-
-var wpv_filter_usermeta_field_selected = jQuery('.js-filter-list .js-filter-usermeta-field input, .js-filter-list .js-filter-usermeta-field select').serialize();
-
-// Watch changes
-
-jQuery(document).on('change keyup input cut paste', '.js-filter-list .js-filter-usermeta-field input, .js-filter-list .js-filter-usermeta-field select', function() {
-	jQuery(this).parents('.js-filter-usermeta-field').find('.filter-input-error').removeClass('filter-input-error');
-	wpv_filter_usermeta_field_watch_changes();
-});
-
-function wpv_filter_usermeta_field_watch_changes() {
-	jQuery('.js-filter-list .js-wpv-filter-usermeta-field-edit-ok').prop('disabled', false);
-	wpv_clear_validate_messages('.js-filter-list .js-filter-usermeta-field');
-	if ( wpv_filter_usermeta_field_selected != jQuery('.js-filter-list .js-filter-usermeta-field input, .js-filter-list .js-filter-usermeta-field select').serialize() ) {
-		jQuery('.js-filter-list .js-wpv-filter-usermeta-field-edit-ok').removeClass('button-secondary').addClass('button-primary').addClass('js-wpv-section-unsaved').val(jQuery('.js-filter-list .js-wpv-filter-usermeta-field-edit-ok').data('save'));
-		setConfirmUnload(true);
-	} else {
-		jQuery('.js-filter-list .js-wpv-filter-usermeta-field-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-filter-list .js-wpv-filter-usermeta-field-edit-ok').data('close'));
-		jQuery('.js-filter-list .js-wpv-filter-usermeta-field-edit-ok').parent().find('.unsaved').remove();
-		if (jQuery('.js-wpv-section-unsaved').length < 1) {
-			setConfirmUnload(false);
+	
+	// Created, saved and deleted
+	
+	$( document ).on( 'js_event_wpv_query_filter_created', function( event, filter_type ) {
+		if ( filter_type == 'usermeta-field' || filter_type.substr( 0, 14 ) == 'usermeta-field' || filter_type == 'all' ) {
+			self.manage_filter_changes();
+			self.usermeta_field_initialize_compare();
+			self.usermeta_field_initialize_compare_mode();// Might not be needed here
+			self.usermeta_field_initialize_relationship();
 		}
-	}
-}
-
-// Close and save
-
-jQuery(document).on('click', '.js-filter-list .js-wpv-filter-usermeta-field-edit-ok', function() {
-	jQuery(this).parent().find('.unsaved').remove();
-	if (wpv_filter_usermeta_field_selected == jQuery('.js-filter-list .js-filter-usermeta-field input, .js-filter-list .js-filter-usermeta-field select').serialize() ) {
-		wpv_close_filter_row('.js-filter-list .js-filter-usermeta-field');
-	} else {
-		var valid = true;
-		var tax_row = jQuery('.js-filter-list .js-wpv-usermeta-field-compare-mode').parents('.js-filter-row-multiple-element').data('field');
-		valid = wpv_validate_filter_inputs('.js-filter-list .js-filter-row-usermeta-field-' + tax_row);
-		if (valid) {
-			_wpv_resolve_usermeta_field_value();
-			var update_message = jQuery(this).data('success');
-			var unsaved_message = jQuery(this).data('unsaved');
-			var nonce = jQuery(this).data('nonce');
-			wpv_filter_usermeta_field_selected = jQuery('.js-filter-list .js-filter-usermeta-field input, .js-filter-list .js-filter-usermeta-field select').serialize();
-			var wpv_usermeta_fields_values = {};
-			jQuery('.js-filter-list .js-filter-usermeta-field .js-filter-row-multiple-element').each(function() {
-				var wpv_usermeta_field = "usermeta-field-" + jQuery(this).data('field');
-				wpv_usermeta_fields_values[wpv_usermeta_field + "_compare"] = jQuery(this).find('.js-wpv-usermeta-field-compare-select').val();
-				wpv_usermeta_fields_values[wpv_usermeta_field + "_type"] = jQuery(this).find('.js-wpv-usermeta-field-type-select').val();
-				wpv_usermeta_fields_values[wpv_usermeta_field + "_value"] = jQuery(this).find('.js-wpv-usermeta-field-values-real').val();
-			});
-			var filter_usermeta_fields = JSON.stringify(wpv_usermeta_fields_values);
-			var spinnerContainer = jQuery('<div class="spinner ajax-loader">').insertAfter(jQuery(this)).removeClass('hidden');
-			var data_view_id = jQuery('.js-post_ID').val();
-			var data = {
-				action: 'wpv_filter_usermeta_field_update',
-				id: data_view_id,
-				filter_usermeta_fields: filter_usermeta_fields,
-				filter_usermeta_fields_relationship: jQuery('.js-filter-list .js-wpv-filter-usermeta-fields-relationship').val(),
-				wpnonce: nonce
-			};
-			jQuery.post(ajaxurl, data, function(response) {
-				if ( (typeof(response) !== 'undefined')) {
-					if (response != 0) {
-						jQuery('.js-filter-list .js-wpv-filter-usermeta-field-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-filter-list .js-wpv-filter-usermeta-field-edit-ok').data('close'));
-						if (jQuery('.js-wpv-section-unsaved').length < 1) {
-							setConfirmUnload(false);
-						}
-						jQuery('.js-filter-list .js-wpv-filter-usermeta-field-summary').html(response);
-						jQuery('.js-filter-list .js-wpv-filter-usermeta-field-summary').append('<span class="updated toolset-alert toolset-alert-success"><i class="icon-check"></i> ' + update_message + '</span>');
-						setTimeout(function(){
-							jQuery('.js-filter-list .js-wpv-filter-usermeta-field-summary .updated').fadeOut('fast');
-						}, 2000);
-						wpv_close_filter_row('.js-filter-list .js-filter-usermeta-field');
-						wpv_update_parametric_search_section();
-					} else {
-						console.log( "Error: WordPress AJAX returned " + response );
-					}
-				} else {
-					console.log( "Error: AJAX returned " + response );
-				}
-
-			})
-			.fail(function(jqXHR, textStatus, errorThrown) {
-				console.log( "Error: %s %s", textStatus, errorThrown );
-			})
-			.always(function() {
-				spinnerContainer.remove();
-			});
+		WPViews.query_filters.filters_exist();
+	});
+	
+	$( document ).on( 'js_event_wpv_query_filter_saved', function( event, filter_type ) {
+		if ( filter_type == 'usermeta-field' || filter_type.substr( 0, 14 ) == 'usermeta-field' || filter_type == 'all' ) {
+			self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+			self.manage_filter_changes();
+			self.usermeta_field_initialize_compare();
+			self.usermeta_field_initialize_compare_mode();// Might not be needed here
+			self.usermeta_field_initialize_relationship();
 		}
-	}
+		WPViews.query_filters.filters_exist();
+	});
+	
+	$( document ).on( 'js_event_wpv_query_filter_deleted', function( event, filter_type ) {
+		if ( filter_type == 'usermeta-field' || filter_type.substr( 0, 14 ) == 'usermeta-field' || filter_type == 'all' ) {
+			self.manage_filter_changes();
+			self.usermeta_field_initialize_compare();
+			self.usermeta_field_initialize_compare_mode();// Might not be needed here
+			self.usermeta_field_initialize_relationship();
+		}
+		WPViews.query_filters.filters_exist();
+	});
+	
+	self.init = function() {
+		self.usermeta_field_initialize_compare();
+		//self.usermeta_field_initialize_compare_mode();
+		self.usermeta_field_initialize_relationship();
+	};
+	
+	self.init();
+
+};
+
+jQuery( document ).ready( function( $ ) {
+    WPViews.usermeta_field_filter_gui = new WPViews.UsermetaFieldFilterGUI( $ );
 });

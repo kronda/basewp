@@ -1,529 +1,505 @@
 <?php
 
-if(is_admin()){
+/**
+* Users filter
+*
+* @package Views
+*
+* @since unknown
+*/
 
+WPV_Users_Filter::on_load();
+
+/**
+* WPV_Users_Filter
+*
+* Views Users Filter Class
+*
+* @since 1.7.0
+*/
+
+class WPV_Users_Filter {
+
+    static function on_load() {
+        add_action( 'init', array( 'WPV_Users_Filter', 'init' ) );
+		add_action( 'admin_init', array( 'WPV_Users_Filter', 'admin_init' ) );
+    }
+
+    static function init() {
+		
+    }
+	
+	static function admin_init() {
+		// Register filter in lists and dialogs
+		add_action( 'wpv_add_users_filter_list_item', array( 'WPV_Users_Filter', 'wpv_add_filter_users_list_item' ), 1, 1 );
+		add_filter( 'wpv_users_filters_add_filter', array( 'WPV_Users_Filter', 'wpv_filters_add_filter_users' ), 1, 1 );
+		// AJAX calbacks
+		add_action( 'wp_ajax_wpv_filter_users_update', array( 'WPV_Users_Filter', 'wpv_filter_users_update_callback' ) );
+			// TODO This might not be needed here, maybe for summary filter
+			add_action( 'wp_ajax_wpv_filter_users_sumary_update', array( 'WPV_Users_Filter', 'wpv_filter_users_sumary_update_callback' ) );
+		add_action( 'wp_ajax_wpv_filter_users_delete', array( 'WPV_Users_Filter', 'wpv_filter_users_delete_callback' ) );
+		add_filter( 'wpv-view-get-summary', array( 'WPV_Users_Filter', 'wpv_users_summary_filter' ), 5, 3 );
+		add_action( 'wp_ajax_wpv_suggest_users', array( 'WPV_Users_Filter', 'wpv_suggest_users' ) );
+		add_action( 'wp_ajax_nopriv_wpv_suggest_users', array( 'WPV_Users_Filter', 'wpv_suggest_users' ) );
+		// Register scripts
+		add_action( 'admin_enqueue_scripts', array( 'WPV_Users_Filter','admin_enqueue_scripts' ), 20 );
+	}
+	
 	/**
-	* Add the User filter to the list and to the popup select
+	* admin_enqueue_scripts
+	*
+	* Register the needed script for this filter
+	*
+	* @since 1.7
 	*/
-    
-	add_action('wpv_add_users_filter_list_item', 'wpv_add_filter_users_list_item', 1, 1);
-	add_filter('wpv_users_filters_add_filter', 'wpv_filters_add_filter_users', 1,1);
-
-	function wpv_filters_add_filter_users($filters) {
-		$filters['users_filter'] = array('name' => __('Specific users', 'wpv-views'),
-						'present' => 'users_mode',
-						'callback' => 'wpv_add_new_filter_users_list_item'
-						);
-
+	
+	static function admin_enqueue_scripts( $hook ) {
+		wp_register_script( 'views-filter-users-js', ( WPV_URL . "/res/js/redesign/views_filter_users.js" ), array( 'suggest', 'views-filters-js'), WPV_VERSION, true );
+		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
+			wp_enqueue_script( 'views-filter-users-js' );
+		}
+	}
+	
+	/**
+	* wpv_filters_add_filter_users
+	*
+	* Register the users filter in the popup dialog
+	*
+	* @param $filters
+	*
+	* @since unknown
+	*/
+	
+	static function wpv_filters_add_filter_users( $filters ) {
+		$filters['users'] = array(
+			'name' => __( 'Specific users', 'wpv-views' ),
+			'present' => 'users_mode',
+			'callback' => array( 'WPV_Users_Filter', 'wpv_add_new_filter_users_list_item' ),
+			'group' => __( 'User filters', 'wpv-views' )
+		);
 		return $filters;
 	}
 
 	/**
-	* Create users filter callback
+	* wpv_add_new_filter_users_list_item
+	*
+	* Register the users filter in the filters list
+	*
+	* @param $taxonomy_type array
+	*
+	* @since unknown
 	*/
 
-	function wpv_add_new_filter_users_list_item() {
+	static function wpv_add_new_filter_users_list_item() {
 		$args = array(
-			'users_mode' => array('this_user')
+			'users_mode' => array( 'this_user' )
 		);
-		wpv_add_filter_users_list_item($args);
+		WPV_Users_Filter::wpv_add_filter_users_list_item( $args );
 	}
-
+	
 	/**
+	* wpv_add_filter_users_list_item
+	*
 	* Render users filter item in the filters list
+	*
+	* @param $view_settings
+	*
+	* @since unknown
 	*/
 
-	function wpv_add_filter_users_list_item($view_settings) {
-		if (isset($view_settings['users_mode'][0])) {
-			$li = wpv_get_list_item_ui_users(null, $view_settings);
-			echo '<li id="js-row-users" class="js-filter-row js-filter-row-simple js-filter-for-users js-filter-users js-filter-row-users_filter">' . $li . '</li>';
+	static function wpv_add_filter_users_list_item( $view_settings ) {
+		if ( isset( $view_settings['users_mode'][0] ) ) {
+			$li = WPV_Users_Filter::wpv_get_list_item_ui_users( $view_settings );
+			WPV_Filter_Item::simple_filter_list_item( 'users', 'users', 'users', __( 'Users filter', 'wpv-views' ), $li );
 		}
 	}
-
+	
 	/**
+	* wpv_get_list_item_ui_users
+	*
 	* Render users filter item content in the filters list
+	*
+	* @param $view_settings
+	*
+	* @since unknown
 	*/
 
-	function wpv_get_list_item_ui_users( $selected, $view_settings = null ) {
-
+	static function wpv_get_list_item_ui_users( $view_settings = array() ) {
 		if ( isset( $view_settings['users_mode'] ) && is_array( $view_settings['users_mode'] ) ) {
 			$view_settings['users_mode'] = $view_settings['users_mode'][0];
 		}
-		
 		ob_start();
 		?>
 		<p class='wpv-filter-users-edit-summary js-wpv-filter-summary js-wpv-filter-users-summary'>
-			<?php echo wpv_get_filter_users_summary_txt ($view_settings ); ?>
+			<?php echo wpv_get_filter_users_summary_txt( $view_settings ); ?>
 		</p>
-		<p class='edit-filter js-wpv-filter-edit-controls'>
-			<i class='button-secondary icon-edit icon-large js-wpv-filter-edit-open js-wpv-filter-users-edit-open' title='<?php echo esc_attr( __('Edit this filter','wpv-views') ); ?>'></i>
-			<i class='button-secondary icon-trash icon-large js-filter-remove' title='<?php echo esc_attr( __('Delete this filter','wpv-views') ); ?>' data-nonce='<?php echo wp_create_nonce( 'wpv_view_filter_users_delete_nonce' ); ?>'></i>
-		</p>
+		<?php
+		WPV_Filter_Item::simple_filter_list_item_buttons( 'users', 'wpv_filter_users_update', wp_create_nonce( 'wpv_view_filter_users_nonce' ), 'wpv_filter_users_delete', wp_create_nonce( 'wpv_view_filter_users_delete_nonce' ) );
+		?>
 		<div id="wpv-filter-users-edit" class="wpv-filter-users-edit wpv-filter-edit js-wpv-filter-edit">
-			<fieldset>
-				<p><strong><?php echo __('Specific users', 'wpv-views'); ?>:</strong></p>
-				<div id="wpv-filter-users" class="js-filter-users-list">
-					<?php wpv_render_users_options( array( 'mode' => 'edit', 'view_settings' => $view_settings ) ); ?>
-				</div>
-			</fieldset>
-			<p>
-				<input class="button-secondary js-wpv-filter-edit-ok js-wpv-filter-users-edit-ok" type="button" value="<?php echo htmlentities( __('Close', 'wpv-views'), ENT_QUOTES ); ?>" data-save="<?php echo htmlentities( __('Save', 'wpv-views'), ENT_QUOTES ); ?>" data-close="<?php echo htmlentities( __('Close', 'wpv-views'), ENT_QUOTES ); ?>" data-success="<?php echo htmlentities( __('Updated', 'wpv-views'), ENT_QUOTES ); ?>" data-unsaved="<?php echo htmlentities( __('Not saved', 'wpv-views'), ENT_QUOTES ); ?>" data-nonce="<?php echo wp_create_nonce( 'wpv_view_filter_users_nonce' ); ?>" />
-			</p>
+			<div id="wpv-filter-users" class="js-wpv-filter-options js-wpv-filter-users-options">
+				<?php WPV_Users_Filter::wpv_render_users_options( $view_settings ); ?>
+			</div>
+			<div class="js-wpv-filter-toolset-messages"></div>
 		</div>
 		<?php
 		$res = ob_get_clean();
 		return $res;
-		/*
-		ob_start();
-		wpv_render_users_options(array('mode' => 'edit', 'view_settings' => $view_settings));
-		$data = ob_get_clean();
-		$td = "<p class='wpv-filter-users-edit-summary js-wpv-filter-summary js-wpv-filter-users-summary'>\n";
-		$td .= wpv_get_filter_users_summary_txt($view_settings);
-		$td .= "</p>\n<p class='edit-filter js-wpv-filter-edit-controls'>\n<i class='button-secondary icon-edit icon-large js-wpv-filter-edit-open js-wpv-filter-users-edit-open' title='".
-		__('Edit','wpv-views') ."'></i>\n<i class='button-secondary icon-trash icon-large js-filter-remove' title='". __('Delete this filter','wpv-views') ."' data-nonce='". wp_create_nonce( 'wpv_view_filter_users_delete_nonce' )
-		. "'></i>\n</p>";
-		$td .= "<div id=\"wpv-filter-users-edit\" class=\"wpv-filter-users-edit wpv-filter-edit js-wpv-filter-edit\">\n";
-		$td .= '<fieldset>';
-		$td .= '<p><strong>' . __('Specific users', 'wpv-views') . ':</strong></p>';
-		$td .= '<div id="wpv-filter-users" class="js-filter-users-list">' . $data . '</div>';
-		$td .= '</fieldset>';
-		ob_start();
-		?>
-		<p>
-			<input class="button-secondary js-wpv-filter-edit-ok js-wpv-filter-users-edit-ok" type="button" value="<?php echo htmlentities( __('Close', 'wpv-views'), ENT_QUOTES ); ?>" data-save="<?php echo htmlentities( __('Save', 'wpv-views'), ENT_QUOTES ); ?>" data-close="<?php echo htmlentities( __('Close', 'wpv-views'), ENT_QUOTES ); ?>" data-success="<?php echo htmlentities( __('Updated', 'wpv-views'), ENT_QUOTES ); ?>" data-unsaved="<?php echo htmlentities( __('Not saved', 'wpv-views'), ENT_QUOTES ); ?>" data-nonce="<?php echo wp_create_nonce( 'wpv_view_filter_users_nonce' ); ?>" />
-		</p>
-		<p class="wpv-custom-fields-help">
-                        <?php echo sprintf(__('%sLearn about filtering by users%s', 'wpv-views'),
-                                        '<a class="wpv-help-link" href="' . WPV_FILTER_BY_AUTHOR_LINK . '" target="_blank">',
-                                        ' &raquo;</a>'
-                                        ); ?>
-        </p>
-		<?php
-		$td .= ob_get_clean();
-		$td .= '</div>';
-
-		return $td;
-		*/
 	}
 
 	/**
+	* wpv_filter_users_update_callback
+	*
 	* Update users filter callback
+	*
+	* @since unknown
 	*/
 
-	add_action('wp_ajax_wpv_filter_users_update', 'wpv_filter_users_update_callback');
-
-	function wpv_filter_users_update_callback() {
-		$nonce = $_POST["wpnonce"];
-		if (! wp_verify_nonce($nonce, 'wpv_view_filter_users_nonce') ) die("Security check");
-		if ( empty( $_POST['filter_users'] ) ) {
-			echo $_POST['id'];
-			die();
+	static function wpv_filter_users_update_callback() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			$data = array(
+				'type' => 'capability',
+				'message' => __( 'You do not have permissions for that.', 'wpv-views' )
+			);
+			wp_send_json_error( $data );
 		}
-
-		parse_str($_POST['filter_users'], $filter_users);
+		if ( 
+			! isset( $_POST["wpnonce"] )
+			|| ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_filter_users_nonce' ) 
+		) {
+			$data = array(
+				'type' => 'nonce',
+				'message' => __( 'Your security credentials have expired. Please reload the page to get new ones.', 'wpv-views' )
+			);
+			wp_send_json_error( $data );
+		}
+		if (
+			! isset( $_POST["id"] )
+			|| ! is_numeric( $_POST["id"] )
+			|| intval( $_POST['id'] ) < 1 
+		) {
+			$data = array(
+				'type' => 'id',
+				'message' => __( 'Wrong or missing ID.', 'wpv-views' )
+			);
+			wp_send_json_error( $data );
+		}
+		if ( empty( $_POST['filter_options'] ) ) {
+			$data = array(
+				'type' => 'data_missing',
+				'message' => __( 'Wrong or missing data.', 'wpv-views' )
+			);
+			wp_send_json_error( $data );
+		}
+		$view_id = intval( $_POST['id'] );
+		parse_str( $_POST['filter_options'], $filter_users );
 		$change = false;
-		$view_array = get_post_meta($_POST["id"], '_wpv_settings', true);
-		if ( !isset( $filter_users['users_name'] ) || '' == $filter_users['users_name'] ) {
+		$view_array = get_post_meta( $view_id, '_wpv_settings', true );
+		if ( 
+			! isset( $filter_users['users_name'] ) 
+			|| '' == $filter_users['users_name'] 
+		) {
 			$filter_users['users_name'] = '';
 			$filter_users['users_id'] = 0;
 		}
-		if ( !isset( $view_array['users_query_in'] ) || $filter_users['users_query_in'] != $view_array['users_query_in'] ) {
-			$change = true;
-			$view_array['users_query_in'] = $filter_users['users_query_in'];
-		}
-		if ( !isset( $view_array['users_mode'] ) || $filter_users['users_mode'] != $view_array['users_mode'] ) {
-			$change = true;
-			$view_array['users_mode'] = $filter_users['users_mode'];
-		}
-		if ( !isset( $view_array['users_name'] ) || $filter_users['users_name'] != $view_array['users_name'] ) {
-			$change = true;
-			$view_array['users_name'] = $filter_users['users_name'];
-		}
-		if ( !isset( $view_array['users_id'] ) || $filter_users['users_id'] != $view_array['users_id'] ) {
-			$change = true;
-			$view_array['users_id'] = $filter_users['users_id'];
-		}
-		if ( !isset( $view_array['users_url_type'] ) || $filter_users['users_url_type'] != $view_array['users_url_type'] ) {
-			$change = true;
-			$view_array['users_url_type'] = $filter_users['users_url_type'];
-		}
-		if ( !isset( $view_array['users_url'] ) || sanitize_text_field($filter_users['users_url']) != $view_array['users_url'] ) {
-			$change = true;
-			$view_array['users_url'] = sanitize_text_field($filter_users['users_url']);
-		}
-		if ( !isset( $view_array['users_shortcode_type'] ) || $filter_users['users_shortcode_type'] != $view_array['users_shortcode_type'] ) {
-			$change = true;
-			$view_array['users_shortcode_type'] = $filter_users['users_shortcode_type'];
-		}
-		if ( !isset( $view_array['users_shortcode'] ) || sanitize_text_field($filter_users['users_shortcode']) != $view_array['users_shortcode'] ) {
-			$change = true;
-			$view_array['users_shortcode'] = sanitize_text_field($filter_users['users_shortcode']);
+		$settings_to_check = array(
+			'users_query_in', 'users_mode',
+			'users_name', 'users_id',
+			'users_url_type', 'users_url',
+			'users_shortcode_type', 'users_shortcode',
+			'users_framework_type', 'users_framework'
+		);
+		foreach ( $settings_to_check as $set ) {
+			if ( 
+				isset( $filter_users[$set] )
+				&& (
+					! isset( $view_array[$set] ) 
+					|| $filter_users[$set] != $view_array[$set] 
+				)
+			) {
+				if ( is_array( $filter_users[$set] ) ) {
+					$filter_users[$set] = array_map( 'sanitize_text_field', $filter_users[$set] );
+				} else {
+					$filter_users[$set] = sanitize_text_field( $filter_users[$set] );
+				}
+				$change = true;
+				$view_array[$set] = $filter_users[$set];
+			}
 		}
 		if ( $change ) {
-			$result = update_post_meta($_POST["id"], '_wpv_settings', $view_array);
+			$result = update_post_meta( $view_id, '_wpv_settings', $view_array );
+			do_action( 'wpv_action_wpv_save_item', $view_id );
 		}
-
 		$filter_users['users_mode'] = $filter_users['users_mode'][0];
-		echo wpv_get_filter_users_summary_txt($filter_users);
-		die();
+		$data = array(
+			'id' => $view_id,
+			'message' => __( 'Specific users filter saved', 'wpv-views' ),
+			'summary' => wpv_get_filter_users_summary_txt( $filter_users )
+		);
+		wp_send_json_success( $data );
 	}
 
-	/**
-	* Update users filter summary callback
-	*/
-
-	// TODO This might not be needed here, maybe for summary filter
-	add_action('wp_ajax_wpv_filter_users_sumary_update', 'wpv_filter_users_sumary_update_callback');
-
-	function wpv_filter_users_sumary_update_callback() {
+	static function wpv_filter_users_sumary_update_callback() {
 		$nonce = $_POST["wpnonce"];
-		if (! wp_verify_nonce($nonce, 'wpv_view_filter_users_nonce') ) die("Security check");
-		parse_str($_POST['filter_users'], $filter_users);
+		if ( ! wp_verify_nonce( $nonce, 'wpv_view_filter_users_nonce' ) ) {
+			die( "Security check" );
+		}
+		parse_str( $_POST['filter_users'], $filter_users );
 		$filter_users['users_mode'] = $filter_users['users_mode'][0];
-		echo wpv_get_filter_users_summary_txt($filter_users);
+		echo wpv_get_filter_users_summary_txt( $filter_users );
 		die();
 	}
-
+	
 	/**
+	* wpv_filter_users_delete_callback
+	*
 	* Delete users filter callback
+	*
+	* @since unknown
 	*/
 
-	add_action('wp_ajax_wpv_filter_users_delete', 'wpv_filter_users_delete_callback');
-
-	function wpv_filter_users_delete_callback() {
-		$nonce = $_POST["wpnonce"];
-		if (! wp_verify_nonce($nonce, 'wpv_view_filter_users_delete_nonce') ) die("Security check");
-		$view_array = get_post_meta($_POST["id"], '_wpv_settings', true);
-		if ( isset( $view_array['users_query_in'] ) ) {
-			unset( $view_array['users_query_in'] );
+	static function wpv_filter_users_delete_callback() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			$data = array(
+				'type' => 'capability',
+				'message' => __( 'You do not have permissions for that.', 'wpv-views' )
+			);
+			wp_send_json_error( $data );
 		}
-		if ( isset( $view_array['users_mode'] ) ) {
-			unset( $view_array['users_mode'] );
+		if ( 
+			! isset( $_POST["wpnonce"] )
+			|| ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_filter_users_delete_nonce' ) 
+		) {
+			$data = array(
+				'type' => 'nonce',
+				'message' => __( 'Your security credentials have expired. Please reload the page to get new ones.', 'wpv-views' )
+			);
+			wp_send_json_error( $data );
 		}
-		if ( isset( $view_array['users_name'] ) ) {
-			unset( $view_array['users_name'] );
+		if (
+			! isset( $_POST["id"] )
+			|| ! is_numeric( $_POST["id"] )
+			|| intval( $_POST['id'] ) < 1 
+		) {
+			$data = array(
+				'type' => 'id',
+				'message' => __( 'Wrong or missing ID.', 'wpv-views' )
+			);
+			wp_send_json_error( $data );
 		}
-		if ( isset( $view_array['users_id'] ) ) {
-			unset( $view_array['users_id'] );
+		$view_array = get_post_meta( $_POST["id"], '_wpv_settings', true );
+		$settings_to_check = array(
+			'users_query_in', 'users_mode',
+			'users_name', 'users_id',
+			'users_url_type', 'users_url',
+			'users_shortcode_type', 'users_shortcode',
+			'users_framework_type', 'users_framework'
+		);
+		foreach ( $settings_to_check as $index ) {
+			if ( isset( $view_array[$index] ) ) {
+				unset( $view_array[$index] );
+			}
 		}
-		if ( isset( $view_array['users_url_type'] ) ) {
-			unset( $view_array['users_url_type'] );
-		}
-		if ( isset( $view_array['users_url'] ) ) {
-			unset( $view_array['users_url'] );
-		}
-		if ( isset( $view_array['users_shortcode_type'] ) ) {
-			unset( $view_array['users_shortcode_type'] );
-		}
-		if ( isset( $view_array['users_shortcode'] ) ) {
-			unset( $view_array['users_shortcode'] );
-		}
-		update_post_meta($_POST["id"], '_wpv_settings', $view_array);
-		echo $_POST['id'];
-		die();
-
+		update_post_meta( $_POST["id"], '_wpv_settings', $view_array );
+		do_action( 'wpv_action_wpv_save_item', $_POST["id"] );
+		$data = array(
+			'id' => $_POST["id"],
+			'message' => __( 'Specific users filter deleted', 'wpv-views' )
+		);
+		wp_send_json_success( $data );
 	}
-
+	
 	/**
-	* Add a filter to show the filter on the summary
+	* wpv_users_summary_filter
+	
+	* Show the users filter on the View summary
+	*
+	* @since unknown
 	*/
 
-	add_filter('wpv-view-get-summary', 'wpv_users_summary_filter', 5, 3);
-
-	function wpv_users_summary_filter($summary, $post_id, $view_settings) {
-		if(isset($view_settings['query_type']) && $view_settings['query_type'][0] == 'users' && isset($view_settings['users_mode'])) {
+	static function wpv_users_summary_filter( $summary, $post_id, $view_settings ) {
+		if( isset( $view_settings['query_type'] ) && $view_settings['query_type'][0] == 'users' && isset( $view_settings['users_mode'] ) ) {
 			$view_settings['users_mode'] = $view_settings['users_mode'][0];
-
-			$result = wpv_get_filter_users_summary_txt($view_settings, true);
-			if ($result != '' && $summary != '') {
+			$result = wpv_get_filter_users_summary_txt( $view_settings, true );
+			if ( $result != '' && $summary != '' ) {
 				$summary .= '<br />';
 			}
 			$summary .= $result;
 		}
 		return $summary;
 	}
-    
-
+	
 	/**
-	* Add users suggest functionality
+	* wpv_render_taxonomy_term_options
+	*
+	* Render users filter options
+	*
+	* @param $view_settings
+	*
+	* @since unknown
 	*/
 
-	add_action('wp_ajax_wpv_suggest_users', 'wpv_suggest_users');
-	add_action('wp_ajax_nopriv_wpv_suggest_users', 'wpv_suggest_users');
+	static function wpv_render_users_options( $view_settings = array() ) {
+		$defaults = array(
+			'users_query_in' => 'include',
+			'users_mode' => 'this_user',
+			'users_name' =>'',
+			'users_id' => 0,
+			'users_url' => 'users-filter',
+			'users_url_type' => '',
+			'users_shortcode' => 'users',
+			'users_shortcode_type' => '',
+			'users_framework' => '',
+			'users_framework_type' => ''
+		);
+		$view_settings = wp_parse_args( $view_settings, $defaults );
+		$view_id = '';
+		// data-viewid is not used anuwhere, so...
+		//----------
+		if ( isset( $_GET['view_id'] ) ) {
+			$view_id = $_GET['view_id'];
+		}
+		if ( isset( $_POST['view_id'] ) ) {
+			$view_id = $_POST['view_id'];
+		}
+		//----------
+		?>
+		<h4><?php  _e( 'Include or exclude users', 'wpv-views' ); ?></h4>
+		<ul class="wpv-filter-options-set">
+			<li>
+				<input type="radio" id="users-query-in-include" name="users_query_in" <?php checked( $view_settings['users_query_in'], 'include' ); ?> class="users-query-in js-wpv-users-query-in" value="include" autocomplete="off" />
+				<label for="users-query-in-include"><?php echo __('Only list users who met the filter criteria', 'wpv-views'); ?></label>
+			</li>
+			<li>
+				<input type="radio" id="users-query-in-exclude" name="users_query_in" <?php checked( $view_settings['users_query_in'], 'exclude' ); ?> class="users-query-in js-wpv-users-query-in" value="exclude" autocomplete="off" />
+				<label for="users-query-in-exclude"><?php echo __('List all users but the ones who met the criteria', 'wpv-views'); ?></label>
+			</li>
+		</ul>
+		<h4><?php  _e( 'Criteria to filter', 'wpv-views' ); ?></h4>
+		<ul class="wpv-filter-options-set">
+			<li>
+				<input type="radio" id="users-mode-this-user" name="users_mode[]" value="this_user" <?php checked( $view_settings['users_mode'], 'this_user' ); ?> autocomplete="off" />
+				<label for="users-mode-this-user"><?php _e('Users with this display name ', 'wpv-views'); ?></label>
+				<input id="wpv_users_name" class="users_suggest js-users-suggest" type='hidden' name="users_name" value="<?php echo esc_attr( $view_settings['users_name'] ); ?>" size="15" />
+				<input id="wpv_users" class="users_suggest_id js-users-suggest-id" type='text' name="users_id" value="<?php echo esc_attr( $view_settings['users_id'] ); ?>" size="10" />
+			</li>
+			<li>
+				<input type="radio" id="users-mode-by-url" name="users_mode[]" value="by_url" <?php checked( $view_settings['users_mode'], 'by_url' ); ?> autocomplete="off" />
+				<label for="users-mode-by-url"><?php _e('Users with ', 'wpv-views'); ?></label>
+				<select id="wpv_users_url_type" name="users_url_type" autocomplete="off">
+					<option value="id"<?php selected( $view_settings['users_url_type'], 'id' ); ?>><?php _e( 'ID', 'wpv-views' ); ?></option>
+					<option value="username"<?php selected( $view_settings['users_url_type'], 'username' ); ?>><?php _e( 'username', 'wpv-views' ); ?></option>
+				</select>
+				<label for="users-url"><?php _e(' set by this URL parameter: ', 'wpv-views'); ?></label>
+				<input type='text' id="users-url" class="js-wpv-filter-users-url js-wpv-filter-validate" data-type="url" data-class="js-wpv-filter-users-url" name="users_url" value="<?php echo esc_attr( $view_settings['users_url'] ); ?>" size="10" autocomplete="off" />
+			</li>
+			<li>
+				<input type="radio" id="users-mode-shortcode" name="users_mode[]" value="shortcode" <?php checked( $view_settings['users_mode'], 'shortcode' ); ?> autocomplete="off" />
+				<label for="users-mode-shortcode"><?php _e('Users with ', 'wpv-views'); ?></label>
+				<select id="wpv_users_shortcode_type" name="users_shortcode_type" autocomplete="off">
+					<option value="id"<?php selected( $view_settings['users_shortcode_type'], 'id' ); ?>><?php _e( 'ID', 'wpv-views' ); ?></option>
+					<option value="username"<?php selected( $view_settings['users_shortcode_type'], 'username' ); ?>><?php _e( 'username', 'wpv-views' ); ?></option>
+				</select>
+				<label for="users-shortcode"><?php _e(' set by this View shortcode attribute: ', 'wpv-views'); ?></label>
+				<input type='text' id="users-shortcode" class="js-wpv-filter-users-shortcode js-wpv-filter-validate" data-type="shortcode" data-class="js-wpv-filter-users-shortcode" name="users_shortcode" value="<?php echo esc_attr( $view_settings['users_shortcode'] ); ?>" size="10" autocomplete="off" />
+			</li>
+			<?php
+			global $WP_Views_fapi;
+			if ( $WP_Views_fapi->framework_valid ) {
+				$framework_data = $WP_Views_fapi->framework_data
+			?>
+			<li>
+				<input type="radio" id="users-mode-framework" name="users_mode[]" value="framework" <?php checked( $view_settings['users_mode'], 'framework' ); ?> autocomplete="off" />
+				<label for="users-mode-framework"><?php _e('Users with ', 'wpv-views'); ?></label>
+				<select id="wpv_users_framework_type" name="users_framework_type" autocomplete="off">
+					<option value="id"<?php selected( $view_settings['users_framework_type'], 'id' ); ?>><?php _e( 'ID', 'wpv-views' ); ?></option>
+					<option value="username"<?php selected( $view_settings['users_framework_type'], 'username' ); ?>><?php _e( 'username', 'wpv-views' ); ?></option>
+				</select>
+				<label for="wpv-users-framework"><?php echo sprintf( __( ' set by the %s key: ', 'wpv-views' ), sanitize_text_field( $framework_data['name'] ) ); ?></label>
+				<select name="users_framework" autocomplete="off">
+					<option value=""><?php _e( 'Select a key', 'wpv-views' ); ?></option>
+					<?php
+					$fw_key_options = array();
+					$fw_key_options = apply_filters( 'wpv_filter_extend_framework_options_for_users', $fw_key_options );
+					foreach ( $fw_key_options as $index => $value ) {
+						?>
+						<option value="<?php echo esc_attr( $index ); ?>" <?php selected( $view_settings['users_framework'], $index ); ?>><?php echo $value; ?></option>
+						<?php
+					}
+					?>
+				</select>
+			</li>
+			<?php
+			}
+			?>
+		</ul>
+		<?php
+			$users = array();
+			$ids = explode( ',', $view_settings['users_id'] );
+			$ids = array_filter( $ids, 'is_numeric' );
+			$names = explode( ',', $view_settings['users_name'] );
+			$names = array_map( 'sanitize_text_field', $names );
+			if ( 
+				count( $ids ) !== 0 
+				&& count( $ids ) == count( $names )
+			) {
+				for ( $i = 0; $i < count( $ids ); $i++ ) {
+					if ( $ids[$i] != 0 ) {
+						$users[] = array(
+							'id' => $ids[$i],
+							'name' => $names[$i]
+						);
+					}
+				}
 
-	function wpv_suggest_users() {
-		global $wpdb; // TODO this global is not needed anymore, it seems
-		$_view_settings = get_post_meta($_GET['view_id'], '_wpv_settings', true);
+			}
+
+		?>
+		<input type="hidden" value="" class="js-wpv-user-suggest-values" data-hinttext="<?php echo esc_attr( __( 'Type to search for users...', 'wpv-views' ) ); ?>"
+		data-noresult="<?php echo esc_attr( __( 'No users matched your criteria', 'wpv-views' ) ); ?>"
+		data-search="<?php echo esc_attr( __( 'Searching', 'wpv-views' ) ); ?>..."
+		data-viewid="<?php echo esc_attr( $view_id ); ?>"
+		data-users='<?php echo json_encode( $users ); ?>'
+		/>
+		<div class="filter-helper js-wpv-users-helper"></div>
+		<?php
+	}
+	
+	/**
+	* wpv_suggest_users
+	*
+	* Suggest users
+	*
+	* @since unknown
+	*/
+	
+	static function wpv_suggest_users() {
+		$_view_settings = get_post_meta( $_GET['view_id'], '_wpv_settings', true );
 		$query_type = 'administrator';
-		if ( isset( $_view_settings['roles_type'][0]) ){
+		if ( isset( $_view_settings['roles_type'][0] ) ) {
 			$query_type = $_view_settings['roles_type'][0];
 		}
-		$user = '*'.esc_sql(like_escape($_REQUEST['q'])).'*';
+		$user = '*' . wpv_esc_like( $_REQUEST['q'] ) . '*';
 		$response = array();
 		$args = array(
 			'search'         => $user,
 			'search_columns' => array( 'user_login', 'user_email' ),
-			'role' => $query_type,
 			'number' => 20
 		);
+		if ( $query_type != 'any' ) {
+			$args['role'] = $query_type;
+		}
 		$user_query = new WP_User_Query( $args );
 		if ( ! empty( $user_query->results ) ) {
 			foreach ( $user_query->results as $user ) {
 				$response[] = array('id'=> $user->ID, 'name'=> $user->display_name );
 			}
 		}
-		$json_response = json_encode($response);
+		$json_response = json_encode( $response );
 		echo $json_response;
 		die();
 	}
-
-}
-
-/**
-* Render users filter options
-*/
-
-function wpv_render_users_options($args) {
-	global $wpdb; // TODO this global seems not used anymore
-
-	$edit = isset($args['mode']) && $args['mode'] == 'edit';
-
-	$view_settings = isset($args['view_settings']) ? $args['view_settings'] : array();
-
-	$defaults = array('users_query_in' => 'include',
-				'users_mode' => 'this_user',
-				'users_name' =>'',
-				'users_id' => 0,
-				'users_url' => 'users-filter',
-				'users_url_type' => '',
-				'users_shortcode' => 'users',
-				'users_shortcode_type' => '');
-	$view_settings = wp_parse_args($view_settings, $defaults);
-	$view_id = '';
-	if ( isset($_GET['view_id']) ){
-		$view_id = $_GET['view_id'];
-	}
-	if ( isset($_POST['view_id']) ){
-		$view_id = $_POST['view_id'];
-	}
-		?>
-		<p>
-			<label for="users_filter_type"><?php _e('This View displays', 'wpv-views'); ?></label>:
-			<select id="users_filter_type" name="users_query_in">
-				<?php $selected = $view_settings['users_query_in'] == 'include' ? ' selected="selected"' : ''; ?>
-				<option value="include"<?php echo $selected; ?>>only those users</option>
-				<?php $selected = $view_settings['users_query_in'] == 'exclude' ? ' selected="selected"' : ''; ?>
-				<option value="exclude"<?php echo $selected; ?>>all users but those</option>
-			</select>
-		</p>
-	<!--	<ul>
-			<?php //$radio_name = $edit ? '_wpv_settings[users_mode][]' : 'users_mode[]' ?>
-			<li>
-				<?php //$checked = $view_settings['users_query_in'] == 'include' ? 'checked="checked"' : ''; ?>
-				<label>
-					<input type="radio" name="users_query_in" value="include" <?php //echo $checked; ?> />
-					<?php //_e('Specific users list', 'wpv-views'); ?>
-				</label>
-			</li>
-				<?php //$checked = $view_settings['users_query_in'] == 'exclude' ? 'checked="checked"' : ''; ?>
-				<label>
-					<input type="radio" name="users_query_in" value="exclude" <?php //echo $checked; ?> />
-					<?php //_e('All users except a specific list of users', 'wpv-views'); ?>
-				</label>
-			</li>
-		</ul>-->
-		<ul>
-			<li>
-			<?php $checked = $view_settings['users_mode'] == 'this_user' ? 'checked="checked"' : ''; ?>
-				<label>
-					<input type="radio" name="users_mode[]" value="this_user" <?php echo $checked; ?> />
-					<?php _e('Users with this display name ', 'wpv-views'); ?>
-				</label>
-			</li>
-			<li>
-				<input id="wpv_users_name" class="users_suggest js-users-suggest" type='hidden' name="users_name" value="<?php echo $view_settings['users_name']; ?>" size="15" />
-				<input id="wpv_users" class="users_suggest_id js-users-suggest-id" type='text' name="users_id" value="<?php echo $view_settings['users_id']; ?>" size="10" />
-			</li>
-			<li>
-				<?php $checked = $view_settings['users_mode'] == 'by_url' ? 'checked="checked"' : ''; ?>
-				<label><input type="radio" name="users_mode[]" value="by_url" <?php echo $checked; ?> />&nbsp;<?php _e('Users with ', 'wpv-views'); ?></label>
-				<select id="wpv_users_url_type" name="users_url_type">
-					<?php
-					$selected_type = $view_settings['users_url_type'] == 'id' ? ' selected="selected"' : '';
-					echo '<option value="id"' . $selected_type . '>' . __('ID', 'wpv-views') . '</option>';
-					$selected_type = $view_settings['users_url_type'] == 'username' ? ' selected="selected"' : '';
-					echo '<option value="username"' . $selected_type . '>' . __('username', 'wpv-views') . '</option>';
-					?>
-				</select>
-				<label><?php _e(' set by this URL parameter: ', 'wpv-views'); ?></label>
-				<input type='text' class="js-wpv-filter-users-url js-wpv-filter-validate" data-type="url" data-class="js-wpv-filter-users-url" name="users_url" value="<?php echo $view_settings['users_url']; ?>" size="10" />
-			</li>
-			<li>
-				<?php $checked = $view_settings['users_mode'] == 'shortcode' ? 'checked="checked"' : ''; ?>
-				<label><input type="radio" name="users_mode[]" value="shortcode" <?php echo $checked; ?>>&nbsp;<?php _e('Users with ', 'wpv-views'); ?></label>
-				<select id="wpv_users_shortcode_type" name="users_shortcode_type">
-				<?php
-				$selected_type = $view_settings['users_shortcode_type'] == 'id' ? ' selected="selected"' : '';
-				echo '<option value="id"' . $selected_type . '>' . __('ID', 'wpv-views') . '</option>';
-				$selected_type = $view_settings['users_shortcode_type'] == 'username' ? ' selected="selected"' : '';
-				echo '<option value="username"' . $selected_type . '>' . __('username', 'wpv-views') . '</option>';
-				?>
-				</select>
-				<label><?php _e(' set by this View shortcode attribute: ', 'wpv-views'); ?></label>
-				<input type='text' class="js-wpv-filter-users-shortcode js-wpv-filter-validate" data-type="shortcode" data-class="js-wpv-filter-users-shortcode" name="users_shortcode" value="<?php echo $view_settings['users_shortcode']; ?>" size="10" />
-			</li>
-		</ul>
-		<?php
-			$users = array();
-			$ids = explode( ',', $view_settings['users_id']);
-					if ( count( $ids ) !== 0){
-
-                    	$names = explode( ',', $view_settings['users_name']);
-                    	for ( $i=0; $i<count($ids); $i++){
-                    		if ($ids[$i] != 0){
-                    		$users[] =array('id'=>$ids[$i],'name'=>$names[$i]);
-							}
-						}
-
-			}
-
-		?>
-		<input type="hidden" value="" class="js-wpv-user-suggest-values" data-hinttext="<?php _e('Type for seach users', 'wpv-views'); ?>..."
-		data-noresult="<?php _e('No users matched your criteria', 'wpv-views'); ?>"
-		data-search="<?php _e('Searching', 'wpv-views'); ?>..."
-		data-viewid="<?php echo $view_id;?>"
-		data-users = '<?php echo json_encode($users)?>'
-		/>
-		<div class="filter-helper js-wpv-users-helper"></div>
-		<?php
-}
-
-/**
-* Render users filter summary text
-*/
-
-function wpv_get_filter_users_summary_txt($view_settings, $short=false, $post_id='') {
-	if ( isset( $_GET['post'] ) ) {
-		$view_name = get_the_title( $_GET['post'] );
-	} else {
-		if ( isset( $_GET['view_id'] ) ) {
-			$view_name = get_the_title( $_GET['view_id'] );
-		} else {
-			$view_name = 'view-name';
-		}
-	}
-	if ( !isset( $view_settings['users_mode'] ) ) {
-        return;
-    }
-	ob_start();
-	if ( isset($_GET['view_id']) ){
-		$_view_settings = get_post_meta($_GET['view_id'], '_wpv_settings', true);
-	}
-	if ( isset($_POST['id']) ){
-		$_view_settings = get_post_meta($_POST["id"], '_wpv_settings', true);
-	}
-    if ( !isset($_view_settings) && !empty($post_id) ){
-        $_view_settings = get_post_meta($post_id, '_wpv_settings', true);
-    }
-	if ( isset($view_settings['roles_type'][0]) ){
-		$user_role = $view_settings['roles_type'][0];
-	}
-	else{
-		$user_role = $_view_settings['roles_type'][0];
-	}
-	if ( !isset($user_role) ){
-		$user_role = 'administrator';
-	}
-    if ( is_array($view_settings['users_mode']) ){
-        $view_settings['users_mode'] = $view_settings['users_mode'][0];
-    }
-
-   
-	switch ($view_settings['users_mode']) {
-
-	case 'this_user':
-		if (isset($view_settings['users_id']) && $view_settings['users_id'] > 0) {
-			if ( $view_settings['users_query_in'] == 'include' ){
-				echo sprintf(__('Select users <strong>(%s)</strong> who have role <strong>%s</strong>', 'wpv-views'), $_view_settings['users_name'], $user_role);
-			}else{
-				echo sprintf(__('Select all users with role <strong>%s</strong>, except of <strong>(%s)</strong>', 'wpv-views'), $user_role , $_view_settings['users_name']);
-			}
-		} else {
-			echo sprintf(__('Select all users with role <strong>%s</strong>', 'wpv-views'), $user_role);
-		}
-		break;
-	case 'by_url':
-		if (isset($view_settings['users_url']) && '' != $view_settings['users_url']){
-			$url_users = $view_settings['users_url'];
-		} else {
-			$url_users = '<i>' . __('None set', 'wpv-views') . '</i>';
-		}
-		if (isset($view_settings['users_url_type']) && '' != $view_settings['users_url_type']){
-			$url_users_type = $view_settings['users_url_type'];
-			switch ($url_users_type) {
-				case 'id':
-					$example = '1';
-					break;
-				case 'username':
-					$example = 'admin';
-					break;
-			}
-		} else {
-			$url_users_type = '<i>' . __('None set', 'wpv-views') . '</i>';
-			$example = '';
-		}
-
-		if ( $view_settings['users_query_in'] == 'include' ){
-			echo sprintf(__('Select users with the <strong>%s</strong> determined by the URL parameter <strong>"%s"</strong> and with role <strong>"%s"</strong>', 'wpv-views'), $url_users_type, $url_users, $user_role);
-		}
-		else{
-			echo sprintf(__('Select all users with role <strong>%s</strong>, except of <strong>%s</strong> determined by the URL parameter <strong>"%s"</strong>', 'wpv-views'), $user_role, $url_users_type, $url_users);
-		}
-		if ('' != $example) echo '<br /><code>' . sprintf(__(' eg. yoursite/page-with-this-view/?<strong>%s</strong>=%s', 'wpv-views'), $url_users, $example) . '</code>';
-		break;
-	case 'shortcode':
-		if (isset($view_settings['users_shortcode']) && '' != $view_settings['users_shortcode']) {
-			$auth_short = $view_settings['users_shortcode'];
-		} else {
-			$auth_short = 'None';
-		}
-		if (isset($view_settings['users_shortcode_type']) && '' != $view_settings['users_shortcode_type']){
-			$shortcode_users_type = $view_settings['users_shortcode_type'];
-			switch ($shortcode_users_type) {
-				case 'id':
-					$example = '1';
-					break;
-				case 'username':
-					$example = 'admin';
-					break;
-			}
-		} else {
-			$shortcode_users_type = '<i>' . __('None set', 'wpv-views') . '</i>';
-			$example = '';
-		}
-		if ( $view_settings['users_query_in'] == 'include' ){
-			echo sprintf(__('Select users with <strong>%s</strong> set by the View shortcode attribute <strong>"%s"</strong> and with role <strong>"%s"</strong>', 'wpv-views'), $shortcode_users_type, $auth_short, $user_role);
-		}
-		else{
-			echo sprintf(__('Select all users with role <strong>%s</strong>, except of <strong>%s</strong> set by the View shortcode attribute <strong>"%s"</strong>', 'wpv-views'), $user_role, $shortcode_users_type, $auth_short);
-		}
-		if ('' != $example) {
-			echo '<br /><code>' . sprintf(__(' eg. [wpv-view name="%s" <strong>%s</strong>="%s"]', 'wpv-views'), $view_name, $auth_short, $example) . '</code>';
-		}
-		break;
-	}
-
-	$data = ob_get_clean();
-    
-	if ($short) {
-		// this happens on the Views table under Filter column
-		if (substr($data, -1) == '.') {
-			$data = substr($data, 0, -1);
-		}
-	}
-
-	return $data;
-
+	
 }
 
 // DEPRECATED
@@ -532,6 +508,8 @@ function wpv_get_filter_users_summary_txt($view_settings, $short=false, $post_id
 
 // add_filter('wpv-view-get-content-summary', 'wpv_users_content_summary_filter', 5, 3);
 
+// Commented out in 1.7.0
+/*
 function wpv_users_content_summary_filter($summary, $post_id, $view_settings) {
     $summary = '';
     $result = '';
@@ -600,3 +578,4 @@ function wpv_get_filter_users_summary_txt_addon( $view_settings ){
     }
     return $output;    
 }
+*/

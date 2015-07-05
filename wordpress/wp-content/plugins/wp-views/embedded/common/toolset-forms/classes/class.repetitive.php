@@ -1,7 +1,12 @@
 <?php
 /*
  * Repetitive controller
- * 
+ *
+ * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/classes/class.repetitive.php $
+ * $LastChangedDate: 2014-07-03 07:27:50 +0000 (Thu, 03 Jul 2014) $
+ * $LastChangedRevision: 24580 $
+ * $LastChangedBy: juan $
+ *
  * If field is repetitive
  * - queues repetitive CSS and JS
  * - renders JS templates in admin footer
@@ -14,16 +19,16 @@ class WPToolset_Forms_Repetitive
         // Register
         wp_register_script( 'wptoolset-forms-repetitive',
                 WPTOOLSET_FORMS_RELPATH . '/js/repetitive.js',
-                array('jquery', 'jquery-ui-sortable'), WPTOOLSET_FORMS_VERSION,
-                false );
+                array('jquery', 'jquery-ui-sortable', 'underscore'), WPTOOLSET_FORMS_VERSION,
+                true );
 //        wp_register_style( 'wptoolset-forms-repetitive', '' );
         // Render settings
         add_action( 'admin_footer', array($this, 'renderTemplates') );
         add_action( 'wp_footer', array($this, 'renderTemplates') );
 
         wp_enqueue_script( 'wptoolset-forms-repetitive' );
-        wp_enqueue_script( 'underscore' );
-    }
+		
+	}
 
     function add( $config, $html ) {
         if ( !empty( $config['repetitive'] ) ) {

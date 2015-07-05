@@ -12,7 +12,7 @@ add_filter( 'wpv_view_settings', 'wpv_post_default_settings' );
 
 function wpv_post_default_settings($view_settings) {
 	if (!isset($view_settings['post_type'])) {
-		$view_settings['post_type'] = array();
+		$view_settings['post_type'] = array( 'any' );
 	}
 	if (!isset($view_settings['post_type_dont_include_current_page'])) {
 		$view_settings['post_type_dont_include_current_page'] = true;

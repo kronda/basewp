@@ -30,7 +30,6 @@ function wpv_register_type_view_template()
     'has_archive' => false, 
     'hierarchical' => false,
     'menu_position' => null,
-	'menu_icon' => WPV_URL .'/res/img/views-18.png',
     'supports' => array('title','editor','author')
   ); 
   register_post_type('view-template',$args);

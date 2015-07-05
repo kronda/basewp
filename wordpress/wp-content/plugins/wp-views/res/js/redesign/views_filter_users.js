@@ -1,125 +1,205 @@
-// users Suggest
+/**
+* Views Users Filter GUI - script
+*
+* Adds basic interaction for the users Filter
+*
+* @package Views
+*
+* @since 1.7.0
+*/
 
-jQuery(document).ready(function(){
-	wpv_users_suggest();
-});
 
-jQuery(document).on('click', '.js-wpv-filter-users-edit-open', function(){
-	if ( typeof(jQuery('.token-input-list-wpv').html()) === 'undefined' ){
-		wpv_users_suggest();
+var WPViews = WPViews || {};
+
+WPViews.UsersFilterGUI = function( $ ) {
+	
+	var self = this;
+	
+	self.view_id = $('.js-post_ID').val();
+	
+	self.icon_edit = '<i class="icon-chevron-up"></i>&nbsp;&nbsp;';
+	self.icon_save = '<i class="icon-ok"></i>&nbsp;&nbsp;';
+	self.spinner = '<span class="spinner ajax-loader"></span>&nbsp;&nbsp;';
+	
+	self.user_row = '.js-wpv-filter-row-users';
+	self.user_options_container_selector = '.js-wpv-filter-users-options';
+	self.user_summary_container_selector = '.js-wpv-filter-users-summary';
+	self.user_edit_open_selector = '.js-wpv-filter-users-edit-open';
+	self.user_close_save_selector = '.js-wpv-filter-users-edit-ok';
+	
+	self.user_current_options = $( self.user_options_container_selector + ' input, ' + self.user_options_container_selector + ' select' ).serialize();
+	
+	//--------------------
+	// Functions for users
+	//--------------------
+	
+	// @todo make this use select2
+	
+	self.wpv_users_suggest = function() {
+		var text_noresult = $('.js-wpv-user-suggest-values').data('noresult'),
+		text_hint = $('.js-wpv-user-suggest-values').data('hinttext'),
+		text_search = $('.js-wpv-user-suggest-values').data('search'),
+		users = $('.js-wpv-user-suggest-values').data('users');
+		$(".js-users-suggest-id").tokenInput(ajaxurl + '?action=wpv_suggest_users&view_id='+self.view_id, {
+			theme: "wpv",
+			preventDuplicates: true,
+			hintText: text_hint,
+			noResultsText: text_noresult,
+			searchingText: text_search,
+			prePopulate: users,
+			onAdd: function (item) {
+				var tokens = $(this).tokenInput('get');
+				var user_val = '';
+				$.each(tokens, function (index, value) {
+					user_val += value.name+', ';
+				});
+				user_val = user_val.substr(0,(user_val.length - 2));
+				$('.js-users-suggest').val(user_val);
+
+			 },
+			 onDelete: function (item) {
+				var tokens = $(this).tokenInput('get');
+				var user_val = '';
+				$.each(tokens, function (index, value) {
+					user_val += value.name+', ';
+				});
+				user_val = user_val.substr(0,(user_val.length - 2));
+				$('.js-users-suggest').val(user_val);
+			 }
+		});
 	}
-
-});
-
-function wpv_users_suggest(){
-	text_noresult = jQuery('.js-wpv-user-suggest-values').data('noresult');
-	text_hint = jQuery('.js-wpv-user-suggest-values').data('hinttext');
-	text_search = jQuery('.js-wpv-user-suggest-values').data('search');
-	view_id = jQuery('.js-wpv-user-suggest-values').data('viewid');
-	users = jQuery('.js-wpv-user-suggest-values').data('users');
-	jQuery(".js-users-suggest-id").tokenInput(ajaxurl + '?action=wpv_suggest_users&view_id='+view_id, {
-			        theme: "wpv",
-			        preventDuplicates: true,
-			        hintText: text_hint,
-	                noResultsText: text_noresult,
-	                searchingText: text_search,
-	                prePopulate: users,
-	                onAdd: function (item) {
-                     	var tokens = jQuery(this).tokenInput('get');
-  	                    var user_val = '';
-	                    jQuery.each(tokens, function (index, value) {
-		                    user_val += value.name+', ';
-		                });
-		                user_val = user_val.substr(0,(user_val.length - 2));
-		                jQuery('.js-users-suggest').val(user_val);
-
-	                 },
-	                 onDelete: function (item) {
-	                    var tokens = jQuery(this).tokenInput('get');
-  	                    var user_val = '';
-	                    jQuery.each(tokens, function (index, value) {
-		                    user_val += value.name+', ';
-		                });
-		                user_val = user_val.substr(0,(user_val.length - 2));
-		                jQuery('.js-users-suggest').val(user_val);
-	                 }
-			    });
-
-}
-// users Close and save
-
-var wpv_filter_users_selected = jQuery('.js-filter-users-list input, .js-filter-users-list select').serialize();
-
-jQuery(document).on('click', '.js-wpv-filter-users-edit-open', function(){ // rebuild the list of the current checked values
-	wpv_filter_users_selected = jQuery('.js-filter-users-list input, .js-filter-users-list select').serialize();
-});
-
-jQuery(document).on('change keyup input cut paste', '.js-filter-users-list input, .js-filter-users-list select', function() { // watch on inputs change
-	jQuery(this).removeClass('filter-input-error');
-	jQuery('.js-wpv-filter-users-edit-ok').prop('disabled', false);
-	wpv_clear_validate_messages('.js-filter-users');
-	if ( wpv_filter_users_selected != jQuery('.js-filter-users-list input, .js-filter-users-list select').serialize() ) {
-		jQuery('.js-wpv-filter-users-edit-ok').removeClass('button-secondary').addClass('button-primary').addClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-users-edit-ok').data('save'));
-		setConfirmUnload(true);
-	} else {
-		jQuery('.js-wpv-filter-users-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-users-edit-ok').data('close'));
-		jQuery('.js-wpv-filter-users-edit-ok').parent().find('.unsaved').remove();
-		if (jQuery('.js-wpv-section-unsaved').length < 1) {
-			setConfirmUnload(false);
+	
+	//--------------------
+	// Events for users
+	//--------------------
+	
+	// Open the edit box and rebuild the current values; show the close/save button-primary
+	// TODO maybe the show() could go to the general file
+	
+	$( document ).on( 'click', self.user_edit_open_selector, function() {
+		self.post_current_options = $( self.user_options_container_selector + ' input, ' + self.user_options_container_selector + ' select' ).serialize();
+		$( self.user_close_save_selector ).show();
+		$( self.user_row ).addClass( 'wpv-filter-row-current' );
+	});
+	
+	// Track changes in options
+	
+	$( document ).on( 'change keyup input cut paste', self.user_options_container_selector + ' input, ' + self.user_options_container_selector + ' select', function() {
+		$( this ).removeClass( 'filter-input-error' );
+		$( self.user_close_save_selector ).prop( 'disabled', false );
+		WPViews.query_filters.clear_validate_messages( self.user_row );
+		if ( self.user_current_options != $( self.user_options_container_selector + ' input, ' + self.user_options_container_selector + ' select' ).serialize() ) {
+			$( self.user_close_save_selector )
+				.addClass('button-primary js-wpv-section-unsaved')
+				.removeClass('button-secondary')
+				.html(
+					self.icon_save + $( self.user_close_save_selector ).data('save')
+				);
+			setConfirmUnload( true );
+		} else {
+			$( self.user_close_save_selector )
+				.addClass('button-secondary')
+				.removeClass('button-primary js-wpv-section-unsaved')
+				.html(
+					self.icon_edit + $( self.user_close_save_selector ).data('close')
+				);
+			$( self.user_close_save_selector )
+				.parent()
+					.find( '.unsaved' )
+					.remove();
+			if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
+				setConfirmUnload( false );
+			}
 		}
-	}
-});
-
-jQuery(document).on('click', '.js-wpv-filter-users-edit-ok', function() {
-	jQuery(this).parent().find('.unsaved').remove();
-	if (wpv_filter_users_selected == jQuery('.js-filter-users-list input, .js-filter-users-list select').serialize() ) {
-		wpv_close_filter_row('.js-filter-users');
-	} else {
-		var valid = wpv_validate_filter_inputs('.js-filter-users');
-		if (valid) {
-			var update_message = jQuery(this).data('success');
-			var unsaved_message = jQuery(this).data('unsaved');
-			var nonce = jQuery(this).data('nonce');
-			wpv_filter_users_selected = jQuery('.js-filter-users-list input, .js-filter-users-list select').serialize();
-			var spinnerContainer = jQuery('<div class="spinner ajax-loader">').insertAfter(jQuery(this)).show();
-			var data_view_id = jQuery('.js-post_ID').val();
-			var data = {
-				action: 'wpv_filter_users_update',
-				id: data_view_id,
-				filter_users: wpv_filter_users_selected,
-				wpnonce: nonce
-			};
-			jQuery.post(ajaxurl, data, function(response) {
-				if ( (typeof(response) !== 'undefined') ) {
-					if (response != 0) {
-						jQuery('.js-wpv-filter-users-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-users-edit-ok').data('close'));
-						if (jQuery('.js-wpv-section-unsaved').length < 1) {
-							setConfirmUnload(false);
+	});
+	
+	// Save filter options
+	
+	$( document ).on( 'click', self.user_close_save_selector, function() {
+		var thiz = $( this );
+		WPViews.query_filters.clear_validate_messages( self.user_row );
+		if ( self.user_current_options == $( self.user_options_container_selector + ' input, ' + self.user_options_container_selector + ' select' ).serialize() ) {
+			WPViews.query_filters.close_filter_row( self.user_row );
+			thiz.hide();
+		} else {
+			var valid = WPViews.query_filters.validate_filter_options( '.js-filter-users' );
+			if ( valid ) {
+				// update_message = thiz.data('success');
+				// unsaved_message = thiz.data('unsaved');
+				var action = thiz.data( 'saveaction' ),
+				nonce = thiz.data('nonce'),
+				spinnerContainer = $( self.spinner ).insertBefore( thiz ).show(),
+				error_container = thiz
+					.closest( '.js-filter-row' )
+						.find( '.js-wpv-filter-toolset-messages' );
+				self.user_current_options = $( self.user_options_container_selector + ' input, ' + self.user_options_container_selector + ' select' ).serialize();
+				var data = {
+					action: action,
+					id: self.view_id,
+					filter_options: self.user_current_options,
+					wpnonce: nonce
+				};
+				$.post( ajaxurl, data, function( response ) {
+					if ( response.success ) {
+						$( self.user_close_save_selector )
+							.addClass('button-secondary')
+							.removeClass('button-primary js-wpv-section-unsaved')
+							.html( 
+								self.icon_edit + $( self.user_close_save_selector ).data( 'close' )
+							);
+						if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
+							setConfirmUnload( false );
 						}
-						jQuery('.js-wpv-filter-users-summary').html(response);
-						jQuery('.js-wpv-filter-users-summary').append('<span class="updated toolset-alert toolset-alert-success"><i class="icon-check"></i> ' + update_message + '</span>');
-						setTimeout(function(){
-							jQuery('.js-wpv-filter-users-summary .updated').fadeOut('fast');
-						}, 2000);
-						wpv_close_filter_row('.js-filter-users');
+						$( self.user_summary_container_selector ).html( response.data.summary );
+						WPViews.query_filters.close_and_glow_filter_row( self.user_row, 'wpv-filter-saved' );
 					} else {
-						console.log( "Error: WordPress AJAX returned " + response );
+						WPViews.view_edit_screen.manage_ajax_fail( response.data, error_container );
 					}
-				} else {
-					console.log( "Error: AJAX returned ", response );
-				}
-
-			})
-			.fail(function(jqXHR, textStatus, errorThrown) {
-				console.log( "Error: ", textStatus, errorThrown );
-			})
-			.always(function() {
-				spinnerContainer.remove();
-			});
+				}, 'json' )
+				.fail( function( jqXHR, textStatus, errorThrown ) {
+					console.log( "Error: ", textStatus, errorThrown );
+				})
+				.always( function() {
+					spinnerContainer.remove();
+					thiz.hide();
+				});
+			}
 		}
-	}
-});
+	});
+	
+	// Remove ID filter
+	
+	$( document ).on( 'click', self.user_row + ' .js-wpv-filter-remove', function() {
+		self.user_current_options = '';
+	});
+	
+	// Initialize suggest if needed
+	
+	$( document ).on( 'click', self.user_edit_open_selector, function() {
+		if ( typeof( $( '.token-input-list-wpv' ).html() ) === 'undefined' ) {
+			self.wpv_users_suggest();
+		}
 
-jQuery(document).on('click', '.js-filter-users .js-filter-remove', function(){
-	wpv_filter_users_selected = '';
+	});
+	
+	// Content selection section saved event
+	
+	$( document ).on( 'js_event_wpv_query_filter_created', function( event, filter_type ) {
+		self.wpv_users_suggest();
+	});
+	
+	//--------------------
+	// Init
+	//--------------------
+	
+	self.init = function() {
+		self.wpv_users_suggest();
+	};
+	
+	self.init();
+
+};
+
+jQuery( document ).ready( function( $ ) {
+    WPViews.users_filter_gui = new WPViews.UsersFilterGUI( $ );
 });

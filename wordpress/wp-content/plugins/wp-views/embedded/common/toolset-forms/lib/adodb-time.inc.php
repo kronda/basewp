@@ -1045,11 +1045,11 @@ function adodb_date($fmt,$d=false,$is_gmt=false)
 static $daylight;
 global $ADODB_DATETIME_CLASS;
 
-	if ($d === false) return ($is_gmt)? @gmdate($fmt): @date($fmt);
+	if ($d === false) return ($is_gmt)? @gmdate($fmt): @date_i18n($fmt);
 	if (!defined('ADODB_TEST_DATES')) {
 		if ((abs($d) <= 0x7FFFFFFF)) { // check if number in 32-bit signed range
 			if (!defined('ADODB_NO_NEGATIVE_TS') || $d >= 0) // if windows, must be +ve integer
-				return ($is_gmt)? @gmdate($fmt,$d): @date($fmt,$d);
+				return ($is_gmt)? @gmdate($fmt,$d): @date_i18n($fmt,$d);
 
 		}
 	}
@@ -1084,7 +1084,7 @@ global $ADODB_DATETIME_CLASS;
 				$dt->SetDate($year,$month,$day);
 				$dates .= $dt->Format('T');
 			} else
-				$dates .= date('T');
+				$dates .= date_i18n('T');
 			break;
 		// YEAR
 		case 'L': $dates .= $arr['leap'] ? '1' : '0'; break;
@@ -1093,7 +1093,7 @@ global $ADODB_DATETIME_CLASS;
 			// 4.3.11 uses '04 Jun 2004'
 			// 4.3.8 uses  ' 4 Jun 2004'
 			$dates .= gmdate('D',$_day_power*(3+adodb_dow($year,$month,$day))).', '		
-				. ($day<10?'0'.$day:$day) . ' '.date('M',mktime(0,0,0,$month,2,1971)).' '.$year.' ';
+				. ($day<10?'0'.$day:$day) . ' '.date_i18n('M',mktime(0,0,0,$month,2,1971)).' '.$year.' ';
 			
 			if ($hour < 10) $dates .= '0'.$hour; else $dates .= $hour; 
 			
@@ -1112,8 +1112,8 @@ global $ADODB_DATETIME_CLASS;
 		case 'm': if ($month<10) $dates .= '0'.$month; else $dates .= $month; break;
 		case 'Q': $dates .= ($month+3)>>2; break;
 		case 'n': $dates .= $month; break;
-		case 'M': $dates .= date('M',mktime(0,0,0,$month,2,1971)); break;
-		case 'F': $dates .= date('F',mktime(0,0,0,$month,2,1971)); break;
+		case 'M': $dates .= date_i18n('M',mktime(0,0,0,$month,2,1971)); break;
+		case 'F': $dates .= date_i18n('F',mktime(0,0,0,$month,2,1971)); break;
 		// DAY
 		case 't': $dates .= $arr['ndays']; break;
 		case 'z': $dates .= $arr['yday']; break;

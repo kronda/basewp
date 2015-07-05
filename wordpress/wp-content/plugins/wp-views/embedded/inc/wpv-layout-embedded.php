@@ -72,19 +72,6 @@ function wpv_layout_start_shortcode($atts){
     
     global $WP_Views;
     
-    // TODO Check Additional JS
-    $view_settings = $WP_Views->get_view_layout_settings();
-    if (!empty($view_settings['additional_js'])) {
-        $scripts = explode(',', $view_settings['additional_js']);
-        $count = 1;
-        foreach ($scripts as $script) {
-            if (strpos($script, '[theme]') == 0) {
-                $script = str_replace('[theme]', get_stylesheet_directory_uri(), $script);
-            }
-            add_action('wp_footer', create_function('$a=1, $script=\'' . $script. '\'', 'echo "<script type=\"text/javascript\" src=\"$script?ver=" . rand(1, 1000) . "\"></script>";'), 21); // Set priority higher than 20, when all the footer scripts are loaded
-            $count++;
-        }
-    }
     $view_settings = $WP_Views->get_view_settings();
     $class = array('js-wpv-view-layout');
     $style = array();
@@ -126,7 +113,19 @@ function wpv_layout_start_shortcode($atts){
         }
         
         return "<div id=\"wpv-view-layout-" . $WP_Views->get_view_count() . "\"$add>\n";
-    } else if ( isset( $view_settings['dps'] ) && is_array( $view_settings['dps'] ) && isset( $view_settings['dps']['ajax_results'] ) && $view_settings['dps']['ajax_results'] == 'enable' ) {
+    } else if ( 
+		isset( $view_settings['dps'] ) 
+		&& is_array( $view_settings['dps'] ) 
+		&& isset( $view_settings['dps']['ajax_results'] ) 
+		&& (
+			$view_settings['dps']['ajax_results'] == 'enable'
+			|| (
+				$view_settings['dps']['ajax_results'] == 'disable'
+				&& isset( $view_settings['dps']['ajax_results_submit'] )
+				&& $view_settings['dps']['ajax_results_submit'] == 'ajaxed'
+			)
+		)
+	) {
 		return "<div id=\"wpv-view-layout-" . $WP_Views->get_view_count() . "\" class=\"js-wpv-view-layout\">\n";
     } else {
         return '';
@@ -140,7 +139,19 @@ function wpv_layout_end_shortcode($atts){
     $view_settings = $WP_Views->get_view_settings();
     if (($view_settings['pagination'][0] == 'enable' && $view_settings['ajax_pagination'][0] == 'enable') || $view_settings['pagination']['mode'] == 'rollover') {
         return '</div>';
-    } else if ( isset( $view_settings['dps'] ) && is_array( $view_settings['dps'] ) && isset( $view_settings['dps']['ajax_results'] ) && $view_settings['dps']['ajax_results'] == 'enable' ) {
+    } else if ( 
+		isset( $view_settings['dps'] ) 
+		&& is_array( $view_settings['dps'] ) 
+		&& isset( $view_settings['dps']['ajax_results'] ) 
+		&& (
+			$view_settings['dps']['ajax_results'] == 'enable'
+			|| (
+				$view_settings['dps']['ajax_results'] == 'disable'
+				&& isset( $view_settings['dps']['ajax_results_submit'] )
+				&& $view_settings['dps']['ajax_results_submit'] == 'ajaxed'
+			)
+		)
+	) {
 		return '</div>';
     } else {
         return '';

@@ -1,68 +1,70 @@
 
-//var wptCredfile = (function($) {
-//    function init(selector) {
-//        $('.js-wpt-credfile .js-wpt-field-item', $(selector)).each(function() {
-//            var $item = $(this);
-//            var $file = $('input[type="file"]', $item);
-//            var $hidden = $('input[type="hidden"]', $item);
-//            alert($item.attr("name"));
-//            $('.js-wpt-credfile-delete-button', $item).on('click', function() {
-//                $file.show().removeAttr('disabled');
-//                $hidden.attr('disabled', 'disabled');
-//                $('.js-wpt-credfile-preview', $item).hide();
-//                $(this).remove();
-//                return false;
-//            });
-//            $('.js-wpt-credfile-upload-file').on('change', function() {
-//                var file = $file[0].files[0];
-//                if (typeof file != 'undefined' && $file.is(':enabled')) {
-//                    var wptFReader = new FileReader();
-//                    wptFReader.readAsDataURL(file);
-//                    wptFReader.onload = function(wptFREvent) {
-//                        $('.js-wpt-credfile-preview', $item).attr('src', wptFREvent.target.result).show();
-//                    };
-//                }
-//            });
-//        });
-//    }
-//    return {
-//        init: init
-//    };
-//})(jQuery);
-//
-//jQuery(document).ready(function() {
-//    wptCredfile.init('body');
-//});
- 
-function init() {}
-//calling this function means that image is set so on click
-//1. disable hidden 
-//2. hide image
-//3. enable file
-//4. show file
-function _cred_switch($name) {
-    $idfile = $name+"_file";
-    $idhidden = $name+"_hidden";
-    $idimage = $name+"_image";
-    $idbutton = $name+"_button";
-    if (!jQuery("#"+$idfile).is(":visible")) {
-        jQuery("#"+$idhidden).attr('disabled','disabled');
-        jQuery("#"+$idimage).hide();
-        jQuery("#"+$idfile).removeAttr('disabled');
-        jQuery("#"+$idfile).show();
-        jQuery("#"+$idfile).val('');
-        jQuery("#"+$idbutton).val('Undo');
-    } else {
-        jQuery("#"+$idbutton).val('Delete');
-        jQuery("#"+$idfile).val(jQuery("#"+$idfile).val());
-        jQuery("#"+$idhidden).removeAttr('disabled');
-        jQuery("#"+$idimage).show();
-        jQuery("#"+$idfile).attr('disabled','disabled');
-        jQuery("#"+$idfile).hide();
-        
+var wptCredfile = (function($) {
+    function init(selector) {
+		$(document).on( 'click', '.js-wpt-credfile-delete, .js-wpt-credfile-undo', function(e) {
+			e.preventDefault();
+			var thiz = $( this ),
+			credfile_action = thiz.data( 'action' ),
+			credfile_container = thiz.closest('.wpt-repctl');
+			if ( credfile_container.length < 1 ) {
+				credfile_container = thiz.closest('.js-wpt-field-items');
+			}
+			var thiz_delete_button = $( '.js-wpt-credfile-delete', credfile_container ),
+			thiz_undo_button = $( '.js-wpt-credfile-undo', credfile_container ),
+			thiz_hidden_input = $( '.js-wpv-credfile-hidden', credfile_container ),
+			thiz_file_input = $( '.js-wpt-credfile-upload-file', credfile_container ),
+			thiz_preview = $( '.js-wpt-credfile-preview', credfile_container ),
+			thiz_existing_value = thiz_hidden_input.val();
+			if ( credfile_action == 'delete' ) {
+				thiz_file_input.prop('disabled', false).show().val( '' );
+				thiz_hidden_input.prop('disabled', true);
+				thiz_preview.hide();
+				thiz_delete_button.hide();
+				if ( thiz_existing_value != '' ) {
+					thiz_undo_button.show();
+				} else {
+					thiz_undo_button.hide();
+				}
+				thiz_file_input.trigger( 'change' );
+			} else if ( credfile_action == 'undo' ) {
+				thiz_file_input.prop('disabled', true ).hide();
+				thiz_hidden_input.prop( 'disabled', false );
+				thiz_file_input.trigger( 'change' );
+				thiz_preview.show();
+				thiz_delete_button.show();
+				thiz_undo_button.hide();
+			}
+		});
+		
+		$(document).on( 'change', '.js-wpt-credfile-upload-file', function(e) {
+			e.preventDefault();
+			var thiz = $( this ),
+			credfile_container = thiz.closest('.wpt-repctl');
+			if ( credfile_container.length < 1 ) {
+				credfile_container = thiz.closest('.js-wpt-field-items');
+			}
+			var thiz_delete_button = $( '.js-wpt-credfile-delete', credfile_container ),
+			thiz_undo_button = $( '.js-wpt-credfile-undo', credfile_container ),
+			thiz_hidden_input = $( '.js-wpv-credfile-hidden', credfile_container ),
+			thiz_preview = $( '.js-wpt-credfile-preview', credfile_container ),
+			thiz_existing_value = thiz_hidden_input.val();
+			if ( thiz.val() != '' ) {
+				thiz_delete_button.show();
+			} else {
+				thiz_delete_button.hide();
+			}
+			if ( thiz_existing_value != '' && thiz_existing_value != thiz.val() ) {
+				thiz_undo_button.show();
+			} else {
+				thiz_undo_button.hide();
+			}
+		});
     }
-}
+    return {
+        init: init
+    };
+})(jQuery);
 
 jQuery(document).ready(function() {
-    
+    wptCredfile.init('body');
 });

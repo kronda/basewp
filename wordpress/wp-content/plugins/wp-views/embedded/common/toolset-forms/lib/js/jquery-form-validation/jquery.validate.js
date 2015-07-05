@@ -169,7 +169,8 @@ $.extend($.expr[":"], {
 	// http://docs.jquery.com/Plugins/Validation/unchecked
 	unchecked: function(a) {return !a.checked;}
 });
-
+var total_errors = 0;
+var error_list = '';
 // constructor for validator
 $.validator = function( options, form ) {
 	this.settings = $.extend( true, {}, $.validator.defaults, options );
@@ -377,6 +378,38 @@ $.extend($.validator, {
 			this.settings.showErrors
 				? this.settings.showErrors.call( this, this.errorMap, this.errorList )
 				: this.defaultShowErrors();
+				
+				message = $('.wpt-form-error').data('message-single');
+				
+				if (typeof message != 'undefined') {
+				
+					$('.wpt-form-error').each(function() {
+						if ( $(this).css('display') == 'block' && $(this).attr('id') !== 'wpt-form-message' && $(this).attr('id') !== 'lbl_generic' ) {
+						   if (typeof $('#'+$(this).attr('for')).data('wpt-field-title') != 'undefined') {
+								error_list += '<li>'+$('#'+$(this).attr('for')).data('wpt-field-title')+': '+$(this).html()+'</li>';
+						   }else{
+								error_list += '<li>'+$(this).parent().find('input').data('wpt-field-title')+': '+$(this).html()+'</li>';								
+						   }
+						   total_errors += 1;
+						}
+					});
+					if ( total_errors > 0){
+						message = $('.wpt-form-error').data('message-single');
+						if ( total_errors > 1 ){
+							message = $('.wpt-form-error').data('message-plural');	
+						}
+						
+						message = message.replace('%NN',total_errors).replace('%PROBLEMS_UL_LIST','<ul>'+error_list+'</ul>');
+						$('#wpt-form-message').html(message);
+						
+						$('#wpt-form-message').show();
+					}else{
+						$('#wpt-form-message').html('');
+						$('#wpt-form-message').hide();	
+					}
+				}
+                total_errors = 0;
+                error_list = '';	
 		},
 
 		// http://docs.jquery.com/Plugins/Validation/Validator/resetForm
@@ -643,10 +676,14 @@ $.extend($.validator, {
 					// actually showing the wrapped element is handled elsewhere
 					label = label.hide().show().wrap("<" + this.settings.wrapper + "/>").parent();
 				}
-				if ( !this.labelContainer.append(label).length )
+				if ( !this.labelContainer.append(label).length ) {
+                    if ( 'date' == $(element).data('wpt-type') ) {
+                        element = $('input[type=text]', $(element).parent());
+                    }
 					this.settings.errorPlacement
 						? this.settings.errorPlacement(label, $(element) )
 						: label.insertAfter(element);
+                }
 			}
 			if ( !message && this.settings.success ) {
 				label.text("");

@@ -1,131 +1,163 @@
-var wpv_filter_tax_term_mode_selected = jQuery('.js-wpv-taxonomy-term-mode').val();
-var wpv_filter_tax_term_selected = jQuery('.js-taxonomy-term-checklist input').serialize();
-var wpv_filter_tax_term_change = false;
-
-jQuery(document).on('click', '.js-wpv-filter-taxonomy-term-edit-open', function(){ // rebuild the list of the current checked values
-	wpv_filter_tax_term_mode_selected = jQuery('.js-wpv-taxonomy-term-mode').val();
-	wpv_filter_tax_term_selected = jQuery('.js-taxonomy-term-checklist input').serialize();
-});
-
-jQuery(document).on('change', '.js-wpv-taxonomy-term-mode, .js-taxonomy-term-checklist input', function() { // watch on inputs change
-	wpv_filter_tax_term_change = false;
-	if ( wpv_filter_tax_term_mode_selected != jQuery('.js-wpv-taxonomy-term-mode').val() ) {
-		wpv_filter_tax_term_change = true;
-	}
-	if ( wpv_filter_tax_term_selected != jQuery('.js-taxonomy-term-checklist input').serialize() ) {
-		wpv_filter_tax_term_change = true;
-	}
-	if (wpv_filter_tax_term_change) {
-		jQuery('.js-wpv-filter-taxonomy-term-edit-ok').removeClass('button-secondary').addClass('button-primary').addClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-taxonomy-term-edit-ok').data('save'));
-		setConfirmUnload(true);
-	} else {
-		jQuery('.js-wpv-filter-taxonomy-term-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-taxonomy-term-edit-ok').data('close'));
-		jQuery('.js-wpv-filter-taxonomy-term-edit-ok').parent().find('.unsaved').remove();
-		if (jQuery('.js-wpv-section-unsaved').length < 1) {
-			setConfirmUnload(false);
-		}
-	}
-	wpv_filter_taxonomy_term_mode();
-});
-
-jQuery(document).ready(function(){
-	wpv_filter_taxonomy_term_mode();
-});
-
-function wpv_filter_taxonomy_term_mode() {
-	if (jQuery('.js-filter-taxonomy-term').length) {
-		var tax_term_mode = jQuery('.js-wpv-taxonomy-term-mode').val();
-		if (tax_term_mode == 'CURRENT_PAGE') {
-			jQuery('.js-taxonomy-term-checklist').hide();
-		} else {
-			jQuery('.js-taxonomy-term-checklist').fadeIn(500);
-		}
-	}
-}
-
-jQuery(document).on('click', '.js-wpv-filter-taxonomy-term-edit-ok', function() { // save new settings if needed and close edit box
-	jQuery(this).parent().find('.unsaved').remove();
-	if ( wpv_filter_tax_term_mode_selected == jQuery('.js-wpv-taxonomy-term-mode').val()
-		&& wpv_filter_tax_term_selected == jQuery('.js-taxonomy-term-checklist input').serialize()
-	) {
-		wpv_close_filter_row('.js-filter-taxonomy-term');
-		jQuery('.js-wpv-filter-taxonomy-term-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-taxonomy-term-edit-ok').data('close'));
-	} else {
-		var update_message = jQuery(this).data('success');
-		var unsaved_message = jQuery(this).data('unsaved');
-		var nonce = jQuery(this).data('nonce');
-		wpv_filter_tax_term_mode_selected = jQuery('.js-wpv-taxonomy-term-mode').val();
-		wpv_filter_tax_term_selected = jQuery('.js-taxonomy-term-checklist input').serialize();
-		var spinnerContainer = jQuery('<div class="spinner ajax-loader">').insertAfter(jQuery(this)).show();
-		var data_view_id = jQuery('.js-post_ID').val();
-		var wpv_filter_tax_term_tax_type = jQuery('.js-wpv-query-taxonomy-type:checked').val();
-		var data = {
-			action: 'wpv_filter_taxonomy_term_update',
-		    id: data_view_id,
-		    tax_term_mode: wpv_filter_tax_term_mode_selected,
-		    tax_term_list: wpv_filter_tax_term_selected,
-		    tax_term_tax_type: wpv_filter_tax_term_tax_type,
-		    wpnonce: nonce
-		};
-		jQuery.post(ajaxurl, data, function(response) {
-			if ( (typeof(response) !== 'undefined') ) {
-				if (response != 0) {
-					jQuery('.js-wpv-filter-taxonomy-term-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-taxonomy-term-edit-ok').data('close'));
-					if (jQuery('.js-wpv-section-unsaved').length < 1) {
-						setConfirmUnload(false);
-					}
-					jQuery('.js-wpv-filter-taxonomy-term-summary').html(response);
-					jQuery('.js-wpv-filter-taxonomy-term-summary').append('<span class="updated toolset-alert toolset-alert-success"><i class="icon-check"></i> ' + update_message + '</span>');
-					setTimeout(function(){
-						jQuery('.js-wpv-filter-taxonomy-term-summary .updated').fadeOut('fast');
-					}, 2000);
-					wpv_close_filter_row('.js-filter-taxonomy-term');
-				} else {
-					console.log( "Error: WordPress AJAX returned " + response );
-				}
-			} else {
-				console.log( "Error: AJAX returned ", response );
-			}
-		})
-		.fail(function(jqXHR, textStatus, errorThrown) {
-			console.log( "Error: ", textStatus, errorThrown );
-		})
-		.always(function() {
-			spinnerContainer.remove();
-		});
-	}
-});
-/*
-function wpv_validate_filter_taxonomy_term() {
-	if (jQuery('.js-wpv-filter-taxonomy-term-edit-ok').length) {
-		var nonce = jQuery('.js-wpv-filter-taxonomy-term-edit-ok').data('nonce');
-		var data = {
-			action: 'wpv_filter_taxonomy_term_test',
-			tax_term_list: jQuery('.js-taxonomy-term-checklist input').serialize(),
-			tax_type: jQuery('.js-wpv-query-taxonomy-type:checked').val(),
-			wpnonce: nonce
-		}
-		alert(jQuery('.js-taxonomy-term-checklist input').serialize());
-		jQuery.post(ajaxurl, data, function(response) {alert(response);
-			if ( (typeof(response) !== 'undefined')) {
-				if (response == 'bad') {
-					wpv_filter_taxonomy_term_changed.insertAfter('.js-wpv-filter-taxonomy-term-summary').show();
-				} else {
-					wpv_filter_taxonomy_term_changed.remove();
-				}
-			} else {
-				console.log( "Error: AJAX returned ", response );
-			}
-
-		})
-		.fail(function(jqXHR, textStatus, errorThrown) {
-			console.log( "Error: ", textStatus, errorThrown );
-		});
-	}
-}
+/**
+* Views Search Filter GUI - script
+*
+* Adds basic interaction for the Search Filter
+*
+* @package Views
+*
+* @since 1.7.0
 */
-jQuery(document).on('click', '.js-filter-taxonomy-term .js-filter-remove', function(){
-	wpv_filter_tax_term_mode_selected = '';
-	wpv_filter_tax_term_selected = '';
-	wpv_filter_tax_term_change = false;
+
+
+var WPViews = WPViews || {};
+
+WPViews.TaxonomyTermFilterGUI = function( $ ) {
+	
+	var self = this;
+	
+	self.view_id = $('.js-post_ID').val();
+	
+	self.icon_edit = '<i class="icon-chevron-up"></i>&nbsp;&nbsp;';
+	self.icon_save = '<i class="icon-ok"></i>&nbsp;&nbsp;';
+	self.spinner = '<span class="spinner ajax-loader"></span>&nbsp;&nbsp;';
+	
+	self.tax_row = '.js-wpv-filter-row-taxonomy-term';
+	self.tax_options_container_selector = '.js-wpv-filter-taxonomy-term-options';
+	self.tax_summary_container_selector = '.js-wpv-filter-taxonomy-term-summary';
+	self.tax_edit_open_selector = '.js-wpv-filter-taxonomy-term-edit-open';
+	self.tax_close_save_selector = '.js-wpv-filter-taxonomy-term-edit-ok';
+	
+	self.tax_current_options = $( self.tax_options_container_selector + ' input, ' + self.tax_options_container_selector + ' select').serialize();
+	
+	//--------------------
+	// Functions for taxonomy term
+	//--------------------
+	
+	self.show_hide_term_list = function() {
+		var mode = $( '.js-wpv-taxonomy-term-mode:checked' ).val();
+		if ( mode == 'THESE' ) {
+			$( '.js-taxonomy-term-checklist' ).show();
+		} else {
+			$( '.js-taxonomy-term-checklist' ).hide();
+		}
+	};
+	
+	//--------------------
+	// Events for taxonomy term
+	//--------------------
+	
+	// Open the edit box and rebuild the current values; show the close/save button-primary
+	// TODO maybe the show() could go to the general file
+	
+	$( document ).on( 'click', self.tax_edit_open_selector, function() {
+		self.tax_current_options = $( self.tax_options_container_selector + ' input, ' + self.tax_options_container_selector + ' select' ).serialize();
+		$( self.tax_close_save_selector ).show();
+		$( self.tax_row ).addClass( 'wpv-filter-row-current' );
+	});
+	
+	// Track changes
+	
+	$( document ).on( 'change keyup input cut paste', self.tax_options_container_selector + ' input, ' + self.tax_options_container_selector + ' select', function() {
+		WPViews.query_filters.clear_validate_messages( self.tax_row );
+		if ( self.tax_current_options != $( self.tax_options_container_selector + ' input, ' + self.tax_options_container_selector + ' select' ).serialize() ) {
+			$( self.tax_close_save_selector )
+				.addClass( 'button-primary js-wpv-section-unsaved' )
+				.removeClass( 'button-secondary' )
+				.html(
+					self.icon_save + $( self.tax_close_save_selector ).data('save')
+				);
+			setConfirmUnload( true );
+		} else {
+			$( self.tax_close_save_selector )
+				.addClass( 'button-secondary' )
+				.removeClass('button-primary js-wpv-section-unsaved')
+				.html(
+					self.icon_edit + $( self.tax_close_save_selector ).data('close')
+				);
+			$( self.tax_close_save_selector )
+				.parent()
+					.find( '.unsaved' )
+					.remove();
+			if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
+				setConfirmUnload( false );
+			}
+		}
+	});
+	
+	// Save options
+	
+	$( document ).on( 'click', self.tax_close_save_selector, function() {
+		var thiz = $( this );
+		WPViews.query_filters.clear_validate_messages( self.tax_row );
+		if ( self.tax_current_options == $( self.tax_options_container_selector + ' input, ' + self.tax_options_container_selector + ' select' ).serialize() ) {
+			WPViews.query_filters.close_filter_row( self.tax_row );
+			thiz.hide();
+		} else {
+			// update_message = thiz.data('success');
+			// unsaved_message = thiz.data('unsaved');
+			var action = thiz.data( 'saveaction' ),
+			nonce = thiz.data('nonce'),
+			spinnerContainer = $( self.spinner ).insertBefore( thiz ).show(),
+			error_container = thiz
+					.closest( '.js-filter-row' )
+						.find( '.js-wpv-filter-toolset-messages' );
+			self.tax_current_options = $( self.tax_options_container_selector + ' input, ' + self.tax_options_container_selector + ' select' ).serialize();
+			var data = {
+				action: action,
+				id: self.view_id,
+				filter_options: self.tax_current_options,
+				wpnonce: nonce
+			}
+			$.post( ajaxurl, data, function( response ) {
+				if ( response.success ) {
+					$( self.tax_close_save_selector )
+						.addClass( 'button-secondary' )
+						.removeClass( 'button-primary js-wpv-section-unsaved' )
+						.html(
+							self.icon_edit + $( self.tax_close_save_selector ).data( 'close' )
+						);
+					if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
+						setConfirmUnload( false );
+					}
+					$( self.tax_summary_container_selector ).html( response.data.summary );
+					WPViews.query_filters.close_and_glow_filter_row( self.tax_row, 'wpv-filter-saved' );
+				} else {
+					WPViews.view_edit_screen.manage_ajax_fail( response.data, error_container );
+				}
+			}, 'json' )
+			.fail( function( jqXHR, textStatus, errorThrown ) {
+				console.log( "Error: ", textStatus, errorThrown );
+			})
+			.always( function() {
+				spinnerContainer.remove();
+				thiz.hide();
+			});
+		}
+	});
+	
+	// Remove tax search filter
+	
+	$( document ).on( 'click', self.tax_row + ' .js-wpv-filter-remove', function() {
+		self.tax_current_options = '';
+	});
+	
+	// Show or hide the terms listStyleType
+	$( document ).on( 'change', '.js-wpv-taxonomy-term-mode', function() {
+		self.show_hide_term_list();
+	});
+	
+	//--------------------
+	// Init
+	//--------------------
+	
+	self.init = function() {
+		self.show_hide_term_list();
+	};
+	
+	self.init();
+
+};
+
+jQuery( document ).ready( function( $ ) {
+    WPViews.taxonomy_term_filter_gui = new WPViews.TaxonomyTermFilterGUI( $ );
 });

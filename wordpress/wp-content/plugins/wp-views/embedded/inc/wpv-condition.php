@@ -36,7 +36,7 @@
  * [wpv-if evaluate="my_func() = '1'"]my_func returns 1[/wpv-if]
  *
  * Link:
- * <a href="http://wp-types.com/documentation/user-guides/conditional-html-output-in-views/">Conditional HTML output in Views</a>
+ * <a href="http://wp-types.com/documentation/user-guides/conditional-html-output-in-views/?utm_source=viewsplugin&utm_campaign=views&utm_medium=views-conditional-help-link&utm_term=Conditional HTML output in Views">Conditional HTML output in Views</a>
  *
  * Note:
  *
@@ -194,33 +194,59 @@ add_filter( 'wpv-extra-condition-filters', 'wpv_add_wpv_if_functions_support', 1
 
 function wpv_add_wpv_if_functions_support($evaluate) {
 	$occurences = preg_match_all('/(\\w+:?:?\\w+?)\(([\\w",. \'-]*)\)/', $evaluate, $matches);
-	if($occurences > 0) {
-		for($i = 0; $i < $occurences; $i++) {
+	if ( $occurences > 0 ) {
+		global $WPV_settings;
+		$allowed_functions = array();
+		if ( 
+			isset( $WPV_settings->wpv_custom_conditional_functions ) 
+			&& is_array( $WPV_settings->wpv_custom_conditional_functions ) 
+		) {
+			$allowed_functions = $WPV_settings->wpv_custom_conditional_functions;
+		}
+		
+		/**
+		* wpv_filter_wpv_custom_conditional_functions
+		*
+		* Extend or modify the list of allowed functions to be usd inside wpv-if shortcodes.
+		* Used to automatically register Views API functions.
+		*
+		* @since 1.8.0
+		*/
+		
+		$allowed_functions = apply_filters( 'wpv_filter_wpv_custom_conditional_functions', $allowed_functions );
+		for ( $i = 0; $i < $occurences; $i++ ) {
 			$real_func = $matches[1][$i];
+			$real_function_trimmed = trim( $real_func );
+			if ( !in_array( $real_function_trimmed, $allowed_functions ) ) {
+				return $evaluate;
+			}
 			if ( strpos( $real_func, '::' ) != false ) {
 				$real_func = array_map('trim', explode('::', $real_func));
 			}
 			$real_values = $matches[2][$i];
 			if ( is_callable($real_func ) ) {
-				global $WP_Views;
-				$view_settings = $WP_Views->get_view_settings();
-				$query_type = null;
-				$object = null;
+				global $WP_Views, $post;
+				$view_depth = $WP_Views->view_depth;
+				$query_type = 'posts';
+				$object = $post;
 				$func_args = array();
 				$resulting_thing = null;
-				if ( !empty( $real_values ) ) $func_args = array_map('trim', explode(',', $real_values));
+				if ( !empty( $real_values ) ) {
+					$func_args = array_map( 'trim', explode( ',', $real_values ) );
+				}
 				$func_args = array_map('wpv_if_func_booleans', $func_args);
-				if ( isset( $view_settings['query_type'] ) && isset( $view_settings['query_type'][0] ) ) {
-					if ($view_settings['query_type'][0] == 'posts') {
-						$query_type = 'posts';
-						global $post;
-						$object = $post;
+				if ( $view_depth > 0 ) {
+					$view_settings = $WP_Views->get_view_settings();
+					if ( isset( $view_settings['query_type'] ) && isset( $view_settings['query_type'][0] ) ) {
+						if ( $view_settings['query_type'][0] == 'taxonomy' ) {
+							$query_type = 'taxonomy';
+							$object = $WP_Views->taxonomy_data['term'];
+						} else if ( $view_settings['query_type'][0] == 'users' ) {
+							$query_type = 'users';
+							$object = $WP_Views->users_data['term'];
+						}
 					}
-					else if ($view_settings['query_type'][0] == 'taxonomy') {
-						$query_type = 'taxonomy';
-						$object = $WP_Views->taxonomy_data['term'];
-					}
-				}//print_r($func_args);
+				}
 				array_push($func_args, $query_type);
 				array_push($func_args, $object);
 				$resulting_thing = call_user_func_array( $real_func, $func_args );
@@ -234,6 +260,9 @@ function wpv_add_wpv_if_functions_support($evaluate) {
 						}
 					} else if ( is_numeric( $resulting_thing ) ) {
 						$replace = $resulting_thing;
+						if ( $replace == 1 ) {
+							$replace = "'1'";
+						}
 					} else {
 						$replace = "'" . $resulting_thing . "'";
 					}
@@ -243,6 +272,32 @@ function wpv_add_wpv_if_functions_support($evaluate) {
 		}
 	}
 	return $evaluate;
+}
+
+/**
+* wpv_if_register_api_functions
+*
+* Extend the functions registered by the user to include the Views API conditional tags
+*
+* @since 1.8.0
+*/
+
+add_filter( 'wpv_filter_wpv_custom_conditional_functions', 'wpv_if_register_api_functions', 10, 1 );
+
+function wpv_if_register_api_functions( $allowed_functions ) {
+	if ( ! in_array( 'has_wpv_wp_archive', $allowed_functions ) ) {
+		$allowed_functions[] = 'has_wpv_wp_archive';
+	}
+	if ( ! in_array( 'is_wpv_wp_archive_assigned', $allowed_functions ) ) {
+		$allowed_functions[] = 'is_wpv_wp_archive_assigned';
+	}
+	if ( ! in_array( 'has_wpv_content_template', $allowed_functions ) ) {
+		$allowed_functions[] = 'has_wpv_content_template';
+	}
+	if ( ! in_array( 'is_wpv_content_template_assigned', $allowed_functions ) ) {
+		$allowed_functions[] = 'is_wpv_content_template_assigned';
+	}
+	return $allowed_functions;
 }
 
 /**

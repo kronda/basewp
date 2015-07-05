@@ -7,7 +7,7 @@ class WP_Views_plugin extends WP_Views {
 
     function init() {
         add_filter( 'custom_menu_order', array($this, 'enable_custom_menu_order' ));
-        add_filter( 'menu_order', array($this, 'custom_menu_order' ));
+        add_filter( 'menu_order', array($this, 'custom_menu_order' )); // @todo I really feel this is not used anymore
 
         global $wp_version;
         if (version_compare($wp_version, '3.3', '>=')) {
@@ -22,86 +22,92 @@ class WP_Views_plugin extends WP_Views {
 
         parent::init();
 
-        add_action('wp_ajax_wpv_get_types_field_name', array($this, 'wpv_ajax_wpv_get_types_field_name'));
-        add_action('wp_ajax_wpv_get_taxonomy_name', array($this, 'wpv_ajax_wpv_get_taxonomy_name'));
-        
-        add_action( 'wpv_action_views_settings_sections', array( $this, 'wpv_bootstrap_options' ), 10 );
-		add_action( 'wpv_action_views_settings_sections', array( $this, 'wpv_edit_view_widget_options' ), 15 );
-        add_action( 'wpv_action_views_settings_sections', array( $this, 'wpv_custom_inner_shortcodes_options' ), 20 );
-        add_action( 'wpv_action_views_settings_sections', array( $this, 'wpv_map_plugin_options' ), 30 );
-        add_action( 'wpv_action_views_settings_sections', array( $this, 'wpv_show_hidden_custom_fields_options' ), 40 );
-        add_action( 'wpv_action_views_settings_sections', array( $this, 'wpv_debug_options' ), 100 );
+        add_action('wp_ajax_wpv_get_types_field_name', array($this, 'wpv_ajax_wpv_get_types_field_name')); // Maybe deprecated
+        add_action('wp_ajax_wpv_get_taxonomy_name', array($this, 'wpv_ajax_wpv_get_taxonomy_name')); // Maybe deprecated
+		
+		// Actions to display buttons in edit screen textareas
+		add_action( 'wpv_views_fields_button', array( $this, 'add_views_fields_button' ) );
+		add_action( 'wpv_cred_forms_button', array( $this, 'add_cred_forms_button' ) );
 
         if(is_admin()){
 			add_action( 'admin_enqueue_scripts', array( $this,'wpv_admin_enqueue_scripts' ) );
 			$this->view_parametric_create();
 		}
-
+        
         /**
         * Add hooks for backend Module Manager Integration
         */
         if ( defined( 'MODMAN_PLUGIN_NAME' ) ) {
 			// Keep the part about registering elements in the plugin version
-            add_filter('wpmodules_register_items_'._VIEWS_MODULE_MANAGER_KEY_, array($this,'register_modules_views_items'), 30, 1);
-            add_filter('wpmodules_register_items_'._VIEW_TEMPLATES_MODULE_MANAGER_KEY_, array($this,'register_modules_view_templates_items'), 20, 1);
+            add_filter( 'wpmodules_register_items_' . _VIEWS_MODULE_MANAGER_KEY_, array( $this, 'register_modules_views_items' ), 30, 1 );
+            add_filter( 'wpmodules_register_items_' . _VIEW_TEMPLATES_MODULE_MANAGER_KEY_, array( $this, 'register_modules_view_templates_items' ), 20, 1 );
 			// Add the section to Views and WPA edit pages
-            add_action('view-editor-section-extra', array($this, 'add_view_module_manager_section'), 20, 2);
+            add_action( 'view-editor-section-extra', array( $this, 'add_view_module_manager_section' ), 20, 2 );
         }
+
+        /**
+         * add some debug information
+         */
+        add_filter( 'icl_get_extra_debug_info', array( $this, 'add_config_to_toolset_extra_debug' ) );
     }
 
-    function register_modules_views_items($items)
-    {
+    /**
+     * add extra debug information
+     */
+    public function add_config_to_toolset_extra_debug( $extra_debug ) {
+        global $WPV_settings;
+        $extra_debug['views'] = $WPV_settings->get();
+        return $extra_debug;
+    }
+
+    function register_modules_views_items( $items ) {
         $views = $this->get_views();
-
-        foreach ($views as $view)
-        {		$summary = '';
-			$view_settings = get_post_meta($view->ID, '_wpv_settings', true);
-
-			if (!isset($view_settings['view-query-mode'])) { // Old views don't have this setting
+        foreach ( $views as $view ) {
+			$summary = '';
+			$view_settings = $this->get_view_settings( $view->ID );
+			if ( ! isset( $view_settings['view-query-mode'] ) ) { // Old views may not have this setting
 				$view_settings['view-query-mode'] = 'normal';
 			}
-
-			switch ($view_settings['view-query-mode']) {
+			switch ( $view_settings['view-query-mode'] ) {
 				case 'normal':
 					$summary .= '<h5>' . __('Content to load', 'wpv-views') . '</h5><p>' . apply_filters('wpv-view-get-content-summary', $summary, $view->ID, $view_settings) .'</p>';
 					$summary .= '<h5>' . __('Filter', 'wpv-views') . '</h5>';
-					$summary .= wpv_create_summary_for_listing($view->ID);
+					$summary .= wpv_create_summary_for_listing( $view->ID );
 					break;
-
 				case 'archive':
+				case 'layout-loop':
 					$summary .= '<h5>' . __('Content to load', 'wpv-views') . '</h5><p>'. __('This View displays results for an <strong>existing WordPress query</strong>', 'wpv-views') . '</p>';
 					break;
 			}
-            $items[]=array(
-                'id'=>_VIEWS_MODULE_MANAGER_KEY_.$view->ID,
-                'title'=>$view->post_title,
-                'details'=> '<div style="padding:0 5px 5px;">' . $summary . '</div>'
+            $items[] = array(
+                'id' => _VIEWS_MODULE_MANAGER_KEY_ . $view->ID,
+                'title' => $view->post_title,
+                'details' => '<div style="padding:0 5px 5px;">' . $summary . '</div>'
             );
         }
         return $items;
     }
 
-    function register_modules_view_templates_items($items)
-    {
+    function register_modules_view_templates_items( $items ) {
+        global $WPV_settings;
         $viewtemplates = $this->get_view_templates();
-		$wpv_options = get_option('wpv_options');
-
-        foreach ($viewtemplates as $view)
-        {
+        foreach ( $viewtemplates as $view ) {
 			$summary = '';
-			$used_as = wpv_get_view_template_defaults($wpv_options, $view->ID);
+			$used_as = wpv_get_view_template_defaults( $WPV_settings, $view->ID );
 			if ($used_as != '<div class="view_template_default_box"></div>') {
 				$summary .= '<h5>' . __('How this Content Template is used', 'wpv-views') . '</h5><p>' . $used_as . '</p>';
 			}
-			$fields_used = wpv_get_view_template_fields_list($view->ID);
+			$fields_used = wpv_get_view_template_fields_list( $view->ID );
 			if ($fields_used != '<div class="view_template_fields_box"></div>') {
 				$summary .= '<h5>' . __('Fields used', 'wpv-views') . '</h5><p>' . $fields_used . '</p>';
 			}
-			if ( '' == $summary ) $summary = '<p>' . __('Content template', 'wpv-views') . '</p>';
-            $items[]=array(
-                'id'=>_VIEW_TEMPLATES_MODULE_MANAGER_KEY_.$view->ID,
-                'title'=>$view->post_title,
-                'details'=>'<div style="padding:0 5px 5px;">' . $summary . '</div>'
+			if ( '' == $summary ) {
+				$summary = '<p>' . __('Content template', 'wpv-views') . '</p>';
+			}
+            $items[] = array(
+                'id' => _VIEW_TEMPLATES_MODULE_MANAGER_KEY_ . $view->ID,
+                'title' => $view->post_title,
+                'details' => '<div style="padding:0 5px 5px;">' . $summary . '</div>'
             );
         }
         return $items;
@@ -113,12 +119,11 @@ class WP_Views_plugin extends WP_Views {
      * @access public
      * @return void
      */
-    function view_parametric_create()
-    {
+    function view_parametric_create() {
 
 		$this->add_parametric = new Editor_addon_parametric (
             'parametric_filter_create',
-			__('Filters', 'wpv-views'),
+			__('New filter', 'wpv-views'),
 			WPV_URL . '/res/js/redisign/views_parametric.js',
 			false,
             false,
@@ -127,7 +132,7 @@ class WP_Views_plugin extends WP_Views {
 
 	    $this->edit_parametric = new Editor_addon_parametric (
             'parametric_filter_edit',
-	    	__('Edit', 'wpv-views'),
+	    	__('Edit filter', 'wpv-views'),
 	    	WPV_URL . '/res/js/redisign/views_parametric.js',
 	    	false,
             false,
@@ -135,6 +140,46 @@ class WP_Views_plugin extends WP_Views {
         );
 
     }
+	
+	/**
+	* add_views_fields_button
+	*
+	* Creates the Views and Fields button for edit pages textareas
+	*
+	* @param $textarea (string)
+	*
+	* @return (string) Echo button
+	*
+	* @since 1.7
+	*/
+	
+	function add_views_fields_button( $textarea ) {
+		echo '<li class="wpv-vicon-codemirror-button">';
+		wpv_add_v_icon_to_codemirror( $textarea );
+		echo '</li>';
+	}
+	
+	/**
+	* add_cred_forms_button
+	*
+	* Creates a button for CRED forms when needd, in edit pages textareas
+	*
+	* @param $textarea (string)
+	*
+	* @return (string) Echo button
+	*
+	* @since 1.7
+	*/
+	
+	function add_cred_forms_button( $textarea ) {
+		$return = '';
+		// This filter is only used by CRED to generate its button HTML
+		$button = apply_filters( 'wpv_meta_html_add_form_button', '', '#' . $textarea );
+		if ( ! empty( $button ) ) {
+			$return .= '<li>' . $button . '</li>';
+		}
+		echo $return;
+	}
 
     function enable_custom_menu_order($menu_ord) {
         return true;
@@ -188,87 +233,72 @@ class WP_Views_plugin extends WP_Views {
         'has_archive' => false,
         'hierarchical' => false,
         //'menu_position' => 80,
-        'menu_icon' => WPV_URL .'/res/img/views-18.png',
         'supports' => array('title','editor','author')
       );
       register_post_type('view',$args);
     }
 
-    function admin_menu(){ // TODO remove not needed admin pages
-
+    function admin_menu() {
+		parent::admin_menu();
 		global $pagenow;
 		$cap = 'manage_options';
-
-//		add_utility_page(__('Views', 'wpv-views'), __('Views', 'wpv-views'), $cap, 'edit.php?post_type=view', '', WPV_URL .'/res/img/views-18.png');
-
-        // remove the default menus and then add a Help menu
-  //      remove_submenu_page('edit.php?post_type=view', 'edit.php?post_type=view');
-  //      remove_submenu_page('edit.php?post_type=view', 'post-new.php?post_type=view');
-
-                // Add the default menus after the Help menu
-  //      add_submenu_page('edit.php?post_type=view', __('Views', 'wpv-views'), __('Views', 'wpv-views'), $cap, 'edit.php?post_type=view');
-  //      add_submenu_page('edit.php?post_type=view', __('New View', 'wpv-views'), __('New View', 'wpv-views'), $cap, 'post-new.php?post_type=view');
-
-        // Add the Content template menus.
-  //      add_submenu_page('edit.php?post_type=view', __('Content Templates', 'wpv-views'), __('Content Templates', 'wpv-views'), $cap, 'edit.php?post_type=view-template');
-//        add_submenu_page('edit.php?post_type=view', __('New Content Template', 'wpv-views'), __('New Content Template', 'wpv-views'), $cap, 'post-new.php?post_type=view-template');
-
-        // add settings menu.
- //       add_submenu_page('edit.php?post_type=view', __('Settings', 'wpv-views'), __('Settings', 'wpv-views'), $cap, 'views-settings',
-   //                 array($this, 'views_settings_admin'));
-
-        // Add import export menu.
-        if (function_exists('wpv_admin_menu_import_export')) {
-//            add_submenu_page('edit.php?post_type=view', __('Import/Export', 'wpv-views'), __('Import/Export', 'wpv-views'), $cap, 'views-import-export', 'wpv_admin_menu_import_export');
-        }
-
-        //   add_submenu_page('edit.php?post_type=view', __('Help', 'wpv-views'), __('Help', 'wpv-views'), $cap , WPV_FOLDER . '/menu/help.php', null, WPV_URL . '/res/img/icon16.png');
-
-     //create new top-level menu
-    add_menu_page(__('Views', 'wpv-views'), __('Views', 'wpv-views'), $cap, 'views', 'wpv_admin_menu_views_listing_page',WPV_URL .'/res/img/views-18.png');
-    // views_redesign_function() is a placeholder function located in wpv-admin-changes.php
-    // create a new submenu for Views listing
-    add_submenu_page( 'views', __('Views', 'wpv-views'), __('Views', 'wpv-views'), $cap, 'views', 'wpv_admin_menu_views_listing_page');
-    if (isset( $_GET['page'] ) && 'views-editor' == $_GET['page']) {
-	add_submenu_page( 'views', __( 'Edit View', 'wpv-views' ), __( 'Edit View', 'wpv-views' ), $cap, 'views-editor', 'views_redesign_html');
+		add_menu_page(__('Views', 'wpv-views'), __('Views', 'wpv-views'), $cap, 'views', 'wpv_admin_menu_views_listing_page', 'none');
+		add_submenu_page( 'views', __('Views', 'wpv-views'), __('Views', 'wpv-views'), $cap, 'views', 'wpv_admin_menu_views_listing_page');
+		if (
+			isset( $_GET['page'] ) 
+			&& 'views-editor' == $_GET['page']
+		) {
+			add_submenu_page( 'views', __( 'Edit View', 'wpv-views' ), __( 'Edit View', 'wpv-views' ), $cap, 'views-editor', 'views_redesign_html');
+		}
+		add_submenu_page( 'views', __('Content Templates', 'wpv-views'), __('Content Templates', 'wpv-views'), $cap, 'view-templates', 'wpv_admin_menu_content_templates_listing_page');
+		if (
+			( 'post-new.php' == $pagenow ) 
+			&& (
+				isset( $_GET['post_type'] ) 
+				&& 'view-template' == $_GET['post_type']
+			)
+		) {
+			add_submenu_page( 'views', __('New Content Template', 'wpv-views'), __('New Content Template', 'wpv-views'), $cap, 'post-new.php?post_type=view-template');
+		}
+		add_submenu_page( 'views', __('WordPress Archives', 'wpv-views'), __('WordPress Archives', 'wpv-views'), $cap, 'view-archives', 'wpv_admin_archive_listing_page');
+		if (
+			isset( $_GET['page'] ) 
+			&& 'view-archives-editor' == $_GET['page']
+		) {
+			add_submenu_page( 'views', __( 'Edit WordPress Archive', 'wpv-views' ), __( 'Edit WordPress Archive', 'wpv-views' ), $cap, 'view-archives-editor', 'views_archive_redesign_html');
+		}
+        global $WPV_settings;
+		add_submenu_page( 'views', __( 'Settings', 'wpv-views' ), __( 'Settings', 'wpv-views' ), $cap, 'views-settings', array( $WPV_settings, 'wpv_settings_admin' ) );
+        add_submenu_page( 'views', __('Import/Export', 'wpv-views'), __('Import/Export', 'wpv-views'), $cap, 'views-import-export', 'wpv_admin_menu_import_export');
+		add_submenu_page( 'views', __('Help', 'wpv-views'), __('Help', 'wpv-views'), $cap, WPV_FOLDER . '/menu/help.php', null );
+		if (
+			isset( $_GET['page'] ) 
+			&& 'views-debug-information' == $_GET['page']
+		) {
+			add_submenu_page( 'views', __( 'Debug information', 'wpv-views' ), __( 'Debug information', 'wpv-views' ), $cap, 'views-debug-information', array( $this, 'debug_page' ) );
+		}
+		// create a new submenu for specific update routines
+		if ( isset( $_GET['page'] ) && 'views-update-help' == $_GET['page'] && function_exists( 'views_update_help_wpv_if' ) ) {
+			add_submenu_page( 'views', __( 'Update changes', 'wpv-views' ), __( 'Update changes', 'wpv-views' ), $cap, 'views-update-help', 'views_update_help');
+		}
     }
-    // create a new submenu for Content Templates listing
-    add_submenu_page( 'views', __('Content Templates', 'wpv-views'), __('Content Templates', 'wpv-views'), $cap, 'view-templates', 'wpv_admin_menu_content_templates_listing_page');
-    if (('post-new.php' == $pagenow) && (isset( $_GET['post_type'] ) && 'view-template' == $_GET['post_type'])) {
-	add_submenu_page( 'views', __('New Content Template', 'wpv-views'), __('New Content Template', 'wpv-views'), $cap, 'post-new.php?post_type=view-template');
-    }
-    // create a new submenu for WordPress Archives listing
-    add_submenu_page( 'views', __('WordPress Archives', 'wpv-views'), __('WordPress Archives', 'wpv-views'), $cap, 'view-archives', 'wpv_admin_archive_listing_page');
-    if (isset( $_GET['page'] ) && 'view-archives-editor' == $_GET['page']) {
-	add_submenu_page( 'views', __( 'Edit WordPress Archive', 'wpv-views' ), __( 'Edit WordPress Archive', 'wpv-views' ), $cap, 'view-archives-editor', 'views_archive_redesign_html');
-    }
-    // create a new submenu for remaining Settings - TODO adjust javascript and CSS enqueues
-    add_submenu_page( 'views', __('Settings', 'wpv-views'), __('Settings', 'wpv-views'), $cap, 'views-settings', array($this, 'views_settings_admin'));
-    // create a new submenu for Export/Import - TODO check that it works (it seems to work out of the box)
-    if (function_exists('wpv_admin_menu_import_export')) {
-	add_submenu_page( 'views', __('Import/Export', 'wpv-views'), __('Import/Export', 'wpv-views'), $cap, 'views-import-export', 'wpv_admin_menu_import_export');
-    }
-    // create a new submenu for Help - TODO check that it works (it seems to work out of the box)
-    add_submenu_page( 'views', __('Help', 'wpv-views'), __('Help', 'wpv-views'), $cap, WPV_FOLDER . '/menu/help.php', null);
+
+    /**
+     * debug page
+     */
+    public function debug_page()
+    {
+        require_once WPV_PATH_EMBEDDED . '/common/debug/debug-information.php';
     }
 
     function settings_box_load(){ // DEPRECATED, check Module Manager, maybe needed in Content Templates
-        add_meta_box('wpv_settings', '<img src="' . WPV_URL . '/res/img/icon16.png" />&nbsp;&nbsp;' . __('View Query - Choose what content to load', 'wpv-views'), array($this, 'settings_box'), 'view', 'normal', 'high');
-        add_meta_box('wpv_layout', '<img src="' . WPV_URL . '/res/img/icon16.png" />&nbsp;&nbsp;' . __('View Layout - Edit the layout', 'wpv-views'), 'view_layout_box', 'view', 'normal', 'high');
-
-        add_meta_box('wpv_views_help', '<img src="' . WPV_URL . '/res/img/icon16.png" />&nbsp;&nbsp;' . __('Views Help', 'wpv-views'), array($this, 'view_help_box'), 'view', 'side', 'high');
-
-        global $pagenow;
+        
+		global $pagenow;
         if (defined('MODMAN_PLUGIN_NAME') && 'post-new.php'!=$pagenow)
         {
             // module manager sidebar meta box
             add_meta_box('wpv_modulemanager_box',__('Module Manager','wpv-views'),array($this, 'modulemanager_views_box'),'view','side','high');  // this might be DEPRECATED
             add_meta_box('wpv_modulemanager_box',__('Module Manager','wpv-views'),array($this, 'modulemanager_view_templates_box'),'view-template','side','high');
-        }
-        //add_meta_box('wpv_css', '<img src="' . WPV_URL . '/res/img/icon16.png" />&nbsp;&nbsp;' . __('CSS for view', 'wpv-views'), array($this, 'css_box'), 'view', 'normal', 'high');
-
-        if ($pagenow == 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] == 'view') {
-            $this->include_admin_css();
         }
         if ($pagenow == 'options-general.php' && isset($_GET['page']) && $_GET['page'] == WPV_FOLDER . '/menu/main.php') {
             $this->include_admin_css();
@@ -276,185 +306,7 @@ class WP_Views_plugin extends WP_Views {
         if ($pagenow == 'options-general.php' && isset($_GET['page']) && $_GET['page'] == 'wpv-import-theme') {
             $this->include_admin_css();
         }
-
-
-    }
-
-    function hide_view_body_controls() { //DEPRECATED
-        global $pagenow, $post;
-        if (($pagenow == 'post-new.php' && isset($_GET['post_type']) && $_GET['post_type'] == 'view') ||
-                ($pagenow == 'post.php' && isset($_GET['action']) && $_GET['action'] == 'edit')) {
-
-            $post_type = $post->post_type;
-
-            if($pagenow == 'post.php' && $post_type != 'view') {
-                return;
-            }
-            // hide the post body.
-            ?>
-                <div id="wpv-customize-link" style="display:none;margin-bottom:15px">
-                    <a href="#" onclick="wpv_show_post_body()"><?php _e('Fully customize the View HTML output', 'wpv-views'); ?></a>
-                    <?php $last_modified = get_post_meta($post->ID, '_wpv_last_modified', true); ?>
-                    <input type="hidden" name="full_view" id="full_view" value="<?php echo ( '' != $last_modified ) ? $last_modified : 'no-data'; ?>"/>
-                </div>
-
-                <div id="wpv-learn-about-views-editing" style="display:none;margin-bottom:15px">
-                    <?php printf(__('Learn about %sediting Views HTML%s', 'wpv-views'),
-                                 '<a href="http://wp-types.com/documentation/user-guides/digging-into-view-outputs/" target="_blank">',
-                                 ' &raquo;</a>'); ?>
-                    <input class="button-secondary" type="button" value="<?php echo __('Hide this editor', 'wpv-views'); ?>" onclick="wpv_hide_post_body()" />
-                </div>
-
-                <script type="text/javascript">
-                    jQuery('#postdivrich').hide();
-                    jQuery('#wpv-learn-about-views-editing').insertAfter('#postdivrich');
-                </script>
-
-
-            <?php
-
-            // hide the author as well.
-            ?>
-                <script type="text/javascript">
-                    jQuery('#authordiv').hide();
-                </script>
-            <?php
-
-            // add a note about saving changes
-            ?>
-                <div id="wpv-save-changes" class="wpv_form_notice" style="display:none;margin-top:10px;width:95%">
-                    <?php _e('* This View has changed. You need to save for these changes to take effect.', 'wpv-views'); ?>
-                </div>
-
-            <?php
-
-
-        }
-
-    }
-
-    /**
-     * Output the view query metabox on the view edit page.
-     *
-     */
-
-    function settings_box($post){ // DEPRECATED
-
-        global $WPV_view_archive_loop;
-
-        ?>
-        <div id="wpv_view_query_controls" style="position: relative">
-            <span id="wpv_view_query_controls_over" class="wpv_view_overlay" style="display:none">
-                <p><strong><?php echo __('The view query settings will be copied from the original', 'wpv-views'); ?></strong></p>
-            </span>
-            <?php
-
-            global $wp_version, $pagenow;
-            if (version_compare($wp_version, '3.2', '<')) {
-                echo '<p style="color:red;"><strong>';
-                _e('* Requires WordPress 3.2 or greater for best results.', 'wpv-views');
-                echo '</strong></p>';
-            }
-
-            $this->include_admin_css();
-
-            wp_nonce_field( 'wpv_get_table_row_ui_nonce', 'wpv_get_table_row_ui_nonce');
-
-            ?>
-            <script type="text/javascript">
-
-                var wpv_confirm_filter_change = '<?php _e("Are you sure you want to change the filter?\\n\\nIt appears that you made modifications to the filter.", 'wpv-views'); ?>';
-                <?php if ($pagenow == 'post-new.php'): ?>
-                    jQuery(document).ready(function($){
-                       wpv_add_initial_filter_shortcode();
-                    });
-                <?php endif; ?>
-
-                var wpv_save_button_text = '<?php _e("Save View", 'wpv-views'); ?>';
-            </script>
-
-            <?php
-
-            global $WP_Views;
-            $view_settings = $WP_Views->get_view_settings($post->ID);
-
-            // check for creating a new view for an archive loop.
-
-            if (isset($_GET['view_archive']) || isset($_GET['view_archive_taxonomy'])) {
-                $view_settings['view-query-mode'] = 'archive';
-                global $wpv_wp_pointer;
-                $wpv_wp_pointer->add_pointer('View Layout',
-                                             'This View displays results for an existing WordPress query.</p><p>Now choose the layout style and then add the fields you wish to display.',
-                                             'select[name="_wpv_layout_settings[style]"]',
-                                             'bottom',
-                                             'wpv_layout');
-
-            }
-
-            ?>
-
-            <p><span style="font-size:1.1em;font-weight:bold;">Does this View query it's own data or replace a standard WordPress archive?</span>&nbsp;&nbsp;&nbsp;<img src="<?php echo WPV_URL_EMBEDDED; ?>/common/res/images/question.png" style="position:relative;top:2px;" />&nbsp;<a href="http://wp-types.com/documentation/user-guides/normal-vs-archive-views/" target="_blank"><?php _e('Learn about Normal and Archive Views &raquo;',
-'wpv-views'); ?></a></p>
-            <ul style="margin-bottom:10px">
-                <?php $checked = $view_settings['view-query-mode'] == 'normal' ? 'checked="checked"' : ''; ?>
-                <li><label><input type="radio" name="_wpv_settings[view-query-mode]" value="normal" <?php echo $checked; ?> onclick="jQuery('#wpv-normal-view-mode').show();jQuery('#wpv-archive-view-mode').hide()" />&nbsp;<?php _e('<strong>Normal View:</strong> This View queries content from the database (good for inserting Views into content or widgets)', 'wpv-views'); ?></label></li>
-                <?php $checked = $view_settings['view-query-mode'] == 'archive' ? 'checked="checked"' : ''; ?>
-                <li><label><input type="radio" name="_wpv_settings[view-query-mode]" value="archive" <?php echo $checked; ?> onclick="jQuery('#wpv-normal-view-mode').hide();jQuery('#wpv-archive-view-mode').show()" />&nbsp;<?php _e('<strong>Archive View:</strong> This View displays results for an existing WordPress query (good for archive pages, taxonomy listing, search, etc.)', 'wpv-views'); ?></label></li>
-            </ul>
-
-            <div id="wpv-normal-view-mode"<?php if($view_settings['view-query-mode'] != 'normal') {echo ' style="display:none;"';} ?>>
-                <table id="wpv_filter_table" class="widefat fixed">
-                    <thead>
-                        <tr>
-                            <th width="20px"></th>
-                            <th width="100%">
-								<?php _e('Filter', 'wpv-views'); ?>
-								&nbsp;&nbsp<a class="wpv-help-link" target="_blank" href="http://wp-types.com/documentation/user-guides/views/">
-									<?php _e('Querying the database', 'wpv-views'); ?>
-								</a>
-							</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr id="wpv_filter_type">
-                            <?php wpv_filter_types_admin($view_settings); ?>
-                        </tr>
-
-                        <?php
-                            global $view_settings_table_row;
-                            $view_settings_table_row = 0;
-                            do_action('wpv_add_filter_table_row', $view_settings);
-                        ?>
-
-                    </tbody>
-                </table>
-
-                <?php
-                $view_settings = wpv_types_defaults($view_settings);
-                wpv_filter_add_filter_admin($view_settings, null, 'popup_add_filter', '', 'wpv_add_filters', $view_settings['query_type'][0] == 'posts');
-                wpv_filter_add_filter_admin($view_settings, null, 'popup_add_filter_taxonomy', '', 'wpv_add_filters_taxonomy', $view_settings['query_type'][0] == 'taxonomy');
-
-				wpv_filter_controls_admin($view_settings);
-
-                ?>
-                <p>
-                    <span style="font-size:1.1em;font-weight:bold;"><?php _e('Pagination and Sliders settings',
-            'wpv-views') ?></span>&nbsp;&nbsp;&nbsp;<img src="<?php echo WPV_URL_EMBEDDED; ?>/common/res/images/question.png" style="position:relative;top:2px;" />&nbsp;<a href="http://wp-types.com/documentation/user-guides/views-pagination/" target="_blank"><?php _e('Everything about Views pagination &raquo;',
-            'wpv-views'); ?></a>
-                </p>
-			    <?php
-                wpv_pagination_admin($view_settings);
-
-                wpv_filter_meta_html_admin($view_settings);
-
-                ?>
-            </div>
-
-            <?php $WPV_view_archive_loop->view_edit_admin($post->ID, $view_settings); ?>
-
-        </div>
-        <?php
+	
     }
 
    function modulemanager_views_box($post)
@@ -463,22 +315,29 @@ class WP_Views_plugin extends WP_Views {
         do_action('wpmodules_inline_element_gui',$element);
    }
 
-   function add_view_module_manager_section($view_settings, $view_id) {
-		global $views_edit_help;
+   function add_view_module_manager_section( $view_settings, $view_id ) {
+		$section_help_pointer = WPV_Admin_Messages::edit_section_help_pointer( 'module_manager' );
 		?>
-		<div class="wpv-setting-container js-wpv-settings-content">
+		<div class="wpv-setting-container wpv-setting-container-module-manager js-wpv-settings-content">
 
 			<div class="wpv-settings-header">
 				<h3>
 					<?php _e( 'Module Manager', 'wpv-views' ) ?>
-					<i class="icon-question-sign js-display-tooltip" data-header="<?php echo $views_edit_help['module_manager']['title'] ?>" data-content="<?php echo $views_edit_help['module_manager']['content'] ?>" ></i>
+					<i class="icon-question-sign js-display-tooltip" 
+						data-header="<?php echo esc_attr( $section_help_pointer['title'] ); ?>" 
+						data-content="<?php echo esc_attr( $section_help_pointer['content'] ); ?>" >
+					</i>
 				</h3>
 			</div>
 
-			<div class="wpv-setting">
+			<div class="wpv-setting wpv-setting-module-manager">
 				<?php
-				$element=array('id'=>_VIEWS_MODULE_MANAGER_KEY_.$view_id, 'title'=>get_the_title($view_id), 'section'=>_VIEWS_MODULE_MANAGER_KEY_);
-				do_action('wpmodules_inline_element_gui',$element);
+				$element = array(
+					'id' => _VIEWS_MODULE_MANAGER_KEY_ . $view_id, 
+					'title' => get_the_title( $view_id ), 
+					'section' => _VIEWS_MODULE_MANAGER_KEY_
+				);
+				do_action( 'wpmodules_inline_element_gui', $element );
 				?>
 			</div>
 
@@ -486,34 +345,14 @@ class WP_Views_plugin extends WP_Views {
 	   <?php
 	}
 
-   function modulemanager_view_templates_box($post)
-   {
-        $element=array('id'=>_VIEW_TEMPLATES_MODULE_MANAGER_KEY_.$post->ID, 'title'=>$post->post_title, 'section'=>_VIEW_TEMPLATES_MODULE_MANAGER_KEY_);
-        do_action('wpmodules_inline_element_gui',$element);
+   function modulemanager_view_templates_box( $post ) {
+        $element = array(
+			'id' => _VIEW_TEMPLATES_MODULE_MANAGER_KEY_ . $post->ID, 
+			'title' => $post->post_title, 
+			'section' => _VIEW_TEMPLATES_MODULE_MANAGER_KEY_
+		);
+        do_action( 'wpmodules_inline_element_gui', $element );
    }
-
-    function view_help_box($post){ // DEPRECATED
-
-        global $pagenow;
-        ?>
-            <div id="wpv-step-help-1" class="wpv-incomplete-step"><?php _e('1. Enter title', 'wpv-views'); ?></div>
-            <div id="wpv-step-help-2" class="wpv-incomplete-step"><?php _e('2. Choose what content to load', 'wpv-views'); ?></div>
-            <div id="wpv-step-help-3" class="wpv-incomplete-step"><?php _e('3. Edit the layout', 'wpv-views'); ?></div>
-
-            <?php if($pagenow == 'post-new.php') :?>
-                <div id="wpv-step-help-4" class="wpv-incomplete-step"><?php _e('4. Save this View', 'wpv-views'); ?></div>
-            <?php else:?>
-                <div id="wpv-step-help-4" class="wpv-complete-step"><?php _e('4. Save this View', 'wpv-views'); ?></div>
-            <?php endif;?>
-            <br />
-            <?php printf(__('Learn how to create a View and how to display it in the complete %sViews Guide%s', 'wpv-views'),
-                         '<a target=_"blank" href="http://wp-types.com/documentation/user-guides/views/">',
-                         ' &raquo;</a>'); ?>
-
-        <?php
-
-    }
-
 
     /**
      * save the view settings.
@@ -521,10 +360,18 @@ class WP_Views_plugin extends WP_Views {
      *
      */
 
-    function save_view_settings($post_id){ // DEPRECATED
+    function save_view_settings($post_id){ // DEPRECATED, keep it because it might be fired when creating a new View
         global $wpdb, $sitepress;
 
-        list($post_type, $post_status) = $wpdb->get_row("SELECT post_type, post_status FROM {$wpdb->posts} WHERE ID = " . $post_id, ARRAY_N);
+        list($post_type, $post_status) = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT post_type, post_status FROM {$wpdb->posts} 
+				WHERE ID = %d 
+				LIMIT 1",
+				$post_id
+			), 
+			ARRAY_N
+		);
 
         if ($post_type == 'view') {
 
@@ -532,7 +379,9 @@ class WP_Views_plugin extends WP_Views {
                 $_POST['_wpv_settings'] = apply_filters('wpv_view_settings_save', $_POST['_wpv_settings']);
                 update_post_meta($post_id, '_wpv_settings', $_POST['_wpv_settings']);
             }
-            save_view_layout_settings($post_id);
+            // DEPRECATED// This should save nothing, as we are not passing anything like the needed data at all
+			// Commented out in 1.7
+			//save_view_layout_settings($post_id);
 
 
             if (isset($sitepress)) {
@@ -547,7 +396,16 @@ class WP_Views_plugin extends WP_Views {
                     $icl_trid = $_POST['icl_trid'];
                 } else {
                     // get trid from database.
-                    $icl_trid = $wpdb->get_var("SELECT trid FROM {$wpdb->prefix}icl_translations WHERE element_id={$post_id} AND element_type = 'post_$post_type'");
+                    $icl_trid = $wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT trid FROM {$wpdb->prefix}icl_translations 
+							WHERE element_id = %d
+							AND element_type = %s 
+							LIMIT 1",
+							$post_id,
+							'post_' . $post_type
+						)
+					);
                 }
 
                 if (isset($_POST['wpv_duplicate_source_id'])) {
@@ -564,12 +422,37 @@ class WP_Views_plugin extends WP_Views {
                 }
             }
             if(isset($_POST['full_view'])) {
-		$blogtime = current_time('timestamp');
-		$last_saved = date('dmYHi',current_time('timestamp'));
-		update_post_meta($post_id, '_wpv_last_modified', $last_saved);
-	    }
+				$blogtime = current_time('timestamp');
+				$last_saved = date('dmYHi',current_time('timestamp'));
+				update_post_meta($post_id, '_wpv_last_modified', $last_saved);
+			}
         }
     }
+	
+	/**
+	* after_save_item
+	*
+	* Action fired on wpv_action_wpv_save_item to update a postmeta flag storing the last modified time
+	*
+	* @param $item_id (integer)
+	*
+	* @since 1.8.0
+	*/
+	
+	function after_save_item( $item_id ) {
+		if (
+			! is_numeric( $item_id )
+			|| intval( $item_id ) < 1
+		) {
+			return;
+		}
+		$now = time();
+        $last = intval( get_post_meta( $item_id, '_toolset_edit_last', true ) );
+		if ( $last >= $now ) {
+            return;
+        }
+        update_post_meta( $item_id, '_toolset_edit_last', $now, $last );
+	}
 
     function duplicate_view($source_id, $target_id, $icl_trid) { // DEPRECATED,check how to translate Views
 
@@ -593,7 +476,14 @@ class WP_Views_plugin extends WP_Views {
         } else {
             // We're saving the original
             // see if we should copy to translations.
-            $translations = $wpdb->get_col("SELECT element_id FROM {$wpdb->prefix}icl_translations WHERE trid = {$icl_trid}");
+            $translations = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT element_id FROM {$wpdb->prefix}icl_translations 
+					WHERE trid = %s 
+					LIMIT 1",
+					$icl_trid
+				)
+			);
 
             foreach ($translations as $translation_id) {
                 if ($translation_id != $source_id) {
@@ -614,11 +504,8 @@ class WP_Views_plugin extends WP_Views {
 		if ( !current_user_can( 'manage_options' ) )
 			return $link;
 		
-		$options = get_option('wpv_options');
-		if ( !isset($options['wpv_show_edit_view_link']) ){
-			$options['wpv_show_edit_view_link'] = 1;	
-		}
-		if ( $options['wpv_show_edit_view_link'] == 1){
+        global $WPV_settings;
+		if ( $WPV_settings->wpv_show_edit_view_link == 1 ){
 			if ($this->current_view) {
 				$view_link = '<a href="'. admin_url() .'admin.php?page=views-editor&view_id='. $this->current_view .'" title="'.__('Edit view', 'wpv-views').'">'.__('Edit view', 'wpv-views').' "'.get_the_title($this->current_view).'"</a>';
 				$view_link = apply_filters( 'wpv_edit_view_link', $view_link );
@@ -660,7 +547,7 @@ class WP_Views_plugin extends WP_Views {
                 $help .= '<p>'.__("This page lists the <strong>Content Templates</strong> that you have created and allows you to create new ones.",'wpv-views').'</p>';
                 $help .= '<p>'.__("The ‘arrange by’ line, at the top of the page, lets you list the <strong>Content Templates</strong> by their name or by how they are used in the site.",'wpv-views').'</p>';
                 $help .= '<p>'.__("Click on the name of a Content Template to edit it or create new <strong>Content Templates</strong> using the ‘Add’ buttons.",'wpv-views').'</p>';
-                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/view-templates/" target="_blank">'.__("Content Templates online help", 'wpv-views').'</a></p>';
+                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/view-templates/?utm_source=viewsplugin&utm_campaign=views&utm_medium=view-content-template-header-help&utm_term=Content Templates online help" target="_blank">'.__("Content Templates online help", 'wpv-views').'</a></p>';
                 break;
 
             case 'view-template':
@@ -670,14 +557,14 @@ class WP_Views_plugin extends WP_Views {
                 $help .= '<li>'.__("Add fields to the body. Use the V icon to insert basic fields, custom fields, taxonomy and Views. If you are using CRED, use the C icon to insert CRED forms.", 'wpv-views').'</li>';
                 $help .= '<li>'.__("Style the output by adding HTML around shortcodes.", 'wpv-views').'</li>';
                 $help .= '</ol>';
-                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/view-templates/" target="_blank">'.__("Content Templates online help", 'wpv-views').'</a></p>';
+                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/view-templates/?utm_source=viewsplugin&utm_campaign=views&utm_medium=content-tempalte-header-page&utm_term=Content Templates online help" target="_blank">'.__("Content Templates online help", 'wpv-views').'</a></p>';
                 break;
 
             case 'toplevel_page_views':
                 $help = '<p>'.__("Use <strong>Views</strong> to load content from the database and display it anyway you choose.",'wpv-views').'</p>';
                 $help .= '<p>'.__("This page lists the <strong>Views</strong> in your site. Under ‘actions’, you will find ‘duplicate’ and ‘delete’ for Views.", 'wpv-views').'</p>';
                 $help .= '<p>'.__("Click on a <strong>Views</strong> name to edit it or create new Views.", 'wpv-views').'</p>';
-                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/views/" target="_blank">'.__("Views online help", 'wpv-views') .'</a></p>';
+                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/views/?utm_source=viewsplugin&utm_campaign=views&utm_medium=views-listing-header&utm_term=Views online help" target="_blank">'.__("Views online help", 'wpv-views') .'</a></p>';
                 break;
 
             case 'views_page_view-archives':
@@ -685,12 +572,12 @@ class WP_Views_plugin extends WP_Views {
                 $help .= '<p>'.__("This page lists the <strong>WordPress Archives</strong> in your site.", 'wpv-views').'</p>';
                 $help .= '<p>'.__("The ‘arrange by’ line, at the top of the page, lets you list the <strong>WordPress Archives</strong> by their name or by how they are used in the site.", 'wpv-views').'</p>';
                 $help .= '<p>'.__("Click on the name of a <strong>WordPress Archives</strong> to edit it or create new WordPress Archives using the ‘Add’ buttons.", 'wpv-views').'</p>';
-                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/normal-vs-archive-views/" target="_blank">'.__("WordPress Archives online help", 'wpv-views') .'</a></p>';
+                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/normal-vs-archive-views/?utm_source=viewsplugin&utm_campaign=views&utm_medium=archive-listing-header&utm_term=WordPress Archives online help" target="_blank">'.__("WordPress Archives online help", 'wpv-views') .'</a></p>';
                 break;
 
             case 'edit-view':
                 $help = '<p>'.__("Use <strong>Views</strong> to filter and display lists in complex and interesting ways. Read more about Views in our user guide:",'wpv-views');
-                $help .= '<br /><a href="http://wp-types.com/user-guides/views/" target="_blank">http://wp-types.com/user-guides/views/ &raquo;</a></p>';
+                $help .= '<br /><a href="http://wp-types.com/user-guides/views/?utm_source=viewsplugin&utm_campaign=views&utm_medium=edit-view&utm_term=http://wp-types.com/user-guides/views/" target="_blank">http://wp-types.com/user-guides/views/ &raquo;</a></p>';
                 $help .= '<p>'.__("This page gives you an overview of the Views you have created.", 'wpv-views').'</p>';
                 $help .= '<p>'.__("It has the following options:", 'wpv-views').'</p>';
                 $help .= '<ul><li>'.__("<strong>Add New</strong>: Add a New View", 'wpv-views').'</li></ul>';
@@ -707,7 +594,7 @@ class WP_Views_plugin extends WP_Views {
                 $help .= '<ol><li>'.__("Set the title", 'wpv-views').'</li>';
                 $help .= '<li>'.__("Select on which listing pages it displays", 'wpv-views').'</li>';
                 $help .= '<li>'.__("Design the output for the View by inserting fields and styling with HTML", 'wpv-views').'</li></ol>';
-                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/normal-vs-archive-views/" target="_blank">'.__("WordPress Archives online help", 'wpv-views') .'</a></p>';
+                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/normal-vs-archive-views/?utm_source=viewsplugin&utm_campaign=views&utm_medium=archive-editor&utm_term=WordPress Archives online help" target="_blank">'.__("WordPress Archives online help", 'wpv-views') .'</a></p>';
                 break;
 
             case 'view':
@@ -722,7 +609,7 @@ class WP_Views_plugin extends WP_Views {
                 $help .= '<li>'.__("If needed, enable pagination and front-end filters", 'wpv-views').'</li>';
                 $help .= '<li>'.__("Design the output for the View by inserting fields and styling with HTML", 'wpv-views').'</li></ol>';
                 $help .= '<p>'.__("When you are done, remember to add the <strong>View</strong> to your content. You can do that by inserting the <strong>View</strong> as a shortcode to content or displaying it as a widget.",'wpv-views').'</p>';
-                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/views/" target="_blank">'.__("Views online help", 'wpv-views') .'</a></p>';
+                $help .= '<p><a href="http://wp-types.com/documentation/user-guides/views/?utm_source=viewsplugin&utm_campaign=views&utm_medium=view-editor&utm_term=Views online help" target="_blank">'.__("Views online help", 'wpv-views') .'</a></p>';
                 break;
 
         }
@@ -747,7 +634,7 @@ class WP_Views_plugin extends WP_Views {
     }
     $last_saved = get_the_modified_time( 'dmYHi' );
     $last_modified = get_post_meta( $post->ID, '_wpv_last_modified', true );
-    $view_not_complete = '<div class="wpv_form_errors" style="width:98.7%;">' . sprintf(  esc_js(__( 'This View was not saved correctly. You may need to increase the number of post variables allowed in PHP. <a href="%s">How to increase max_post_vars setting</a>.', 'wpv-views' )), 'http://wp-types.com/faq/why-do-i-get-a-500-server-error-when-editing-a-view/' ) . '</div>';
+    $view_not_complete = '<div class="wpv_form_errors" style="width:98.7%;">' . sprintf(  esc_js(__( 'This View was not saved correctly. You may need to increase the number of post variables allowed in PHP. <a href="%s">How to increase max_post_vars setting</a>.', 'wpv-views' )), 'http://wp-types.com/faq/why-do-i-get-a-500-server-error-when-editing-a-view/?utm_source=viewsplugin&utm_campaign=views&utm_medium=add-view-error&utm_term=How to increase max_post_vars setting' ) . '</div>';
     ?>
 	<script type="text/javascript">
 	jQuery(document).ready(function(){
@@ -802,657 +689,7 @@ class WP_Views_plugin extends WP_Views {
         }
 	}
 
-	function admin_section_start($title, $help_link = null, $help_text = null) { // DEPRECATED
-
-
-		if ($help_link) {
-			$title .= '<a class="wpv-help-link" href="' . $help_link . '" target="_blank">' . $help_text . '</a>';
-		}
-
-		echo $title;
-
-	}
-
-	function admin_section_end() { // DEPRECATED
-		?>
-
-		<?php
-	}
-
-
-    function views_settings_admin() { // TODO move to its own file and create own js file too
-
-        //global $WPV_templates, $wpdb;
-
-        $options = $this->get_options();
-
-        $defaults = array('views_template_loop_blog' => '0');
-        $options = wp_parse_args($options, $defaults);
-
-        ?>
-
-        <div class="wrap">
-
-            <div id="icon-views" class="icon32"><br /></div>
-            <h2><?php _e('Views Settings', 'wpv-views') ?></h2>
-
-            <?php do_action( 'wpv_action_views_settings_sections', $options ); ?>
-            
-            <?php //$this->wpv_bootstrap_options($options); ?>
-            
-            <?php //$this->wpv_custom_inner_shortcodes_options($options); ?>
-            
-            <?php //$this->wpv_map_plugin_options($options); ?>
-            
-            <?php //$this->wpv_show_hidden_custom_fields_options($options); ?>
-            
-            <?php //$WPV_templates->add_wpml_settings(); ?>
-            
-            <?php //$WPV_templates->admin_settings($options); ?>
-
-			<?php //$this->wpv_debug_options($options); ?>
-			
-			
-
-            <?php
-                // change the preview url when the selector changes.
-            ?>
-            <script type="text/javascript">
-                jQuery(document).ready(function($){
-                    jQuery('.views_template_select').change(function() {
-
-                        var taxonomy;
-                        var link;
-                        var loop = false;
-                        if (jQuery(this).attr('name').substring(0, 20) == 'views_template_loop_') {
-                            taxonomy = jQuery(this).attr('name').substring(20);
-                            link = jQuery('#views_template_loop_preview_' + taxonomy).attr('href');
-                            loop = true;
-                        } else {
-                            taxonomy = jQuery(this).attr('name').substring(19);
-                            link = jQuery('#views_template_for_preview_' + taxonomy).attr('href');
-                        }
-
-                        var newAdditionalURL = "";
-                        var tempArray = link.split("?");
-                        var baseURL = tempArray[0];
-                        var aditionalURL = '';
-                        if (tempArray.length == 2) {
-                            aditionalURL = tempArray[1];
-                        }
-                        var temp = "";
-                        if(aditionalURL) {
-                            var tempArray = aditionalURL.split("&");
-                            for ( var i in tempArray ){
-                                if(tempArray[i].indexOf("view-template") == -1){
-                                    newAdditionalURL += temp+tempArray[i];
-                                    temp = "&";
-                                    }
-                                }
-                        }
-                        var rows_txt = temp+"view-template="+jQuery("#" + jQuery(this).attr('id') + ' option:selected').text();
-                        var finalURL = baseURL+"?"+newAdditionalURL+rows_txt;
-                        if (loop) {
-                            jQuery('#views_template_loop_preview_' + taxonomy).attr('href', finalURL);
-                        } else {
-                            jQuery('#views_template_for_preview_' + taxonomy).attr('href', finalURL);
-                            jQuery('#wpv_diff_template_' + taxonomy).hide();
-                        }
-                    });
-                });
-            </script>
-
-        </div>
-
-
-        <?php
-    }
-
-	function wpv_save_theme_debug_settings() {
-
-		global $WPV_templates;
-
-        $options = $this->get_options();
-
-        $defaults = array('views_template_loop_blog' => '0');
-        $options = wp_parse_args($options, $defaults);
-
-        if ( ! wp_verify_nonce($_POST['wpv_view_templates_theme_support'], 'wpv_view_templates_theme_support')) die("Security check");
-
-        $options = $WPV_templates->submit($options);
-
-        $this->save_options($options);
-
-        echo 'ok';
-
-	die();
-	}
-
-	function wpv_save_wpml_settings() {
-		global $WPV_templates;
-
-		$WPV_templates->wpv_save_wpml_settings();
-	}
-
-	function wpv_update_custom_inner_shortcodes() {
-
-		if ( ! wp_verify_nonce( $_POST['wpv_custom_inner_shortcodes_nonce'], 'wpv_custom_inner_shortcodes_nonce' ) ) die("Security check");
-
-		$options = $this->get_options();
-
-		if (isset( $options['wpv_custom_inner_shortcodes'] ) && $options['wpv_custom_inner_shortcodes'] != '' ) {
-			$custom_shrt = $options['wpv_custom_inner_shortcodes'];
-		} else {
-			$custom_shrt = array();
-		}
-		if ( !is_array( $custom_shrt ) ) {
-			$custom_shrt = array();
-		}
-
-		if ( isset( $_POST['csaction'] ) && isset( $_POST['cstarget'] ) ) {
-			switch ( $_POST['csaction'] ) {
-				case 'add':
-					if ( !in_array( $_POST['cstarget'], $custom_shrt ) ) {
-						$custom_shrt[] = $_POST['cstarget'];
-					}
-					break;
-				case 'delete':
-					$key = array_search( $_POST['cstarget'],$custom_shrt );
-					if ( $key !== false ) {
-						unset( $custom_shrt[$key] );
-					}
-					break;
-			}
-			$options['wpv_custom_inner_shortcodes'] = $custom_shrt;
-			$this->save_options($options);
-			echo 'ok';
-		} else {
-			echo 'error';
-		}
-
-		die();
-	}
-
-	// called from ajax
-	function wpv_get_show_hidden_custom_fields() {
-
-		if ( ! wp_verify_nonce( $_POST['wpv_show_hidden_custom_fields_nonce'], 'wpv_show_hidden_custom_fields_nonce' ) ) die("Security check");
-
-		$options = $this->get_options();
-
-		if (isset($_POST['wpv_show_hidden_fields'])) {
-			// save as comma separated string.
-			$options['wpv_show_hidden_fields'] = implode(',', $_POST['wpv_show_hidden_fields']);
-		} else {
-			$options['wpv_show_hidden_fields'] = '';
-		}
-
-		$this->save_options($options);
-
-		$this->wpv_show_hidden_custom_fields_options($options);
-
-		die();
-	}
-
-	function wpv_custom_inner_shortcodes_options($options) {
-		if (isset($options['wpv_custom_inner_shortcodes']) && $options['wpv_custom_inner_shortcodes'] != '') {
-			$custom_shrt = $options['wpv_custom_inner_shortcodes'];
-		} else {
-			$custom_shrt = array();
-		}
-		if ( !is_array( $custom_shrt ) ) {
-			$custom_shrt = array();
-		}
-		?>
-
-		<div class="wpv-setting-container wpv-settings-shortcodes">
-
-			<div class="wpv-settings-header">
-				<h3><?php _e('Third-party shortcode arguments', 'wpv-views'); ?></h3>
-			</div>
-
-			<div class="wpv-setting">
-
-				<div class="js-cf-summary">
-
-				<p>
-					<?php _e('List of custom and third-party shortcodes you want to be able to use as Views shortcode arguments.', 'wpv-views'); ?>
-				</p>
-				<p>
-					<?php _e('For example, to support [wpv-post-title id="[my-custom-shortcode]"] add <strong>my-custom-shortcode</strong> as a third-party shortcode argument below.', 'wpv-views'); ?>
-				</p>
-				<p>
-					<?php echo sprintf( __('You can get the details in the <a href="%s" title="Documentation on the shortcodes within shortcodes">documentation page</a>.', 'wpv-views'), 'http://wp-types.com/documentation/user-guides/shortcodes-within-shortcodes/' ); ?>
-                </p>
-				<div>
-    				<ul class="wpv-taglike-list js-custom-shortcode-list">
-    				<?php
-    				if (count( $custom_shrt ) > 0 ) {
-    					sort( $custom_shrt );
-    					foreach ( $custom_shrt as $custom_shrtcode ) { ?>
-    						<li class="js-<?php echo $custom_shrtcode; ?>-item">
-    							<span class="">[<?php echo $custom_shrtcode; ?>]</span>
-    							<i class="icon-remove-sign js-custom-shortcode-delete" data-target="<?php echo $custom_shrtcode; ?>"></i>
-    						</li>
-    					<?php }
-    				}
-    				?>
-    				</ul>
-    				<form class="js-custom-inner-shortcodes-form-add">
-    					<input type="text" placeholder="<?php _e('Shortcode name', 'wpv-views'); ?>" class="js-custom-inner-shortcode-newname" />
-    					<button class="button-secondary js-custom-inner-shortcodes-add" type="button" disabled><i class="icon-plus"></i> <?php _e('Add', 'wpv-views'); ?></button>
-    					<span class="toolset-alert toolset-alert-error hidden js-wpv-cs-error"><?php _e('Only letters, numbers, underscores and dashes', 'wpv-views'); ?></span>
-    					<span class="toolset-alert toolset-alert-info hidden js-wpv-cs-dup"><?php _e('That shortcode already exists', 'wpv-views'); ?></span>
-    					<span class="toolset-alert toolset-alert-info hidden js-wpv-cs-ajaxfail"><?php _e('An error ocurred', 'wpv-views'); ?></span>
-    				</form>
-				</div>
-				<?php wp_nonce_field( 'wpv_custom_inner_shortcodes_nonce', 'wpv_custom_inner_shortcodes_nonce' ); ?>
-
-				</div>
-
-			</div>
-		</div>
-
-		<?php
-
-	}
-
-	function wpv_debug_options($options) {
-		if ( !isset($options['wpv_debug_mode']) ) {
-			$options['wpv_debug_mode'] = '';
-			$this->save_options($options);
-		} 
-		if ( !isset($options['wpv-debug-mode-type']) ) {
-			$options['wpv-debug-mode-type'] = 'compact';
-			$this->save_options($options);
-		} 
-		
-		?>
-
-		<div class="wpv-setting-container">
-            <div class="wpv-settings-header">
-                <h3 id="debug_mode"><?php _e( 'Debug mode','wpv-views' ); ?></h3>
-            </div>
-            <div class="wpv-setting">
-                <p>
-                    <?php _e( "Enabling Views debug will open a popup on every page showing a Views element.",'wpv-views' ); ?>
-                   
-                </p>
-                <p>
-					<?php _e('This popup will show usefull information about the elements being displayed: time needed to render, memory used, shortcodes details...', 'wpv-views'); ?>
-                </p>
-                <p>
-					<?php _e('There are two modes: compact and full. Compact mode will give you an overview of the elements rendered. The full mode will display a complete report with all the object involved on the page.', 'wpv-views'); ?>
-                </p>
-                <p>
-					<?php echo sprintf( __('You can get the details in the <a href="%s" title="Documentation on the Views debug tool">documentation page</a>.', 'wpv-views'), 'http://wp-types.com/documentation/user-guides/debugging-types-and-views/' ); ?>
-                </p>
-                <div class="js-debug-mode-form">
-                    <p>
-                        <?php $checked = $options['wpv_debug_mode'] ? ' checked="checked"' : ''; ?>
-                        <label>
-                            <input type="checkbox" name="wpv-debug-mode" class="js-wpv-debug-mode" value="1" <?php echo $checked; ?> />
-                            <?php _e( "Enable Views debug mode", 'wpv-views' ); ?>
-                        </label>
-                        <div class="js-wpv-debug-additional-options<?php echo empty( $options['wpv_debug_mode'] ) ? ' hidden' : ''; ?>">
-                        	 <?php $checked = ($options['wpv-debug-mode-type'] == 'compact') ? ' checked="checked"' : ''; ?>
-                        	 <ul style="margin-left:30px;">
-                        	 <li><label>
-	                            <input type="radio" name="wpv-debug-mode-type" class="js-wpv-debug-mode-type" value="compact" <?php echo $checked; ?> />
-	                            <?php _e( "Compact debug mode", 'wpv-views' ); ?>
-	                         </label>
-	                         </li>
-	                         <li>
-	                         <?php $checked = ($options['wpv-debug-mode-type'] == 'full') ? ' checked="checked"' : ''; ?>
-                        	 <label>
-	                            <input type="radio" name="wpv-debug-mode-type" class="js-wpv-debug-mode-type" value="full" <?php echo $checked; ?> />
-	                            <?php _e( "Full debug mode", 'wpv-views' ); ?>
-	                         </label>
-	                         </li>
-	                         </ul>
-							<?php
-							$debug_enabled = ( isset( $options['wpv_debug_mode'] ) && $options['wpv_debug_mode'] );
-							$debug_dismissed = ( isset( $options['dismiss_debug_check'] ) && $options['dismiss_debug_check'] == 'true' );
-							$debug_tested = ( isset( $_GET['action'] ) && esc_html( $_GET['action'] ) == 'test-debug' );
-							?>
-							<div class="js-wpv-debug-checker<?php echo $debug_enabled ? '' : ' hidden'; ?>">
-								<?php if ( $debug_tested ) { ?>
-								<div class="js-wpv-debug-checker-results">
-									<p><?php _e('Did a new window just open?', 'wpv-views'); ?></p>
-									<p><a class="js-wpv-debug-checker-success button-secondary"><?php _e('Yes, it worked', 'wpv-views'); ?></a> <a href="#" class="js-wpv-debug-checker-failure button-secondary"><?php _e('No, nothing opened', 'wpv-views'); ?></a></p>
-									<a href="#" class="js-open-test-popup-trigger hidden"></a>
-									<script type="text/javascript">
-									function wpv_open_test_popup() {
-										var popupWidth = (screen.width/2),
-										popupHeight = (screen.height/2),
-										popupPosLeft = (screen.width/2) - (popupWidth/2),
-										popupPosTop = (screen.height/2) - (popupHeight/2);
-										var winobj = window.open(
-											'',
-											'blank',
-											'resizable=yes,scrollbars=yes,status=no,location=no,width='+popupWidth+',height='+popupHeight+',left='+popupPosLeft+',top='+popupPosTop
-										);
-										var debug_info = jQuery('.js-debuger-test-output').clone().html();//alert(debug_info);
-										winobj.document.write(debug_info);
-									}
-									jQuery(document).on('click', '.js-open-test-popup-trigger', function(e) {
-										e.preventDefault();
-										wpv_open_test_popup();
-									});
-									jQuery(document).ready(function(){
-										jQuery('.js-open-test-popup-trigger').click();
-									});
-									</script>
-								</div>
-								<p class="js-wpv-debug-checker-message-success js-wpv-debug-checker-after toolset-alert toolset-alert-success hidden">
-									<?php _e( 'Views debugger is ready for use. Thanks for checking it', 'wpv-views' ); ?>
-								</p>
-								<div class="js-wpv-debug-checker-message-failure js-wpv-debug-checker-after toolset-alert toolset-alert-error hidden">
-									<p><?php _e('Seems like your browser is blocking popups. You should allow all popup windows from this site to use the Views debugger.', 'wpv-views'); ?></p>
-									<p><?php _e('Please refer to the following links for documentation related to the most used browsers:'); ?></p>
-									<p>
-										<a href="http://mzl.la/MyNqBe">Mozilla Firefox</a> &bull; 
-										<a href="http://windows.microsoft.com/en-us/internet-explorer/ie-security-privacy-settings">Internet Explorer</a> &bull; 
-										<a href="https://support.google.com/chrome/answer/95472">Google Chrome</a> &bull; 
-										<a href="http://www.opera.com/help/tutorials/personalize/content/#siteprefs">Opera</a>
-									</p>
-								</div>
-								<?php } ?>
-								<p class="js-wpv-debug-checker-before<?php echo ( $debug_dismissed || $debug_tested ) ? ' hidden' : ''; ?>"><?php _e('Views debugger will need to open a popup window. Your browser may block it, so let\'s check that it\'s working for you.', 'wpv-views'); ?></p>
-								
-								<p class="js-wpv-debug-checker-actions<?php echo ( $debug_dismissed || $debug_tested ) ? ' hidden' : ''; ?>"><button data-target="<?php echo admin_url(); ?>admin.php?page=views-settings&amp;action=test-debug&amp;timestamp=<?php echo current_time('timestamp'); ?>#debug_mode" class="js-wpv-debug-checker-action button-primary"><?php _e('Test the debugger window', 'wpv-views'); ?></button> <button href="<?php echo admin_url(); ?>admin.php?page=views-settings" class="js-wpv-debug-checker-dismiss button-secondary"><?php _e('It\'s OK, skip this test', 'wpv-views'); ?></button></p>
-								
-								<p class="js-wpv-debug-checker-enabler<?php echo ( $debug_dismissed && !$debug_tested ) ? '' : ' hidden'; ?>"><a href="<?php echo admin_url(); ?>admin.php?page=views-settings" class="js-wpv-debug-checker-recover" title="<?php _e('Test debugger window', 'wpv-views'); ?>"><?php _e('Test debugger window', 'wpv-views'); ?></a></p>
-							</div><!-- js-wpv-debug-checker -->
-                        </div><!-- close .js-wpv-debug-additional-options -->
-                        
-                    </p>
-                    <?php
-                        wp_nonce_field( 'wpv_debug_mode_option', 'wpv_debug_mode_option' );
-                    ?>
-                </div><!--  close .js-debug-mode-form -->
-
-                <p class="update-button-wrap">
-                    <span class="js-debug-mode-update-message toolset-alert toolset-alert-success hidden">
-                        <?php _e( 'Settings saved', 'wpv-views' ); ?>
-                    </span>
-                    <button class="js-save-debug-mode-settings button-secondary" disabled="disabled">
-                        <?php _e( 'Save', 'wpv-views' ); ?>
-                    </button>
-                </p>
-                
-                <div class="wpv-hidden" style="display:none">
-					<div class="js-debuger-test-output">
-						<div>
-						<h1><?php _e('It works!', 'wpv-views'); ?></h1>
-						<p><?php _e('You can close this window and click \'Yes, it worked\' in the Views settings page.', 'wpv-views'); ?></p>
-						</div>
-					</div> <!-- .js-debuger-output -->
-				</div>
-
-            </div>
-        </div>
-
-		<?php
-
-	}
-	
-	function wpv_map_plugin_options($options) {
-		if ( !isset($options['wpv_map_plugin']) ) {
-			$options['wpv_map_plugin'] = '';
-			$this->save_options($options);
-		} 
-		
-		?>
-
-		<div class="wpv-setting-container">
-            <div class="wpv-settings-header">
-                <h3><?php _e( 'Map plugin','wpv-views' ); ?></h3>
-            </div>
-            <div class="wpv-setting">
-                <p>
-                    <?php _e( "Enabling Views Maps will add the Google Maps API and the Views Maps plugin to your site.",'wpv-views' ); ?>
-                   
-                </p>
-                <p>
-					<?php _e('This will let you create maps on your site and use Views to plot WordPress posts on a Google Map.', 'wpv-views'); ?>
-                </p>
-                <p>
-					<?php echo sprintf( __('You can get the details in the <a href="%s" title="Documentation on the Views Maps plugin">documentation page</a>.', 'wpv-views'), 'http://wp-types.com/documentation/user-guides/map-wordpress-posts/' ); ?>
-                </p>
-                <div class="js-map-plugin-form">
-                    <p>
-                        <?php $checked = $options['wpv_map_plugin'] ? ' checked="checked"' : ''; ?>
-                        <label>
-                            <input type="checkbox" name="wpv-map-plugin" class="js-wpv-map-plugin" value="1" <?php echo $checked; ?> />
-                            <?php _e( "Enable Views Map Plugin", 'wpv-views' ); ?>
-                        </label>
-                    </p>
-                    <?php
-                        wp_nonce_field( 'wpv_map_plugin_nonce', 'wpv_map_plugin_nonce' );
-                    ?>
-                </div>
-
-                <p class="update-button-wrap">
-                    <span class="js-wpv-map-plugin-update-message toolset-alert toolset-alert-success hidden">
-                        <?php _e( 'Settings saved', 'wpv-views' ); ?>
-                    </span>
-                    <button class="js-wpv-map-plugin-settings-save button-secondary" disabled="disabled">
-                        <?php _e( 'Save', 'wpv-views' ); ?>
-                    </button>
-                </p>
-
-            </div>
-        </div>
-
-		<?php
-
-	}
-	
-	/*
-	 * Show Bootstrap version option
-	*/
-	function wpv_edit_view_widget_options($options) {
-		if ( !isset($options['wpv_show_edit_view_link']) ) {
-			$options['wpv_show_edit_view_link'] = 1;
-			$this->save_options($options);
-		}
-		
-		?>
-
-		<div class="wpv-setting-container">
-            <div class="wpv-settings-header">
-                <h3><?php _e( 'Frontend Edit Links','wpv-views' ); ?></h3>
-            </div>
-            <div class="wpv-setting">
-                <p>
-                    <?php _e( "You can enable/disable the edit links on the frontend for Views, Content Templates and WordPress Archives. Remember that the frontend edit links are only visible to administrators.",'wpv-views' ); ?>
-                </p>
-                <ul class="js-bootstrap-version-form">
-                    <li>
-                        <?php $checked = $options['wpv_show_edit_view_link'] == 1 ? ' checked="checked"' : ''; ?>
-                        <label>
-                            <input type="checkbox" name="wpv-show-edit-view-link" class="js-wpv-show-edit-view-link" value="1" <?php echo $checked;?> />
-                            <?php _e( "Enable edit links on the frontend", 'wpv-views' ); ?>
-                        </label>
-                    </li>
-                    
-                </ul>
-                <?php
-					wp_nonce_field( 'wpv_show_edit_view_link_nonce', 'wpv_show_edit_view_link_nonce' );
-				?>
-                <p class="update-button-wrap">
-                    <span class="js-wpv-show-edit-view-link-update-message toolset-alert toolset-alert-success hidden">
-                        <?php _e( 'Settings saved', 'wpv-views' ); ?>
-                    </span>
-                    <button class="js-wpv-show-edit-view-link-settings-save button-secondary" disabled="disabled">
-                        <?php _e( 'Save', 'wpv-views' ); ?>
-                    </button>
-                </p>
-            </div>
-        </div>
-
-		<?php
-
-	} 
-
-	/*
-	 * Show Bootstrap version option
-	*/
-	function wpv_bootstrap_options($options) {
-		if ( !isset($options['wpv_bootstrap_version']) ) {
-			$options['wpv_bootstrap_version'] = 1;
-			$this->save_options($options);
-		}
-		
-		$disabled = '';
-		$disabled_message = '';
-		if ( class_exists( 'WPDD_Layouts_CSSFrameworkOptions' ) ) {
-			$disabled = ' disabled="disabled" readonly="readonly" ';
-			$framework = WPDD_Layouts_CSSFrameworkOptions::getInstance()->get_current_framework();
-			$disabled_message = '<p><strong>'. sprintf(__("Bootstrap version overriden by the Layouts plugin settings to use Bootstrap v.%s", 'wpv-views'), str_replace( 'bootstrap-', '', $framework ) ) .'</strong></p>';	
-		}
-		
-		?>
-
-		<div class="wpv-setting-container">
-            <div class="wpv-settings-header">
-                <h3><?php _e( 'Bootstrap Layouts','wpv-views' ); ?></h3>
-            </div>
-            <div class="wpv-setting">
-                <p>
-                    <?php _e( "You can set here the Bootstrap version that you want to use, based on the one <strong>provided by your theme</strong>. We will then generate the right markup in the Views Layouts Wizard when using the Bootstrap Grid option.",'wpv-views' ); ?>
-                </p>
-                <?php echo $disabled_message;?>
-                <p>
-					<?php echo sprintf( __('You can get the details in the <a href="%s" title="Documentation on the Bootstrap Layouts">documentation page</a>.', 'wpv-views'), 'http://wp-types.com/documentation/user-guides/view-layouts-101/#bootstrap' ); ?>
-                </p>
-                <ul class="js-bootstrap-version-form">
-                    <li>
-                        <?php $checked = $options['wpv_bootstrap_version'] == 1 ? ' checked="checked"' : ''; ?>
-                        <label>
-                            <input type="radio" name="wpv-bootstrap-version" class="js-wpv-bootstrap-version" value="1" <?php echo $checked; echo $disabled; ?> />
-                            <?php _e( "Bootstrap version not set", 'wpv-views' ); ?>
-                        </label>
-                    </li>
-                    <li>
-                        <?php $checked = $options['wpv_bootstrap_version'] == 2 ? ' checked="checked"' : ''; ?>
-                        <label>
-                            <input type="radio" name="wpv-bootstrap-version" class="js-wpv-bootstrap-version" value="2" <?php echo $checked; echo $disabled; ?> />
-                            <?php _e( "Bootstrap v. 2.0", 'wpv-views' ); ?>
-                        </label>
-                    </li>
-					<li>
-                        <?php $checked = $options['wpv_bootstrap_version'] == 3 ? ' checked="checked"' : ''; ?>
-                        <label>
-                            <input type="radio" name="wpv-bootstrap-version" class="js-wpv-bootstrap-version" value="3" <?php echo $checked; echo $disabled; ?> />
-                            <?php _e( "Bootstrap v. 3.0", 'wpv-views' ); ?>
-                        </label>
-                    </li>
-                </ul>
-                <?php
-					wp_nonce_field( 'wpv_bootstrap_version_nonce', 'wpv_bootstrap_version_nonce' );
-				?>
-                <p class="update-button-wrap">
-                    <span class="js-wpv-bootstrap-version-update-message toolset-alert toolset-alert-success hidden">
-                        <?php _e( 'Settings saved', 'wpv-views' ); ?>
-                    </span>
-                    <button class="js-wpv-bootstrap-version-settings-save button-secondary" disabled="disabled">
-                        <?php _e( 'Save', 'wpv-views' ); ?>
-                    </button>
-                </p>
-            </div>
-        </div>
-
-		<?php
-
-	} 
-
-	function wpv_show_hidden_custom_fields_options($options) {
-
-		if (isset($options['wpv_show_hidden_fields']) && $options['wpv_show_hidden_fields'] != '') {
-			$defaults = explode(',', $options['wpv_show_hidden_fields']);
-		} else {
-			$defaults = array();
-		}
-
-		?>
-
-        <div class="wpv-setting-container wpv-settings-hidden-cf">
-
-            <div class="wpv-settings-header">
-                <h3><?php _e('Hidden custom fields', 'wpv-views'); ?></h3>
-            </div>
-
-            <div class="wpv-setting">
-
-                <div class="js-cf-summary">
-                    <?php
-                        $cf_exists = false;
-                        if ( sizeof($defaults) > 0 ) {
-                            $cf_exists = true;
-                        }
-                    ?>
-                    <p class="js-cf-exists-message <?php echo $cf_exists ? '' : 'hidden' ; ?>">
-                        <?php _e('The following private custom fields are showing in the Views GUI:', 'wpv-views'); ?>
-                    </p>
-                    <p class="js-no-cf-message <?php echo $cf_exists ? 'hidden' : '' ; ?>">
-                        <?php _e('No private custom fields are showing in the Views GUI.', 'wpv-views'); ?>
-                    </p>
-                    <ul class="wpv-selected-cf-list wpv-taglike-list  js-selected-cf-list <?php echo $cf_exists ? '' : 'hidden' ; ?>">
-                    <?php foreach ($defaults as $cf): ?>
-                        <li><?php echo $cf ?></li>
-                    <?php endforeach; ?>
-                    </ul>
-
-                    <p>
-                        <button class="button-secondary js-show-cf-list" type="button"><?php _e('Edit', 'wpv-views'); ?></button>
-                        <span class="toolset-alert toolset-alert-success hidden js-cf-update-message">
-                            <?php _e( 'Settings saved', 'wpv-views' ); ?>
-                        </span>
-                    </p>
-
-                </div>
-
-                <div class="js-cf-toggle hidden">
-
-    				<?php $meta_keys = $this->get_meta_keys(true); ?>
-                    <ul class="cf-list wpv-mightlong-list js-all-cf-list">
-    				<?php foreach($meta_keys as $key => $field): ?>
-    					<?php if (strpos($field, '_') === 0): ?>
-                            <?php
-        						$options[$field]['#default_value'] = in_array($field, $defaults);
-        						$element = wpv_form_control(array('field' => array(
-        							'#type' => 'checkbox',
-        							'#name' => 'wpv_show_hidden_fields[]',
-        							'#attributes' => array('style' => ''),
-        							'#inline' => true,
-        							'#title' => $field,
-        							'#value' => $field,
-        							'#before' => '',
-        							'#after' => '',
-        							'#default_value' => in_array($field, $defaults)
-                                )));
-                            ?>
-                            <li><?php echo $element ?></li>
-                        <?php endif; ?>
-    				<?php endforeach; ?>
-				<?php wp_nonce_field( 'wpv_show_hidden_custom_fields_nonce', 'wpv_show_hidden_custom_fields_nonce' ); ?>
-                    </ul>
-
-    				<p class="update-button-wrap">
-                        <span class="js-cf-spinner spinner hidden"></span>
-                        <button class="button-secondary js-hide-cf-list"><?php _e('Cancel', 'wpv-views'); ?></button>
-                        <button class="button-primary js-save-cf-list"><?php _e('Save', 'wpv-views'); ?></button>
-                    </p>
-
-                </div>
-            </div>
-        </div>
-
-		<?php
-	}
-	/**
+    /**
 	 * Get the available View in a select box
 	 *
 	 */
@@ -1463,7 +700,11 @@ class WP_Views_plugin extends WP_Views {
 		static $views_available = null;
 
 		if (!$views_available) {
-			$views_available = $wpdb->get_results("SELECT ID, post_title, post_name FROM {$wpdb->posts} WHERE post_type='view' AND post_status='publish'");
+			$views_available = $wpdb->get_results(
+				"SELECT ID, post_title, post_name FROM {$wpdb->posts} 
+				WHERE post_type = 'view' 
+				AND post_status = 'publish'"
+			);
 
             if ($archives_only) {
                 foreach ($views_available as $index => $view) {
@@ -1489,7 +730,7 @@ class WP_Views_plugin extends WP_Views {
 			$view_box .= '<select class="view_select" name="view_' . $row . '" id="view_' . $row . '">';
 		}
 
-        if (function_exists('icl_object_id')) {
+        if (isset($sitepress) && function_exists('icl_object_id')) {
             $page_selected = icl_object_id($page_selected, 'view', true);
         }
 
@@ -1582,54 +823,47 @@ class WP_Views_plugin extends WP_Views {
 		die();
 	}
 
-	function wpv_admin_enqueue_scripts($hook) {// echo $hook; TODO this function needs a lot of love
+	function wpv_admin_enqueue_scripts( $hook ) {// echo $hook; TODO this function needs a lot of love
 		/**
 		* Registering all scripts
 		*/
 
-		// Register scripts and styles needed in the embedded version too
-
-		parent::wpv_admin_enqueue_scripts($hook);
-
-		// CodeMirror
-
-		wp_register_script( 'views-codemirror-script' , WPV_URL . '/res/js/codemirror/lib/codemirror.js', array(), WPV_VERSION, false);
-		wp_register_script( 'views-codemirror-overlay-script' , WPV_URL . '/res/js/codemirror/addon/mode/overlay.js', array('views-codemirror-script'), WPV_VERSION, false);
-		wp_register_script( 'views-codemirror-xml-script' , WPV_URL . '/res/js/codemirror/mode/xml/xml.js', array('views-codemirror-overlay-script'), WPV_VERSION, false);
-		wp_register_script( 'views-codemirror-css-script' , WPV_URL . '/res/js/codemirror/mode/css/css.js', array('views-codemirror-overlay-script'), WPV_VERSION, false);
-		wp_register_script( 'views-codemirror-js-script' , WPV_URL . '/res/js/codemirror/mode/javascript/javascript.js', array('views-codemirror-overlay-script'), WPV_VERSION, false);
-		wp_register_script( 'views-codemirror-conf-script' , WPV_URL . '/res/js/views_codemirror_conf.js', array('jquery','views-codemirror-script'), WPV_VERSION, false);
+		/**
+		* Register scripts and styles needed in the embedded version too:
+		*
+		* Scripts:
+		* toolset-colorbox
+		* select2
+		* views-utils-script
+		* CodeMirror
+		* Pointers
+		*
+		* Styles:
+		* toolset-font-awesome
+		* toolset-colorbox
+		* views-notifications-css
+		* views-dialogs-css
+		* select2
+		* views-codemirror-css
+		*/
+		parent::wpv_admin_enqueue_scripts( $hook );
 
 		// Views, WPA and CT edit screens JS
+		// @todo on a future revision, once common is spread, make **_editor.js depend on icl_editor-script and remove fallbacks
 
-		wp_register_script( 'views-redesign-js', ( WPV_URL . "/res/js/redesign/views_editor.js" ), array( 'jquery','wp-pointer', 'jquery-ui-sortable', 'jquery-ui-draggable', 'views-codemirror-script'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-filters-js', ( WPV_URL . "/res/js/redesign/views_section_filters.js" ), array( 'views-redesign-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-status-js', ( WPV_URL . "/res/js/redesign/views_filter_status.js" ), array( 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-author-js', ( WPV_URL . "/res/js/redesign/views_filter_author.js" ), array( 'suggest', 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-users-js', ( WPV_URL . "/res/js/redesign/views_filter_users.js" ), array( 'suggest', 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-parent-js', ( WPV_URL . "/res/js/redesign/views_filter_parent.js" ), array( 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-search-js', ( WPV_URL . "/res/js/redesign/views_filter_search.js" ), array( 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-id-js', ( WPV_URL . "/res/js/redesign/views_filter_id.js" ), array( 'suggest', 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-post-relationship-js', ( WPV_URL . "/res/js/redesign/views_filter_post_relationship.js" ), array( 'suggest', 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-category-js', ( WPV_URL . "/res/js/redesign/views_filter_category.js" ), array( 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-custom-field-js', ( WPV_URL . "/res/js/redesign/views_filter_custom_field.js" ), array( 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-usermeta-field-js', ( WPV_URL . "/res/js/redesign/views_filter_usermeta_field.js" ), array( 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-taxonomy-term-js', ( WPV_URL . "/res/js/redesign/views_filter_taxonomy_term.js" ), array( 'views-redesign-filters-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-pagination-js', ( WPV_URL . "/res/js/redesign/views_section_pagination.js" ), array( 'views-redesign-js'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-update-js', ( WPV_URL . "/res/js/redesign/views_sections_update.js" ), array( 'views-redesign-js'), WPV_VERSION, true );
+		wp_register_script( 'views-editor-js', ( WPV_URL . "/res/js/redesign/views_editor.js" ), array( 'jquery', 'wp-pointer', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tooltip', 'views-codemirror-conf-script', 'underscore', 'views-utils-script', 'quicktags', 'wplink'), WPV_VERSION, true );
+		wp_register_script( 'views-filters-js', ( WPV_URL . "/res/js/redesign/views_section_filters.js" ), array( 'views-editor-js'), WPV_VERSION, true );
+		wp_register_script( 'views-pagination-js', ( WPV_URL . "/res/js/redesign/views_section_pagination.js" ), array( 'views-editor-js'), WPV_VERSION, true );
+		wp_register_script( 'views-update-js', ( WPV_URL . "/res/js/redesign/views_sections_update.js" ), array( 'views-editor-js'), WPV_VERSION, true );
 
-		wp_register_script( 'views-archive-redesign-js', ( WPV_URL . "/res/js/redesign/views_archive_editor.js" ), array( 'jquery','wp-pointer', 'jquery-ui-sortable', 'jquery-ui-draggable', 'views-codemirror-script'), WPV_VERSION, true );
-		wp_register_script( 'views-redesign-update-archive-js', ( WPV_URL . "/res/js/redesign/views_archives_sections_update.js" ), array( 'views-archive-redesign-js'), WPV_VERSION, true );
+		wp_register_script( 'views-archive-editor-js', ( WPV_URL . "/res/js/redesign/views_archive_editor.js" ), array( 'jquery', 'wp-pointer', 'jquery-ui-sortable', 'jquery-ui-draggable', 'views-codemirror-conf-script', 'underscore', 'views-utils-script', 'quicktags', 'wplink'), WPV_VERSION, true );
+		wp_register_script( 'views-archive-update-js', ( WPV_URL . "/res/js/redesign/views_archives_sections_update.js" ), array( 'views-archive-editor-js'), WPV_VERSION, true );
 
-		wp_register_script( 'views-redesign-layout-template-js', ( WPV_URL . "/res/js/redesign/views_section_layout_template.js" ), array( 'jquery'), WPV_VERSION, true );
+		wp_register_script( 'views-layout-template-js', ( WPV_URL . "/res/js/redesign/views_section_layout_template.js" ), array( 'jquery'), WPV_VERSION, true );
 		wp_register_script( 'views-redesign-media-manager-js', ( WPV_URL . "/res/js/redesign/views_media_manager.js" ), array( 'jquery'), WPV_VERSION, true );
 		wp_register_script( 'views-layout-wizard-script' , WPV_URL . '/res/js/redesign/views_layout_edit_wizard.js', array('jquery'), WPV_VERSION, true);
 
-		wp_register_script( 'views-template-redesign-js' , WPV_URL . '/res/js/redesign/views_content_template.js', array( 'jquery','wp-pointer', 'jquery-ui-sortable', 'jquery-ui-draggable', 'views-codemirror-script'), WPV_VERSION, true);
-
-		// Settings JS
-
-		wp_register_script( 'views-settings-script' , WPV_URL . '/res/js/views_settings.js', array('jquery'), WPV_VERSION, true);
+		wp_register_script( 'views-content-template-js' , WPV_URL . '/res/js/redesign/views_content_template.js', array( 'jquery', 'wp-pointer', 'jquery-ui-sortable', 'jquery-ui-draggable', 'views-codemirror-conf-script', 'underscore', 'views-utils-script', 'quicktags', 'wplink'), WPV_VERSION, true);
 
 		// Suggestion Script for Views edit screen
 		wp_register_script( 'views-suggestion_script', ( WPV_URL . "/res/js/redesign/suggestion_script.js" ), array(), WPV_VERSION, true );
@@ -1638,26 +872,16 @@ class WP_Views_plugin extends WP_Views {
 
 		// Listing JS
 
-		wp_register_script( 'views-listing-script' , WPV_URL . '/res/js/redesign/views_listing_page.js', array('jquery'), WPV_VERSION, true);
-		wp_register_script( 'views-archive-listing-script' , WPV_URL . '/res/js/redesign/views_wordpress_archive_listing_page.js', array('jquery'), WPV_VERSION, true);
-		wp_register_script( 'views-content-templates-listing-script' , WPV_URL . '/res/js/redesign/wpv_content_template_listing.js', array('jquery'), WPV_VERSION, true);
+		wp_register_script( 'views-listing-common-script' , WPV_URL . '/res/js/redesign/wpv_listing_common.js', array( 'jquery' ), WPV_VERSION, true);
+		wp_register_script( 'views-listing-script' , WPV_URL . '/res/js/redesign/views_listing_page.js', array( 'jquery', 'views-listing-common-script' ), WPV_VERSION, true);
+		wp_register_script( 'views-archive-listing-script' , WPV_URL . '/res/js/redesign/views_wordpress_archive_listing_page.js', array( 'jquery', 'views-listing-common-script' ), WPV_VERSION, true);
+		wp_register_script( 'views-content-template-listing-script' , WPV_URL . '/res/js/redesign/wpv_content_template_listing.js', array('jquery', 'views-listing-common-script' ), WPV_VERSION, true);
+		
+		// Update help
+		
+		wp_register_script( 'views-update-help-js', WPV_URL . '/res/js/views_admin_update_help.js', array( 'jquery' ), WPV_VERSION, true );
 
 		// NOTE knockout and parametric.js files need to be enqueued at admin_header time for some reason, registered and enqueued in editor-addon-parametric-class.php in common
-
-		/**
-		* Registering all styles
-		*/
-
-		// CodeMirror style
-
-		wp_register_style( 'views-codemirror-css' , WPV_URL . '/res/js/codemirror/lib/codemirror.css', array(), WPV_VERSION);
-
-		// General Views redesign style
-
-		wp_register_style( 'views-admin-css', WPV_URL . '/res/css/views-admin.css',
-		  array('toolset-font-awesome','toolset-colorbox','views-notifications-css','views-dialogs-css','views-select2-css'), WPV_VERSION );
-
-
 
 		/**
 		* Enqueue actions
@@ -1665,62 +889,71 @@ class WP_Views_plugin extends WP_Views {
 
 		// Basic WordPress scripts & styles
 
-		wp_enqueue_script('wp-pointer'); // TODO maybe DEPRECATED
-		wp_enqueue_style('wp-pointer'); // TODO maybe DEPRECATED
+		wp_enqueue_script('wp-pointer');
+		wp_enqueue_style('wp-pointer');
 		wp_enqueue_script('thickbox'); // TODO maybe DEPRECATED
 		wp_enqueue_style('thickbox'); // TODO maybe DEPRECATED
 
 		// External libraries scripts
-		if (isset($_GET['page']) &&
-			(
-				$_GET['page'] == 'views' || $_GET['page'] == 'view-archives' || $_GET['page'] == 'view-templates' || $_GET['page'] == 'views-editor' || $_GET['page']=='view-archives-editor' || strpos( $_SERVER['QUERY_STRING'], 'help.php') !== false
+		if ( 
+			isset($_GET['page'] )
+			&& (
+				$_GET['page'] == 'views' 
+				|| $_GET['page'] == 'view-archives' 
+				|| $_GET['page'] == 'view-templates' 
+				|| $_GET['page'] == 'views-editor' 
+				|| $_GET['page'] == 'view-archives-editor' 
+				|| strpos( $_SERVER['QUERY_STRING'], 'help.php') !== false
 			)
 		) {
 
-                if ($_GET['page'] == 'views-editor')
-                    delete_transient('wpv_layout_wizard_save_settings');
+			if ( $_GET['page'] == 'views-editor' ) {// TODO WTF is it doing here?
+				delete_transient('wpv_layout_wizard_save_settings');
+			}
 
-		wp_enqueue_script( 'views-utils-script');
-		$help_box_translations = array(
-		'wpv_dont_show_it_again' => __("Got it! Don't show this message again", 'wpv-views'),
-		'wpv_close' => __("Close", 'wpv-views')
-		);
-		wp_localize_script( 'views-utils-script', 'wpv_help_box_texts', $help_box_translations );
+			wp_enqueue_script( 'views-utils-script');
+			$help_box_translations = array(
+				'wpv_dont_show_it_again' => __("Got it! Don't show this message again", 'wpv-views'),
+				'wpv_close' => __("Close", 'wpv-views')
+			);
+			wp_localize_script( 'views-utils-script', 'wpv_help_box_texts', $help_box_translations );
+			
+			// Views shortcodes GUI script
+			wp_enqueue_script('views-shortcodes-gui-script');
 
-		// CodeMirror NOTE add to Views and Content Templates edit screen only
+			// CodeMirror NOTE add to Views and Content Templates edit screen only
 
-		if ( $_GET['page'] == 'views-editor' || $_GET['page'] == 'view-archives-editor' ) {
-			wp_enqueue_script('views-codemirror-script');
-			wp_enqueue_script('views-codemirror-overlay-script');
-			wp_enqueue_script('views-codemirror-xml-script');
-			wp_enqueue_script('views-codemirror-css-script');
-			wp_enqueue_script('views-codemirror-js-script');
-			wp_enqueue_script('views-codemirror-conf-script');
-			wp_enqueue_style('views-codemirror-css');
-		}
+			if ( $_GET['page'] == 'views-editor' || $_GET['page'] == 'view-archives-editor' ) {
+				wp_enqueue_script('views-codemirror-script');
+				wp_enqueue_script('views-codemirror-overlay-script');
+				wp_enqueue_script('views-codemirror-xml-script');
+				wp_enqueue_script('views-codemirror-css-script');
+				wp_enqueue_script('views-codemirror-js-script');
+				wp_enqueue_script('views-codemirror-addon-searchcursor-script');
+				wp_enqueue_script('views-codemirror-addon-panel-script');
+				wp_enqueue_script('views-codemirror-conf-script');
+				wp_enqueue_style('views-codemirror-css');
+				
+				//Codemirror:Quicktags:Add link popup styles and html
+				wp_enqueue_style('editor-buttons');
+			}
 
-		// Shared ToolSet CSS
+			// Shared ToolSet CSS
 
-		wp_enqueue_style( 'toolset-font-awesome' );
+			wp_enqueue_style( 'toolset-font-awesome' );
 
-		// General Views CSS
+			// General Views CSS
 
-		wp_enqueue_style( 'views-admin-css' );
-
-		}
-
-		// Views settings script
-
-		if ( isset( $_GET['page'] ) && ( $_GET['page'] == 'views-settings' ) ) {
-			wp_enqueue_script( 'views-settings-script' );
 			wp_enqueue_style( 'views-admin-css' );
-		}
 
+		}
+     
 		// Views screens - import/export and help
 
-		if ( $hook == 'views_page_views-import-export' ||
-					$hook == 'wp-views/menu/help.php' ||
-					$hook == 'views_page_views-settings') {
+		if ( 
+			$hook == 'views_page_views-import-export'
+			|| $hook == 'wp-views/menu/help.php'
+		) {
 			wp_enqueue_style( 'views-admin-css' );
 		}
 
@@ -1735,41 +968,70 @@ class WP_Views_plugin extends WP_Views {
 		}
 
 		if (isset($_GET['page']) && $_GET['page'] == 'view-templates') {
-			wp_enqueue_script( 'views-content-templates-listing-script' );
+			wp_enqueue_script( 'views-content-template-listing-script' );
 		}
 
 
 		// Views and WPA editors
-		
+		// To Juan: check this code after 2-3 versions
 		$media_manager_translations = array(
 			'only_img_allowed_here' => __( "You can only use an image file here", 'wpv-views' )
 		);
+		
+		$editor_translations = array(
+			'meta_html_extra_css_open' => __( 'Open CSS editor', 'wpv-views' ),
+			'meta_html_extra_css_close' => __( 'Close CSS editor', 'wpv-views'  ),
+			'meta_html_extra_js_open' => __( 'Open JS editor', 'wpv-views'  ),
+			'meta_html_extra_js_close' => __( 'Close JS editor', 'wpv-views'  )
+		);
+		
+		$inline_content_templates_translations = array(
+            'new_template_name_in_use' => __( 'A Content Template with that name already exists. Please try with another name.', 'wpv-views' ),
+			'pointer_close' => __( 'Close', 'wpv-views' ),
+			'pointer_scroll_to_template' => __( 'Scroll to the Content Template', 'wpv-views' )
+		);
+		
+		$layout_wizard_translations = array(
+			'button_next' => __( 'Next', 'wpv-views' ),
+			'button_insert' => __( 'Finish', 'wpv-views' ),
+			'unknown_error' => __( 'Something wrong happened, please try again', 'wpv-views' )
+		);
 
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
-			wp_enqueue_script('suggest'); // for author filter
-			wp_enqueue_script( 'views-redesign-js' ); // general js file
-			wp_enqueue_script( 'views-redesign-filters-js' ); // general js file for filters
-			wp_enqueue_script( 'views-redesign-status-js' );
-			wp_enqueue_script( 'views-redesign-author-js' );
-			wp_enqueue_script( 'views-redesign-users-js' );
-			wp_enqueue_script( 'views-redesign-parent-js' );
-			wp_enqueue_script( 'views-redesign-search-js' );
-			wp_enqueue_script( 'views-redesign-id-js' );
-			wp_enqueue_script( 'views-redesign-post-relationship-js' );
-			wp_enqueue_script( 'views-redesign-category-js' );
-			wp_enqueue_script( 'views-redesign-custom-field-js' );
-			wp_enqueue_script( 'views-redesign-usermeta-field-js' );
-			wp_enqueue_script( 'views-redesign-taxonomy-term-js' );
-			wp_enqueue_script( 'views-redesign-pagination-js' );
-
-			//Enquey suggestion script
-			wp_enqueue_script( 'views-suggestion_script' );
-			wp_enqueue_style ('views_suggestion_style');
-			wp_enqueue_style ('views_suggestion_style2');
-
+			wp_enqueue_script('suggest'); // for author filter, although it is declared as dependency
+			wp_enqueue_script( 'views-editor-js' ); // general js file
+			wp_localize_script( 'views-editor-js', 'wpv_editor_strings', $editor_translations );
+			
+			wp_enqueue_script( 'views-filters-js' ); // general js file for filters, each filter registers and enqueues its own scripts depending on this
+			$filters_strings = array(
+				'select_empty' => __( "Please select an option", 'wpv-views' ),
+				'param_missing' => __("This field can not be empty", 'wpv-views'),
+				'param_url_ilegal' => __("Only lowercase letters, numbers, hyphens and underscores allowed as URL parameters", 'wpv-views'),
+				'param_shortcode_ilegal' => __("Only lowercase letters and numbers allowed as shortcode attributes", 'wpv-views'),
+				'param_year_ilegal' => __( 'Years can only be a four digits number', 'wpv-views'  ),
+				'param_month_ilegal' => __( 'Months can only be a number between 1 and 12', 'wpv-views' ),
+				'param_week_ilegal' => __( 'Weeks can only be numbers between 1 and 53', 'wpv-views' ),
+				'param_day_ilegal' => __( 'Days can only be a number between 1 and 31', 'wpv-views' ),
+				'param_hour_ilegal' => __( 'Hours can only be numbers between 0 and 23', 'wpv-views' ),
+				'param_minute_ilegal' => __( 'Minutes can only be numbers between 0 and 59', 'wpv-views' ),
+				'param_second_ilegal' => __( 'Seconds can only be numbers between 0 and 59', 'wpv-views' ),
+				'param_dayofyear_ilegal' => __( 'Days of the year can only be numbers between 1 and 366', 'wpv-views' ),
+				'param_dayofweek_ilegal' => __( 'Days of the week can only be numbers between 1 and 7', 'wpv-views' ),
+				'param_numeric_natural_ilegal' => __( 'This needs to be a non-negative number', 'wpv-views' ),
+				'param_forbidden_wordpress' => __("This is a word reserved by WordPress", 'wpv-views'),
+				'param_forbidden_toolset' => __("This is a word reserved by any of the ToolSet plugins", 'wpv-views'),
+				'param_forbidden_toolset_attr' => __("This is an attribute reserved by any of the ToolSet plugins", 'wpv-views'),
+				'param_forbidden_post_type' => __("There is a post type named like that", 'wpv-views'),
+				'param_forbidden_taxonomy' => __("There is a taxonomy named like that", 'wpv-views'),
+				'parent_type_not_hierarchical' => __("The posts you want to display are not hierarchical, so this filter will not work", 'wpv-views'),
+				'taxonomy_parent_changed' => __("The taxonomy you want to display has changed, so this filter needs some action", 'wpv-views'),
+				'taxonomy_term_changed' => __("The taxonomy you want to display has changed, so this filter needs some action", 'wpv-views')
+			);
+			wp_localize_script( 'views-filters-js', 'wpv_filters_strings', $filters_strings );
+			
+			wp_enqueue_script( 'views-pagination-js' );
 			$pagination_translation = array(
-				'wpv_filter_insert_wrong_cursor_position'		=> __('You need to place your cursor between the [wpv-filter-start] and the [wpv-filter-end] shortcodes', 'wpv-views'),
-				'wpv_layout_insert_wrong_cursor_position'		=> __('You need to place your cursor between the [wpv-layout-start] and the [wpv-layout-end] shortcodes', 'wpv-views'),
+				'close' => __( 'Close', 'wpv-views' ),
 				'wpv_page_pagination_shortcode_definition'	=> __('This is an optional placeholder to wrap the pagination shortcodes. The content of this shortcode will only be displayed if there is more than one page of results.', 'wpv-views'),
 				'wpv_page_num_shortcode_definition'		=> __('Displays the current page number', 'wpv-views'),
 				'wpv_page_total_shortcode_definition'		=> __('Displays the maximum number of pages found by the Views Query.', 'wpv-views'),
@@ -1777,27 +1039,53 @@ class WP_Views_plugin extends WP_Views {
 				'wpv_page_pre_shortcode_definition'		=> __('Display a <em>Previous</em> link to move to the previous page.', 'wpv-views'),
 				'wpv_page_next_shortcode_definition'		=> __('Display a <em>Next</em> link to move to the next page.', 'wpv-views')
 			);
-			wp_localize_script( 'views-redesign-pagination-js', 'wpv_pagination_texts', $pagination_translation );
-			wp_enqueue_script( 'views-redesign-update-js' );
-			wp_enqueue_script( 'views-redesign-layout-template-js' );
+			wp_localize_script( 'views-pagination-js', 'wpv_pagination_texts', $pagination_translation );
+
+			//Enqueue suggestion script
+			wp_enqueue_script( 'views-suggestion_script' );
+			wp_enqueue_style ('views_suggestion_style');
+			wp_enqueue_style ('views_suggestion_style2');
+
+			wp_enqueue_script( 'views-update-js' );
+			
+			wp_enqueue_script( 'views-layout-template-js' );
+			wp_localize_script( 'views-layout-template-js', 'wpv_inline_templates_strings', $inline_content_templates_translations );
+			
 			wp_enqueue_script( 'views-layout-wizard-script' );
-			if( function_exists( 'wp_enqueue_media' ) ) {
+			wp_localize_script( 'views-layout-wizard-script', 'wpv_layout_wizard_strings', $layout_wizard_translations );
+			
+			if( function_exists( 'wp_enqueue_media' ) && !wp_script_is( 'icl_media-manager-js', 'enqueued') ) {
+				wp_enqueue_media();
+				wp_enqueue_script( 'views-redesign-media-manager-js' );
+				wp_localize_script( 'views-redesign-media-manager-js', 'wpv_media_manager', $media_manager_translations );
+			}
+            
+        }
+
+		if ( isset($_GET['page'] ) && $_GET['page']=='view-archives-editor' ) {
+            wp_enqueue_script('suggest');
+			wp_enqueue_script( 'views-archive-editor-js' ); // general js file
+			wp_localize_script( 'views-archive-editor-js', 'wpv_editor_strings', $editor_translations );
+			
+			wp_enqueue_script( 'views-archive-update-js' );
+			
+			wp_enqueue_script( 'views-layout-template-js' );
+			wp_localize_script( 'views-layout-template-js', 'wpv_inline_templates_strings', $inline_content_templates_translations );
+			
+			wp_enqueue_script( 'views-layout-wizard-script' );
+			wp_localize_script( 'views-layout-wizard-script', 'wpv_layout_wizard_strings', $layout_wizard_translations );
+			
+			if( function_exists( 'wp_enqueue_media' ) && !wp_script_is( 'icl_media-manager-js', 'enqueued') ) {
 				wp_enqueue_media();
 				wp_enqueue_script( 'views-redesign-media-manager-js' );
 				wp_localize_script( 'views-redesign-media-manager-js', 'wpv_media_manager', $media_manager_translations );
 			}
 		}
-
-		if ( isset($_GET['page'] ) && $_GET['page']=='view-archives-editor' ) {
-			wp_enqueue_script( 'views-archive-redesign-js' ); // general js file
-			wp_enqueue_script( 'views-redesign-update-archive-js' );
-			wp_enqueue_script( 'views-redesign-layout-template-js' );
-			wp_enqueue_script( 'views-layout-wizard-script' );
-			if( function_exists( 'wp_enqueue_media' ) ) {
-				wp_enqueue_media();
-				wp_enqueue_script( 'views-redesign-media-manager-js' );
-				wp_localize_script( 'views-redesign-media-manager-js', 'wpv_media_manager', $media_manager_translations );
-			}
+		
+		// Update help screen
+		
+		if ( isset($_GET['page'] ) && $_GET['page']=='views-update-help' ) {
+			wp_enqueue_script( 'views-update-help-js' );
 		}
 
 	}

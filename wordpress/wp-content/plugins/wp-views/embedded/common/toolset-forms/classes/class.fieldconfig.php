@@ -1,13 +1,15 @@
 <?php
+
 /**
  *
- * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/Views-1.6.1-Types-1.5.7/toolset-forms/classes/class.fieldconfig.php $
- * $LastChangedDate: 2014-04-16 16:10:26 +0000 (Wed, 16 Apr 2014) $
- * $LastChangedRevision: 21591 $
- * $LastChangedBy: marcin $
+ * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/classes/class.fieldconfig.php $
+ * $LastChangedDate: 2014-12-22 13:08:03 +0000 (Mon, 22 Dec 2014) $
+ * $LastChangedRevision: 30499 $
+ * $LastChangedBy: francesco $
  *
  */
 if (!class_exists("FieldConfig")) {
+
     /**
      * Description of FieldConfig
      *
@@ -27,10 +29,11 @@ if (!class_exists("FieldConfig")) {
         private $options = array();
         private $default_value = '';
         private $validation = array();
-
+        private $attr;
         private $add_time = false;
 
         public function __construct() {
+            
         }
 
         public function setRepetitive($repetitive) {
@@ -45,42 +48,76 @@ if (!class_exists("FieldConfig")) {
             $this->add_time = $addtime;
         }
 
-        public function setDefaultValue($type,$field_arr)
-        {
+        public function setAttr($attr) {
+            $this->attr = $attr;
+        }
+
+        public function getAttr() {
+            return $this->attr;
+        }
+
+        public function setDefaultValue($type, $field_arr) {
             switch ($type) {
-            case 'date':
-                $this->add_time = 'and_time' == $field_arr['data']['date_and_time'];
+                case 'date':
+                    $this->add_time = false;
+                    if (isset($field_arr['data']['date_and_time']) && 'and_time' == $field_arr['data']['date_and_time']) {
+                        $this->add_time = true;
+                    }
                     break;
-            case 'checkboxes':
-                $this->default_value = @$field_arr['attr']['default'][0];
-                break;
+                case 'checkboxes':
+                    if (is_array($field_arr['attr']['default']) && count($field_arr['attr']['default'])) {
+                        $this->default_value = $field_arr['attr']['default'][0];
+                    }
+                    break;
 
-            case 'select':
-                $this->default_value = isset( $field_arr['attr']['actual_value'][0] )? $field_arr['attr']['actual_value'][0] : null;
-                break;
+                case 'select':
+                    if (isset($field_arr['attr']['multiple'])) {
+                        //Multiselect
+                        if (isset($field_arr['value']))
+                            foreach ($field_arr['value'] as $value) {
+                                if (isset($value[0])) {
+                                    $this->default_value = $value;
+                                    break;
+                                }
+                            }
+                    } else
+                        $this->default_value = isset($field_arr['attr']['actual_value'][0]) ? $field_arr['attr']['actual_value'][0] : null;
+                    break;
 
-            case 'radios':
-                $this->default_value = $field_arr['attr']['default'];
-                break;
+                case 'radios':
+                    $this->default_value = $field_arr['attr']['default'];
+                    break;
 
-            default:
-                $this->default_value = "";
-                break;
+                case 'checkbox':
+                    $this->default_value = isset($field_arr['data']['checked']) ? $field_arr['data']['checked'] : false;
+                    /*if (!$this->default_value)
+                        $this->default_value = isset($field_arr['data']['set_value']) && $field_arr['data']['set_value'] == 'y' ? true : false;*/
+                    break;
+
+                default:
+                    $this->default_value = "";
+                    break;
             }
         }
 
-        public function setOptions($name,$type,$values,$attrs) {
+        public function setOptions($name, $type, $values, $attrs) {
             $arr = array();
             switch ($type) {
+                case 'checkbox':
+                    $arr = $attrs;
+                    break;
                 case 'checkboxes':
-                    foreach ($attrs['actual_titles'] as $refvalue=>$title) {
+                    foreach ($attrs['actual_titles'] as $refvalue => $title) {
                         $value = $attrs['actual_values'][$refvalue];
-                        $arr[$refvalue] = array('value'=>$refvalue,'title'=>$title,'checked'=>(bool)$values[$refvalue],'name'=>$name);
+                        $arr[$refvalue] = array('value' => $refvalue, 'title' => $title, 'name' => $name, 'data-value' => $value);
+                        if (in_array($refvalue, $attrs['default'])) {
+                            $arr[$refvalue]['checked'] = true;
+                        }
                     }
                     break;
                 case 'select':
                     $values = $attrs['options'];
-                    foreach ($values as $refvalue=>$title) {
+                    foreach ($values as $refvalue => $title) {
                         $arr[$refvalue] = array(
                             'value' => $refvalue,
                             'title' => $title,
@@ -89,7 +126,7 @@ if (!class_exists("FieldConfig")) {
                     }
                     break;
                 case 'radios':
-                    foreach ($attrs['actual_titles'] as $refvalue=>$title) {
+                    foreach ($attrs['actual_titles'] as $refvalue => $title) {
                         $arr[$refvalue] = array(
                             'value' => $refvalue,
                             'title' => $title,
@@ -98,10 +135,10 @@ if (!class_exists("FieldConfig")) {
                             'types-value' => $attrs['actual_values'][$refvalue],
                         );
                     }
-                break;
+                    break;
                 default:
                     return;
-                break;
+                    break;
             }
             $this->options = $arr;
         }
@@ -113,15 +150,16 @@ if (!class_exists("FieldConfig")) {
                 'type' => $this->getType(),
                 'title' => $this->getTitle(),
                 'options' => $this->getOptions(),
-                'defualt_value' => $this->getDefaultValue(),
+                'default_value' => $this->getDefaultValue(),
                 'description' => $this->getDescription(),
                 'repetitive' => $this->isRepetitive(),
-                /*'name' => $base_name."[".$this->getType()."]",*/
+                /* 'name' => $base_name."[".$this->getType()."]", */
                 'name' => $this->getName(),
                 'value' => $this->getValue(),
                 'add_time' => $this->getAddTime(),
                 'validation' => array(),
                 'display' => $this->getDisplay(),
+                'attribute' => $this->getAttr()
             );
             return $this->config;
         }
@@ -150,8 +188,7 @@ if (!class_exists("FieldConfig")) {
             return $this->title;
         }
 
-        public function getDisplay()
-        {
+        public function getDisplay() {
             return $this->display;
         }
 
@@ -207,10 +244,11 @@ if (!class_exists("FieldConfig")) {
             $this->id = $id;
         }
 
-        public function setDisplay($display)
-        {
+        public function setDisplay($display) {
             $this->display = $display;
         }
+
     }
+
 }
 

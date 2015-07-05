@@ -1,79 +1,5 @@
 <?php
 
-
-function wpv_manage_views_columns($columns) { // DEPRECATED
-	$columns['wpv_query'] = __('Content to load', 'wpv-views');
-	$columns['wpv_filter'] = __('Filter', 'wpv-views');
-	$columns['wpv_display'] = __('Display', 'wpv-views');
-
-	return $columns;
-}
-
-add_filter('manage_edit-view_columns', 'wpv_manage_views_columns');
-
-
-function wpv_manage_view_templates_columns($columns) {
-	$columns['wpv_fields'] = __('Fields used', 'wpv-views');
-	$columns['wpv_default'] = __('How this Content Template is used', 'wpv-views');
-
-	return $columns;
-}
-
-add_filter('manage_edit-view-template_columns', 'wpv_manage_view_templates_columns');
-
-function wpv_manage_views_table_row($column_name, $post_id) {
-	static $quick_edit_removed = false;
-
-	$wpv_options = get_option('wpv_options');
-
-	switch($column_name) {
-		case 'wpv_query': // DEPRECATED
-			$summary = wpv_create_content_summary_for_listing($post_id);
-			echo $summary;
-			break;
-
-		case 'wpv_filter': // DEPRECATED
-			//$wpv_layout_settings = get_post_meta($post_id, '_wpv_layout_settings', true);
-			// var_dump($wpv_layout_settings);
-			$summary = wpv_create_summary_for_listing($post_id);
-			echo $summary; break;
-		case 'wpv_display': // DEPRECATED
-			$wpv_layout_settings = get_post_meta($post_id, '_wpv_layout_settings', true);
-			echo wpv_get_layout_label_by_slug($wpv_layout_settings) ; break;
-		case 'wpv_fields':
-			echo wpv_get_view_template_fields_list($post_id);
-			break;
-		case 'wpv_default':
-			echo wpv_get_view_template_defaults($wpv_options, $post_id);
-			break;
-		default:
-	}
-
-	switch($column_name) { // DEPRECATED
-		case 'wpv_query':
-		case 'wpv_fields':
-
-			// Let's disable the quick edit at this point as well.
-			// This should probaby be done in a JS file but I don't think
-			// we have one for the Views list page.
-			if (!$quick_edit_removed) {
-				?>
-					<script type="text/javascript">
-						jQuery(document).ready(function(){
-							jQuery('.editinline').parent().hide();
-						});
-
-					</script>
-				<?php
-
-				$quick_edit_removed = true;
-			}
-	}
-
-}
-
-add_filter('manage_posts_custom_column', 'wpv_manage_views_table_row', 10, 2);
-
 /**
  *
  * Helper function returning the layout label by slug
@@ -157,9 +83,13 @@ function wpv_get_view_template_defaults($wpv_options, $post_id) { // TODO check 
 	return $result;
 }
 
-function wpv_create_content_summary_for_listing($post_id) { // TODO check if e want to use this or next filter, DEPRECATED for the other NOTE ModuleManager is using one
+function wpv_create_content_summary_for_listing($post_id) {
+    // TODO check if e want to use this or next filter, DEPRECATED for the other NOTE ModuleManager is using one
 
-	$view_settings = get_post_meta($post_id, '_wpv_settings', true);
+    // TODO this is currently being used in Views listing
+
+	global $WP_Views;
+	$view_settings = $WP_Views->get_view_settings( $post_id );
 
 	if (!isset($view_settings['view-query-mode'])) {
 		$view_settings['view-query-mode'] = 'normal';
@@ -181,8 +111,8 @@ function wpv_create_content_summary_for_listing($post_id) { // TODO check if e w
 }
 
 function wpv_create_summary_for_listing($post_id) { // TODO check if e want to use this or previous filter, DEPRECATED for the other NOTE ModuleManager is using one
-
-	$view_settings = get_post_meta($post_id, '_wpv_settings', true);
+	global $WP_Views;
+	$view_settings = $WP_Views->get_view_settings( $post_id );
 
 	$filter_summary = apply_filters('wpv-view-get-summary', '', $post_id, $view_settings);
 	$summary = '';
@@ -220,34 +150,8 @@ function wpv_get_view_template_fields_list($post_id) { // DEPRECATED Victor coul
 
 }
 
-add_filter('admin_init', 'wpv_remove_unnecessary_columns');
-
-function wpv_remove_unnecessary_columns() {
-    add_filter( 'manage_edit-view_columns', 'wpv_view_columns_filter', 10, 1 ); // DEPRECATED
-    add_filter( 'manage_edit-view-template_columns', 'wpv_view_template_columns_filter', 10, 1 );
-}
-
-function wpv_view_columns_filter( $columns ) { // DEPRECATED
-    unset($columns['author']);
-	unset($columns['date']);
-    return $columns;
-}
-
-function wpv_view_template_columns_filter( $columns ) {
-	unset($columns['author']);
-	unset($columns['date']);
-    return $columns;
-}
-
-function views_redesign_function() { // function placeholder while the admin pages are designed // DEPRECATED ?>
-	<div class="wrap">
-	<div id="icon-edit" class="icon32 icon32-posts-view"><br /></div>
-	<h2>this is a test page</h2>
-	</div>
-<?php }
-
 // highlight the proper top level menu - needed when embedding WordPress custom post types edit pages in custom menus
-function wpv_view_templates_menu_fix($parent_file) { // TODO test deprecating this
+function wpv_view_templates_menu_fix($parent_file) { // TODO review this
 	global $current_screen;
 	if ('view-template' == $current_screen->post_type) $parent_file = 'views';
 	return $parent_file;

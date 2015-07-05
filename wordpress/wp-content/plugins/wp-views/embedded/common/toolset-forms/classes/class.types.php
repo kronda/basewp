@@ -2,9 +2,9 @@
 /**
  * Types fields specific
  *
- * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/Views-1.6.1-Types-1.5.7/toolset-forms/classes/class.types.php $
- * $LastChangedDate: 2014-04-16 08:42:22 +0000 (Wed, 16 Apr 2014) $
- * $LastChangedRevision: 21561 $
+ * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/classes/class.types.php $
+ * $LastChangedDate: 2015-02-25 11:07:34 +0000 (Wed, 25 Feb 2015) $
+ * $LastChangedRevision: 31886 $
  * $LastChangedBy: marcin $
  *
  */
@@ -26,7 +26,7 @@ class WPToolset_Types
      * @param type $post_id Post or user ID used for conditional
      * @return array
      */
-    static function filterField($field, $post_id = null)
+    static function filterField($field, $post_id = null, $_post_wpcf = array())
     {
         // Get field settings (as when using get_option('wpcf-fields') from DB)
         $field = self::getConfig( $field );
@@ -68,6 +68,7 @@ class WPToolset_Types
          *
          * Main settings that are returned.
          */
+
         $_field = array(
             'id' => $prefix . $field['id'] . $suffix, // Used as main ID (raw date wpt-id), used to connect conditional relations
             'meta_key' => $prefix . $field['id'], // Used by Types (meta key of field saved to DB)
@@ -81,7 +82,8 @@ class WPToolset_Types
             'name' => isset( $field['form_name'] ) ? $field['form_name'] : "wpcf[{$field['id']}]", // Form element name, default wpcf[$no-prefix-slug]
             'repetitive' => self::isRepetitive( $field ), // Is repetitive?
             'validation' => self::filterValidation( $field ), // Validation settings
-            'conditional' => self::filterConditional( $field, $post_id ), // Conditional settings
+            'conditional' => self::filterConditional( $field, $post_id, $_post_wpcf ), // Conditional settings
+            'placeholder' => isset($field['data']) && isset($field['data']['placeholder'])? $field['data']['placeholder']:null, // HTML5 placeholder
         );
 
         /* Specific field settings
@@ -140,6 +142,7 @@ class WPToolset_Types
         if ( $field['type'] == 'radio' ) {
             $_field['type'] = 'radios';
         }
+
         return $cache[$cache_key] = $_field;
     }
 
@@ -179,10 +182,22 @@ class WPToolset_Types
         if ( isset( $config['data']['validate'] ) ) {
             foreach ( $config['data']['validate'] as $rule => $settings ) {
                 if ( $settings['active'] ) {
+                    // Work out the id so we can get the translated message.
+                    $id = '';
+                    if (isset($config['slug'])) {
+                        $id = $config['slug'];
+                    } else {
+                        // This is on a cred from
+                        // try to find an appropriate id
+                        $id = $config['name'];
+                        if (strpos($id, 'wpcf-') === 0) {
+                            $id = substr($id, 5);
+                        }
+                    }
                     $validation[$rule] = array(
                         'args' => isset( $settings['args'] ) ? array_unshift( $value,
                                         $settings['args'] ) : array($value, true),
-                        'message' => $settings['message']
+                        'message' => self::translate('field ' . $id . ' validation message ' . $rule, stripslashes( $settings['message']))
                     );
                 }
             }
@@ -262,7 +277,7 @@ class WPToolset_Types
      * @param int $post_id Post or user ID to fetch meta data to check against
      * @return array
      */
-    public static function filterConditional($field, $post_id)
+    public static function filterConditional($field, $post_id, $_post_wpcf = array())
     {
         $field = self::getConfig( $field );
         if ( is_null( $field ) ) return array();
@@ -296,21 +311,25 @@ class WPToolset_Types
          */
         $suffix = isset( $field['suffix'] ) ? $field['suffix'] : '';
         $cond = array();
-        $cond_values = array();
         if ( empty( $field['meta_type'] ) ) {
             $field['meta_type'] = 'postmeta';
         }
 
         // Get [values]
-        if ( !empty( $post_id ) ) {
-            $cond_values = $field['meta_type'] == 'usermeta' ? get_user_meta( $post_id ) : get_post_custom( $post_id );
-        }
+        $cond_values = self::getConditionalValues($post_id, $field['meta_type']);
 
-        // Unserialize [values] and do not allow array (take first value from array
-        if ( is_array( $cond_values ) ) {
-            foreach ( $cond_values as $k => &$v ) {
-                $v = maybe_unserialize( $v[0] );
-                $v = self::getStringFromArray($v);
+		if ( function_exists('wpcf_fields_get_field_by_slug') ){
+            // Update the conditional values according to what's being saved.
+            foreach ( $_post_wpcf as $field_slug => $field_value ) {
+                // Get field by slug
+                $field = wpcf_fields_get_field_by_slug( $field_slug );
+                if ( empty( $field ) ) {
+                    continue;
+                }
+
+                $field_value = apply_filters( 'wpcf_fields_type_' . $field['type'] . '_value_save', $field_value, $field, null );
+
+                $cond_values[$field['meta_key']] = $field_value;
             }
         }
 
@@ -320,42 +339,7 @@ class WPToolset_Types
             $custom = $field['data']['conditional_display']['custom'];
 
             // Extract field values ('${$field_name}')
-            $c_fields = WPToolset_Forms_Conditional::extractFields( $custom );
-            $c_values = array();
-
-            // Loop over extracted fields and adjust custom statement
-            foreach ( $c_fields as $c_field_id ) {
-
-                // Get field settings
-                $c_field = self::getConfig( $c_field_id );
-
-                // If it's Types field
-                if ( !empty( $c_field ) ) {
-
-                    // Adjust custom statement
-                    $custom = preg_replace( '/\$' . $c_field_id . '[\s\)]/',
-                            "\${$c_field['meta_key']}{$suffix} ", $custom );
-
-                    // Apply filters from field (that is why we set 'type' property)
-                    wptoolset_form_field_add_filters( $c_field['type'] );
-                    $c_key = $c_field['meta_key'];
-                    if ( isset( $cond_values[$c_key] ) ) {
-                        $c_values[$c_key . $suffix] = apply_filters( 'wptoolset_conditional_value_php',
-                                $cond_values[$c_key], $c_field['type'] );
-                    }
-
-                    // Otherwise do nothing (leave statement as it is and just add [values])
-                    // That allows checking for non-Types field
-                } elseif ( isset( $cond_values[$c_field_id] ) ) {
-                    $c_values[$c_field_id . $suffix] = $cond_values[$c_field_id];
-                }
-            }
-
-            // Set conditional setting
-            $cond = array(
-                'custom' => $custom,
-                'values' => $c_values,
-            );
+            $cond = self::getCustomConditional($custom, $suffix, $cond_values);
 
             // Regular conditional
         } elseif ( !empty( $field['data']['conditional_display']['conditions'] ) ) {
@@ -399,6 +383,66 @@ class WPToolset_Types
         }
         unset( $cond_values, $c_values, $c_field );
         return $cache[$cache_key] = $cond;
+    }
+
+    public static function getConditionalValues($post_id, $meta_type = 'postmeta') {
+        $cond_values = array();
+        if ( !empty( $post_id ) ) {
+            $cond_values = $meta_type == 'usermeta' ? get_user_meta( $post_id ) : get_post_custom( $post_id );
+        }
+
+        // Unserialize [values] and do not allow array (take first value from array
+        if ( is_array( $cond_values ) ) {
+            foreach ( $cond_values as $k => &$v ) {
+                $v = maybe_unserialize( $v[0] );
+                $v = self::getStringFromArray($v);
+            }
+        }
+
+        return $cond_values;
+    }
+
+    public static function getCustomConditional($custom, $suffix = '', $cond_values = array()) {
+        $c_fields = WPToolset_Forms_Conditional::extractFields( $custom );
+        $c_values = array();
+
+        // Loop over extracted fields and adjust custom statement
+        foreach ( $c_fields as $c_field_id ) {
+
+            // Get field settings
+            $c_field = self::getConfig( $c_field_id );
+
+            // If it's Types field
+            if ( !empty( $c_field ) ) {
+
+                // Adjust custom statement
+                $custom = preg_replace( '/\$\(' . $c_field_id . '\)/',
+                        "\$({$c_field['meta_key']}{$suffix})", $custom );
+                $custom = preg_replace( '/\$' . $c_field_id . '[\s\)]/',
+                        "\${$c_field['meta_key']}{$suffix} ", $custom );
+
+                // Apply filters from field (that is why we set 'type' property)
+                wptoolset_form_field_add_filters( $c_field['type'] );
+                $c_key = $c_field['meta_key'];
+                if ( isset( $cond_values[$c_key] ) ) {
+                    $c_values[$c_key . $suffix] = apply_filters( 'wptoolset_conditional_value_php',
+                            $cond_values[$c_key], $c_field['type'] );
+                }
+
+                // Otherwise do nothing (leave statement as it is and just add [values])
+                // That allows checking for non-Types field
+            } elseif ( isset( $cond_values[$c_field_id] ) ) {
+                $c_values[$c_field_id . $suffix] = $cond_values[$c_field_id];
+            }
+        }
+
+        // Set conditional setting
+        $cond = array(
+            'custom' => $custom,
+            'values' => $c_values,
+        );
+
+        return $cond;
     }
 
     /**

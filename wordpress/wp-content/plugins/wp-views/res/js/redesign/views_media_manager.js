@@ -70,7 +70,7 @@ jQuery(document).ready(function($){
 		var media_attachment = wpv_media_frame.state().get('selection').first().toJSON(),
 		filetype = media_attachment.type;
 		if ( filetype == 'image' ) {
-			var size = $('.attachment-display-settings .size').val(),
+			var size = $('.attachment-display-settings .size').val(),// WARNING size might be undefined for some image types, like BMP or TIFF, that do not generate thumbnails
 			only_img_src_allowed_here = [
 				'wpv-pagination-spinner-image',
 				'wpv-dps-spinner-image',
@@ -86,23 +86,41 @@ jQuery(document).ready(function($){
 			align,
 			target_url;
 			if ( $.inArray( window.wpcfActiveEditor, only_img_src_allowed_here ) !== -1 ) {
-				code = media_attachment.sizes[size].url;
+				if ( size ) {
+					code = media_attachment.sizes[size].url;
+				} else {
+					code = media_attachment.url;
+				}
 				$('.js-' + window.wpcfActiveEditor).val('');
-				$('.js-' + window.wpcfActiveEditor + '-preview').attr("src",code);
+				$('.js-' + window.wpcfActiveEditor + '-preview').attr("src",code).show();
 			} else {
 				// Basic img tag options
-				options = {
-					tag:'img',
-					attrs: {
-						src: media_attachment.sizes[size].url
-					},
-					single: true
-				};
+				if ( size ) {
+					options = {
+						tag:'img',
+						attrs: {
+							src: media_attachment.sizes[size].url
+						},
+						single: true
+					};
+				} else {
+					options = {
+						tag:'img',
+						attrs: {
+							src: media_attachment.url
+						},
+						single: true
+					};
+				}
 				if ( media_attachment.hasOwnProperty( 'alt' ) && media_attachment.alt ) {
 					options.attrs.alt = media_attachment.alt;
 				}
-				options.attrs.width = media_attachment.sizes[size].width;
-				options.attrs.height = media_attachment.sizes[size].height;
+				if ( size ) {
+					options.attrs.width = media_attachment.sizes[size].width;
+					options.attrs.height = media_attachment.sizes[size].height;
+				} else {
+					options.attrs.width = 1;
+				}
 				classes = [];
 				align = $('.alignment').val();
 				if ( align == 'none' ) {
@@ -137,8 +155,12 @@ jQuery(document).ready(function($){
 				// Generate the caption shortcode if needed
 				if ( media_attachment.caption ) {
 					shortcode = {};
-					if ( media_attachment.sizes[size].width ) {
-						shortcode.width = media_attachment.sizes[size].width;
+					if (size ) {
+						if ( media_attachment.sizes[size].width ) {
+							shortcode.width = media_attachment.sizes[size].width;
+						}
+					} else {
+						shortcode.width = 1;
 					}
 					if ( align ) {
 						shortcode.align = 'align' + align;

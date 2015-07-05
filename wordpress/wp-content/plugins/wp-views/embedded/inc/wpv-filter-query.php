@@ -1,13 +1,21 @@
 <?php
 
 /**
- * Create the query to return the posts based on the settings
- * in the views query meta box.
- *
- */
+* wpv_filter_get_posts
+*
+* Create the query to return the posts based on the View settings
+*
+* @param $id (integer) The View ID
+*
+* @return $post_query (object) WP_Query instance
+*
+* @since unknown
+*
+* @todo remove extract() calls
+*/
 
-function wpv_filter_get_posts($id) {
-    global $WP_Views, $post, $wplogger,$WPVDebug, $wpdb;
+function wpv_filter_get_posts( $id ) {
+    global $WP_Views, $post, $wplogger, $WPVDebug;
 	
 	$view_settings_defaults = array(
 		'post_type'         => 'any',
@@ -16,15 +24,20 @@ function wpv_filter_get_posts($id) {
 		'paged'             => '1',
 		'posts_per_page'    =>  -1
 	);
-	extract($view_settings_defaults);
+	extract( $view_settings_defaults );
 	
-	$view_settings = $WP_Views->get_view_settings($id);
+	$view_settings = $WP_Views->get_view_settings( $id );
 	$view_settings['view_id'] = $id;
 	
-	extract($view_settings, EXTR_OVERWRITE);
+	extract( $view_settings, EXTR_OVERWRITE );
 
-	if (isset($_GET['wpv_paged']) && isset($_GET['wpv_view_count']) && esc_attr($_GET['wpv_view_count']) == $WP_Views->get_view_count()) {
-		$paged = intval(esc_attr($_GET['wpv_paged']));
+	// Let URL pagination parameters set the page
+	if (
+		isset( $_GET['wpv_paged'] ) 
+		&& isset( $_GET['wpv_view_count'] ) 
+		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
+	) {
+		$paged = intval( esc_attr( $_GET['wpv_paged'] ) );
 	}
     $query = array(
             'posts_per_page'    => $posts_per_page,
@@ -35,24 +48,31 @@ function wpv_filter_get_posts($id) {
 			'ignore_sticky_posts' => true
     );
 
-    if (isset($view_settings['pagination'][0]) && $view_settings['pagination'][0] == 'disable'
+    if (
+		isset( $view_settings['pagination'][0] ) 
+		&& $view_settings['pagination'][0] == 'disable'
     // && isset($view_settings['pagination']['mode']) && $view_settings['pagination']['mode'] == 'paged'
     ) {
         // Show all the posts if pagination is disabled.
         $query['posts_per_page'] = -1;
-    }
-    if (isset($view_settings['pagination']['mode']) && $view_settings['pagination']['mode'] == 'rollover') {
+    } else if (
+		isset( $view_settings['pagination']['mode'] ) 
+		&& $view_settings['pagination']['mode'] == 'rollover'
+	) {
         $query['posts_per_page'] = $view_settings['rollover']['posts_per_page'];
     }
 
 	// Add special check for media (attachments) as their default status in not usually published
-	if (sizeof($post_type) == 1 && $post_type[0] == 'attachment') {
+	if ( 
+		sizeof( $post_type ) == 1 
+		&& $post_type[0] == 'attachment'
+	) {
 		$query['post_status'] = 'any'; // Note this can be overriden by adding a status filter.
 	}
 
-	$WPVDebug->add_log( 'info' , apply_filters('wpv-view-get-content-summary', '', $WP_Views->current_view, $view_settings) , 'short_query' );
+	$WPVDebug->add_log( 'info', apply_filters( 'wpv-view-get-content-summary', '', $WP_Views->current_view, $view_settings ), 'short_query' );
 
-	$WPVDebug->add_log( 'info' , "Basic query arguments\n". print_r($query, true) , 'query_args' );
+	$WPVDebug->add_log( 'info', "Basic query arguments\n". print_r( $query, true ), 'query_args' );
 
 	/**
 	* Filter wpv_filter_query
@@ -70,16 +90,16 @@ function wpv_filter_get_posts($id) {
 
     $query = apply_filters( 'wpv_filter_query', $query, $view_settings, $id );
 
-    $WPVDebug->add_log( 'filters' , "wpv_filter_query\n" . print_r($query, true) , 'filters', 'Filter arguments before the query using <strong>wpv_filter_query</strong>' );
+    $WPVDebug->add_log( 'filters', "wpv_filter_query\n" . print_r( $query, true ), 'filters', 'Filter arguments before the query using <strong>wpv_filter_query</strong>' );
 
-    $post_query = new WP_Query($query);
+    $post_query = new WP_Query( $query );
 
-	$WPVDebug->add_log( 'mysql_query' , $post_query->request , 'posts' , '' , true );
+	$WPVDebug->add_log( 'mysql_query', $post_query->request , 'posts', '', true );
 
-	$WPVDebug->add_log( 'info' , print_r($post_query, true) , 'query_results' , '' , true );
+	$WPVDebug->add_log( 'info', print_r( $post_query, true ), 'query_results', '', true );
 
-	$wplogger->log($post_query->query, WPLOG_DEBUG);
-	$wplogger->log($post_query->request, WPLOG_DEBUG);
+	$wplogger->log( $post_query->query, WPLOG_DEBUG );
+	$wplogger->log( $post_query->request, WPLOG_DEBUG );
 
 	/**
 	* Filter wpv_filter_query_post_process
@@ -97,14 +117,14 @@ function wpv_filter_get_posts($id) {
 
     $post_query = apply_filters( 'wpv_filter_query_post_process', $post_query, $view_settings, $id );
 
-    $WPVDebug->add_log( 'filters' , "wpv_filter_query_post_process\n" . print_r($post_query, true) , 'filters', 'Filter the returned query using <strong>wpv_filter_query_post_process</strong>' );
+    $WPVDebug->add_log( 'filters', "wpv_filter_query_post_process\n" . print_r( $post_query, true ), 'filters', 'Filter the returned query using <strong>wpv_filter_query_post_process</strong>' );
 
     return $post_query;
 }
 
-add_filter('wpv_filter_query', 'wpv_filter_query_compatibility', 99,2);
+add_filter( 'wpv_filter_query', 'wpv_filter_query_compatibility', 99, 2 );
 
-function wpv_filter_query_compatibility($query, $view_settings) {
+function wpv_filter_query_compatibility( $query, $view_settings ) {
 
 	// Relevanssi compatibility
 	if ( isset($view_settings['search_mode'] ) && function_exists( 'relevanssi_prevent_default_request' ) ) {
@@ -133,16 +153,27 @@ function wpv_filter_query_post_in_and_not_in_fix($query, $view_settings) {
 	if ( isset( $query['post__in'] ) && isset( $query['post__not_in'] ) ) {
 		$query['post__in'] = array_diff( (array) $query['post__in'], (array) $query['post__not_in'] );
 		unset( $query['post__not_in'] );
+		if ( empty( $query['post__in'] ) ) {
+			$query['post__in'] = array( '0' );
+		}
 	}
 
 	return $query;
 }
 
-add_filter('wpv_filter_query_post_process', 'wpv_filter_extend_query_for_parametric', 999, 3);
+/**
+* wpv_filter_extend_query_for_parametric_and_counters
+*
+* Creates the additional cached data for parametric search dependency and counters
+*
+* @since 1.6.0
+*/
 
-function wpv_filter_extend_query_for_parametric($post_query, $view_settings, $id ) {
-	remove_filter('wpv_filter_query_post_process', 'wpv_filter_extend_query_for_parametric', 999, 2);
+add_filter( 'wpv_filter_query_post_process', 'wpv_filter_extend_query_for_parametric_and_counters', 999, 3 );
+
+function wpv_filter_extend_query_for_parametric_and_counters( $post_query, $view_settings, $id ) {
 	$dps_enabled = false;
+	$counters_enabled = false;
 	if ( !isset( $view_settings['dps'] ) || !is_array( $view_settings['dps'] ) ) {
 		$view_settings['dps'] = array();
 	}
@@ -153,7 +184,7 @@ function wpv_filter_extend_query_for_parametric($post_query, $view_settings, $id
 		$no_intersection = array();
 		if ( !isset( $controls_per_kind['error'] ) ) {
 		//	$controls_count = array_sum( $controls_per_kind );
-			$controls_count = $controls_per_kind['cf'] + $controls_per_kind['tax'] + $controls_per_kind['pr'];
+			$controls_count = $controls_per_kind['cf'] + $controls_per_kind['tax'] + $controls_per_kind['pr'] + $controls_per_kind['search'];
 			if ( $controls_per_kind['cf'] > 1 && ( !isset( $view_settings['custom_fields_relationship'] ) || $view_settings['custom_fields_relationship'] != 'AND' ) ) {
 				$no_intersection[] = __( 'custom field', 'wpv-views' );
 			}
@@ -171,9 +202,15 @@ function wpv_filter_extend_query_for_parametric($post_query, $view_settings, $id
 			$dps_enabled = false;
 		}
 	}
+	if ( !isset( $view_settings['filter_meta_html'] ) ) {
+		$view_settings['filter_meta_html'] = '';
+	}
+	if ( strpos( $view_settings['filter_meta_html'], '%%COUNT%%' ) !== false ) {
+		$counters_enabled = true;
+	}
 	
 	global $WP_Views;
-	if ( !$dps_enabled ) {
+	if ( !$dps_enabled && !$counters_enabled ) {
 		// Set the force value
 		$WP_Views->set_force_disable_dependant_parametric_search( true );
 		return $post_query;
@@ -339,13 +376,31 @@ function wpv_filter_extend_query_for_parametric($post_query, $view_settings, $id
 function wpv_custom_cache_metadata( $id_posts = array(), $f_data = array() ) {
 	$f_fields = ( isset( $f_data['cf'] ) ) ? $f_data['cf'] : array();
 	$f_taxes = ( isset( $f_data['tax'] ) ) ? $f_data['tax'] : array();
-	// First, the post_meta
 	$cache_post_meta = array();
+	// Sanitize $id_posts
+	// It usually comes from a WP_Query, but still
+	$id_posts = array_map( 'esc_attr', $id_posts );
+	$id_posts = array_map( 'trim', $id_posts );
+	// is_numeric does sanitization
+	$id_posts = array_filter( $id_posts, 'is_numeric' );
+	$id_posts = array_map( 'intval', $id_posts );
+	// First, the post_meta
 	if ( !empty( $f_fields ) && !empty( $id_posts ) ) {
 		global $wpdb;
-		$id_list = join( ',', $id_posts );
-		$f_fields_list = implode( "','", $f_fields );
-		$meta_list = $wpdb->get_results( "SELECT post_id, meta_key, meta_value FROM {$wpdb->postmeta} WHERE post_id IN ({$id_list}) AND meta_key IN ('{$f_fields_list}') ORDER BY post_id ASC", ARRAY_A );
+		$id_list = implode( ',', $id_posts );
+		$f_fields_count = count( $f_fields );
+		$f_fields_placeholders = array_fill( 0, $f_fields_count, '%s' );
+		$meta_list = $wpdb->get_results( 
+			$wpdb->prepare(
+				"SELECT post_id, meta_key, meta_value 
+				FROM {$wpdb->postmeta} 
+				WHERE post_id IN ({$id_list}) 
+				AND meta_key IN (" . implode( ",", $f_fields_placeholders ) . ") 
+				ORDER BY post_id ASC", 
+				$f_fields
+			),
+			ARRAY_A 
+		);
 		if ( !empty($meta_list) ) {
 			foreach ( $meta_list as $metarow) {
 				$mpid = intval($metarow['post_id']);
@@ -369,14 +424,19 @@ function wpv_custom_cache_metadata( $id_posts = array(), $f_data = array() ) {
 	$cache_post_taxes = array();
 	if ( !empty( $f_taxes ) && !empty( $id_posts ) ) {
 		$terms = wp_get_object_terms( $id_posts, $f_taxes, array('fields' => 'all_with_object_id') );
+		if ( is_wp_error( $terms ) ) {
+			$terms = array();
+		}
 		$object_terms = array();
-		foreach ( (array) $terms as $term )
+		foreach ( (array) $terms as $term ) {
 			$object_terms[$term->object_id][$term->taxonomy][$term->term_id] = $term;
+		}
 		foreach ( $id_posts as $id_needed ) {
 			foreach ( $f_taxes as $taxonomy ) {
-				if ( ! isset($object_terms[$id_needed][$taxonomy]) ) {
-					if ( !isset($object_terms[$id_needed]) )
+				if ( ! isset( $object_terms[$id_needed][$taxonomy] ) ) {
+					if ( ! isset( $object_terms[$id_needed] ) ) {
 						$object_terms[$id_needed] = array();
+					}
 					$object_terms[$id_needed][$taxonomy] = array();
 				}
 			}

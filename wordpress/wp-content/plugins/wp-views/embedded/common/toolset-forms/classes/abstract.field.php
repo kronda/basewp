@@ -25,6 +25,7 @@ abstract class FieldAbstract {
     abstract public function getName();
     abstract public function getType();
     abstract public function getValue();
+    abstract public function getAttr();
     abstract public function getTitle();
     abstract public function getDescription();    
     abstract public function getData();

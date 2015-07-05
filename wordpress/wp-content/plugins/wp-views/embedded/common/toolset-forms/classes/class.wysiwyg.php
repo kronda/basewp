@@ -6,29 +6,53 @@ require_once 'class.textarea.php';
  *
  * @author Srdjan
  *
- * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/Views-1.6.1-Types-1.5.7/toolset-forms/classes/class.wysiwyg.php $
- * $LastChangedDate: 2014-04-14 14:17:33 +0000 (Mon, 14 Apr 2014) $
- * $LastChangedRevision: 21441 $
+ * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/classes/class.wysiwyg.php $
+ * $LastChangedDate: 2014-10-23 18:02:22 +0000 (Thu, 23 Oct 2014) $
+ * $LastChangedRevision: 28231 $
  * $LastChangedBy: marcin $
  *
  */
 class WPToolset_Field_Wysiwyg extends WPToolset_Field_Textarea
 {
-
     protected $_settings = array('min_wp_version' => '3.3');
 
     public function metaform()
     {
+
+        $attributes = $this->getAttr();
         $form = array();
+        $markup = '';
+        if ( is_admin() ) {
+            $markup .= '<div class="form-item form-item-markup">';
+            $markup .= sprintf( '<label class="wpt-form-label wpt-form-textfield-label">%s</label>', $this->getTitle() );
+        }
+        $markup .= stripcslashes($this->getDescription());
+        $markup .= $this->_editor($attributes);
+        if ( is_admin() ) {
+            $markup .= '</div>';
+        }
         $form[] = array(
             '#type' => 'markup',
-            '#markup' => $this->getTitle() . $this->getDescription() . $this->_editor(),
+            '#markup' => $markup
         );
         return $form;
     }
 
-    protected function _editor()
+    protected function _editor(&$attributes)
     {
+
+        if (isset($attributes['readonly'])&&$attributes['readonly']=='readonly') {
+            add_filter( 'tiny_mce_before_init',  array(&$this, 'tiny_mce_before_init_callback'));
+        }
+
+        //EMERSON: Rewritten to set do_concat to TRUE so WordPress won't echo styles directly to the browser
+        //This will fix a lot of issues as WordPress will not be echoing content to the browser before header() is called
+        //This fix is important so we will not be necessarily adding ob_start() here in this todo:
+        //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/185336518/comments#282283111
+        //Using ob_start in that code will have some side effects of some styles from other plugins not being properly loaded.
+
+        global $wp_styles;
+        $wp_styles->do_concat=TRUE;
         ob_start();
         wp_editor( $this->getValue(), $this->getId(),
             array(
@@ -42,9 +66,20 @@ class WPToolset_Field_Wysiwyg extends WPToolset_Field_Textarea
                 'teeny' => false, // output the minimal editor config used in Press This
                 'dfw' => false, // replace the default fullscreen with DFW (needs specific DOM elements and css)
                 'tinymce' => true, // load TinyMCE, can be used to pass settings directly to TinyMCE using an array()
-                'quicktags' => true // load Quicktags, can be used to pass settings directly to Quicktags using an array()
+                'quicktags' => true // load Quicktags, can be used to pass settings directly to Quicktags using an array(),
             ) );
         return ob_get_clean() . "\n\n";
+        $wp_styles->do_concat=FALSE;
+   }
+
+    /*RICCARDO: removed anonymous function for retrocompatibility */
+    public function tiny_mce_before_init_callback($args)
+    {
+        // do you existing check for published here
+        if ( 1 == 1 )
+            $args['readonly'] = 1;
+
+        return $args;
     }
 
 }

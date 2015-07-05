@@ -1,77 +1,150 @@
-// ID Close and save
+/**
+* Views ID Filter GUI - script
+*
+* Adds basic interaction for the ID Filter
+*
+* @package Views
+*
+* @since 1.7.0
+*/
 
-var wpv_filter_id_selected = jQuery('.js-filter-id-list input, .js-filter-id-list select').serialize();
 
-jQuery(document).on('click', '.js-wpv-filter-id-edit-open', function(){ // rebuild the list of the current checked values
-	wpv_filter_id_selected = jQuery('.js-filter-id-list input, .js-filter-id-list select').serialize();
-});
+var WPViews = WPViews || {};
 
-jQuery(document).on('change keyup input cut paste', '.js-filter-id-list input, .js-filter-id-list select', function() { // watch on inputs change
-	jQuery(this).removeClass('filter-input-error');
-	jQuery('.js-wpv-filter-id-edit-ok').prop('disabled', false);
-	wpv_clear_validate_messages('.js-filter-id');
-	if ( wpv_filter_id_selected != jQuery('.js-filter-id-list input, .js-filter-id-list select').serialize() ) {
-		jQuery('.js-wpv-filter-id-edit-ok').removeClass('button-secondary').addClass('button-primary').addClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-id-edit-ok').data('save'));
-		setConfirmUnload(true);
-	} else {
-		jQuery('.js-wpv-filter-id-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-id-edit-ok').data('close'));
-		jQuery('.js-wpv-filter-id-edit-ok').parent().find('.unsaved').remove();
-		if (jQuery('.js-wpv-section-unsaved').length < 1) {
-			setConfirmUnload(false);
+WPViews.IDFilterGUI = function( $ ) {
+	
+	var self = this;
+	
+	self.view_id = $('.js-post_ID').val();
+	
+	self.icon_edit = '<i class="icon-chevron-up"></i>&nbsp;&nbsp;';
+	self.icon_save = '<i class="icon-ok"></i>&nbsp;&nbsp;';
+	self.spinner = '<span class="spinner ajax-loader"></span>&nbsp;&nbsp;';
+	
+	self.post_row = '.js-wpv-filter-row-post-id';
+	self.post_options_container_selector = '.js-wpv-filter-post-id-options';
+	self.post_summary_container_selector = '.js-wpv-filter-post-id-summary';
+	self.post_edit_open_selector = '.js-wpv-filter-post-id-edit-open';
+	self.post_close_save_selector = '.js-wpv-filter-post-id-edit-ok';
+	
+	self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+	
+	//--------------------
+	// Events for ID
+	//--------------------
+	
+	// Open the edit box and rebuild the current values; show the close/save button-primary
+	// TODO maybe the show() could go to the general file
+	
+	$( document ).on( 'click', self.post_edit_open_selector, function() {
+		self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+		$( self.post_close_save_selector ).show();
+		$( self.post_row ).addClass( 'wpv-filter-row-current' );
+	});
+	
+	// Track changes in options
+	
+	$( document ).on( 'change keyup input cut paste', self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select', function() {
+		$( this ).removeClass( 'filter-input-error' );
+		$( self.post_close_save_selector ).prop( 'disabled', false );
+		WPViews.query_filters.clear_validate_messages( self.post_row );
+		if ( self.post_current_options != $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize() ) {
+			$( self.post_close_save_selector )
+				.addClass('button-primary js-wpv-section-unsaved')
+				.removeClass('button-secondary')
+				.html(
+					self.icon_save + $( self.post_close_save_selector ).data('save')
+				);
+			setConfirmUnload( true );
+		} else {
+			$( self.post_close_save_selector )
+				.addClass('button-secondary')
+				.removeClass('button-primary js-wpv-section-unsaved')
+				.html(
+					self.icon_edit + $( self.post_close_save_selector ).data('close')
+				);
+			$( self.post_close_save_selector )
+				.parent()
+					.find( '.unsaved' )
+					.remove();
+			if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
+				setConfirmUnload( false );
+			}
 		}
-	}
-});
-
-jQuery(document).on('click', '.js-wpv-filter-id-edit-ok', function() {
-	jQuery(this).parent().find('.unsaved').remove();
-	if (wpv_filter_id_selected == jQuery('.js-filter-id-list input, .js-filter-id-list select').serialize() ) {
-		wpv_close_filter_row('.js-filter-id');
-	} else {
-		var valid = wpv_validate_filter_inputs('.js-filter-id');
-		if (valid) {
-			var update_message = jQuery(this).data('success'),
-				unsaved_message = jQuery(this).data('unsaved'),
-				nonce = jQuery(this).data('nonce'),
-				spinnerContainer = jQuery('<div class="spinner ajax-loader">').insertAfter(jQuery(this)).show(),
-				data_view_id = jQuery('.js-post_ID').val();
-			wpv_filter_id_selected = jQuery('.js-filter-id-list input, .js-filter-id-list select').serialize();
-			var data = {
-				action: 'wpv_filter_id_update',
-				id: data_view_id,
-				filter_id: wpv_filter_id_selected,
-				wpnonce: nonce
-			};
-			jQuery.post(ajaxurl, data, function(response) {
-				if ( (typeof(response) !== 'undefined') ) {
-					if (response != 0) {
-						jQuery('.js-wpv-filter-id-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-id-edit-ok').data('close'));
-						if (jQuery('.js-wpv-section-unsaved').length < 1) {
-							setConfirmUnload(false);
+	});
+	
+	// Save filter options
+	
+	$( document ).on( 'click', self.post_close_save_selector, function() {
+		var thiz = $( this );
+		WPViews.query_filters.clear_validate_messages( self.post_row );
+		if ( self.post_current_options == $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize() ) {
+			WPViews.query_filters.close_filter_row( self.post_row );
+			thiz.hide();
+		} else {
+			var valid = WPViews.query_filters.validate_filter_options( '.js-filter-post-id' );
+			if ( valid ) {
+				// update_message = thiz.data('success');
+				// unsaved_message = thiz.data('unsaved');
+				var action = thiz.data( 'saveaction' ),
+				nonce = thiz.data('nonce'),
+				spinnerContainer = $( self.spinner ).insertBefore( thiz ).show(),
+				error_container = thiz
+					.closest( '.js-filter-row' )
+						.find( '.js-wpv-filter-toolset-messages' );
+				self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+				var data = {
+					action: action,
+					id: self.view_id,
+					filter_options: self.post_current_options,
+					wpnonce: nonce
+				};
+				$.post( ajaxurl, data, function( response ) {
+					if ( response.success ) {
+						$( self.post_close_save_selector )
+							.addClass('button-secondary')
+							.removeClass('button-primary js-wpv-section-unsaved')
+							.html( 
+								self.icon_edit + $( self.post_close_save_selector ).data( 'close' )
+							);
+						if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
+							setConfirmUnload( false );
 						}
-						jQuery('.js-wpv-filter-id-summary').html(response);
-						jQuery('.js-wpv-filter-id-summary').append('<span class="updated toolset-alert toolset-alert-success"><i class="icon-check"></i> ' + update_message + '</span>');
-						setTimeout(function(){
-							jQuery('.js-wpv-filter-id-summary .updated').fadeOut('fast');
-						}, 2000);
-						wpv_close_filter_row('.js-filter-id');
+						$( self.post_summary_container_selector ).html( response.data.summary );
+						WPViews.query_filters.close_and_glow_filter_row( self.post_row, 'wpv-filter-saved' );
 					} else {
-						console.log( "Error: WordPress AJAX returned " + response );
+						WPViews.view_edit_screen.manage_ajax_fail( response.data, error_container );
 					}
-				} else {
-					console.log( "Error: AJAX returned ", response );
-				}
-
-			})
-			.fail(function(jqXHR, textStatus, errorThrown) {
-				console.log( "Error: ", textStatus, errorThrown );
-			})
-			.always(function() {
-				spinnerContainer.remove();
-			});
+				}, 'json' )
+				.fail( function( jqXHR, textStatus, errorThrown ) {
+					console.log( "Error: ", textStatus, errorThrown );
+				})
+				.always( function() {
+					spinnerContainer.remove();
+					thiz.hide();
+				});
+			}
 		}
-	}
-});
+	});
+	
+	// Remove ID filter
+	
+	$( document ).on( 'click', self.post_row + ' .js-wpv-filter-remove', function() {
+		self.post_current_options = '';
+	});
+	
+	//--------------------
+	// Init
+	//--------------------
+	
+	self.init = function() {
+		
+	};
+	
+	self.init();
 
-jQuery(document).on('click', '.js-filter-id .js-filter-remove', function(){
-	wpv_filter_id_selected = '';
+};
+
+jQuery( document ).ready( function( $ ) {
+    WPViews.id_filter_gui = new WPViews.IDFilterGUI( $ );
 });

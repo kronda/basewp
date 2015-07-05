@@ -47,6 +47,22 @@ span.toolset-alert {
 		top: 9px;
 		right: 5px;
 		color: #999;
+        cursor:pointer;
+	}
+	
+	.toolset-alert .button {
+		text-shadow: none;
+	}
+	
+	.toolset-alert .toolset-rounded-icon {
+		width: 25px;
+		height: 25px;
+		margin-right: 10px;
+		line-height: 25px;
+		text-align: center;
+		color: #fff;
+		background: #c09853;
+		border-radius: 50%;
 	}
 
 .toolset-alert-success {
@@ -58,6 +74,10 @@ span.toolset-alert {
 	.toolset-alert-success .toolset-alert-header {
 	 	color: #468847;
 	}
+	
+	.toolset-alert-success .toolset-rounded-icon {
+		background: #468847;
+	}
 
 .toolset-alert-error {
 	border-color: #eed3d7;
@@ -67,6 +87,10 @@ span.toolset-alert {
 
 	.toolset-alert-error .toolset-alert-header {
 	 	color: #b94a48;
+	}
+	
+	.toolset-alert-error .toolset-rounded-icon {
+		background: #b94a48;
 	}
 
 .toolset-alert-info {
@@ -78,34 +102,30 @@ span.toolset-alert {
 	.toolset-alert-info .toolset-alert-header {
 		color: #3a87ad;
 	}
+	
+	.toolset-alert-info .toolset-rounded-icon {
+		background: #3a87ad;
+	}
 
 /* Explanation messages */
 .toolset-help {
-	min-height: 140px;
-	border-color: #d2e9e7;
-	background: #f6fafa;
-	background: -moz-linear-gradient(top,  #f6fafa 0%, #eff6f6 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6fafa), color-stop(100%,#eff6f6));
-	background: -webkit-linear-gradient(top,  #f6fafa 0%,#eff6f6 100%);
-	background: -o-linear-gradient(top,  #f6fafa 0%,#eff6f6 100%);
-	background: -ms-linear-gradient(top,  #f6fafa 0%,#eff6f6 100%);
-	background: linear-gradient(to bottom,  #f6fafa 0%,#eff6f6 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6fafa', endColorstr='#eff6f6',GradientType=0 );
+	display: table;
+	width: 100%;
+	background: #fff;
+	border: none;
 }
-/*.wpv-section-title + .toolset-help {
-	margin-top: 0;
-	border-top: 0;
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
-}*/
+
 .js-show-toolset-message {
 	display: none;
 }
 
 	.toolset-help-content {
-		padding: 15px 160px 15px 15px;
-		min-height: 105px;
+		display: table-cell;
+		vertical-align: middle;
+		padding: 15px 25px 15px 180px;
+		height: 135px;
 		color: #4f4f4f;
+		border: solid 1px #cdcdcd;
 	}
 
 		.toolset-help-content a {
@@ -134,49 +154,46 @@ span.toolset-alert {
 		}
 		.toolset-help-content .btn {
 			margin: 0 10px 0 0;
-			padding: 0 10px;
+			padding: 4px 10px;
 			border: 0;
-			border-radius: 15px;
+			border-radius: 4px;
 			background: #11a99b;
 			color: #fff;
 			text-decoration: none;
 			text-shadow: none;
 			font-weight: bold;
 		}
+		
+		.toolset-help-content .btn:hover {
+			background: #008C7D;
+		}
 
 		.toolset-help-content .toolset-help-content-toolbar {
-			margin: 20px 0 0 0;
+			margin: 20px 0 10px 0;
 		}
 
 	.toolset-help-sidebar {
 		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		width: 145px;
-		border-left: 1px solid #d2e9e7;
-		background: -moz-linear-gradient(top,  #e5f4f3 0%, #dff1f0 100%);
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5f4f3), color-stop(100%,#dff1f0));
-		background: -webkit-linear-gradient(top,  #e5f4f3 0%,#dff1f0 100%);
-		background: -o-linear-gradient(top,  #e5f4f3 0%,#dff1f0 100%);
-		background: -ms-linear-gradient(top,  #e5f4f3 0%,#dff1f0 100%);
-		background: linear-gradient(to bottom,  #e5f4f3 0%,#dff1f0 100%);
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5f4f3', endColorstr='#dff1f0',GradientType=0 );
+		top: 1px;
+		left: 1px;
+		bottom: 1px;
+		width: 144px;
+		display: table-cell;
+		text-align: center;
+		vertical-align: middle;
+		background: url('../img/icon-help-message.png') center center no-repeat #333;
+		box-shadow: inset 0 0 15px #111;
 	}
-		.toolset-help-sidebar-ico {
-			margin: 20px auto 0 auto;
-			width: 93px;
-			height: 83px;
-			background: url('../img/icon-help-message.png') center center no-repeat;
-			vertical-align: middle;
+		.toolset-help-sidebar .toolset-help-sidebar-ico {
+			
 		}
 
 	.toolset-help-footer {
 		position: relative;
 		z-index: 1;
 		padding: 5px;
-		border-top: 1px solid #d2e9e7;
-		background: #dff1f0;
+		border-top: 1px solid #cdcdcd;
+		background: #fff;
 		text-align: right;
 	}
 
@@ -185,10 +202,26 @@ span.toolset-alert {
 		}
 
 
-	.toolset-help .icon-remove-sign {
+	.toolset-help .icon-remove-sign,
+	.toolset-help .icon-remove {
 		position: absolute;
-		top: -10px;
-		right: -8px;
-		color: #333;
-		font-size: 22px;
+		top: 0;
+		right: 0;
+		color: #999;
+		opacity: 1;
+		background: #fff;
+		border: solid 1px #cdcdcd;
+		padding: 2px 4px;
+		font-size: 16px;
+		cursor: pointer;
+	}
+	
+	.toolset-help .icon-remove-sign:hover,
+	.toolset-help .icon-remove:hover {
+		background: #b94a48;
+		color: #fff;
+	}
+	
+	.toolset-help code {
+		display: inline-block;
 	}

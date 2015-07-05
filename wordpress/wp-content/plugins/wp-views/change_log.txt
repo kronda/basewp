@@ -1,8 +1,228 @@
 -------------------------------------------------------------------------------------------------------------------
+Views 1.8 aka R2-D2
+	- Added third-party theme frameworks integration.
+	
+	- Added a query filter by post date.
+	
+	- Added a GUI for the Views Embedded plugin.
+	
+	- Added a new API function - is_wpv_content_template_assigned.
+	
+	- Added a new API function - is_wpv_wp_archive_assigned.
+	
+	- Added a shortcut, Ctrl+S, to save sections containing editors in Views and WordPress Archives edit screens.
+	
+	- Added a new shortcode - wpv-login-form.
+	
+	- Added a new shortcode - wpv-archive-title.
+	
+	- Added support for custom statuses to the related Views query filter.
+	
+	- Improved the Views Settings page.
+	
+	- Improved the feedback when adding or editing items on the Filter editor of a View related to parametric search.
+	
+	- Improved the AJAX error management when dealing with auto-save in Views and WordPress Archives edit screens.
+	
+	- Improved the export/import workflow.
+	
+	- Improved the compatibility with WordPress 4.1 related to meta_query entries for custom fields and sorting by meta values.
+	
+	- Improved the compatibility with WordPress 4.2 related to term splitting.
+	
+	- Improved the compatibility with WordPress 4.2 related to cache objects for taxonomies.
+	
+	- Improved the compatibility with WordPress 4.2 related to accessing the global $wp_filter.
+	
+	- Changed the Google Maps script register handler for better third-party compatibility.
+	
+	- Fixed an issue related to filtering by custom field values containing a plus sign.
+	
+	- Fixed an issue related to filtering by Types checkboxes fields - extended support for complex queries in WordPress 4.1+.
+	
+	- Fixed an issue related to multiselect items on a parametric search - avoid force selecting the first option by default.
+	
+	- Cleaned some deprecated code.
+	
+	- Updated the CodeMirror script to version 5.0.0.
+	
+
+-------------------------------------------------------------------------------------------------------------------
+Views 1.7 aka Zaphod Beeblebrox
+	- Improved the workflow for inserting a parametric search using the V icon popup.
+	
+	- Improved the workflow for inserting a parametric search using the WP Views Filter widget.
+	
+	- Improved screen options for Views and WordPress Archives edit screens - now they are saved automatically.
+	
+	- Added a setting to the screen options to hide the query filters section - hide it by default for parametric Views.
+	
+	- Improved the Views and WordPress Archive edit screens: sections without a textarea are now saved automatically.
+	
+	- Improved the Query filters section of a View: better styles, better performance, each query filter is now defined as a completely independent class.
+	
+	- Improved the parametric search settings section - now there are 3 basic options and another one to define the settings manually.
+	
+	- Improved spinner settings for parametric search - now all their settings are defined in the shortcode.
+	
+	- Revamped the Layout Wizard dialog and workflow.
+	
+	- Normalized GUI for custom CSS and JS textareas in Views, Content Templates and WordPress Archives edit screens.
+	
+	- Added options to use buttons instead of inputs as HTML tags for submit and clear elements in a parametric search.
+	
+	- Added a custom callback to be executed before the AJAX request of a parametric search - we already had callbacks executed before and after loading the new results.
+	
+	- Added a new mode to the taxonomy parent filter: parent set by the current term in a WordPress archive loop.
+	
+	- Reordered Views and WordPress Archives toolbars buttons - added hints on specific buttons when they provide needed functionalities.
+	
+	- Added quicktags to all Views textareas.
+	
+	- Added formatting instructions to Views textareas.
+	
+	- Added sorting to manually added values on a parametric search filter by a custom field.
+	
+	- Added highlighting when inserting a shortcode into a textarea using the GUI.
+	
+	- Revamped the inline Content Template section for Views and WordPress Archives.
+	
+	- Added wpv-index=odd|even options for zebra styling of Views output.
+	
+	- Added a shortcode wpv-taxonomy-id that returns the term ID in Views listing taxonomy terms.
+	
+	- Improved the management of admin notices.
+	
+	- Disabled the Distraction Free Writing button on Content Template edit screens.
+	
+	- Fixed the use of manual added values on a parametric search filter by a custom field when one value is empty.
+	
+	- Fixed the default date in datepickers in parametric searches: if that value was not set, make it default to empty.
+	  https://wp-types.com/forums/topic/parametric-datepicker-starts-with-date-already-can-it-start-cleared/
+	  https://wp-types.com/forums/topic/parametric-datepicker-starts-with-date-already/
+	  
+	- Fixed a bug when filtering by a taxonomy using a shortcode attribute and passing a non existing value.
+	  https://wp-types.com/forums/topic/passing-arguments-to-views-wrong-argument-display-all/
+	  
+	- Fixed a bug when filtering by post IDs using an URL parameter and it has an empty value.
+	  https://wp-types.com/forums/topic/how-to-search-byfor-id/
+	
+	- Fixed a problem with custom functions inside conditionals: wpv-if shortcodes executed after a View may inherit settings from it but without needed data.
+	
+	- Fixed a problem about functions used inside wpv-if conditional shortcodes: added support for Views listing users, adjusted default values to match the ones in our documentation, prevented loading some data when no View was being displayed.
+	
+	- Fixed a problem with assets loaded in the frontend when is_ssl() is false but FORCE_SSL_ADMIN is true.
+	
+	- Fixed a problem with wpv-post-body shortcodes used inside wpv-if conditionals.
+	  http://wp-types.com/forums/topic/urgent-after-updating-content-templatesviews-are-broken/
+	
+	- Fixed a problem with AJAX pagination on sites pointing to a folder and installed in a subfolder.
+	  http://wp-types.com/forums/topic/unable-to-find-wpv-ajax-pagination-folder/
+	  
+	- Fixed a compatibility issue with Layouts: some filters were producing PHP errors in Views previews (basically, because they needed data from current page, and it was not set).
+	
+	- Fixed trashing Views and WordPress Archives from their edit screens - prevent unsaved sections from stopping the redirect to listing screens after trashing.
+	
+	- Fixed a small styling incompatibility between the Views datepicker filter and Bootstrap 3.
+	
+	- Fixed an issue about parametric search inputs coming from Types checkboxes fields.
+	
+	- Fixed an issue about automatic AJAX pagination.
+	
+	- Fixed the Views widgets so they do not offer to display trashed Views.
+	
+	- Fixed the preview of the custom spinner used in pagination.
+	
+	- Cleaned some deprecated code: media management.
+	
+	- Updated select2 script and changed its name from "views-select2-script" to just "select2".
+	
+	- Updated CodeMirror script.
+
+-------------------------------------------------------------------------------------------------------------------
+Views 1.6.4
+    - Added the clear date field values in a parametric search.
+	
+    - Fixed a problem that the wpv-post-url and wpv-post-link shortcodes were having with WPML slug translation.
+	  http://wp-types.com/forums/topic/wpv-post-url-doesnt-generate-url-when-wpml-string-translation-is-activated/
+	  
+    - Fixed the wpv-control shortcodes which should be useful to create generic inputs on a form.
+	  http://wp-types.com/forums/topic/vpv-control-not-working-anymore-after-update/
+	  
+    - Fixed a problem with a parameter needed for creating a layout using the wizard by adding a default value for it.
+	
+    - Fixed the compatibility of wpv-post-body shortcode with WPML post switcher for availability in other languages.
+	
+    - Fixed a problem where editing a filter by a Types custom field resulted in a duplicated filter.
+	
+    - Added a fix to avoid problems with plugins setting ajaxSetup data defaults that can mess up our pagination script.
+	  http://wp-types.com/forums/topic/ajax-pagination-does-not-work-with-wc-german-market/
+	  
+    - Fixed the PHP errors that were caused by the “filter by post relationship” under some circumstances.
+	  http://wp-types.com/forums/topic/php-warning-from-parent-searching-warning-explode-expects-parameter-2/
+	  
+    - Fixed a problem which prevented comparing to empty values when filtering by custom fields (if not using URL parameters or shortcode attributes).
+	  http://wp-types.com/forums/topic/filter-by-image-field-not-empty/
+	  http://wp-types.com/forums/topic/filtering-no-longer-works/
+
+-------------------------------------------------------------------------------------------------------------------
+Views 1.6.3
+    - Fix: improve datepicker.css so styling only applies to the datepicker popup
+	
+-------------------------------------------------------------------------------------------------------------------
+Views 1.6.2
+	- New: create a standalone plugin out of the Embedded Views directory
+		* add read-only summary pages for every Views object, accessible when this new plugin is activated
+		* move a bunch of files to the embedded side (CodeMirror, summaries, admin messages, CSS files, etc)
+	- New: add option to Views listing users so we can get users of any role
+	- New: filter by post author: set by the author of the current page
+	- New: admin message when a View lists posts but no post type has been selected
+	- New: button-primary-toolset styling button
+	- New: execute an action before and after each element on a View loop
+	- Parametric search:
+		* add counters to each option of each input based on a new format="..." attribute using %%NAME%% and %%COUNT%% as placeholders
+		* remove one remove_filter call that broke dependency when the relevant View was not the first on a page
+		* fix post status arguments: when querying inside an AJAX call, they should not return protected statuses by default
+		* save a meta_query filter when the filter by custom field uses the IN comparison and one of the passed values is empty (meaning we should return all results)
+		* fix filters getting multiple values (multi-select and checkboxes) and AJAX pagination
+		* fix filter by post relationship: sometimes, the default value is 0 and not array(0)
+		* fix adding a filter by a custom field created outside Types
+		* fix filters by a taxonomy on multisite
+		* stop rollover if set when selecting an option of the form
+		* fix nested Views
+	- Fix: trashing flow for Content Templates and WordPress Archives is cleaner and leaves no traces
+	- Fix: Views Media Manager can now handle BMP and TIFF files
+	- Fix: normalize the output so it will return all post types in case no one was selected
+	- Fix: security issue - force users to register valid functions used inside wpv-if evaluations
+	- Fix: security issue - do not use serialize/unserialize in Views AJAX pagination
+	- Fix: better manage functions returning a numeric 1 inside wpv-if evaluations
+	- Fix: move automatic registering of strings for WPML to the init hook, as before that the current user capabilities are not reliable
+	- Fix: do not use -1 as the ID in post__in argument to get an empty query: use a 0 instead
+	- Fix: do not use -1 as the ID in include argument to get an empty users query: use a 0 instead
+	- Fix: prevent deprecated methods when checking current user capabilities for displaying the Views debug popup
+	- Optimization: better create View popup
+	- Optimization: better parametric search add filter popup
+	- Optimization: better summary messages
+	- Compatibility: Layouts
+		* fix CodeMirror on the inline Content Template editor
+		* fix CodeMirror on all the HTML textareas on Internet Explorer
+	- Compatibility: Module Manager
+		* link to read-only summaries or edit screens on installed items in the Module Library tab
+	- Compatibility: WooCommerce
+		* fix add to cart button URL when used inside a View with AJAX pagination or parametric search with automatic results
+		* fix product search results when there are no results and using a WordPress Archive
+	- Compatibility: WordPress 4.0
+		* fix Content Templates editor
+		* fix like_escape() being deprecated
+	- Update: CodeMirror to its latest release
+	- Clean: remove a great bunch of legacy deprecated code
+	- Experimental: "limit" and "offset" Views shortcode attributes
+
+-------------------------------------------------------------------------------------------------------------------
 Version 1.6.1
 	- New: general View setting to disable frontend edit links to Views objects
 	- New: better copy on the parametric search popup
-	- New: suggesions for the default value on a filter by custom field on parametric search when using existing values
+	- New: suggestions for the default value on a filter by custom field on parametric search when using existing values
 	- New: when performing a parametric search by a checkbox field that stores zero in the database when unchecked, allow filtering by this zero value
 	- Fix: parametric search - allow between, greater than and lower than comparisons when setting values manually if they do not match actual custom field values
 	- Fix: post relationship parametric search when WPML is active

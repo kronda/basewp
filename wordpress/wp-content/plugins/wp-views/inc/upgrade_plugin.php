@@ -11,7 +11,7 @@
     function check_for_views_plugin_updates($value) {
         // called when the update_plugins transient is saved.
         
-        global $views_plugins, $WP_Views;
+        global $views_plugins, $WPV_settings;
         
         if(empty($views_plugins)) return $value;
         
@@ -26,14 +26,13 @@
                 }
             }
             
-			$options = $WP_Views->get_options();
-			
             $request = wp_remote_post(VIEWS_UPDATE_URL, array(
                 'timeout' => 15,
                 'body' => array(
                     'action' => 'update_information',
-                    'subscription_email' => isset($options['subscription_email'])?$options['subscription_email']:false,
-                    'subscription_key' => isset($options['subscription_key'])?$options['subscription_key']:false,
+                    // TODO: Set these keys as false by default
+                    'subscription_email' => isset( $WPV_settings->subscription_email ) ? $WPV_settings->subscription_email : false,
+                    'subscription_key' => isset( $WPV_settings->subscription_key ) ? $WPV_settings->subscription_key : false,
                     'plugins' => $plugins,
                     'lc' => get_option('WPLANG'),
                     )));
@@ -62,12 +61,8 @@
     }
     
     function get_views_plugin_page($state, $action, $args) {
-        global $wpdb, $WP_Views;
-        
-        global $views_plugins;
+        global $WPV_settings, $views_plugins;
 
-		$options = $WP_Views->get_options();
-        
         $res = false;
 
         if (isset($args->slug) && $args->slug == "views_all" || @in_array(str_replace('_', ' ', $args->slug), $views_plugins)) {
@@ -75,15 +70,17 @@
             if (!isset($args->installed)) {
                 $args->installed = "";
             }
-            $body_array = array('action' => $action,
-                                    'request' => serialize($args),
-                                    'slug' => $args->slug,
-                                    'installed' => $args->installed,
-                                    'subscription_email' => isset($options['subscription_email'])?$options['subscription_email']:false,
-                                    'subscription_key' => isset($options['subscription_key'])?$options['subscription_key']:false,
-                                    'lc' => get_option('WPLANG'),
-                                    );
-            
+            $body_array = array(
+                'action' => $action,
+                'request' => serialize( $args ),
+                'slug' => $args->slug,
+                'installed' => $args->installed,
+                // TODO: Set these keys as false by default
+                'subscription_email' => isset( $WPV_settings->subscription_email ) ? $WPV_settings->subscription_email : false,
+                'subscription_key' => isset( $WPV_settings->subscription_key ) ? $WPV_settings->subscription_key : false,
+                'lc' => get_option( 'WPLANG' ),
+            );
+
             $request = wp_remote_post(VIEWS_UPDATE_URL, array( 'timeout' => 15, 'body' => $body_array) );
             if ( is_wp_error($request) ) {
                 $res = new WP_Error('plugins_api_failed', __('An Unexpected HTTP Error occurred during the API request.', 'wpv-views'), $request->get_error_message() );

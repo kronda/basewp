@@ -19,17 +19,19 @@ class WPV_Debug{
 		$this->status = false;
 		$this->total_memory = memory_get_usage ( false );
 		$this->show_type = 'compact';
-		$options = get_option('wpv_options');
-
+		
+        // FIXME: Use $WPV_settings, if possible.
+        // WPV_Debug class is initialized before WPV_Settings, can we change that?
+        $options = get_option('wpv_options');
 		if ( !isset($options['wpv_debug_mode']) ) {
 			$options['wpv_debug_mode'] = '';
 		}
-		if ( !isset($options['wpv-debug-mode-type']) ) {
-			$options['wpv-debug-mode-type'] = 'compact';
+		if ( !isset($options['wpv_debug_mode_type']) ) {
+			$options['wpv_debug_mode_type'] = 'compact';
 		}
 		if ( isset($options['wpv_debug_mode']) && !empty($options['wpv_debug_mode'])   ){
 			$this->status = true;
-			$this->show_type = $options['wpv-debug-mode-type'];
+			$this->show_type = $options['wpv_debug_mode_type'];
 			if ( !defined('SAVEQUERIES') ){
 					define('SAVEQUERIES', true);
 			}
@@ -61,8 +63,8 @@ class WPV_Debug{
 		</div>
 
 		<?php // TODO: Can we register these files? ?>
-		<script type="text/javascript" src="<?php echo WPV_URL_EMBEDDED;?>/res/js/lib/jstorage.min.js"></script>
-		<script type="text/javascript" src="<?php echo WPV_URL_EMBEDDED;?>/res/js/lib/prism.js" data-manual></script>
+		<script type="text/javascript" src="<?php echo WPV_URL_EMBEDDED_FRONTEND;?>/res/js/lib/jstorage.min.js"></script>
+		<script type="text/javascript" src="<?php echo WPV_URL_EMBEDDED_FRONTEND;?>/res/js/lib/prism.js" data-manual></script>
 		<script type="text/javascript">
 
 			jQuery(document).ready(function($) {
@@ -97,11 +99,11 @@ class WPV_Debug{
 				);
 
 				//var windoc = winobj.document;
-				var $debugCSS = $('<link rel="stylesheet" href="<?php echo WPV_URL_EMBEDDED; ?>/res/css/debug.css?<?php echo date('l jS \of F Y h:i:s A'); ?>" type="text/css" media="all" />');
-				var $prismCSS = $('<link rel="stylesheet" href="<?php echo WPV_URL_EMBEDDED; ?>/res/css/prism.css?<?php echo date('l jS \of F Y h:i:s A'); ?>" type="text/css" media="all" />');
+				var $debugCSS = $('<link rel="stylesheet" href="<?php echo WPV_URL_EMBEDDED_FRONTEND; ?>/res/css/debug.css?<?php echo date('l jS \of F Y h:i:s A'); ?>" type="text/css" media="all" />');
+				var $prismCSS = $('<link rel="stylesheet" href="<?php echo WPV_URL_EMBEDDED_FRONTEND; ?>/res/css/prism.css?<?php echo date('l jS \of F Y h:i:s A'); ?>" type="text/css" media="all" />');
 
-				var cssone = '<link rel="stylesheet" href="<?php echo WPV_URL_EMBEDDED; ?>/res/css/debug.css?<?php echo date('l jS \of F Y h:i:s A'); ?>" type="text/css" media="all" />';
-				var csstwo = '<link rel="stylesheet" href="<?php echo WPV_URL_EMBEDDED; ?>/res/css/prism.css?<?php echo date('l jS \of F Y h:i:s A'); ?>" type="text/css" media="all" />';
+				var cssone = '<link rel="stylesheet" href="<?php echo WPV_URL_EMBEDDED_FRONTEND; ?>/res/css/debug.css?<?php echo date('l jS \of F Y h:i:s A'); ?>" type="text/css" media="all" />';
+				var csstwo = '<link rel="stylesheet" href="<?php echo WPV_URL_EMBEDDED_FRONTEND; ?>/res/css/prism.css?<?php echo date('l jS \of F Y h:i:s A'); ?>" type="text/css" media="all" />';
 				// Append debug data into popup
 				
 				//debug_info.appendTo( winobj.document.body );
@@ -265,8 +267,7 @@ class WPV_Debug{
 		if ( !is_user_logged_in() ){
 			return false;
 		}
-		global $user_level;
-		if ( $user_level !== 10 ){
+		if ( !current_user_can( 'manage_options' ) ) {
 			return false;
 		}
 		return true;

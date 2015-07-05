@@ -2,22 +2,6 @@
     background:url("../img/views-32.png") #fff right no-repeat;
 }
 
-.wpv-incomplete-step {
-    padding-left: 18px;
-    font-weight: bold;
-}
-
-.wpv-complete-step {
-    background:url("../img/blue_tick.png") left no-repeat;
-    padding-left: 18px;
-}
-
-.wpv-complete-step-all {
-    background:url("../img/gray_tick.png") left no-repeat;
-    padding-left: 18px;
-}
-
-
 .wpv_form_errors {
     border:1px solid #f00;
     background-color: #ffb7b7;

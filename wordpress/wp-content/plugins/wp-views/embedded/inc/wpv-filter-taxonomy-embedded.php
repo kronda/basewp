@@ -73,22 +73,29 @@ function get_taxonomy_query($view_settings) {
 
 	$WPVDebug->add_log( 'filters' , "wpv_filter_taxonomy_query\n". print_r($tax_query_settings, true) , 'filters', 'Filter arguments before the query using <strong>wpv_filter_taxonomy_query</strong>' );
 
-    if (isset($_GET['wpv_column_sort_id']) && esc_attr($_GET['wpv_column_sort_id']) != '' && esc_attr($_GET['wpv_view_count']) == $WP_Views->get_view_count()) {
-        $field = esc_attr($_GET['wpv_column_sort_id']);
-        if ($field == 'taxonomy-link') {
+    if (
+		isset( $_GET['wpv_column_sort_id'] ) 
+		&& esc_attr( $_GET['wpv_column_sort_id'] ) != '' 
+		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
+	) {
+        $field = esc_attr( $_GET['wpv_column_sort_id'] );
+        if ( $field == 'taxonomy-link' ) {
             $tax_query_settings['orderby'] = 'name';
-        }
-        if ($field == 'taxonomy-title') {
+        } else if ( $field == 'taxonomy-title' ) {
             $tax_query_settings['orderby'] = 'name';
-        }
-        if ($field == 'taxonomy-post_count') {
+        } else if ( $field == 'taxonomy-post_count' ) {
             $tax_query_settings['orderby'] = 'count';
         }
 
     }
 
-    if (isset($_GET['wpv_column_sort_dir']) && esc_attr($_GET['wpv_column_sort_dir']) != '' && esc_attr($_GET['wpv_view_count']) == $WP_Views->get_view_count()) {
-        $tax_query_settings['order'] = strtoupper(esc_attr($_GET['wpv_column_sort_dir']));
+    if (
+		isset( $_GET['wpv_column_sort_dir'] ) 
+		&& esc_attr( $_GET['wpv_column_sort_dir'] ) != '' 
+		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
+		&& in_array( strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) ), array( 'ASC', 'DESC' ) )
+	) {
+        $tax_query_settings['order'] = strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) );
 
     }
 
@@ -119,13 +126,26 @@ function get_taxonomy_query($view_settings) {
 			case 'current_view':
 			$parent_id = $WP_Views->get_parent_view_taxonomy();
 			break;
-
+			case 'current_archive_loop':
+			if ( is_category() || is_tag() || is_tax() ) {
+				$queried_object = get_queried_object();
+				$parent_id = $queried_object->term_id;
+			}
+			break;
 			case 'this_parent':
 			$parent_id = $view_settings['taxonomy_parent_id'];
 
-			if ( function_exists('icl_object_id') && isset( $view_settings['taxonomy_type'][0] ) && !empty( $parent_id ) ) {
+			if ( 
+				isset( $view_settings['taxonomy_type'][0] ) 
+				&& ! empty( $parent_id ) 
+			) {
+				// WordPress 4.2 compatibility - split terms
+				$candidate_term_id_splitted = wpv_compat_get_split_term( $parent_id, $view_settings['taxonomy_type'][0] );
+				if ( $candidate_term_id_splitted ) {
+					$parent_id = $candidate_term_id_splitted;
+				}
 				// Adjust for WPML support
-				$parent_id = icl_object_id( $parent_id, $view_settings['taxonomy_type'][0], true );
+				$parent_id = apply_filters( 'translate_object_id', $parent_id, $view_settings['taxonomy_type'][0], true, null );
 			}
 			break;
 		}
@@ -141,61 +161,113 @@ function get_taxonomy_query($view_settings) {
     }
 
     if ( isset( $view_settings['taxonomy_terms_mode'] ) ) {
-		if ($view_settings['taxonomy_terms_mode'] == 'THESE') {
-			if (sizeof($view_settings['taxonomy_terms'])) {
-				// filter by indiviual taxonomy terms.
-
-				$filtered_terms = array();
-
-				if ( function_exists('icl_object_id') && isset( $view_settings['taxonomy_type'][0] ) && !empty( $view_settings['taxonomy_terms'] ) ) {
-					// Adjust for WPML support
-					$trans_term_ids = array();
-					foreach ( $view_settings['taxonomy_terms'] as $untrans_term_id ) {
-						$trans_term_ids[] = icl_object_id( $untrans_term_id, $view_settings['taxonomy_type'][0], true );
+		switch ( $view_settings['taxonomy_terms_mode'] ) {
+			case 'CURRENT_PAGE':
+				if ( isset( $taxonomies[$view_settings['taxonomy_type'][0]] ) ) {
+					global $post;
+					if ( isset( $post ) ) {
+						$terms = get_the_terms( $post->ID, $view_settings['taxonomy_type'][0] );
+					} else {
+						$terms = array();
 					}
-					$view_settings['taxonomy_terms'] = $trans_term_ids;
+					if ( ! is_array( $terms ) ) {
+						$terms = array();
+					}
+					$filtered_terms = array();
+					$terms_info = array();
+					foreach ( $items as $item ) {
+						foreach( $terms as $term ) {
+							if ( $item->term_id == $term->term_id ) {
+								// only add the terms in the 'taxonomy_terms' array.
+								$filtered_terms[] = $item;
+								$terms_info[] = $term->name . ' (id=' . $term->term_id . ')';
+							}
+						}
+					}
+					$items = $filtered_terms;
+					$WPVDebug->add_log( 'filters' , "Filter by terms from the current page " . implode( ', ' , $terms_info ) . "\n" . print_r($items, true) , 'filters', 'Filter by terms from the current page' );
+				} else {
+					$items = array();
+					$WPVDebug->add_log( 'filters' , "Filter by terms from the current page but for a taxonomy that no longer exists \n" . print_r($items, true) , 'filters', 'Filter by terms from the current page' );
 				}
-
-				foreach($items as $item) {
-					if (in_array($item->term_id, $view_settings['taxonomy_terms'])) {
-					// only add the terms in the 'taxonomy_terms' array.
-					$filtered_terms[] = $item;
+				break;
+			case 'THESE':
+				if (
+					isset( $view_settings['taxonomy_terms'] )
+					&& sizeof( $view_settings['taxonomy_terms'] ) 
+				) {
+					$filtered_terms = array();
+					if ( 
+						isset( $view_settings['taxonomy_type'][0] ) 
+						&& ! empty( $view_settings['taxonomy_terms'] ) 
+					) {
+						$adjusted_term_ids = array();
+						foreach ( $view_settings['taxonomy_terms'] as $candidate_term_id ) {
+							// WordPress 4.2 compatibility - split terms
+							$candidate_term_id_splitted = wpv_compat_get_split_term( $candidate_term_id, $view_settings['taxonomy_type'][0] );
+							if ( $candidate_term_id_splitted ) {
+								$candidate_term_id = $candidate_term_id_splitted;
+							}
+							// WPML support
+							$candidate_term_id = apply_filters( 'translate_object_id', $candidate_term_id, $view_settings['taxonomy_type'][0], true, null );
+							$adjusted_term_ids[] = $candidate_term_id;
+						}
+						$view_settings['taxonomy_terms'] = $adjusted_term_ids;
+					}
+					foreach ( $items as $item ) {
+						if ( in_array( $item->term_id, $view_settings['taxonomy_terms'] ) ) {
+							// only add the terms in the 'taxonomy_terms' array.
+							$filtered_terms[] = $item;
+						}
+					}
+					$items = $filtered_terms;
+					$WPVDebug->add_log( 'filters' , "Filter by specific terms " . implode( ',  ' , $view_settings['taxonomy_terms'] ) . "\n". print_r($items, true) , 'filters', 'Filter by specific terms' );
+				}
+				break;
+			case 'framework':
+				global $WP_Views_fapi;
+				if ( $WP_Views_fapi->framework_valid ) {
+					if (
+						isset( $view_settings['taxonomy_terms_framework'] ) 
+						&& '' != $view_settings['taxonomy_terms_framework']
+					) {
+						$taxonomy_terms_framework = $view_settings['taxonomy_terms_framework'];
+						$taxonomy_terms_candidates = $WP_Views_fapi->get_framework_value( $taxonomy_terms_framework, array() );
+						if ( ! is_array( $taxonomy_terms_candidates ) ) {
+							$taxonomy_terms_candidates = explode( ',', $taxonomy_terms_candidates );
+						}
+						$taxonomy_terms_candidates = array_map( 'esc_attr', $taxonomy_terms_candidates );
+						$taxonomy_terms_candidates = array_map( 'trim', $taxonomy_terms_candidates );
+						// is_numeric does sanitization
+						$taxonomy_terms_candidates = array_filter( $taxonomy_terms_candidates, 'is_numeric' );
+						if ( count( $taxonomy_terms_candidates ) ) {
+							$filtered_terms = array();
+							if ( isset( $view_settings['taxonomy_type'][0] ) ) {
+								$adjusted_term_ids = array();
+								foreach ( $taxonomy_terms_candidates as $candidate_term_id ) {
+									// WordPress 4.2 compatibility - split terms
+									$candidate_term_id_splitted = wpv_compat_get_split_term( $candidate_term_id, $view_settings['taxonomy_type'][0] );
+									if ( $candidate_term_id_splitted ) {
+										$candidate_term_id = $candidate_term_id_splitted;
+									}
+									// WPML support
+									$candidate_term_id = apply_filters( 'translate_object_id', $candidate_term_id, $view_settings['taxonomy_type'][0], true, null );
+									$adjusted_term_ids[] = $candidate_term_id;
+								}
+								$taxonomy_terms_candidates = $adjusted_term_ids;
+							}
+							foreach ( $items as $item ) {
+								if ( in_array( $item->term_id, $taxonomy_terms_candidates ) ) {
+									// only add the terms in the 'taxonomy_terms' array.
+									$filtered_terms[] = $item;
+								}
+							}
+							$items = $filtered_terms;
+						}
 					}
 				}
-
-				$items = $filtered_terms;
-
-				$WPVDebug->add_log( 'filters' , "Filter by specific terms " . implode( ',  ' , $view_settings['taxonomy_terms'] ) . "\n". print_r($items, true) , 'filters', 'Filter by specific terms' );
-			}
-		} else {
-			// get the terms from the current page.
-
-			global $post;
-			$terms = get_the_terms($post->ID, $view_settings['taxonomy_type'][0]);
-			
-			if ( !is_array( $terms ) ) {
-				$terms = array();
-			}
-
-			$filtered_terms = array();
-			$terms_info = array();
-
-			foreach($items as $item) {
-				foreach($terms as $term) {
-					if ($item->term_id == $term->term_id) {
-					// only add the terms in the 'taxonomy_terms' array.
-					$filtered_terms[] = $item;
-					$terms_info[] = $term->name . ' (id=' . $term->term_id . ')';
-					}
-				}
-			}
-
-			$items = $filtered_terms;
-
-			$WPVDebug->add_log( 'filters' , "Filter by terms from the current page " . implode( ', ' , $terms_info ) . "\n" . print_r($items, true) , 'filters', 'Filter by terms from the current page' );
-
+				break;
 		}
-
     }
 
 	if ( isset( $wpdb->queries ) && !empty( $wpdb->queries ) ) {

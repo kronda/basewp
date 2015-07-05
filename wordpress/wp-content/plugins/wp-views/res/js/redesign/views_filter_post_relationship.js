@@ -1,206 +1,260 @@
-// Relationship Close and save
+/**
+* Views Post Relationship Filter GUI - script
+*
+* Adds basic interaction for the Post Relationship Filter
+*
+* @package Views
+*
+* @since 1.7.0
+*/
 
-var wpv_filter_post_relationship_mode_selected = jQuery('.js-post-relationship-mode:checked').val();
-var wpv_filter_post_relationship_post_type_selected = jQuery('.js-post-relationship-post-type').val();
-var wpv_filter_post_relationship_shortcode_attribute_selected = jQuery('.js-post-relationship-shortcode-attribute').val();
-var wpv_filter_post_relationship_url_parameter_selected = jQuery('.js-post-relationship-url-parameter').val();
-var wpv_filter_post_relationship_id_selected = jQuery('select[name=post_relationship_id]').val();
-var wpv_filter_post_relationship_changed = false;
 
-jQuery(document).on('click', '.js-wpv-filter-parent-edit-open', function(){ // rebuild the list of the current checked values
-wpv_filter_post_relationship_mode_selected = jQuery('.js-post-relationship-mode:checked').val();
-	wpv_filter_post_relationship_post_type_selected = jQuery('.js-post-relationship-post-type').val();
-	wpv_filter_post_relationship_shortcode_attribute_selected = jQuery('.js-post-relationship-shortcode-attribute').val();
-	wpv_filter_post_relationship_url_parameter_selected = jQuery('.js-post-relationship-url-parameter').val();
-	wpv_filter_post_relationship_id_selected = jQuery('select[name=post_relationship_id]').val();
-	wpv_filter_post_relationship_changed = false;
-});
+var WPViews = WPViews || {};
 
-jQuery(document).on('change keyup input cut paste', '.js-post-relationship-mode, .js-post-relationship-post-type, select[name=post_relationship_id], .js-post-relationship-shortcode-attribute, .js-post-relationship-url-parameter', function() { // watch on input change
-	wpv_filter_post_relationship_changed = false;
-	jQuery(this).removeClass('filter-input-error');
-	jQuery('.js-wpv-filter-post-relationship-edit-ok').prop('disabled', false);
-	wpv_clear_validate_messages('.js-filter-post-relationship');
-	if ( wpv_filter_post_relationship_mode_selected != jQuery('.js-post-relationship-mode:checked').val() ) {
-		wpv_filter_post_relationship_changed = true;
-	}
-	if ( wpv_filter_post_relationship_post_type_selected != jQuery('.js-post-relationship-post-type').val() ) {
-		wpv_filter_post_relationship_changed = true;
-	}
-	if ( wpv_filter_post_relationship_shortcode_attribute_selected != jQuery('.js-post-relationship-shortcode-attribute').val() ) {
-		wpv_filter_post_relationship_changed = true;
-	}
-	if ( wpv_filter_post_relationship_url_parameter_selected != jQuery('.js-post-relationship-url-parameter').val() ) {
-		wpv_filter_post_relationship_changed = true;
-	}
-	if ( wpv_filter_post_relationship_id_selected != jQuery('select[name=post_relationship_id]').val()
-		&& typeof(wpv_filter_post_relationship_id_selected) !== 'undefined'
-		&& typeof(jQuery('select[name=post_relationship_id]').val()) !== 'undefined'
-	) {
-		wpv_filter_post_relationship_changed = true;
-	}
-	wpv_filter_post_relationship_changed_helper();
-});
-
-function wpv_filter_post_relationship_changed_helper() {
-	if (wpv_filter_post_relationship_changed) {
-		jQuery('.js-wpv-filter-post-relationship-edit-ok').removeClass('button-secondary').addClass('button-primary').addClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-post-relationship-edit-ok').data('save'));
-		setConfirmUnload(true);
-	} else {
-		jQuery('.js-wpv-filter-post-relationship-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-post-relationship-edit-ok').data('close'));
-		jQuery('.js-wpv-filter-post-relationship-edit-ok').parent().find('.unsaved').hide();
-		if (jQuery('.js-wpv-section-unsaved').length < 1) {
-			setConfirmUnload(false);
+WPViews.PostRelationshipFilterGUI = function( $ ) {
+	
+	var self = this;
+	
+	self.view_id = $('.js-post_ID').val();
+	
+	self.icon_edit = '<i class="icon-chevron-up"></i>&nbsp;&nbsp;';
+	self.icon_save = '<i class="icon-ok"></i>&nbsp;&nbsp;';
+	self.spinner = '<span class="spinner ajax-loader"></span>&nbsp;&nbsp;';
+	
+	self.post_row = '.js-wpv-filter-row-post-relationship';
+	self.post_options_container_selector = '.js-wpv-filter-post-relationship-options';
+	self.post_summary_container_selector = '.js-wpv-filter-post-relationship-summary';
+	self.post_messages_container_selector = '.js-wpv-filter-row-post-relationship .js-wpv-filter-toolset-messages';
+	self.post_edit_open_selector = '.js-wpv-filter-post-relationship-edit-open';
+	self.post_close_save_selector = '.js-wpv-filter-post-relationship-edit-ok';
+	
+	self.post_type_select = {};
+	
+	self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+	
+	//--------------------
+	// Functions for post relationship
+	//--------------------
+	
+	// Show an hide notices related to the content selection section
+	// @todo watch out! it is cleared when opening the edit fast after save, seems to be because the show/hide of the success message!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	self.show_hide_post_relationship_notice = function() {
+		var show = false,
+		rel_message = '',
+		list = '';
+		if ( $('.js-wpv-query-post-type:checked').length ) {
+			$('.js-wpv-query-post-type:checked').each( function() {
+				if ( $( this ).data( 'typeschild' ) == 'no' ) {
+					show = true;
+					if ( rel_message == '' ) {
+						rel_message = wpv_pr_strings.post_type_orphan;
+					}
+					if ( list != '' ) {
+						list += ',';
+					}
+					list += ' ' + $( this ).parent( 'li' ).find( 'label' ).html();
+				}
+			});
+			if ( list != '' ) {
+				rel_message += list;
+			}
+		} else {
+			show = true;
+			rel_message = wpv_pr_strings.post_type_missing;
+		}
+		if ( show ) {
+			$( '.js-wpv-filter-post-relationship-notice' ).show();
+			$( self.post_messages_container_selector ).wpvToolsetMessage({
+				text:rel_message,
+				type:'error',
+				classname:'js-wpv-filter-post-relationship-info js-wpv-permanent-alert-error',
+				inline:false,
+				stay:true,
+				fadeIn: 10,
+				fadeOut: 10
+			});
+		} else {
+			$( '.js-wpv-filter-post-relationship-notice' ).hide();
+			$( self.post_row ).find( '.js-wpv-filter-post-relationship-info' ).remove();
 		}
 	}
-}
-
-jQuery(document).on('click', '.js-wpv-filter-post-relationship-edit-ok', function() {
-	jQuery(this).parent().find('.unsaved').remove();
-	if ( wpv_filter_post_relationship_mode_selected == jQuery('.js-post-relationship-mode:checked').val()
-		&& wpv_filter_post_relationship_post_type_selected == jQuery('.js-post-relationship-post-type').val()
-		&& wpv_filter_post_relationship_id_selected == jQuery('select[name=post_relationship_id]').val()
-		&& wpv_filter_post_relationship_shortcode_attribute_selected == jQuery('.js-post-relationship-shortcode-attribute').val()
-		&& wpv_filter_post_relationship_url_parameter_selected == jQuery('.js-post-relationship-url-parameter').val()
-	) {
-		wpv_close_filter_row('.js-filter-post-relationship');
-	} else {
-		var valid = wpv_validate_filter_inputs('.js-filter-post-relationship');
-		if (valid) {
-			var update_message = jQuery(this).data('success');
-			var unsaved_message = jQuery(this).data('unsaved');
-			var nonce = jQuery(this).data('nonce');
-			wpv_filter_post_relationship_mode_selected = jQuery('.js-post-relationship-mode:checked').val();
-			wpv_filter_post_relationship_post_type_selected = jQuery('.js-post-relationship-post-type').val();
-			wpv_filter_post_relationship_shortcode_attribute_selected = jQuery('.js-post-relationship-shortcode-attribute').val();
-			wpv_filter_post_relationship_url_parameter_selected = jQuery('.js-post-relationship-url-parameter').val();
-			wpv_filter_post_relationship_id_selected = jQuery('select[name=post_relationship_id]').val();
-			var spinnerContainer = jQuery('<div class="spinner ajax-loader">').insertAfter(jQuery(this)).show();
-			var data_view_id = jQuery('.js-post_ID').val();
-			var data = {
-				action: 'wpv_filter_post_relationship_update',
-				id: data_view_id,
-				post_relationship_mode: wpv_filter_post_relationship_mode_selected,
-				post_relationship_shortcode_attribute: wpv_filter_post_relationship_shortcode_attribute_selected,
-				post_relationship_url_parameter: wpv_filter_post_relationship_url_parameter_selected,
-				post_relationship_id: wpv_filter_post_relationship_id_selected,
-				wpnonce: nonce
+	
+	//--------------------
+	// Events for post relationship
+	//--------------------
+	
+	// Open the edit box and rebuild the current values; show the close/save button-primary
+	// TODO maybe the show() could go to the general file
+	
+	$( document ).on( 'click', self.post_edit_open_selector, function() {
+		self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+		$( self.post_close_save_selector ).show();
+		$( self.post_row ).addClass( 'wpv-filter-row-current' );
+		self.show_hide_post_relationship_notice();
+	});
+	
+	// Track changes in options
+	
+	$( document ).on( 'change keyup input cut paste', self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select', function() {
+		$( this ).removeClass( 'filter-input-error' );
+		$( self.post_close_save_selector ).prop( 'disabled', false );
+		WPViews.query_filters.clear_validate_messages( self.post_row );
+		if ( self.post_current_options != $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize() ) {
+			$( self.post_close_save_selector )
+				.addClass('button-primary js-wpv-section-unsaved')
+				.removeClass('button-secondary')
+				.html(
+					self.icon_save + $( self.post_close_save_selector ).data('save')
+				);
+			setConfirmUnload( true );
+		} else {
+			$( self.post_close_save_selector )
+				.addClass('button-secondary')
+				.removeClass('button-primary js-wpv-section-unsaved')
+				.html(
+					self.icon_edit + $( self.post_close_save_selector ).data('close')
+				);
+			$( self.post_close_save_selector )
+				.parent()
+					.find( '.unsaved' )
+					.remove();
+			if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
+				setConfirmUnload( false );
 			}
-			jQuery.post(ajaxurl, data, function(response) {
-				if ( (typeof(response) !== 'undefined') ) {
-					if (response != 0) {
-						jQuery('.js-wpv-filter-post-relationship-edit-ok').removeClass('button-primary').addClass('button-secondary').removeClass('js-wpv-section-unsaved').val(jQuery('.js-wpv-filter-post-relationship-edit-ok').data('close'));
-						if (jQuery('.js-wpv-section-unsaved').length < 1) {
-							setConfirmUnload(false);
+		}
+	});
+	
+	// Save filter options
+	
+	$( document ).on( 'click', self.post_close_save_selector, function() {
+		var thiz = $( this );
+		WPViews.query_filters.clear_validate_messages( self.post_row );
+		if ( self.post_current_options == $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize() ) {
+			WPViews.query_filters.close_filter_row( self.post_row );
+			thiz.hide();
+		} else {
+			var valid = WPViews.query_filters.validate_filter_options( '.js-filter-post-relationship' );
+			if ( valid ) {
+				// update_message = thiz.data('success');
+				// unsaved_message = thiz.data('unsaved');
+				var action = thiz.data( 'saveaction' ),
+				nonce = thiz.data('nonce'),
+				spinnerContainer = $( self.spinner ).insertBefore( thiz ).show(),
+				error_container = thiz
+					.closest( '.js-filter-row' )
+						.find( '.js-wpv-filter-toolset-messages' );
+				self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+				var data = {
+					action: action,
+					id: self.view_id,
+					filter_options: self.post_current_options,
+					wpnonce: nonce
+				};
+				$.post( ajaxurl, data, function( response ) {
+					if ( response.success ) {
+						$( self.post_close_save_selector )
+							.addClass('button-secondary')
+							.removeClass('button-primary js-wpv-section-unsaved')
+							.html( 
+								self.icon_edit + $( self.post_close_save_selector ).data( 'close' )
+							);
+						if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
+							setConfirmUnload( false );
 						}
-						jQuery('.js-wpv-filter-post-relationship-summary').html(response);
-						jQuery('.js-wpv-filter-post-relationship-summary').append('<span class="updated toolset-alert toolset-alert-success"><i class="icon-check"></i> ' + update_message + '</span>');
-						setTimeout(function(){
-							jQuery('.js-wpv-filter-post-relationship-summary .updated').fadeOut('fast');
-						}, 2000);
-						wpv_close_filter_row('.js-filter-post-relationship');
-						wpv_update_parametric_search_section();
+						$( self.post_summary_container_selector ).html( response.data.summary );
+						WPViews.query_filters.close_and_glow_filter_row( self.post_row, 'wpv-filter-saved' );
+					} else {
+						WPViews.view_edit_screen.manage_ajax_fail( response.data, error_container );
+					}
+				}, 'json' )
+				.fail( function( jqXHR, textStatus, errorThrown ) {
+					console.log( "Error: ", textStatus, errorThrown );
+				})
+				.always( function() {
+					spinnerContainer.remove();
+					thiz
+						.prop( 'disabled', false )
+						.hide();
+				});
+			}
+		}
+	});
+	
+	// Remove  filter
+	
+	$( document ).on( 'click', self.post_row + ' .js-wpv-filter-remove', function() {
+		self.post_current_options = '';
+	});
+	
+	// Update posts selector when changing the specific option post type
+	// Cache options to prevent multiple AJAX calls for the same post type
+
+	$( document ).on( 'change', '.js-post-relationship-post-type', function() {
+		// Update the parents for the selected type.
+		var post_type = $('.js-post-relationship-post-type').val();
+		$( 'select#post_relationship_id' ).remove();
+		if ( typeof self.post_type_select[post_type] == "undefined" ) {
+			var data = {
+				action : 'wpv_get_post_relationship_post_select',
+				post_type : post_type,
+				wpnonce : $('.js-post-relationship-post-type').data('nonce')
+			};
+			var spinnerContainer = $( self.spinner ).insertAfter( $(this) ).show();
+			$.post( ajaxurl, data, function( response ) {
+				if ( typeof( response ) !== 'undefined' ) {
+					if ( response != 0 ) {
+						self.post_type_select[post_type] = response;
+						$( '.js-post-relationship-post-type' ).after( self.post_type_select[post_type] );
+						$( '.js-post-relationship-shortcode-attribute' ).trigger( 'change' );
 					} else {
 						console.log( "Error: WordPress AJAX returned " + response );
 					}
 				} else {
 					console.log( "Error: AJAX returned ", response );
 				}
-
 			})
-			.fail(function(jqXHR, textStatus, errorThrown) {
+			.fail( function( jqXHR, textStatus, errorThrown ) {
 				console.log( "Error: ", textStatus, errorThrown );
 			})
-			.always(function() {
-				spinnerContainer.remove();
+			.always( function() {
+				spinnerContainer.hide();
 			});
-		}
-	}
-});
-
-// Relationship update posts selector
-
-jQuery(document).on('change', '.js-post-relationship-post-type', function(){
-	// Update the parents for the selected type.
-	var data = {
-		action : 'wpv_get_post_relationship_post_select',
-		post_type : jQuery('.js-post-relationship-post-type').val(),
-		wpnonce : jQuery('.js-post-relationship-post-type').data('nonce')
-	};
-	jQuery('select[name=post_relationship_id]').remove();
-	var spinnerContainer = jQuery('<div class="spinner ajax-loader">').insertAfter(jQuery(this)).show();
-	jQuery.post(ajaxurl, data, function(response) {
-		if ( typeof(response) !== 'undefined') {
-			if (response != 0) {
-				jQuery('.js-post-relationship-post-type').after(response);
-				if ( wpv_filter_post_relationship_id_selected != jQuery('select[name=post_relationship_id]').val() ) {
-					wpv_filter_post_relationship_changed = true;
-				}
-				wpv_filter_post_relationship_changed_helper();
-			} else {
-				console.log( "Error: WordPress AJAX returned " + response );
-			}
 		} else {
-			console.log( "Error: AJAX returned ", response );
+			$( '.js-post-relationship-post-type' ).after( self.post_type_select[post_type] );
+			$( '.js-post-relationship-shortcode-attribute' ).trigger( 'change' );
 		}
-	})
-	.fail(function(jqXHR, textStatus, errorThrown) {
-		console.log( "Error: ", textStatus, errorThrown );
-	})
-	.always(function() {
-		spinnerContainer.hide();
 	});
-});
-
-// Validation for Content Selection
-
-jQuery(document).on('click', '.js-wpv-query-type-update', function(){
-	wpv_validate_post_relationship_post_types();
-});
-
-jQuery(document).ready(function(){
-	wpv_validate_post_relationship_post_types();
-});
-
-function wpv_validate_post_relationship_post_types() {
-	if (jQuery('.js-wpv-filter-post-relationship-edit-ok').length) {
-		var wpv_query_post_items = [];
-		jQuery('.js-wpv-query-post-type:checked').each(function(){
-			wpv_query_post_items.push(jQuery(this).val());
-		});
-		var nonce = jQuery('.js-wpv-filter-post-relationship-edit-ok').data('nonce');
-		var data = {
-			action: 'wpv_update_post_relationship_test',
-			post_types: wpv_query_post_items,
-			wpnonce: nonce
+	
+	// Content selection section saved event
+	
+	$( document ).on( 'js_event_wpv_query_type_options_saved', '.js-wpv-query-type-update', function( event, query_type ) {
+		self.show_hide_post_relationship_notice();
+	});
+	
+	// Filter creation event
+	
+	$( document ).on( 'js_event_wpv_query_filter_created', function( event, filter_type ) {
+		if ( filter_type == 'post_relationship' ) {
+			self.show_hide_post_relationship_notice();
 		}
-		jQuery.post(ajaxurl, data, function(response) {
-			if ( (typeof(response) !== 'undefined')) {
-				if (response != 0) {
-					jQuery('.filter-info-post-relationship').remove();
-					jQuery(response).insertAfter('.js-wpv-filter-post-relationship-summary');
-				} else {
-					console.log( "Error: WordPress AJAX returned " + response );
-				}
-			} else {
-				console.log( "Error: AJAX returned ", response );
-			}
+		if ( filter_type == 'parametric-all' ) {
+			self.post_current_options = $( self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select' ).serialize();
+		}
+	});
+	
+	//--------------------
+	// Init
+	//--------------------
+	
+	self.init = function() {
+		self.show_hide_post_relationship_notice();
+	};
+	
+	self.init();
 
-		})
-		.fail(function(jqXHR, textStatus, errorThrown) {
-			console.log( "Error: ", textStatus, errorThrown );
-		})
-		.always(function() {
+};
 
-		});
-	}
-}
-
-jQuery(document).on('click', '.js-filter-post-relationship .js-filter-remove', function(){
-	wpv_filter_post_relationship_mode_selected = '';
-	wpv_filter_post_relationship_post_type_selected = '';
-	wpv_filter_post_relationship_shortcode_attribute_selected = '';
-	wpv_filter_post_relationship_url_parameter_selected = '';
-	wpv_filter_post_relationship_id_selected = '';
-	wpv_filter_post_relationship_changed = false;
+jQuery( document ).ready( function( $ ) {
+    WPViews.post_relationship_filter_gui = new WPViews.PostRelationshipFilterGUI( $ );
 });

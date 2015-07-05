@@ -12,7 +12,7 @@ function wpv_filter_post_search($query, $view_settings) {
         $query['s'] = $view_settings['post_search_value'];
     }
     if ( isset( $view_settings['search_mode'] ) && isset( $_GET['wpv_post_search'] ) ) {
-        $search_term = urldecode( sanitize_text_field( $_GET['wpv_post_search'] ) );
+        $search_term = rawurldecode( sanitize_text_field( $_GET['wpv_post_search'] ) );
         if ( !empty( $search_term ) ) {
 			$query['s'] = $search_term;
 		}
@@ -36,7 +36,7 @@ function wpv_filter_taxonomy_search($query, $view_settings) {
         $query['search'] = $view_settings['taxonomy_search_value'];
     }
     if (isset($view_settings['taxonomy_search_mode']) && isset($_GET['wpv_taxonomy_search'])) {
-        $search_term = urldecode( sanitize_text_field( $_GET['wpv_taxonomy_search'] ) );
+        $search_term = rawurldecode( sanitize_text_field( $_GET['wpv_taxonomy_search'] ) );
         if ( !empty( $search_term ) ) {
 			$query['search'] = $search_term;
 		}
@@ -48,24 +48,23 @@ function wpv_filter_taxonomy_search($query, $view_settings) {
     return $query;
 }
 
-function wpv_search_by_title_only( $search, &$wp_query )
-{
+function wpv_search_by_title_only( $search, &$wp_query ) {
     global $wpdb;
     if ( empty( $search ) )
         return $search; // skip processing - no search term in query
     $q = $wp_query->query_vars;
     $n = ! empty( $q['exact'] ) ? '' : '%';
     $search = '';
-    $searchand = '';
+    $searchand = "";
     foreach ( (array) $q['search_terms'] as $term ) {
-        $term = esc_sql( like_escape( $term ) );
-        $search .= "{$searchand}($wpdb->posts.post_title LIKE '{$n}{$term}{$n}')";
-        $searchand = ' AND ';
+		$term = $n . wpv_esc_like( $term ) . $n;
+		$search .= $wpdb->prepare( $searchand . "( $wpdb->posts.post_title LIKE %s )", $term );
+		$searchand = " AND ";
     }
     if ( ! empty( $search ) ) {
-        $search = " AND ({$search}) ";
+        $search = " AND ( {$search} ) ";
         if ( ! is_user_logged_in() )
-            $search .= " AND ($wpdb->posts.post_password = '') ";
+            $search .= " AND ( $wpdb->posts.post_password = '' ) ";
     }
     return $search;
 }

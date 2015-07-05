@@ -20,16 +20,15 @@ add_filter('the_content', 'wpv_resolve_internal_shortcodes', 9);
  * @param string page content to be evaluated for internal shortcodes
  */
 function wpv_parse_content_shortcodes($content) {
-	global $WP_Views;
-	$options = $WP_Views->get_options();
+	global $WPV_settings;
 	$inner_expressions = array();
 	$inner_expressions[] = "/\\[types.*?\\].*?\\[\\/types\\]/i";
-	$inner_expressions[] = "/\\[(wpv-post-|wpv-taxonomy-|types|wpv-current-user|wpv-user).*?\\]/i";
+	$inner_expressions[] = "/\\[(wpv-post-|wpv-taxonomy-|types|wpv-current-user|wpv-user|wpv-attribute).*?\\]/i";
 	// support for custom inner shortcodes via settings page
 	// since 1.4
 	$custom_inner_shortcodes = array();
-	if ( isset( $options['wpv_custom_inner_shortcodes'] ) && is_array( $options['wpv_custom_inner_shortcodes'] ) ) {
-		$custom_inner_shortcodes = $options['wpv_custom_inner_shortcodes'];
+	if ( isset( $WPV_settings->wpv_custom_inner_shortcodes ) && is_array( $WPV_settings->wpv_custom_inner_shortcodes ) ) {
+		$custom_inner_shortcodes = $WPV_settings->wpv_custom_inner_shortcodes;
 	}
 	// wpv_custom_inner_shortcodes filter
 	// since 1.4

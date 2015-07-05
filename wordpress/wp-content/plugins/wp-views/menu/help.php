@@ -62,18 +62,25 @@
             <h3><?php _e('Learning Views','wpv-views'); ?></h3>
             <ul>
                 <li>
-                    <a href="http://wp-types.com/documentation/user-guides/getting-started-with-views/" target="_blank"><?php _e('Views Training','wpv-views') ?></a> &ndash; <?php _e('an interactive course that takes you through the basics and advanced features of Views.','wpv-views') ?>
+                    <a href="http://wp-types.com/documentation/user-guides/getting-started-with-views/?utm_source=viewsplugin&utm_campaign=views&utm_medium=help-page-link-1&utm_term=Views Training" target="_blank"><?php _e('Views Training','wpv-views') ?></a> &ndash; <?php _e('an interactive course that takes you through the basics and advanced features of Views.','wpv-views') ?>
                     <p><?php _e('Learn by building a real site, using sample data and step-by-step tutorials that we’ve prepared for you.','wpv-views') ?></p>
                 </li>
                 <li>
-                    <a href="http://wp-types.com/documentation/user-guides/#Views" target="_blank"><?php _e('Views Documentation','wpv-views') ?></a> &ndash; <?php _e('a complete reference library for everything in Views.','wpv-views') ?>
+                    <a href="http://wp-types.com/documentation/user-guides/?utm_source=viewsplugin&utm_campaign=views&utm_medium=help-page-link-2&utm_term=Views Documentation#Views" target="_blank"><?php _e('Views Documentation','wpv-views') ?></a> &ndash; <?php _e('a complete reference library for everything in Views.','wpv-views') ?>
                 </li>
                 <li>
-                    <a href="http://wp-types.com/forums/forum/support-2/" target="_blank"><?php _e('Support forum','wpv-views') ?></a> &ndash; <?php _e('need any technical help? Our support staff are waiting for you in our forum.','wpv-views') ?>
+                    <a href="http://wp-types.com/forums/forum/support-2/?utm_source=viewsplugin&utm_campaign=views&utm_medium=help-page-link-3&utm_term=Support forum" target="_blank"><?php _e('Support forum','wpv-views') ?></a> &ndash; <?php _e('need any technical help? Our support staff are waiting for you in our forum.','wpv-views') ?>
                 </li>
             </ul>
        </div>
 
     </div>
 
+<h3 style="margin-top:3em;"><?php _e('Debug information', 'wpv-views'); ?></h3>
+<p><?php
+printf(
+    __( 'For retrieving debug information if asked by a support person, use the <a href="%s">debug information</a> page.', 'wpv-views' ),
+    admin_url('admin.php?page=views-debug-information')
+);
+?></p>
 </div>

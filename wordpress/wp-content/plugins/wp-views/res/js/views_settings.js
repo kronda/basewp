@@ -203,36 +203,42 @@ jQuery(function($){
         return false;
     });
 
-    // Save custom inner shortcodes options
+    // Save custom inner shortcodes and conditional functions options
 
-	$(document).on('keyup input cut paste', '.js-custom-inner-shortcode-newname', function(){
-		$('.js-wpv-cs-error, .js-wpv-cs-dup, .js-wpv-cs-ajaxfail').hide();
+	$(document).on('input cut paste', '.js-wpv-add-item-settings-form-newname', function(e){
+		var parent_form = $( this ).closest( '.js-wpv-add-item-settings-form' );
+		$('.js-wpv-cs-error, .js-wpv-cs-dup, .js-wpv-cs-ajaxfail', parent_form).hide();
 		if ( $(this).val() != '' ) {
-			$('.js-custom-inner-shortcodes-add').addClass('button-primary').removeClass('button-secondary').prop('disabled', false);
+			$('.js-wpv-add-item-settings-form-button', parent_form).addClass('button-primary').removeClass('button-secondary').prop('disabled', false);
 		} else {
-			$('.js-custom-inner-shortcodes-add').removeClass('button-primary').addClass('button-secondary').prop('disabled', true);
+			$('.js-wpv-add-item-settings-form-button', parent_form).removeClass('button-primary').addClass('button-secondary').prop('disabled', true);
 		}
 	});
 
-	$('.js-custom-inner-shortcodes-form-add').submit(function(e){
+	$('.js-wpv-add-item-settings-form').submit(function(e){
+		var thiz = $( this );
 		e.preventDefault();
-		$('.js-custom-inner-shortcodes-add').click();
+		$('.js-wpv-add-item-settings-form-button', thiz).click();
 		return false;
 	});
+	
+	// Add additional inner shortcodes
 
 	$('.js-custom-inner-shortcodes-add').on('click', function(e){
 		e.preventDefault();
-		$('.js-wpv-cs-error, .js-wpv-cs-dup, .js-wpv-cs-ajaxfail').hide();
 		var thiz = $(this),
-		newshortcode = $('.js-custom-inner-shortcode-newname'),
-		shortcode_pattern = /^[a-z0-9\-\_]+$/;
+		shortcode_pattern = /^[a-z0-9\-\_]+$/,
+		parent_form = $( this ).closest( '.js-wpv-add-item-settings-form' ),
+		parent_container = $( this ).closest('.js-wpv-add-item-settings-wrapper'),
+		newshortcode = $('.js-wpv-add-item-settings-form-newname', parent_form);
+		$('.js-wpv-cs-error, .js-wpv-cs-dup, .js-wpv-cs-ajaxfail', parent_form).hide();
 		if (shortcode_pattern.test(newshortcode.val()) == false) {
-			$('.js-wpv-cs-error').show();
-		} else if ( $('.js-' + newshortcode.val() + '-item').length > 0 ) {
-			$('.js-wpv-cs-dup').show();
+			$('.js-wpv-cs-error', parent_form).show();
+		} else if ( $('.js-' + newshortcode.val() + '-item', parent_container).length > 0 ) {
+			$('.js-wpv-cs-dup', parent_form).show();
 		} else {
 			var spinnerContainer = $('<div class="spinner ajax-loader">').insertAfter($(this)).show();
-			$('.js-custom-inner-shortcodes-add').removeClass('button-primary').addClass('button-secondary').prop('disabled', true);
+			thiz.removeClass('button-primary').addClass('button-secondary').prop('disabled', true);
 			var data = {
 				action: 'wpv_update_custom_inner_shortcodes',
 				csaction: 'add',
@@ -248,21 +254,21 @@ jQuery(function($){
 				success:function(response){
 					if ( (typeof(response) !== 'undefined') ) {
 						if (response == 'ok') {
-							$('.js-custom-shortcode-list').append('<li class="js-' + newshortcode.val() + '-item"><span class="">[' + newshortcode.val() + ']</span> <i class="icon-remove-sign js-custom-shortcode-delete" data-target="' + newshortcode.val() + '"></i></li>');
+							$('.js-wpv-add-item-settings-list', parent_container).append('<li class="js-' + newshortcode.val() + '-item"><span class="">[' + newshortcode.val() + ']</span> <i class="icon-remove-sign js-custom-shortcode-delete" data-target="' + newshortcode.val() + '"></i></li>');
 							newshortcode.val('');
 						}
 						else {
-							$('.js-wpv-cs-ajaxfail').show();
+							$('.js-wpv-cs-ajaxfail', parent_form).show();
 							console.log( "Error: WordPress AJAX returned ", response );
 						}
 					}
 					else {
-						$('.js-wpv-cs-ajaxfail').show();
+						$('.js-wpv-cs-ajaxfail', parent_form).show();
 						console.log( "Error: AJAX returned ", response );
 					}
 				},
 				error: function (ajaxContext) {
-					$('.js-wpv-cs-ajaxfail').show();
+					$('.js-wpv-cs-ajaxfail', parent_form).show();
 					console.log( "Error: ", ajaxContext.responseText );
 				},
 				complete: function() {
@@ -272,10 +278,13 @@ jQuery(function($){
 		}
 		return false;
 	});
+	
+	// Delete additional inner shortcodes
 
 	$(document).on('click', '.js-custom-shortcode-delete', function(e){
 		e.preventDefault();
 		var thiz = $(this).data('target'),
+		parent_container = $( this ).closest('.js-wpv-add-item-settings-wrapper'),
 		spinnerContainer = $('<div class="spinner ajax-loader">').insertAfter($('.js-custom-inner-shortcodes-add')).show();
 		var data = {
 			action: 'wpv_update_custom_inner_shortcodes',
@@ -292,20 +301,132 @@ jQuery(function($){
 			success:function(response){
 				if ( (typeof(response) !== 'undefined') ) {
 					if (response == 'ok') {
-						$('li.js-' + thiz + '-item').fadeOut( 'fast', function() { $(this).remove(); });
+						$( 'li.js-' + thiz + '-item', parent_container )
+							.addClass( 'remove' )
+							.fadeOut( 'fast', function() { 
+								$( this ).remove(); 
+							});
 					}
 					else {
-						$('.js-wpv-cs-ajaxfail').show();
+						$('.js-wpv-cs-ajaxfail', parent_container).show();
 						console.log( "Error: WordPress AJAX returned ", response );
 					}
 				}
 				else {
-					$('.js-wpv-cs-ajaxfail').show();
+					$('.js-wpv-cs-ajaxfail', parent_container).show();
 					console.log( "Error: AJAX returned ", response );
 				}
 			},
 			error: function (ajaxContext) {
-				$('.js-wpv-cs-ajaxfail').show();
+				$('.js-wpv-cs-ajaxfail', parent_container).show();
+				console.log( "Error: ", ajaxContext.responseText );
+			},
+			complete: function() {
+				spinnerContainer.remove();
+			}
+		});
+
+		return false;
+	});
+	
+	// Add custom conditional functions
+	
+	$('.js-custom-conditional-function-add').on('click', function(e){
+		e.preventDefault();
+		var thiz = $(this),
+		shortcode_pattern = /^[a-zA-Z0-9\:\-\_]+$/,
+		parent_form = $( this ).closest( '.js-wpv-add-item-settings-form' ),
+		parent_container = $( this ).closest('.js-wpv-add-item-settings-wrapper'),
+		newshortcode = $('.js-wpv-add-item-settings-form-newname', parent_form),
+		sanitized_val = newshortcode.val().replace( '::', '-_paamayim_-' );
+		$('.js-wpv-cs-error, .js-wpv-cs-dup, .js-wpv-cs-ajaxfail', parent_form).hide();
+		if (shortcode_pattern.test(newshortcode.val()) == false) {
+			$('.js-wpv-cs-error', parent_form).show();
+		} else if ( $('.js-' + sanitized_val + '-item', parent_container).length > 0 ) {
+			$('.js-wpv-cs-dup', parent_form).show();
+		} else {
+			var spinnerContainer = $('<div class="spinner ajax-loader">').insertAfter($(this)).show();
+			thiz.removeClass('button-primary').addClass('button-secondary').prop('disabled', true);
+			var data = {
+				action: 'wpv_update_custom_conditional_functions',
+				csaction: 'add',
+				cstarget: newshortcode.val(),
+				wpv_custom_conditional_functions_nonce: $('#wpv_custom_conditional_functions_nonce').val()
+			};
+
+			$.ajax({
+				async:false,
+				type:"POST",
+				url:ajaxurl,
+				data:data,
+				success:function(response){
+					if ( (typeof(response) !== 'undefined') ) {
+						if (response == 'ok') {
+							$('.js-wpv-add-item-settings-list', parent_container).append('<li class="js-' + sanitized_val + '-item"><span class="">' + newshortcode.val() + '</span> <i class="icon-remove-sign js-custom-function-delete" data-target="' + sanitized_val + '"></i></li>');
+							newshortcode.val('');
+						}
+						else {
+							$('.js-wpv-cs-ajaxfail', parent_form).show();
+							console.log( "Error: WordPress AJAX returned ", response );
+						}
+					}
+					else {
+						$('.js-wpv-cs-ajaxfail', parent_form).show();
+						console.log( "Error: AJAX returned ", response );
+					}
+				},
+				error: function (ajaxContext) {
+					$('.js-wpv-cs-ajaxfail', parent_form).show();
+					console.log( "Error: ", ajaxContext.responseText );
+				},
+				complete: function() {
+					spinnerContainer.remove();
+				}
+			});
+		}
+		return false;
+	});
+	
+	// Delete custom conditional functions
+	
+	$(document).on('click', '.js-custom-function-delete', function(e){
+		e.preventDefault();
+		var thiz = $(this).data('target'),
+		parent_container = $( this ).closest('.js-wpv-add-item-settings-wrapper'),
+		spinnerContainer = $('<div class="spinner ajax-loader">').insertAfter($('.js-custom-conditional-function-add')).show();
+		var data = {
+			action: 'wpv_update_custom_conditional_functions',
+			csaction: 'delete',
+			cstarget: thiz,
+			wpv_custom_conditional_functions_nonce: $('#wpv_custom_conditional_functions_nonce').val()
+		};
+
+		$.ajax({
+			async:false,
+			type:"POST",
+			url:ajaxurl,
+			data:data,
+			success:function(response){
+				if ( (typeof(response) !== 'undefined') ) {
+					if (response == 'ok') {
+						$( 'li.js-' + thiz + '-item', parent_container )
+							.addClass( 'remove' )
+							.fadeOut( 'fast', function() { 
+								$( this ).remove(); 
+							});
+					}
+					else {
+						$('.js-wpv-cs-ajaxfail', parent_container).show();
+						console.log( "Error: WordPress AJAX returned ", response );
+					}
+				}
+				else {
+					$('.js-wpv-cs-ajaxfail', parent_container).show();
+					console.log( "Error: AJAX returned ", response );
+				}
+			},
+			error: function (ajaxContext) {
+				$('.js-wpv-cs-ajaxfail', parent_container).show();
 				console.log( "Error: ", ajaxContext.responseText );
 			},
 			complete: function() {
@@ -316,6 +437,7 @@ jQuery(function($){
 		return false;
 	});
 
+	// Maybe DEPRECATED ??
 	$('.js-custom-inner-shortcodes-save').on('click', function(e) {
 		e.preventDefault();
 
@@ -571,7 +693,7 @@ jQuery(function($){
 			var data = {
 				action: 'wpv_update_debug_mode_status',
 				debug_status: debug_status,
-				wpv_dembug_mode_type: $('input[name=wpv-debug-mode-type]:radio:checked').val(),
+				wpv_debug_mode_type: $('input[name=wpv_debug_mode_type]:radio:checked').val(),
 				wpv_debug_mode_option: $('#wpv_debug_mode_option').val()
 				
 			};

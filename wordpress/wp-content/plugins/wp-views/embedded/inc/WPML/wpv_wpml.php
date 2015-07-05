@@ -35,20 +35,11 @@ function wpv_wpml_icl_current_language($lang) { // TODO check why is this needed
 */
 
 function wpml_content_fix_links_to_translated_content($body){
-    global $wpdb, $sitepress, $sitepress_settings, $wp_taxonomies;
+    global $WPV_settings, $wpdb, $sitepress, $sitepress_settings, $wp_taxonomies;
 
-    global $WP_Views;
-    $settings = $WP_Views->get_options();
-    if (isset($settings['wpml_fix_urls'])) {
-        $wpml_fix_urls = $settings['wpml_fix_urls'];
-    } else {
-        $wpml_fix_urls = true;
-    }
-
-    if (!$wpml_fix_urls) {
+    if ( ! $WPV_settings->wpml_fix_urls ) {
         return $body;
     }
-
 
     if (isset($sitepress)) {
 
@@ -61,6 +52,8 @@ function wpml_content_fix_links_to_translated_content($body){
             $body = $content_cache[$cache_code];
         } else {
 
+			// On the latest fix, those two hooks were  moved to after the _process_generic_text call
+			// This needs wild testing on sites with a non-english first language
             add_filter('icl_current_language', 'wpv_wpml_icl_current_language');
             remove_filter('option_rewrite_rules', array($sitepress, 'rewrite_rules_filter'));
 
@@ -109,7 +102,14 @@ function wpml_content_fix_links_to_translated_content($body){
                         $translations = NULL;
                         $is_tax = false;
                         if($key == 'p'){
-                            $kind = 'post_' . $wpdb->get_var("SELECT post_type FROM {$wpdb->posts} WHERE ID='{$value}'");
+                            $kind = 'post_' . $wpdb->get_var(
+								$wpdb->prepare(
+									"SELECT post_type FROM {$wpdb->posts} 
+									WHERE ID = %d 
+									LIMIT 1",
+									$value
+								)
+							);
                         } else if($key == "page_id"){
                             $kind = 'post_page';
                         } else if($key == 'cat' || $key == 'cat_ID'){
@@ -120,8 +120,17 @@ function wpml_content_fix_links_to_translated_content($body){
                             $is_tax = true;
                             $taxonomy = 'post_tag';
                             $kind = 'tax_' . $taxonomy;
-                            $value = $wpdb->get_var("SELECT term_taxonomy_id FROM {$wpdb->terms} t
-                                JOIN {$wpdb->term_taxonomy} x ON t.term_id = x.term_id WHERE x.taxonomy='{$taxonomy}' AND t.slug='{$value}'");
+                            $value = $wpdb->get_var(
+								$wpdb->prepare(
+									"SELECT term_taxonomy_id FROM {$wpdb->terms} t JOIN {$wpdb->term_taxonomy} x 
+									ON t.term_id = x.term_id 
+									WHERE x.taxonomy = %s 
+									AND t.slug = %s 
+									LIMIT 1",
+									$taxonomy,
+									$value
+								)
+							);
                         } else {
                             $found = false;
                             foreach($wp_taxonomies as $ktax => $tax){
@@ -129,9 +138,17 @@ function wpml_content_fix_links_to_translated_content($body){
                                     $found = true;
                                     $is_tax = true;
                                     $kind = 'tax_' . $ktax;
-                                    $value = $wpdb->get_var("
-                                        SELECT term_taxonomy_id FROM {$wpdb->terms} t
-                                            JOIN {$wpdb->term_taxonomy} x ON t.term_id = x.term_id WHERE x.taxonomy='{$ktax}' AND t.slug='{$value}'");
+                                    $value = $wpdb->get_var(
+										$wpdb->prepare(
+											"SELECT term_taxonomy_id FROM {$wpdb->terms} t JOIN {$wpdb->term_taxonomy} x 
+											ON t.term_id = x.term_id 
+											WHERE x.taxonomy = %s 
+											AND t.slug = %s 
+											LIMIT 1",
+											$ktax,
+											$value
+										)
+									);
                                     $taxonomy = $ktax;
                                 }
                             }
@@ -161,7 +178,15 @@ function wpml_content_fix_links_to_translated_content($body){
                             $translated_id = $translations[$target_lang_code]->element_id;
 
                             if($is_tax){ //if it's a tax, get the translated link based on the term slug (to avoid the need to convert from term_taxonomy_id to term_id)
-                                $translated_id = $wpdb->get_var("SELECT slug FROM {$wpdb->terms} t JOIN {$wpdb->term_taxonomy} x ON t.term_id=x.term_id WHERE x.term_taxonomy_id=$translated_id");
+                                $translated_id = $wpdb->get_var(
+									$wpdb->prepare(
+										"SELECT slug FROM {$wpdb->terms} t JOIN {$wpdb->term_taxonomy} x 
+										ON t.term_id = x.term_id 
+										WHERE x.term_taxonomy_id = %d 
+										LIMIT 1",
+										$translated_id
+									)
+								);
                             }
 
                             // if absolute links is not on turn into WP permalinks
@@ -279,13 +304,7 @@ function wpml_content_get_link_paths($body) {
 
 add_action('icl_tm_menu_mcsetup', 'wpv_wpml_settings');
 function wpv_wpml_settings() {
-    global $WP_Views;
-    $settings = $WP_Views->get_options();
-    if (isset($settings['wpml_fix_urls'])) {
-        $wpml_fix_urls = $settings['wpml_fix_urls'];
-    } else {
-        $wpml_fix_urls = true;
-    }
+    global $WPV_settings;
 
     wp_nonce_field('wpv_wpml_save_settings_nonce', 'wpv_wpml_save_settings_nonce');
     
@@ -312,7 +331,7 @@ function wpv_wpml_settings() {
                 <td style="border: none;">
                     <p>
                         <label>
-                            <input id="wpv_wpml_fix_urls" type="checkbox" value="1" <?php if($wpml_fix_urls): ?>checked<?php endif; ?> />
+                            <input id="wpv_wpml_fix_urls" type="checkbox" value="1" <?php checked( $WPV_settings->wpml_fix_urls ); ?> />
                             <?php _e('Convert URLs to point to translated content in Views and Content Templates', 'wpv-views'); ?>
                         </label>
                     </p>
@@ -346,7 +365,7 @@ function wpv_wpml_settings() {
         <div class="wpml-section-content">
             <p>
                 <label>
-                    <input id="wpv_wpml_fix_urls" type="checkbox" value="1" <?php if($wpml_fix_urls): ?>checked<?php endif; ?> />
+                    <input id="wpv_wpml_fix_urls" type="checkbox" value="1" <?php checked( $WPV_settings->wpml_fix_urls ); ?> />
                     <?php _e('Convert URLs to point to translated content in Views and Content Templates', 'wpv-views'); ?>
                 </label>
             </p>
@@ -387,17 +406,9 @@ function wpv_wpml_settings() {
 add_action('wp_ajax_wpv_wpml_save_settings', 'wpv_wpml_save_settings');
 function wpv_wpml_save_settings() {
 	if (wp_verify_nonce($_POST['wpv_nonce'], 'wpv_wpml_save_settings_nonce')) {
-        global $WP_Views;
-        $settings = $WP_Views->get_options();
-
-        if (isset($_POST['wpv_wpml_fix_urls'])) {
-            $settings['wpml_fix_urls'] = $_POST['wpv_wpml_fix_urls'];
-        } else {
-            $settings['wpml_fix_urls'] = false;
-        }
-
-        $WP_Views->save_options($settings);
-
+        global $WPV_settings;
+        $WPV_settings->wpml_fix_urls = isset( $_POST['wpv_wpml_fix_urls'] ) ? $_POST['wpv_wpml_fix_urls'] : false;
+        $WPV_settings->save();
     }
 
     die();
@@ -641,12 +652,19 @@ function wpv_register_wpml_strings( $content ) {
 * Hooks into the String Translation activation, registering all Views wpml-string shortcodes and all translatable strings in wpv-control shortcodes
 *
 * @since 1.5.0
+* @since 1.6.2 change of the hook to init as the user capabilities are not reliable before that (and they are used in get_posts())
 */
 
-add_action('plugins_loaded', 'wpv_register_wpml_strings_on_activation', 99);
+add_action('init', 'wpv_register_wpml_strings_on_activation', 99);
 
 function wpv_register_wpml_strings_on_activation() {
-	if ( function_exists( 'icl_register_string' ) && defined( 'WPML_ST_VERSION' ) && !get_option( 'wpv_strings_translation_initialized', false ) ) {
+	if (
+		function_exists( 'icl_register_string' ) &&
+		defined( 'WPML_ST_VERSION' ) &&
+		!get_option( 'wpv_strings_translation_initialized', false ) &&
+		current_user_can( 'manage_options' )
+	) {
+		global $WP_Views;
 		// Register strings from Views
 		$views = get_posts('post_type=view&post_status=any&posts_per_page=-1');
 		foreach ( $views as $key => $post ) {
@@ -654,13 +672,13 @@ function wpv_register_wpml_strings_on_activation() {
 			// Register strings in the content
 			wpv_register_wpml_strings( $post['post_content'] );
 			// Register strings in the Filter HTML textarea
-			$view_array = get_post_meta( $post["ID"], '_wpv_settings', true);
+			$view_array = $WP_Views->get_view_settings( $post["ID"] );
 			if ( isset( $view_array['filter_meta_html'] ) ) {
 				wpv_add_controls_labels_to_translation( $view_array['filter_meta_html'], $post["ID"] );
 				wpv_register_wpml_strings( $view_array['filter_meta_html'] );
 			}
 			// Register strings in the Layout HTML textarea
-			$view_layout_array = get_post_meta($post["ID"], '_wpv_layout_settings', true);
+			$view_layout_array = $WP_Views->get_view_layout_settings( $post["ID"] );
 			if ( isset( $view_layout_array['layout_meta_html'] ) ) {
 				wpv_register_wpml_strings( $view_layout_array['layout_meta_html'] );
 			}
@@ -677,3 +695,89 @@ function wpv_register_wpml_strings_on_activation() {
 	}
 }
 
+/**
+* wpv_add_string_translation_to_formatting_instructions
+* 
+* Registers the hooks to add the String Translation information to the formatting instructions under CodeMirror textareas
+*
+* @since 1.7
+*/
+
+add_action( 'init', 'wpv_add_string_translation_to_formatting_instructions' );
+
+function wpv_add_string_translation_to_formatting_instructions() {
+	if ( function_exists( 'wpml_string_shortcode' )	) {
+		// Register the section
+		add_filter( 'wpv_filter_formatting_help_filter', 'wpv_register_wpml_section' );
+		add_filter( 'wpv_filter_formatting_help_layout', 'wpv_register_wpml_section' );
+		add_filter( 'wpv_filter_formatting_help_inline_content_template', 'wpv_register_wpml_section' );
+		add_filter( 'wpv_filter_formatting_help_layouts_content_template_cell', 'wpv_register_wpml_section' );
+		add_filter( 'wpv_filter_formatting_help_combined_output', 'wpv_register_wpml_section' );
+		add_filter( 'wpv_filter_formatting_help_content_template', 'wpv_register_wpml_section' );
+		// Register the section content
+		add_filter( 'wpv_filter_formatting_instructions_section', 'wpv_wpml_string_translation_shortcodes_instructions', 10, 2 );
+	}
+}
+
+/**
+* wpv_register_wpml_section
+*
+* Registers the formatting instructions section for WPML in several textareas
+*
+* Check if the string_translation section has already been registered. If not, add it to the hooked formatting instructions boxes
+*
+* @param $sections (array) Registered sections for the formatting instructions
+*
+* @return $sections (array)
+*
+* @since 1.7
+*/
+
+function wpv_register_wpml_section( $sections ) {
+	if ( ! in_array( 'string_translation', $sections ) ) {
+		array_splice( $sections, -2, 0, array( 'string_translation' ) );
+	}
+	return $sections;
+}
+
+/**
+* wpv_wpml_string_translation_shortcodes_instructions
+*
+* Registers the content of the WPML section in several formatting instructions boxes
+*
+* @param $return (array|false) What to return, generally an array for the section that you want to give content to
+*     'classname' => (string) A specific classname for this section, useful when some kind of show/hide functionality is needed
+*     'title' => (string) The title of the section
+*     'content' => (string) The main text of the section
+*     'table' => (array) Table of ( Element, Description) arrays to showcase shortcodes, markup or related things
+*         array(
+*             'element' => (string) The element to describe. You can use some classes to add styling like in the CodeMirror instances: .wpv-code-shortcode, .wpv-code-html, .wpv-code-attr or .wpv-code-val
+*             'description' => (string) The element description
+*         )
+*     'content_extra' => (string) Extra text to be displayed after the table
+* @param $section (string) The name of the section
+*
+* @return $return (array|false)
+*
+* @since 1.7
+*/
+
+function wpv_wpml_string_translation_shortcodes_instructions( $return, $section ) {
+	if ( $section == 'string_translation' ) {
+		$return = array(
+			'classname' => 'js-wpv-editor-instructions-for-string-translation',
+			'title' => __( 'String translation shortcodes', 'wpv-views' ),
+			'content' => '',
+			'table' => array(
+				array(
+					'element' => '<span class="wpv-code-shortcode">[wpml-string</span> <span class="wpv-code-attr">context</span>=<span class="wpv-code-val">"wpv-views"</span><span class="wpv-code-shortcode">]</span>' 
+							. __( 'Text content', 'wpv-views' )
+							. '<span class="wpv-code-shortcode">[/wpml-string]</span>',
+					'description' => __( 'Makes the text content translatable via WPML\'s String Translation.', 'wpv-views' )
+				)
+			),
+			'content_extra' => ''
+		);
+	}
+	return $return;
+}

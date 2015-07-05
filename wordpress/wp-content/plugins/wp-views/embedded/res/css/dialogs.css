@@ -99,8 +99,11 @@
 
 		.wpv-dialog-content .helper-text {
 			display: block;
+			clear: both;
 			color: #999;
 			font-size: 90%;
+			margin-left: 22px;
+			margin-right: 22px;
 		}
 
 		.wpv-dialog-content table {
@@ -257,6 +260,27 @@
 				font-weight: bold;
 			}
 
+	.wpv-dialog-parametric-filter .icon-move {
+		cursor: move;
+	}
+
+	.wpv-dialog-parametric-filter .icon-remove-sign {
+		cursor: pointer;
+	}
+			
+	.wpv-dialog-parametric-filter .label-alignleft {
+		display: inline-block;
+		padding-right: 10px;
+		width: 45%;
+	}
+	
+	.wpv-dialog-parametric-filter select {
+		min-width: 190px;
+	}
+	.wpv-dialog-parametric-filter textarea {
+		width: 100%;
+	}
+
 /* wpv-dialog-parametric-filter END */
 
 /* wpv-dialog-layout-wizard */
@@ -283,11 +307,12 @@
 			margin: 1px;
 		}
 
-		.layout-wizard-layout-style li {
+		.wpv-layout-wizard-layout-style li {
 			line-height: 32px;
 			vertical-align: middle;
+			position: relative;
 		}
-			.layout-wizard-layout-style i {
+			.wpv-layout-wizard-layout-style i {
 				font-size: 32px;
 				margin: 0 5px;
 				vertical-align: middle;
@@ -295,34 +320,31 @@
 			}
 
 
-		.layout-wizard-layout-fields li {
+		.wpv-layout-wizard-layout-fields li {
 			position: relative;
 			padding: 5px 0 5px 25px;
+			border: solid 1px transparent;
+			transition: all 1s linear;
+			
 		}
-		.layout-wizard-layout-fields li:nth-child(2n) {
+		.wpv-layout-wizard-layout-fields li:nth-child(2n) {
 			background: #fafafa;
 		}
+		
+		.wpv-layout-wizard-layout-fields li.wpv-layout-wizard-field-deleted {
+			border-color: red;
+		}
 
-			.layout-wizard-layout-fields i {
+			.wpv-layout-wizard-layout-fields i {
 				vertical-align: middle;
 				margin: 0 5px;
 			}
-			.layout-wizard-layout-fields .icon-move {
+			.wpv-layout-wizard-layout-fields .icon-move {
 				cursor: move;
 				position: absolute;
 				top: 13px;
 				left: 2px;
 			}
-			.layout-wizard-layout-fields .icon-remove-sign {
-				cursor: pointer;
-				opacity: .7;
-			}
-			.layout-wizard-layout-fields .icon-remove-sign:hover {
-				opacity: 1;
-			}
-			.layout-wizard-layout-fields + p {
-				text-align: right;
-				}
 /* wpv-dialog-layout-wizard  END */
 
 /* wpv-dialog-layout-wizard */
@@ -336,15 +358,19 @@
 	}
 
 		.wpv-dialog-pagination-wizard .wpv-dialog-sidebar h3 {
-			font-size: 18px;
-			color: #999;
-			font-weight: normal;
-			margin-bottom: 20px;
-			text-align: center;
+			font-size: 13px;
+			color: #fefefe;
+			background: #999;
+			padding: 5px 5px;
+			margin: 0;
 		}
 
 		.wpv-dialog-pagination-wizard .pagination-preview {
+			border: 1px solid #ccc;
+			border-top: none;
+			border-radius: 0 0 5px 5px;
 			cursor: default;
+			padding: 1px 15px 1px 10px;
 		}
 
 			.wpv-dialog-pagination-wizard .pagination-preview [disabled] {
@@ -421,4 +447,12 @@
     color: #CCC;
     background: transparent;
     cursor: pointer;
+}
+
+/* Disalog trash Content Template*/
+.wpv-dialog-trash-ct{
+	width:550px;
+}
+.wpv-dialog-trash-ct select{
+	max-width:200px;
 }

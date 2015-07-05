@@ -1,4 +1,12 @@
 <?php
+/**
+ *
+ * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/classes/class.credfile.php $
+ * $LastChangedDate: 2014-10-01 08:03:36 +0000 (Wed, 01 Oct 2014) $
+ * $LastChangedRevision: 27576 $
+ * $LastChangedBy: francesco $
+ *
+ */
 require_once 'class.textfield.php';
 
 /**
@@ -9,55 +17,86 @@ require_once 'class.textfield.php';
 class WPToolset_Field_Credfile extends WPToolset_Field_Textfield
 {
 
-    public function init() {        
-    }
-
-    public static function registerScripts() {
-        wp_register_script( 'wpt-field-credfile',
+    public function init() {
+		wp_register_script( 'wpt-field-credfile',
                 WPTOOLSET_FORMS_RELPATH . '/js/credfile.js',
                 array('wptoolset-forms'), WPTOOLSET_FORMS_VERSION, true );
+		wp_enqueue_script( 'wpt-field-credfile' );
+	}
+
+    public static function registerScripts() {
+        
     }
 
     public static function registerStyles() {
-        wp_register_style( 'wpt-field-credfile',
-                WPTOOLSET_FORMS_RELPATH . '/css/credfile.css' );
+        
     }
 
     public function enqueueScripts() {
-        wp_enqueue_script( 'wpt-field-credfile' );
+        
     }
 
     public function enqueueStyles() {
-        wp_enqueue_style( 'wpt-field-credfile' );
+        
     }
 
     public function metaform() {
-        $value = $this->getValue();        
+        $value = $this->getValue();
+        $name = $this->getName();
+        if ( isset($this->_data['title']) ){
+                $title = $this->_data['title'];
+        }else{
+                $title = $name;	
+        }
 
-        $is_image = false;
-        if ( !empty( $value ) && $this->getName() == '_featured_image' ) {
-            if ( preg_match( '/src="([\w\d\:\/\._-]*)"/', $value, $_v ) ) {
-                $value = $_v[1];
-            }
+        $id = str_replace( array( "[", "]" ), "", $name );
+        $delete_input_showhide = '';
+        $button_extra_classnames = '';
+
+        $has_image = false;
+        $is_empty = false;
+
+        if ( empty( $value ) ) {
+                $value = ''; // NOTE we need to set it to an empty string because sometimes it is NULL on repeating fields
+                $is_empty = true;
+                $delete_input_showhide = ' style="display:none"';
+        }
+
+        if ( $name == '_featured_image' ) {
+                $title = __( 'Featured Image', 'wpv-views' );
+                if ( !$is_empty ) {
+                        if ( preg_match( '/src="([\w\d\:\/\._-]*)"/', $value, $_v ) ) {
+                                $value = $_v[1];
+                        }
+                }
+        }
+
+        if ( !$is_empty ) {
+                $pathinfo = pathinfo( $value );
+                // TODO we should check against the allowed mime types, not file extensions
+                if ( isset( $pathinfo['extension'] ) && in_array( strtolower( $pathinfo['extension'] ), array( 'png', 'gif', 'jpg', 'jpeg', 'bmp', 'tif' ) ) ) {
+                    $has_image = true;
+                }
+        }
+
+        if ( array_key_exists( 'use_bootstrap', $this->_data ) && $this->_data['use_bootstrap'] ) {
+                $button_extra_classnames = ' btn btn-default btn-sm';
         }
         
-        $id = str_replace(array("[","]"),"",$this->getName());
-        $preview_file = WPTOOLSET_FORMS_RELPATH . '/images/icon-attachment32.png';
+        $preview_file = '';//WPTOOLSET_FORMS_RELPATH . '/images/icon-attachment32.png';
         $attr_hidden = array(
-            'id' => $id."_hidden"
+            'id' => $id . "_hidden",
+			'class' => 'js-wpv-credfile-hidden',
+			'data-wpt-type' => 'file'
         );
         $attr_file = array(
-            'id' => $id."_file",
+            'id' => $id . "_file",
             'class' => 'js-wpt-credfile-upload-file wpt-credfile-upload-file',
             'alt' => $value,
         );
 
-        if ( !empty( $value ) ) {
+        if ( !$is_empty ) {
             $preview_file = $value;
-            $pathinfo = pathinfo( $value );
-            if ( in_array( strtolower( $pathinfo['extension'] ), array('png', 'gif', 'jpg', 'jpeg', 'bmp') ) ) {
-                $is_image = true;
-            }
             // Set attributes
             $attr_file['disabled'] = 'disabled';
             $attr_file['style'] = 'display:none';
@@ -66,53 +105,44 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield
         }
 
         $form = array();
-        if ( !empty( $value ) ) {
-            $form[] = array(
+        $form[] = array(
                 '#type' => 'markup',
-                '#markup' => '<input type="button" value="' . __( 'Delete' ) . '" id="'.$id.'_button" name="switch" class="js-wpt-credfile-delete-button wpt-credfile-delete-button" onclick="_cred_switch(\''.$id.'\')"/>',
-            );
-        }
+                '#markup' => '<input type="button" style="display:none" data-action="undo" class="js-wpt-credfile-undo wpt-credfile-undo' . $button_extra_classnames . '" value="' . esc_attr( __( 'Restore original', 'wpv-views' ) ) . '" />',
+        );
+        $form[] = array(
+                '#type' => 'markup',
+                '#markup' => '<input type="button"' . $delete_input_showhide . ' data-action="delete" class="js-wpt-credfile-delete wpt-credfile-delete' . $button_extra_classnames . '" value="' . esc_attr( __( 'Clear', 'wpv-views' ) ) . '" />',
+        );
         $form[] = array(
             '#type' => 'hidden',
-            '#name' => $this->getName(),
+            '#name' => $name,
             '#value' => $value,
             '#attributes' => $attr_hidden,
         );
         $form[] = array(
             '#type' => 'file',
-            '#name' => $this->getName(),
+            '#name' => $name,
             '#value' => $value,
-            '#title' => $this->getTitleFromName( $this->getTitle() ),
+            '#title' => $title,
             '#before' => '',
             '#after' => '',
             '#attributes' => $attr_file,
             '#validate' => $this->getValidationData(),
+            '#repetitive' => $this->isRepetitive(),
         );
-        if ( $is_image ) {
+        if ( $has_image ) {
             $form[] = array(
                 '#type' => 'markup',
-                '#markup' => '<img id="'.$id.'_image" src="' . $preview_file . '" class="js-wpt-credfile-preview wpt-credfile-preview" />',
+                '#markup' => '<span class="js-wpt-credfile-preview  wpt-credfile-preview"><img id="'.$id.'_image" src="' . $preview_file . '" title="' . $preview_file . '" alt="' . $preview_file . '" class="js-wpt-credfile-preview-item wpt-credfile-preview-item" /></span>',
             );
         } else {
-            if (!empty($value))
+            //if ( !$is_empty )
             $form[] = array(
                 '#type' => 'markup',
-                '#markup' => $preview_file,
+                '#markup' => '<span class="js-wpt-credfile-preview wpt-credfile-preview">' . $preview_file . '</span>',
             );
         }
-
         return $form;
-    }
-
-    private function getTitleFromName( $name ) {
-        switch ( $name ) {
-
-            case "_featured_image":
-                return "Featured Image";
-
-            default:
-                return $name;
-        }
     }
 
 }

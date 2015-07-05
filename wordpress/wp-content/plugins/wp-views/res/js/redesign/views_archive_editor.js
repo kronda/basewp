@@ -1,239 +1,712 @@
-jQuery(function($){
+var WPV_Toolset = WPV_Toolset  || {};
+if ( typeof WPV_Toolset.CodeMirror_instance === "undefined" ) {
+	WPV_Toolset.CodeMirror_instance = [];
+}
 
-	// Screen options fix
+var codemirror_views_layout = icl_editor.codemirror('wpv_layout_meta_html_content', true),
+codemirror_views_layout_val = codemirror_views_layout.getValue(),
+wpv_layout_meta_html_content_qt = quicktags( { id: 'wpv_layout_meta_html_content', buttons: 'strong,em,link,block,del,ins,img,ul,ol,li,code,close' } ),
+codemirror_views_layout_css = icl_editor.codemirror('wpv_layout_meta_html_css', true, 'css'),
+codemirror_views_layout_css_val = codemirror_views_layout_css.getValue(),
+codemirror_views_layout_js = icl_editor.codemirror('wpv_layout_meta_html_js', true, 'javascript'),
+codemirror_views_layout_js_val = codemirror_views_layout_js.getValue(),
+codemirror_views_content = icl_editor.codemirror('wpv_content', true),
+codemirror_views_content_val = codemirror_views_content.getValue(),
+wpv_content_qt = quicktags( { id: 'wpv_content', buttons: 'strong,em,link,block,del,ins,img,ul,ol,li,code,close' } );
 
-	wpv_screen_options();
+WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'] =  codemirror_views_layout;
+WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_css'] =  codemirror_views_layout_css;
+WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_js'] =  codemirror_views_layout_js;
+WPV_Toolset.CodeMirror_instance['wpv_content'] =  codemirror_views_content;
 
-	wpv_show_hide_metasections_init();
+// Define 'save' command in CodeMirror object
+// This automatically adds Ctrl+S (Cmd+S in Mac) keyboard shortcut for saving
+// in every CodeMirror instance.
+// This code is duplicated in views_editor.js
+jQuery(document).ready(function ($) {
+    CodeMirror.commands.save = function (cm) {
+        // Prevent Firefox trigger Save Dialog
+        var keypress_handler = function (cm, event) {
+            if (event.which == 115 && (event.ctrlKey || event.metaKey) || (event.which == 19)) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        };
+        CodeMirror.off(cm.getWrapperElement(), 'keypress', keypress_handler);
+        cm.on('keypress', keypress_handler);
+        
+        var textarea_id = cm.getTextArea().id;
+        if (
+                textarea_id === 'wpv_layout_meta_html_content' ||
+                textarea_id === 'wpv_layout_meta_html_css' ||
+                textarea_id === 'wpv_layout_meta_html_js'
+                ) {
+            /* Loop Output */
+            jQuery('.js-wpv-layout-extra-update').click();
+        } else if (
+                textarea_id === 'wpv_content'
+                ) {
+            /* Filter and Loop Output Integration */
+            jQuery('.js-wpv-content-update').click();
+        }
+    };
+});
 
-	// Help boxes initialization
+var WPViews = WPViews || {};
 
-	wpv_show_hide_help_init();
-
-	// description toggle
-
-	$('.js-wpv-description-toggle').on('click', function() {
-		$(this).hide();
-		$('.js-wpv-description-container').fadeIn('fast');
-		$('#wpv-description').focus();
-	});
-
-	// title placeholder
-
-	$('.js-title').each(function(){
-		if ('' == $(this).val()) {
-			$(this).parent().find('.js-title-reader').removeClass('screen-reader-text');
-			$(this).focus(function(){
-				$(this).parent().find('.js-title-reader').addClass('screen-reader-text');
-			});
-			$(this).blur(function(){
-				$(this).parent().find('.js-title-reader').removeClass('screen-reader-text');
-			});
+WPViews.WPAEditScreen = function( $ ) {
+	
+	var self = this;
+	self.view_id = $('.js-post_ID').val();
+	self.show_hide_sections =  $( '.js-wpv-show-hide-container' ).find('.js-wpv-show-hide-value').serialize();
+	self.show_hide_metasections_help =  $( '.js-wpv-show-hide-container' ).find('.js-wpv-show-hide-help-value').serialize();
+	
+	self.action_bar = $( '#js-wpv-general-actions-bar' );
+	self.action_bar_message_container = $( '#js-wpv-general-actions-bar .js-wpv-message-container' );
+	self.html = $( 'html' );
+	
+	self.overlay_container = $("<div class='wpv-setting-overlay js-wpv-setting-overlay'><div class='wpv-transparency'></div><i class='icon-lock'></i></div>");
+	
+	if ( self.action_bar && self.action_bar.offset() ) {
+		var toolbarPos = self.action_bar.offset().top,
+		adminBarHeight = 0,
+		adminBarWidth = $( '.wpv-title-section .wpv-setting-container' ).width();
+		if ( $('#wpadminbar').length !== 0 ) {
+			adminBarHeight = $('#wpadminbar').height();
+			self.action_bar.width( adminBarWidth );
 		}
-	});
+		self.set_toolbar_pos = function() {
+			if ( toolbarPos <= $(window).scrollTop() + adminBarHeight + 5) {
+				self.html.addClass('wpv-general-actions-bar-fixed');
+			}
+			else {
+				self.html.removeClass('wpv-general-actions-bar-fixed');
+			}
+		};
 
-	//editor buttons
-	$('.js-code-editor-button').click(function(e){
-		e.preventDefault();
-
-		var $this = $(this);
-		var state = $(this).data('state');
-		var $editor = $('.js-code-editor').filter(function() {
-			return $this.data('target') ===  $(this).data('name');
+		$( window ).on( 'scroll', function() {
+			self.set_toolbar_pos();
 		});
 		
-		$this.removeClass('code-editor-textarea-full code-editor-textarea-empty');
+		$( window ).on( 'resize', function() {
+			var adminBarWidth = $( '.wpv-title-section .wpv-setting-container' ).width();
+			self.action_bar.width( adminBarWidth );
+		});
 
-		$editor.toggleClass('closed');
-
-		if ( $this.data('target') == 'filter-css-editor' || $this.data('target') == 'filter-js-editor'
-			|| $this.data('target') == 'layout-js-editor' || $this.data('target') == 'layout-css-editor' ){
-			var z_el = $this.data('target');
-			var $elem = $this.detach();
-			if (state == 'closed') {
-				$editor.find('.js-code-editor-toolbar ul').append('<li class="wpv-'+ z_el +'-button-moved close-editor"></li>');
-				$('.wpv-'+ z_el +'-button-moved').append($elem);
+		self.set_toolbar_pos();
+	}
+	
+	// ---------------------------------
+	// Save actions: errors and successes
+	// ---------------------------------
+	
+	self.manage_ajax_fail = function( data, message_container ) {
+		if ( data.type ) {
+			switch ( data.type ) {
+				case 'nonce':
+				case 'id':
+				case 'capability':
+					self.manage_action_bar_error( data );
+					setConfirmUnload( false );
+					$( '.wpv-setting-container:not(.js-wpv-general-actions-bar)' ).prepend( self.overlay_container );
+					break;
+				default:
+					if ( data.message ) {
+						message_container
+							.wpvToolsetMessage({
+								text: data.message,
+								type: 'error',
+								inline: true,
+								stay: true
+							});
+					}
+					break;
 			}
-			else{
-				$('.js-wpv-'+ z_el +'-old-place').append($elem);
-				$editor.find('.js-code-editor-toolbar ul li.wpv-'+ z_el +'-button-moved').remove();
-				if ( wpv_extra_textarea_toggle_flag(z_el) ) {
-					$this.addClass('code-editor-textarea-full');
+		} else {
+			if ( data.message ) {
+				message_container
+					.wpvToolsetMessage({
+						text: data.message,
+						type: 'error',
+						inline: true,
+						stay: true
+					});
+			}
+		}
+	};
+	
+	self.manage_ajax_success = function( data, message_container ) {
+		if ( data.message ) {
+			message_container
+				.wpvToolsetMessage({
+					text: data.message,
+					type: 'success',
+					inline: true,
+					stay: false
+				});
+		}
+	};
+	
+	self.manage_action_bar_error = function( data ) {
+		if ( data.message ) {
+			$.colorbox.close();
+			self.action_bar_message_container
+				.wpvToolsetMessage({
+					text: data.message,
+					type: 'error',
+					inline: false,
+					stay: true
+				});
+		}
+	};
+	
+	// ---------------------------------
+	// Screen options
+	// ---------------------------------
+	
+	// Screen options - position fix
+	
+	self.screen_options_fix = function() {
+		var views_screen_options = $('.js-screen-meta-links-dup > div'),
+		views_screen_options_container = $('.js-screen-meta-dup > div');
+		$('#screen-meta-links').append(views_screen_options);
+		$('#screen-meta').append(views_screen_options_container);
+	};
+	
+	// Screen options - show/hide metasections
+	
+	self.show_hide_metasections_init = function() {
+		$( '.js-wpv-show-hide-section' ).each( function() {
+			var metasection = $( this ).data( 'metasection' );
+			if (
+				0 == $( this ).find( '.js-wpv-show-hide:checked' ).length &&
+				$( '.' + metasection ).find( '.wpv-setting-container' ).length == $( this ).find( '.js-wpv-show-hide' ).length
+			) {
+				$( '.' + metasection ).hide();
+			}
+		});
+	};
+	
+	// Screen options - help boxes for purposes
+	
+	self.show_hide_help_init = function() {
+		$('.js-wpv-show-hide-help').each(function(){
+			var metasection = $( this ).data( 'metasection' ),
+			state = $( this ).attr( 'checked' );
+			if ( 'checked' == state ) {
+				jQuery( '.js-metasection-help-' + metasection ).show();
+			} else {
+				jQuery( '.js-metasection-help-' + metasection ).hide();
+			}
+		});
+	};
+	
+	// Screen options - update automatically
+	
+	self.save_wpa_screen_options = function() {
+		var container = $( '.js-wpv-show-hide-container' ),
+		wpv_show_hide_sections = container.find('.js-wpv-show-hide-value').serialize(),
+		wpv_show_hide_metasections_help = container.find('.js-wpv-show-hide-help-value').serialize();
+		container.find('.toolset-alert').remove();
+		
+		if ( self.show_hide_sections == wpv_show_hide_sections
+			&& self.show_hide_metasections_help == wpv_show_hide_metasections_help
+		) {
+			
+		} else {
+			var manager = container.find( '.js-wpv-show-hide-update' ),
+			nonce = manager.data( 'nonce' ),
+			data_view_id = self.view_id,
+			data = {
+				action: 'wpv_save_screen_options',
+				id: data_view_id,
+				settings: wpv_show_hide_sections,
+				helpboxes: wpv_show_hide_metasections_help,
+				wpnonce: nonce
+			};
+			$.post( ajaxurl, data, function( response ) {
+				if ( response.success ) {
+					$( document ).trigger( 'js_event_wpv_screen_options_saved' );
 				} else {
-					$this.addClass('code-editor-textarea-empty');
+					self.manage_action_bar_error( response.data );
 				}
+			}, 'json' )
+			.fail( function( jqXHR, textStatus, errorThrown ) {
+				console.log( "Error: ", textStatus, errorThrown );
+			})
+			.always( function() {
+				self.show_hide_sections = wpv_show_hide_sections;
+				self.show_hide_metasections_help = wpv_show_hide_metasections_help;
+			});
+		}
+		
+	};
+	
+	self.screen_options_debounce_update = _.debounce( self.save_wpa_screen_options, 1000 );
+	
+	// Screen options - events
+	
+	$( document ).on( 'click', '#screen-meta-links #contextual-help-link', function() {
+		// Fix when opening Help section
+		// This is caused because we are adding our Screen Options in an artificial way
+		// so when opening the Help tab it displays all elements inside the tab container
+		$( '.metabox-prefs .js-wpv-show-hide-container' ).hide();
+	});
+	
+	$( document ).on( 'change', '.js-wpv-show-hide-container .js-wpv-show-hide, .js-wpv-show-hide-container .js-wpv-show-hide-help', function() {
+		self.screen_options_debounce_update();
+	});
+	
+	// ---------------------------------
+	// Title and description
+	// ---------------------------------
+	
+	// Title placeholder
+	
+	self.title_placeholder = function() {
+		$( '.js-title' ).each( function() {
+			var thiz = $( this );
+			if ( '' == thiz.val() ) {
+				thiz
+					.parents( '.js-wpv-titlewrap' )
+						.find( '.js-title-reader' )
+							.removeClass( 'screen-reader-text' );
 			}
-		}
+			thiz.focus( function() {
+				thiz
+					.parents( '.js-wpv-titlewrap' )
+						.find( '.js-title-reader' )
+							.addClass( 'screen-reader-text' );
+			});
+			thiz.blur( function() {
+				if ( '' == thiz.val() ) {
+					thiz
+						.parents( '.js-wpv-titlewrap' )
+							.find( '.js-title-reader' )
+								.removeClass( 'screen-reader-text' );
+				}
+			});
+		});
+	};
+	
+	// Description events
+	
+	$( '.js-wpv-description-toggle' ).on( 'click', function() {
+		$( this ).hide();
+		$( '.js-wpv-description-container' ).fadeIn( 'fast' );
+		$( '#wpv-description' ).focus();
+	});
+	
+	// Change status
 
-		if (state == 'closed') {
-			$(this).data('state','opened');
-			$(this).text($(this).data('opened'));
-			$(this).prev('input').val('on');
-		}
-		else if (state == 'opened') {
-			$(this).data('state','closed');
-			$(this).text($(this).data('closed'));
-			$(this).prev('input').val('off');
-		}
-
-		return false;
+	$( document ).on( 'click', '.js-wpv-change-view-status', function( e ) {
+		e.preventDefault();
+		var thiz = $( this ),
+		newstatus = thiz.data( 'statusto' ),
+		spinnerContainer = $( '<div class="spinner ajax-loader">' ).insertAfter( thiz ).show(),
+		update_message = thiz.data( 'success' ),
+		error_message = thiz.data( 'unsaved' ),
+		redirect_url = thiz.data( 'redirect' ),
+		message_where = $( '.js-wpv-settings-title-and-desc .js-wpv-message-container' );
+		thiz
+			.prop( 'disabled', true )
+			.removeClass( 'button-primary' )
+			.addClass( 'button-secondary' );
+		var data = {
+			action: 'wpv_view_change_status',
+			id: self.view_id,
+			newstatus: newstatus,
+			wpnonce : thiz.data( 'nonce' )
+		};
+		$.ajax({
+			async:false,
+			type:"POST",
+			url:ajaxurl,
+			data:data,
+			success: function( response ) {
+				if ( ( typeof( response ) !== 'undefined' ) && ( response == data.id ) ) {
+					if ( newstatus == 'trash' ) {
+						setConfirmUnload( false );
+						$( location ).attr( 'href', redirect_url );
+					}
+				} else {
+					message_where.wpvToolsetMessage({
+						text:error_message,
+						type:'error',
+						inline:true,
+						stay:true
+					});
+					console.log( "Error: AJAX returned ", response );
+				}
+			},
+			error: function( ajaxContext ) {
+				thiz.prop( 'disabled', false );
+				spinnerContainer.remove();
+				message_where.wpvToolsetMessage({
+					text:error_message,
+					type:'error',
+					inline:true,
+					stay:true
+				});
+			  console.log( "Error: ", ajaxContext.responseText );
+			},
+			complete: function() {
+			  
+			}
+		});
+	});
+	
+	// ---------------------------------
+	// Loop selection
+	// ---------------------------------
+	
+	// Loop selection - save automatically
+	
+	self.save_wpa_loop_selection_options = function() {
+		//view_settings['.js-wpv-loop-selection'] = jQuery('.js-loop-selection-form').serialize();
+		
+		var dataholder = $( '.js-wpv-loop-selection-update' ),
+		messages_container = dataholder.parents( '.js-wpv-update-action-wrap' ).find( '.js-wpv-message-container' ),
+		section_container = $( '.js-wpv-settings-archive-loop' ),
+		unsaved_message = dataholder.data('unsaved'),
+		nonce = dataholder.data('nonce'),
+		spinnerContainer,
+		view_id = self.view_id;
+		section_container
+			.addClass( 'wpv-setting-replacing' )
+			.find( '.spinner.ajax-loader' )
+				.remove();
+		messages_container.find('.toolset-alert-error').remove();
+		spinnerContainer = $('<div class="spinner ajax-loader">').insertBefore( dataholder ).show();
+		var data = {
+			action: 'wpv_update_loop_selection',
+			id: view_id,
+			form: $('.js-loop-selection-form').serialize(),
+			wpnonce: nonce
+		};
+		$('.js-loop-selection-form input').prop( 'disabled', true );
+		$.ajax({
+			type: "POST",
+			dataType: "json",
+			url: ajaxurl,
+			data: data,
+			success: function( response ) {
+				if ( response.success ) {
+					$('.js-loop-selection-form').html( response.data.updated_archive_loops );
+				} else {
+					self.manage_ajax_fail( response.data, messages_container );
+				}
+			},
+			error: function (ajaxContext) {
+				messages_container
+					.wpvToolsetMessage({
+						text:unsaved_message,
+						type:'error',
+						inline:true,
+						stay:true
+					});
+				console.log( "Error: ", ajaxContext.responseText );
+			},
+			complete: function() {
+				spinnerContainer.remove();
+				section_container.removeClass( 'wpv-setting-replacing' );
+				$('.js-loop-selection-form input').prop( 'disabled', false );
+			}
+		});
+	};
+	
+	self.loop_selection_debounce_update = _.debounce( self.save_wpa_loop_selection_options, 1000 );
+	
+	// Loop selection - events
+	
+	$( document ).on( 'change', '.js-loop-selection-form input', function() {
+		self.loop_selection_debounce_update();
+	});
+	
+	// ---------------------------------
+	// Archive pagination button
+	// ---------------------------------
+	
+	/**
+	 * This happens when user clicks on the "Pagination controls" button in the Layout HTML/CSS/JS section.
+	 *
+	 * A dialog for selecting controls to insert ("js-wpv-archive-pagination-dialog") is displayed. The process then
+	 * continues with clicking on a button with class "js-wpv-insert-archive-pagination".
+	 *
+	 * @since 1.7
+	 */ 
+	$(document).on( 'click', '.js-wpv-archive-pagination-popup', function( e ) {
+		e.preventDefault();
+		$.colorbox({
+			href: '.js-wpv-archive-pagination-dialog',
+			inline: true
+		});
 	});
 
-	if ('on' == $('#wpv_layout_meta_html_state').val()) {
-		$('.layout-html-editor').removeClass('closed');
-		$('.layout-html-editor-button')
-		.data('state','opened')
-		.text($('.layout-html-editor-button').data('opened'));
-	}
-	if ('' != $('#wpv_layout_meta_html_css').val() && 'on' == $('#wpv_layout_meta_html_extra_css_state').val()) {
-		$('.layout-css-editor').removeClass('closed');
-		$('.layout-css-editor-button')
-		.data('state','opened')
-		.text($('.layout-css-editor-button').data('opened'));
-	}
-	if ('' != $('#wpv_layout_meta_html_js').val() && 'on' == $('#wpv_layout_meta_html_extra_js_state').val()) {
-		$('.layout-js-editor').removeClass('closed');
-		$('.layout-js-editor-button')
-		.data('state','opened')
-		.text($('.layout-js-editor-button').data('opened'));
-	}
+
+	/**
+	 * Insert archive pagination controls on cursor position into layout editor.
+	 *
+	 * This happens when user clicks on the submit button in "js-wpv-archive-pagination-dialog" colorbox dialog.
+	 *
+	 * @since 1.7
+	 */  
+	$(document).on( 'click', '.js-wpv-insert-archive-pagination', function( e ) {
+
+		// Generate shortcodes
+		var insertPrevLink = $('input[name=archive_pagination_insert_prev]').prop('checked');
+		var insertNextLink = $('input[name=archive_pagination_insert_next]').prop('checked');
+		
+		var paginationShortcodes = "";
+		if( insertPrevLink ) {
+			paginationShortcodes = '[wpv-archive-pager-prev-page][wpml-string context="wpv-views"]Older posts[/wpml-string][/wpv-archive-pager-prev-page]';
+		}
+
+		if( insertNextLink ) {
+			paginationShortcodes += '[wpv-archive-pager-next-page][wpml-string context="wpv-views"]Newer posts[/wpml-string][/wpv-archive-pager-next-page]';
+		}
+		
+		// Insert pagination shortcodes at cursor position in the Layout editor
+		var codemirror = codemirror_views_layout;
+		var current_cursor = codemirror.getCursor( true );
+		var text_before = codemirror.getRange( { line: 0, ch: 0 }, current_cursor );
+		var text_after = codemirror.getRange( current_cursor, { line: codemirror.lastLine(), ch: null } );
+		codemirror.replaceRange( paginationShortcodes, current_cursor, current_cursor );
+		
+		$.colorbox.close();
+		codemirror.refresh();
+		codemirror.focus();
+	});
 
 
-	// wp-pointers
+	/**
+	 * Enable or disable the submit button in "js-wpv-archive-pagination-dialog" dialog depending on the input validity.
+	 *
+	 * @since 1.7
+	 */ 
+	$(document).on( 'change', '.js-wpv-archive-pagination-option', function( e ) {
+		var insertPrevLink = $('input[name=archive_pagination_insert_prev]').prop('checked');
+		var insertNextLink = $('input[name=archive_pagination_insert_next]').prop('checked');
+		var isSomethingChecked = insertPrevLink || insertNextLink;
 
-	$('.wpv-setting-container .icon-question-sign').click(function(){
-		var $thiz = $(this);
-
+		var submitButton = $('.js-wpv-insert-archive-pagination');
+		if( isSomethingChecked ) {
+			submitButton.prop( 'disabled', false ).addClass( 'button-primary' ).removeClass( 'button-secondary' );
+		} else {
+			submitButton.prop( 'disabled', true ).removeClass( 'button-primary' ).addClass( 'button-secondary' );
+		}
+	});
+	
+	// ---------------------------------
+	// CodeMirror
+	// ---------------------------------
+	
+	// Refresh CodeMirror instances on init, after init of everything else
+	// @todo use WPV_Toolset.CodeMirror_instance here to get rid of my globals
+	
+	self.refresh_codemirror = function( instance ) {
+		if ( instance === 'all' ) {
+			codemirror_views_layout.refresh();
+			codemirror_views_layout_css.refresh();
+			codemirror_views_layout_js.refresh();
+			codemirror_views_content.refresh();
+		} else {
+			if ( instance == 'layout-css-editor' ) {
+				codemirror_views_layout_css.refresh();
+			} else if ( instance == 'layout-js-editor' ) {
+				codemirror_views_layout_js.refresh();
+			}
+		}
+	};
+	
+	// ---------------------------------
+	// Quicktags
+	// ---------------------------------
+	
+	// Add quicktags to the default editors
+	
+	self.add_quicktags = function() {
+		WPV_Toolset.add_qt_editor_buttons( wpv_layout_meta_html_content_qt, WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'] );
+		WPV_Toolset.add_qt_editor_buttons( wpv_content_qt, WPV_Toolset.CodeMirror_instance['wpv_content'] );
+	};
+	
+	// ---------------------------------
+	// Formatting help boxes
+	// ---------------------------------
+	
+	self.show_hide_formatting_help = function( thiz ) {
+		$( '.' + thiz.data( 'target' ) ).slideToggle( 400, function() {
+			thiz
+				.find( '.js-wpv-toggle-toggler-icon i' )
+					.toggleClass( 'icon-caret-down icon-caret-up' );
+		});
+	};
+	
+	$( document ).on( 'click', '.js-wpv-editor-instructions-toggle', function() {
+		var thiz = $( this );
+		self.show_hide_formatting_help( thiz );
+	});
+	
+	// ---------------------------------
+	// Sections help pointers
+	// ---------------------------------
+	
+	$('.js-display-tooltip').click(function(){
+		var thiz = $( this );
 		// hide this pointer if other pointer is opened.
-		$('.wp-pointer').fadeOut(100);
-
-		$(this).pointer({
-			content: '<h3>'+$thiz.data('header')+'</h3><p>'+$thiz.data('content')+'</p>',
+		$( '.wp-toolset-pointer' ).fadeOut( 100 );
+		thiz.pointer({
+			pointerClass: 'wp-toolset-pointer wp-toolset-views-pointer',
+			pointerWidth: 400,
+			content: '<h3>'+thiz.data('header')+'</h3><p>'+thiz.data('content')+'</p>',
 			position: {
 				edge: 'left',
 				align: 'center',
 				offset: '15 0'
+			},
+			buttons: function( event, t ) {
+				var button_close = $('<button class="button button-primary-toolset alignright js-wpv-close-this">Close</button>');
+				button_close.bind( 'click.pointer', function( e ) {
+					e.preventDefault();
+					t.element.pointer('close');
+				});
+				return button_close;
 			}
 		}).pointer('open');
 	});
+	
+	// ---------------------------------
+	// Dismiss pointers
+	// ---------------------------------
+	
+	$( document ).on( 'js_event_wpv_dismiss_pointer', function( event, pointer_name ) {
+		var data = {
+			action: 'wpv_dismiss_pointer',
+			name: pointer_name
+			//wpnonce : $(this).data('nonce')
+		};
+		$.ajax({
+			type : "POST",
+			url : ajaxurl,
+			data : data,
+			success : function( response ) {
+				
+			},
+			error: function ( ajaxContext ) {
+				console.log( "Error: ", ajaxContext.responseText );
+			},
+			complete: function() {
+				$( '.js-wpv-' + pointer_name + '-pointer' ).addClass( 'js-wpv-pointer-dismissed' );
+			}
+		});
+	});
+	
+	// ---------------------------------
+	// CSS and JS textareas
+	// ---------------------------------
+	
+	self.editor_needs_flag = function( instance ) {
+		var full = false;
+		if ( instance == 'layout-css-editor' ) {
+			full = ( codemirror_views_layout_css.getValue() != '' );
+		} else if ( instance == 'layout-js-editor' ) {
+			full = ( codemirror_views_layout_js.getValue() != '' );
+		}
+		return full;
+	};
+	
+	$( document ).on( 'click', '.js-wpv-code-editor-toggler', function() {
+		var thiz = $( this ),
+		thiz_kind = thiz.data( 'kind' ),
+		thiz_text_holder = thiz.find( 'span.js-wpv-text-holder' ),
+		thiz_container = thiz.parents( 'li' ),
+		thiz_flag = thiz_container.find( '.js-wpv-textarea-full' ),
+		thiz_target = thiz_container.find( '.js-wpv-code-editor' ),
+		thiz_target_id = thiz.data( 'target' );
+		thiz_flag.hide();
+		thiz_target
+			.toggleClass('js-wpv-code-editor-closed');
+		if ( thiz_target.hasClass( 'js-wpv-code-editor-closed' ) ) {
+			if ( thiz_kind == 'css' ) {
+				thiz_text_holder.text( wpv_editor_strings.meta_html_extra_css_open );
+			} else if ( thiz_kind == 'js' ) {
+				thiz_text_holder.text( wpv_editor_strings.meta_html_extra_js_open );
+			}
+			if ( self.editor_needs_flag( thiz_target_id ) ) {
+				thiz_flag.animate( {width: 'toggle'}, 200 );
+			}
+		} else {
+			if ( thiz_kind == 'css' ) {
+				thiz_text_holder.text( wpv_editor_strings.meta_html_extra_css_close );
+			} else if ( thiz_kind == 'js' ) {
+				thiz_text_holder.text( wpv_editor_strings.meta_html_extra_js_close );
+			}
+		}
+		thiz_target
+			.slideToggle( 200, function() {
+				if ( 
+					! thiz_target.hasClass( 'js-wpv-code-editor-closed' ) 
+					&& ! thiz_target.hasClass( 'js-wpv-code-editor-refreshed' ) 
+				) {
+					self.refresh_codemirror( thiz_target_id );
+					thiz_target.addClass( 'js-wpv-code-editor-refreshed' ) 
+				}
+			});
+	});
+	
+	// ---------------------------------
+	// Toolset compatibility
+	// ---------------------------------
+	
+	self.toolset_compatibility = function() {
+		// CRED plugin
+		if ( typeof cred_cred != 'undefined' ) {
+			cred_cred.posts();
+		}
+		// Layouts plugin
+		if ( $( '.js-wpv-display-in-iframe' ).length == 1 ) {
+			if ( $( '.js-wpv-display-in-iframe' ).val() == 'yes' ) {
+				$( '.toolset-help a, .wpv-setting a' ).attr( "target", "_blank" );
+			}
+		}
+	};
+	
+	// ---------------------------------
+	// Init
+	// ---------------------------------
+	
+	self.init = function(){ // public method
+		// Screen options fix - move to the right place in DOM
+		self.screen_options_fix();
+		// Show or hide metasections in page load, based on screen options
+		self.show_hide_metasections_init();
+		// Show or hide section help boxes based on purpose
+		self.show_hide_help_init();
+		// Title placeholder
+		self.title_placeholder();
+		// Refresh CodeMirror instances
+		self.refresh_codemirror( 'all' );
+		// Add quicktags to the right textareas
+		self.add_quicktags();
+		// Toolset compatibility
+		self.toolset_compatibility();
+	};
+	
+	self.init(); // call the init method
 
-	// CodeMirror
-/*	var codemirror_views_layout = icl_editor.codemirror('wpv_layout_meta_html_content', true);
-	var codemirror_views_layout_css = icl_editor.codemirror('wpv_layout_meta_html_css', true);
-	var codemirror_views_layout_js = icl_editor.codemirror('wpv_layout_meta_html_js', true);
-	var codemirror_views_content = icl_editor.codemirror('wpv_content', true);*/
+};
 
-	if( typeof cred_cred != 'undefined'){
-		cred_cred.posts();
-	}
-});
-
-function wpv_extra_textarea_toggle_flag(element) {
-	var full = false;
-	if ( element == 'layout-css-editor' ) {
-		full = ( codemirror_views_layout_css.getValue() != '' );
-	} else if ( element == 'layout-js-editor' ) {
-		full = ( codemirror_views_layout_js.getValue() != '' );
-	}
-	return full;
-}
-
-// Change status
-
-jQuery(document).on('click', '.js-wpv-change-view-status', function(e){
-	e.preventDefault();
-	var newstatus = jQuery(this).data('statusto'),
-		    spinnerContainer = jQuery('<div class="spinner ajax-loader">').insertAfter(jQuery(this)).show(),
-		    thiz = jQuery(this),
-		    update_message = jQuery(this).data('success'),
-		    error_message = jQuery(this).data('unsaved'),
-		    redirect_url = jQuery(this).data('redirect');
-		    thiz.prop('disabled', true).removeClass('button-primary').addClass('button-secondary');
-		    if (newstatus == 'trash') {
-			    message_where = jQuery('.js-wpv-slug-container');
-		    } else {
-			    message_where = thiz.parent();
-		    }
-		    var data = {
-			    action: 'wpv_view_change_status',
-			    id: jQuery('.js-post_ID').val(),
-			    newstatus: newstatus,
-			    wpnonce : jQuery(this).data('nonce')
-		    };
-		    jQuery.ajax({
-			    async:false,
-		  type:"POST",
-		  url:ajaxurl,
-		  data:data,
-		  success:function(response){
-			  if ( (typeof(response) !== 'undefined') && (response == data.id)) {
-				  if (newstatus == 'trash') {
-					  jQuery(location).attr('href',redirect_url);
-				  }
-			  } else {
-				  message_where.wpvToolsetMessage({
-					  text:error_message,
-				      type:'error',
-				      inline:true,
-				      stay:true
-				  });
-				  console.log( "Error: AJAX returned ", response );
-			  }
-		  },
-		  error: function (ajaxContext) {
-			  thiz.prop('disabled', false);
-			  spinnerContainer.remove();
-			  message_where.wpvToolsetMessage({
-				  text:error_message,
-				  type:'error',
-				  inline:true,
-				  stay:true
-			  });
-			  console.log( "Error: ", ajaxContext.responseText );
-		  },
-		  complete: function() {
-			  
-		  }
-		    });
+jQuery( document ).ready( function( $ ) {
+    WPViews.wpa_edit_screen = new WPViews.WPAEditScreen( $ );
 });
 
 /*
  * Screen options
  */
 
-// Fix when opening Help section
-// This is caused because we are adding our Screen Options in an artificial way
-// so when opening the Hellp tab it displays all elements inside the tab container
-
-jQuery(document).on('click', '#screen-meta-links #contextual-help-link', function() {
-	jQuery('.metabox-prefs .js-wpv-show-hide-container').hide();
-});
-
-// Screen options - move to the right place in DOM
-
-function wpv_screen_options() {
-	var views_screen_options = jQuery('.js-screen-meta-links-dup > div');
-	var views_screen_options_container = jQuery('.js-screen-meta-dup > div');
-	jQuery('#screen-meta-links').append(views_screen_options);
-	jQuery('#screen-meta').append(views_screen_options_container);
-}
-
-// Screen options - hide metasections on page load if needed
-
-function wpv_show_hide_metasections_init() {
-	jQuery('.js-wpv-show-hide-section').each(function(){
-		var metasection = jQuery(this).data('metasection');
-		if (
-			0 == jQuery(this).find('.js-wpv-show-hide:checked').length &&
-			jQuery('.' + metasection).find('.wpv-setting-container').length == jQuery(this).find('.js-wpv-show-hide').length
-		) {
-			jQuery('.' + metasection).hide();
-		}
-	});
-}
 
 // Screen options - manage sections checkboxes click
-// TODO make saving automatic
 
 jQuery(document).on('change', '.js-wpv-show-hide', function(){
 	wpv_show_hide_section_change(jQuery(this));
@@ -252,47 +725,23 @@ function wpv_show_hide_section_change(checkbox) {
 		jQuery('.' + metasection).show();
 		jQuery('.js-wpv-settings-' + section).fadeIn('fast');
 		input_value.val('on');
-		if ('filter-extra' == section) {
-			codemirror_views_query.refresh();
-			codemirror_views_query_css.refresh();
-			codemirror_views_query_js.refresh();
-		}
-		if ('content' == section) {
-			codemirror_views_content.refresh();
-		}
-		if ('layout-extra' == section) {
-			codemirror_views_layout.refresh();
-			codemirror_views_layout_css.refresh();
-			codemirror_views_layout_js.refresh();
-		}
-		if ('pagination' == section) {
-			if ('checked' != jQuery('.js-wpv-show-hide-filter-extra').attr('checked')) {
-				jQuery('.js-wpv-show-hide-filter-extra').trigger('click');
-				jQuery('.js-wpv-show-hide-update').parent().wpvToolsetMessage({
-					text:jQuery('.js-wpv-show-hide-container').data('pagneedsfilter'),
-											      type:'info',
-								  inline:true,
-								  stay:true
-				});
-			}
-		}
+
+		/* We're no longer displaying Combined Output on WPA edit page (ever). But if we did, this should happen
+		 * when showing/hiding it:
+		 * 
+	     * codemirror_views_content.refresh();
+		 */
+		 
 	} else {
 		if(jQuery('.js-wpv-settings-' + section).find('.js-wpv-section-unsaved').length > 0) {
 			checkbox.attr('checked', 'checked');
-			jQuery('.js-wpv-show-hide-update').parent().wpvToolsetMessage({
-				text:section_changed,
-				type:'error',
-				inline:true,
-				stay:true
-			});
-		} else if ('filter-extra' == section && 'checked' == jQuery('.js-wpv-show-hide-pagination').attr('checked')) {
-			jQuery('.js-wpv-show-hide-filter-extra').attr('checked', true);
-			jQuery('.js-wpv-show-hide-update').parent().wpvToolsetMessage({
-				text:jQuery('.js-wpv-show-hide-container').data('pagneedsfilter'),
-										      type:'info',
-								 inline:true,
-								 stay:true
-			});
+			jQuery('.js-wpv-show-hide-container .js-wpv-toolset-messages')
+				.wpvToolsetMessage({
+					text:section_changed,
+					type:'error',
+					inline:true,
+					stay:true
+				});
 		} else {
 			jQuery('.js-wpv-settings-' + section).hide();
 			var metasection = checkbox.parents('.js-wpv-show-hide-section').data('metasection');
@@ -305,78 +754,6 @@ function wpv_show_hide_section_change(checkbox) {
 			input_value.val('off');
 		}
 	}
-}
-
-jQuery(document).on('click', '.js-wpv-show-hide-update', function(){  // TODO this should be DEPRECATED
-	jQuery(this).parents('.js-wpv-show-hide-container').find('.toolset-alert').remove();
-	var update_message = jQuery(this).data('success'),
-		unsaved_message = jQuery(this).data('unsaved'),
-		nonce = jQuery(this).data('nonce'),
-		spinnerContainer = jQuery('<div class="spinner ajax-loader">').insertBefore(jQuery(this)).show(),
-		data_view_id = jQuery('.js-post_ID').val(),
-		wpv_show_hide_sections = jQuery('.js-wpv-show-hide-value').serialize(),
-		wpv_show_hide_metasections_help = jQuery('.js-wpv-show-hide-help-value').serialize();
-	var data = {
-		action: 'wpv_save_screen_options',
-		id: data_view_id,
-		settings: wpv_show_hide_sections,
-		helpboxes: wpv_show_hide_metasections_help,
-		wpnonce: nonce
-	};
-	jQuery.post(ajaxurl, data, function(response) {
-		if ( (typeof(response) !== 'undefined') ) {
-			if (0 != response) {
-				jQuery('.js-wpv-show-hide-update').parent().wpvToolsetMessage({
-					text:update_message,
-					type:'success',
-					inline:true,
-					stay:false
-				});
-			} else {
-				jQuery('.js-wpv-show-hide-update').parent().wpvToolsetMessage({
-					text:unsaved_message,
-					type:'error',
-					inline:true,
-					stay:true
-				});
-				console.log( "Error: WordPress AJAX returned ", response );
-			}
-		} else {
-			jQuery('.js-wpv-show-hide-update').parent().wpvToolsetMessage({
-				text:unsaved_message,
-				type:'error',
-				inline:true,
-				stay:true
-			});
-			console.log( "Error: AJAX returned ", response );
-		}
-	})
-	.fail(function(jqXHR, textStatus, errorThrown) {
-		jQuery('.js-wpv-show-hide-update').parent().wpvToolsetMessage({
-			text:unsaved_message,
-			type:'error',
-			inline:true,
-			stay:true
-		});
-		console.log( "Error: ", textStatus, errorThrown );
-	})
-	.always(function() {
-		spinnerContainer.remove();
-	});
-});
-
-// Message boxes display
-
-function wpv_show_hide_help_init() {
-	jQuery('.js-wpv-show-hide-help').each(function(){
-	var metasection = jQuery(this).data('metasection'),
-		state = jQuery(this).attr('checked');
-	if ('checked' == state) {
-		jQuery('.js-metasection-help-' + metasection).show();
-	} else {
-		jQuery('.js-metasection-help-' + metasection).hide();
-	}
-	});
 }
 
 // Message boxes display
@@ -403,85 +780,101 @@ jQuery(document).on('change', '.js-wpv-show-hide-help', function(){
 	}
 });
 
-// Show or hide layout hint extra text
+/**
+* Quicktags custom implementation fallback
+*/
 
-jQuery(document).on('click', '.js-wpv-layout-help-extra-show', function(e){
-	e.preventDefault();
-	jQuery('.js-wpv-layout-help-extra').fadeIn('fast');
-	jQuery(this).parent().hide();
-	return false;
-});
-
-jQuery(document).on('click', '.js-wpv-layout-help-extra-hide', function(e){
-	e.preventDefault();
-	jQuery('.js-wpv-layout-help-extra').hide();
-	jQuery('.js-wpv-layout-help-extra-show').parent().show();
-	return false;
-});
-
-// Layout wizard help
-
-function wpv_layout_wizard_hint() {
-	if ( !jQuery('.js-wpv-layout-wizard-hint').hasClass('js-toolset-help-dismissed') ) {
-		jQuery('.js-wpv-layout-wizard-hint').fadeIn('fast');
-	}
-}
-
-jQuery(document).on('click', '.js-wpv-layout-wizard-hint .toolset-help-footer .js-toolset-help-close-forever', function(){
-	var data = {
-		action: 'wpv_layout_wizard_hint_disable',
-		wpnonce: jQuery('.js-wpv-layout-wizard-dismiss').data('nonce')
-	};
-	jQuery.post(ajaxurl, data, function(response) {
-		if ( (typeof(response) !== 'undefined')) {
-			if (response == 0) {
-				console.log( "Error: WordPress AJAX returned ", response );
+if ( WPV_Toolset.add_qt_editor_buttons !== 'function' ) {
+    WPV_Toolset.add_qt_editor_buttons = function( qt_instance, editor_instance ) {
+        QTags._buttonsInit();
+		if ( typeof WPV_Toolset.CodeMirror_instance[qt_instance.id] === "undefined" ) {
+			WPV_Toolset.CodeMirror_instance[qt_instance.id] = editor_instance;
+		}
+        for ( var button_name in qt_instance.theButtons ) {
+			if ( qt_instance.theButtons.hasOwnProperty( button_name ) ) {
+				qt_instance.theButtons[button_name].old_callback = qt_instance.theButtons[button_name].callback;
+                if ( qt_instance.theButtons[button_name].id == 'img' ){
+                    qt_instance.theButtons[button_name].callback = function( element, canvas, ed ) {
+                    var t = this,
+                    id = jQuery( canvas ).attr( 'id' ),
+                    selection = WPV_Toolset.CodeMirror_instance[id].getSelection(),
+                    e = "http://",
+                    g = prompt( quicktagsL10n.enterImageURL, e ),
+                    f = prompt( quicktagsL10n.enterImageDescription, "" );
+                    t.tagStart = '<img src="'+g+'" alt="'+f+'" />';
+                    selection = t.tagStart;
+                    t.closeTag( element, ed );
+                    WPV_Toolset.CodeMirror_instance[id].replaceSelection( selection, 'end' );
+                    WPV_Toolset.CodeMirror_instance[id].focus();
+                    }
+                } else if ( qt_instance.theButtons[button_name].id == 'close' ) {
+                    
+                } else if ( qt_instance.theButtons[button_name].id == 'link' ) {
+					var t = this;
+					qt_instance.theButtons[button_name].callback = 
+                        function ( b, c, d, e ) {
+							activeUrlEditor = c;var f,g=this;return"undefined"!=typeof wpLink?void wpLink.open(d.id):(e||(e="http://"),void(g.isOpen(d)===!1?(f=prompt(quicktagsL10n.enterURL,e),f&&(g.tagStart='<a href="'+f+'">',a.TagButton.prototype.callback.call(g,b,c,d))):a.TagButton.prototype.callback.call(g,b,c,d)))
+						} 
+					;
+					jQuery( '#wp-link-submit' ).off();
+					jQuery( '#wp-link-submit' ).on( 'click', function() {
+						var id = jQuery( activeUrlEditor ).attr('id'),
+						selection = WPV_Toolset.CodeMirror_instance[id].getSelection(),
+						target = '';
+						if ( jQuery( '#link-target-checkbox' ).prop('checked') ) {
+						  target = '_blank';
+						}
+						html = '<a href="' + jQuery('#url-field').val() + '"';
+						title = '';
+						if ( jQuery( '#link-title-field' ).val() ) {
+							title = jQuery( '#link-title-field' ).val().replace( /</g, '&lt;' ).replace( />/g, '&gt;' ).replace( /"/g, '&quot;' );
+							html += ' title="' + title + '"';
+						}
+						if ( target ) {
+							html += ' target="' + target + '"';
+						}
+						html += '>';
+						if ( selection === '' ) {
+							html += title;
+						} else {
+							html += selection;
+						}
+						html += '</a>';
+						t.tagStart = html;
+						selection = t.tagStart;
+						WPV_Toolset.CodeMirror_instance[id].replaceSelection( selection, 'end' );
+						WPV_Toolset.CodeMirror_instance[id].focus();
+						jQuery( '#wp-link-backdrop,#wp-link-wrap' ).hide();
+						jQuery( document.body ).removeClass( 'modal-open' );
+						return false;
+                    });
+                } else {
+                    qt_instance.theButtons[button_name].callback = function( element, canvas, ed ) {                    
+                        var id = jQuery( canvas ).attr( 'id' ),
+                        t = this,
+                        selection = WPV_Toolset.CodeMirror_instance[id].getSelection();
+						if ( selection.length > 0 ) { 
+							if ( !t.tagEnd ) {
+								selection = selection + t.tagStart;
+							} else {
+								selection = t.tagStart + selection + t.tagEnd;
+							}
+						} else {
+							if ( !t.tagEnd ) {
+								selection = t.tagStart;
+							} else if ( t.isOpen( ed ) === false ) {
+								selection = t.tagStart;
+								t.openTag( element, ed );
+							} else {
+								selection = t.tagEnd;
+								t.closeTag( element, ed );
+							}
+						}
+                        WPV_Toolset.CodeMirror_instance[id].replaceSelection(selection, 'end');
+                        WPV_Toolset.CodeMirror_instance[id].focus();
+                    }
+                }
 			}
-		} else {
-			console.log( "Error: AJAX returned ", response );
 		}
-	})
-	.fail(function(jqXHR, textStatus, errorThrown) {
-		console.log( "Error: ", textStatus, errorThrown );
-	})
-	.always(function() {
-		jQuery('.js-wpv-layout-wizard-hint').addClass('js-toolset-help-dismissed').hide();
-	});
-});
-
-// Inline CT help
-
-function wpv_inline_ct_hint() {
-	if ( !jQuery('.js-wpv-content-template-hint').hasClass('js-toolset-help-dismissed') ) {
-		if ( jQuery('#wpv-ct-add-to-editor-btn').prop('checked') == true || jQuery('input[name=wpv-ct-type]:checked').val() == 2 ){
-			jQuery('.js-wpv-content-template-hint').find('.js-wpv-ct-was-not-inserted').addClass('hidden');
-			jQuery('.js-wpv-content-template-hint').find('.js-wpv-ct-was-inserted').removeClass('hidden');
-		} else {
-			jQuery('.js-wpv-content-template-hint').find('.js-wpv-ct-was-inserted').addClass('hidden');
-			jQuery('.js-wpv-content-template-hint').find('.js-wpv-ct-was-not-inserted').removeClass('hidden');
-		}
-		jQuery('.js-wpv-content-template-hint').fadeIn('fast');
-	}
+    }
 }
-
-jQuery(document).on('click', '.js-wpv-content-template-hint .toolset-help-footer .js-toolset-help-close-forever', function(){
-	var data = {
-		action: 'wpv_content_template_hint_disable',
-		wpnonce: jQuery('.js-wpv-content-template-dismiss').data('nonce')
-	};
-	jQuery.post(ajaxurl, data, function(response) {
-		if ( (typeof(response) !== 'undefined')) {
-			if (response == 0) {
-				console.log( "Error: WordPress AJAX returned ", response );
-			}
-		} else {
-			console.log( "Error: AJAX returned ", response );
-		}
-	})
-	.fail(function(jqXHR, textStatus, errorThrown) {
-		console.log( "Error: ", textStatus, errorThrown );
-	})
-	.always(function() {
-		jQuery('.js-wpv-content-template-hint').addClass('js-toolset-help-dismissed').hide();
-	});
-});
