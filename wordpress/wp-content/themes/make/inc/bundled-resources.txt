@@ -8,4 +8,4 @@ listed below.
 * Fitvids              - WTFPL (http://sam.zoy.org/wtfpl/)
 * FontAwesome          - MIT license (http://opensource.org/licenses/mit-license.html)
 * Noneditable          - LGPL (http://www.tinymce.com/license)
-* Screenshot           - CC0 (http://unsplash.com/cc0)
+* Screenshot           - CC0 (http://creativecommons.org/publicdomain/zero/1.0/)

@@ -275,6 +275,8 @@ var ttfmakeFormatBuilder = ttfmakeFormatBuilder || {};
 			});
 			if ( 'true' == this.get('target') ) {
 				$node.attr('target', '_blank');
+			} else {
+				$node.removeAttr('target');
 			}
 
 			// Add inline styles.
@@ -301,7 +303,8 @@ var ttfmakeFormatBuilder = ttfmakeFormatBuilder || {};
 				$node.prepend($icon);
 			}
 
-			// Remove TinyMCE attribute that breaks things when trying to update an existing format.
+			// Remove TinyMCE attributes that break things when trying to update an existing format.
+			$node.removeAttr('data-mce-href');
 			$node.removeAttr('data-mce-style');
 		},
 

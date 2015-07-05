@@ -184,7 +184,14 @@ function ttfmake_customizer_define_typography_sections( $sections ) {
 				'control' => array(
 					'control_type' => 'TTFMAKE_Customize_Misc_Control',
 					'type'         => 'text',
-					'description'  => __( 'Not all fonts provide each of these subsets.', 'make' ),
+					'description'  => sprintf(
+						__( 'Not all fonts provide each of these subsets. Please visit the %s to see which subsets are available for each font.', 'make' ),
+						sprintf(
+							'<a href="%1$s" target="_blank">%2$s</a>',
+							esc_url( 'https://www.google.com/fonts' ),
+							__( 'Google Fonts website', 'make' )
+						)
+					),
 				),
 			),
 		),

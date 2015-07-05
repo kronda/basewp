@@ -331,6 +331,13 @@ function ttfmake_builder_get_text_class( $ttfmake_section_data, $sections ) {
 	$columns_number = ( isset( $ttfmake_section_data['columns-number'] ) ) ? absint( $ttfmake_section_data['columns-number'] ) : 1;
 	$text_class .= ' builder-text-columns-' . $columns_number;
 
+	// Test for background padding
+	$bg_color = ( isset( $ttfmake_section_data['background-color'] ) && ! empty( $ttfmake_section_data['background-color'] ) );
+	$bg_image = ( isset( $ttfmake_section_data['background-image'] ) && 0 !== absint( $ttfmake_section_data['background-image'] ) );
+	if ( true === $bg_color || true === $bg_image ) {
+		$text_class .= ' has-background';
+	}
+
 	/**
 	 * Filter the text section class.
 	 *
@@ -341,6 +348,44 @@ function ttfmake_builder_get_text_class( $ttfmake_section_data, $sections ) {
 	 * @param array     $sections                The list of sections.
 	 */
 	return apply_filters( 'make_builder_get_text_class', $text_class, $ttfmake_section_data, $sections );
+}
+
+/**
+ * Generate the CSS for the gallery.
+ *
+ * @since  1.6.1.
+ *
+ * @param  array     $ttfmake_section_data    The section data.
+ * @return string                             The CSS string.
+ */
+function ttfmake_builder_get_text_style( $ttfmake_section_data ) {
+	if ( ! ttfmake_builder_is_section_type( 'text', $ttfmake_section_data ) ) {
+		return '';
+	}
+
+	$text_style = '';
+
+	// Background color
+	if ( isset( $ttfmake_section_data['background-color'] ) && ! empty( $ttfmake_section_data['background-color'] ) ) {
+		$text_style .= 'background-color:' . maybe_hash_hex_color( $ttfmake_section_data['background-color'] ) . ';';
+	}
+
+	// Background image
+	if ( isset( $ttfmake_section_data['background-image'] ) && 0 !== absint( $ttfmake_section_data['background-image'] ) ) {
+		$image_src = ttfmake_get_image_src( $ttfmake_section_data['background-image'], 'full' );
+		if ( isset( $image_src[0] ) ) {
+			$text_style .= 'background-image: url(\'' . addcslashes( esc_url_raw( $image_src[0] ), '"' ) . '\');';
+		}
+	}
+
+	// Background style
+	if ( isset( $ttfmake_section_data['background-style'] ) && ! empty( $ttfmake_section_data['background-style'] ) ) {
+		if ( 'cover' === $ttfmake_section_data['background-style'] ) {
+			$text_style .= 'background-size: cover;';
+		}
+	}
+
+	return $text_style;
 }
 
 /**
@@ -399,6 +444,13 @@ function ttfmake_builder_get_banner_class( $ttfmake_section_data, $sections ) {
 		$banner_class .= ' ' . ttfmake_get_builder_save()->section_classes( $ttfmake_section_data, $sections );
 	}
 
+	// Test for background padding
+	$bg_color = ( isset( $ttfmake_section_data['background-color'] ) && ! empty( $ttfmake_section_data['background-color'] ) );
+	$bg_image = ( isset( $ttfmake_section_data['background-image'] ) && 0 !== absint( $ttfmake_section_data['background-image'] ) );
+	if ( true === $bg_color || true === $bg_image ) {
+		$banner_class .= ' has-background';
+	}
+
 	/**
 	 * Filter the class for the banner section.
 	 *
@@ -408,6 +460,44 @@ function ttfmake_builder_get_banner_class( $ttfmake_section_data, $sections ) {
 	 * @param array     $ttfmake_section_data    The section data.
 	 */
 	return apply_filters( 'make_builder_banner_class', $banner_class, $ttfmake_section_data );
+}
+
+/**
+ * Generate the CSS for the gallery.
+ *
+ * @since  1.6.1.
+ *
+ * @param  array     $ttfmake_section_data    The section data.
+ * @return string                             The CSS string.
+ */
+function ttfmake_builder_get_banner_style( $ttfmake_section_data ) {
+	if ( ! ttfmake_builder_is_section_type( 'banner', $ttfmake_section_data ) ) {
+		return '';
+	}
+
+	$banner_style = '';
+
+	// Background color
+	if ( isset( $ttfmake_section_data['background-color'] ) && ! empty( $ttfmake_section_data['background-color'] ) ) {
+		$banner_style .= 'background-color:' . maybe_hash_hex_color( $ttfmake_section_data['background-color'] ) . ';';
+	}
+
+	// Background image
+	if ( isset( $ttfmake_section_data['background-image'] ) && 0 !== absint( $ttfmake_section_data['background-image'] ) ) {
+		$image_src = ttfmake_get_image_src( $ttfmake_section_data['background-image'], 'full' );
+		if ( isset( $image_src[0] ) ) {
+			$banner_style .= 'background-image: url(\'' . addcslashes( esc_url_raw( $image_src[0] ), '"' ) . '\');';
+		}
+	}
+
+	// Background style
+	if ( isset( $ttfmake_section_data['background-style'] ) && ! empty( $ttfmake_section_data['background-style'] ) ) {
+		if ( 'cover' === $ttfmake_section_data['background-style'] ) {
+			$banner_style .= 'background-size: cover;';
+		}
+	}
+
+	return $banner_style;
 }
 
 /**

@@ -5,9 +5,10 @@
 
 global $ttfmake_section_data, $ttfmake_sections;
 $text_columns = ttfmake_builder_get_text_array( $ttfmake_section_data );
+$darken   = ( isset( $ttfmake_section_data[ 'darken' ] ) ) ? absint( $ttfmake_section_data[ 'darken' ] ) : 0;
 ?>
 
-<section id="builder-section-<?php echo esc_attr( $ttfmake_section_data['id'] ); ?>" class="builder-section<?php echo esc_attr( ttfmake_builder_get_text_class( $ttfmake_section_data, $ttfmake_sections ) ); ?>">
+<section id="<?php echo esc_attr( ttfmake_get_builder_save()->section_html_id( $ttfmake_section_data ) ); ?>" class="builder-section<?php echo esc_attr( ttfmake_builder_get_text_class( $ttfmake_section_data, $ttfmake_sections ) ); ?>" style="<?php echo esc_attr( ttfmake_builder_get_text_style( $ttfmake_section_data ) ); ?>">
 	<?php if ( '' !== $ttfmake_section_data['title'] ) : ?>
 	<h3 class="builder-text-section-title">
 		<?php echo apply_filters( 'the_title', $ttfmake_section_data['title'] ); ?>
@@ -42,4 +43,7 @@ $text_columns = ttfmake_builder_get_text_array( $ttfmake_section_data );
 		</div>
 		<?php $i++; endforeach; endif; ?>
 	</div>
+	<?php if ( 0 !== $darken ) : ?>
+	<div class="builder-section-overlay"></div>
+	<?php endif; ?>
 </section>

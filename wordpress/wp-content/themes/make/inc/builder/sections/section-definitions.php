@@ -98,6 +98,35 @@ class TTFMAKE_Section_Definitions {
 						4 => 4,
 					),
 				),
+				300 => array(
+					'type'  => 'image',
+					'name'  => 'background-image',
+					'label' => __( 'Background image', 'make' ),
+					'class' => 'ttfmake-configuration-media'
+				),
+				400 => array(
+					'type'    => 'checkbox',
+					'label'   => __( 'Darken background to improve readability', 'make' ),
+					'name'    => 'darken',
+					'default' => 0,
+				),
+				500 => array(
+					'type'    => 'select',
+					'name'    => 'background-style',
+					'label'   => __( 'Background style', 'make' ),
+					'default' => 'tile',
+					'options' => array(
+						'tile'  => __( 'Tile', 'make' ),
+						'cover' => __( 'Cover', 'make' ),
+					),
+				),
+				600 => array(
+					'type'    => 'color',
+					'label'   => __( 'Background color', 'make' ),
+					'name'    => 'background-color',
+					'class'   => 'ttfmake-text-background-color ttfmake-configuration-color-picker',
+					'default' => '',
+				),
 			)
 		);
 	}
@@ -123,6 +152,26 @@ class TTFMAKE_Section_Definitions {
 
 		if ( isset( $data['columns-order'] ) ) {
 			$clean_data['columns-order'] = array_map( array( 'TTFMAKE_Builder_Save', 'clean_section_id' ), explode( ',', $data['columns-order'] ) );
+		}
+
+		if ( isset( $data['background-image']['image-id'] ) ) {
+			$clean_data['background-image'] = ttfmake_sanitize_image_id( $data['background-image']['image-id'] );
+		}
+
+		if ( isset( $data['darken'] ) ) {
+			$clean_data['darken'] = 1;
+		} else {
+			$clean_data['darken'] = 0;
+		}
+
+		if ( isset( $data['background-color'] ) ) {
+			$clean_data['background-color'] = maybe_hash_hex_color( $data['background-color'] );
+		}
+
+		if ( isset( $data['background-style'] ) ) {
+			if ( in_array( $data['background-style'], array( 'tile', 'cover' ) ) ) {
+				$clean_data['background-style'] = $data['background-style'];
+			}
 		}
 
 		if ( isset( $data['columns'] ) && is_array( $data['columns'] ) ) {
@@ -224,7 +273,36 @@ class TTFMAKE_Section_Definitions {
 						'balanced' => __( 'Default', 'make' ),
 						'aspect'   => __( 'Aspect', 'make' ),
 					)
-				)
+				),
+				900 => array(
+					'type'  => 'image',
+					'name'  => 'background-image',
+					'label' => __( 'Background image', 'make' ),
+					'class' => 'ttfmake-configuration-media'
+				),
+				1000 => array(
+					'type'    => 'checkbox',
+					'label'   => __( 'Darken background to improve readability', 'make' ),
+					'name'    => 'darken',
+					'default' => 0,
+				),
+				1100 => array(
+					'type'    => 'select',
+					'name'    => 'background-style',
+					'label'   => __( 'Background style', 'make' ),
+					'default' => 'tile',
+					'options' => array(
+						'tile'  => __( 'Tile', 'make' ),
+						'cover' => __( 'Cover', 'make' ),
+					),
+				),
+				1200 => array(
+					'type'    => 'color',
+					'label'   => __( 'Background color', 'make' ),
+					'name'    => 'background-color',
+					'class'   => 'ttfmake-gallery-background-color ttfmake-configuration-color-picker',
+					'default' => '',
+				),
 			)
 		);
 	}
@@ -263,6 +341,26 @@ class TTFMAKE_Section_Definitions {
 
 		if ( isset( $data['banner-slide-order'] ) ) {
 			$clean_data['banner-slide-order'] = array_map( array( 'TTFMAKE_Builder_Save', 'clean_section_id' ), explode( ',', $data['banner-slide-order'] ) );
+		}
+
+		if ( isset( $data['background-image']['image-id'] ) ) {
+			$clean_data['background-image'] = ttfmake_sanitize_image_id( $data['background-image']['image-id'] );
+		}
+
+		if ( isset( $data['darken'] ) ) {
+			$clean_data['darken'] = 1;
+		} else {
+			$clean_data['darken'] = 0;
+		}
+
+		if ( isset( $data['background-color'] ) ) {
+			$clean_data['background-color'] = maybe_hash_hex_color( $data['background-color'] );
+		}
+
+		if ( isset( $data['background-style'] ) ) {
+			if ( in_array( $data['background-style'], array( 'tile', 'cover' ) ) ) {
+				$clean_data['background-style'] = $data['background-style'];
+			}
 		}
 
 		if ( isset( $data['banner-slides'] ) && is_array( $data['banner-slides'] ) ) {
@@ -617,9 +715,20 @@ class TTFMAKE_Section_Definitions {
 		if ( ! ttfmake_post_type_supports_builder( $typenow ) || ! in_array( $hook_suffix, array( 'post.php', 'post-new.php' ) )) {
 			return;
 		}
-
-		// Define the templates to print
-		$templates = array(
+		
+		/**
+		 * Array of items to print as JS templates in the footer of the Builder screen.
+		 *
+		 * Each item is represented as an associative array and includes the following items:
+		 * - id                  The ID of the template
+		 * - builder_template    The relative path to the PHP template
+		 * - path                The path to the base directory
+		 *
+		 * @since 1.6.0.
+		 *
+		 * @param array    $templates    The
+		 */
+		$templates = apply_filters( 'make_builder_js_templates', array(
 			array(
 				'id' => 'gallery-item',
 				'builder_template' => 'sections/builder-templates/gallery-item',
@@ -630,7 +739,7 @@ class TTFMAKE_Section_Definitions {
 				'builder_template' => 'sections/builder-templates/banner-slide',
 				'path' => 'inc/builder/',
 			),
-		);
+		) );
 
 		// Print the templates
 		foreach ( $templates as $template ) : ?>

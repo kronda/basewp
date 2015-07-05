@@ -24,14 +24,6 @@ function ttfmake_customizer_staticfrontpage() {
 	// Set Static Front Page section priority
 	$social_priority = $wp_customize->get_section( $theme_prefix . 'rss' )->priority;
 	$section->priority = $social_priority + 5;
-
-	// Adjust section title if no panel support
-	if ( ! ttfmake_customizer_supports_panels() ) {
-		$panels = ttfmake_customizer_get_panels();
-		if ( isset( $panels['general']['title'] ) ) {
-			$section->title = $panels['general']['title'] . ': ' . $section->title;
-		}
-	}
 }
 endif;
 

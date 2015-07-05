@@ -63,27 +63,23 @@ if ( ! function_exists( 'ttfmake_get_google_font_uri' ) ) :
 /**
  * Build the HTTP request URL for Google Fonts.
  *
+ * The wp_enqueue_style function escapes the stylesheet URL, so no escaping is done here. If
+ * this function is used in a different context, make sure the output is escaped!
+ *
  * @since  1.0.0.
  *
  * @return string    The URL for including Google Fonts.
  */
 function ttfmake_get_google_font_uri() {
 	// Grab the font choices
-	if ( ttfmake_customizer_supports_panels() ) {
-		$all_keys = array_keys( ttfmake_option_defaults() );
-		$font_keys = array();
-		foreach ( $all_keys as $key ) {
-			if ( false !== strpos( $key, 'font-family-' ) ) {
-				$font_keys[] = $key;
-			}
+	$all_keys = array_keys( ttfmake_option_defaults() );
+	$font_keys = array();
+	foreach ( $all_keys as $key ) {
+		if ( false !== strpos( $key, 'font-family-' ) ) {
+			$font_keys[] = $key;
 		}
-	} else {
-		$font_keys = array(
-			'font-site-title',
-			'font-header',
-			'font-body',
-		);
 	}
+
 	$fonts = array();
 	foreach ( $font_keys as $key ) {
 		$fonts[] = get_theme_mod( $key, ttfmake_get_default( $key ) );
@@ -105,11 +101,13 @@ function ttfmake_get_google_font_uri() {
 		}
 	}
 
+	// Start the request
+	$request = '';
+	$uri_base = '//fonts.googleapis.com/css';
+
 	// Convert from array to string
-	if ( empty( $family ) ) {
-		return '';
-	} else {
-		$request = '//fonts.googleapis.com/css?family=' . implode( '|', $family );
+	if ( ! empty( $family ) ) {
+		$request = add_query_arg( 'family', implode( '|', $family ), $uri_base );
 	}
 
 	// Load the font subset
@@ -125,14 +123,16 @@ function ttfmake_get_google_font_uri() {
 		$subsets = array_keys( $subsets_available );
 	} else {
 		$subsets = array(
-			'latin',
 			$subset,
 		);
+		if ( 'latin' !== $subset ) {
+			$subsets[] = 'latin';
+		}
 	}
 
 	// Append the subset string
-	if ( ! empty( $subsets ) ) {
-		$request .= urlencode( '&subset=' . join( ',', $subsets ) );
+	if ( '' !== $request && ! empty( $subsets ) ) {
+		$request = add_query_arg( 'subset', join( ',', $subsets ), $request );
 	}
 
 	/**
@@ -142,7 +142,7 @@ function ttfmake_get_google_font_uri() {
 	 *
 	 * @param string    $url    The URL to retrieve the Google Fonts.
 	 */
-	return apply_filters( 'make_get_google_font_uri', esc_url( $request ) );
+	return apply_filters( 'make_get_google_font_uri', $request );
 }
 endif;
 
@@ -217,11 +217,13 @@ function ttfmake_get_google_font_subsets() {
 	 */
 	return apply_filters( 'make_get_google_font_subsets', array(
 		'all'          => __( 'All', 'make' ),
+		'arabic'       => __( 'Arabic', 'make' ),
 		'cyrillic'     => __( 'Cyrillic', 'make' ),
 		'cyrillic-ext' => __( 'Cyrillic Extended', 'make' ),
 		'devanagari'   => __( 'Devanagari', 'make' ),
 		'greek'        => __( 'Greek', 'make' ),
 		'greek-ext'    => __( 'Greek Extended', 'make' ),
+		'hebrew'       => __( 'Hebrew', 'make' ),
 		'khmer'        => __( 'Khmer', 'make' ),
 		'latin'        => __( 'Latin', 'make' ),
 		'latin-ext'    => __( 'Latin Extended', 'make' ),

@@ -33,14 +33,6 @@ function ttfmake_customizer_background() {
 	$header_priority = $wp_customize->get_section( $theme_prefix . 'header-background' )->priority;
 	$section->priority = $header_priority - 5;
 
-	// Adjust section title if no panel support
-	if ( ! ttfmake_customizer_supports_panels() ) {
-		$panels = ttfmake_customizer_get_panels();
-		if ( isset( $panels['background-images']['title'] ) ) {
-			$section->title = $panels['background-images']['title'] . ': ' . $section->title;
-		}
-	}
-
 	// Reconfigure image and repeat controls
 	$wp_customize->get_control( 'background_image' )->label = __( 'Background Image', 'make' );
 	$wp_customize->get_control( 'background_image' )->priority = $priority->add();

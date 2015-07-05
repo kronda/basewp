@@ -25,14 +25,6 @@ function ttfmake_customizer_sitetitletagline() {
 	$logo_priority = $wp_customize->get_section( $theme_prefix . 'logo' )->priority;
 	$section->priority = $logo_priority - 5;
 
-	// Adjust section title if no panel support
-	if ( ! ttfmake_customizer_supports_panels() ) {
-		$panels = ttfmake_customizer_get_panels();
-		if ( isset( $panels['general']['title'] ) ) {
-			$section->title = $panels['general']['title'] . ': ' . $section->title;
-		}
-	}
-
 	// Reset priorities on Site Title control
 	$wp_customize->get_control( 'blogname' )->priority = $priority->add();
 

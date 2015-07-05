@@ -10,7 +10,7 @@ $captions = ( isset( $ttfmake_section_data[ 'captions' ] ) ) ? esc_attr( $ttfmak
 $aspect   = ( isset( $ttfmake_section_data[ 'aspect' ] ) ) ? esc_attr( $ttfmake_section_data[ 'aspect' ] ) : 'square';
 ?>
 
-<section id="builder-section-<?php echo esc_attr( $ttfmake_section_data['id'] ); ?>" class="builder-section<?php echo esc_attr( ttfmake_builder_get_gallery_class( $ttfmake_section_data, $ttfmake_sections ) ); ?>" style="<?php echo esc_attr( ttfmake_builder_get_gallery_style( $ttfmake_section_data ) ); ?>">
+<section id="<?php echo esc_attr( ttfmake_get_builder_save()->section_html_id( $ttfmake_section_data ) ); ?>" class="builder-section<?php echo esc_attr( ttfmake_builder_get_gallery_class( $ttfmake_section_data, $ttfmake_sections ) ); ?>" style="<?php echo esc_attr( ttfmake_builder_get_gallery_style( $ttfmake_section_data ) ); ?>">
 	<?php if ( '' !== $ttfmake_section_data['title'] ) : ?>
 	<h3 class="builder-gallery-section-title">
 		<?php echo apply_filters( 'the_title', $ttfmake_section_data['title'] ); ?>

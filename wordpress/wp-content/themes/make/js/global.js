@@ -3,8 +3,8 @@
  *
  * @since 1.0.0
  */
-/* global jQuery, ttfmakeFitVids */
-(function($) {
+/* global jQuery, ttfmakeGlobal */
+(function($, Make) {
 	'use strict';
 
 	var ttfmake = {
@@ -37,11 +37,19 @@
 		bindEvents: function() {
 			var self = this;
 
-			this.cache.$document.on( 'ready', function() {
+			self.cache.$document.ready(function() {
 				self.navigationInit();
 				self.skipLinkFocusFix();
-				self.fitVidsInit();
+				self.navigationHoverFix();
+				self.fitVidsInit($('.ttfmake-embed-wrapper'), Make);
 			} );
+
+			// Infinite Scroll support
+			self.cache.$document.on('post-load', function() {
+				// FitVids
+				var $elements = $('.ttfmake-embed-wrapper:not(:has(".fluid-width-video-wrapper"))');
+				self.fitVidsInit($elements, Make);
+			});
 		},
 
 		/**
@@ -52,7 +60,7 @@
 		 * @return void
 		 */
 		navigationInit: function() {
-			var container, button, menu;
+			var container, button, menu, links, subMenus;
 
 			container = document.getElementById( 'site-navigation' );
 			if ( ! container ) {
@@ -72,6 +80,7 @@
 				return;
 			}
 
+			menu.setAttribute( 'aria-expanded', 'false' );
 			if ( -1 === menu.className.indexOf( 'nav-menu' ) ) {
 				menu.className += ' nav-menu';
 			}
@@ -79,10 +88,51 @@
 			button.onclick = function() {
 				if ( -1 !== container.className.indexOf( 'toggled' ) ) {
 					container.className = container.className.replace( ' toggled', '' );
+					button.setAttribute( 'aria-expanded', 'false' );
+					menu.setAttribute( 'aria-expanded', 'false' );
 				} else {
 					container.className += ' toggled';
+					button.setAttribute( 'aria-expanded', 'true' );
+					menu.setAttribute( 'aria-expanded', 'true' );
 				}
 			};
+
+			// Get all the link elements within the menu.
+			links    = menu.getElementsByTagName( 'a' );
+			subMenus = menu.getElementsByTagName( 'ul' );
+
+			// Set menu items with submenus to aria-haspopup="true".
+			for ( var i = 0, len = subMenus.length; i < len; i++ ) {
+				subMenus[i].parentNode.setAttribute( 'aria-haspopup', 'true' );
+			}
+
+			// Each time a menu link is focused or blurred, toggle focus.
+			for ( i = 0, len = links.length; i < len; i++ ) {
+				links[i].addEventListener( 'focus', toggleFocus, true );
+				links[i].addEventListener( 'blur', toggleFocus, true );
+			}
+
+			/**
+			 * Sets or removes .focus class on an element.
+			 */
+			function toggleFocus() {
+				var self = this;
+
+				// Move up through the ancestors of the current link until we hit .nav-menu.
+				while ( -1 === self.className.indexOf( 'nav-menu' ) ) {
+
+					// On li elements toggle the class .focus.
+					if ( 'li' === self.tagName.toLowerCase() ) {
+						if ( -1 !== self.className.indexOf( 'focus' ) ) {
+							self.className = self.className.replace( ' focus', '' );
+						} else {
+							self.className += ' focus';
+						}
+					}
+
+					self = self.parentElement;
+				}
+			}
 		},
 
 		/**
@@ -95,16 +145,21 @@
 		skipLinkFocusFix: function() {
 			var is_webkit = navigator.userAgent.toLowerCase().indexOf( 'webkit' ) > -1,
 				is_opera  = navigator.userAgent.toLowerCase().indexOf( 'opera' )  > -1,
-				is_ie     = navigator.userAgent.toLowerCase().indexOf( 'msie' )   > -1,
-				eventMethod;
+				is_ie     = navigator.userAgent.toLowerCase().indexOf( 'msie' )   > -1;
 
-			if ( ( is_webkit || is_opera || is_ie ) && 'undefined' !== typeof( document.getElementById ) ) {
-				eventMethod = ( window.addEventListener ) ? 'addEventListener' : 'attachEvent';
-				window[ eventMethod ]( 'hashchange', function() {
-					var element = document.getElementById( location.hash.substring( 1 ) );
+			if ( ( is_webkit || is_opera || is_ie ) && document.getElementById && window.addEventListener ) {
+				window.addEventListener( 'hashchange', function() {
+					var id = location.hash.substring( 1 ),
+						element;
+
+					if ( ! ( /^[A-z0-9_-]+$/.test( id ) ) ) {
+						return;
+					}
+
+					element = document.getElementById( id );
 
 					if ( element ) {
-						if ( ! /^(?:a|select|input|button|textarea)$/i.test( element.tagName ) ) {
+						if ( ! ( /^(?:a|select|input|button|textarea)$/i.test( element.tagName ) ) ) {
 							element.tabIndex = -1;
 						}
 
@@ -115,36 +170,53 @@
 		},
 
 		/**
+		 * Bind a click event to nav menu items with sub menus.
+		 *
+		 * Fixes an issue with the sub menus not appearing correctly in some situations on iPads.
+		 *
+		 * @link http://blog.travelvictoria.com.au/2012/03/31/make-sure-your-websites-drop-down-menus-work-on-an-ipad/
+		 *
+		 * @since
+		 *
+		 * @return void
+		 */
+		navigationHoverFix: function() {
+			this.cache.$dropdown = this.cache.$dropdown || $('li:has(ul)', '#site-navigation');
+			this.cache.$dropdown.on('click', function() {
+				return true;
+			});
+		},
+
+		/**
 		 * Initialize FitVids.
 		 *
 		 * @since  1.0.0
 		 *
 		 * @return void
 		 */
-		fitVidsInit: function() {
+		fitVidsInit: function($elements, Make) {
 			// Make sure lib is loaded.
-			if (!$.fn.fitVids) {
+			if (! $.fn.fitVids) {
 				return;
 			}
 
-			// Update the cache
-			this.cache.$container = $('.container');
-
-			var args = {};
+			var $container = $elements || $('.ttfmake-embed-wrapper'),
+				selectors = Make.fitvids.selectors || '',
+				args = {};
 
 			// Get custom selectors
-			if ('object' === typeof ttfmakeFitVids) {
-				args.customSelector = ttfmakeFitVids.selectors;
+			if (selectors) {
+				args.customSelector = selectors;
 			}
 
 			// Run FitVids
-			this.cache.$container.fitVids(args);
+			$container.fitVids(args);
 
 			// Fix padding issue with Blip.tv. Note that this *must* happen after Fitvids runs.
 			// The selector finds the Blip.tv iFrame, then grabs the .fluid-width-video-wrapper div sibling.
-			this.cache.$container.find('.fluid-width-video-wrapper:nth-child(2)').css({ 'paddingTop': 0 });
+			$container.find('.fluid-width-video-wrapper:nth-child(2)').css({ 'paddingTop': 0 });
 		}
 	};
 
 	ttfmake.init();
-})(jQuery);
+})(jQuery, ttfmakeGlobal);

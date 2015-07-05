@@ -1,3 +1,36 @@
+## 1.6.1
+
+* New feature: All default sections now have background image and background color options.
+* Improved: Cycle2 slider script only loads when content requires it.
+* Bug fix: H1 typography settings no longer affect the site title (which has its own typography settings).
+* Updated: Mobile navigation script now matches latest version in the _s theme.
+* New filter: `make_required_files` modifies the list of theme files to load.
+* Changed: Prevent Make from activating if WordPress version is less than 4.0.
+
+## 1.6.0
+
+* Improved: Video embeds can now be set to specific widths and alignments while still behaving responsively on narrow screens.
+* Improved: Make now enqueues the parent stylesheet if the child theme is version 1.1 or higher (instead of relying on a CSS @import statement).
+* Improved: Several minor Builder UI tweaks.
+* Fixed: Builder content preview panes sometimes weren't refreshing in Firefox.
+* Fixed: Google Maps embeds now only resize to specific dimensions when added in post content.
+* Fixed: Taxonomy icons now align with their lists properly in the post footer even when other meta elements are present.
+* New filter: `make_builder_js_templates` modifies the array of JS templates loaded on the Page Builder screen.
+* Updated: The latest list of Google fonts.
+* Changed: Make now only supports WordPress 4.0 and higher.
+* Changed: New theme screenshot. CC0 compatible.
+
+## 1.5.2
+
+* Added options for Arabic and Hebrew in Google Fonts character subsets.
+* Fixed url encoding issues with Google Fonts URL.
+* Fixed issue causing Format Builder's button URL to not update correctly.
+* Fixed some instances of default stylesheet overriding Customizer typography settings.
+* Fixed wrong version number for FontAwesome library in some places.
+* Fixed fatal error in Customizer for WP versions before 4.0.
+* Updated Google Fonts.
+* Updated Dutch translation. Props @LeoOosterloo.
+
 ## 1.5.1
 
 * Added Customizer options to remove header and footer boundary padding.

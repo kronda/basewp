@@ -551,7 +551,31 @@ class TTFMAKE_Builder_Save {
 	}
 
 	/**
-	 * Prepare the classes need for a section.
+	 * Prepare the HTML id for a section.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @param $current_section
+	 *
+	 * @return mixed|void
+	 */
+	public function section_html_id( $current_section ) {
+		$prefix = 'builder-section-';
+		$id = sanitize_title_with_dashes( $current_section['id'] );
+
+		/**
+		 * Filter the section wrapper's HTML id attribute.
+		 *
+		 * @since 1.6.0.
+		 *
+		 * @param string    $section_id         The string used in the section's HTML id attribute.
+		 * @param array     $current_section    The data for the section.
+		 */
+		return apply_filters( 'make_section_html_id', $prefix . $id, $current_section );
+	}
+
+	/**
+	 * Prepare the HTML classes for a section.
 	 *
 	 * Includes the name of the current section type, the next section type and the previous section type. It will also
 	 * denote if a section is the first or last section.

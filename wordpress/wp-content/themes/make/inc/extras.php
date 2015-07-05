@@ -827,6 +827,47 @@ function ttfmake_is_builder_page( $post_id = 0 ) {
 }
 endif;
 
+/**
+ * Handle frontend scripts for use with the existing sections on the current Builder page.
+ *
+ * @since 1.6.1.
+ *
+ * @return void
+ */
+function ttfmake_frontend_builder_scripts() {
+	if ( ttfmake_is_builder_page() ) {
+		$sections = ttfmake_get_section_data( get_the_ID() );
+		// Bail if there are no sections
+		if ( empty( $sections ) ) {
+			return;
+		}
+		// Parse the sections included on the page.
+		$sections      = ttfmake_get_section_data( get_the_ID() );
+		$section_types = wp_list_pluck( $sections, 'section-type' );
+
+		foreach ( $section_types as $section_id => $section_type ) {
+			switch ( $section_type ) {
+				default :
+					break;
+				case 'banner' :
+					// Add Cycle2 as a dependency for the Frontend script
+					global $wp_scripts;
+					$script = $wp_scripts->query( 'ttfmake-global', 'registered' );
+					if ( $script && ! in_array( 'ttfmake-cycle2', $script->deps ) ) {
+						$script->deps[] = 'ttfmake-cycle2';
+						if ( ! defined( 'TTFMAKE_SUFFIX' ) || '.min' !== TTFMAKE_SUFFIX ) {
+							$script->deps[] = 'ttfmake-cycle2-center';
+							$script->deps[] = 'ttfmake-cycle2-swipe';
+						}
+					}
+					break;
+			}
+		}
+	}
+}
+
+add_action( 'wp_head', 'ttfmake_frontend_builder_scripts' );
+
 if ( ! function_exists( 'ttfmake_builder_css' ) ) :
 /**
  * Trigger an action hook for each section on a Builder page for the purpose
@@ -873,6 +914,13 @@ if ( ! function_exists( 'ttfmake_builder_banner_css' ) ) :
  * @return void
  */
 function ttfmake_builder_banner_css( $data, $id ) {
+	$prefix = 'builder-section-';
+	$id = sanitize_title_with_dashes( $data['id'] );
+	/**
+	 * This filter is documented in inc/builder/core/save.php
+	 */
+	$section_id = apply_filters( 'make_section_html_id', $prefix . $id, $data );
+
 	$responsive = ( isset( $data['responsive'] ) ) ? $data['responsive'] : 'balanced';
 	$slider_height = absint( $data['height'] );
 	if ( 0 === $slider_height ) {
@@ -882,20 +930,20 @@ function ttfmake_builder_banner_css( $data, $id ) {
 
 	if ( 'aspect' === $responsive ) {
 		ttfmake_get_css()->add( array(
-			'selectors'    => array( '#builder-section-' . esc_attr( $id ) . ' .builder-banner-slide' ),
+			'selectors'    => array( '#' . esc_attr( $section_id ) . ' .builder-banner-slide' ),
 			'declarations' => array(
 				'padding-bottom' => $slider_ratio . '%'
 			),
 		) );
 	} else {
 		ttfmake_get_css()->add( array(
-			'selectors'    => array( '#builder-section-' . esc_attr( $id ) . ' .builder-banner-slide' ),
+			'selectors'    => array( '#' . esc_attr( $section_id ) . ' .builder-banner-slide' ),
 			'declarations' => array(
 				'padding-bottom' => $slider_height . 'px'
 			),
 		) );
 		ttfmake_get_css()->add( array(
-			'selectors'    => array( '#builder-section-' . esc_attr( $id ) . ' .builder-banner-slide' ),
+			'selectors'    => array( '#' . esc_attr( $section_id ) . ' .builder-banner-slide' ),
 			'declarations' => array(
 				'padding-bottom' => $slider_ratio . '%'
 			),
@@ -906,3 +954,55 @@ function ttfmake_builder_banner_css( $data, $id ) {
 endif;
 
 add_action( 'make_builder_banner_css', 'ttfmake_builder_banner_css', 10, 2 );
+
+/**
+ * Add a wrapper div to the output of oembeds and the [embed] shortcode.
+ *
+ * Also enqueues FitVids, since the embed might be a video.
+ *
+ * @since 1.0.0.
+ *
+ * @param  string    $html    The generated HTML of the embed handler.
+ * @param  string    $url     The embed URL.
+ * @param  array     $attr    The attributes of the embed shortcode.
+ *
+ * @return string             The wrapped HTML.
+ */
+function ttfmake_embed_container( $html, $url, $attr ) {
+	// Bail if this is the admin
+	if ( is_admin() ) {
+		return $html;
+	}
+
+	if ( isset( $attr['width'] ) ) {
+		// Add FitVids as a dependency for the Frontend script
+		global $wp_scripts;
+		$script = $wp_scripts->query( 'ttfmake-global', 'registered' );
+		if ( $script && ! in_array( 'ttfmake-fitvids', $script->deps ) ) {
+			$script->deps[] = 'ttfmake-fitvids';
+		}
+
+		// Get classes
+		$default_class = 'ttfmake-embed-wrapper';
+		$align_class = 'aligncenter';
+		if ( isset( $attr['make_align'] ) ) {
+			$align = trim( $attr['make_align'] );
+			if ( in_array( $align, array( 'left', 'right', 'center', 'none' ) ) ) {
+				$align_class = 'align' . $align;
+			}
+		}
+		$class = trim( "$default_class $align_class" );
+
+		// Get style
+		$style = 'max-width: ' . absint( $attr['width'] ) . 'px;';
+
+		// Build wrapper
+		$wrapper = "<div class=\"$class\" style=\"$style\">%s</div>";
+		$html = sprintf( $wrapper, $html );
+	}
+
+	return $html;
+}
+
+add_filter( 'embed_handler_html', 'ttfmake_embed_container', 10, 3 );
+add_filter( 'embed_oembed_html' , 'ttfmake_embed_container', 10, 3 );

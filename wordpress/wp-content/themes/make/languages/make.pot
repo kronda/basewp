@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Make 1.5.1\n"
+"Project-Id-Version: Make 1.6.1\n"
 "Report-Msgid-Bugs-To: https://thethemefoundry.com/support/\n"
-"POT-Creation-Date: 2015-02-26 02:05:40+00:00\n"
+"POT-Creation-Date: 2015-06-20 03:40:59+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -29,40 +29,46 @@ msgstr ""
 msgid "Comments are closed."
 msgstr ""
 
-#: functions.php:163
+#: functions.php:179
 msgid "Primary Menu"
 msgstr ""
 
-#: functions.php:164
+#: functions.php:180
 msgid "Social Profile Links"
 msgstr ""
 
-#: functions.php:165
+#: functions.php:181
 msgid "Header Bar Menu"
 msgstr ""
 
-#: functions.php:195
+#: functions.php:211
 msgid "Left Sidebar"
 msgstr ""
 
-#: functions.php:204
+#: functions.php:220
 msgid "Right Sidebar"
 msgstr ""
 
-#: functions.php:213
+#: functions.php:229
 msgid "Footer 1"
 msgstr ""
 
-#: functions.php:222
+#: functions.php:238
 msgid "Footer 2"
 msgstr ""
 
-#: functions.php:231
+#: functions.php:247
 msgid "Footer 3"
 msgstr ""
 
-#: functions.php:240
+#: functions.php:256
 msgid "Footer 4"
+msgstr ""
+
+#: inc/activation.php:34
+msgid ""
+"Make requires at least WordPress version %1$s. You are running version "
+"%2$s. Please upgrade and try again."
 msgstr ""
 
 #: inc/admin-notice/template.php:8
@@ -121,12 +127,17 @@ msgstr ""
 msgid "Upgrade to %s"
 msgstr ""
 
-#: inc/builder/core/templates/menu.php:51
-msgid "Products"
+#: inc/builder/core/templates/menu.php:39
+msgid "Get more."
 msgstr ""
 
-#: inc/builder/core/templates/menu.php:63
-msgid "Downloads"
+#: inc/builder/core/templates/menu.php:43
+msgid "Looking for more sections and options? %s."
+msgstr ""
+
+#: inc/builder/core/templates/menu.php:47 inc/customizer/bootstrap.php:428
+#: inc/customizer/sections/stylekit.php:29
+msgid "Upgrade to Make Plus"
 msgstr ""
 
 #: inc/builder/core/templates/overlay-configuration.php:4
@@ -176,9 +187,9 @@ msgid "Content position"
 msgstr ""
 
 #: inc/builder/sections/builder-templates/banner-slide.php:77
-#: inc/builder/sections/section-definitions.php:208
-#: inc/builder/sections/section-definitions.php:343
-#: inc/builder/sections/section-definitions.php:354
+#: inc/builder/sections/section-definitions.php:257
+#: inc/builder/sections/section-definitions.php:441
+#: inc/builder/sections/section-definitions.php:452
 #: inc/customizer/choices.php:87 inc/customizer/choices.php:209
 #: inc/customizer/choices.php:232 inc/customizer/choices.php:243
 #: inc/customizer/choices.php:254 inc/gallery-slider/gallery-slider.php:118
@@ -198,12 +209,16 @@ msgid "Right"
 msgstr ""
 
 #: inc/builder/sections/builder-templates/banner-slide.php:84
-#: inc/builder/sections/section-definitions.php:375
+#: inc/builder/sections/section-definitions.php:109
+#: inc/builder/sections/section-definitions.php:285
+#: inc/builder/sections/section-definitions.php:473
 msgid "Darken background to improve readability"
 msgstr ""
 
 #: inc/builder/sections/builder-templates/banner-slide.php:90
-#: inc/builder/sections/section-definitions.php:391
+#: inc/builder/sections/section-definitions.php:125
+#: inc/builder/sections/section-definitions.php:301
+#: inc/builder/sections/section-definitions.php:489
 msgid "Background color"
 msgstr ""
 
@@ -236,7 +251,7 @@ msgid "Delete item"
 msgstr ""
 
 #: inc/builder/sections/builder-templates/gallery-item.php:72
-msgid "Title"
+msgid "Enter item title"
 msgstr ""
 
 #: inc/builder/sections/builder-templates/gallery-item.php:79
@@ -278,223 +293,207 @@ msgid "Create rearrangeable columns of content and images."
 msgstr ""
 
 #: inc/builder/sections/section-definitions.php:85
-#: inc/builder/sections/section-definitions.php:173
-#: inc/builder/sections/section-definitions.php:318
+#: inc/builder/sections/section-definitions.php:222
+#: inc/builder/sections/section-definitions.php:416
 msgid "Enter section title"
 msgstr ""
 
 #: inc/builder/sections/section-definitions.php:92
-#: inc/builder/sections/section-definitions.php:324
+#: inc/builder/sections/section-definitions.php:422
 msgid "Columns"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:163
+#: inc/builder/sections/section-definitions.php:104
+#: inc/builder/sections/section-definitions.php:280
+#: inc/builder/sections/section-definitions.php:468
+msgid "Background image"
+msgstr ""
+
+#: inc/builder/sections/section-definitions.php:116
+#: inc/builder/sections/section-definitions.php:292
+#: inc/builder/sections/section-definitions.php:480
+msgid "Background style"
+msgstr ""
+
+#: inc/builder/sections/section-definitions.php:119
+#: inc/builder/sections/section-definitions.php:295
+#: inc/builder/sections/section-definitions.php:483
+#: inc/customizer/choices.php:121
+msgid "Tile"
+msgstr ""
+
+#: inc/builder/sections/section-definitions.php:120
+#: inc/builder/sections/section-definitions.php:296
+#: inc/builder/sections/section-definitions.php:484
+#: inc/customizer/choices.php:157
+msgid "Cover"
+msgstr ""
+
+#: inc/builder/sections/section-definitions.php:212
 msgid "Display multiple types of content in a banner or a slider."
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:178
+#: inc/builder/sections/section-definitions.php:227
 #: inc/gallery-slider/gallery-slider.php:98
 msgid "Hide navigation arrows"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:184
+#: inc/builder/sections/section-definitions.php:233
 #: inc/gallery-slider/gallery-slider.php:102
 msgid "Hide navigation dots"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:190
+#: inc/builder/sections/section-definitions.php:239
 msgid "Autoplay slideshow"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:196
+#: inc/builder/sections/section-definitions.php:245
 #: inc/gallery-slider/gallery-slider.php:110
 msgid "Time between slides (ms)"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:202
+#: inc/builder/sections/section-definitions.php:251
 msgid "Transition effect"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:206
+#: inc/builder/sections/section-definitions.php:255
 #: inc/gallery-slider/gallery-slider.php:116
 msgid "Slide horizontal"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:207
+#: inc/builder/sections/section-definitions.php:256
 #: inc/gallery-slider/gallery-slider.php:117
 msgid "Fade"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:213
+#: inc/builder/sections/section-definitions.php:262
 msgid "Section height (px)"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:219
+#: inc/builder/sections/section-definitions.php:268
 msgid "Responsive behavior"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:222
+#: inc/builder/sections/section-definitions.php:271
 msgid ""
 "Choose how the Banner will respond to varying screen widths. Default is "
 "ideal for large amounts of written content, while Aspect is better for "
 "showing your images."
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:224
-#: inc/customizer/choices.php:182 inc/customizer/sections/typography.php:26
+#: inc/builder/sections/section-definitions.php:273
+#: inc/customizer/choices.php:182 inc/customizer/sections/stylekit.php:48
+#: inc/customizer/sections/typography.php:26
 msgid "Default"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:225
+#: inc/builder/sections/section-definitions.php:274
 msgid "Aspect"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:308
+#: inc/builder/sections/section-definitions.php:406
 msgid "Display your images in various grid combinations."
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:337
+#: inc/builder/sections/section-definitions.php:435
 msgid "Aspect ratio"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:340
+#: inc/builder/sections/section-definitions.php:438
 msgid "Square"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:341
+#: inc/builder/sections/section-definitions.php:439
 msgid "Landscape"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:342
+#: inc/builder/sections/section-definitions.php:440
 msgid "Portrait"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:349
+#: inc/builder/sections/section-definitions.php:447
 msgid "Caption style"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:352
+#: inc/builder/sections/section-definitions.php:450
 msgid "Reveal"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:353
+#: inc/builder/sections/section-definitions.php:451
 msgid "Overlay"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:360
+#: inc/builder/sections/section-definitions.php:458
 msgid "Caption color"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:363
-#: inc/customizer/legacy_sections/stylekit.php:67
-#: inc/customizer/sections/stylekit.php:48
+#: inc/builder/sections/section-definitions.php:461
+#: inc/customizer/sections/stylekit.php:50
 msgid "Light"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:364
-#: inc/customizer/legacy_sections/stylekit.php:68
-#: inc/customizer/sections/stylekit.php:49
+#: inc/builder/sections/section-definitions.php:462
+#: inc/customizer/sections/stylekit.php:51
 msgid "Dark"
-msgstr ""
-
-#: inc/builder/sections/section-definitions.php:370
-msgid "Background image"
-msgstr ""
-
-#: inc/builder/sections/section-definitions.php:382
-msgid "Background style"
-msgstr ""
-
-#: inc/builder/sections/section-definitions.php:385
-#: inc/customizer/choices.php:121
-msgid "Tile"
-msgstr ""
-
-#: inc/builder/sections/section-definitions.php:386
-#: inc/customizer/choices.php:157
-msgid "Cover"
 msgstr ""
 
 #: inc/compatibility.php:35
 msgid "The uploaded package appears to be a plugin. PLEASE INSTALL AS A PLUGIN."
 msgstr ""
 
-#: inc/compatibility.php:336
+#: inc/compatibility.php:331
 msgid ""
-"Make is designed to work with WordPress 3.9 and above. Please %s to ensure "
-"compatibility."
+"Make requires version %1$s of WordPress or higher. Please %2$s to ensure "
+"full compatibility."
 msgstr ""
 
-#: inc/compatibility.php:340 inc/compatibility.php:357
-#: inc/compatibility.php:375
+#: inc/compatibility.php:336
 msgid "update WordPress"
 msgstr ""
 
-#: inc/compatibility.php:353
-msgid ""
-"Several features in this version of Make are only available with WordPress "
-"4.0 or later. Please %s to take advantage of Make's full capabilities."
-msgstr ""
-
-#: inc/compatibility.php:371
-msgid ""
-"In the next release, Make will officially drop support for WordPress 3.9.x. "
-"Please %s to 4.0 or newer to maintain compatibility."
-msgstr ""
-
-#: inc/compatibility.php:404
-msgid ""
-"A new version of Make Plus is available. Please %s to ensure compatibility "
-"with the Make theme."
-msgstr ""
-
-#: inc/compatibility.php:408
-msgid "update to the latest version"
-msgstr ""
-
-#: inc/compatibility.php:421
+#: inc/compatibility.php:366
 msgid ""
 "A new version of Make Plus is available. If you encounter problems updating "
 "through %1$s, please %2$s to update manually."
 msgstr ""
 
-#: inc/compatibility.php:425
+#: inc/compatibility.php:370
 msgid "the WordPress interface"
 msgstr ""
 
-#: inc/compatibility.php:430
+#: inc/compatibility.php:375
 msgid "follow these steps"
 msgstr ""
 
-#: inc/customizer/bootstrap.php:71 inc/customizer/bootstrap.php:388
+#: inc/customizer/bootstrap.php:54
 msgid "General"
 msgstr ""
 
-#: inc/customizer/bootstrap.php:72
+#: inc/customizer/bootstrap.php:55
 msgid "Typography"
 msgstr ""
 
-#: inc/customizer/bootstrap.php:73
+#: inc/customizer/bootstrap.php:56
 msgid "Color"
 msgstr ""
 
-#: inc/customizer/bootstrap.php:74
+#: inc/customizer/bootstrap.php:57
 msgid "Background Images"
 msgstr ""
 
-#: inc/customizer/bootstrap.php:75
+#: inc/customizer/bootstrap.php:58
 #: inc/customizer/sections/content-layout.php:52
 #: inc/customizer/sections/content-layout.php:196
 msgid "Layout"
 msgstr ""
 
-#: inc/customizer/bootstrap.php:76 inc/customizer/bootstrap.php:392
+#: inc/customizer/bootstrap.php:59
 #: inc/customizer/sections/background-images.php:24
 #: inc/customizer/sections/content-layout.php:47
 msgid "Header"
 msgstr ""
 
-#: inc/customizer/bootstrap.php:77 inc/customizer/bootstrap.php:400
+#: inc/customizer/bootstrap.php:60
 #: inc/customizer/sections/background-images.php:42
 #: inc/customizer/sections/color-scheme.php:584
 #: inc/customizer/sections/content-layout.php:172
@@ -502,66 +501,16 @@ msgstr ""
 msgid "Footer"
 msgstr ""
 
-#: inc/customizer/bootstrap.php:125
+#: inc/customizer/bootstrap.php:106
 msgid "Sidebars & Widgets"
 msgstr ""
 
-#: inc/customizer/bootstrap.php:389 inc/customizer/sections/stylekit.php:23
-msgid "Style Kits"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:390
-msgid "Fonts"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:391
-msgid "Colors"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:393 inc/customizer/sections/general.php:31
-msgid "Logo"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:394
-msgid "Main"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:395
-msgid "Layout: Blog (Posts Page)"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:396
-msgid "Layout: Archives"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:397
-msgid "Layout: Search Results"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:398
-msgid "Layout: Posts"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:399
-msgid "Layout: Pages"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:401
-msgid "Social Profiles &amp; RSS"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:568
+#: inc/customizer/bootstrap.php:425
 msgid "No results match"
 msgstr ""
 
-#: inc/customizer/bootstrap.php:569
+#: inc/customizer/bootstrap.php:426
 msgid "No matching fonts"
-msgstr ""
-
-#: inc/customizer/bootstrap.php:571
-#: inc/customizer/legacy_sections/stylekit.php:32
-#: inc/customizer/sections/stylekit.php:29
-msgid "Upgrade to Make Plus"
 msgstr ""
 
 #: inc/customizer/choices.php:43 inc/customizer/choices.php:65
@@ -733,653 +682,87 @@ msgid "All"
 msgstr ""
 
 #: inc/customizer/fonts.php:220
-msgid "Cyrillic"
+msgid "Arabic"
 msgstr ""
 
 #: inc/customizer/fonts.php:221
-msgid "Cyrillic Extended"
+msgid "Cyrillic"
 msgstr ""
 
 #: inc/customizer/fonts.php:222
-msgid "Devanagari"
+msgid "Cyrillic Extended"
 msgstr ""
 
 #: inc/customizer/fonts.php:223
-msgid "Greek"
+msgid "Devanagari"
 msgstr ""
 
 #: inc/customizer/fonts.php:224
-msgid "Greek Extended"
+msgid "Greek"
 msgstr ""
 
 #: inc/customizer/fonts.php:225
-msgid "Khmer"
+msgid "Greek Extended"
 msgstr ""
 
 #: inc/customizer/fonts.php:226
-msgid "Latin"
+msgid "Hebrew"
 msgstr ""
 
 #: inc/customizer/fonts.php:227
-msgid "Latin Extended"
+msgid "Khmer"
 msgstr ""
 
 #: inc/customizer/fonts.php:228
-msgid "Telugu"
+msgid "Latin"
 msgstr ""
 
 #: inc/customizer/fonts.php:229
+msgid "Latin Extended"
+msgstr ""
+
+#: inc/customizer/fonts.php:230
+msgid "Telugu"
+msgstr ""
+
+#: inc/customizer/fonts.php:231
 msgid "Vietnamese"
 msgstr ""
 
-#: inc/customizer/fonts.php:347
+#: inc/customizer/fonts.php:349
 msgid "Standard Fonts"
 msgstr ""
 
-#: inc/customizer/fonts.php:349
+#: inc/customizer/fonts.php:351
 msgid "Google Fonts"
-msgstr ""
-
-#: inc/customizer/legacy_sections/background.php:22
-#: inc/customizer/sections/color-scheme.php:105
-#: inc/customizer/sections/color-scheme.php:150
-msgid "Background"
-msgstr ""
-
-#: inc/customizer/legacy_sections/background.php:36
-msgid ""
-"With the Site Layout option (under <em>General</em>) set to \"Full Width\", "
-"the background color and image will not be visible."
-msgstr ""
-
-#: inc/customizer/legacy_sections/background.php:64
-#: inc/customizer/legacy_sections/footer.php:231
-#: inc/customizer/legacy_sections/header.php:335
-#: inc/customizer/legacy_sections/main.php:127
-msgid "Background Size"
-msgstr ""
-
-#: inc/customizer/legacy_sections/color.php:38
-#: inc/customizer/sections/color-scheme.php:39
-#: inc/customizer/sections/color-scheme.php:355
-#: inc/customizer/sections/color-scheme.php:562
-#: inc/customizer/sections/color-scheme.php:604
-msgid "Primary Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/color.php:61
-#: inc/customizer/sections/color-scheme.php:52
-#: inc/customizer/sections/color-scheme.php:326
-#: inc/customizer/sections/color-scheme.php:541
-msgid "Secondary Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/color.php:84
-#: inc/customizer/sections/color-scheme.php:65
-#: inc/customizer/sections/color-scheme.php:167
-#: inc/customizer/sections/color-scheme.php:211
-#: inc/customizer/sections/color-scheme.php:256
-#: inc/customizer/sections/color-scheme.php:259
-#: inc/customizer/sections/color-scheme.php:286
-#: inc/customizer/sections/color-scheme.php:289
-#: inc/customizer/sections/color-scheme.php:422
-#: inc/customizer/sections/color-scheme.php:513
-#: inc/customizer/sections/color-scheme.php:527
-#: inc/formatting/formatting.php:186
-msgid "Text Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/color.php:107
-#: inc/customizer/sections/color-scheme.php:78
-#: inc/customizer/sections/color-scheme.php:309
-#: inc/customizer/sections/color-scheme.php:312
-msgid "Detail Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:31
-msgid "The list of Google fonts is long! You can %s before making your choices."
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:35
-msgid "preview"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:58
-#: inc/customizer/sections/typography.php:74
-msgid "Site Title"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:80
-msgid "Headers"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:102
-msgid "Body"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:119
-#: inc/customizer/sections/typography.php:199
-msgid "Typekit"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:134
-msgid "Looking to add premium fonts from Typekit to your website? %s."
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:139
-#: inc/customizer/legacy_sections/footer.php:355
-#: inc/customizer/sections/general.php:320
-#: inc/customizer/sections/typography.php:210
-msgid "Upgrade to %1$s"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:179
-msgid "Site Title Font Size (in px)"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:200
-msgid "Site Tagline Font Size (in px)"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:221
-msgid "Navigation Font Size (in px)"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:242
-msgid "Header Font Size (in px)"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:263
-msgid "Widget Font Size (in px)"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:284
-msgid "Body Font Size (in px)"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:319
-#: inc/customizer/sections/typography.php:178
-msgid "Character Subset"
-msgstr ""
-
-#: inc/customizer/legacy_sections/font.php:335
-#: inc/customizer/sections/typography.php:187
-msgid "Not all fonts provide each of these subsets."
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:36
-#: inc/customizer/sections/content-layout.php:205
-msgid "Footer Layout"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:73
-#: inc/customizer/sections/content-layout.php:239
-#: inc/customizer/sections/typography.php:162
-msgid "Footer Text"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:96
-#: inc/customizer/sections/color-scheme.php:592
-msgid "Footer Text Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:119
-msgid "Footer Border Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:142
-msgid "Footer Background Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:165
-msgid "Footer Background Image"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:187
-#: inc/customizer/legacy_sections/header.php:291
-#: inc/customizer/legacy_sections/main.php:83
-msgid "Background Repeat"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:209
-#: inc/customizer/legacy_sections/header.php:313
-#: inc/customizer/legacy_sections/main.php:105
-msgid "Background Position"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:267
-msgid "Footer Widget Areas"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:283
-msgid "Footer Options"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:304
-#: inc/customizer/sections/content-layout.php:145
-#: inc/customizer/sections/content-layout.php:255
-msgid "Show social icons"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:334
-#: inc/customizer/sections/general.php:309
-msgid "White Label"
-msgstr ""
-
-#: inc/customizer/legacy_sections/footer.php:350
-msgid "Want to remove the theme byline from your website&#8217;s footer? %s."
-msgstr ""
-
-#: inc/customizer/legacy_sections/general.php:36
-#: inc/customizer/sections/content-layout.php:33
-msgid "Site Layout"
-msgstr ""
-
-#: inc/customizer/legacy_sections/general.php:59
-#: inc/customizer/sections/general.php:113
-msgid "Sticky Label"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:36
-#: inc/customizer/sections/content-layout.php:61
-msgid "Header Layout"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:58
-#: inc/customizer/sections/content-layout.php:72
-msgid "Show Title/Logo On"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:94
-msgid "Header Bar Content Layout"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:117
-#: inc/customizer/sections/content-layout.php:119
-#: inc/customizer/sections/typography.php:136
-msgid "Header Bar Text"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:140
-msgid "Header Bar Text Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:163
-msgid "Header Bar Border Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:186
-msgid "Header Bar Background Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:223
-msgid "Header Text Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:246
-msgid "Header Background Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:269
-msgid "Header Background Image"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:351
-msgid "Header Options"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:372
-msgid "Show social icons in header bar"
-msgstr ""
-
-#: inc/customizer/legacy_sections/header.php:393
-msgid "Show search field in header bar"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:30
-#: inc/customizer/legacy_sections/layout-blog.php:30
-#: inc/customizer/legacy_sections/layout-page.php:30
-#: inc/customizer/legacy_sections/layout-post.php:30
-#: inc/customizer/legacy_sections/layout-search.php:30
-#: inc/customizer/sections/content-layout.php:456
-msgid "Header, Footer, Sidebars"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:51
-#: inc/customizer/legacy_sections/layout-blog.php:51
-#: inc/customizer/legacy_sections/layout-page.php:51
-#: inc/customizer/legacy_sections/layout-post.php:51
-#: inc/customizer/legacy_sections/layout-search.php:51
-#: inc/customizer/sections/content-layout.php:464
-msgid "Hide site header"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:72
-#: inc/customizer/legacy_sections/layout-blog.php:72
-#: inc/customizer/legacy_sections/layout-page.php:72
-#: inc/customizer/legacy_sections/layout-post.php:72
-#: inc/customizer/legacy_sections/layout-search.php:72
-#: inc/customizer/sections/content-layout.php:473
-msgid "Hide site footer"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:93
-#: inc/customizer/legacy_sections/layout-blog.php:93
-#: inc/customizer/legacy_sections/layout-page.php:93
-#: inc/customizer/legacy_sections/layout-post.php:93
-#: inc/customizer/legacy_sections/layout-search.php:93
-#: inc/customizer/sections/content-layout.php:482
-msgid "Show left sidebar"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:114
-#: inc/customizer/legacy_sections/layout-blog.php:114
-#: inc/customizer/legacy_sections/layout-page.php:114
-#: inc/customizer/legacy_sections/layout-post.php:114
-#: inc/customizer/legacy_sections/layout-search.php:114
-#: inc/customizer/sections/content-layout.php:491
-msgid "Show right sidebar"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:135
-#: inc/customizer/legacy_sections/layout-blog.php:135
-#: inc/customizer/legacy_sections/layout-page.php:186
-#: inc/customizer/legacy_sections/layout-post.php:135
-#: inc/customizer/legacy_sections/layout-search.php:135
-#: inc/customizer/sections/content-layout.php:515
-msgid "Featured Images"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:157
-#: inc/customizer/legacy_sections/layout-blog.php:157
-#: inc/customizer/legacy_sections/layout-page.php:208
-#: inc/customizer/legacy_sections/layout-post.php:157
-#: inc/customizer/legacy_sections/layout-search.php:157
-msgid "Featured Images Alignment"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:179
-#: inc/customizer/legacy_sections/layout-blog.php:179
-#: inc/customizer/legacy_sections/layout-page.php:230
-#: inc/customizer/legacy_sections/layout-post.php:179
-#: inc/customizer/legacy_sections/layout-search.php:179
-#: inc/customizer/sections/content-layout.php:561
-msgid "Post Date"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:201
-#: inc/customizer/legacy_sections/layout-blog.php:201
-#: inc/customizer/legacy_sections/layout-page.php:252
-#: inc/customizer/legacy_sections/layout-post.php:201
-#: inc/customizer/legacy_sections/layout-search.php:201
-msgid "Post Date Location"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:223
-#: inc/customizer/legacy_sections/layout-blog.php:223
-#: inc/customizer/legacy_sections/layout-page.php:274
-#: inc/customizer/legacy_sections/layout-post.php:223
-#: inc/customizer/legacy_sections/layout-search.php:223
-#: inc/customizer/sections/content-layout.php:607
-msgid "Post Author"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:245
-#: inc/customizer/legacy_sections/layout-blog.php:245
-#: inc/customizer/legacy_sections/layout-page.php:296
-#: inc/customizer/legacy_sections/layout-post.php:245
-#: inc/customizer/legacy_sections/layout-search.php:245
-msgid "Post Author Location"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:261
-#: inc/customizer/legacy_sections/layout-blog.php:261
-#: inc/customizer/legacy_sections/layout-search.php:261
-#: inc/customizer/sections/content-layout.php:741
-msgid "Content"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:282
-#: inc/customizer/legacy_sections/layout-blog.php:282
-#: inc/customizer/legacy_sections/layout-search.php:282
-#: inc/customizer/sections/content-layout.php:750
-msgid "Generate excerpts automatically"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:297
-#: inc/customizer/legacy_sections/layout-blog.php:297
-#: inc/customizer/legacy_sections/layout-post.php:261
-#: inc/customizer/legacy_sections/layout-search.php:297
-#: inc/customizer/sections/content-layout.php:699
-msgid "Post Meta"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:318
-#: inc/customizer/legacy_sections/layout-blog.php:318
-#: inc/customizer/legacy_sections/layout-post.php:282
-#: inc/customizer/legacy_sections/layout-search.php:318
-#: inc/customizer/sections/content-layout.php:708
-msgid "Show categories"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:339
-#: inc/customizer/legacy_sections/layout-blog.php:339
-#: inc/customizer/legacy_sections/layout-post.php:303
-#: inc/customizer/legacy_sections/layout-search.php:339
-#: inc/customizer/sections/content-layout.php:717
-msgid "Show tags"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:360
-#: inc/customizer/legacy_sections/layout-blog.php:360
-#: inc/customizer/legacy_sections/layout-page.php:318
-#: inc/customizer/legacy_sections/layout-post.php:324
-#: inc/customizer/legacy_sections/layout-search.php:360
-#: inc/customizer/sections/content-layout.php:653
-msgid "Comment Count"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-archive.php:382
-#: inc/customizer/legacy_sections/layout-blog.php:382
-#: inc/customizer/legacy_sections/layout-page.php:340
-#: inc/customizer/legacy_sections/layout-post.php:346
-#: inc/customizer/legacy_sections/layout-search.php:382
-msgid "Comment Count Location"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-page.php:129
-#: inc/customizer/sections/content-layout.php:367
-msgid "Sidebars are not available on pages using the Builder Template."
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-page.php:144
-#: inc/customizer/sections/content-layout.php:380
-msgid "Page Title"
-msgstr ""
-
-#: inc/customizer/legacy_sections/layout-page.php:165
-#: inc/customizer/sections/content-layout.php:388
-msgid "Hide title"
-msgstr ""
-
-#: inc/customizer/legacy_sections/logo.php:38
-#: inc/customizer/sections/general.php:39
-msgid "Regular Logo"
-msgstr ""
-
-#: inc/customizer/legacy_sections/logo.php:62
-#: inc/customizer/sections/general.php:49
-msgid "Retina Logo (2x)"
-msgstr ""
-
-#: inc/customizer/legacy_sections/logo.php:78
-#: inc/customizer/sections/general.php:50
-msgid "The Retina Logo should be twice the size of the Regular Logo."
-msgstr ""
-
-#: inc/customizer/legacy_sections/logo.php:101
-#: inc/customizer/sections/general.php:60
-msgid "Favicon"
-msgstr ""
-
-#: inc/customizer/legacy_sections/logo.php:118
-#: inc/customizer/sections/general.php:61
-msgid ""
-"File must be <strong>.png</strong> or <strong>.ico</strong> format. Optimal "
-"dimensions: <strong>32px x 32px</strong>."
-msgstr ""
-
-#: inc/customizer/legacy_sections/logo.php:141
-#: inc/customizer/sections/general.php:72
-msgid "Apple Touch Icon"
-msgstr ""
-
-#: inc/customizer/legacy_sections/logo.php:158
-#: inc/customizer/sections/general.php:73
-msgid ""
-"File must be <strong>.png</strong> format. Optimal dimensions: "
-"<strong>152px x 152px</strong>."
-msgstr ""
-
-#: inc/customizer/legacy_sections/main.php:38
-#: inc/customizer/sections/color-scheme.php:173
-#: inc/customizer/sections/color-scheme.php:323
-#: inc/customizer/sections/color-scheme.php:388
-#: inc/customizer/sections/color-scheme.php:460
-#: inc/customizer/sections/color-scheme.php:635
-#: inc/formatting/formatting.php:185
-msgid "Background Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/main.php:61
-#: inc/customizer/sections/background-images.php:77
-#: inc/customizer/sections/background.php:45
-msgid "Background Image"
-msgstr ""
-
-#: inc/customizer/legacy_sections/main.php:143
-msgid "Content Options"
-msgstr ""
-
-#: inc/customizer/legacy_sections/main.php:164
-msgid "Underline links in content"
-msgstr ""
-
-#: inc/customizer/legacy_sections/navigation.php:38
-#: inc/customizer/sections/general.php:102
-msgid "Mobile Menu Label"
-msgstr ""
-
-#: inc/customizer/legacy_sections/navigation.php:53
-#: inc/customizer/sections/general.php:103
-msgid "Resize your browser window to preview the mobile menu label."
-msgstr ""
-
-#: inc/customizer/legacy_sections/site-title-tagline.php:38
-#: inc/customizer/sections/color-scheme.php:221
-msgid "Site Title Color"
-msgstr ""
-
-#: inc/customizer/legacy_sections/site-title-tagline.php:63
-#: inc/customizer/sections/site-title-tagline.php:46
-msgid "Hide Site Title"
-msgstr ""
-
-#: inc/customizer/legacy_sections/site-title-tagline.php:88
-#: inc/customizer/sections/site-title-tagline.php:64
-msgid "Hide Tagline"
-msgstr ""
-
-#: inc/customizer/legacy_sections/social.php:30
-#: inc/customizer/sections/general.php:142
-msgid ""
-"Enter the complete URL to your profile for each service below that you "
-"would like to share."
-msgstr ""
-
-#: inc/customizer/legacy_sections/social.php:235
-msgid ""
-"If you would like to add a social profile that is not listed above, or "
-"change the order of the icons, use %s."
-msgstr ""
-
-#: inc/customizer/legacy_sections/social.php:238
-msgid "this alternate method"
-msgstr ""
-
-#: inc/customizer/legacy_sections/social.php:261
-#: inc/customizer/sections/general.php:246 inc/extras.php:471
-msgid "Email"
-msgstr ""
-
-#: inc/customizer/legacy_sections/social.php:276
-#: inc/customizer/sections/general.php:273
-msgid "Default RSS"
-msgstr ""
-
-#: inc/customizer/legacy_sections/social.php:297
-#: inc/customizer/sections/general.php:281
-msgid "Hide default RSS feed link"
-msgstr ""
-
-#: inc/customizer/legacy_sections/social.php:318
-#: inc/customizer/sections/general.php:290
-msgid "Custom RSS URL (replaces default)"
-msgstr ""
-
-#: inc/customizer/legacy_sections/stylekit.php:28
-#: inc/customizer/sections/stylekit.php:25
-msgid ""
-"%s to quickly apply designer-picked style choices (fonts, layout, colors) "
-"to your website."
-msgstr ""
-
-#: inc/customizer/legacy_sections/stylekit.php:49
-#: inc/customizer/sections/stylekit.php:37
-msgid "Kits"
-msgstr ""
-
-#: inc/customizer/legacy_sections/stylekit.php:66
-#: inc/customizer/sections/stylekit.php:47
-msgid "Choose a kit"
-msgstr ""
-
-#: inc/customizer/legacy_sections/stylekit.php:69
-#: inc/customizer/sections/stylekit.php:50
-msgid "Modern"
-msgstr ""
-
-#: inc/customizer/legacy_sections/stylekit.php:70
-#: inc/customizer/sections/stylekit.php:51
-msgid "Creative"
-msgstr ""
-
-#: inc/customizer/legacy_sections/stylekit.php:71
-#: inc/customizer/sections/stylekit.php:52
-msgid "Vintage"
 msgstr ""
 
 #: inc/customizer/sections/background-images.php:33
 msgid "Main Column"
 msgstr ""
 
+#: inc/customizer/sections/background-images.php:77
+#: inc/customizer/sections/background.php:37
+msgid "Background Image"
+msgstr ""
+
 #: inc/customizer/sections/background-images.php:86
-#: inc/customizer/sections/background.php:47
+#: inc/customizer/sections/background.php:39
 msgid "Repeat"
 msgstr ""
 
 #: inc/customizer/sections/background-images.php:97
-#: inc/customizer/sections/background.php:62
+#: inc/customizer/sections/background.php:54
 msgid "Position"
 msgstr ""
 
 #: inc/customizer/sections/background-images.php:108
-#: inc/customizer/sections/background.php:73
+#: inc/customizer/sections/background.php:65
 msgid "Attachment"
 msgstr ""
 
 #: inc/customizer/sections/background-images.php:120
-#: inc/customizer/sections/background.php:85
+#: inc/customizer/sections/background.php:77
 msgid "Size"
 msgstr ""
 
@@ -1411,6 +794,13 @@ msgstr ""
 msgid "Color Scheme"
 msgstr ""
 
+#: inc/customizer/sections/color-scheme.php:39
+#: inc/customizer/sections/color-scheme.php:355
+#: inc/customizer/sections/color-scheme.php:562
+#: inc/customizer/sections/color-scheme.php:604
+msgid "Primary Color"
+msgstr ""
+
 #: inc/customizer/sections/color-scheme.php:41
 #: inc/customizer/sections/color-scheme.php:54
 #: inc/customizer/sections/color-scheme.php:67
@@ -1422,12 +812,38 @@ msgstr ""
 msgid "links"
 msgstr ""
 
+#: inc/customizer/sections/color-scheme.php:52
+#: inc/customizer/sections/color-scheme.php:326
+#: inc/customizer/sections/color-scheme.php:541
+msgid "Secondary Color"
+msgstr ""
+
 #: inc/customizer/sections/color-scheme.php:55
 msgid "form inputs, table borders, ruled lines, slider buttons"
 msgstr ""
 
+#: inc/customizer/sections/color-scheme.php:65
+#: inc/customizer/sections/color-scheme.php:167
+#: inc/customizer/sections/color-scheme.php:211
+#: inc/customizer/sections/color-scheme.php:256
+#: inc/customizer/sections/color-scheme.php:259
+#: inc/customizer/sections/color-scheme.php:286
+#: inc/customizer/sections/color-scheme.php:289
+#: inc/customizer/sections/color-scheme.php:422
+#: inc/customizer/sections/color-scheme.php:513
+#: inc/customizer/sections/color-scheme.php:527
+#: inc/formatting/formatting.php:186
+msgid "Text Color"
+msgstr ""
+
 #: inc/customizer/sections/color-scheme.php:68
 msgid "most text"
+msgstr ""
+
+#: inc/customizer/sections/color-scheme.php:78
+#: inc/customizer/sections/color-scheme.php:309
+#: inc/customizer/sections/color-scheme.php:312
+msgid "Detail Color"
 msgstr ""
 
 #: inc/customizer/sections/color-scheme.php:81
@@ -1453,6 +869,11 @@ msgstr ""
 msgid "The default link color is controlled by the \"Primary Color\" option above."
 msgstr ""
 
+#: inc/customizer/sections/color-scheme.php:105
+#: inc/customizer/sections/color-scheme.php:150
+msgid "Background"
+msgstr ""
+
 #: inc/customizer/sections/color-scheme.php:113
 msgid "Main Column Background Color"
 msgstr ""
@@ -1474,6 +895,15 @@ msgstr ""
 msgid "Site Header"
 msgstr ""
 
+#: inc/customizer/sections/color-scheme.php:173
+#: inc/customizer/sections/color-scheme.php:323
+#: inc/customizer/sections/color-scheme.php:388
+#: inc/customizer/sections/color-scheme.php:460
+#: inc/customizer/sections/color-scheme.php:635
+#: inc/formatting/formatting.php:185
+msgid "Background Color"
+msgstr ""
+
 #: inc/customizer/sections/color-scheme.php:208
 #: inc/customizer/sections/typography.php:72
 msgid "Site Title &amp; Tagline"
@@ -1481,6 +911,10 @@ msgstr ""
 
 #: inc/customizer/sections/color-scheme.php:210
 msgid "These options override the %s option in the %s section."
+msgstr ""
+
+#: inc/customizer/sections/color-scheme.php:221
+msgid "Site Title Color"
 msgstr ""
 
 #: inc/customizer/sections/color-scheme.php:230
@@ -1567,6 +1001,22 @@ msgstr ""
 msgid "Widget Body Color"
 msgstr ""
 
+#: inc/customizer/sections/color-scheme.php:592
+msgid "Footer Text Color"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:33
+msgid "Site Layout"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:61
+msgid "Header Layout"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:72
+msgid "Show Title/Logo On"
+msgstr ""
+
 #: inc/customizer/sections/content-layout.php:84
 msgid "Header Bar Layout"
 msgstr ""
@@ -1585,6 +1035,11 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
+#: inc/customizer/sections/content-layout.php:119
+#: inc/customizer/sections/typography.php:136
+msgid "Header Bar Text"
+msgstr ""
+
 #: inc/customizer/sections/content-layout.php:120
 msgid ""
 "This text only appears if a custom menu has not been assigned to the Header "
@@ -1599,6 +1054,11 @@ msgstr ""
 msgid "Show search field"
 msgstr ""
 
+#: inc/customizer/sections/content-layout.php:145
+#: inc/customizer/sections/content-layout.php:255
+msgid "Show social icons"
+msgstr ""
+
 #: inc/customizer/sections/content-layout.php:155
 #: inc/customizer/sections/content-layout.php:265
 #: inc/formatting/formatting.php:189
@@ -1609,8 +1069,17 @@ msgstr ""
 msgid "Number of Widget Areas"
 msgstr ""
 
+#: inc/customizer/sections/content-layout.php:205
+msgid "Footer Layout"
+msgstr ""
+
 #: inc/customizer/sections/content-layout.php:222
 msgid "Remove padding above footer"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:239
+#: inc/customizer/sections/typography.php:162
+msgid "Footer Text"
 msgstr ""
 
 #: inc/customizer/sections/content-layout.php:247
@@ -1637,6 +1106,42 @@ msgstr ""
 msgid "Pages"
 msgstr ""
 
+#: inc/customizer/sections/content-layout.php:367
+msgid "Sidebars are not available on pages using the Builder Template."
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:380
+msgid "Page Title"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:388
+msgid "Hide title"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:456
+msgid "Header, Footer, Sidebars"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:464
+msgid "Hide site header"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:473
+msgid "Hide site footer"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:482
+msgid "Show left sidebar"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:491
+msgid "Show right sidebar"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:515
+msgid "Featured Images"
+msgstr ""
+
 #: inc/customizer/sections/content-layout.php:524
 #: inc/customizer/sections/content-layout.php:581
 #: inc/customizer/sections/content-layout.php:627
@@ -1648,14 +1153,94 @@ msgstr ""
 msgid "Alignment"
 msgstr ""
 
+#: inc/customizer/sections/content-layout.php:561
+msgid "Post Date"
+msgstr ""
+
 #: inc/customizer/sections/content-layout.php:570
 #: inc/customizer/sections/content-layout.php:616
 #: inc/customizer/sections/content-layout.php:662
 msgid "Style"
 msgstr ""
 
+#: inc/customizer/sections/content-layout.php:607
+msgid "Post Author"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:653
+msgid "Comment Count"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:699
+msgid "Post Meta"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:708
+msgid "Show categories"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:717
+msgid "Show tags"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:741
+msgid "Content"
+msgstr ""
+
+#: inc/customizer/sections/content-layout.php:750
+msgid "Generate excerpts automatically"
+msgstr ""
+
+#: inc/customizer/sections/general.php:31
+msgid "Logo"
+msgstr ""
+
+#: inc/customizer/sections/general.php:39
+msgid "Regular Logo"
+msgstr ""
+
+#: inc/customizer/sections/general.php:49
+msgid "Retina Logo (2x)"
+msgstr ""
+
+#: inc/customizer/sections/general.php:50
+msgid "The Retina Logo should be twice the size of the Regular Logo."
+msgstr ""
+
+#: inc/customizer/sections/general.php:60
+msgid "Favicon"
+msgstr ""
+
+#: inc/customizer/sections/general.php:61
+msgid ""
+"File must be <strong>.png</strong> or <strong>.ico</strong> format. Optimal "
+"dimensions: <strong>32px x 32px</strong>."
+msgstr ""
+
+#: inc/customizer/sections/general.php:72
+msgid "Apple Touch Icon"
+msgstr ""
+
+#: inc/customizer/sections/general.php:73
+msgid ""
+"File must be <strong>.png</strong> format. Optimal dimensions: "
+"<strong>152px x 152px</strong>."
+msgstr ""
+
 #: inc/customizer/sections/general.php:92
 msgid "Labels"
+msgstr ""
+
+#: inc/customizer/sections/general.php:102
+msgid "Mobile Menu Label"
+msgstr ""
+
+#: inc/customizer/sections/general.php:103
+msgid "Resize your browser window to preview the mobile menu label."
+msgstr ""
+
+#: inc/customizer/sections/general.php:113
+msgid "Sticky Label"
 msgstr ""
 
 #: inc/customizer/sections/general.php:129
@@ -1666,6 +1251,12 @@ msgstr ""
 msgid "Social Profiles"
 msgstr ""
 
+#: inc/customizer/sections/general.php:142
+msgid ""
+"Enter the complete URL to your profile for each service below that you "
+"would like to share."
+msgstr ""
+
 #: inc/customizer/sections/general.php:230
 msgid ""
 "If you would like to add a social profile that is not listed above, or "
@@ -1674,6 +1265,10 @@ msgstr ""
 
 #: inc/customizer/sections/general.php:233
 msgid "as described here"
+msgstr ""
+
+#: inc/customizer/sections/general.php:246 inc/extras.php:471
+msgid "Email"
 msgstr ""
 
 #: inc/customizer/sections/general.php:247
@@ -1690,25 +1285,88 @@ msgstr ""
 msgid "If configured, an RSS icon will appear with your social profile icons."
 msgstr ""
 
+#: inc/customizer/sections/general.php:273
+msgid "Default RSS"
+msgstr ""
+
+#: inc/customizer/sections/general.php:281
+msgid "Hide default RSS feed link"
+msgstr ""
+
+#: inc/customizer/sections/general.php:290
+msgid "Custom RSS URL (replaces default)"
+msgstr ""
+
+#: inc/customizer/sections/general.php:309
+msgid "White Label"
+msgstr ""
+
 #: inc/customizer/sections/general.php:310
 msgid "Want to remove the theme byline from your website&#8217;s footer?"
 msgstr ""
 
-#: inc/customizer/sections/navigation.php:44
+#: inc/customizer/sections/general.php:320
+#: inc/customizer/sections/typography.php:217
+msgid "Upgrade to %1$s"
+msgstr ""
+
+#: inc/customizer/sections/navigation.php:36
 msgid ""
 "After you have created your custom menu for social profile links, select it "
 "here."
 msgstr ""
 
-#: inc/customizer/sections/navigation.php:59
+#: inc/customizer/sections/navigation.php:51
 msgid ""
 "Select which menu appears in each location. You can edit your menu content "
 "on the Menus screen in the Appearance section."
 msgstr ""
 
+#: inc/customizer/sections/site-title-tagline.php:38
+msgid "Hide Site Title"
+msgstr ""
+
+#: inc/customizer/sections/site-title-tagline.php:56
+msgid "Hide Tagline"
+msgstr ""
+
+#: inc/customizer/sections/stylekit.php:23
+msgid "Style Kits"
+msgstr ""
+
+#: inc/customizer/sections/stylekit.php:25
+msgid ""
+"%s to quickly apply designer-picked style choices (fonts, layout, colors) "
+"to your website."
+msgstr ""
+
+#: inc/customizer/sections/stylekit.php:37
+msgid "Kits"
+msgstr ""
+
+#: inc/customizer/sections/stylekit.php:47
+msgid "Choose a kit"
+msgstr ""
+
+#: inc/customizer/sections/stylekit.php:49
+msgid "Hello"
+msgstr ""
+
+#: inc/customizer/sections/stylekit.php:52
+msgid "Modern"
+msgstr ""
+
+#: inc/customizer/sections/stylekit.php:53
+msgid "Creative"
+msgstr ""
+
+#: inc/customizer/sections/stylekit.php:54
+msgid "Vintage"
+msgstr ""
+
 #: inc/customizer/sections/typography.php:41
 #: inc/customizer/sections/typography.php:118
-#: inc/customizer/sections/typography.php:287 inc/formatting/formatting.php:211
+#: inc/customizer/sections/typography.php:294 inc/formatting/formatting.php:211
 msgid "Font Weight"
 msgstr ""
 
@@ -1738,6 +1396,10 @@ msgstr ""
 
 #: inc/customizer/sections/typography.php:63
 msgid "H6"
+msgstr ""
+
+#: inc/customizer/sections/typography.php:74
+msgid "Site Title"
 msgstr ""
 
 #: inc/customizer/sections/typography.php:75
@@ -1770,43 +1432,61 @@ msgstr ""
 msgid "Google Font Subsets"
 msgstr ""
 
-#: inc/customizer/sections/typography.php:200
+#: inc/customizer/sections/typography.php:178
+msgid "Character Subset"
+msgstr ""
+
+#: inc/customizer/sections/typography.php:188
+msgid ""
+"Not all fonts provide each of these subsets. Please visit the %s to see "
+"which subsets are available for each font."
+msgstr ""
+
+#: inc/customizer/sections/typography.php:192
+msgid "Google Fonts website"
+msgstr ""
+
+#: inc/customizer/sections/typography.php:206
+msgid "Typekit"
+msgstr ""
+
+#: inc/customizer/sections/typography.php:207
 msgid "Looking to add premium fonts from Typekit to your website?"
 msgstr ""
 
-#: inc/customizer/sections/typography.php:261
+#: inc/customizer/sections/typography.php:268
 msgid "Font Family"
 msgstr ""
 
-#: inc/customizer/sections/typography.php:272 inc/formatting/formatting.php:187
+#: inc/customizer/sections/typography.php:279 inc/formatting/formatting.php:187
 msgid "Font Size (px)"
 msgstr ""
 
-#: inc/customizer/sections/typography.php:299
+#: inc/customizer/sections/typography.php:306
 msgid "Font Style"
 msgstr ""
 
-#: inc/customizer/sections/typography.php:311
+#: inc/customizer/sections/typography.php:318
 msgid "Text Transform"
 msgstr ""
 
-#: inc/customizer/sections/typography.php:323
+#: inc/customizer/sections/typography.php:330
 msgid "Line Height (em)"
 msgstr ""
 
-#: inc/customizer/sections/typography.php:338
+#: inc/customizer/sections/typography.php:345
 msgid "Letter Spacing (px)"
 msgstr ""
 
-#: inc/customizer/sections/typography.php:353
+#: inc/customizer/sections/typography.php:360
 msgid "Word Spacing (px)"
 msgstr ""
 
-#: inc/customizer/sections/typography.php:368
+#: inc/customizer/sections/typography.php:375
 msgid "Link Underline"
 msgstr ""
 
-#: inc/customizer/sections/typography.php:397
+#: inc/customizer/sections/typography.php:404
 msgid "Loading&hellip;"
 msgstr ""
 
@@ -2205,12 +1885,12 @@ msgctxt "section name"
 msgid "Columns"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:161
+#: inc/builder/sections/section-definitions.php:210
 msgctxt "section name"
 msgid "Banner"
 msgstr ""
 
-#: inc/builder/sections/section-definitions.php:306
+#: inc/builder/sections/section-definitions.php:404
 msgctxt "section name"
 msgid "Gallery"
 msgstr ""

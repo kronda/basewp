@@ -6,7 +6,12 @@
 /**
  * The current version of the theme.
  */
-define( 'TTFMAKE_VERSION', '1.5.1' );
+define( 'TTFMAKE_VERSION', '1.6.1' );
+
+/**
+ * The minimum version of WordPress required for Finder.
+ */
+define( 'TTFMAKE_MIN_WP_VERSION', '4.0' );
 
 /**
  * The suffix to use for scripts.
@@ -23,6 +28,67 @@ if ( ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG ) ) {
 if ( ! isset( $content_width ) ) {
 	$content_width = 620;
 }
+
+/**
+ * Load files.
+ *
+ * @since 1.6.1.
+ *
+ * @return void
+ */
+function ttfmake_require_files() {
+	$files = array(
+		// Activation
+		get_template_directory() . '/inc/activation.php',
+		// Compatibility
+		get_template_directory() . '/inc/compatibility.php',
+		// Customizer
+		get_template_directory() . '/inc/customizer/bootstrap.php',
+		// Gallery slider
+		get_template_directory() . '/inc/gallery-slider/gallery-slider.php',
+		// Formatting
+		get_template_directory() . '/inc/formatting/formatting.php',
+		// Integrations
+		get_template_directory() . '/inc/jetpack.php',
+		get_template_directory() . '/inc/woocommerce.php',
+		// Miscellaneous
+		get_template_directory() . '/inc/extras.php',
+		get_template_directory() . '/inc/template-tags.php',
+	);
+
+	if ( is_admin() ) {
+		$admin_files = array(
+			// Admin notices
+			get_template_directory() . '/inc/admin-notice/admin-notice.php',
+			// Page customizations
+			get_template_directory() . '/inc/edit-page.php',
+			// Page Builder
+			get_template_directory() . '/inc/builder/core/base.php'
+		);
+
+		$files = array_merge( $files, $admin_files );
+	}
+
+	/**
+	 * Filter the list of theme files to load.
+	 *
+	 * Note that in some cases, the order that the files are listed in matters.
+	 *
+	 * @since 1.6.1.
+	 *
+	 * @param array    $files    The array of absolute file paths.
+	 */
+	$files = apply_filters( 'make_required_files', $files );
+
+	foreach ( $files as $file ) {
+		if ( file_exists( $file ) ) {
+			require_once $file;
+		}
+	}
+}
+
+// Load files immediately.
+ttfmake_require_files();
 
 if ( ! function_exists( 'ttfmake_content_width' ) ) :
 /**
@@ -66,56 +132,6 @@ function ttfmake_content_width() {
 endif;
 
 add_action( 'template_redirect', 'ttfmake_content_width' );
-
-/**
- * Global includes.
- */
-// Compatibility
-require get_template_directory() . '/inc/compatibility.php';
-
-// Custom functions that act independently of the theme templates
-require get_template_directory() . '/inc/extras.php';
-
-// Custom template tags
-require get_template_directory() . '/inc/template-tags.php';
-
-// Customizer additions
-require get_template_directory() . '/inc/customizer/bootstrap.php';
-
-// Gallery slider
-require get_template_directory() . '/inc/gallery-slider/gallery-slider.php';
-
-// Formatting
-require get_template_directory() . '/inc/formatting/formatting.php';
-
-/**
- * Admin includes.
- */
-if ( is_admin() ) {
-	// Page customizations
-	require get_template_directory() . '/inc/edit-page.php';
-
-	// Page Builder
-	require get_template_directory() . '/inc/builder/core/base.php';
-
-	// Admin notices
-	require get_template_directory() . '/inc/admin-notice/admin-notice.php';
-}
-
-/**
- * 3rd party compatibility includes.
- */
-// Jetpack
-// There are several plugins that duplicate the functionality of various Jetpack modules,
-// so rather than conditionally loading our Jetpack compatibility file based on the presence
-// of the main Jetpack class, we attempt to detect individual classes/functions related to
-// their particular modules.
-require get_template_directory() . '/inc/jetpack.php';
-
-// WooCommerce
-if ( class_exists( 'WooCommerce' ) ) {
-	require get_template_directory() . '/inc/woocommerce.php';
-}
 
 if ( ! function_exists( 'ttfmake_setup' ) ) :
 /**
@@ -313,9 +329,30 @@ function ttfmake_scripts() {
 		'ttfmake-font-awesome',
 		get_template_directory_uri() . '/css/font-awesome' . TTFMAKE_SUFFIX . '.css',
 		$style_dependencies,
-		'4.2.0'
+		'4.3.0'
 	);
 	$style_dependencies[] = 'ttfmake-font-awesome';
+
+	// Parent stylesheet, if child theme is active
+	// @link http://justintadlock.com/archives/2014/11/03/loading-parent-styles-for-child-themes
+	if ( is_child_theme() && defined( 'TTFMAKE_CHILD_VERSION' ) && version_compare( TTFMAKE_CHILD_VERSION, '1.1.0', '>=' ) ) {
+		/**
+		 * Toggle for loading the parent stylesheet along with the child one.
+		 *
+		 * @since 1.6.0.
+		 *
+		 * @param bool    $enqueue    True enqueues the parent stylesheet.
+		 */
+		if ( true === apply_filters( 'make_enqueue_parent_stylesheet', true ) ) {
+			wp_enqueue_style(
+				'ttfmake-parent-style',
+				get_template_directory_uri() . '/style.css',
+				$style_dependencies,
+				TTFMAKE_VERSION
+			);
+			$style_dependencies[] = 'ttfmake-parent-style';
+		}
+	}
 
 	// Main stylesheet
 	wp_enqueue_style(
@@ -338,23 +375,33 @@ function ttfmake_scripts() {
 	// Scripts
 	$script_dependencies = array();
 
-	// jQuery
-	$script_dependencies[] = 'jquery';
-
-	// Cycle2
-	ttfmake_cycle2_script_setup( $script_dependencies );
-	$script_dependencies[] = 'ttfmake-cycle2';
-
 	// FitVids
-	wp_enqueue_script(
+	// Register only. Enqueued when necessary by the embed shortcode.
+	wp_register_script(
 		'ttfmake-fitvids',
 		get_template_directory_uri() . '/js/libs/fitvids/jquery.fitvids' . TTFMAKE_SUFFIX . '.js',
-		$script_dependencies,
+		array( 'jquery' ),
 		'1.1',
 		true
 	);
 
-	// Default selectors
+	// Cycle2
+	// Register only. Enqueued when necessary by gallery shortcode or Banner section.
+	ttfmake_cycle2_script_setup( array( 'jquery' ) );
+
+	// jQuery
+	$script_dependencies[] = 'jquery';
+
+	// Global script
+	wp_enqueue_script(
+		'ttfmake-global',
+		get_template_directory_uri() . '/js/global' . TTFMAKE_SUFFIX . '.js',
+		$script_dependencies,
+		TTFMAKE_VERSION,
+		true
+	);
+
+	// FitVids selectors
 	$selector_array = array(
 		"iframe[src*='www.viddler.com']",
 		"iframe[src*='money.cnn.com']",
@@ -375,25 +422,16 @@ function ttfmake_scripts() {
 
 	// Compile selectors
 	$fitvids_custom_selectors = array(
-		'selectors' => implode( ',', $selector_array )
+		'fitvids' => array(
+			'selectors' => implode( ',', $selector_array )
+		),
 	);
 
 	// Send to the script
 	wp_localize_script(
-		'ttfmake-fitvids',
-		'ttfmakeFitVids',
-		$fitvids_custom_selectors
-	);
-
-	$script_dependencies[] = 'ttfmake-fitvids';
-
-	// Global script
-	wp_enqueue_script(
 		'ttfmake-global',
-		get_template_directory_uri() . '/js/global' . TTFMAKE_SUFFIX . '.js',
-		$script_dependencies,
-		TTFMAKE_VERSION,
-		true
+		'ttfmakeGlobal',
+		$fitvids_custom_selectors
 	);
 
 	// Comment reply script
@@ -420,7 +458,7 @@ if ( ! function_exists( 'ttfmake_cycle2_script_setup' ) ) :
  */
 function ttfmake_cycle2_script_setup( $script_dependencies ) {
 	if ( defined( 'TTFMAKE_SUFFIX' ) && '.min' === TTFMAKE_SUFFIX ) {
-		wp_enqueue_script(
+		wp_register_script(
 			'ttfmake-cycle2',
 			get_template_directory_uri() . '/js/libs/cycle2/jquery.cycle2' . TTFMAKE_SUFFIX . '.js',
 			$script_dependencies,
@@ -429,7 +467,7 @@ function ttfmake_cycle2_script_setup( $script_dependencies ) {
 		);
 	} else {
 		// Core script
-		wp_enqueue_script(
+		wp_register_script(
 			'ttfmake-cycle2',
 			get_template_directory_uri() . '/js/libs/cycle2/jquery.cycle2.js',
 			$script_dependencies,
@@ -438,7 +476,7 @@ function ttfmake_cycle2_script_setup( $script_dependencies ) {
 		);
 
 		// Vertical centering
-		wp_enqueue_script(
+		wp_register_script(
 			'ttfmake-cycle2-center',
 			get_template_directory_uri() . '/js/libs/cycle2/jquery.cycle2.center.js',
 			'ttfmake-cycle2',
@@ -447,7 +485,7 @@ function ttfmake_cycle2_script_setup( $script_dependencies ) {
 		);
 
 		// Swipe support
-		wp_enqueue_script(
+		wp_register_script(
 			'ttfmake-cycle2-swipe',
 			get_template_directory_uri() . '/js/libs/cycle2/jquery.cycle2.swipe.js',
 			'ttfmake-cycle2',
@@ -538,7 +576,8 @@ function ttfmake_plus_styles() {
 	.make-plus-products .ttfmake-menu-list-item-link-icon-wrapper:before,
 	.ttfmp-import-message strong:after,
 	#accordion-section-ttfmake_stylekit h3:before,
-	a.ttfmake-customize-plus {
+	a.ttfmake-customize-plus,
+	#ttfmake-menu-list-item-link-plus h4:after {
 		content: "Plus";
 		position: relative;
 		top: -1px;
@@ -609,7 +648,7 @@ add_action( 'customize_controls_print_styles', 'ttfmake_plus_styles', 20 );
  * @param  string    $deprecated    This parameter is no longer used.
  * @return string                   The link.
  */
-function ttfmake_get_plus_link( $deprecated ) {
+function ttfmake_get_plus_link( $deprecated = '' ) {
 	$url = 'https://thethemefoundry.com/make-buy/';
 	return esc_url( $url );
 }

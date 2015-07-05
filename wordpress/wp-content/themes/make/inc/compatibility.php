@@ -224,11 +224,6 @@ if ( ! function_exists( 'ttfmake_customizer_convert_theme_mods' ) ) :
  * @return void
  */
 function ttfmake_customizer_set_up_theme_mod_conversions() {
-	// Don't run conversions if WordPress version doesn't support panels
-	if ( ! ttfmake_customizer_supports_panels() ) {
-		return;
-	}
-
 	// Set up the necessary filters
 	foreach ( ttfmake_customizer_get_key_conversions() as $key => $value ) {
 		add_filter( 'theme_mod_' . $key, 'ttfmake_customizer_convert_theme_mods_filter', 11 );
@@ -329,11 +324,12 @@ endif;
 function ttfmake_upgrade_notices() {
 	global $wp_version;
 
-	if ( version_compare( $wp_version, '3.9', '<' ) ) {
+	if ( version_compare( $wp_version, TTFMAKE_MIN_WP_VERSION, '<' ) ) {
 		ttfmake_register_admin_notice(
-			'make-wp-lt-39',
+			'make-wp-lt-min-version',
 			sprintf(
-				__( 'Make is designed to work with WordPress 3.9 and above. Please %s to ensure compatibility.', 'make' ),
+				__( 'Make requires version %1$s of WordPress or higher. Please %2$s to ensure full compatibility.', 'make' ),
+				TTFMAKE_MIN_WP_VERSION,
 				sprintf(
 					'<a href="%1$s">%2$s</a>',
 					admin_url( 'update-core.php' ),
@@ -341,44 +337,10 @@ function ttfmake_upgrade_notices() {
 				)
 			),
 			array(
-				'cap'    => 'update_core',
-				'screen' => array( 'index.php', 'themes.php', 'update-core.php' ),
-				'type'   => 'error',
-			)
-		);
-	} else if ( version_compare( $wp_version, '4.0', '<' ) ) {
-		ttfmake_register_admin_notice(
-			'make-wp-lt-40-features',
-			sprintf(
-				__( 'Several features in this version of Make are only available with WordPress 4.0 or later. Please %s to take advantage of Make\'s full capabilities.', 'make' ),
-				sprintf(
-					'<a href="%1$s">%2$s</a>',
-					admin_url( 'update-core.php' ),
-					__( 'update WordPress', 'make' )
-				)
-			),
-			array(
-				'cap'    => 'update_core',
-				'screen' => array( 'index.php', 'themes.php', 'update-core.php' ),
-				'type'   => 'error',
-			)
-		);
-	}
-	if ( version_compare( $wp_version, '4.0', '<' ) ) {
-		ttfmake_register_admin_notice(
-			'make-wp-lt-40-dropping-39',
-			sprintf(
-				__( 'In the next release, Make will officially drop support for WordPress 3.9.x. Please %s to 4.0 or newer to maintain compatibility.', 'make' ),
-				sprintf(
-					'<a href="%1$s">%2$s</a>',
-					admin_url( 'update-core.php' ),
-					__( 'update WordPress', 'make' )
-				)
-			),
-			array(
-				'cap'    => 'update_core',
-				'screen' => array( 'index.php', 'themes.php', 'update-core.php' ),
-				'type'   => 'error',
+				'cap'     => 'update_core',
+				'dismiss' => false,
+				'screen'  => array( 'dashboard', 'themes.php', 'update-core.php' ),
+				'type'    => 'error',
 			)
 		);
 	}
@@ -397,24 +359,7 @@ function ttfmake_plus_upgrade_notices() {
 	if ( ttfmake_is_plus() && function_exists( 'ttfmp_get_app' ) ) {
 		$make_plus_version = ttfmp_get_app()->version;
 
-		if ( version_compare( $make_plus_version, '1.4.0', '<' ) ) {
-			ttfmake_register_admin_notice(
-				'make-plus-lt-140',
-				sprintf(
-					__( 'A new version of Make Plus is available. Please %s to ensure compatibility with the Make theme.', 'make' ),
-					sprintf(
-						'<a href="%1$s" target="_blank">%2$s</a>',
-						esc_url( 'https://thethemefoundry.com/tutorials/updating-your-existing-theme/' ),
-						__( 'update to the latest version', 'make' )
-					)
-				),
-				array(
-					'cap'    => 'update_plugins',
-					'screen' => array( 'index.php', 'update-core.php', 'plugins.php' ),
-					'type'   => 'error',
-				)
-			);
-		} else if ( version_compare( $make_plus_version, '1.4.7', '<=' ) ) {
+		if ( version_compare( $make_plus_version, '1.4.7', '<=' ) ) {
 			ttfmake_register_admin_notice(
 				'make-plus-lte-147',
 				sprintf(
@@ -432,7 +377,7 @@ function ttfmake_plus_upgrade_notices() {
 				),
 				array(
 					'cap'    => 'update_plugins',
-					'screen' => array( 'index.php', 'update-core.php', 'plugins.php' ),
+					'screen' => array( 'dashboard', 'update-core.php', 'plugins.php' ),
 					'type'   => 'warning',
 				)
 			);
@@ -520,5 +465,56 @@ if ( ! function_exists( 'ttfmake_css_add_rules' ) ) :
  */
 function ttfmake_css_add_rules() {
 	_deprecated_function( __FUNCTION__, '1.5.0' );
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_customizer_supports_panels' ) ) :
+/**
+ * Detect support for Customizer panels.
+ *
+ * This feature was introduced in WP 4.0. The WP_Customize_Manager class is not loaded
+ * outside of the Customizer, so this also looks for wp_validate_boolean(), another
+ * function added in WP 4.0.
+ *
+ * This function has been deprecated, as Make no longer supports WordPress versions that don't support panels.
+ *
+ * @since  1.3.0.
+ *
+ * @return bool    Whether or not panels are supported.
+ */
+function ttfmake_customizer_supports_panels() {
+	_deprecated_function( __FUNCTION__, '1.6.0' );
+	return ( class_exists( 'WP_Customize_Manager' ) && method_exists( 'WP_Customize_Manager', 'add_panel' ) ) || function_exists( 'wp_validate_boolean' );
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_customizer_add_legacy_sections' ) ) :
+/**
+ * Add the old sections and controls to the customizer for WP installations with no panel support.
+ *
+ * This function has been deprecated, as Make no longer supports WordPress versions that don't support panels.
+ *
+ * @since  1.3.0.
+ *
+ * @param  WP_Customize_Manager    $wp_customize    Theme Customizer object.
+ * @return void
+ */
+function ttfmake_customizer_add_legacy_sections( $wp_customize ) {
+	_deprecated_function( __FUNCTION__, '1.6.0' );
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_css_legacy_fonts' ) ) :
+/**
+ * Build the CSS rules for the custom fonts.
+ *
+ * This function has been deprecated, as Make no longer supports WordPress versions that don't support panels.
+ *
+ * @since  1.0.0.
+ *
+ * @return void
+ */
+function ttfmake_css_legacy_fonts() {
+	_deprecated_function( __FUNCTION__, '1.6.0' );
 }
 endif;

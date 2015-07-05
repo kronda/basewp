@@ -345,7 +345,7 @@ class TTFMAKE_Formatting {
 				'ttfmake-font-awesome',
 				get_template_directory_uri() . '/css/font-awesome' . TTFMAKE_SUFFIX . '.css',
 				array(),
-				'4.2.0'
+				'4.3.0'
 			);
 
 			// Icon definitions

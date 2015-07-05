@@ -69,7 +69,7 @@ $overlay_id  = 'ttfmake-overlay-' . $combined_id;
 		100 => array(
 			'type'    => 'section_title',
 			'name'    => 'title',
-			'label'   => __( 'Title', 'make' ),
+			'label'   => __( 'Enter item title', 'make' ),
 			'default' => '',
 			'class'   => 'ttfmake-configuration-title',
 		),

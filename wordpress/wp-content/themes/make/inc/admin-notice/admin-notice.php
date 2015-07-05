@@ -104,7 +104,7 @@ class TTFMAKE_Admin_Notice {
 		$defaults = array(
 			'cap'     => 'switch_themes',      // User capability to see the notice
 			'dismiss' => true,                 // Whether notice is dismissable
-			'screen'  => array( 'index.php' ), // Which screens to show the notice on
+			'screen'  => array( 'dashboard' ), // IDs/filenames of screens to show the notice on
 			'type'    => 'info',               // success, warning, error, info
 		);
 		$args = wp_parse_args( $args, $defaults );
@@ -120,12 +120,12 @@ class TTFMAKE_Admin_Notice {
 	 *
 	 * @since 1.4.9.
 	 *
-	 * @param  string    $screen    The screen to display the notices on.
-	 * @return array                Array of notices to display on the specified screen.
+	 * @param  string|object    $screen    The screen to display the notices on.
+	 * @return array                       Array of notices to display on the specified screen.
 	 */
 	private function get_notices( $screen = '' ) {
 		if ( ! $screen ) {
-			return $this->notices;
+			return array();
 		}
 
 		// Get the array of notices that the current user has already dismissed
@@ -136,8 +136,10 @@ class TTFMAKE_Admin_Notice {
 		$notices = $this->notices;
 		foreach( $notices as $id => $args ) {
 			if (
-				! in_array( $screen, (array) $args['screen'] ) ||
-				! current_user_can( $args['cap'] ) ||
+				! $this->screen_is_enabled( $screen, $args['screen'] )
+				||
+				! current_user_can( $args['cap'] )
+				||
 				in_array( $id, (array) $dismissed )
 			) {
 				unset( $notices[ $id ] );
@@ -148,6 +150,34 @@ class TTFMAKE_Admin_Notice {
 	}
 
 	/**
+	 * Check if the given screen is in the array of allowed screens.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @param  WP_Screen    $current_screen     The WP_Screen object for the given screen.
+	 * @param  array        $enabled_screens    Array of allowed screen IDs.
+	 *
+	 * @return bool                             True if the given screen is enabled for displaying the notice.
+	 */
+	private function screen_is_enabled( $current_screen, $enabled_screens ) {
+		// Validate current screen variable
+		if ( ! is_object( $current_screen ) || 'WP_Screen' !== get_class( $current_screen ) ) {
+			return false;
+		}
+
+		// Ensure correct casting
+		$enabled_screens = (array) $enabled_screens;
+
+		// Check screen ID first
+		if ( in_array( $current_screen->id, $enabled_screens ) ) {
+			return true;
+		}
+
+		// Check screen's parent file next
+		return in_array( $current_screen->parent_file, $enabled_screens );
+	}
+
+	/**
 	 * Wrapper function for admin_notices hook that sets everything up.
 	 *
 	 * @since 1.4.9.
@@ -155,8 +185,7 @@ class TTFMAKE_Admin_Notice {
 	 * @return void
 	 */
 	public function admin_notices() {
-		global $pagenow;
-		$current_notices = $this->get_notices( $pagenow );
+		$current_notices = $this->get_notices( get_current_screen() );
 
 		if ( ! empty( $current_notices ) && file_exists( $this->template ) ) {
 			add_action( 'admin_print_footer_scripts', array( $this, 'print_admin_notices_js' ) );
@@ -193,7 +222,7 @@ class TTFMAKE_Admin_Notice {
 			$type    = $args['type'];
 			$nonce   = wp_create_nonce( 'ttfmake_dismiss_' . $id );
 
-			// CSS and JS in older version of WP rely on the error and updated classes.
+			// CSS and JS in older versions of WP rely on the error and updated classes.
 			$legacy_class = '';
 			if ( version_compare( $wp_version, '4.1', '<=' ) ) {
 				if ( in_array( $type, array( 'warning', 'error' ) ) ) {

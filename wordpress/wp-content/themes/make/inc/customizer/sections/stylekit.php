@@ -45,6 +45,8 @@ function ttfmake_customizer_stylekit( $sections ) {
 					'description'		=> '
 						<select>
 							<option selected="selected" disabled="disabled">--- ' . __( "Choose a kit", "make" ) . ' ---</option>
+							<option disabled="disabled">' . __( "Default", "make" ) . '</option>
+							<option disabled="disabled">' . __( "Hello", "make" ) . '</option>
 							<option disabled="disabled">' . __( "Light", "make" ) . '</option>
 							<option disabled="disabled">' . __( "Dark", "make" ) . '</option>
 							<option disabled="disabled">' . __( "Modern", "make" ) . '</option>

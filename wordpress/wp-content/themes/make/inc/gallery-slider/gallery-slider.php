@@ -135,6 +135,17 @@ class TTFMAKE_Gallery_Slider {
 	function render_gallery( $output, $attr ) {
 		// Only use this alternative output if the slider is set to true
 		if ( isset( $attr['ttfmake_slider'] ) && true == $attr['ttfmake_slider'] ) {
+			// Add Cycle2 as a dependency for the Frontend script
+			global $wp_scripts;
+			$script = $wp_scripts->query( 'ttfmake-global', 'registered' );
+			if ( $script && ! in_array( 'ttfmake-cycle2', $script->deps ) ) {
+				$script->deps[] = 'ttfmake-cycle2';
+				if ( ! defined( 'TTFMAKE_SUFFIX' ) || '.min' !== TTFMAKE_SUFFIX ) {
+					$script->deps[] = 'ttfmake-cycle2-center';
+					$script->deps[] = 'ttfmake-cycle2-swipe';
+				}
+			}
+
 			$post = get_post();
 
 			if ( ! empty( $attr['ids'] ) ) {

@@ -29,14 +29,6 @@ function ttfmake_customizer_navigation() {
 	$logo_priority = $wp_customize->get_section( $theme_prefix . 'logo' )->priority;
 	$section->priority = $logo_priority + 5;
 
-	// Adjust section title if no panel support
-	if ( ! ttfmake_customizer_supports_panels() ) {
-		$panels = ttfmake_customizer_get_panels();
-		if ( isset( $panels['general']['title'] ) ) {
-			$section->title = $panels['general']['title'] . ': ' . $section->title;
-		}
-	}
-
 	// Move the Social Profile Links option to the General > Social section, if a custom menu has been created
 	$social_menu = $wp_customize->get_control( 'nav_menu_locations[social]' );
 	if ( $social_menu ) {
