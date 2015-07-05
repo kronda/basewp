@@ -1,0 +1,258 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Ultimate Coming Soon Page\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-22 00:33+0100\n"
+"PO-Revision-Date: 2015-06-22 00:48+0100\n"
+"Last-Translator: John Turner <john@seedprod.com>\n"
+"Language-Team: john@seedprod.com\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-Basepath: ../\n"
+"X-Generator: Poedit 1.8.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: da_DK\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: ultimate-coming-soon-page.php:38
+msgid ""
+"WordPress 3.0 and higher required. The plugin has now disabled itself. On a "
+"side note why are you running an old version :( Upgrade!"
+msgstr ""
+"WordPress 3.0 og højere er påkrævet. Dette plugin har nu deaktiveret sig "
+"selv. En sidebemærkning er fordi du bruger en gammel udgave :( Opgrader!"
+
+#: framework/framework.php:289
+msgid "Media Image Library"
+msgstr "Media Billedbibliotek"
+
+#: framework/framework.php:403
+#, php-format
+msgid "Settings saved.  <a href='%s/?cs_preview=true'>Preview &raquo;</a>"
+msgstr ""
+"Indstillinger gemt.  <a href='%s/?cs_preview=true'>Eksempel &raquo;</a>"
+
+#: framework/framework.php:514
+msgid "Save Changes"
+msgstr "Gem ændringer"
+
+#: inc/config.php:49
+msgid "Coming Soon Mode Active"
+msgstr "“Kommer snart” tilstand aktiveret"
+
+#: inc/config.php:78
+msgid "Enter Your Email"
+msgstr "Indtast din email"
+
+#: inc/config.php:79
+msgid "Error :( Please try again."
+msgstr "Fejl. Venligst prøv igen."
+
+#: inc/config.php:80
+msgid "Please enter a valid email."
+msgstr "Venligst indtast en gyldig email."
+
+#: inc/config.php:81
+msgid "You'll be notified soon!"
+msgstr "Du vil snart blive underettet!"
+
+#: inc/config.php:138
+msgid "Unable to load lists, check your API Key!"
+msgstr "Kunne ikke indlæse din liste tjek din API nøgle!"
+
+#: inc/config.php:259
+msgid ""
+"Offer your visitors incentives such as coupons codes, free ebook, free "
+"software, etc. in exchange for their email.\n"
+"        \tJust fill out either or both of the fileds below and the "
+"information will be displayed after you have succesfully captured their "
+"email.\n"
+"        \t"
+msgstr ""
+"Tilbyd dine besøgende incitamenter såsom kupon koder, gratis e-bog, gratis "
+"software osv. i bytte for deres e-mail.\n"
+"         \tDu skal udfylde begge felter nedenfor og oplysningerne vil blive "
+"vist efter du har modtaget deres e-mail.\n"
+"        \t"
+
+#: inc/config.php:307
+msgid "Are you sure you want to DELETE all emails?"
+msgstr "Er du sikker på du vil SLETTE alle emails?"
+
+#: inc/config.php:351 inc/config.php:353 inc/config.php:354
+msgid "Coming Soon"
+msgstr "Kommer snart"
+
+#: inc/config.php:376
+msgid "Settings"
+msgstr "Indstillinger"
+
+#: inc/config.php:388
+msgid "Enable"
+msgstr "Aktiver"
+
+#: inc/config.php:389
+#, php-format
+msgid ""
+"Enable if you want to display a coming soon page to visitors. Users who are "
+"logged in will not see the coming soon page, this means you.  <a href='%s/?"
+"cs_preview=true'>Preview</a>"
+msgstr ""
+"Aktiver, hvis du ønsker at vise en “Kommer snart” side til dine besøgende. "
+"Brugere, der er logget ind, vil ikke se “Kommer snart” siden, som i dette "
+"tilfælde er dig. <a href='%s/?cs_preview=true'>Eksempel</a>"
+
+#: inc/config.php:390 inc/config.php:466
+msgid "Yes"
+msgstr "Ja"
+
+#: inc/config.php:396
+msgid "Image"
+msgstr "Billede"
+
+#: inc/config.php:397
+msgid "Upload a logo or teaser image (or) enter the url to your image."
+msgstr "Upload et logo eller thumbnail (eller) indtast et url til dit billede."
+
+#: inc/config.php:403
+msgid "Headline"
+msgstr "Overskrift"
+
+#: inc/config.php:404
+msgid ""
+"Write a headline for your coming soon page. Tip: Avoid using 'Coming Soon'."
+msgstr ""
+"Skriv en overskrift til din “Kommer snart” side. Tip: Undgå at bruge ‘Kommer "
+"snart“."
+
+#: inc/config.php:410
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: inc/config.php:411
+msgid "Tell the visitor what to expect from your site."
+msgstr "Fortæl den besøgende, hvad de kan forvente af din hjemmeside."
+
+#: inc/config.php:419
+msgid "Mailing List"
+msgstr "Email liste"
+
+#: inc/config.php:427
+msgid "FeedBurn Address"
+msgstr "FeedBurn Adresse"
+
+#: inc/config.php:428
+msgid ""
+"Enter the part after http://feeds2.feedburner.com/ <a href='http://wordpress."
+"org/extend/plugins/ultimate-coming-soon-page/faq/'' target='_blanks'> Learn "
+"how</a> to use FeedBurner to collect emails."
+msgstr ""
+"Indtast delen efter http://feeds2.feedburner.com/ <a href='http://wordpress."
+"org/extend/plugins/ultimate-coming-soon-page/faq/'' target='_blanks'>Lær "
+"hvordan</a> at bruge FeedBurner til at indsamle e-mails."
+
+#: inc/config.php:435
+msgid "Custom HTML"
+msgstr "Tilpasset HTML"
+
+#: inc/config.php:436
+msgid ""
+"Enter any custom html or javascript that you want outputted. You can also "
+"enter you Google Analytics code."
+msgstr ""
+"Indsæt enhver tilpasset html eller javascript, som du ønsker udlæses. Du kan "
+"også indtaste din Google Analytics kode."
+
+#: inc/config.php:444
+msgid "Style"
+msgstr "Style"
+
+#: inc/config.php:449
+msgid "Background Color"
+msgstr "Baggrundsfarve"
+
+#: inc/config.php:457
+msgid "Background Image"
+msgstr "Baggrundsbillede"
+
+#: inc/config.php:460
+msgid ""
+"Upload an optional background image (or) enter the url to your image. This "
+"will override the color above if set."
+msgstr ""
+"Upload et valgfrit baggrundsbillede (eller) indtast en url til dit billede. "
+"Dette vil tilsidesætte farven ovenfor, hvis indstillet."
+
+#: inc/config.php:464
+msgid "Stretch Background Image"
+msgstr "Stræk baggrundsbillede"
+
+#: inc/config.php:465
+msgid "This will stretch your background image to match any browser size."
+msgstr ""
+"Dette vil strække dit baggrundsbillede til at matche enhver browsers "
+"størrelse."
+
+#: inc/config.php:473
+msgid "Font Color"
+msgstr "Skrifttype farve"
+
+#: inc/config.php:474
+msgid "Black"
+msgstr "Sort"
+
+#: inc/config.php:474
+msgid "Gray"
+msgstr "Grå"
+
+#: inc/config.php:474
+msgid "White"
+msgstr "Hvid"
+
+#: inc/config.php:483
+msgid "Headline Font"
+msgstr "Overskrift skrifttype"
+
+#: inc/config.php:487 inc/config.php:496
+msgid ""
+"View <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html"
+"\">System Fonts</a> - View <a href=\"http://www.google.com/webfonts\">Google "
+"Fonts</a>"
+msgstr ""
+"Vis <a href=\"http://www.ampsoft.net/webdesign-l/WindowsMacFonts.html"
+"\">System Skrifttyper</a> - Vis <a href = \"http://www.google.com/webfonts\" "
+">Google Skrifttyper</a>"
+
+#: inc/config.php:491
+msgid "Body Font"
+msgstr "Skrifttype"
+
+#: inc/config.php:501
+msgid "Custom CSS"
+msgstr "Tilpasset CSS"
+
+#: inc/config.php:506
+msgid "Need to tweaks the styles? Add your custom CSS here."
+msgstr "Behov for at tweake dine styles? Tilføj dit tilpassede CSS her."
+
+#: inc/config.php:511
+msgid "Powered By SeedProd"
+msgstr "Powered By SeedProd"
+
+#: inc/config.php:512
+msgid "Nope - Got No Love"
+msgstr "Niks - Jeg elsker dig ikke"
+
+#: inc/config.php:512
+msgid "Yep - I Love You Man"
+msgstr "Yep - Jeg elsker dig man"
+
+#: inc/config.php:513
+msgid ""
+"Can we show a <strong>cool stylish</strong> footer credit at the bottom the "
+"page."
+msgstr ""
+"Kan vi vise et <strong>køligt stilfuldt</ strong> footer kredit nederst på "
+"siden."

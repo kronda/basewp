@@ -3,8 +3,8 @@ Contributors: bungeshea
 Donate link: http://bungeshea.com/donate/
 Tags: code-snippets, snippets, code, php, network, multisite
 Requires at least: 3.3
-Tested up to: 4.1.1
-Stable tag: 2.0.3
+Tested up to: 4.2.2
+Stable tag: 2.3.0
 License: MIT
 License URI: license.txt
 
@@ -115,6 +115,47 @@ That's fantastic! Fork the [repository on GitHub](http://github.com/sheabunge/co
 4. Importing snippets from an XML file
 
 == Changelog ==
+
+= 2.3.0 =
+* Removed nested functions
+* Added icons for admin and front-end snippets to manage table
+* Improved settings retrieval by caching settings
+* Updated Russian translation by [Alexey Chumakov](http://chumakov.ru/)
+* Added filter switch to prevent a snippet from executing ([#25](https://github.com/sheabunge/code-snippets/issues/25))
+* Fixed errors in string translation
+* Fixed bug in import process ([#32](https://github.com/sheabunge/code-snippets/issues/32))
+
+= 2.2.3 =
+* Fixed broken call to `export_snippet()` function
+* Added support for importing and exporting snippet scope
+* Fixed duplicate primary key database error
+* Improved database table structure
+
+= 2.2.2 =
+* Polyfilled array_replace_recursive() function for PHP 5.2
+* Updated references to old plugin site
+* Resolved JavaScript error on edit snippet pages
+* Made minor updates to French translation file
+* Added statuses for snippet scopes on manage snippets table
+
+= 2.2.1 =
+* Fixed the default values of new setting not being applied
+* Fixed missing background of tags input
+
+= 2.2.0 =
+* Introduced CodeSniffer testing on code
+* Fixed description heading disappearing when media buttons enabled
+* Added snippet scope selector
+* Minified all CSS and JS in plugin
+* Made CodeMirror theme names more readable
+* Fixed bug causing translations to not be loaded
+
+= 2.1.0 =
+* Added additional setting descriptions
+* Added settings for code and description editor height
+* Updated CodeMirror to version 5.2
+* Fixed not escaping the request URL when using query arg functions
+* Improved efficiency of settings component
 
 = 2.0.3 =
 * Updated German translation by [Joerg Knoerchen](http://www.sensorgraphy.net/)
@@ -306,6 +347,21 @@ __Fixed__
 
 == Upgrade Notice ==
 
+= 2.3.0 =
+Numerious fixes and Russian translation update. Props to @signo and @`achumakov.
+
+= 2.2.3 =
+Fixed error when exporting; snippet scopes can now be imported
+
+= 2.2.2 =
+Fix error with PHP 5.2 added statuses for scopes to manage snippets table
+
+= 2.2.1 =
+New snippet scope feature; fixed bug with translations not loading; minified all css and js
+
+= 2.1.0 =
+Minor improvements to settings component; added description editor settings; minor security fixes
+
 = 2.0.2 =
 Fix snippets not saving
 
@@ -344,9 +400,6 @@ Improvements on the 'Manage Snippets' page and localization
 
 = 1.4 =
 Better code highlighting and improved multisite support
-
-= 1.3.2 =
-Code Snippets has a new website: http://code-snippets.bungeshea.com/
 
 = 1.3 =
 Added import/export feature

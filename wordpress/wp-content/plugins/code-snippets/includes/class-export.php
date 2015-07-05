@@ -11,8 +11,6 @@
  * @subpackage Export
  */
 
-if ( ! class_exists( 'Code_Snippets_Export' ) ) :
-
 /**
  * Exports selected snippets to a XML or PHP file.
  *
@@ -27,7 +25,7 @@ class Code_Snippets_Export {
 	 * The IDs
 	 * @var array
 	 */
-	public $snippet_ids = array();
+	protected $snippet_ids = array();
 
 	/**
 	 * The name of the table to fetch snippets from
@@ -40,21 +38,21 @@ class Code_Snippets_Export {
 	 * Either 'xml' or 'php'
 	 * @var object
 	 */
-	public $format;
+	protected $format;
 
 	/**
 	 * The DOM document.
 	 * Only used in XML exports
 	 * @var object
 	 */
-	public $dom;
+	protected $dom;
 
 	/**
 	 * The DOM document root element
 	 * Only used in XML exports
 	 * @var object
 	 */
-	public $root;
+	protected $root;
 
 	/**
 	 * Constructor function
@@ -62,7 +60,7 @@ class Code_Snippets_Export {
 	 * @param string $table The name of the table to fetch snippets from
 	 * @param  string $format The format of the export file
 	 */
-	function __construct( $ids, $table, $format = 'xml' ) {
+	public function __construct( $ids, $table, $format = 'xml' ) {
 		$this->snippet_ids = (array) $ids;
 		$this->table_name = $table;
 		$this->format = 'php' === $format ? 'php' : 'xml';
@@ -73,7 +71,7 @@ class Code_Snippets_Export {
 	 * Build the export file name
 	 * @return string
 	 */
-	function get_filename() {
+	public function get_filename() {
 
 		if ( 1 == count( $this->snippet_ids ) ) {
 			/* If there is only snippet to export, use its name instead of the site name */
@@ -120,10 +118,10 @@ class Code_Snippets_Export {
 		}
 
 		/* Build a generator line, like the WordPress export files */
-		$gen  = sprintf (
+		$gen = sprintf(
 			'generator="Code Snippets/%s" created="%s"',
 			CODE_SNIPPETS_VERSION,
-			date('Y-m-d H:i')
+			date( 'Y-m-d H:i' )
 		);
 
 		/* Run the generator line through the standard WordPress filter */
@@ -134,8 +132,6 @@ class Code_Snippets_Export {
 		$gen = $this->dom->createComment( " $gen " );
 		$this->dom->appendChild( $gen );
 	}
-
-
 
 	/**
 	 * Process all snippet items
@@ -195,18 +191,17 @@ class Code_Snippets_Export {
 	 * @param array $snippet
 	 */
 	protected function do_item_php( $snippet ) {
+		echo "\n/**\n * {$snippet['name']}\n";
 
-			echo "\n/**\n * {$snippet['name']}\n";
+		if ( ! empty( $snippet['description'] ) ) {
 
-			if ( ! empty( $snippet['description'] ) ) {
+			/* Convert description to PhpDoc */
+			$desc = strip_tags( str_replace( "\n", "\n * ", $snippet['description'] ) );
 
-				/* Convert description to PhpDoc */
-				$desc = strip_tags( str_replace( "\n", "\n * ", $snippet['description'] ) );
+			echo " *\n * $desc\n";
+		}
 
-				echo " *\n * $desc\n";
-			}
-
-			echo " */\n{$snippet['code']}\n";
+		echo " */\n{$snippet['code']}\n";
 	}
 
 	/**
@@ -250,5 +245,3 @@ class Code_Snippets_Export {
 		exit;
 	}
 }
-
-endif; // class exists check

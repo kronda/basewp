@@ -23,18 +23,19 @@ function build_snippet_object( $data = null ) {
 	$snippet->description = '';
 	$snippet->code = '';
 	$snippet->tags = array();
+	$snippet->scope = 0;
 	$snippet->active = 0;
 	$snippet = apply_filters( 'code_snippets/build_default_snippet', $snippet );
 
 	if ( ! isset( $data ) ) {
 		return $snippet;
-	}
-	elseif ( is_object( $data ) ) {
+
+	} elseif ( is_object( $data ) ) {
 
 		/* If we already have a snippet object, merge it with the default */
 		return (object) array_merge( (array) $snippet, (array) $data );
-	}
-	elseif ( is_array( $data ) ) {
+
+	} elseif ( is_array( $data ) ) {
 
 		foreach ( $data as $field => $value ) {
 
@@ -150,8 +151,13 @@ function escape_snippet_data( $snippet ) {
 	/* Remove ?> from end of snippet */
 	$snippet->code = preg_replace( '|\?>[\s]*$|', '', $snippet->code );
 
-	/* Escape the data */
+	/* Ensure the ID is a positive integer */
 	$snippet->id = absint( $snippet->id );
+
+	/* Make sure that the scope is a valid value */
+	if ( ! in_array( $snippet->scope, array( 0, 1, 2 ) ) ) {
+		$snippet->scope = 0;
+	}
 
 	/* Store tags as a string, with tags separated by commas */
 	$snippet->tags = code_snippets_build_tags_array( $snippet->tags );
@@ -369,7 +375,7 @@ function import_snippets( $file, $multisite = null ) {
 	$dom->load( $file );
 
 	$snippets_xml = $dom->getElementsByTagName( 'snippet' );
-	$fields = array( 'name', 'description', 'code', 'tags' );
+	$fields = array( 'name', 'description', 'code', 'tags', 'scope' );
 	$count = 0;
 
 	/* Loop through all snippets */
@@ -380,7 +386,7 @@ function import_snippets( $file, $multisite = null ) {
 		foreach ( $fields as $field_name ) {
 
 			/* Fetch the field element from the document */
-			$field = $snippet_xml->getElementsByTagName( $field_name )->item(0);
+			$field = $snippet_xml->getElementsByTagName( $field_name )->item( 0 );
 
 			/* If the field element exists, add it to the snippet object */
 			if ( isset( $field->nodeValue ) ) {
@@ -441,7 +447,6 @@ function execute_snippet( $code ) {
 	$output = ob_get_contents();
 	ob_end_clean();
 
-	do_action( 'code_snippets/execute_snippet', $code );
 	return $result;
 }
 
@@ -472,17 +477,21 @@ function execute_active_snippets() {
 	/* Check if the multisite snippets table exists */
 	if ( is_multisite() && $wpdb->get_var( "SHOW TABLES LIKE '$wpdb->ms_snippets'" ) === $wpdb->ms_snippets ) {
 		$sql = ( isset( $sql ) ? $sql . "\nUNION ALL\n" : '' );
-		$sql .= "SELECT code FROM {$wpdb->ms_snippets} WHERE active=1;";
+		$sql .= "SELECT code FROM {$wpdb->ms_snippets} WHERE active=1";
 	}
 
 	if ( ! empty( $sql ) ) {
+		$sql .= sprintf( ' AND (scope=0 OR scope=%d)', is_admin() ? 1 : 2 );
 
 		/* Grab the active snippets from the database */
 		$active_snippets = $wpdb->get_col( $sql );
 
-		foreach ( $active_snippets as $snippet_code ) {
-			/* Execute the PHP code */
-			execute_snippet( $snippet_code );
+		foreach ( $active_snippets as $snippet_id => $snippet_code ) {
+
+			if ( apply_filters( 'code_snippets/allow_execute_snippet', true, $snippet_id ) ) {
+				/* Execute the PHP code */
+				execute_snippet( $snippet_code );
+			}
 		}
 
 		return true;

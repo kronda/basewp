@@ -4,27 +4,27 @@
  * Code Snippets - An easy, clean and simple way to add code snippets to your site.
  *
  * If you're interested in helping to develop Code Snippets, or perhaps
- * contribute to the localization, please see http://code-snippets.bungeshea.com
+ * contribute to the localization, please see https://github.com/sheabunge/code-snippets
  *
  * @package   Code_Snippets
- * @version   2.0.3
+ * @version   2.3.0
  * @author    Shea Bunge <http://bungeshea.com/>
- * @copyright Copyright (c) 2012-2014, Shea Bunge
- * @link      http://code-snippets.bungeshea.com
+ * @copyright Copyright (c) 2012-2015, Shea Bunge
+ * @link      http://bungeshea.com/plugins/code-snippets/
  * @license   http://opensource.org/licenses/MIT
  */
 
 /*
 Plugin Name: Code Snippets
-Plugin URI:  http://code-snippets.bungeshea.com
+Plugin URI:  http://bungeshea.com/plugins/code-snippets/
 Description: An easy, clean and simple way to add code snippets to your site. No need to edit to your theme's functions.php file again!
 Author:      Shea Bunge
 Author URI:  http://bungeshea.com
-Version:     2.0.3
+Version:     2.3.0
 License:     MIT
 License URI: license.txt
 Text Domain: code-snippets
-Domain Path: /languages/
+Domain Path: /languages
 */
 
 /* Exit if accessed directly */
@@ -42,7 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 2.0
  * @var string A PHP-standardized version number string
  */
-define( 'CODE_SNIPPETS_VERSION', '2.0.2' );
+define( 'CODE_SNIPPETS_VERSION', '2.3.0' );
 
 /**
  * The full path to the main file of this plugin
@@ -53,7 +53,7 @@ define( 'CODE_SNIPPETS_VERSION', '2.0.2' );
  *
  * @since 2.0
  * @var string
-  */
+ */
 define( 'CODE_SNIPPETS_FILE', __FILE__ );
 
 /**
@@ -107,13 +107,13 @@ add_action( 'plugins_loaded', 'execute_active_snippets', 1 );
 
 /**
  * Load up the localization file if we're using WordPress in a different language.
- * Place it in this plugin's "languages" folder and name it "code-snippets-[value in wp-config].mo"
+ * Place it in this plugin's "languages" folder and name it "code-snippets-[language_COUNTRY].mo"
  *
  * If you wish to contribute a language file to be included in the Code Snippets package,
  * please see create an issue on GitHub: https://github.com/sheabunge/code-snippets/issues
  */
 function code_snippets_load_textdomain() {
-	load_plugin_textdomain( 'code-snippets', false, dirname( basename( __FILE__ ) ) . '/languages/' );
+	load_plugin_textdomain( 'code-snippets', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 
 add_action( 'plugins_loaded', 'code_snippets_load_textdomain' );
