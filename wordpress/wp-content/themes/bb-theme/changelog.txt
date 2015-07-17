@@ -1,0 +1,299 @@
+<h4>1.3.1 - 07/08/2015</h4>
+<p>This is our biggest theme update since settings were moved to the Customizer! <strong>PLEASE NOTE:</strong> None of your customizations will immediately change as a result of this update. However, you may notice slight differences to text/link colors in the header/footer sections the next time you enter the Customizer that you are now able to adjust. Please see <a href="https://www.wpbeaverbuilder.com/the-beaver-builder-theme-is-now-even-more-customizable/">this blog post</a> for more details.</p>
+<ul>
+	<li>Added 25 new settings to the Customizer.</li>
+	<li>Added a Customizer setting for showing a hamburger icon for the mobile nav button.</li>
+	<li>Added Customizer settings for better text color control.</li>
+	<li>Added Customizer settings for adding a background image to each page section.</li>
+	<li>Added 14 new actions.</li>
+	<li>Added 2 new filters.</li>
+</ul>
+
+<h4>1.3.0.1 - 06/20/2015</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed a bug with retina logos and the fixed header.</li>
+    <li>Fixed a bug with the fixed header when the main header is disabled.</li>
+    <li>Fixed the setting to only show footer widgets on the homepage.</li>
+</ul>
+
+<h4>1.3.0 - 06/01/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Core presets can now be removed. Custom presets can be added. Please see this <a href="https://www.wpbeaverbuilder.com/knowledge-base/adding-and-removing-presets/">knowledge base entry</a> for more information.</li>
+	<li>The includes/copyright.php file can now be overridden in child themes.</li>
+	<li>A body class is now added for the current preset.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>JavaScript tweak to fix a retina logo issue.</li>
+    <li>CSS tweak to fix a FireFox bug with large logos.</li>
+</ul>
+
+<h4>1.2.9 - 04/26/2015</h4>
+<p><strong>Tweaks</strong></p>
+<ul>
+    <li>Updated FontAwesome.</li>
+    <li>Top nav dropdowns are now enabled on mobile.</li>
+</ul>
+
+<h4>1.2.8 - 03/31/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added Russian translation.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>CSS fix for WooCommerce shipping radio buttons.</li>
+    <li>CSS fix for WooCommerce three columns category layouts.</li>
+</ul>
+
+<h4>1.2.7 - 03/24/2015</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed a WooCommerce CSS bug.</li>
+    <li>Fixed a bug with retina logos not showing in the fixed header.</li>
+</ul>
+
+<h4>1.2.6 - 03/22/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added German translation.</li>
+	<li>Shortcodes in logo text are now parsed.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed a bug with retina logos being incorrectly sized.</li>
+    <li>Fixed a WooCommerce CSS bug with 3 column layouts.</li>
+</ul>
+
+<h4>1.2.5 - 03/01/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added Arabic translation.</li>
+    <li>Pages now use H1 instead of H2 for titles.</li>
+</ul>
+
+<h4>1.2.4 - 02/22/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added 'No Header/Footer' page template.</li>
+    <li>Single posts now use H1 instead of H2 for titles.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Tweaked the CSS for responsive blog post images so it doesn't override images resized using the WordPress editor.</li>
+    <li>Footer widgets now show on mobile.</li>
+</ul>
+
+<h4>1.2.3 - 02/15/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>HTML for default page headings is no longer rendered if the builder is active and they are disabled in the global settings.</li>
+	<li>Added French translation.</li>
+	<li>Added Italian translation.</li>
+	<li>Enhanced SSL check for servers behind load balancers.</li>
+</ul>
+
+<h4>1.2.2 - 01/25/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Major improvements to how translations are handled. A huge thanks to Oliver Juhas of <a href="http://www.webmandesign.eu/" target="_blank">WebMan Design</a> for making that happen.</li>
+	<li>Added Slovak translation.</li>
+    <li>Updated to Bootstrap 3.3.2.</li>
+    <li>Added fl-page-header-primary class to the primary header to differentiate it from the fixed header.</li>
+	<li>HTML attributes for the logo now use the site title settings instead of the logo text setting if an image logo is being used.</li>
+	<li>Added favicon to wp-admin.</li>
+</ul>
+
+<h4>1.2.1 - 01/12/2015</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed a small bug with migrations to the new Customizer interface.</li>
+</ul>
+
+<h4>1.2.0 - 01/11/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+    <li>Theme settings have been moved to the WordPress Customizer!</li>
+    <li>Added 20 new theme settings. See our blog for complete details.</li>
+    <li>Added the ability to completely hide the header or footer.</li>
+    <li>Added the ability to override files in the includes folder such as nav-bottom.php and fixed-header.php.</li>
+    <li>Added dropdown support to the top bar's menus.</li>
+    <li>Added new layouts for the top bar to combine icons, menus or text.</li>
+    <li>Added post navigation on single post pages.</li>
+    <li>Shortcodes are now parsed in the header and footer sections.</li>
+    <li>Added support for right-to-left languages.</li>
+    <li>Updated Google fonts.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed HTML validation issues.</li>
+    <li>Resolved a conflict with plugins like the Events Calendar that use the same Less CSS processor.</li>
+    <li>Video iframe embeds are now responsive.</li>
+</ul>
+
+<h4>1.1.9</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added styling for a number of additional HTML5 input fields.</li>
+	<li>Added an email option to the social settings.</li>
+</ul>
+
+<h4>1.1.8</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>The theme logo now defaults to the site title instead of the Beaver Builder logo.</li>
+</ul>
+
+<h4>1.1.7</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added Swedish translation.</li>
+</ul>
+
+<h4>1.1.6</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added fl_head_open open action.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed a JavaScript theme settings bug.</li>
+    <li>Fixed an IE gradient bug.</li>
+</ul>
+
+<h4>1.1.5</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Relaunching as Beaver Builder! Check out the new site at <a href="http://www.wpbeaverbuilder.com" target="_blank">www.wpbeaverbuilder.com</a>.</li>
+</ul>
+
+<h4>1.1.4</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+    <li>Added Italian translation.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Moved loading of settings into the theme setup method and after translations have been loaded.</li>
+</ul>
+
+<h4>1.1.3</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+    <li>Updated Font Awesome.</li>
+    <li>Added .fl-post-more classname to read more links.</li>
+</ul>
+
+<h4>1.1.2</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+    <li>Added two new skins.</li>
+    <li>Added the WordPress customizer link back in.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Post dates are now displayed using the date format set in wp-admin.</li>
+</ul>
+
+<h4>1.1.1</h4>
+<p>CSS tweaks for WooCommerce widgets.</p>
+
+<h4>1.1.0</h4>
+<p>Fixed woocommerce css issues.</p>
+
+<h4>1.0.9</h4>
+<p>Minor bug fixes.</p>
+
+<h4>1.0.8</h4>
+<p>The Automator theme is now licensed under the GNU General Public License v2.0.</p>
+
+<h4>1.0.7</h4>
+<ul>
+    <li>Added scheme.org markup to Automator's HTML.</li>
+</ul>
+
+<h4>1.0.6</h4>
+<ul>
+    <li>The fixed header is no longer hidden by the WordPress admin bar when logged in.</li>
+    <li>Fixed a bug that was caused by not having a site title.</li>
+    <li>Google fonts are now loaded via SSL if enabled.</li>
+</ul>
+
+<h4>1.0.5</h4>
+<ul>
+    <li>Fixed header layout issue with FireFox.</li>
+</ul>
+
+<h4>1.0.4</h4>
+<ul>
+    <li>Changed theme settings capability check to edit_theme_options instead of administrator.</li>
+</ul>
+
+<h4>1.0.3</h4>
+<ul>
+    <li>Minor core code enhancements.</li>
+</ul>
+
+<h4>1.0.2</h4>
+<ul>
+    <li>Updated Font Awesome to include new icons in 4.0.3.</li>
+</ul>
+
+<h4>1.0.1</h4>
+<ul>
+    <li>Fixed a bug that was causing double separators in the title on some pages.</li>
+</ul>
+
+<h4>1.0</h4>
+<p>Version 1.0 is here!</p>
+<p><strong>Enhancements</strong></p>
+<ul>
+    <li>Added additional actions and filters.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed an overflow issue with the responsive menu.</li>
+</ul>
+
+<h4>0.8.6</h4>
+<ul>
+    <li>Fixed double title issue when using the WordPress SEO plugin.</li>
+</ul>
+
+<h4>0.8.5</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+    <li>Added lightbox option in the theme settings that defaults to enabled.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed preview bug that was breaking the builder.</li>
+    <li>WooCommerce LESS fixes.</li>
+</ul>
+
+<h4>0.8.4</h4>
+<ul>
+    <li>Blog images are now responsive.</li>
+    <li>Mobile submenus are now collapsed by default.</li>
+</ul>
+
+<h4>0.8.3</h4>
+<ul>
+    <li>Misc core bug fixes.</li>
+    <li>Added aria-haspopup to submenus for touch support.</li>
+</ul>
+
+<h4>0.8.2</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed an Android bug with Automator fixed header.</li>
+</ul>
+<p><strong>Enhancements</strong></p>
+<ul>
+    <li>Adjusted color of mobile submenus so they are easier to read on a light background.</li>
+</ul>
+
+<h4>0.8.1</h4>
+<p>Initial beta release.</p>

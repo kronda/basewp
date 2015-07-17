@@ -1,0 +1,78 @@
+<div class="tve-group-heading collapse-table-list-heading">
+    <span class="tve-group-part collapse-table-part tve-group-title collapse-table-part-title">
+        <span class="tve-group-sort tve-sort-handle"><span class="tve-icon-expand"></span></span>
+        <span class="group-title"><strong class="bigger"><#= post_title #></strong></span>
+        <input class="tve-form-control tve-input-small tve-input-inline tve-input-condensed tve-edit-title-input" style="display: none;">
+        <a href="javascript:void(0)" class="tve-btn tve-btn-icon tve-edit-title" style="margin-right: 5px;">
+            <span class="tve-icon-pencil"></span>
+        </a>
+    </span>
+    <span class="tve-group-part collapse-table-part tve-group-center collapse-table-part-center"><#= impressions #></span>
+    <span class="tve-group-part collapse-table-part tve-group-center collapse-table-part-center"><#= conversions #></span>
+    <span class="tve-group-part collapse-table-part tve-group-center collapse-table-part-center"><#= conversion_rate #></span>
+    <span class="tve-group-part collapse-table-part tve-group-center collapse-table-part-center" id="tve-dm-<#= ID #>"><#= display_on_mobile #></span>
+    <span class="tve-group-part collapse-table-part tve-group-center collapse-table-part-center" id="tve-ds-<#= ID #>"><#= display_status #></span>
+    <span class="relative tve-group-part collapse-table-part tve-row-actions collapse-table-part-action">
+        <a href="javascript:void(0)" title="<?php echo __('View details', 'thrive-leads') ?>" class="tl-tooltip tve-prevent-click tve-btn tve-btn-icon tve-group-details"><span class="tve-icon-plus-circle"></span></a>
+        <a href="#settings/<#= ID #>" title="<?php echo __('Display Settings', 'thrive-leads') ?>" class="tl-tooltip tve-prevent-click tve-btn tve-btn-icon tve-group-settings">
+            <span class="tve-icon-cog"></span>
+        </a>
+        <a href="javascript:void(0)" title="<?php echo __('Delete Group', 'thrive-leads') ?>" data-title="<?php echo __('Delete Group', 'thrive-leads') ?>" class="tl-tooltip tve-prevent-click tve-btn tve-btn-icon tve-group-delete" data-id="<#= ID #>"><span class="tve-icon-trash-o"></span></a>
+        <# if( has_display_settings != 1 ) { #><span class="tve-prevent-click targeting-option-balloon"><?php echo __('Set your targeting options here.', 'thrive-leads') ?></span> <# } #>
+    </span>
+</div>
+<div class="tve-form-types" style="display: none;">
+    <div class="tve-form-types-list"></div>
+    <div class="tve-form-type-buttons">
+        <a style="" class="tve-start-group-test tve-btn tve-btn-green tve-btn-large" href="javascript:void(0)"
+           title="<?php echo __('Test types of form against each other', 'thrive-leads') ?>">
+            <?php echo __('Test Types Of Form Against Each Other', 'thrive-leads') ?>
+        </a>
+    </div>
+    <div class="clearfix"></div>
+    <div class="tve-leads-running-tests" style="display: none">
+        <h2 title="<?php echo __('Click to expand', 'thrive-leads') ?>" class="tl-clickable display-inline-block tl-toggle-test-display collapsed" data-target=".tve-active-group-tests">
+            <span class="tl-icon tve-icon-collapsed"> </span>
+            <?php echo __('Tests Currently In Progress', 'thrive-leads') ?> (<#= running_tests_count #>)
+        </h2>
+
+        <div class="tve-active-group-tests" style="display: none;width:100%">
+            <table class="tve-table">
+                <thead>
+                <th><?php echo __('Test Name', 'thrive-leads') ?></th>
+                <th><?php echo __('Type', 'thrive-leads') ?></th>
+                <th><?php echo __('Test Description', 'thrive-leads') ?></th>
+                <th><?php echo __('Start Date', 'thrive-leads') ?></th>
+                <th>&nbsp;</th>
+                </thead>
+                <tbody id="tve-active-group-test-list"></tbody>
+            </table>
+        </div>
+        <div class="tve-no-active-group-tests margin-bottom-10" style="display: none">
+            <?php echo __('There are no tests currently in progress.', 'thrive-leads') ?>
+        </div>
+    </div>
+    <div class="tve-leads-archived-tests" style="display: none">
+        <h2 title="<?php echo __('Click to expand', 'thrive-leads') ?>" class="tl-clickable display-inline-block tl-toggle-test-display collapsed" data-target=".tve-completed-group-tests">
+            <span class="tl-icon tve-icon-collapsed"> </span>
+            <?php echo __('Tests Archives', 'thrive-leads') ?> (<#= archived_tests_count #>)
+        </h2>
+
+        <div class="tve-completed-group-tests" style="display: none">
+            <table class="tve-table">
+                <thead>
+                <th><?php echo __('Test Name', 'thrive-leads') ?></th>
+                <th><?php echo __('Type', 'thrive-leads') ?></th>
+                <th><?php echo __('Test Description', 'thrive-leads') ?></th>
+                <th><?php echo __('Start Date', 'thrive-leads') ?></th>
+                <th><?php echo __('End Date', 'thrive-leads') ?></th>
+                <th>&nbsp;</th>
+                </thead>
+                <tbody id="tve-completed-group-test-list"></tbody>
+            </table>
+        </div>
+        <div class="tve-no-completed-group-tests margin-bottom-10" style="display: none">
+            <?php echo __('There are no archived tests.', 'thrive-leads') ?>
+        </div>
+    </div>
+</div>

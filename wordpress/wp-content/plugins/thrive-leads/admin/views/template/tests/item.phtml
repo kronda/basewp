@@ -1,0 +1,58 @@
+<td style="color:<#= item.get('color') #>">
+    <#= item.get('name') #>
+    <#= item.get('is_control') == 1 ? '(control)' : '' #>
+</td>
+
+<# if(item.get('form_type')) { #>
+<td style="font-weight:bold;color:<#= item.get('color') #>">
+    <#= item.get('form_type')#>
+</td>
+<# } #>
+
+<td><#= item.get('unique_impressions') #></td>
+<td><#= item.get('conversions') #></td>
+<td class="right" style="padding-right: 22px;"><#= item.getConversionRate() == 0 ? 'N/A' : item.getConversionRate() + ' %' #></td>
+
+<# if (item.get('show_graph')) { #>
+<td>
+    <div id="tve-candle-stick-chart-<#= item.get('index')#>"></div>
+</td>
+<# } #>
+
+<# if (item.get('is_control') == 1) { #>
+<td colspan="2" class="center">
+    <div class="inline-message"><?php echo __('This is the control', 'thrive-leads') ?></div>
+</td>
+<# } else { #>
+<td class="right" style="padding-right: 20px">
+        <span class="tve-status-color" style="color:<#= item.getPercentageImprovementColor() #>">
+            <# if(item.get('percentage_improvement') != "N/A" && item.get('percentage_improvement') > 0) { #>+<# } #><#= item.get('percentage_improvement') #>
+            <#= item.get('percentage_improvement') != "N/A" ? '%' : ''  #>
+        </span>
+</td>
+<td class="right" style="padding-right: 20px"><#= item.get('beat_original') #></td>
+<# } #>
+
+<td>
+    <#= item.get('trigger_name') #> / <br/>
+    <?php echo __('Animation', 'thrive-leads'); ?>: <#= item.get('animation_name') #>
+</td>
+
+<# if (item.get('show_graph')) { #>
+<td class="right" style="padding-right: 30px">
+    <a class="tve-btn tve-btn-link tve-btn-link-icon-green" target="_blank" href="<#= item.get('preview_url')#>" title="<?php echo __('View Form', 'thrive-leads') ?>">
+        <span class="tve-icon-view"></span><?php echo __('View Form', 'thrive-leads') ?>
+    </a>
+    <# if (item.get('parent_test_running')) { #>
+    <a href="javascript:void(0)" class="tve-btn tve-btn-link  tve-btn-link-icon-blue tve-leads-tooltip tve-leads-disabled">
+        <span class="tve-icon-edit7"></span><?php echo __('Edit', 'thrive-leads') ?>
+        <p class="tve-leads-tooltip-text"><span class="tve-icon-exclamation-circle"></span><?php echo __("You can't currently edit this form because a test is running. If you want to edit the form, you should stop the test", 'thrive-leads') ?></p>
+    </a>
+    <# } #>
+</td>
+<# } else { #>
+<td>
+    <a class="tve-btn tve-btn-blue tve-test-item-winner" href="#form-type/<#= item.get('form_type_id') #>" data-test-item-id="<#= item.get('id') #>"
+       title="<?php echo __('Set as Winner', 'thrive-leads') ?>"><?php echo __('Set as Winner', 'thrive-leads') ?></a>
+</td>
+<# } #>

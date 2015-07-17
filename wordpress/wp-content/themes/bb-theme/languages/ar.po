@@ -1,0 +1,1211 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: {FL_THEME_NAME}\n"
+"POT-Creation-Date: 2015-01-21 15:24+0100\n"
+"PO-Revision-Date: 2015-03-01 17:27-0800\n"
+"Last-Translator: WebMan - Oliver Juhas <webmandesigneu@gmail.com>\n"
+"Language-Team: WebMan Design <webmandesigneu@gmail.com>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.4\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: 404.php:9
+msgid "Sorry! That page doesn't seem to exist."
+msgstr "نعتذر! لايبدو أن الصفحة موجودة . "
+
+#: classes/class-fl-customizer-control.php:148
+msgid ""
+"Please install and activate the \"Customizer Export/Import\" plugin to "
+"proceed."
+msgstr "الرجاء تثبيت وتفعيل  \" تخصيص إستيراد / تصدير  \" للمتابعة ."
+
+#: classes/class-fl-customizer-control.php:149
+msgctxt "...a plugin."
+msgid "Install &amp; Activate"
+msgstr "تثبيت و تفعيل "
+
+#: classes/class-fl-customizer.php:271
+msgctxt "Customizer section title. Theme design/style presets."
+msgid "Presets"
+msgstr "المسبقة "
+
+#: classes/class-fl-customizer.php:291
+msgid "Start by selecting a preset for your theme."
+msgstr "ابدأ بتحديد مسبق للموضوع الخاص بك . "
+
+#: classes/class-fl-customizer.php:382
+msgctxt "Customizer section title."
+msgid "Export/Import"
+msgstr "إستيراد / تصدير "
+
+#: classes/class-fl-theme.php:63
+msgid "Top Bar Menu"
+msgstr "شريط القائمة العلوي "
+
+#: classes/class-fl-theme.php:64
+msgid "Header Menu"
+msgstr "قائمة الهيدر "
+
+#: classes/class-fl-theme.php:65
+msgid "Footer Menu"
+msgstr "قائمة الفوتر "
+
+#: classes/class-fl-theme.php:137
+msgid "Primary Sidebar"
+msgstr "شريط جانبي رئيسي "
+
+#: classes/class-fl-theme.php:148
+#, php-format
+msgctxt ""
+"Sidebar title. %d stands for the order number of the auto-created sidebar, 4 "
+"in total."
+msgid "Footer Column %d"
+msgstr "عمود الفوتر  %d"
+
+#: classes/class-fl-theme.php:160
+msgid "WooCommerce Sidebar"
+msgstr "الشريط الجانبي للتجارة الإلكترونية "
+
+#: classes/class-fl-theme.php:318
+msgid "Choose Menu"
+msgstr "إختر قائمة "
+
+#: classes/class-fl-theme.php:318
+msgid "Home"
+msgstr "الرئيسية "
+
+#: classes/class-fl-theme.php:762
+#, php-format
+msgctxt "Archive title: tag."
+msgid "Posts Tagged &#8216;%s&#8217;"
+msgstr "الكلمات الدلالية للمشاركة  &#8216;%s&#8217;"
+
+#: classes/class-fl-theme.php:766
+#, php-format
+msgctxt "Archive title: day."
+msgid "Archive for %s"
+msgstr "أرشيف لـ  %s"
+
+#: classes/class-fl-theme.php:770
+#, php-format
+msgctxt "Archive title: month."
+msgid "Archive for %s"
+msgstr "أرشيف لـ  %s"
+
+#: classes/class-fl-theme.php:774
+#, php-format
+msgctxt "Archive title: year."
+msgid "Archive for %s"
+msgstr "أرشيف لـ  %s"
+
+#: classes/class-fl-theme.php:778
+#, php-format
+msgctxt "Archive title: author."
+msgid "Posts by %s"
+msgstr "كاتب المشاركات  %s"
+
+#: classes/class-fl-theme.php:782
+#, php-format
+msgctxt "Search results title."
+msgid "Search results for: %s"
+msgstr "نتائج البحث عن: %s"
+
+#: classes/class-fl-theme.php:786
+msgctxt "Archive title: paged archive."
+msgid "Archives"
+msgstr "الأرشيف "
+
+#: classes/class-fl-theme.php:812
+msgid "&laquo; Newer Posts"
+msgstr "&laquo; أحدث المشاركات"
+
+#: classes/class-fl-theme.php:813
+msgid "Older Posts &raquo;"
+msgstr "المشاركات الأقدم  &raquo;"
+
+#: classes/class-fl-theme.php:846
+#, php-format
+msgctxt "Post meta info: author."
+msgid "By %s"
+msgstr "الكاتب %s"
+
+#: classes/class-fl-theme.php:913
+msgctxt "Post meta info: category."
+msgid "Posted in %s"
+msgstr "نشر في %s"
+
+#: classes/class-fl-theme.php:918
+msgctxt ""
+"Post meta info: tags. Continuing of the sentence started with \"Posted in "
+"Category\"."
+msgid " and tagged %s"
+msgstr "و الكلمات الدلالية  %s"
+
+#: classes/class-fl-theme.php:920
+msgctxt "Post meta info: tags."
+msgid "Tagged %s"
+msgstr "الكلمات الدلالية  %s"
+
+#: classes/class-fl-theme.php:929
+msgctxt "Comments popup link title."
+msgid "Leave a comment"
+msgstr "أترك تعليق "
+
+#: classes/class-fl-theme.php:929
+msgid "1 Comment"
+msgstr "تعليق 1"
+
+#: classes/class-fl-theme.php:929
+msgctxt "Comments popup link title."
+msgid "1 Comment"
+msgid_plural "% Comments"
+msgstr[0] "تعليق 1"
+msgstr[1] "% تعليق 1"
+msgstr[2] "% تعليق 1"
+
+#: comments.php:21
+#, php-format
+msgctxt "Comments list title."
+msgid "1 Comment"
+msgid_plural "%d Comments"
+msgstr[0] "تعليق 1"
+msgstr[1] "%d تعليق 1"
+msgstr[2] "%d تعليق 1"
+
+#: comments.php:27
+msgid "No Comments"
+msgstr "لايوجد تعليقات"
+
+#: comments.php:50
+msgctxt "Respond form title."
+msgid "Leave a Comment"
+msgstr "أترك تعليق "
+
+#: comments.php:57
+#, php-format
+msgctxt "Please, keep the HTML tags."
+msgid "You must be <a%s>logged in</a> to post a comment."
+msgstr "يجب عليك  <a%s>تسجيل الدخول</a> لنشر تعليق . "
+
+#: comments.php:69
+#, php-format
+msgid "Logged in as %s."
+msgstr "تسجيل الدخول كـ  %s."
+
+#: comments.php:69
+msgid "Log out of this account"
+msgstr "تسجيل الخروج من هذا الحساب "
+
+#: comments.php:69
+msgid "Log out &raquo;"
+msgstr "تسجيل الخروج  &raquo;"
+
+#: comments.php:73
+msgctxt "Comment form label: comment author name."
+msgid "Name"
+msgstr "الإسم "
+
+#: comments.php:73 comments.php:77
+msgid " (required)"
+msgstr " (povinné)"
+
+#: comments.php:77
+msgctxt "Comment form label: comment author email."
+msgid "Email (will not be published)"
+msgstr "البريد الإلكتروني  (لن يتم نشره)"
+
+#: comments.php:81
+msgctxt "Comment form label: comment author website."
+msgid "Website"
+msgstr "الموقع "
+
+#: comments.php:87
+msgctxt "Comment form label: comment content."
+msgid "Comment"
+msgstr "تعليق "
+
+#: comments.php:91
+msgid "Submit Comment"
+msgstr "إضافة تعليق "
+
+#: content-no-results.php:4
+msgid "Nothing Found"
+msgstr "لايوجد شىء "
+
+#: content-no-results.php:10
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+"آسف ، ولكن لا توجد نتائج للبحث الخاص بك . يرجى المحاولة مرة أخرى مع كلمات "
+"مختلفة."
+
+#: content-no-results.php:15
+msgid ""
+"It seems we can't find what you're looking for. Perhaps searching can help."
+msgstr "يبدو أننا لا يمكن أن نجد ما تبحث عنه. محرك البحث ربما يمكن أن يساعد."
+
+#: content-page.php:5
+msgctxt "Edit page link text."
+msgid "Edit"
+msgstr "تحرير "
+
+#: content-page.php:13 content-single.php:38
+msgctxt "Text before page links on paginated post."
+msgid "Pages:"
+msgstr "صفحات : "
+
+#: content-single.php:11 content.php:13
+msgctxt "Edit post link text."
+msgid "Edit"
+msgstr "تحرير "
+
+#. translators: 1: comment author name, 2: date, 3: time
+#: includes/comment.php:10
+#, php-format
+msgid ""
+"<span class=\"comment-author-link\">%1$s</span> <span class=\"comment-date"
+"\">on %2$s at %3$s</span>"
+msgstr ""
+"<span class=\"comment-author-link\">%1$s</span> <span class=\"comment-date"
+"\">dňa %2$s o %3$s</span>"
+
+#: includes/comment.php:17
+msgid "Your comment is awaiting moderation."
+msgstr "تعليقك ينتظر الموافقة عليه."
+
+#: includes/comment.php:20
+msgctxt "Comment edit link text."
+msgid "(Edit)"
+msgstr "(تحرير) "
+
+#: includes/comment.php:26
+msgid "Reply"
+msgstr "رد"
+
+#: includes/copyright.php:4
+msgid "Credits"
+msgstr "ائتمانات "
+
+#: includes/customizer-panel-code.php:5
+msgctxt "Customizer panel title."
+msgid "Code"
+msgstr "كود "
+
+#: includes/customizer-panel-code.php:10
+msgctxt "Customizer section title."
+msgid "CSS Code"
+msgstr "كود تنسيق "
+
+#: includes/customizer-panel-code.php:19
+msgid ""
+"CSS entered in the box below will be rendered within &lt;style&gt; tags."
+msgstr "التنسيق المدخل فى المربع أدناه يكون ضمن علامات  &lt;أسلوب&gt; ."
+
+#: includes/customizer-panel-code.php:29
+msgctxt "Customizer section title."
+msgid "JavaScript Code"
+msgstr "كود جافا سكربت "
+
+#: includes/customizer-panel-code.php:38
+msgid ""
+"JavaScript entered in the box below will be rendered within &lt;script&gt; "
+"tags."
+msgstr "كود جافا سكربت المدخل فى المربع أدناه يكون ضمن علامات  &lt;سكربت&gt; ."
+
+#: includes/customizer-panel-code.php:48
+msgctxt "Customizer section title."
+msgid "Head Code"
+msgstr "كود رأس الصفحة "
+
+#: includes/customizer-panel-code.php:57
+msgid ""
+"Code entered in the box below will be rendered within the page &lt;head&gt; "
+"tag."
+msgstr "الكود المدخل فى المربع أدناه يكون ضمن علامات  &lt;head&gt; ."
+
+#: includes/customizer-panel-code.php:67
+msgctxt "Customizer section title."
+msgid "Header Code"
+msgstr "كود الهيدر "
+
+#: includes/customizer-panel-code.php:76
+msgid ""
+"Code entered in the box below will be rendered directly after the opening "
+"&lt;body&gt; tag."
+msgstr "الكود المدخل فى المربع أدناه يكون ضمن علامات  &lt;body&gt; ."
+
+#: includes/customizer-panel-code.php:86
+msgctxt "Customizer section title."
+msgid "Footer Code"
+msgstr "كود الفوتر "
+
+#: includes/customizer-panel-code.php:95
+msgid ""
+"Code entered in the box below will be rendered directly before the closing "
+"&lt;body&gt; tag."
+msgstr "الكود المدخل فى المربع أدناه يكون ضمن علامات  &lt;body&gt; ."
+
+#: includes/customizer-panel-content.php:5
+msgctxt "Customizer panel title."
+msgid "Content"
+msgstr "ألمحتوي "
+
+#: includes/customizer-panel-content.php:10
+msgctxt "Customizer section title."
+msgid "Content Background"
+msgstr "محتوى الخلفية "
+
+#: includes/customizer-panel-content.php:20
+msgid "Content Background Color"
+msgstr "لون محتوى الخلفية "
+
+#: includes/customizer-panel-content.php:28
+msgctxt "Customizer section title."
+msgid "Blog Layout"
+msgstr "تخطيط المدونة "
+
+#: includes/customizer-panel-content.php:38
+msgid "Blog Sidebar Position"
+msgstr "Pozícia bočného panelu blogu"
+
+#: includes/customizer-panel-content.php:41
+#: includes/customizer-panel-content.php:264
+msgid "Sidebar Right"
+msgstr "شريط جانبي يمين "
+
+#: includes/customizer-panel-content.php:42
+#: includes/customizer-panel-content.php:265
+msgid "Sidebar Left"
+msgstr "شريط جانبى يسار"
+
+#: includes/customizer-panel-content.php:43
+#: includes/customizer-panel-content.php:266
+msgid "No Sidebar"
+msgstr "بدون شريط جانبي "
+
+#: includes/customizer-panel-content.php:55
+msgid "Blog Sidebar Size"
+msgstr "حجم الشريط الجانبي للمدونة "
+
+#: includes/customizer-panel-content.php:58
+#: includes/customizer-panel-content.php:281
+msgctxt "Sidebar size."
+msgid "Large"
+msgstr "كبير "
+
+#: includes/customizer-panel-content.php:59
+#: includes/customizer-panel-content.php:282
+msgctxt "Sidebar size."
+msgid "Medium"
+msgstr "متوسط "
+
+#: includes/customizer-panel-content.php:60
+#: includes/customizer-panel-content.php:283
+msgctxt "Sidebar size."
+msgid "Small"
+msgstr "صغير"
+
+#: includes/customizer-panel-content.php:72
+msgid "Blog Sidebar Display"
+msgstr "عرض الشريط الجانبي للمدونة "
+
+#: includes/customizer-panel-content.php:75
+#: includes/customizer-panel-content.php:298
+msgid "Desktop Only"
+msgstr "سطح المكتب فقط "
+
+#: includes/customizer-panel-content.php:76
+#: includes/customizer-panel-content.php:299
+msgid "Always"
+msgstr "دائماً "
+
+#: includes/customizer-panel-content.php:96
+msgid "Post Author"
+msgstr "كاتب المشاركة "
+
+#: includes/customizer-panel-content.php:99
+#: includes/customizer-panel-content.php:115
+#: includes/customizer-panel-content.php:208
+#: includes/customizer-panel-content.php:224
+#: includes/customizer-panel-content.php:240
+#: includes/customizer-panel-content.php:323
+msgid "Visible"
+msgstr "مرئي "
+
+#: includes/customizer-panel-content.php:100
+#: includes/customizer-panel-content.php:116
+#: includes/customizer-panel-content.php:167
+#: includes/customizer-panel-content.php:191
+#: includes/customizer-panel-content.php:209
+#: includes/customizer-panel-content.php:225
+#: includes/customizer-panel-content.php:241
+#: includes/customizer-panel-content.php:324
+msgid "Hidden"
+msgstr "مخفي "
+
+#: includes/customizer-panel-content.php:112
+msgid "Post Date"
+msgstr "تاريخ النشر "
+
+#: includes/customizer-panel-content.php:125
+msgctxt "Customizer section title."
+msgid "Archive Layout"
+msgstr "تخطيط الأرشيف "
+
+#: includes/customizer-panel-content.php:135
+msgid "Show Full Text"
+msgstr "عرض النص كامل "
+
+#: includes/customizer-panel-content.php:136
+msgid "Whether or not to show the full post. If no, the excerpt will be shown."
+msgstr "نعم سيتم إظهار المشاركة كاملة ، لا سيتك عرض المقتطف فقط . "
+
+#: includes/customizer-panel-content.php:139
+msgid "Yes"
+msgstr "نعم "
+
+#: includes/customizer-panel-content.php:140
+msgid "No"
+msgstr "لا "
+
+#: includes/customizer-panel-content.php:148
+msgid "Read More"
+msgstr "إقرأ المزيد "
+
+#: includes/customizer-panel-content.php:152
+msgid "\"Read More\" Text"
+msgstr "\"إقرأ المزيد \" نص "
+
+#: includes/customizer-panel-content.php:164
+#: includes/customizer-panel-content.php:188
+msgid "Featured Image"
+msgstr "صورة مميزة "
+
+#: includes/customizer-panel-content.php:168
+msgid "Above Posts"
+msgstr "فوق المشاركات "
+
+#: includes/customizer-panel-content.php:169
+msgid "Beside Posts"
+msgstr "بجانب المشاركات "
+
+#: includes/customizer-panel-content.php:178
+msgctxt "Customizer section title."
+msgid "Post Layout"
+msgstr "تخطيط المشاركة "
+
+#: includes/customizer-panel-content.php:192
+msgid "Above Post"
+msgstr "فوق المشاركات "
+
+#: includes/customizer-panel-content.php:193
+msgid "Beside Post"
+msgstr "بجانب المشاركات "
+
+#: includes/customizer-panel-content.php:205
+msgid "Post Categories"
+msgstr "تصنيف المشاركة "
+
+#: includes/customizer-panel-content.php:221
+msgid "Post Tags"
+msgstr "كلمات دلالية "
+
+#: includes/customizer-panel-content.php:237
+msgid "Prev/Next Post Links"
+msgstr "روابط المشاركة السابق / التالي "
+
+#: includes/customizer-panel-content.php:250
+msgctxt "Customizer section title."
+msgid "WooCommerce Layout"
+msgstr "تخطيط المتجر الإلكتروني "
+
+#: includes/customizer-panel-content.php:260
+msgid "WooCommerce Sidebar Position"
+msgstr "تموضع الشريط الجانبي للمتجر الإلكتروني "
+
+#: includes/customizer-panel-content.php:261
+msgid "The location of the WooCommerce sidebar."
+msgstr "موقع الشريط الجانبي للمتجر الإلكتروني "
+
+#: includes/customizer-panel-content.php:278
+msgid "WooCommerce Sidebar Size"
+msgstr "حجم الشريط الجانبي للمتجر الإلكتروني "
+
+#: includes/customizer-panel-content.php:295
+msgid "WooCommerce Sidebar Display"
+msgstr "عرض الشريط الجانبي للمتجر الإلكتروني "
+
+#: includes/customizer-panel-content.php:319
+msgid "\"Add to Cart\" Button"
+msgstr "زر  \"إضافة للسلة \""
+
+#: includes/customizer-panel-content.php:320
+msgid "Show the \"Add to Cart\" button on product category pages?"
+msgstr "عرض  \"أضف للسلة\" فى صفحة تصنيف المنتجات ؟"
+
+#: includes/customizer-panel-content.php:333
+msgctxt "Customizer section title."
+msgid "Lightbox"
+msgstr "عارض الصور "
+
+#: includes/customizer-panel-content.php:343
+msgid "Lightbox"
+msgstr "عارض الصور "
+
+#: includes/customizer-panel-content.php:346
+msgid "Enabled"
+msgstr "تمكين "
+
+#: includes/customizer-panel-content.php:347
+#: includes/customizer-panel-footer.php:23
+msgid "Disabled"
+msgstr "تعطيل "
+
+#: includes/customizer-panel-footer.php:5
+msgctxt "Customizer panel title."
+msgid "Footer"
+msgstr "الفوتر "
+
+#: includes/customizer-panel-footer.php:10
+msgctxt "Customizer section title."
+msgid "Footer Widgets Layout"
+msgstr "تخطيط القطع الجانبية للفوتر "
+
+#: includes/customizer-panel-footer.php:20
+msgid "Footer Widgets Display"
+msgstr "عرض القطع الجانبية للفوتر "
+
+#: includes/customizer-panel-footer.php:24
+msgid "All Pages"
+msgstr "كل الصفحات "
+
+#: includes/customizer-panel-footer.php:25
+msgid "Homepage Only"
+msgstr "الصفحة الرئيسية فقط "
+
+#: includes/customizer-panel-footer.php:34
+msgctxt "Customizer section title."
+msgid "Footer Widgets Background"
+msgstr "خلفية القطع الجانبيةللفوتر "
+
+#: includes/customizer-panel-footer.php:44
+msgid "Footer Widgets Background Type"
+msgstr "نوع خلفية القطع الجانبية للفوتر "
+
+#: includes/customizer-panel-footer.php:47
+#: includes/customizer-panel-footer.php:82
+#: includes/customizer-panel-footer.php:184
+#: includes/customizer-panel-general.php:107
+#: includes/customizer-panel-general.php:167
+#: includes/customizer-panel-header.php:23
+#: includes/customizer-panel-header.php:127
+#: includes/customizer-panel-header.php:178
+#: includes/customizer-panel-header.php:250
+#: includes/customizer-panel-header.php:287
+#: includes/customizer-panel-header.php:437
+msgid "None"
+msgstr "لاشىء "
+
+#: includes/customizer-panel-footer.php:48
+#: includes/customizer-panel-footer.php:185
+#: includes/customizer-panel-header.php:128
+#: includes/customizer-panel-header.php:288
+#: includes/customizer-panel-header.php:438
+msgid "Same as Content"
+msgstr "نفس المحتوي "
+
+#: includes/customizer-panel-footer.php:49
+#: includes/customizer-panel-footer.php:186
+#: includes/customizer-panel-header.php:129
+#: includes/customizer-panel-header.php:289
+#: includes/customizer-panel-header.php:439
+msgid "Custom"
+msgstr "مخصص "
+
+#: includes/customizer-panel-footer.php:61
+msgid "Footer Widgets Background Color"
+msgstr "لون خلفية القطع الجانبية للفوتر "
+
+#: includes/customizer-panel-footer.php:69
+msgctxt "Customizer section title."
+msgid "Footer Layout"
+msgstr "تخطيط الفوتر "
+
+#: includes/customizer-panel-footer.php:79
+msgid "Footer Layout"
+msgstr "تخطيط الفوتر "
+
+#: includes/customizer-panel-footer.php:83
+#: includes/customizer-panel-header.php:24
+msgid "1 Column"
+msgstr "عمود 1"
+
+#: includes/customizer-panel-footer.php:84
+#: includes/customizer-panel-header.php:25
+msgid "2 Columns"
+msgstr "2 أعمدة "
+
+#: includes/customizer-panel-footer.php:104
+msgctxt "%d stands for column order number."
+msgid "Footer Column %d Layout"
+msgstr "عمود الفوتر  %d تخطيط "
+
+#: includes/customizer-panel-footer.php:107
+#: includes/customizer-panel-footer.php:146
+#: includes/customizer-panel-header.php:48
+#: includes/customizer-panel-header.php:88
+#: includes/customizer-panel-header.php:251
+#: includes/customizer-panel-header.php:338
+msgid "Text"
+msgstr "نص "
+
+#: includes/customizer-panel-footer.php:108
+#: includes/customizer-panel-footer.php:147
+#: includes/customizer-panel-header.php:52
+#: includes/customizer-panel-header.php:92
+#: includes/customizer-panel-header.php:252
+msgid "Social Icons"
+msgstr "أيقونات التواصل "
+
+#: includes/customizer-panel-footer.php:109
+#: includes/customizer-panel-footer.php:148
+#: includes/customizer-panel-header.php:49
+#: includes/customizer-panel-header.php:89
+#: includes/customizer-panel-header.php:253
+msgid "Text &amp; Social Icons"
+msgstr "نص وأيقونات التواصل "
+
+#: includes/customizer-panel-footer.php:110
+#: includes/customizer-panel-footer.php:149
+#: includes/customizer-panel-header.php:50
+#: includes/customizer-panel-header.php:90
+msgid "Menu"
+msgstr "القائمة "
+
+#: includes/customizer-panel-footer.php:123
+msgctxt "%d stands for column order number."
+msgid "Footer Column %d Text"
+msgstr "عمود الفوتر  %d نص "
+
+#: includes/customizer-panel-footer.php:171
+msgctxt "Customizer section title."
+msgid "Footer Background"
+msgstr "خلفية الفوتر "
+
+#: includes/customizer-panel-footer.php:181
+msgid "Footer Background Type"
+msgstr "نوع خلفية الفوتر "
+
+#: includes/customizer-panel-footer.php:198
+msgid "Footer Background Color"
+msgstr "لون خلفية الفوتر "
+
+#: includes/customizer-panel-general.php:5
+msgctxt "Customizer panel title."
+msgid "General"
+msgstr "عام "
+
+#: includes/customizer-panel-general.php:10
+msgctxt "Customizer section title."
+msgid "Layout"
+msgstr "تخطيط "
+
+#: includes/customizer-panel-general.php:20
+msgid "Layout Width"
+msgstr "حجم عرض التخطيط "
+
+#: includes/customizer-panel-general.php:23
+msgid "Boxed"
+msgstr "مربع "
+
+#: includes/customizer-panel-general.php:24
+msgid "Full Width"
+msgstr "العرض الكامل "
+
+#: includes/customizer-panel-general.php:37
+msgid "Spacing (px)"
+msgstr "مسافات (px)"
+
+#: includes/customizer-panel-general.php:50
+msgid "Drop Shadow Size (px)"
+msgstr "حجم الظل المنخفض  (px)"
+
+#: includes/customizer-panel-general.php:62
+msgid "Drop Shadow Color"
+msgstr "لون الظل المنخفض "
+
+#: includes/customizer-panel-general.php:70
+msgctxt "Customizer section title."
+msgid "Background"
+msgstr "الخلفية "
+
+#: includes/customizer-panel-general.php:80
+msgid "Background Color"
+msgstr "لون الخلفية "
+
+#: includes/customizer-panel-general.php:92
+msgid "Background Image"
+msgstr "صورة الخلفية "
+
+#: includes/customizer-panel-general.php:104
+msgid "Background Repeat"
+msgstr "تكرار الخلفية "
+
+#: includes/customizer-panel-general.php:108
+msgid "Tile"
+msgstr "قرميدة "
+
+#: includes/customizer-panel-general.php:109
+msgid "Horizontal"
+msgstr "أفقي "
+
+#: includes/customizer-panel-general.php:110
+msgid "Vertical"
+msgstr "رأسي "
+
+#: includes/customizer-panel-general.php:123
+msgid "Background Position"
+msgstr "تموضع الخلفية "
+
+#: includes/customizer-panel-general.php:126
+msgid "Left Top"
+msgstr "اعلى اليسار "
+
+#: includes/customizer-panel-general.php:127
+msgid "Left Center"
+msgstr "منتصف اليسار "
+
+#: includes/customizer-panel-general.php:128
+msgid "Left Bottom"
+msgstr "أسفل اليسار "
+
+#: includes/customizer-panel-general.php:129
+msgid "Right Top"
+msgstr "أعلى اليمين "
+
+#: includes/customizer-panel-general.php:130
+msgid "Right Center"
+msgstr "منتصف اليمين "
+
+#: includes/customizer-panel-general.php:131
+msgid "Right Bottom"
+msgstr "أسفل اليمين "
+
+#: includes/customizer-panel-general.php:132
+msgid "Center Top"
+msgstr "اعلى المنتصف "
+
+#: includes/customizer-panel-general.php:133
+msgid "Center"
+msgstr "منتصف "
+
+#: includes/customizer-panel-general.php:134
+msgid "Center Bottom"
+msgstr "أسفل المنتصف "
+
+#: includes/customizer-panel-general.php:147
+msgid "Background Attachment"
+msgstr "ملف الخلفية "
+
+#: includes/customizer-panel-general.php:150
+msgid "Scroll"
+msgstr "الإسكرول بار "
+
+#: includes/customizer-panel-general.php:151
+msgid "Fixed"
+msgstr "ثابت "
+
+#: includes/customizer-panel-general.php:164
+msgid "Background Scale"
+msgstr "مقياس الخلفية "
+
+#: includes/customizer-panel-general.php:168
+msgid "Fit"
+msgstr "صالح "
+
+#: includes/customizer-panel-general.php:169
+msgid "Fill"
+msgstr "تعبئة "
+
+#: includes/customizer-panel-general.php:178
+msgctxt "Customizer section title."
+msgid "Accent Color"
+msgstr "لون سائد "
+
+#: includes/customizer-panel-general.php:188
+msgid "Accent Color"
+msgstr "لون سائد "
+
+#: includes/customizer-panel-general.php:189
+msgid ""
+"The accent color will be used to color elements such as links and buttons as "
+"well as various elements in your theme."
+msgstr ""
+"سيتم إستخدان اللون السائد لألوان الروابط والأزرار والعناصر المختلفة للقالب "
+"الخاص بك ."
+
+#: includes/customizer-panel-general.php:197
+msgctxt "Customizer section title."
+msgid "Headings"
+msgstr "العناوين "
+
+#: includes/customizer-panel-general.php:208
+msgid "Heading Color"
+msgstr "لون العناوين "
+
+#: includes/customizer-panel-general.php:220
+msgid "Heading Font Family"
+msgstr "نوع الخط للعناوين "
+
+#: includes/customizer-panel-general.php:233
+msgid "Heading Font Weight"
+msgstr "حجم الخط للعناوين "
+
+#: includes/customizer-panel-general.php:247
+msgid "Heading Font Format"
+msgstr "تنسيق الخط للعناوين "
+
+#: includes/customizer-panel-general.php:250
+#: includes/customizer-panel-header.php:532
+msgid "Regular"
+msgstr "منتظم "
+
+#: includes/customizer-panel-general.php:251
+#: includes/customizer-panel-header.php:533
+msgid "Capitalize"
+msgstr "الحروف كابتل "
+
+#: includes/customizer-panel-general.php:252
+#: includes/customizer-panel-header.php:534
+msgid "Uppercase"
+msgstr "الحروف كبيرة "
+
+#: includes/customizer-panel-general.php:253
+#: includes/customizer-panel-header.php:535
+msgid "Lowercase"
+msgstr "الحروف صغيرة "
+
+#: includes/customizer-panel-general.php:275
+#: includes/customizer-panel-general.php:289
+#: includes/customizer-panel-general.php:303
+#: includes/customizer-panel-general.php:317
+#: includes/customizer-panel-general.php:331
+#: includes/customizer-panel-general.php:345
+#, php-format
+msgctxt "%s stands for HTML heading tag."
+msgid "%s Font Size (px)"
+msgstr "%s  حجم الخط  (px)"
+
+#: includes/customizer-panel-general.php:354
+msgctxt "Customizer section title."
+msgid "Text"
+msgstr "نص "
+
+#: includes/customizer-panel-general.php:364
+msgid "Text Color"
+msgstr "لون النص "
+
+#: includes/customizer-panel-general.php:375
+msgid "Text Font Family"
+msgstr "نوع الخط للنص "
+
+#: includes/customizer-panel-general.php:388
+msgid "Text Font Size (px)"
+msgstr "حجم الخط للنص (px)"
+
+#: includes/customizer-panel-header.php:5
+msgctxt "Customizer panel title."
+msgid "Header"
+msgstr "الهيدر "
+
+#: includes/customizer-panel-header.php:10
+msgctxt "Customizer section title."
+msgid "Top Bar Layout"
+msgstr "تخطيط الشريط العلوى "
+
+#: includes/customizer-panel-header.php:20
+msgid "Top Bar Layout"
+msgstr "تخطيط الشريط العلوي "
+
+#: includes/customizer-panel-header.php:45
+#: includes/customizer-panel-header.php:85
+#, php-format
+msgctxt "%d stands for column order number."
+msgid "Top Bar Column %d Layout"
+msgstr "عمود الشريط العلوي  %d  تخطيط "
+
+#: includes/customizer-panel-header.php:51
+#: includes/customizer-panel-header.php:91
+msgid "Menu &amp; Social Icons"
+msgstr "القائمة وأيقونات التواصل الإجتماعي "
+
+#: includes/customizer-panel-header.php:65
+#: includes/customizer-panel-header.php:105
+#, php-format
+msgctxt "%d stands for column order number."
+msgid "Top Bar Column %d Text"
+msgstr "عمود الشريط العلوي %d  نص "
+
+#: includes/customizer-panel-header.php:114
+msgctxt "Customizer section title."
+msgid "Top Bar Background"
+msgstr "خلفية الشريط العلوي "
+
+#: includes/customizer-panel-header.php:124
+msgid "Top Bar Background Type"
+msgstr "نوع خلفية الشريط العلوي "
+
+#: includes/customizer-panel-header.php:141
+msgid "Top Bar Background Color"
+msgstr "لون خلفية الشريط العلوي "
+
+#: includes/customizer-panel-header.php:152
+msgid "Top Bar Background Gradient"
+msgstr "تدرج لوني لخلفية الشريط العلوي "
+
+#: includes/customizer-panel-header.php:155
+#: includes/customizer-panel-header.php:210
+#: includes/customizer-panel-header.php:227
+#: includes/customizer-panel-header.php:315
+#: includes/customizer-panel-header.php:465
+msgctxt ""
+"Used for multiple Customizer options values. Use generalized form of the "
+"word when translating."
+msgid "Disabled"
+msgstr "تعطيل "
+
+#: includes/customizer-panel-header.php:156
+#: includes/customizer-panel-header.php:211
+#: includes/customizer-panel-header.php:226
+#: includes/customizer-panel-header.php:316
+#: includes/customizer-panel-header.php:466
+msgctxt ""
+"Used for multiple Customizer options values. Use generalized form of the "
+"word when translating."
+msgid "Enabled"
+msgstr "تمكين "
+
+#: includes/customizer-panel-header.php:165
+msgctxt "Customizer section title."
+msgid "Header Layout"
+msgstr "تخطيط الهيدر "
+
+#: includes/customizer-panel-header.php:175
+msgid "Header Layout"
+msgstr "تخطيط الهيدر "
+
+#: includes/customizer-panel-header.php:179
+msgid "Navigation Bottom"
+msgstr "زر الترقيم "
+
+#: includes/customizer-panel-header.php:180
+msgid "Navigation Right"
+msgstr "الترقيم الأيمن "
+
+#: includes/customizer-panel-header.php:181
+msgid "Navigation Centered"
+msgstr "منتصف الترقيم "
+
+#: includes/customizer-panel-header.php:194
+msgid "Header Padding (px)"
+msgstr "التباعد الداخلي للهيدر  (px)"
+
+#: includes/customizer-panel-header.php:206
+msgid "Fixed Header"
+msgstr "هيدر ثابت "
+
+#: includes/customizer-panel-header.php:207
+msgid "Show a fixed header as the page is scrolled."
+msgstr "عرض الهيدر الثابت عند النزول بالاسكرول بار . "
+
+#: includes/customizer-panel-header.php:223
+msgid "Navigation Search Icon"
+msgstr "أيقونة بحث الإنتقال "
+
+#: includes/customizer-panel-header.php:247
+msgid "Header Content Layout"
+msgstr "تخطيط محتوي الهيدر "
+
+#: includes/customizer-panel-header.php:265
+msgid "Header Content Text"
+msgstr "نص محتوي الهيدر "
+
+#: includes/customizer-panel-header.php:274
+msgctxt "Customizer section title."
+msgid "Header Background"
+msgstr "خلفية الهيدر "
+
+#: includes/customizer-panel-header.php:284
+msgid "Header Background Type"
+msgstr "نوع خلفية الهيدر "
+
+#: includes/customizer-panel-header.php:301
+msgid "Header Background Color"
+msgstr "لون خلفية الهيدر "
+
+#: includes/customizer-panel-header.php:312
+msgid "Header Background Gradient"
+msgstr "تدرج لوني لخلفية الهيدر "
+
+#: includes/customizer-panel-header.php:325
+msgctxt "Customizer section title."
+msgid "Header Logo"
+msgstr "شعار الهيدر "
+
+#: includes/customizer-panel-header.php:335
+msgid "Logo Type"
+msgstr "نوع الشعار "
+
+#: includes/customizer-panel-header.php:339
+msgid "Image"
+msgstr "صورة "
+
+#: includes/customizer-panel-header.php:351
+msgid "Logo Image (Regular)"
+msgstr "صورة الشعار "
+
+#: includes/customizer-panel-header.php:362
+msgid "Logo Image (Retina)"
+msgstr "صورة الشعار "
+
+#: includes/customizer-panel-header.php:374
+msgid "Logo Text"
+msgstr "نص الشعار "
+
+#: includes/customizer-panel-header.php:387
+msgid "Logo Font Family"
+msgstr "نوع خط الشعار"
+
+#: includes/customizer-panel-header.php:400
+msgid "Logo Font Weight"
+msgstr "حجم خط الشعار "
+
+#: includes/customizer-panel-header.php:415
+msgid "Logo Font Size (px)"
+msgstr "حجم خط الشعار  (px)"
+
+#: includes/customizer-panel-header.php:424
+msgctxt "Customizer section title."
+msgid "Navigation Background"
+msgstr "خلفية الإنتقال "
+
+#: includes/customizer-panel-header.php:434
+msgid "Navigation Background Type"
+msgstr "نوع خلفية الإنتقال "
+
+#: includes/customizer-panel-header.php:451
+msgid "Navigation Background Color"
+msgstr "لون خلفية الإنتقال "
+
+#: includes/customizer-panel-header.php:462
+msgid "Navigation Background Gradient"
+msgstr "تدرج لوني لخلفية الإنتقال "
+
+#: includes/customizer-panel-header.php:475
+msgctxt "Customizer section title."
+msgid "Navigation Text"
+msgstr "نص الإنتقال "
+
+#: includes/customizer-panel-header.php:485
+msgid "Navigation Text Type"
+msgstr "نوع خط الإنتقال "
+
+#: includes/customizer-panel-header.php:488
+msgctxt "Navigation text type."
+msgid "Default"
+msgstr "الإفتراضي "
+
+#: includes/customizer-panel-header.php:489
+msgctxt "Navigation text type."
+msgid "Custom"
+msgstr "مخصص "
+
+#: includes/customizer-panel-header.php:502
+msgid "Navigation Font Family"
+msgstr "نوع خط الإنتقال "
+
+#: includes/customizer-panel-header.php:515
+msgid "Navigation Font Weight"
+msgstr "حجم خط الإنتقال "
+
+#: includes/customizer-panel-header.php:529
+msgid "Navigation Font Format"
+msgstr "تنسيق خط الإنتقال "
+
+#: includes/customizer-panel-header.php:549
+msgid "Navigation Font Size (px)"
+msgstr "حجم خط الإنتقال  (px)"
+
+#: includes/customizer-panel-settings.php:5
+msgctxt "Customizer panel title."
+msgid "Settings"
+msgstr "الإعدادات "
+
+#: includes/customizer-panel-settings.php:10
+msgctxt "Customizer section title."
+msgid "Social Links"
+msgstr "روابط التواصل الإجتماعي "
+
+#: includes/customizer-panel-settings.php:20
+msgid "Social Icons Color"
+msgstr "لون أيقونات التواصل "
+
+#: includes/customizer-panel-settings.php:23
+msgid "Branded"
+msgstr "العلامات التجارية "
+
+#: includes/customizer-panel-settings.php:24
+msgid "Monochrome"
+msgstr "أحادية اللون "
+
+#: includes/customizer-panel-settings.php:123
+msgid "RSS"
+msgstr "التغذيات "
+
+#: includes/customizer-panel-settings.php:129
+msgid "Email"
+msgstr "البريد الإلكتروني "
+
+#: includes/customizer-panel-settings.php:137
+msgctxt "Customizer section title."
+msgid "Favicons"
+msgstr "أيقونة مصغرة للموقع "
+
+#: includes/customizer-panel-settings.php:147
+msgid "Favicon"
+msgstr "أيقونة مصغرة للموقع "
+
+#: includes/customizer-panel-settings.php:158
+msgid "Apple Touch Icon"
+msgstr "أيقونة أبل باللمس "
+
+#: includes/customizer-panel-widgets.php:5
+msgctxt "Customizer panel title."
+msgid "Widgets"
+msgstr "القطع الجانبية "
+
+#: includes/nav-bottom.php:22 includes/nav-centered.php:17
+#: includes/nav-right.php:14
+msgctxt "Mobile navigation toggle button text."
+msgid "Menu"
+msgstr "القائمة "
+
+#: includes/nav-search.php:3 searchform.php:1
+msgctxt "Search form mouse hover title."
+msgid "Type and press Enter to search."
+msgstr "اكتب ثم أنقر إنتر للبحث "
+
+#: includes/nav-search.php:4 searchform.php:2
+msgctxt "Search form field placeholder text."
+msgid "Search"
+msgstr "بحث "

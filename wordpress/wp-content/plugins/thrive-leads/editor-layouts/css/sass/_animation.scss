@@ -1,0 +1,53 @@
+/** CSS animations used in the preview of the animation (admin) and both on frontend **/
+
+.tve-tl-anim {
+  @include transition(all .3s ease-out);
+  opacity: 0;
+  &.tve-leads-triggered {
+    opacity: 1;
+    @include transition(all .3s ease-out);
+  }
+  &.tl-anim-rotational {
+    @include transform(scale(0.1) rotate(400deg));
+    &.tve-leads-triggered {
+      @include transform(scale(1) rotate(0deg));
+      @include transition(all .6s ease-out);
+    }
+  }
+  &.tl-anim-zoom_in {
+    @include transform(scale(0));
+    &.tve-leads-triggered {
+      @include transform(scale(1));
+    }
+  }
+  &.tl-anim-zoom_out {
+    @include transform(scale(2));
+    &.tve-leads-triggered {
+      @include transform(scale(1));
+    }
+  }
+  &.tl-anim-slide_top {
+    @include transform(translateY(-100%));
+    &.tve-leads-triggered {
+      @include transform(translateY(0));
+    }
+  }
+  &.tl-anim-slide_bot {
+    @include transform(translateY(100%));
+    &.tve-leads-triggered {
+      @include transform(translateY(0));
+    }
+  }
+  &.tl-anim-slide_left {
+    @include transform(translateX(-800px));
+    &.tve-leads-triggered {
+      @include transform(translateX(0));
+    }
+  }
+  &.tl-anim-slide_right {
+    @include transform(translateX(800px));
+    &.tve-leads-triggered {
+      @include transform(translateX(0));
+    }
+  }
+}

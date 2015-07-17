@@ -1,0 +1,63 @@
+
+<label class="form-label tve-control-label"><?php echo __('Mobile Settings', 'thrive-leads') ?></label>
+
+<p class="tve-form-description">
+    <?php echo __('We can\'t detect this trigger on a mobile device so here you can choose an alternative trigger just for mobile devices', 'thrive-leads') ?>
+</p>
+
+<label class="form-label tve-control-label"><?php echo __('Mobile Trigger', 'thrive-leads') ?></label>
+<div class="form-field">
+    <select class="trigger-config" name="m" id="exit-mobile">
+        <option value=""<?php echo empty($config['m']) ? ' selected="selected"' : '' ?>><?php echo __('None', 'thrive-leads') ?></option>
+        <option value="timer"<?php echo !empty($config['m']) && $config['m'] == 'timer' ? ' selected="selected"' : '' ?>><?php echo __('Timer', 'thrive-leads') ?></option>
+    </select>
+</div>
+
+<div id="trigger-mobile-settings"<?php if (empty($config['m'])) echo ' style="display: none"' ?>>
+    <label class="form-label tve-control-label"><?php echo __('Seconds after page load', 'thrive-leads') ?></label>
+    <div class="form-field">
+        <div class="tve-slider" style="width: 300px; display: inline-block;">
+            <div class="tve-slider-element" id="slider-m-timer"></div>
+        </div>
+        &nbsp;&nbsp;
+        <input class="trigger-config tve-input-small inline input-slider" type="text" name="ms" id="slider-m-timer-input" value="<?php echo (int)$config['ms'] ?>" size="3">
+        &nbsp; <?php echo __('Seconds', 'thrive-leads') ?>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    (function ($) {
+        $(function() {
+            $('#exit-mobile').change(function () {
+                var $this = $(this),
+                    $target = $('#trigger-mobile-settings');
+                if ($this.val()) {
+                    $target.show().find('input').removeAttr('disabled');
+                } else {
+                    $target.hide().find('input').attr('disabled', 'disabled');
+                }
+                ThriveLeads.resize_thickbox();
+            });
+            var $slider_input = $('#slider-m-timer-input').change(function () {
+                    var _value = parseInt(this.value);
+                    if (isNaN(_value) || _value < 0 || _value > 100) {
+                        _value = 10;
+                    }
+                    if (_value != this.value) {
+                        this.value = _value;
+                    }
+                    $t_slider.slider('value', _value);
+                }),
+                $t_slider = $('#slider-m-timer').slider({
+                    min: 0,
+                    max: 100,
+                    step: 1,
+                    slide: function (event, ui) {
+                        $slider_input.val(ui.value);
+                    }
+                });
+            $slider_input.change();
+        });
+    })(jQuery);
+</script>

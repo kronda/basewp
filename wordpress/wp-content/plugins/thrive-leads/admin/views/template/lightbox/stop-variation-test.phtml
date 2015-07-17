@@ -1,0 +1,21 @@
+<table class="tve-table tve-test-items-list margin-top-10">
+    <thead>
+        <tr>
+            <th></th>
+            <# if (test_type == ThriveLeads .const.group_test_type) { #>
+                <th><?php echo __('Form Type', 'thrive-leads') ?></th>
+            <# } #>
+            <th><?php echo __('Form Impressions', 'thrive-leads') ?></th>
+            <th><?php echo __('Conversions', 'thrive-leads') ?></th>
+            <th><?php echo __('Conversions Rate', 'thrive-leads') ?></th>
+            <th><?php echo __('Percentage Improvement', 'thrive-leads') ?></th>
+            <th><?php echo __('Chance To Beat Original', 'thrive-leads') ?></th>
+            <th><?php echo __('Trigger', 'thrive-leads') ?></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="tve-stop-variation"></tbody>
+</table>
+<div class="clearfix">
+    <a class="tve-btn tve-btn-gray tve-close-thickbox pull-right" href="javascript:void(0)"><?php echo __('Cancel', 'thrive-leads') ?></a>
+</div>

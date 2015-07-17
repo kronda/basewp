@@ -1,0 +1,16 @@
+<p class="tve-form-description tl-red"><?php echo __('This is an advanced feature that you should only use if you know what you\'re doing.', 'thrive-leads') ?></p>
+
+<div class="tve-form">
+    <p class="tve-form-description"><?php echo __('If you\'re not technical or familiar with how PHP code works, then ignore this section or ask a developer to handle this for you. If you make a mistake while adding this code, it has the potential to bring down your entire site.', 'thrive-leads') ?></p>
+    <p class="tl-text-center"><?php echo __('Use the code below to load the form anywhere on your site:', 'thrive-leads') ?></p>
+
+    <div class="tl-center tl-text-center" style="width: 90%;">
+        <input readonly style="width:350px;height:32px;display:inline-block" class="tve-php-code tve-shortcode tve-form-control" type="text" value="<#= model_instance.getPHPCode() #>" />
+        <span>
+            <a class="tve-copy-to-clipboard tve-btn tve-btn-blue" href="javascript:void(0)" style="padding:7px 10px;vertical-align: top">
+                <span class="tve-icon-clone2"></span>
+                <span class="tl-copy-text"><?php echo __('Copy', 'thrive-leads') ?> &nbsp;</span>
+            </a>
+        </span>
+    </div>
+</div>

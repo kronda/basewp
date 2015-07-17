@@ -1,0 +1,52 @@
+<span class="tve-group-part collapse-table-part tve-group-title collapse-table-part-title">
+<span class="spacer"></span>
+    <#= form.get('post_title') #>
+    <# if (form.get('group_test_id')) { #>
+        <span class="testing"><?php echo __('(test in progress)', 'thrive-leads') ?></span>
+    <# } #>
+    <# if (form.get('tve_form_type') == 'php_insert' && form.get('ID')) { #>
+        (<a href="javascript:void(0)" class="tve-leads-php-code" title="<?php echo __('Get PHP Code', 'thrive-leads') ?>"><?php echo __('Get PHP Code', 'thrive-leads') ?></a>)
+    <# } #>
+</span>
+<span class="tve-group-part collapse-table-part tve-group-center collapse-table-part-center"><#= form.get('impressions') #></span>
+<span class="tve-group-part collapse-table-part tve-group-center collapse-table-part-center"><#= form.get('conversions') #></span>
+<span class="tve-group-part collapse-table-part tve-group-center collapse-table-part-center"><#= form.get('conversion_rate') #></span>
+<span class="tve-group-part collapse-table-part tve-group-center collapse-table-part-center">
+    <label class="tve-switch <#= (form.get('active_test').get('id') || form.get('group_test_id')) ?'tl-tooltip':'' #>"
+    <# if(form.get('active_test').get('id') || form.get('group_test_id')){ #> title="<?php echo __('You can\'t change the \'display on mobile\' setting while a test is in progress in order to protect the integrity of the test!', 'thrive-leads') ?>"<# } #>>
+        <input data-title="dm" data-display="display_on_mobile" type="checkbox" class="tve-form-type-mobile" <#= form.get('display_on_mobile')==1?'checked':'' #>
+            <# if(form.get('active_test').get('id') || form.get('group_test_id')){ #> disabled="disabled" <# } #> />
+        <i></i>
+    </label>
+</span>
+<span class="tve-group-part collapse-table-part tve-group-center collapse-table-part-center">
+    <label class="tve-switch <#= (form.get('active_test').get('id') || form.get('group_test_id')) ? 'tl-tooltip' : '' #>"
+    <# if(form.get('active_test').get('id') || form.get('group_test_id')) { #> title="<?php echo __('You can\'t change the \'display status\' setting while a test is in progress in order to protect the integrity of the test!', 'thrive-leads') ?>" <# } #>>
+        <input data-title="ds" data-display="display_status" type="checkbox" class="tve-form-type-status" <#= form.get('display_status')== 1 ? 'checked="checked"' : '' #>
+            <# if(form.get('active_test').get('id') || form.get('group_test_id')) { #> disabled="disabled" <# } #> />
+        <i></i>
+    </label>
+</span>
+<span class="tve-group-part collapse-table-part tve-row-actions collapse-table-part-action">
+    <# if(!form.get('group_test_id') && !form.get('active_test').get('id') && form.get('variations').length ) { #>
+        <a style="float: left;" href="javascript:void(0)" title="<?php echo __('Reset Stats', 'thrive-leads') ?>" class="clear tve-btn tve-btn-link tve-btn-link-icon-yellow form-type-reset tl-tooltip"> <span class="tve-icon-undo"></span> <span class="tve-btn-text">reset stats</span></a>
+    <# } #>
+
+    <# if(form.get('group_test_id')) { #>
+        <a data-group-test-id="<#= form.group_test_id #>" href="#test/<#= form.get('group_test_id') #>" title="<?php echo __('View Test', 'thrive-leads') ?>" class="tve-btn tve-btn-remove-text-tablet tve-btn-link tve-form-type-test tve-btn-link-icon-purple">
+            <span class="tve-icon-view"></span> <span class="tve-btn-text"><?php echo __('View Test', 'thrive-leads') ?></span>
+        </a>
+    <# } else if (form.get('active_test').get('id')) { #>
+        <a href="#test/<#= form.get('active_test').get('id') #>/completed" title="<?php echo __('Test In Progress', 'thrive-leads') ?>" class="tve-btn tve-btn-remove-text-tablet tve-btn-link tve-form-type-edit tve-btn-link-icon-purple">
+            <span class="tve-icon-view"></span> <span class="tve-btn-text"><?php echo __('Test In Progress', 'thrive-leads') ?></span>
+        </a>
+    <# } else if (form.get('variations').length) { #>
+        <a href="#form-type/<#= form.get('ID') #>" title="<?php echo __('Edit', 'thrive-leads') ?>" class="tve-btn tve-btn-remove-text-tablet tve-btn-link tve-form-type-edit tve-btn-link-icon-blue">
+            <span class="tve-icon-edit7"></span> <span class="tve-btn-text"><?php echo __('Edit', 'thrive-leads') ?></span>
+        </a>
+    <# } else { #>
+        <a href="javascript:void(0)" title="<?php echo __('Add', 'thrive-leads') ?>" class="tve-btn tve-btn-remove-text-tablet tve-btn-link tve-form-type-add tve-btn-link-icon-green">
+            <span class="tve-icon-add2"></span> <span class="tve-btn-text"><?php echo __('Add', 'thrive-leads') ?></span>
+        </a>
+    <# } #>
+</span>

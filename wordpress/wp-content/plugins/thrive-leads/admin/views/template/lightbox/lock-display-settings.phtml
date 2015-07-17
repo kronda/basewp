@@ -1,0 +1,28 @@
+<h2>
+    <#= post_title #>
+</h2>
+
+<p class="tve-form-description">
+    <?php echo __('This setting determines how the content inside the shortcode will be displayed.', 'thrive-leads') ?>
+</p>
+
+<div class="tve-form">
+    <label class="form-label tve-control-label"><?php echo __('Content Display', 'thrive-leads') ?></label>
+
+    <div class="form-field">
+        <select id="tve-lock-display">
+            <option value="hide"><?php echo __('Hide', 'thrive-leads') ?></option>
+            <option value="blur"><?php echo __('Blur', 'thrive-leads') ?></option>
+        </select>
+    </div>
+
+    <p class="tve-form-description tve-error tve-blur-warning">
+        <?php echo __('Warning! The blur filter is not supported in Internet Explorer. Low opacity will be used instead.', 'thrive-leads') ?>
+    </p>
+
+    <div class="form-buttons center">
+        <a href="javascript:void(0)" class="tve-btn tve-btn-gray tve-btn-large tve-close-thickbox" tabindex="3"><?php echo __('Cancel', 'thrive-leads') ?></a>
+        &nbsp;
+        <a href="javascript:void(0)" class="tve-btn tve-btn-green tve-btn-large tve-save-lead-lock tl-enter-action" tabindex="2"><?php echo __('Save', 'thrive-leads') ?></a>
+    </div><br />
+</div>

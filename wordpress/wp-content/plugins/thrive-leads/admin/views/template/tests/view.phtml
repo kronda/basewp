@@ -1,0 +1,116 @@
+<?php global $tve_leads_help_videos ?>
+<div class="tve-header">
+    <div class="tve-logo">
+        <?php echo '<img src="' . plugins_url('thrive-leads/admin/img') . '/logo.png" > '; ?>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <h1 class="panel-title">
+            <#= test.get('form_title') #> &raquo; <#= test.get('title') #>
+            <a href="<?php echo $tve_leads_help_videos['TestChart'] ?>"
+               title="<?php echo __('Test Charts', 'thrive-leads') ?>"
+               class="tl-play-link wistia-popover[height=450,playerColor=333333,width=800]">
+                <span class="tve-icon-play"> </span>
+            </a>
+        </h1>
+    </div>
+    <div class="panel-body relative">
+        <div class="tve-chart-interval">
+            <label class="tve-custom-select"><?php echo __('Graph Interval', 'thrive-leads'); ?>:
+                <select autocomplete="off" id="tve-chart-interval-select" name="tve-chart-interval">
+                    <option selected value="day"><?php echo __('Daily', 'thrive-leads'); ?></option>
+                    <option value="week"><?php echo __('Weekly', 'thrive-leads'); ?></option>
+                    <option value="month"><?php echo __('Monthly', 'thrive-leads'); ?></option>
+                </select>
+            </label>
+        </div>
+
+        <div id="tve-test-chart"></div>
+        <div class="tve-chart-overlay" style="display: none">
+            <div class="tve-overlay-text">
+                <h1><?php echo __('No Test Data (Yet)', 'thrive-leads'); ?></h1>
+
+                <div>
+                    <?php echo __('Here you will see a graph of conversion data as the test progresses. Currently there is no data to display yet.', 'thrive-leads'); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<table class="tve-table tve-test-items-list">
+    <thead>
+    <tr>
+        <th>
+            <a href="<?php echo $tve_leads_help_videos['TestTableData'] ?>"
+               title="<?php echo __('Test Charts', 'thrive-leads') ?>"
+               class="tl-play-link wistia-popover[height=450,playerColor=333333,width=800]">
+                <span class="tve-icon-play"> </span>
+            </a>
+        </th>
+        <# if(test.get('test_type') == ThriveLeads.const.group_test_type) { #>
+        <th><?php echo __('Form Type', 'thrive-leads') ?></th>
+        <# } #>
+        <th><?php echo __('Form Impressions', 'thrive-leads') ?></th>
+        <th><?php echo __('Conversions', 'thrive-leads') ?></th>
+        <th class="right" style="padding-right: 20px;"><?php echo __('Conversion Rate', 'thrive-leads') ?></th>
+        <th style="width: 250px;"><?php echo __('Chart', 'thrive-leads') ?></th>
+        <th><?php echo __('Percentage Improvement', 'thrive-leads') ?></th>
+        <th><?php echo __('Chance To Beat Original', 'thrive-leads') ?></th>
+        <th><?php echo __('Trigger / Animation', 'thrive-leads') ?></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="tve-form-test-items"></tbody>
+    <tfoot id="tve-test-items-total">
+
+    </tfoot>
+</table>
+<div>
+    <div id="tve-test-options" style="text-align: right"></div>
+</div>
+<div id="tl-completed-tests" style="margin-bottom: 20px; display: none;">
+    <h2 title="<?php echo __('Click to expand', 'thrive-leads') ?>" style="cursor:pointer" class="tl-clickable display-inline-block tl-toggle-completed-tests collapsed" data-target="#tl-toggle-completed-tests">
+        <span class="tl-icon tve-icon-collapsed"> </span>
+        <?php echo __('Completed Tests', 'thrive-leads') ?> <span id="tl-completed-tests-count">(0)</span>
+    </h2>
+    <div style="width: 100%; display: none" id="tl-toggle-completed-tests">
+        <table class="tve-table show-completed-tests">
+            <thead>
+            <tr>
+                <th><?php echo __('Test Name', 'tve-leads') ?></th>
+                <th><?php echo __('Test Description', 'thrive-leads') ?></th>
+                <th><?php echo __('Start Date', 'thrive-leads') ?></th>
+                <th><?php echo __('End Date', 'thrive-leads') ?></th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody id="tve-completed-test-list"></tbody>
+        </table>
+    </div>
+</div>
+
+<div>
+    <a class="tve-btn tve-btn-gray pull-left" href="#dashboard">
+        <span class="tve-icon-double-angle-quotes"></span> <?php echo __('Back To Dashboard', 'thrive-leads') ?>
+    </a>
+    <# if(test.get('another_test_running') && test.get('another_test_running') != test.get('id')) { #>
+        <a class="tve-btn tve-btn-gray pull-right" href="#test/<#= test.get('another_test_running') #>/completed">
+            <span class="tve-icon-double-angle-quotes"></span> <?php echo __('Back To Current Running Test', 'thrive-leads') ?>
+        </a>
+    <# } else if( test.get('status') === ThriveLeads.const.test_status.archived && test.get('test_type') === ThriveLeads.const.variation_test_type ) { #>
+        <a class="tve-btn tve-btn-gray pull-right" href="#form-type/<#= test.get('main_group_id') #>">
+            <span class="tve-icon-double-angle-quotes"></span> <?php echo __('Back To Form Type', 'thrive-leads') ?>
+        </a>
+    <# } else if( test.get('status') === ThriveLeads.const.test_status.archived && test.get('test_type') === ThriveLeads.const.shortcode_test_type ) { #>
+        <a class="tve-btn tve-btn-gray pull-right" href="#shortcode/<#= test.get('main_group_id') #>">
+            <span class="tve-icon-double-angle-quotes"></span> <?php echo __('Back To Shortcode', 'thrive-leads') ?>
+        </a>
+    <# } else if( test.get('status') === ThriveLeads.const.test_status.archived && test.get('test_type') === ThriveLeads.const.two_step_lightbox_test_type ) { #>
+        <a class="tve-btn tve-btn-gray pull-right" href="#2step-lightbox/<#= test.get('main_group_id') #>">
+            <span class="tve-icon-double-angle-quotes"></span> <?php echo __('Back To 2 Step Lightbox', 'thrive-leads') ?>
+        </a>
+    <# } #>
+</div>

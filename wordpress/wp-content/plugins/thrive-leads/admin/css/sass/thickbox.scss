@@ -1,0 +1,51 @@
+@import "bourbon";
+
+body {
+  .TB_Wide {
+    height: 80% !important;
+    width: 80% !important;
+    top: 10% !important;
+    margin: 0 !important;
+    left: 10% !important;
+    overflow-y: hidden;
+    #TB_title {
+      display: table;
+      width: 100%;
+      box-sizing: border-box;
+      #TB_ajaxWindowTitle {
+        display: table-cell;
+        float: none;
+        height: 64px;
+        line-height: 64px;
+        vertical-align: middle;
+      }
+    }
+    #TB_ajaxContent {
+      overflow: auto;
+      background-color: #f1f1f1;
+      width: 100% !important;
+      height: 87% !important;
+      box-sizing: border-box;
+    }
+  }
+  #tve-leads-loader {
+    background: rgba(0,0,0,.3);
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100060;
+    img {
+      height: 13px;
+      left: 50%;
+      margin: -6px 0 0 -104px;
+      position: absolute;
+      top: 50%;
+      width: 208px;
+    }
+  }
+  .ui-autocomplete {
+    z-index: 1000000;
+  }
+}

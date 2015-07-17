@@ -1,0 +1,26 @@
+<h2><#= post_title #></h2>
+
+<p class="tve-form-description">
+    <?php echo __('This setting determines how much time it takes before the same visitor will be shown the same form again', 'thrive-leads') ?>
+</p>
+
+<div class="tve-form">
+    <label class="form-label tve-control-label"><?php echo __('Show once every*', 'thrive-leads') ?></label>
+    <div class="form-field">
+        <div class="tve-slider" style="width: 300px; display: inline-block;">
+            <div class="tve-slider-element slider-display-frequency"></div>
+        </div>
+        &nbsp;&nbsp;
+        <input class="input-display-frequency input-slider trigger-config tve-input-small inline" type="text" name="display_frequency" value="<#= display_frequency #>" size="3" tabindex="1">
+        &nbsp; <?php echo __('days', 'thrive-leads') ?>
+    </div>
+
+    <p class="tve-form-description">
+        <?php echo __('*If set to zero then the popup will be displayed all the time', 'thrive-leads') ?>
+    </p>
+    <div class="form-buttons center">
+        <a href="javascript:void(0)" class="tve-btn tve-btn-gray tve-btn-large tve-close-thickbox" tabindex="3"><?php echo __('Cancel', 'thrive-leads') ?></a>
+        &nbsp;
+        <a href="javascript:void(0)" class="tve-btn tve-btn-green tve-btn-large tve-save-frequency tl-enter-action" tabindex="2"><?php echo __('Save', 'thrive-leads') ?></a>
+    </div>
+</div>

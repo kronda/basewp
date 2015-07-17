@@ -1,0 +1,95 @@
+<td>
+    <input type="hidden" id="variation-key-<#= key #>" value="<#= key #>">
+    <span class="form-title"><#= post_title #></span>
+    <# if (post_status === 'publish') { #>
+            <input class="tve-form-control tve-input-small tve-input-inline tve-input-condensed tve-edit-title-input" style="display: none;">
+        <# if (is_control) { #> (<?php echo __('control', 'thrive-leads') ?>) <# } #>
+            <a href="javascript:void(0)" class="tve-btn tve-btn-icon tve-edit-title" style="margin-right: 5px;">
+                <span class="tve-icon-pencil"></span>
+            </a>
+    <# } #>
+</td>
+<# if (post_status != 'publish' || is_control) { #>
+    <td><#= impressions #></td>
+    <td><#= conversions #></td>
+    <td><#= conversion_rate #></td>
+<# } else { #>
+    <td colspan="3">
+        <div class="inline-message">
+            <?php echo __('No traffic is currently being sent to this form. Start an A/B Test to start tracking statistics', 'thrive-leads') ?>
+        </div>
+    </td>
+<# } #>
+<td>
+    <# if (post_status == 'publish' && has_trigger_settings) { #>
+        <a href="#triggers/<#= post_parent #>/<#= key #>">
+    <# } #>
+    <#= trigger_nice_name #>
+    <# if (post_status == 'publish') { #>
+        </a>
+    <# } #>
+</td>
+<# if (has_frequency_settings) { #>
+    <td>
+        <# if (post_status == 'publish') { #>
+        <a href="javascript:void(0)" class="tve-leads-display-frequency">
+            <# } #>
+            <#= display_frequency_nice_name #>
+            <# if (post_status == 'publish') { #>
+        </a>
+    <# } #>
+    </td>
+<# } #>
+
+<# if (has_position_settings) { #>
+<td>
+    <# if (post_status == 'publish') { #>
+        <a href="#position/<#= post_parent #>/<#= key #>">
+        <# } #>
+        <#= display_position_nice_name #>
+        <# if (post_status == 'publish') { #>
+    </a>
+    <# } #>
+</td>
+<# } #>
+
+<# if (has_animation_settings) { #>
+    <td>
+        <# if (post_status == 'publish') { #>
+        <a href="javascript:void(0)" class="tve-leads-display-animation">
+            <# } #>
+            <#= display_animation_nice_name #>
+            <# if (post_status == 'publish') { #>
+        </a>
+    <# } #>
+    </td>
+<# } #>
+
+<# if (content_locking) { #>
+    <td>
+        <# if (post_status == 'publish') { #>
+            <a href="javascript:void(0)" class="tve-leads-lock-display">
+        <# } #>
+        <#= content_lock_display #>
+            <# if (post_status == 'publish') { #>
+        </a>
+            <# } #>
+    </td>
+<# } #>
+
+<td class="table-row-actions">
+    <div class="pull-right">
+        <# if ( typeof hide_buttons != 'undefined' && !hide_buttons) { #>
+            <# if (post_status == ThriveLeads.const.test_status.archived) { #>
+                <a href="<#= tcb_preview_url #>" target="_blank" title="<?php echo __('View Form', 'thrive-leads') ?>" class="tve-btn tve-btn-remove-text-tablet tve-btn-link tve-btn-link-icon-blue"> <span class="tve-icon-view"></span> <span class="tve-btn-text"><?php echo __('View Form', 'thrive-leads') ?></span></a>
+                <a href="javascript:void(0)" title="<?php echo __('Re-add', 'thrive-leads') ?>" class="tve-btn tve-btn-remove-text-tablet tve-btn-link tve-btn-link-icon-green variation-publish"> <span class="tve-icon-add2"></span> <span class="tve-btn-text"><?php echo __('Re-add', 'thrive-leads') ?></span></a>
+                <a href="javascript:void(0)" title="<?php echo __('Delete', 'thrive-leads') ?>" class="tve-btn tve-btn-remove-text-tablet tve-btn-link tve-btn-link-icon-red variation-delete"> <span class="tve-icon-trash-o"></span> <span class="tve-btn-text"><?php echo __('Delete', 'thrive-leads') ?></span></a>
+            <# } else { #>
+                <a href="<#= tcb_edit_url #>" target="_blank" title="<?php echo __('Edit Design', 'thrive-leads') ?>" class="tve-btn tve-btn-blue tl-tooltip"> <span class="tve-icon-pencil"></span></a>
+                <a href="javascript:void(0)" title="<?php echo __('Clone', 'thrive-leads') ?>" class="tve-btn tve-btn-purple variation-clone tl-tooltip"> <span class="tve-icon-clone2"></span></a>
+                <a href="javascript:void(0)" title="<?php echo __('Reset Stats', 'thrive-leads') ?>" class="tve-btn tve-btn-yellow variation-reset tl-tooltip"> <span class="tve-icon-undo"></span></a>
+                <a href="javascript:void(0)" title="<?php echo __('Archive', 'thrive-leads') ?>" class="tve-btn tve-btn-cadet-blue variation-archive tl-tooltip"> <span class="tve-icon-box-add"></span></a>
+            <# } #>
+        <# } #>
+    </div>
+</td>

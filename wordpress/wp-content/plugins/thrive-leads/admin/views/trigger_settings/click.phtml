@@ -1,0 +1,12 @@
+
+<p class="tve-form-description"><?php echo __('Insert the ID or the class name of the element(s) that will trigger the display of this form (on click)', 'thrive-leads') ?></p>
+
+<label class="form-label tve-control-label"><?php echo __('Class', 'thrive-leads') ?></label>
+<div class="form-field">
+    <input type="text" name="c" class="trigger-config" value="<?php echo empty($config['c']) ? '' : $config['c'] ?>">
+</div>
+
+<label class="form-label tve-control-label"><?php echo __('ID', 'thrive-leads') ?></label>
+<div class="form-field">
+    <input type="text" name="i" class="trigger-config" value="<?php echo empty($config['i']) ? '' : $config['i'] ?>">
+</div>

@@ -1,0 +1,10 @@
+<td><#= test.get('title') #></td>
+<# if(test.get('type') !== undefined) { #>
+<td><#= test.get('type').join(' v ') #></td>
+<# } #>
+<td><#= test.get('notes') #></td>
+<td><#= test.get('date_started') #></td>
+<td><#= test.get('date_completed') #></td>
+<td class="tve-row-actions collapse-table-part-action">
+    <a class="tve-btn  tve-btn-link tve-form-type-test tve-btn-link-icon-purple" href="#test/<#= test.get('id') #>"><span class="tve-icon-view"></span><?php echo __('View Test', 'thrive-leads') ?></a>
+</td>

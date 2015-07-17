@@ -1,0 +1,27 @@
+<?php $animations = tve_leads_get_available_animations(); ?>
+
+<h2><#= post_title #></h2>
+
+<div class="tve-form" id="animation-settings-base">
+    <label class="form-label tve-control-label"><?php echo __('Animation', 'thrive-leads') ?></label>
+    <div class="form-field">
+        <select name="animation" id="animation-type" tabindex="1">
+            <?php foreach ($animations as $key => $animation) : /** @var TVE_Leads_Animation_Abstract $animation */ ?>
+                <option value="<?php echo $key ?>"><?php echo $animation->get_title() ?></option>
+            <?php endforeach ?>
+        </select>
+    </div>
+    <div class="clear" style="height: 10px;"></div>
+    <div class="tve-animation-preview" style="height: 60px;">
+        <label class="form-label tve-control-label"><?php echo __('Animation preview', 'thrive-leads') ?></label>
+        <div class="form-field">
+            <img id="tve-anim-target" class="tve-tl-anim" src="<?php echo TVE_LEADS_URL . 'admin/img/logo.png' ?>" height="30">
+        </div>
+    </div>
+    <div class="clear" style="height: 10px;"></div>
+    <div class="form-buttons">
+        <a href="javascript:void(0)" class="tve-btn tve-btn-gray tve-btn-large tve-close-thickbox" tabindex="3"><?php echo __('Cancel', 'thrive-leads') ?></a>
+        &nbsp;
+        <a href="javascript:void(0)" class="tve-btn tve-btn-green tve-btn-large tve-save-animation tl-enter-action" tabindex="2"><?php echo __('Save', 'thrive-leads') ?></a>
+    </div>
+</div>

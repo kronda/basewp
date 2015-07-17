@@ -1,0 +1,53 @@
+<div class="tve-two-step-lightbox-heading tve-shortcode-heading collapse-table-list-heading">
+    <span
+        class="tve-two-step-lightbox-part tve-shortcode-part collapse-table-part-condensed collapse-table-part tve-two-step-lightbox-title collapse-table-part-title">
+
+            <strong class="bigger"><#= two_step_lightbox.get('post_title') #></strong>
+            <# if(two_step_lightbox.get('active_test')) { #>
+            <span class="testing"><?php echo __('(test in progress)', 'thrive-leads') ?></span>
+            <# } #>
+    
+        <span class="pull-right">
+            <input readonly class="tve-two-step-lightbox tve-form-control tve-input-small tve-input-inline tve-input-condensed" type="text"
+                   value="[thrive_2step id='<#= two_step_lightbox.get('ID') #>']Trigger goes here[/thrive_2step]"/>
+            <span class="tve-leads-copy-container">
+                <a class="tve-copy-to-clipboard tve-btn tve-btn-blue tve-btn-small margin-right-10" href="javascript:void(0)">
+                    <span class="tve-icon-clone2"></span>
+                    <span class="tl-copy-text"><?php echo __('Copy', 'thrive-leads') ?> &nbsp;</span>
+                </a>
+            </span>
+        </span>
+    </span>
+    <span
+        class="tve-two-step-lightbox-part tve-shortcode-part collapse-table-part-condensed collapse-table-part tve-two-step-lightbox-center collapse-table-part-center">&nbsp;</span>
+    <span
+        class="tve-two-step-lightbox-part tve-shortcode-part collapse-table-part-condensed collapse-table-part tve-two-step-lightbox-center collapse-table-part-center"><#= two_step_lightbox.get('impressions') #></span>
+    <span
+        class="tve-two-step-lightbox-part tve-shortcode-part collapse-table-part-condensed collapse-table-part tve-two-step-lightbox-center collapse-table-part-center"><#= two_step_lightbox.get('conversions') #></span>
+    <span
+        class="tve-two-step-lightbox-part tve-shortcode-part collapse-table-part-condensed collapse-table-part tve-two-step-lightbox-center collapse-table-part-center"><#= two_step_lightbox.get('conversion_rate') #></span>
+    <span
+        class="tve-two-step-lightbox-part tve-shortcode-part collapse-table-part-condensed collapse-table-part tve-row-actions collapse-table-part-action">
+        <span class="pull-right">
+            <# if(two_step_lightbox.get('active_test')) { #>
+            <a data-two-step-lightbox-test-id="<#= two_step_lightbox.get('active_test').get('id') #>"
+               href="#test/<#= two_step_lightbox.get('active_test').get('id') #>/completed"
+               title="<?php echo __('View Test', 'thrive-leads') ?>"
+               class="tve-btn tve-btn-remove-text-tablet tve-btn-link tve-form-type-test tve-btn-link-icon-purple">
+                <span class="tve-icon-view"></span><span class="tve-btn-text"><?php echo __('View Test', 'thrive-leads') ?></span>
+            </a>
+            <# } else { #>
+                <a style="float: left;" href="javascript:void(0)" title="<?php echo __('Reset Stats', 'thrive-leads') ?>" class="clear tve-btn tve-btn-link tve-btn-link-icon-yellow two-step-reset tl-tooltip"> <span class="tve-icon-undo"></span> <span class="tve-btn-text">reset stats</span></a>
+                <a class="tve-btn tve-btn-link tve-btn-remove-text-tablet tve-btn-link-icon-blue tve-two-step-lightbox-settings tl-tooltip"
+                   data-show-until="1480" href="#2step-lightbox/<#= two_step_lightbox.get('ID')#>"
+                   title="<?php echo __('Edit', 'thrive-leads') ?>"><span class="tve-icon-edit7"></span> <span
+                        class="tve-btn-text"><?php echo __('Edit', 'thrive-leads') ?></span></a>
+                <a class="tve-btn tve-btn-link tve-btn-remove-text-tablet tve-btn-link-icon-red tve-two-step-lightbox-delete tl-tooltip"
+                   href="javascript:void(0)" data-show-until="1480"
+                   title="<?php echo __('Delete Two Step Lightbox', 'thrive-leads') ?>"
+                   data-id="<#= two_step_lightbox.get('ID') #>"><span class="tve-icon-delete2"></span> <span
+                        class="tve-btn-text"><?php echo __('Delete', 'thrive-leads') ?></span></a>
+            <# } #>
+        </span>
+    </span>
+</div>

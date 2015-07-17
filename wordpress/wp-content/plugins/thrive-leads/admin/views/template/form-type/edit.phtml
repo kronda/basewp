@@ -1,0 +1,150 @@
+<div class="tve-header">
+    <div class="tve-logo">
+        <?php echo '<img src="' . plugins_url('thrive-leads/admin/img') . '/logo.png" > '; ?>
+    </div>
+</div>
+
+<div class="tve-no-content tl-show-no-forms" style="display: none;">
+    <div class="tve-notice">
+        <img src="<?php echo TVE_LEADS_URL . 'admin/img/thrive_notification_logo.png' ?>" alt="">
+        <span><?php echo __('Your forms will appear here.', 'thrive-leads') ?></span>
+        <button class="tve-btn tve-btn-gray tve-add-form"><?php echo __('Create Form', 'thrive-leads') ?></button>
+        <div>
+            <a href="#dashboard" class="tve-btn tve-btn-link"><?php echo __('Back To Dashboard', 'thrive-leads') ?></a>
+        </div>
+    </div>
+</div>
+<div class="pull-right">
+    <# if(model instanceof ThriveLeads.models.Shortcode) { #>
+        <div class="white-box">
+            <input readonly class="tve-shortcode tve-form-control tve-input-small tve-input-inline" type="text" value="<#= model.getCode() #>" />
+            <span>
+                <a class="tve-copy-to-clipboard tve-btn tve-btn-blue margin-right-10" href="javascript:void(0)">
+                    <span class="tve-icon-clone2"></span>
+                    <span class="tl-copy-text"><?php echo __('Copy', 'thrive-leads') ?> &nbsp;</span>
+                </a>
+            </span>
+            <div class="clear"></div>
+            <a href="javascript:void(0)" class="tve-leads-main-php-code" title="<?php echo __('Get PHP Code', 'thrive-leads') ?>"><?php echo __('Get PHP Code', 'thrive-leads') ?></a>
+        </div>
+    <# } else if(model instanceof ThriveLeads.models.TwoStepLightbox) { #>
+        <div class="white-box">
+            <input readonly class="tve-shortcode tve-form-control tve-input-small tve-input-inline" type="text" value="<#= model.getCode() #>" />
+            <a class="tve-copy-to-clipboard tve-btn tve-btn-blue margin-right-10" href="javascript:void(0)">
+                <span class="tve-icon-clone2"></span>
+                <span class="tl-copy-text"><?php echo __('Copy', 'thrive-leads') ?> &nbsp;</span>
+            </a>
+        </div>
+    <# } #>
+</div>
+<h1 class="tve-action-title tl-hide-no-forms">
+    <div class="pull-left">
+        <# if( model.get('parent') && model.get('parent').post_title ) { #>
+        <strong><#= model.get('parent').post_title #></strong> -
+        <# } #>
+        <#= model.get('post_title') #>
+        <a class="tve-leads-button tve-btn tve-btn-blue  tve-add-form" href="javascript:void(0)"><?php echo __('Add New Form', 'thrive-leads') ?></a>
+    </div>
+</h1>
+
+<div id="tve-lead-forms" class="tl-hide-no-forms">
+    <h2><?php echo __('Forms', 'thrive-leads') ?></h2>
+    <p><?php echo __('Here you can create the designs for your opt in form. You can create as many forms as you like, and the traffic will be distributed randomly to each of them.', 'thrive-leads') ?></p>
+    <table class="tve-table form-type-list hide-no-groups" style="display: none">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th><?php echo __('Form Impressions', 'thrive-leads') ?></th>
+                <th><?php echo __('Conversions', 'thrive-leads') ?></th>
+                <th><?php echo __('Conversion Rate', 'thrive-leads') ?></th>
+                <th><?php echo __('Trigger', 'thrive-leads') ?></th>
+                <# if (model.get('has_frequency_settings')) { #>
+                    <th><?php echo __('Display Frequency', 'thrive-leads') ?></th>
+                <# } #>
+                <# if (model.get('has_position_settings')) { #>
+                <th><?php echo __('Position', 'thrive-leads') ?></th>
+                <# } #>
+                <# if (model.get('has_animation_settings')) { #>
+                    <th><?php echo __('Animation', 'thrive-leads') ?></th>
+                <# } #>
+                <# if (model.get('content_locking')) { #>
+                <th><?php echo __('Lock Mode', 'thrive-leads') ?></th>
+                <# } #>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody id="tve-variation-list"></tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5"></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <a style="display: none" class="tve-btn margin-right-10 tve-btn-green tve-start-variation-test pull-right" href="javascript:void(0)" title="<?php echo __('Start A/B Test', 'thrive-leads') ?>">
+       <?php echo __('Start A/B Test', 'thrive-leads') ?>
+    </a>
+    <div class="clearfix"></div>
+
+    <p class="show-no-groups" style="display: none">
+        <?php echo __("You don't have any active forms", 'thrive-leads') ?> -
+        <a href="javascript:void(0)" class="tve-add-form">
+            <?php echo __('click here to create one', 'thrive-leads') ?>
+        </a>
+    </p>
+    <div id="tl-completed-tests" style="display: none">
+        <h2 title="<?php echo __('Click to expand', 'thrive-leads') ?>" style="cursor:pointer" class="tl-clickable display-inline-block tl-toggle-display collapsed" data-target="#tl-toggle-tests">
+            <span class="tl-icon tve-icon-collapsed"> </span>
+            <?php echo __('Completed Tests', 'thrive-leads') ?> (<#= model.get('completed_tests').length #>)
+        </h2>
+        <div style="width: 100%; display: none" id="tl-toggle-tests">
+            <table class="tve-table show-completed-tests">
+                <thead>
+                    <tr>
+                        <th><?php echo __('Test Name', 'tve-leads') ?></th>
+                        <th><?php echo __('Test Description', 'thrive-leads') ?></th>
+                        <th><?php echo __('Start Date', 'thrive-leads') ?></th>
+                        <th><?php echo __('End Date', 'thrive-leads') ?></th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody id="tve-completed-test-list"></tbody>
+            </table>
+        </div>
+    </div>
+    <div id="tl-archived-forms" style="display: none">
+        <h2 title="<?php echo __('Click to expand', 'thrive-leads') ?>" style="cursor:pointer" class="tl-clickable display-inline-block tl-toggle-display collapsed" data-target="#tl-toggle-forms">
+            <span class="tl-icon tve-icon-collapsed"> </span>
+            <?php echo __('Archived Forms', 'thrive-leads') ?> (<#= model.get('variations_archived').length #>)
+        </h2>
+        <div style="width: 100%;display:none" id="tl-toggle-forms">
+            <table class="tve-table show-archived-tests">
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th><?php echo __('Form Impressions', 'thrive-leads') ?></th>
+                        <th><?php echo __('Conversions', 'thrive-leads') ?></th>
+                        <th><?php echo __('Conversion Rate', 'thrive-leads') ?></th>
+                        <th><?php echo __('Trigger', 'thrive-leads') ?></th>
+                        <# if (model.get('has_frequency_settings')) { #>
+                        <th><?php echo __('Display Frequency', 'thrive-leads') ?></th>
+                        <# } #>
+                        <# if (model.get('has_position_settings')) { #>
+                        <th><?php echo __('Position', 'thrive-leads') ?></th>
+                        <# } #>
+                        <# if (model.get('has_animation_settings')) { #>
+                        <th><?php echo __('Animation', 'thrive-leads') ?></th>
+                        <# } #>
+                        <# if (model.get('content_locking')) { #>
+                        <th><?php echo __('Lock Mode', 'thrive-leads') ?></th>
+                        <# } #>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody id="tve-archive-list"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<a href="#dashboard" class="tve-btn tve-btn-gray tl-hide-no-forms"><span class="tve-icon-double-angle-quotes"></span> <?php echo __('Back To Dashboard', 'thrive-leads') ?></a>

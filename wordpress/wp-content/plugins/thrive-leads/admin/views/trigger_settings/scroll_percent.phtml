@@ -1,0 +1,47 @@
+<label class="form-label tve-control-label"><?php echo __('Scroll percentage', 'thrive-leads') ?></label>
+<div class="form-field">
+    <div class="tve-slider" style="width: 300px; display: inline-block;">
+        <div class="tve-slider-element" id="slider-scroll"></div>
+    </div>
+    &nbsp;&nbsp;
+    <input class="trigger-config tve-input-small inline input-slider" type="text" name="p" id="slider-scroll-input" value="<?php echo (int)$config['p'] ?>" size="3"> %
+    &nbsp;
+</div>
+
+<label class="form-label-tve-control-label" for="tl-timer-exit">
+    <?php echo __('Exit intent?', 'thrive-leads') ?>
+</label>
+<div class="form-field">
+    <label class="tve-switch">
+        <input type="checkbox" class="trigger-config" value="1" name="exi"<?php echo empty($config['exi']) ? '' : ' checked="checked"' ?>>
+        <i></i>
+    </label>
+    <div class="clear"></div>
+    <p class="tve-form-description" style="margin-top: 0;"><?php echo __('Use this option to trigger the form on exit-intent if the visitor attempts to leave the site before the defined scroll depth is reached', 'thrive-leads') ?></p>
+</div>
+
+<script type="text/javascript">
+    (function ($) {
+        $(function() {
+            var $slider_input = $('#slider-scroll-input').change(function () {
+                    var _value = parseInt(this.value);
+                    if (isNaN(_value) || _value < 0 || _value > 100) {
+                        _value = 10;
+                    }
+                    if (_value != this.value) {
+                        this.value = _value;
+                    }
+                    $t_slider.slider('value', _value);
+                }),
+                $t_slider = $('#slider-scroll').slider({
+                    min: 0,
+                    max: 100,
+                    step: 1,
+                    slide: function (event, ui) {
+                        $slider_input.val(ui.value);
+                    }
+                });
+            $slider_input.change();
+        });
+    })(jQuery);
+</script>

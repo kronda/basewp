@@ -1,0 +1,20 @@
+<th>&nbsp;</th>
+<# if(test.get('test_type') == ThriveLeads.const.group_test_type) { #>
+    <th>&nbsp;</th>
+<# } #>
+<th><#= totals.impressions #></th>
+<th><#= totals.conversions #></th>
+<th class="right" style="padding-right: 20px;text-align:right;"><#= totals.conversions_rate == 0 ? 'N/A' : totals.conversions_rate + ' %' #></th>
+
+<td colspan="5" class="right" style="padding-right: 30px">
+    <# if (test.get('status') == ThriveLeads.const.test_status.running) { #>
+        <span class="margin-right-10">
+            <# if (test.get('auto_win_enabled') == 1) { #>
+                <span><?php echo __('Automatic winner settings are enabled', 'thrive-leads') ?> -</span>
+            <# } else { #>
+                <span><?php echo __('Automatic winner settings are disabled', 'thrive-leads') ?> -</span>
+            <# } #>
+            <a class="tve-edit-test" href="javascript:void(0)"><?php echo __('Change', 'thrive-leads') ?></a>
+        </span>
+    <# } #>
+</td>

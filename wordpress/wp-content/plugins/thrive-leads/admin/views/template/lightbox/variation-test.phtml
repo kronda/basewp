@@ -1,0 +1,67 @@
+<br />
+<div class="tve-form">
+    <label class="form-label tve-control-label"><?php echo __('Title', 'thrive-leads') ?></label>
+
+    <div class="form-field">
+        <input type="text" class="" value="" name="test_title" tabindex="1">
+    </div>
+    <label class="form-label"><?php echo __('Test Notes', 'thrive-leads') ?></label>
+
+    <div class="form-field">
+        <textarea name="test_notes" tabindex="2"></textarea>
+    </div>
+    <div class="clearfix"></div>
+    <div id="tve-form-types-list" style="display: none">
+        <p><?php echo __('Choose which type of form to test against each other: ', 'thrive-leads') ?></p>
+
+    </div>
+
+    <div class="gray-box" id="tve-winner-test-settings">
+        <h2><?php echo __('Automatic Winner Settings', 'thrive-leads') ?><a class="tve-toggle-plus-icon" tabindex="3" href="javascript:void(0)"><span class="tve-icon-plus-circle"></span></a></h2>
+
+        <div style="display: none" id="tve-winner-test-container">
+            <p><?php echo __('Here you can set the conditions by which a form will be considered the winner. When a form is considered the winner, the remaining forms will be archived and all traffic will be sent to the winner', 'thrive-leads') ?></p>
+
+            <label for="tve-enable-test-settings"><?php echo __('Enabled', 'thrive-leads') ?></label>
+            <div class="form-field">
+                <input id="tve-enable-test-settings" type="checkbox" name="auto_win_enabled" tabindex="4" />
+            </div>
+
+            <div class="tve-winner-settings-input" style="display: none">
+                <label class="tve-control-label"><?php echo __('Minimum Conversions', 'thrive-leads') ?></label>
+                <div class="form-field">
+                    <div class="form-field-input">
+                        <input type="text" name="auto_win_min_conversions" tabindex="5" value="100" />
+                    </div>
+                </div>
+
+                <label class="tve-control-label"><?php echo __('Minimum Duration', 'thrive-leads') ?></label>
+                <div class="form-field">
+                    <div class="form-field-input">
+                        <input type="text" name="auto_win_min_duration" tabindex="6" value="14"/>
+                    </div>
+                    <div class="form-field-label">
+                        <span><?php echo __("days", 'thrive-leads') ?></span>
+                    </div>
+                </div>
+
+                <label class="tve-control-label"><?php echo __('Chance To Beat Original', 'thrive-leads') ?></label>
+                <div class="form-field">
+                    <div class="form-field-input">
+                        <input type="text" name="auto_win_chance_original" tabindex="7" value="95"/>
+                    </div>
+                    <div class="form-field-label">
+                        <span>%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-buttons center">
+        <a class="tve-btn tve-btn-gray tve-btn-large tve-close-thickbox" tabindex="9"
+           href="javascript:void(0)"><?php echo __('Cancel', 'thrive-leads') ?></a>
+        &nbsp;
+        <a class="tve-btn tve-btn-green tve-btn-large tve-start-variation-test tl-enter-action" tabindex="8"
+           href="javascript:void(0)"><?php echo __('Start Test', 'thrive-leads') ?></a>
+    </div>
+</div>
