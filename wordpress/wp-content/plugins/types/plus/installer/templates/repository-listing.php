@@ -1,4 +1,4 @@
-<?php if(($match = $this->get_matching_cp($repository)) && $match['exp']): ?>
+<?php if((!$this->repository_has_subscription($repository_id) && $match = $this->get_matching_cp($repository)) && $match['exp']): ?>
 <p class="alignright installer_highlight"><strong><?php printf('Price offers available until %s', date_i18n(get_option( 'date_format' ), $match['exp'])) ?></strong></p>
 <?php endif; ?>
 

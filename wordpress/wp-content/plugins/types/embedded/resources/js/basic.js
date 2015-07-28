@@ -642,7 +642,7 @@ function wpcf_slugize(val)
         return;
     }
     val = removeDiacritics(val.toLowerCase());
-    val = val.replace(/[^a-z0-9A-Z]+/g, '-');
+    val = val.replace(/[^a-z0-9A-Z_]+/g, '-');
     val = val.replace(/\-+/g, '-');
     val = val.replace(/^\-/g, '');
     val = val.replace(/\-$/g, '');

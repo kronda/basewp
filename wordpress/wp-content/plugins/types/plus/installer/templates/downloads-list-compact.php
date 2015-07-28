@@ -20,17 +20,18 @@
                                     <label>
                                     <?php 
                                         $url =  $this->append_site_key_to_download_url($download['url'], $site_key, $repository_id );
+
                                         $download_data = array(
                                             'url'           => $url, 
-                                            'basename'      => $download['basename'], 
+                                            'slug'          => $download['slug'],
                                             'nonce'         => wp_create_nonce('install_plugin_' . $url),
                                             'repository_id' => $repository_id
                                         );
 
                                         $disabled = $expired ||
                                                     (
-                                                        $this->plugin_is_installed($download['name'], $download['basename'], $download['version']) &&
-                                                        !$this->plugin_is_embedded_version($download['name'], $download['basename'])
+                                                        $this->plugin_is_installed($download['name'], $download['slug'], $download['version']) &&
+                                                        !$this->plugin_is_embedded_version($download['name'], $download['slug'])
                                                     )||
                                                     !WP_Installer()->is_uploading_allowed();
 
@@ -40,10 +41,10 @@
                                         
                                     </label>                                
                                 </td>
-                                <td><?php echo $download['name'] ?></td>
+                                <td class="installer_plugin_name"><?php echo $download['name'] ?></td>
                                 <td><?php echo $download['version'] ?></td>
-                                <td>
-                                    <?php if($v = $this->plugin_is_installed($download['name'], $download['basename'])): $class = version_compare($v, $download['version'], '>=') ? 'installer-green-text' : 'installer-red-text'; ?>
+                                <td class="installer_version_installed">
+                                    <?php if($v = $this->plugin_is_installed($download['name'], $download['slug'])): $class = version_compare($v, $download['version'], '>=') ? 'installer-green-text' : 'installer-red-text'; ?>
                                     <span class="<?php echo $class ?>"><?php echo $v; ?></span>
                                     <?php endif; ?>
                                 </td>
@@ -69,7 +70,8 @@
                     &nbsp;
                     <label><input name="activate" type="checkbox" value="1" disabled="disabled" />&nbsp;<?php _e('Activate after download', 'installer') ?></label>
 
-                    <div class="installer-status-success"><p><?php _e('Operation complete!', 'installer') ?></p></div>
+                    <div class="installer-download-progress-status"></div>
+                    <div class="installer-status-success"><?php _e('Operation complete!', 'installer') ?></div>
 
                     <span class="installer-revalidate-message hidden"><?php _e("Download failed!\n\nClick OK to revalidate your subscription or CANCEL to try again.", 'installer') ?></span>
                     </form>         

@@ -1,3 +1,16 @@
+= 1.6.4 =
+* Enabled the OTGS_DISABLE_AUTO_UPDATES constant for theme update checks
+* Fixed a bug that was causing Register links to show for all installed plugins
+
+= 1.6.3 =
+* Fixed performance issue related to themes upgrade logic
+
+= 1.6 =
+* Improved the way plugins are matched: not just by the folder name (slug) but also by name
+* Added support for installing and upgrading themes from repositories (currently: Toolset themes)
+* Added support for 'alias' plugins on the toolset and wpml repositories (currently: Types)
+* Enhanced the progress animation during plugins downloading
+
 = 1.5.6 =
 * Updated the translations
 * Fix for WPML 3.2 conditional upgrade logic

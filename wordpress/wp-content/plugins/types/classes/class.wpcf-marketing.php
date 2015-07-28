@@ -79,7 +79,7 @@ class WPCF_Types_Marketing
                     array(
                         'utm_source' => 'typesplugin',
                         'utm_medium' => 'insert-fields',
-                        'utm_campaig' => 'postedit',
+                        'utm_campaign' => 'postedit',
                         'utm_term' => 'meet-toolset',
                     ),
                     'http://wp-types.com/'
@@ -91,7 +91,7 @@ class WPCF_Types_Marketing
                     array(
                         'utm_source' => 'typesplugin',
                         'utm_medium' => 'insert-fields',
-                        'utm_campaig' => 'postedit',
+                        'utm_campaign' => 'postedit',
                         'utm_term' => 'creating-content-templates',
                     ),
                     'http://wp-types.com/documentation/user-guides/view-templates/'
@@ -201,7 +201,7 @@ class WPCF_Types_Marketing
             array(
                 'utm_source' => 'typesplugin',
                 'utm_medium' =>  $utm_medium,
-                'utm_campaig' => sprintf('%s-howto', $this->get_kind() ),
+                'utm_campaign' => sprintf('%s-howto', $this->get_kind() ),
             ),
             $url
         );

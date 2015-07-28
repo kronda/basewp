@@ -4,7 +4,7 @@ return array(
     'brochure' => array(
         'title' => __('Brochure', 'wpcf'),
         'description' => __('static content displayed in different ways', 'wpcf'),
-        'url' => __('http://wp-types.com/develop-brochure-site-wordpress/' , 'wpcf'),
+        'url' => __('http://wp-types.com/how-to/develop-brochure-site-wordpress/' , 'wpcf'),
         'default' => true,
     ),
 //    'directory' => array(

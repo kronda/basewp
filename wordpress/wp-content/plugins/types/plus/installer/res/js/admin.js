@@ -167,7 +167,7 @@
     },
     
     download_downloads: function(){
-        
+
         var activate = jQuery(this).find(":checkbox:checked[name=activate]").val(),
             action_button = jQuery(this).find('input[type="submit"]');
             downloads_form = jQuery(this),
@@ -189,7 +189,7 @@
         }
 
         function download_and_activate( elem ){
-            
+
             var this_tr = elem.closest('tr');
             var is_update = this_tr.find('.installer-red-text').length;
             if(is_update){
@@ -198,28 +198,34 @@
             }else{
                 var installing = this_tr.find('.installer-status-installing');
                 var installed = this_tr.find('.installer-status-installed');
-                
+
             }
             if(activate){
                 var activating = this_tr.find('.installer-status-activating');
                 var activated = this_tr.find('.installer-status-activated');
             }
-            
 
-            if( this_tr.find('.for_spinner_js .spinner').size() > 0 ){
+            if( this_tr.find('.for_spinner_js .spinner').length > 0 ){
                 var spinner = this_tr.find('.for_spinner_js .spinner');
             }else{
                 var spinner = this_tr.find('.installer-status-downloading');
             }
-            
+
             otgs_wp_installer.reset_errors();
-            
-            spinner.show();
-                        
+            downloads_form.find('div.installer-status-success').hide();
+            spinner.css('visibility', 'visible');
             installing.show();
-            
+
+            var plugin_name = this_tr.find('.installer_plugin_name').html();
+            if(is_update){
+                otgs_wp_installer.show_download_progress_status(downloads_form, installer_strings.updating.replace('%s', plugin_name));
+            }else{
+                otgs_wp_installer.show_download_progress_status(downloads_form, installer_strings.installing.replace('%s', plugin_name));
+            }
+
+
             data = {action: 'installer_download_plugin', data: elem.val(), activate: activate}
-            
+
             jQuery.ajax({
                 url: ajaxurl,
                 type: 'POST',
@@ -227,32 +233,34 @@
                 data: data,
                 success: function(ret){
                     installing.hide();
-                    
+
                     if(!ret.success){
                         installed.addClass('installer-status-error');
                         installed.html(installed.data('fail'));
-                        
+
                         if(ret.message){
-                            
                             installed.closest('.otgs_wp_installer_table').find('.installer-error-box').html('<p>' + ret.message + '</p>').show();
-                            
                         }else{
-                            
                             installed.closest('.otgs_wp_installer_table').find('.installer-error-box').html('<p>' + downloads_form.find('.installer-revalidate-message').html() + '</p>').show();
-                            
                         }
-                        
-                        
+
+
                     }
-                                        
+
                     installed.show();
-                    spinner.hide();
+                    spinner.fadeOut();
+
+                    if(ret.version){
+                        this_tr.find('.installer_version_installed').html('<span class="installer-green-text">' + ret.version + '</span>');
+                    }
 
                     if(ret.success && activate){
+
+                        otgs_wp_installer.show_download_progress_status(downloads_form, installer_strings.activating.replace('%s', plugin_name));
                         activating.show();
                         spinner.show();
                         this_tr.find('.installer-red-text').removeClass('installer-red-text').addClass('installer-green-text').html(ret.version);
-                        
+
                         jQuery.ajax({
                             url: ajaxurl,
                             type: 'POST',
@@ -260,15 +268,17 @@
                             data: {action: 'installer_activate_plugin', plugin_id: ret.plugin_id, nonce: ret.nonce},
                             success: function(ret){
                                 activating.hide();
-                                if(! ret.error ){
+                                if(!ret.error ){
                                     activated.show();
                                 }
-                                spinner.hide();
+
+                                spinner.fadeOut();
 
                                 idx++;
                                 if( typeof checkboxes[idx] != 'undefined' ){
                                     download_and_activate( checkboxes[idx] );
                                 }else{
+                                    otgs_wp_installer.hide_download_progress_status(downloads_form);
                                     downloads_form.find('div.installer-status-success').show();
                                     action_button.removeAttr('disabled');
                                 }
@@ -279,19 +289,33 @@
                         if( typeof checkboxes[idx] != 'undefined' ){
                             download_and_activate( checkboxes[idx] );
                         }else{
-                             downloads_form.find('div.installer-status-success').show();
+                            otgs_wp_installer.hide_download_progress_status(downloads_form);
+                            downloads_form.find('div.installer-status-success').show();
                             action_button.removeAttr('disabled');
                         }
                     }
                 }
-                
+
             });
-            
+
         };
-        
+
         return false;
     },
-    
+
+
+    show_download_progress_status: function(downloads_form, text){
+
+        downloads_form.find('.installer-download-progress-status').html(text).fadeIn();
+
+    },
+
+    hide_download_progress_status: function(downloads_form){
+
+        downloads_form.find('.installer-download-progress-status').html('').fadeOut();
+
+    },
+
     dismiss_nag: function(){
         
         var thisa = jQuery(this);
