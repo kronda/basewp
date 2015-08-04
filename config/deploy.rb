@@ -6,7 +6,7 @@ set :domains, ["default"]
 
 # Set the repository type and location to deploy from.
 set :scm, :git
-set :repository,  "git@bitbucket.com:kronda/#{application}.git"
+set :repository,  "git@bitbucket.org:kronda/#{application}.git"
 # set :scm, :subversion
 # set :repository,  "https://svn.example.com/svn/#{application}/trunk/"
 # set(:scm_password) { Capistrano::CLI.password_prompt("SCM Password: ") }
@@ -39,4 +39,4 @@ set :httpd_group, 'apache'
 
 
 #set this to where you have installed your wp site locally (http://[local_domain]/wp-admin/ should exist. )
-set :local_domain, 'karveldigital.kdev.com'
+set :local_domain, '#{application}.dev'
