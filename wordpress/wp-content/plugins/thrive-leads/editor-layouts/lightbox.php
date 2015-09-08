@@ -76,8 +76,7 @@ if (!empty($variation[TVE_LEADS_FIELD_TEMPLATE])) {
         <script type="text/javascript">
             jQuery(document).ready(function () {
                 /* trigger lightbox opening */
-                TL_Front.open_lightbox(jQuery('#open-me'));
-
+                window.TL_Front && TL_Front.open_lightbox(jQuery('#open-me'));
             });
         </script>
     <?php endif ?>

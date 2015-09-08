@@ -3,19 +3,32 @@
 @mixin opensans {
   font-family: 'Open Sans', sans-serif;
 }
+
 @mixin sourcesans {
   font-family: 'Source Sans Pro', sans-serif;
 }
+
 $white: #fff;
 $black: #000;
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 [class*='eighteen_set'] {
+  @include clearfix();
   &.tve_gray_bg {
     background-image: none;
     background: #c2c2c2;
   }
 }
-
 
 #tve_eighteen_set {
   [class*='eighteen_set'] {
@@ -184,8 +197,7 @@ $black: #000;
   }
 }
 
-$color-pallete:
-'blue' #304269 #253250 #29385a,
+$color-pallete: 'blue' #304269 #253250 #29385a,
 'black' #313131 #252525 #272727,
 'green' #27714a #1e5639 #21613f,
 'white' #ffffff #c3c3c3 #dadada,
@@ -238,7 +250,7 @@ $color-pallete:
         padding: 10px;
       }
       h5 {
-        margin-top: 10px!important;
+        margin-top: 10px !important;
       }
       .tve_btn.tve_btn3 {
         &.tve_normalBtn {
@@ -249,7 +261,7 @@ $color-pallete:
       }
       .thrv_content_container_shortcode {
         .tve_content_inner {
-          margin-top: 10px!important;
+          margin-top: 10px !important;
         }
       }
     }

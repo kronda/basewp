@@ -1,0 +1,167 @@
+{
+	"IcoMoonType": "selection",
+	"icons": [
+		{
+			"icon": {
+				"paths": [
+					"M316.373 657.707l195.627-195.627 195.627 195.627 60.373-60.373-256-256-256 256z"
+				],
+				"attrs": [
+					{}
+				],
+				"isMulticolor": false,
+				"tags": [
+					"keyboard-arrow-up"
+				],
+				"grid": 24,
+				"colorPermutations": {
+					"6868681": [
+						0
+					]
+				}
+			},
+			"attrs": [
+				{}
+			],
+			"properties": {
+				"order": 9,
+				"id": 3,
+				"prevSize": 24,
+				"code": 58880,
+				"name": "keyboard-arrow-up"
+			},
+			"setIdx": 0,
+			"iconIdx": 0
+		},
+		{
+			"icon": {
+				"paths": [
+					"M366.293 702.293l195.627-195.627-195.627-195.627 60.373-60.373 256 256-256 256z"
+				],
+				"attrs": [
+					{}
+				],
+				"isMulticolor": false,
+				"tags": [
+					"keyboard-arrow-right"
+				],
+				"grid": 24,
+				"colorPermutations": {
+					"6868681": [
+						0
+					]
+				}
+			},
+			"attrs": [
+				{}
+			],
+			"properties": {
+				"order": 10,
+				"id": 2,
+				"prevSize": 24,
+				"code": 58881,
+				"name": "keyboard-arrow-right"
+			},
+			"setIdx": 0,
+			"iconIdx": 1
+		},
+		{
+			"icon": {
+				"paths": [
+					"M657.707 696.96l-195.627-195.627 195.627-195.627-60.373-60.373-256 256 256 256z"
+				],
+				"attrs": [
+					{}
+				],
+				"isMulticolor": false,
+				"tags": [
+					"keyboard-arrow-left"
+				],
+				"grid": 24,
+				"colorPermutations": {
+					"6868681": [
+						0
+					]
+				}
+			},
+			"attrs": [
+				{}
+			],
+			"properties": {
+				"order": 11,
+				"id": 1,
+				"prevSize": 24,
+				"code": 58882,
+				"name": "keyboard-arrow-left"
+			},
+			"setIdx": 0,
+			"iconIdx": 2
+		},
+		{
+			"icon": {
+				"paths": [
+					"M316.373 350.293l195.627 195.627 195.627-195.627 60.373 60.373-256 256-256-256z"
+				],
+				"attrs": [
+					{}
+				],
+				"isMulticolor": false,
+				"tags": [
+					"keyboard-arrow-down"
+				],
+				"grid": 24,
+				"colorPermutations": {
+					"6868681": [
+						0
+					]
+				}
+			},
+			"attrs": [
+				{}
+			],
+			"properties": {
+				"order": 12,
+				"id": 0,
+				"prevSize": 24,
+				"code": 58883,
+				"name": "keyboard-arrow-down"
+			},
+			"setIdx": 0,
+			"iconIdx": 3
+		}
+	],
+	"height": 1024,
+	"metadata": {
+		"name": "ThriveCleverWidgets"
+	},
+	"preferences": {
+		"showGlyphs": true,
+		"showQuickUse": true,
+		"showQuickUse2": true,
+		"showSVGs": true,
+		"fontPref": {
+			"prefix": "tcw-icon-",
+			"metadata": {
+				"fontFamily": "ThriveCleverWidgets",
+				"majorVersion": 1,
+				"minorVersion": 0
+			},
+			"metrics": {
+				"emSize": 1024,
+				"baseline": 6.25,
+				"whitespace": 50
+			},
+			"showSelector": false,
+			"resetPoint": 58880
+		},
+		"imagePref": {
+			"prefix": "icon-",
+			"png": true,
+			"useClassSelector": true,
+			"color": 4473924,
+			"bgColor": 16777215
+		},
+		"historySize": 100,
+		"showCodes": true
+	}
+}

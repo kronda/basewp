@@ -2,10 +2,7 @@
 
 class Thrive_Leads_Visitors_Status_Tab extends Thrive_Leads_Tab
 {
-    protected $items = array(
-        'logged_in' => 'Logged in',
-        'logged_out' => 'Logged out'
-    );
+    protected $items;
 
     /**
      * Specific tab has to implement this function which transforms
@@ -45,6 +42,10 @@ class Thrive_Leads_Visitors_Status_Tab extends Thrive_Leads_Tab
      */
     protected function initItems()
     {
+        $this->items = array(
+            'logged_in' => __('Logged in', 'thrive-leads'),
+            'logged_out' => __('Logged out', 'thrive-leads')
+        );
         return $this;
     }
 

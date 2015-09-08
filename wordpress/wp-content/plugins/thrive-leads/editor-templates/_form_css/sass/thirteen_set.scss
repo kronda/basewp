@@ -4,6 +4,17 @@
   font-family: 'Source Sans Pro', sans-serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 @font-face {
   font-family: 'tve-leads-thirteen-set-icons';
   src: url('fonts/thirteen_set/thirteen_set_icons.eot?kbj5hd');
@@ -42,6 +53,7 @@ $black: #000;
 
 #tve_thirteen_set {
   [class*='thirteen_set'] {
+    @include clearfix();
     .tve-screen-filler-close {
       @include sourcesans();
       border-radius: 50%;
@@ -244,7 +256,7 @@ $black: #000;
         box-shadow: 0 1px 5px 0 rgba(#000, .2) inset;
         background: #dee5cf;
         color: #333333;
-      } 
+      }
     }
   }
 }

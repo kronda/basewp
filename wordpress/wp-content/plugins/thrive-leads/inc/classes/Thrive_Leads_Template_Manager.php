@@ -317,7 +317,7 @@ class Thrive_Leads_Template_Manager extends Thrive_Leads_Request_Handler
             $data['states'][$index]['state_key'] = $child_state['key'];
             $data['states'][$index]['state_type'] = $this->type($state_config['tpl']);
 
-            $to_save []= $child_state;
+            $to_save [] = $child_state;
 
         }
 
@@ -466,7 +466,22 @@ class Thrive_Leads_Template_Manager extends Thrive_Leads_Request_Handler
     {
         $only_current_template = (int)$this->param('current_template');
         $form_type = get_post_meta((int)$this->param('post_id'), 'tve_form_type', true);
-        $form_type = self::tpl_type_map($form_type);
+
+        //for two step lightbox we have two types of forms: lightbox and screenfiller
+        if ($form_type == 'two_step_lightbox') {
+            $variation_key = (int)$this->param('_key');
+            $variation = tve_leads_get_form_variation(null, $variation_key);
+            //if the current variation is the default one, then we display both screen filler and lightbox saved templates
+            if ($variation['parent_id'] == 0) {
+                $form_type = array('screen_filler', 'lightbox');
+            } else {
+                //if this is a secondary state, we display only the templates that are the same type as the parrent
+                $parent_variation = tve_leads_get_form_variation(null, $variation['parent_id']);
+                $form_type = array($this->type($parent_variation));
+            }
+        } else {
+            $form_type = array(self::tpl_type_map($form_type));
+        }
 
         $templates = get_option(self::OPTION_TPL_META);
         $templates = empty($templates) ? array() : array_reverse($templates, true); // order by date DESC
@@ -481,7 +496,7 @@ class Thrive_Leads_Template_Manager extends Thrive_Leads_Request_Handler
 
         foreach ($templates as $index => $template) {
             /* make sure we only load the same type, e.g. ribbon */
-            if ($form_type != $this->type($template)) {
+            if (!in_array($this->type($template), $form_type)) {
                 continue;
             }
 
@@ -543,7 +558,7 @@ class Thrive_Leads_Template_Manager extends Thrive_Leads_Request_Handler
      */
     public function api_delete()
     {
-        $tpl_index = (int) str_replace('user-saved-template-', '', $this->param('tpl'));
+        $tpl_index = (int)str_replace('user-saved-template-', '', $this->param('tpl'));
 
         $contents = get_option(self::OPTION_TPL_CONTENT);
         $meta = get_option(self::OPTION_TPL_META);

@@ -9,14 +9,7 @@ class Thrive_Leads_Other_Screens_Tab extends Thrive_Leads_Tab implements Thrive_
      * Predefined screens
      * @var array
      */
-    protected $items = array(
-        'front_page' => 'Front Page',
-        'all_post' => 'All Posts',
-        'all_page' => 'All Pages',
-        'blog_index' => 'Blog Index',
-        '404_error_page' => '404 Error Page',
-        'search_page' => 'Search page'
-    );
+    protected $items;
 
     protected function matchItems()
     {
@@ -52,6 +45,14 @@ class Thrive_Leads_Other_Screens_Tab extends Thrive_Leads_Tab implements Thrive_
      */
     protected function initItems()
     {
+        $this->items = array(
+            'front_page' => __('Front Page', 'thrive-leads'),
+            'all_post' => __('All Posts', 'thrive-leads'),
+            'all_page' => __('All Pages', 'thrive-leads'),
+            'blog_index' => __('Blog Index', 'thrive-leads'),
+            '404_error_page' => __('404 Error Page', 'thrive-leads'),
+            'search_page' => __('Search page', 'thrive-leads')
+        );
         return $this;
     }
 

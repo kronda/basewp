@@ -1,0 +1,2137 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Thrive Leads\n"
+"POT-Creation-Date: 2015-08-17 16:33+0300\n"
+"PO-Revision-Date: 2015-08-17 16:34+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: .git\n"
+"X-Poedit-SearchPathExcluded-1: .idea\n"
+"X-Poedit-SearchPathExcluded-2: node_modules\n"
+
+#: admin/controllers/Thrive_Leads_Ajax_Controller.php:247
+msgid "Error on resetting form type statistics"
+msgstr ""
+
+#: admin/controllers/Thrive_Leads_Ajax_Controller.php:361
+msgid "here"
+msgstr ""
+
+#: admin/controllers/Thrive_Leads_Ajax_Controller.php:362
+#, php-format
+msgid ""
+"A test is currently running at this level. You cannot make any modifications "
+"to this form until the test is completed. Click %s to view the test"
+msgstr ""
+
+#: admin/controllers/Thrive_Leads_Ajax_Controller.php:388
+msgid "Copy of"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:22
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:76
+msgid "Basic Settings"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:23
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:77
+msgid "Categories etc."
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:24
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:78
+msgid "Posts"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:25
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:79
+msgid "Pages"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:26
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:80
+msgid "Page Templates"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:27
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:81
+msgid "Post Types"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:28
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:82
+msgid "Archive Pages"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:29
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:83
+msgid "Other"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:154
+msgid "Empty values"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Other_Screens_Tab.php:49
+msgid "Front Page"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Other_Screens_Tab.php:50
+msgid "All Posts"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Other_Screens_Tab.php:51
+msgid "All Pages"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Other_Screens_Tab.php:52
+msgid "Blog Index"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Other_Screens_Tab.php:53
+msgid "404 Error Page"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Other_Screens_Tab.php:54
+msgid "Search page"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Page_Templates_Tab.php:36
+msgid "Default"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Visitors_Status_Tab.php:46
+msgid "Logged in"
+msgstr ""
+
+#: admin/inc/classes/display_settings/Thrive_Leads_Visitors_Status_Tab.php:47
+msgid "Logged out"
+msgstr ""
+
+#: admin/inc/translations.php:9 admin/inc/translations.php:34
+#: admin/views/template/groups/item.phtml:17
+msgid "Display Settings"
+msgstr ""
+
+#: admin/inc/translations.php:10
+msgid "Please select a name for your template !"
+msgstr ""
+
+#: admin/inc/translations.php:12 admin/views/template/form-type/edit.phtml:46
+#: admin/views/template/shortcode/edit.phtml:12
+#: admin/views/template/two-step-lightbox/edit.phtml:12
+msgid "Add New Form"
+msgstr ""
+
+#: admin/inc/translations.php:13 admin/views/dashboard.php:130
+msgid "Add New Lead Shortcode"
+msgstr ""
+
+#: admin/inc/translations.php:14
+msgid "Add New Lead 2 Step Lightbox"
+msgstr ""
+
+#: admin/inc/translations.php:15 admin/views/dashboard.php:103
+msgid "Add New Lead Group"
+msgstr ""
+
+#: admin/inc/translations.php:16
+msgid "Re-add Form"
+msgstr ""
+
+#: admin/inc/translations.php:17
+msgid "Archive Form"
+msgstr ""
+
+#: admin/inc/translations.php:18
+#: admin/views/template/lightbox/delete-form.phtml:9
+msgid "Delete Form"
+msgstr ""
+
+#: admin/inc/translations.php:19
+msgid "Start New A/B Test"
+msgstr ""
+
+#: admin/inc/translations.php:20
+msgid "Start New Test of Opt-In Form Types"
+msgstr ""
+
+#: admin/inc/translations.php:21
+msgid "Test title is required"
+msgstr ""
+
+#: admin/inc/translations.php:22
+msgid "Auto win minimum conversions is required"
+msgstr ""
+
+#: admin/inc/translations.php:23
+msgid "Auto win minimum duration is required"
+msgstr ""
+
+#: admin/inc/translations.php:24
+msgid "Auto win chance to beat original is required"
+msgstr ""
+
+#: admin/inc/translations.php:25
+#: admin/views/template/lightbox/variation-test.phtml:20
+msgid "Automatic Winner Settings"
+msgstr ""
+
+#: admin/inc/translations.php:26
+msgid "This value must be a positive integer number!"
+msgstr ""
+
+#: admin/inc/translations.php:27
+msgid "This value must be a positive value lower than 100!"
+msgstr ""
+
+#: admin/inc/translations.php:28
+msgid "Loading..."
+msgstr ""
+
+#: admin/inc/translations.php:29
+msgid "Choose Winner"
+msgstr ""
+
+#: admin/inc/translations.php:30
+msgid "Minimum two form types are required to be selected to perform a test"
+msgstr ""
+
+#: admin/inc/translations.php:31
+msgid "Reset Form Statistics"
+msgstr ""
+
+#: admin/inc/translations.php:32 admin/views/trigger_settings.php:11
+msgid "Trigger Settings"
+msgstr ""
+
+#: admin/inc/translations.php:33 admin/views/position_settings.php:1
+msgid "Position Settings"
+msgstr ""
+
+#: admin/inc/translations.php:35
+msgid "Animation Settings"
+msgstr ""
+
+#: admin/inc/translations.php:36
+msgid "Lock Display Settings"
+msgstr ""
+
+#: admin/inc/translations.php:37
+msgid "Display Settings Template Loaded"
+msgstr ""
+
+#: admin/inc/translations.php:38
+msgid "Display Settings Template Saved"
+msgstr ""
+
+#: admin/inc/translations.php:39
+msgid ""
+"An unexpected error occurred. Please try again and, if this still happens, "
+"try reloading the page."
+msgstr ""
+
+#: admin/inc/translations.php:40
+msgid "Copied"
+msgstr ""
+
+#: admin/inc/translations.php:41 admin/inc/translations.php:42
+#: admin/inc/translations.php:43 admin/inc/translations.php:44
+msgid ""
+"You have successfully selected a winner. It is now being show as the default "
+"form. All non-winning forms have been added to the \"Archived Forms\" "
+"section at the bottom."
+msgstr ""
+
+#: admin/inc/translations.php:55
+msgid "Creating Forms"
+msgstr ""
+
+#: admin/inc/translations.php:60 admin/views/dashboard.php:101
+#: admin/views/reporting.php:58
+msgid "Lead Groups"
+msgstr ""
+
+#: admin/inc/translations.php:65 admin/inc/translations.php:70
+#: admin/views/dashboard.php:128
+msgid "Lead Shortcodes"
+msgstr ""
+
+#: admin/inc/translations.php:75
+msgid "Trigger settings"
+msgstr ""
+
+#: admin/inc/translations.php:80
+msgid "Testing Form Variations"
+msgstr ""
+
+#: admin/inc/translations.php:85
+msgid "Testing Opt-In Form Types"
+msgstr ""
+
+#: admin/inc/translations.php:90
+msgid "Group settings"
+msgstr ""
+
+#: admin/start.php:43
+msgid ""
+"Current version of Thrive Leads is not compatible with the current version "
+"of Thrive Content Builder. Please update both plugins to the latest versions."
+msgstr ""
+
+#: admin/start.php:46 admin/views/tcb_version_incompatible.php:17
+msgid "Manage plugins"
+msgstr ""
+
+#: admin/start.php:357
+msgid "API"
+msgstr ""
+
+#: admin/views/dashboard.php:22
+msgid "Settings"
+msgstr ""
+
+#: admin/views/dashboard.php:27 editor-templates/slide_in/eight_set.php:64
+#: editor-templates/slide_in/five_set.php:59
+#: editor-templates/slide_in/four_set_v1.php:45
+#: editor-templates/slide_in/four_set_v2.php:34
+#: editor-templates/slide_in/one_set_v1.php:65
+#: editor-templates/slide_in/one_set_v2.php:42
+#: editor-templates/slide_in/seven_set_v1.php:72
+#: editor-templates/slide_in/seven_set_v2.php:64
+#: editor-templates/slide_in/six_set.php:55
+#: editor-templates/slide_in/three_set.php:64
+#: editor-templates/slide_in/two_set.php:50
+msgid "Close"
+msgstr ""
+
+#: admin/views/dashboard.php:29
+msgid "General Settings"
+msgstr ""
+
+#: admin/views/dashboard.php:33
+msgid "Lazy load forms"
+msgstr ""
+
+#: admin/views/dashboard.php:44
+msgid ""
+"Using lazy loading can speed up the loading of your page and ensure "
+"compatibility with the various WordPress caching plugins such as W3 Total "
+"Cache, WP Super Cache and WP Rocket. If set to Off while caching plugins are "
+"enabled, tracking and conversions will not be recorded correctly"
+msgstr ""
+
+#: admin/views/dashboard.php:52
+msgid "Today's Summary"
+msgstr ""
+
+#: admin/views/dashboard.php:59
+msgid "We've detected that your Thrive Leads database could be optimized"
+msgstr ""
+
+#: admin/views/dashboard.php:60
+msgid "click here to optimize it"
+msgstr ""
+
+#: admin/views/dashboard.php:61
+msgid ""
+"This will clear some old data that it not used anymore, and free up database "
+"space."
+msgstr ""
+
+#: admin/views/dashboard.php:73 admin/views/dashboard.php:80
+#: admin/views/dashboard.php:88
+msgid "View More"
+msgstr ""
+
+#: admin/views/dashboard.php:87 admin/views/dashboard.php:111
+#: admin/views/dashboard.php:138 admin/views/dashboard.php:166
+#: inc/data.php:1554 inc/data.php:1609 inc/data.php:1624
+#: admin/views/template/form-type/edit.phtml:59
+#: admin/views/template/form-type/edit.phtml:128
+#: admin/views/template/shortcode/edit.phtml:26
+#: admin/views/template/shortcode/edit.phtml:74
+#: admin/views/template/tests/view.phtml:58
+#: admin/views/template/two-step-lightbox/edit.phtml:26
+#: admin/views/template/two-step-lightbox/edit.phtml:74
+msgid "Conversion Rate"
+msgstr ""
+
+#: admin/views/dashboard.php:93
+msgid ""
+"In this area, a daily snapshot will be displayed. Stats will be gathered "
+"automatically as soon as you create and publish at least one form using the "
+"options below."
+msgstr ""
+
+#: admin/views/dashboard.php:104 admin/views/dashboard.php:131
+#: admin/views/dashboard.php:157
+msgid "Add New"
+msgstr ""
+
+#: admin/views/dashboard.php:109 admin/views/dashboard.php:136
+#: admin/views/dashboard.php:164 admin/views/template/form-type/edit.phtml:57
+#: admin/views/template/form-type/edit.phtml:126
+#: admin/views/template/lightbox/stop-variation-test.phtml:8
+#: admin/views/template/shortcode/edit.phtml:24
+#: admin/views/template/shortcode/edit.phtml:72
+#: admin/views/template/tests/view.phtml:56
+#: admin/views/template/two-step-lightbox/edit.phtml:24
+#: admin/views/template/two-step-lightbox/edit.phtml:72
+msgid "Form Impressions"
+msgstr ""
+
+#: admin/views/dashboard.php:110 admin/views/dashboard.php:137
+#: admin/views/dashboard.php:165 inc/data.php:1264
+#: admin/views/template/form-type/edit.phtml:58
+#: admin/views/template/form-type/edit.phtml:127
+#: admin/views/template/lightbox/stop-variation-test.phtml:9
+#: admin/views/template/reporting/lead-referral-report/list.phtml:5
+#: admin/views/template/reporting/lead-tracking-report/list.phtml:7
+#: admin/views/template/shortcode/edit.phtml:25
+#: admin/views/template/shortcode/edit.phtml:73
+#: admin/views/template/tests/view.phtml:57
+#: admin/views/template/two-step-lightbox/edit.phtml:25
+#: admin/views/template/two-step-lightbox/edit.phtml:73
+msgid "Conversions"
+msgstr ""
+
+#: admin/views/dashboard.php:112
+msgid "Display On Mobile"
+msgstr ""
+
+#: admin/views/dashboard.php:113
+msgid "Display Status"
+msgstr ""
+
+#: admin/views/dashboard.php:120
+msgid ""
+"You don't have any Lead Groups created yet. Click the 'Add new' button to "
+"create one."
+msgstr ""
+
+#: admin/views/dashboard.php:139
+msgid "Content Locking"
+msgstr ""
+
+#: admin/views/dashboard.php:146
+msgid ""
+"You don't have any Lead Shortcodes created yet. Click the 'Add new' button "
+"to create one."
+msgstr ""
+
+#: admin/views/dashboard.php:154 admin/views/reporting.php:78
+msgid "2 Step Lightboxes"
+msgstr ""
+
+#: admin/views/dashboard.php:156
+msgid "Add New 2 Step Lightbox"
+msgstr ""
+
+#: admin/views/dashboard.php:173
+msgid ""
+"You don't have any 2 Step Lightboxes created yet. Click the 'Add new' button "
+"to create one."
+msgstr ""
+
+#: admin/views/license_inactive.php:12
+msgid "You need to"
+msgstr ""
+
+#: admin/views/license_inactive.php:14
+msgid "activate your license"
+msgstr ""
+
+#: admin/views/license_inactive.php:15
+msgid "before you can use the Thrive Leads plugin!"
+msgstr ""
+
+#: admin/views/position_settings.php:4
+msgid "This setting determines the position of the \""
+msgstr ""
+
+#: admin/views/position_settings.php:7
+msgid " This type of form will be displayed only on singular pages!"
+msgstr ""
+
+#: admin/views/position_settings.php:23
+#: admin/views/template/groups/settings/group_settings.phtml:56
+#: admin/views/template/lightbox/add-form-variation.phtml:9
+#: admin/views/template/lightbox/add-group.phtml:9
+#: admin/views/template/lightbox/add-shortcode.phtml:9
+#: admin/views/template/lightbox/add-two-step-lightbox.phtml:9
+#: admin/views/template/lightbox/animation-settings.phtml:23
+#: admin/views/template/lightbox/archive-form-variation.phtml:7
+#: admin/views/template/lightbox/delete-form.phtml:7
+#: admin/views/template/lightbox/delete-group.phtml:7
+#: admin/views/template/lightbox/delete-shortcode.phtml:7
+#: admin/views/template/lightbox/delete-two-step-lightbox.phtml:7
+#: admin/views/template/lightbox/display-frequency-settings.phtml:22
+#: admin/views/template/lightbox/lock-display-settings.phtml:24
+#: admin/views/template/lightbox/reset-form-stats.phtml:10
+#: admin/views/template/lightbox/reset-form-type-stats.phtml:9
+#: admin/views/template/lightbox/stop-variation-test.phtml:20
+#: admin/views/template/lightbox/variation-test.phtml:62
+msgid "Cancel"
+msgstr ""
+
+#: admin/views/position_settings.php:25 admin/views/trigger_settings.php:29
+#: admin/views/template/lightbox/animation-settings.phtml:25
+#: admin/views/template/lightbox/display-frequency-settings.phtml:24
+#: admin/views/template/lightbox/lock-display-settings.phtml:26
+msgid "Save"
+msgstr ""
+
+#: admin/views/reporting.php:10
+msgid "Reporting"
+msgstr ""
+
+#: admin/views/reporting.php:19
+msgid "Show report"
+msgstr ""
+
+#: admin/views/reporting.php:22
+msgid "Conversion Report"
+msgstr ""
+
+#: admin/views/reporting.php:24
+msgid "Conversion Rate Report"
+msgstr ""
+
+#: admin/views/reporting.php:26
+msgid "Cumulative Conversions Report"
+msgstr ""
+
+#: admin/views/reporting.php:28
+msgid "Comparison Report"
+msgstr ""
+
+#: admin/views/reporting.php:30
+msgid "List Growth"
+msgstr ""
+
+#: admin/views/reporting.php:32
+msgid "Cumulative List Growth"
+msgstr ""
+
+#: admin/views/reporting.php:34
+msgid "Lead Referral Report"
+msgstr ""
+
+#: admin/views/reporting.php:36
+msgid "Lead Tracking Report"
+msgstr ""
+
+#: admin/views/reporting.php:43 admin/views/template/form-type/edit.phtml:107
+#: admin/views/template/groups/item.phtml:45
+#: admin/views/template/groups/item.phtml:67
+#: admin/views/template/shortcode/edit.phtml:55
+#: admin/views/template/tests/view.phtml:85
+#: admin/views/template/two-step-lightbox/edit.phtml:55
+msgid "Start Date"
+msgstr ""
+
+#: admin/views/reporting.php:49 admin/views/template/form-type/edit.phtml:108
+#: admin/views/template/groups/item.phtml:68
+#: admin/views/template/shortcode/edit.phtml:56
+#: admin/views/template/tests/view.phtml:86
+#: admin/views/template/two-step-lightbox/edit.phtml:56
+msgid "End Date"
+msgstr ""
+
+#: admin/views/reporting.php:55
+#: admin/views/template/reporting/lead-tracking-report/list.phtml:4
+msgid "Source"
+msgstr ""
+
+#: admin/views/reporting.php:57
+msgid "All"
+msgstr ""
+
+#: admin/views/reporting.php:68
+msgid "Shortcodes"
+msgstr ""
+
+#: admin/views/reporting.php:93 admin/views/template/tests/view.phtml:20
+msgid "Graph Interval"
+msgstr ""
+
+#: admin/views/reporting.php:95 admin/views/template/tests/view.phtml:22
+msgid "Daily"
+msgstr ""
+
+#: admin/views/reporting.php:96 admin/views/template/tests/view.phtml:23
+msgid "Weekly"
+msgstr ""
+
+#: admin/views/reporting.php:97 admin/views/template/tests/view.phtml:24
+msgid "Monthly"
+msgstr ""
+
+#: admin/views/reporting.php:108
+msgid "No Report Data (Yet)"
+msgstr ""
+
+#: admin/views/reporting.php:111
+msgid ""
+"Here you will see a graph with the report data from all of your forms. "
+"Currently there is no data to display yet."
+msgstr ""
+
+#: admin/views/tcb_version_incompatible.php:12
+msgid ""
+"It looks like you have Thrive Content Builder installed, but it's not "
+"compatible with this version of Thrive Leads. The Thrive Leads plugin uses "
+"Thrive Content Builder to edit various pieces of content.\n"
+"To be able to use this feature, please make sure you have the latest "
+"versions for both plugins by clicking on the following link and checking for "
+"updates:"
+msgstr ""
+
+#: admin/views/trigger_settings.php:2
+msgid "No form could be found. Please try again"
+msgstr ""
+
+#: admin/views/trigger_settings.php:14
+#: admin/views/template/form-type/edit.phtml:60
+#: admin/views/template/form-type/edit.phtml:129
+#: admin/views/template/lightbox/stop-variation-test.phtml:13
+#: admin/views/template/shortcode/edit.phtml:27
+#: admin/views/template/shortcode/edit.phtml:75
+#: admin/views/template/two-step-lightbox/edit.phtml:27
+#: admin/views/template/two-step-lightbox/edit.phtml:75
+msgid "Trigger"
+msgstr ""
+
+#: editor-layouts/_form_states.php:24
+msgid "Minimize"
+msgstr ""
+
+#: editor-layouts/_form_states.php:39
+msgid "Duplicate state"
+msgstr ""
+
+#: editor-layouts/_form_states.php:46
+msgid "Delete state"
+msgstr ""
+
+#: editor-layouts/_form_states.php:56
+#: admin/views/template/form-type/item.phtml:48
+#: admin/views/template/form-type/item.phtml:49
+msgid "Add"
+msgstr ""
+
+#: editor-layouts/_form_states.php:59
+msgid "New State"
+msgstr ""
+
+#: editor-layouts/_form_states.php:60 inc/data.php:2158
+msgid "Already Subscribed"
+msgstr ""
+
+#: editor-layouts/_form_states.php:62 inc/data.php:2157 inc/helpers.php:34
+msgid "Lightbox"
+msgstr ""
+
+#: editor-layouts/_form_states.php:80
+msgid "Restore"
+msgstr ""
+
+#: editor-layouts/_form_states.php:86
+msgid "States"
+msgstr ""
+
+#: editor-layouts/element-menus/_background_controls.php:7
+msgid "Background image..."
+msgstr ""
+
+#: editor-layouts/element-menus/_background_controls.php:12
+msgid "Background pattern"
+msgstr ""
+
+#: editor-layouts/element-menus/_background_controls.php:34
+msgid "Clear background color"
+msgstr ""
+
+#: editor-layouts/element-menus/_background_controls.php:37
+msgid "Clear background pattern / image"
+msgstr ""
+
+#: editor-layouts/element-menus/lead_form.php:7
+msgid "Element options"
+msgstr ""
+
+#: editor-layouts/element-menus/ribbon.php:2
+msgid "Ribbon general options"
+msgstr ""
+
+#: editor-layouts/element-menus/ribbon.php:38
+#: editor-layouts/element-menus/screen_filler.php:38
+#: editor-layouts/element-menus/slide_in.php:11
+msgid "Maximum width"
+msgstr ""
+
+#: editor-layouts/element-menus/screen_filler.php:2
+msgid "Screen Filler general options"
+msgstr ""
+
+#: editor-layouts/element-menus/side-menu/settings.php:6
+msgid "Thrive Leads Settings"
+msgstr ""
+
+#: editor-layouts/element-menus/side-menu/settings.php:22
+msgid "Choose Opt-in Template"
+msgstr ""
+
+#: editor-layouts/element-menus/side-menu/settings.php:27
+#, php-format
+msgid "%s Settings"
+msgstr ""
+
+#: editor-layouts/element-menus/side-menu/settings.php:31
+msgid "Reset To Default Content"
+msgstr ""
+
+#: editor-layouts/element-menus/slide_in.php:2
+msgid "Slide In general options"
+msgstr ""
+
+#: editor-layouts/element-menus/widget.php:2
+msgid "Widget general options"
+msgstr ""
+
+#: editor-layouts/in_content.php:49
+msgid "This is a Form Design type called \"In content\"."
+msgstr ""
+
+#: editor-layouts/in_content.php:50
+msgid "It is an Opt-In form that appears in the content of a post."
+msgstr ""
+
+#: editor-layouts/in_content.php:51 editor-layouts/shortcode.php:50
+msgid ""
+"Note that this form doesn't have any width settings. It will expand to the "
+"full width of the content area of your theme"
+msgstr ""
+
+#: editor-layouts/ribbon.php:49
+msgid ""
+"This is a Form Design type called \"Ribbon\". It is displayed on the top of "
+"the page and it's usually a long horizontal bar"
+msgstr ""
+
+#: editor-layouts/ribbon.php:50
+msgid ""
+"The content of the page will be scrolled down with the same amount as the "
+"ribbon's height"
+msgstr ""
+
+#: editor-layouts/ribbon.php:51
+msgid "The ribbon will always stay on top, even when the user scrolls the page"
+msgstr ""
+
+#: editor-layouts/shortcode.php:49
+msgid "Currently displaying the Shortcode called "
+msgstr ""
+
+#: editor-layouts/slide_in.php:37
+msgid "This is a Form Design type called \"Slide In\"."
+msgstr ""
+
+#: editor-layouts/slide_in.php:38
+msgid ""
+"It is simply a form that slides in from the edge of the content and sits on "
+"the edge of the screen, usually in the bottom right, but can be anywhere."
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:11 editor-lightbox/lb_templates.php:15
+msgid "Invalid data"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:50
+#, php-format
+msgid "Choose the %s template you would like to use for this form"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:57
+msgid "Warning - your changes will be lost"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:60
+msgid ""
+"If you change your the template without saving the current revision, you "
+"won't be able to revert back to it later."
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:64
+msgid "Template Name"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:68
+msgid "Save As Template"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:77
+msgid "Quick filter..."
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:83
+msgid "Opt In Templates"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:86
+#, php-format
+msgid "Your Saved %s Templates"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:90
+msgid "Multi-step Templates"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:112
+msgid "Delete template"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:113
+msgid "Choose from your saved templates"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:121
+msgid "Show only saved versions of the current template"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:156
+msgid "Choose template"
+msgstr ""
+
+#: editor-lightbox/lb_templates.php:162
+msgid "Reset contents"
+msgstr ""
+
+#: inc/classes/Thrive_Leads_Template_Manager.php:513
+msgid "No saved templates found"
+msgstr ""
+
+#: inc/classes/Thrive_Leads_Template_Manager.php:551
+msgid "Template saved."
+msgstr ""
+
+#: inc/classes/thrive_leads_widget.php:12
+msgid ""
+"Simple widget to control the placement of thrive leads forms in the widget "
+"areas."
+msgstr ""
+
+#: inc/classes/thrive_leads_widget.php:13
+msgid "Thrive Leads Widget"
+msgstr ""
+
+#: inc/classes/thrive_leads_widget.php:95
+msgid "Chose Lead Group:"
+msgstr ""
+
+#: inc/data.php:66 inc/data.php:79 inc/data.php:143
+msgid "No"
+msgstr ""
+
+#: inc/data.php:68 inc/data.php:81 inc/data.php:145
+msgid "Yes"
+msgstr ""
+
+#: inc/data.php:70 inc/data.php:83 inc/data.php:147
+msgid "Custom"
+msgstr ""
+
+#: inc/data.php:1261
+msgid "Graph to show lead generation conversions over time"
+msgstr ""
+
+#: inc/data.php:1293
+msgid "Cumulative Lead Growth"
+msgstr ""
+
+#: inc/data.php:1293
+msgid "Lead Growth"
+msgstr ""
+
+#: inc/data.php:1307
+msgid "Leads"
+msgstr ""
+
+#: inc/data.php:1451
+msgid "Graph to show cumulative lead generation conversions by date"
+msgstr ""
+
+#: inc/data.php:1454
+msgid "Signups"
+msgstr ""
+
+#: inc/data.php:1551 inc/data.php:1621
+msgid "Graph to show Lead Generation conversions by date"
+msgstr ""
+
+#: inc/data.php:1748
+msgid "Pie Chart to show relative conversion source"
+msgstr ""
+
+#: inc/data.php:2159
+msgid "State"
+msgstr ""
+
+#: inc/data.php:2166
+msgid "Default State"
+msgstr ""
+
+#: inc/helpers.php:28
+msgid "Ribbon"
+msgstr ""
+
+#: inc/helpers.php:40
+msgid "Widget"
+msgstr ""
+
+#: inc/helpers.php:45
+msgid "Post Footer"
+msgstr ""
+
+#: inc/helpers.php:51
+msgid "Slide in"
+msgstr ""
+
+#: inc/helpers.php:57
+msgid "In content"
+msgstr ""
+
+#: inc/helpers.php:63
+msgid "Screen filler Lightbox"
+msgstr ""
+
+#: inc/helpers.php:73
+msgid "PHP Insert"
+msgstr ""
+
+#: inc/helpers.php:81
+msgid "Shortcode"
+msgstr ""
+
+#: inc/helpers.php:88
+msgid "2 Step Lightbox"
+msgstr ""
+
+#: inc/helpers.php:281 inc/helpers.php:290
+#: admin/views/template/form-type/edit.phtml:65
+#: admin/views/template/form-type/edit.phtml:134
+msgid "Position"
+msgstr ""
+
+#: inc/helpers.php:283 inc/helpers.php:913
+msgid "Bottom Left"
+msgstr ""
+
+#: inc/helpers.php:284 inc/helpers.php:911
+msgid "Bottom Right"
+msgstr ""
+
+#: inc/helpers.php:285 inc/helpers.php:915
+msgid "Top Left"
+msgstr ""
+
+#: inc/helpers.php:286 inc/helpers.php:917
+msgid "Top Right"
+msgstr ""
+
+#: inc/helpers.php:292 inc/helpers.php:919
+msgid "Top"
+msgstr ""
+
+#: inc/helpers.php:293 inc/helpers.php:921
+msgid "Bottom"
+msgstr ""
+
+#: inc/helpers.php:297
+msgid "Show after how many paragraphs?"
+msgstr ""
+
+#: inc/helpers.php:459
+msgid "Invalid shortcode parameters"
+msgstr ""
+
+#: inc/helpers.php:625
+msgid "Invalid shortcode attributes"
+msgstr ""
+
+#: inc/helpers.php:638
+msgid "No form found"
+msgstr ""
+
+#: inc/helpers.php:897
+msgid "All the time"
+msgstr ""
+
+#: inc/helpers.php:925
+msgid "At the beginning of the post"
+msgstr ""
+
+#: inc/helpers.php:927
+msgid "After the first paragraph"
+msgstr ""
+
+#: inc/helpers.php:929
+msgid "After "
+msgstr ""
+
+#: inc/helpers.php:1509
+msgid "There is a problem with this PHP insert: missing both parameters"
+msgstr ""
+
+#: inc/license_activation.php:24
+#, php-format
+msgid ""
+"An error occurred while connecting to the license server. Error: %s. Please "
+"login to thrivethemes.com, report this error message on the forums and we'll "
+"get this sorted for you"
+msgstr ""
+
+#: inc/license_activation.php:34
+#, php-format
+msgid ""
+"An error occurred while receiving the license status. The response was: %s. "
+"Please login to thrivethemes.com, report this error message on the forums "
+"and we'll get this sorted for you."
+msgstr ""
+
+#: inc/license_activation.php:61
+msgid "Thank you - You have successfully validated your license!"
+msgstr ""
+
+#: inc/license_activation.php:75
+msgid ""
+"License activation error - please contact support copying this message and "
+"we'll get this sorted for you."
+msgstr ""
+
+#: inc/license_activation.php:91
+msgid "Validate your License:"
+msgstr ""
+
+#: inc/license_activation.php:95
+msgid "Email Address:"
+msgstr ""
+
+#: inc/license_activation.php:104
+msgid "License Key"
+msgstr ""
+
+#: inc/license_activation.php:115
+msgid "Activate License"
+msgstr ""
+
+#: inc/triggers.php:195
+msgid "Displays immediately on page load"
+msgstr ""
+
+#: inc/triggers.php:200
+msgid "Show on page load"
+msgstr ""
+
+#: inc/triggers.php:229 inc/triggers.php:268 inc/triggers.php:320
+msgid "(exit intent before that)"
+msgstr ""
+
+#: inc/triggers.php:240
+msgid "Show after a certain period of time"
+msgstr ""
+
+#: inc/triggers.php:265
+#, php-format
+msgid "Displays when content scrolled to %s%%"
+msgstr ""
+
+#: inc/triggers.php:279
+msgid "Show when the user scrolls to a percentage of the way down the content"
+msgstr ""
+
+#: inc/triggers.php:317
+msgid "Displays when scrolled at a certain part of the content"
+msgstr ""
+
+#: inc/triggers.php:331
+msgid "Show when the user scrolls to a specific part of the content"
+msgstr ""
+
+#: inc/triggers.php:374
+msgid "Displays on click"
+msgstr ""
+
+#: inc/triggers.php:382
+msgid "Show when the user clicks an element"
+msgstr ""
+
+#: inc/triggers.php:408
+msgid "Displays on exit intent"
+msgstr ""
+
+#: inc/triggers.php:416
+msgid "Show when the user is about to exit the page (exit intent)"
+msgstr ""
+
+#: inc/triggers.php:436
+msgid "Displays when the form enters viewport"
+msgstr ""
+
+#: inc/triggers.php:444
+msgid "Show when the form enters viewport"
+msgstr ""
+
+#: inc/triggers.php:465
+msgid "When user reaches the end of the content"
+msgstr ""
+
+#: inc/triggers.php:473
+msgid "Show when user reaches the end of the content"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_State_Lightbox_Action.php:70
+msgid "Open lightbox state"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_State_Lightbox_Action.php:94
+#: tcb-bridge/tcb_action_hooks.php:1149
+msgid "Switch lightbox state"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_State_Lightbox_Action.php:94
+msgid "Open lightbox state settings"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_State_Lightbox_Action.php:160
+msgid "Edit Lightbox State"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_State_Lightbox_Close_Action.php:45
+msgid "Close current lightbox"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_State_Screen_Filler_Close_Action.php:45
+msgid "Close current screen filler"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_State_Switch_Action.php:43
+msgid "Switch state"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_State_Switch_Action.php:110
+msgid "Edit State"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_Two_Step_Action.php:69
+msgid "Open Thrive Leads 2 Step Lightbox"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_Two_Step_Action.php:114
+msgid "A/B test in progress"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_Two_Step_Action.php:116
+msgid "View test"
+msgstr ""
+
+#: tcb-bridge/event-manager/actions/Thrive_Leads_Two_Step_Action.php:122
+msgid "Edit 2 Step Lightbox"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/lightbox-settings.php:7
+msgid "Thrive Leads 2 Step Lightbox"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/lightbox-settings.php:11
+msgid "Which 2 Step Lightbox should be displayed ?"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/lightbox-settings.php:14
+msgid "Select Lighbox"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/lightbox-settings.php:23
+msgid "Lightbox animation"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/lightbox-settings.php:26
+msgid "Choose a 2 Step Lightbox"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/lightbox-settings.php:29
+msgid ""
+"You cannot change the animation settings, as you currently have an A/B test "
+"running on this lightbox."
+msgstr ""
+
+#: tcb-bridge/event-manager/views/lightbox-settings.php:31
+#, php-format
+msgid "Click %shere%s to view the test (it will open in a new tab)"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/lightbox-settings.php:37
+msgid "You can change the animation from your Thrive Leads Dashboard page."
+msgstr ""
+
+#: tcb-bridge/event-manager/views/lightbox-settings.php:39
+#, php-format
+msgid "Click %shere%s to change the settings (it will open in a new tab)"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/state-lightbox-settings.php:10
+msgid "Which lightbox state should be displayed ?"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/state-lightbox-settings.php:13
+msgid "Select lightbox state"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/state-settings.php:6
+msgid "Switch State Settings"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/state-settings.php:11
+msgid "Which state should be displayed ?"
+msgstr ""
+
+#: tcb-bridge/event-manager/views/state-settings.php:15
+msgid "Select state"
+msgstr ""
+
+#: tcb-bridge/tcb_action_hooks.php:409
+msgid "Please choose a template"
+msgstr ""
+
+#: tcb-bridge/tcb_action_hooks.php:410
+msgid ""
+"Are you sure you want to reset this Form to the default template? This "
+"action cannot be undone"
+msgstr ""
+
+#: tcb-bridge/tcb_action_hooks.php:411
+msgid "Please enter a template name, it will be easier to reload it after."
+msgstr ""
+
+#: tcb-bridge/tcb_action_hooks.php:412
+msgid ""
+"Are you sure you want to delete this saved template? This action cannot be "
+"undone"
+msgstr ""
+
+#: tcb-bridge/tcb_action_hooks.php:413
+msgid "You can only have one Already Subscribed state for a form"
+msgstr ""
+
+#: tcb-bridge/tcb_action_hooks.php:414
+msgid "Are you sure you want to delete this state?"
+msgstr ""
+
+#: tcb-bridge/tcb_action_hooks.php:415
+msgid ""
+"If you choose a multi-step template, ALL CURRENT STATES WILL BE DELETED AND "
+"RE-CREATED. Do you want to continue?"
+msgstr ""
+
+#: admin/views/template/form-type/checkbox.phtml:10
+msgid ""
+"This form type has no design, please add one before including it into a test."
+msgstr ""
+
+#: admin/views/template/form-type/checkbox.phtml:11
+#: admin/views/template/form-type/checkbox.phtml:24
+msgid "Click here to learn more"
+msgstr ""
+
+#: admin/views/template/form-type/checkbox.phtml:23
+msgid ""
+"This form type cannot be chosen because you currently have a split test "
+"running."
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:10
+msgid "Your forms will appear here."
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:11
+#: admin/views/template/lightbox/add-form-variation.phtml:11
+msgid "Create Form"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:13
+#: admin/views/template/form-type/edit.phtml:150
+#: admin/views/template/tests/view.phtml:97
+msgid "Back To Dashboard"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:24
+#: admin/views/template/form-type/edit.phtml:35
+#: admin/views/template/lightbox/php-insert-code.phtml:12
+#: admin/views/template/shortcode/item.phtml:20
+#: admin/views/template/two-step-lightbox/item.phtml:16
+msgid "Copy"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:28
+#: admin/views/template/form-type/item.phtml:8
+#: admin/views/template/shortcode/item.phtml:7
+msgid "Get PHP Code"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:51
+#: admin/views/template/shortcode/edit.phtml:16
+#: admin/views/template/two-step-lightbox/edit.phtml:16
+msgid "Forms"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:52
+#: admin/views/template/shortcode/edit.phtml:18
+#: admin/views/template/two-step-lightbox/edit.phtml:18
+msgid ""
+"Here you can create the designs for your opt in form. You can create as many "
+"forms as you like, and the traffic will be distributed randomly to each of "
+"them."
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:62
+#: admin/views/template/form-type/edit.phtml:131
+msgid "Display Frequency"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:68
+#: admin/views/template/form-type/edit.phtml:137
+#: admin/views/template/lightbox/animation-settings.phtml:6
+#: admin/views/template/tests/item.phtml:38
+msgid "Animation"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:71
+#: admin/views/template/form-type/edit.phtml:140
+msgid "Lock Mode"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:85
+#: admin/views/template/form-type/edit.phtml:86
+#: admin/views/template/shortcode/edit.phtml:37
+#: admin/views/template/shortcode/edit.phtml:38
+#: admin/views/template/two-step-lightbox/edit.phtml:37
+#: admin/views/template/two-step-lightbox/edit.phtml:38
+msgid "Start A/B Test"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:91
+#: admin/views/template/shortcode/edit.phtml:45
+#: admin/views/template/two-step-lightbox/edit.phtml:45
+msgid "You don't have any active forms"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:93
+#: admin/views/template/shortcode/edit.phtml:46
+#: admin/views/template/two-step-lightbox/edit.phtml:46
+msgid "click here to create one"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:97
+#: admin/views/template/form-type/edit.phtml:117
+#: admin/views/template/groups/item.phtml:34
+#: admin/views/template/groups/item.phtml:56
+#: admin/views/template/tests/view.phtml:75
+msgid "Click to expand"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:99
+#: admin/views/template/shortcode/edit.phtml:49
+#: admin/views/template/tests/view.phtml:77
+#: admin/views/template/two-step-lightbox/edit.phtml:49
+msgid "Completed Tests"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:105
+#: admin/views/template/groups/item.phtml:42
+#: admin/views/template/groups/item.phtml:64
+#: admin/views/template/shortcode/edit.phtml:53
+#: admin/views/template/tests/view.phtml:83
+#: admin/views/template/two-step-lightbox/edit.phtml:53
+msgid "Test Name"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:106
+#: admin/views/template/groups/item.phtml:44
+#: admin/views/template/groups/item.phtml:66
+#: admin/views/template/shortcode/edit.phtml:54
+#: admin/views/template/tests/view.phtml:84
+#: admin/views/template/two-step-lightbox/edit.phtml:54
+msgid "Test Description"
+msgstr ""
+
+#: admin/views/template/form-type/edit.phtml:119
+#: admin/views/template/shortcode/edit.phtml:67
+#: admin/views/template/two-step-lightbox/edit.phtml:67
+msgid "Archived Forms"
+msgstr ""
+
+#: admin/views/template/form-type/item.phtml:5
+#: admin/views/template/shortcode/item.phtml:11
+#: admin/views/template/two-step-lightbox/item.phtml:7
+msgid "(test in progress)"
+msgstr ""
+
+#: admin/views/template/form-type/item.phtml:16
+msgid ""
+"You can't change the 'display on mobile' setting while a test is in progress "
+"in order to protect the integrity of the test!"
+msgstr ""
+
+#: admin/views/template/form-type/item.phtml:24
+msgid ""
+"You can't change the 'display status' setting while a test is in progress in "
+"order to protect the integrity of the test!"
+msgstr ""
+
+#: admin/views/template/form-type/item.phtml:32
+#: admin/views/template/form-type/variation.phtml:90
+#: admin/views/template/shortcode/item.phtml:46
+#: admin/views/template/two-step-lightbox/item.phtml:40
+msgid "Reset Stats"
+msgstr ""
+
+#: admin/views/template/form-type/item.phtml:36
+#: admin/views/template/form-type/item.phtml:37
+#: admin/views/template/shortcode/item.phtml:41
+#: admin/views/template/shortcode/item.phtml:43
+#: admin/views/template/tests/active-test-item.phtml:6
+#: admin/views/template/tests/completed-test-item.phtml:9
+#: admin/views/template/two-step-lightbox/item.phtml:35
+#: admin/views/template/two-step-lightbox/item.phtml:37
+msgid "View Test"
+msgstr ""
+
+#: admin/views/template/form-type/item.phtml:40
+#: admin/views/template/form-type/item.phtml:41
+msgid "Test In Progress"
+msgstr ""
+
+#: admin/views/template/form-type/item.phtml:44
+#: admin/views/template/form-type/item.phtml:45
+#: admin/views/template/shortcode/item.phtml:47
+#: admin/views/template/tests/item.phtml:48
+#: admin/views/template/two-step-lightbox/item.phtml:43
+#: admin/views/template/two-step-lightbox/item.phtml:44
+msgid "Edit"
+msgstr ""
+
+#: admin/views/template/form-type/variation.phtml:6
+msgid "control"
+msgstr ""
+
+#: admin/views/template/form-type/variation.phtml:19
+msgid ""
+"No traffic is currently being sent to this form. Start an A/B Test to start "
+"tracking statistics"
+msgstr ""
+
+#: admin/views/template/form-type/variation.phtml:84
+#: admin/views/template/reporting/conversion-report/item.phtml:10
+#: admin/views/template/tests/item.phtml:43
+#: admin/views/template/tests/item.phtml:44
+msgid "View Form"
+msgstr ""
+
+#: admin/views/template/form-type/variation.phtml:85
+msgid "Re-add"
+msgstr ""
+
+#: admin/views/template/form-type/variation.phtml:86
+#: admin/views/template/shortcode/item.phtml:48
+#: admin/views/template/two-step-lightbox/item.phtml:49
+msgid "Delete"
+msgstr ""
+
+#: admin/views/template/form-type/variation.phtml:88
+msgid "Edit Design"
+msgstr ""
+
+#: admin/views/template/form-type/variation.phtml:89
+msgid "Clone"
+msgstr ""
+
+#: admin/views/template/form-type/variation.phtml:91
+msgid "Archive"
+msgstr ""
+
+#: admin/views/template/groups/item.phtml:16
+msgid "View details"
+msgstr ""
+
+#: admin/views/template/groups/item.phtml:20
+msgid "Delete Group"
+msgstr ""
+
+#: admin/views/template/groups/item.phtml:21
+msgid "Set your targeting options here."
+msgstr ""
+
+#: admin/views/template/groups/item.phtml:28
+msgid "Test types of form against each other"
+msgstr ""
+
+#: admin/views/template/groups/item.phtml:29
+msgid "Test Types Of Form Against Each Other"
+msgstr ""
+
+#: admin/views/template/groups/item.phtml:36
+msgid "Tests Currently In Progress"
+msgstr ""
+
+#: admin/views/template/groups/item.phtml:43
+#: admin/views/template/groups/item.phtml:65
+msgid "Type"
+msgstr ""
+
+#: admin/views/template/groups/item.phtml:52
+msgid "There are no tests currently in progress."
+msgstr ""
+
+#: admin/views/template/groups/item.phtml:58
+msgid "Tests Archives"
+msgstr ""
+
+#: admin/views/template/groups/item.phtml:75
+msgid "There are no archived tests."
+msgstr ""
+
+#: admin/views/template/groups/settings/add_direct_url_form.phtml:2
+msgid "Add new link"
+msgstr ""
+
+#: admin/views/template/groups/settings/add_direct_url_form.phtml:3
+msgid "Add Link"
+msgstr ""
+
+#: admin/views/template/groups/settings/direct_url.phtml:2
+msgid "Remove Link"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:8
+#, php-format
+msgid ""
+"After saving these settings, the cache data from %s plugin will be "
+"automatically cleared (this is required each time you make a change to these "
+"settings)"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:9
+#, php-format
+msgid ""
+"If you have a caching plugin installed (such as %1$sW3 Total Cache%2$s or "
+"%1$sWP Super Cache%2$s), please clear the cache after you change these "
+"settings"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:15
+msgid "Load Saved Options"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:17
+msgid "Current selection"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:22
+msgid "Display Logic"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:25
+msgid "Use this form to set when your forms will be displayed:"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:31
+msgid "Exclusions"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:35
+msgid ""
+"Use this form to set when your forms will not be displayed. This overrides "
+"the display logic above"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:42
+msgid "Save as Template"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:44
+msgid ""
+"You can save the display configuration that you've created if you'd like a "
+"template to re-use with other forms."
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:46
+msgid "Template name"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:47
+msgid "Save Display Template"
+msgstr ""
+
+#: admin/views/template/groups/settings/group_settings.phtml:57
+msgid "Save & Close"
+msgstr ""
+
+#: admin/views/template/groups/settings/posts_filter.phtml:2
+#: admin/views/template/groups/settings/tags_filter.phtml:3
+msgid "Search..."
+msgstr ""
+
+#: admin/views/template/groups/settings/selected_filter.phtml:2
+msgid "Taxonomy:"
+msgstr ""
+
+#: admin/views/template/lightbox/add-form-variation.phtml:1
+msgid ""
+"Give your form a name. This can be used to describe the design of the "
+"specific form that you are going to build, for example \"Orange Variation\""
+msgstr ""
+
+#: admin/views/template/lightbox/add-form-variation.phtml:4
+msgid "Form Name"
+msgstr ""
+
+#: admin/views/template/lightbox/add-group.phtml:1
+msgid ""
+"Give your lead group a name. Usually your lead group would be named after "
+"the promotion that you're running. For instance \"Weight Loss Report\""
+msgstr ""
+
+#: admin/views/template/lightbox/add-group.phtml:4
+msgid "Lead Group Name"
+msgstr ""
+
+#: admin/views/template/lightbox/add-group.phtml:11
+msgid "Add Lead Group"
+msgstr ""
+
+#: admin/views/template/lightbox/add-shortcode.phtml:1
+msgid ""
+"Give your lead shortcode a name. Usually your lead shortcode would be named "
+"after the promotion that you're running. For instance \"Weight Loss Report\""
+msgstr ""
+
+#: admin/views/template/lightbox/add-shortcode.phtml:4
+msgid "Lead Shortcode Name"
+msgstr ""
+
+#: admin/views/template/lightbox/add-shortcode.phtml:11
+msgid "Add Lead Shortcode"
+msgstr ""
+
+#: admin/views/template/lightbox/add-two-step-lightbox.phtml:1
+msgid ""
+"Give your 2 Step Lightbox a name. Usually your 2 Step Lightbox would be "
+"named after the promotion that you're running. For instance \"Weight Loss "
+"Report\""
+msgstr ""
+
+#: admin/views/template/lightbox/add-two-step-lightbox.phtml:4
+msgid "2 Step Lightbox Name"
+msgstr ""
+
+#: admin/views/template/lightbox/add-two-step-lightbox.phtml:11
+msgid "Add 2 Step Lightbox"
+msgstr ""
+
+#: admin/views/template/lightbox/animation-settings.phtml:16
+msgid "Animation preview"
+msgstr ""
+
+#: admin/views/template/lightbox/archive-form-variation.phtml:1
+msgid "Are you sure you want to archive this Form?"
+msgstr ""
+
+#: admin/views/template/lightbox/archive-form-variation.phtml:3
+msgid "This will move the form to the archive"
+msgstr ""
+
+#: admin/views/template/lightbox/archive-form-variation.phtml:9
+msgid "Move to Archive"
+msgstr ""
+
+#: admin/views/template/lightbox/delete-form.phtml:1
+msgid "Warning: You are about to delete Form: "
+msgstr ""
+
+#: admin/views/template/lightbox/delete-form.phtml:3
+msgid ""
+"You will lose the design and all conversion data associated with this form. "
+"This can't be undone. "
+msgstr ""
+
+#: admin/views/template/lightbox/delete-group.phtml:1
+msgid "Warning! You are about to delete Lead Group"
+msgstr ""
+
+#: admin/views/template/lightbox/delete-group.phtml:3
+msgid ""
+"This will delete all forms and statistics in this lead group, and cannot be "
+"reversed"
+msgstr ""
+
+#: admin/views/template/lightbox/delete-group.phtml:9
+msgid "Delete Lead Group"
+msgstr ""
+
+#: admin/views/template/lightbox/delete-shortcode.phtml:1
+msgid "Warning! You are about to delete Lead Shortcode"
+msgstr ""
+
+#: admin/views/template/lightbox/delete-shortcode.phtml:3
+#: admin/views/template/lightbox/delete-two-step-lightbox.phtml:3
+msgid "This will delete all forms and statistics and cannot be reversed"
+msgstr ""
+
+#: admin/views/template/lightbox/delete-shortcode.phtml:9
+msgid "Delete Lead Shortcode"
+msgstr ""
+
+#: admin/views/template/lightbox/delete-two-step-lightbox.phtml:1
+msgid "Warning! You are about to delete 2 Step Lightbox"
+msgstr ""
+
+#: admin/views/template/lightbox/delete-two-step-lightbox.phtml:9
+msgid "Delete 2 Step Lightbox"
+msgstr ""
+
+#: admin/views/template/lightbox/display-frequency-settings.phtml:4
+msgid ""
+"This setting determines how much time it takes before the same visitor will "
+"be shown the same form again"
+msgstr ""
+
+#: admin/views/template/lightbox/display-frequency-settings.phtml:8
+msgid "Show once every*"
+msgstr ""
+
+#: admin/views/template/lightbox/display-frequency-settings.phtml:15
+#: admin/views/template/lightbox/variation-test.phtml:44
+msgid "days"
+msgstr ""
+
+#: admin/views/template/lightbox/display-frequency-settings.phtml:19
+msgid "*If set to zero then the popup will be displayed all the time"
+msgstr ""
+
+#: admin/views/template/lightbox/display-settings-group.phtml:1
+msgid "Display Group Settings"
+msgstr ""
+
+#: admin/views/template/lightbox/edit-variation-test.phtml:2
+#: admin/views/template/lightbox/variation-test.phtml:23
+msgid ""
+"Here you can set the conditions by which a form will be considered the "
+"winner. When a form is considered the winner, the remaining forms will be "
+"archived and all traffic will be sent to the winner"
+msgstr ""
+
+#: admin/views/template/lightbox/edit-variation-test.phtml:5
+#: admin/views/template/lightbox/variation-test.phtml:25
+msgid "Enabled"
+msgstr ""
+
+#: admin/views/template/lightbox/edit-variation-test.phtml:10
+#: admin/views/template/lightbox/variation-test.phtml:31
+msgid "Minimum Conversions"
+msgstr ""
+
+#: admin/views/template/lightbox/edit-variation-test.phtml:17
+#: admin/views/template/lightbox/variation-test.phtml:38
+msgid "Minimum Duration"
+msgstr ""
+
+#: admin/views/template/lightbox/edit-variation-test.phtml:23
+msgid "Days"
+msgstr ""
+
+#: admin/views/template/lightbox/edit-variation-test.phtml:27
+#: admin/views/template/lightbox/stop-variation-test.phtml:12
+#: admin/views/template/lightbox/variation-test.phtml:48
+#: admin/views/template/tests/view.phtml:61
+msgid "Chance To Beat Original"
+msgstr ""
+
+#: admin/views/template/lightbox/edit-variation-test.phtml:33
+msgid "%"
+msgstr ""
+
+#: admin/views/template/lightbox/edit-variation-test.phtml:40
+msgid "Save Settings"
+msgstr ""
+
+#: admin/views/template/lightbox/lock-display-settings.phtml:6
+msgid ""
+"This setting determines how the content inside the shortcode will be "
+"displayed."
+msgstr ""
+
+#: admin/views/template/lightbox/lock-display-settings.phtml:10
+msgid "Content Display"
+msgstr ""
+
+#: admin/views/template/lightbox/lock-display-settings.phtml:14
+msgid "Hide"
+msgstr ""
+
+#: admin/views/template/lightbox/lock-display-settings.phtml:15
+msgid "Blur"
+msgstr ""
+
+#: admin/views/template/lightbox/lock-display-settings.phtml:20
+msgid ""
+"Warning! The blur filter is not supported in Internet Explorer. Low opacity "
+"will be used instead."
+msgstr ""
+
+#: admin/views/template/lightbox/php-insert-code.phtml:1
+msgid ""
+"This is an advanced feature that you should only use if you know what you're "
+"doing."
+msgstr ""
+
+#: admin/views/template/lightbox/php-insert-code.phtml:4
+msgid ""
+"If you're not technical or familiar with how PHP code works, then ignore "
+"this section or ask a developer to handle this for you. If you make a "
+"mistake while adding this code, it has the potential to bring down your "
+"entire site."
+msgstr ""
+
+#: admin/views/template/lightbox/php-insert-code.phtml:5
+msgid "Use the code below to load the form anywhere on your site:"
+msgstr ""
+
+#: admin/views/template/lightbox/reset-form-stats.phtml:1
+#: admin/views/template/lightbox/reset-form-type-stats.phtml:1
+msgid "Warning! You are about to reset all statistics for"
+msgstr ""
+
+#: admin/views/template/lightbox/reset-form-stats.phtml:4
+msgid ""
+"This will delete all statistics (form impressions, conversions, conversion "
+"rates etc) that were recorded for this form.\n"
+"    The data will also be removed from the reporting section. Do you want to "
+"continue?"
+msgstr ""
+
+#: admin/views/template/lightbox/reset-form-stats.phtml:12
+#: admin/views/template/lightbox/reset-form-type-stats.phtml:11
+msgid "Reset stats"
+msgstr ""
+
+#: admin/views/template/lightbox/reset-form-type-stats.phtml:4
+msgid ""
+"This will delete all statistics (form impressions, conversions, conversion "
+"rates etc) that were recorded for this form. Do you want to continue?"
+msgstr ""
+
+#: admin/views/template/lightbox/stop-variation-test.phtml:6
+#: admin/views/template/tests/view.phtml:54
+msgid "Form Type"
+msgstr ""
+
+#: admin/views/template/lightbox/stop-variation-test.phtml:10
+msgid "Conversions Rate"
+msgstr ""
+
+#: admin/views/template/lightbox/stop-variation-test.phtml:11
+#: admin/views/template/tests/view.phtml:60
+msgid "Percentage Improvement"
+msgstr ""
+
+#: admin/views/template/lightbox/variation-test.phtml:3
+msgid "Title"
+msgstr ""
+
+#: admin/views/template/lightbox/variation-test.phtml:8
+msgid "Test Notes"
+msgstr ""
+
+#: admin/views/template/lightbox/variation-test.phtml:15
+msgid "Choose which type of form to test against each other: "
+msgstr ""
+
+#: admin/views/template/lightbox/variation-test.phtml:65
+msgid "Start Test"
+msgstr ""
+
+#: admin/views/template/pagination/view.phtml:2
+msgid "Showing"
+msgstr ""
+
+#: admin/views/template/pagination/view.phtml:4
+msgid "to"
+msgstr ""
+
+#: admin/views/template/pagination/view.phtml:6
+msgid "from a total of"
+msgstr ""
+
+#: admin/views/template/pagination/view.phtml:8
+msgid "records"
+msgstr ""
+
+#: admin/views/template/pagination/view.phtml:13
+msgid "First Page"
+msgstr ""
+
+#: admin/views/template/pagination/view.phtml:14
+msgid "Previous Page"
+msgstr ""
+
+#: admin/views/template/pagination/view.phtml:25
+msgid "Next Page"
+msgstr ""
+
+#: admin/views/template/pagination/view.phtml:26
+msgid "Last Page"
+msgstr ""
+
+#: admin/views/template/reporting/comparison-report/list.phtml:4
+#: admin/views/template/reporting/conversion-report/list.phtml:6
+msgid "Lead Group / Shortcode"
+msgstr ""
+
+#: admin/views/template/reporting/comparison-report/list.phtml:5
+msgid "Percentage of Total Conversions"
+msgstr ""
+
+#: admin/views/template/reporting/conversion-rate-report/list.phtml:3
+msgid "Average Conversion Rate"
+msgstr ""
+
+#: admin/views/template/reporting/conversion-rate-report/list.phtml:11
+msgid "Date"
+msgstr ""
+
+#: admin/views/template/reporting/conversion-rate-report/list.phtml:12
+msgid "Rate"
+msgstr ""
+
+#: admin/views/template/reporting/conversion-report/list.phtml:4
+msgid "Contact"
+msgstr ""
+
+#: admin/views/template/reporting/conversion-report/list.phtml:5
+msgid "Date and time"
+msgstr ""
+
+#: admin/views/template/reporting/conversion-report/list.phtml:7
+msgid "Form type"
+msgstr ""
+
+#: admin/views/template/reporting/conversion-report/list.phtml:8
+msgid "Referrer URL"
+msgstr ""
+
+#: admin/views/template/reporting/conversion-report/list.phtml:9
+msgid "Form preview"
+msgstr ""
+
+#: admin/views/template/reporting/lead-referral-report/list.phtml:4
+msgid "Referring URL"
+msgstr ""
+
+#: admin/views/template/reporting/lead-tracking-report/list.phtml:5
+msgid "Medium"
+msgstr ""
+
+#: admin/views/template/reporting/lead-tracking-report/list.phtml:6
+msgid "Name"
+msgstr ""
+
+#: admin/views/template/shortcode/edit.phtml:63
+#: admin/views/template/two-step-lightbox/edit.phtml:63
+msgid "You don't have any completed split tests yet."
+msgstr ""
+
+#: admin/views/template/shortcode/edit.phtml:81
+#: admin/views/template/two-step-lightbox/edit.phtml:81
+msgid "You don't have any archived forms yet."
+msgstr ""
+
+#: admin/views/template/shortcode/edit.phtml:86
+#: admin/views/template/two-step-lightbox/edit.phtml:86
+msgid "Back to Dashboard"
+msgstr ""
+
+#: admin/views/template/shortcode/item.phtml:31
+msgid ""
+"You can't change the content locking setting while a test is in progress in "
+"order to protect the integrity of the test!"
+msgstr ""
+
+#: admin/views/template/shortcode/item.phtml:48
+msgid "Delete Shortcode"
+msgstr ""
+
+#: admin/views/template/tests/item.phtml:24
+msgid "This is the control"
+msgstr ""
+
+#: admin/views/template/tests/item.phtml:49
+msgid ""
+"You can't currently edit this form because a test is running. If you want to "
+"edit the form, you should stop the test"
+msgstr ""
+
+#: admin/views/template/tests/item.phtml:56
+msgid "Set as Winner"
+msgstr ""
+
+#: admin/views/template/tests/options.phtml:3
+msgid "Stop Test And Choose Winner"
+msgstr ""
+
+#: admin/views/template/tests/totals.phtml:13
+msgid "Automatic winner settings are enabled"
+msgstr ""
+
+#: admin/views/template/tests/totals.phtml:15
+msgid "Automatic winner settings are disabled"
+msgstr ""
+
+#: admin/views/template/tests/totals.phtml:17
+msgid "Change"
+msgstr ""
+
+#: admin/views/template/tests/view.phtml:12
+#: admin/views/template/tests/view.phtml:48
+msgid "Test Charts"
+msgstr ""
+
+#: admin/views/template/tests/view.phtml:32
+msgid "No Test Data (Yet)"
+msgstr ""
+
+#: admin/views/template/tests/view.phtml:35
+msgid ""
+"Here you will see a graph of conversion data as the test progresses. "
+"Currently there is no data to display yet."
+msgstr ""
+
+#: admin/views/template/tests/view.phtml:59
+msgid "Chart"
+msgstr ""
+
+#: admin/views/template/tests/view.phtml:62
+msgid "Trigger / Animation"
+msgstr ""
+
+#: admin/views/template/tests/view.phtml:101
+msgid "Back To Current Running Test"
+msgstr ""
+
+#: admin/views/template/tests/view.phtml:105
+msgid "Back To Form Type"
+msgstr ""
+
+#: admin/views/template/tests/view.phtml:109
+msgid "Back To Shortcode"
+msgstr ""
+
+#: admin/views/template/tests/view.phtml:113
+msgid "Back To 2 Step Lightbox"
+msgstr ""
+
+#: admin/views/template/two-step-lightbox/item.phtml:47
+msgid "Delete Two Step Lightbox"
+msgstr ""
+
+#: admin/views/trigger_settings/click.phtml:2
+msgid ""
+"Insert the ID or the class name of the element(s) that will trigger the "
+"display of this form (on click)"
+msgstr ""
+
+#: admin/views/trigger_settings/click.phtml:4
+#: admin/views/trigger_settings/scroll_element.phtml:4
+msgid "Class"
+msgstr ""
+
+#: admin/views/trigger_settings/click.phtml:9
+#: admin/views/trigger_settings/scroll_element.phtml:9
+msgid "ID"
+msgstr ""
+
+#: admin/views/trigger_settings/exit_intent.phtml:2
+msgid "Mobile Settings"
+msgstr ""
+
+#: admin/views/trigger_settings/exit_intent.phtml:5
+msgid ""
+"We can't detect this trigger on a mobile device so here you can choose an "
+"alternative trigger just for mobile devices"
+msgstr ""
+
+#: admin/views/trigger_settings/exit_intent.phtml:8
+msgid "SmartExit"
+msgstr ""
+
+#: admin/views/trigger_settings/exit_intent.phtml:11
+msgid "None"
+msgstr ""
+
+#: admin/views/trigger_settings/exit_intent.phtml:12
+msgid "Timer"
+msgstr ""
+
+#: admin/views/trigger_settings/exit_intent.phtml:17
+#: admin/views/trigger_settings/time.phtml:1
+msgid "Seconds after page load"
+msgstr ""
+
+#: admin/views/trigger_settings/exit_intent.phtml:24
+#: admin/views/trigger_settings/time.phtml:7
+msgid "Seconds"
+msgstr ""
+
+#: admin/views/trigger_settings/scroll_element.phtml:2
+msgid ""
+"Insert the ID or the class name of the element that the user should scroll "
+"to in order to display this form"
+msgstr ""
+
+#: admin/views/trigger_settings/scroll_element.phtml:15
+#: admin/views/trigger_settings/scroll_percent.phtml:12
+#: admin/views/trigger_settings/time.phtml:11
+msgid "SmartExit+"
+msgstr ""
+
+#: admin/views/trigger_settings/scroll_element.phtml:23
+msgid ""
+"Use this option to trigger the form on exit-intent if the visitor attempts "
+"to leave the site before the element has entered the viewport"
+msgstr ""
+
+#: admin/views/trigger_settings/scroll_percent.phtml:1
+msgid "Scroll percentage"
+msgstr ""
+
+#: admin/views/trigger_settings/scroll_percent.phtml:20
+msgid ""
+"Use this option to trigger the form on exit-intent if the visitor attempts "
+"to leave the site before the defined scroll depth is reached"
+msgstr ""
+
+#: admin/views/trigger_settings/time.phtml:19
+msgid ""
+"Use this option to trigger the form on exit-intent if the visitor attempts "
+"to leave the site before the set amount of time passes"
+msgstr ""

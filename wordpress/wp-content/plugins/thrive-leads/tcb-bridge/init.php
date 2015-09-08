@@ -21,6 +21,15 @@ add_filter('tcb_post_types', 'tve_leads_disable_edit', 5);
 /* enqueue scripts for the frontend - used only in editing and preview modes */
 add_action('wp_enqueue_scripts', 'tve_leads_frontend_enqueue_scripts');
 
+add_filter('tve_filter_plugin_languages_path', 'tve_leads_filter_tcb_language_path');
+
+function tve_leads_filter_tcb_language_path($path)
+{
+    $path = 'thrive-leads/tcb/languages/';
+
+    return $path;
+}
+
 if (!function_exists('tve_editor_url')) {
     /**
      * we need override the base path here

@@ -823,6 +823,10 @@ class Thrive_Leads_DB
      */
     public function mass_update_field($table, $field, $field_value, $keys = array(), $key_field = 'id')
     {
+        if (empty($keys)) {
+            return 0;
+        }
+
         $table = '{' . $table . '}';
         $field = '`' . $field . '`';
         $sql = "UPDATE {$table} SET {$field} = %s WHERE 1";

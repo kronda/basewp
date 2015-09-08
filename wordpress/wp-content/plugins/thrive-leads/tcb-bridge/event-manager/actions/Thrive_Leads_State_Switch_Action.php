@@ -159,6 +159,12 @@ if (!class_exists('Thrive_Leads_State_Switch_Action')) {
 
             $_type = tve_leads_get_form_type_from_variation($state);
 
+            if (strpos($state['tpl'], 'screen_filler') !== false) {
+                $_type = 'screen_filler';
+            } elseif (strpos($state['tpl'], 'lightbox') !== false) {
+                $_type = 'lightbox';
+            }
+
             $displayFn = 'tve_leads_display_form_' . $_type;
 
             $form_content = tve_editor_custom_content($state);
@@ -169,23 +175,34 @@ if (!class_exists('Thrive_Leads_State_Switch_Action')) {
                 self::$SAVED_CONTENT[$parent_id] = '';
             }
 
-            if ($_type == 'lightbox') {
-                self::$SAVED_CONTENT[$parent_id] .= tve_leads_display_form_lightbox('__return_content', $form_content, $state, null, null, array(
-                    'wrap' => false,
-                    'hide' => true,
-                    'hide_inner' => false,
-                    'animation' => false
-                ));
-            } else {
-                /**
-                 * this includes all other forms:
-                 * ribbon, in_content, screen_filler, post_footer, shortcode
-                 */
-                self::$SAVED_CONTENT[$parent_id] .= $displayFn('__return_content', $form_content, $state, array(
-                    'wrap' => false,
-                    'hide' => true
-                ));
+            switch ($_type) {
+                case 'lightbox':
+                    self::$SAVED_CONTENT[$parent_id] .= tve_leads_display_form_lightbox('__return_content', $form_content, $state, null, null, array(
+                        'wrap' => false,
+                        'hide' => true,
+                        'hide_inner' => false,
+                        'animation' => false
+                    ));
+                    break;
+                case 'screen_filler':
+                    self::$SAVED_CONTENT[$parent_id] .= tve_leads_display_form_screen_filler('__return_content', $form_content, $state, array(
+                        'wrap' => false,
+                        'hide' => true,
+                        'hide_inner' => false,
+                        'animation' => false
+                    ));
+                    break;
+                default:
+                    /**
+                     * this includes all other forms:
+                     * ribbon, in_content, screen_filler, post_footer, shortcode
+                     */
+                    self::$SAVED_CONTENT[$parent_id] .= $displayFn('__return_content', $form_content, $state, array(
+                        'wrap' => false,
+                        'hide' => true
+                    ));
             }
+
             remove_filter('tve_leads_variation_append_states', array('Thrive_Leads_State_Switch_Action', 'append_state_html'), 10);
             add_filter('tve_leads_variation_append_states', array('Thrive_Leads_State_Switch_Action', 'append_state_html'), 10, 2);
 
@@ -215,7 +232,7 @@ if (!class_exists('Thrive_Leads_State_Switch_Action')) {
         {
             foreach (self::$LOADED_STATES as $id => $v) {
                 if (is_array($v)) {
-                    $output_variations []= $v;
+                    $output_variations [] = $v;
                 }
             }
 

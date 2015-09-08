@@ -19,14 +19,14 @@ class Thrive_Leads_Display_Settings_Manager
          */
         foreach ($hangers as $hanger) {
             $hanger->initTabs(array(
-                'other_screens' => 'Basic Settings',
-                'taxonomy_terms' => 'Categories etc.',
-                'posts' => 'Posts',
-                'pages' => 'Pages',
-                'page_templates' => 'Page Templates',
-                'post_types' => 'Post Types',
-                'taxonomy_archives' => 'Archive Pages',
-                'others' => 'Other'
+                'other_screens' => __('Basic Settings', 'thrive-leads'),
+                'taxonomy_terms' => __('Categories etc.', 'thrive-leads'),
+                'posts' => __('Posts', 'thrive-leads'),
+                'pages' => __('Pages', 'thrive-leads'),
+                'page_templates' => __('Page Templates', 'thrive-leads'),
+                'post_types' => __('Post Types', 'thrive-leads'),
+                'taxonomy_archives' => __('Archive Pages', 'thrive-leads'),
+                'others' => __('Other', 'thrive-leads')
             ));
         }
 
@@ -73,14 +73,14 @@ class Thrive_Leads_Display_Settings_Manager
         );
 
         $identifiers = array(
-            'other_screens' => 'Basic Settings',
-            'taxonomy_terms' => 'Categories etc.',
-            'posts' => 'Posts',
-            'pages' => 'Pages',
-            'page_templates' => 'Page Templates',
-            'post_types' => 'Post Types',
-            'taxonomy_archives' => 'Archive Pages',
-            'others' => 'Other'
+            'other_screens' => __('Basic Settings', 'thrive-leads'),
+            'taxonomy_terms' => __('Categories etc.', 'thrive-leads'),
+            'posts' => __('Posts', 'thrive-leads'),
+            'pages' => __('Pages', 'thrive-leads'),
+            'page_templates' => __('Page Templates', 'thrive-leads'),
+            'post_types' => __('Post Types', 'thrive-leads'),
+            'taxonomy_archives' => __('Archive Pages', 'thrive-leads'),
+            'others' => __('Other', 'thrive-leads')
         );
 
         /**
@@ -151,7 +151,7 @@ class Thrive_Leads_Display_Settings_Manager
     public function save_options()
     {
         if (empty($_POST['options']) || empty($_POST['group'])) {
-            return 'Empty values';
+            return __('Empty values', 'thrive-leads');
         }
 
         require_once plugin_dir_path(__FILE__) . 'Thrive_Leads_Group_Options.php';

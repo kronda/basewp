@@ -27,6 +27,10 @@
                                 <option
                                     value="ComparisonChart"><?php echo __('Comparison Report', 'thrive-leads'); ?></option>
                                 <option
+                                    value="ListGrowth"><?php echo __('List Growth', 'thrive-leads'); ?></option>
+                                <option
+                                    value="CumulativeListGrowth"><?php echo __('Cumulative List Growth', 'thrive-leads'); ?></option>
+                                <option
                                     value="LeadReferral"><?php echo __('Lead Referral Report', 'thrive-leads'); ?></option>
                                 <option
                                     value="LeadTracking"><?php echo __('Lead Tracking Report', 'thrive-leads'); ?></option>

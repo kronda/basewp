@@ -156,7 +156,7 @@ class Thrive_Leads_State_Manager extends Thrive_Leads_Request_Handler
             $css_links[$_id] = $_css;
         }
 
-        if ($type == 'lightbox') {
+        if ($type == 'lightbox' || $type == 'screen_filler') {
             $css_links['tve_lightbox_post'] = tve_editor_css() . '/editor_lightbox.css';
             $css_links['thrive_events'] = tve_editor_css() . '/events.css';
         }

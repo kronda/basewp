@@ -15,6 +15,34 @@ TL_Front.add_page_css = function (stylesheets) {
     });
 };
 
+TL_Front.add_page_js = function (links, onLoad) {
+    if (typeof onLoad !== 'function') {
+        onLoad = function () {};
+    }
+    var to_load = 0;
+    ThriveGlobal.$j.each(links, function (_id, href) {
+        _id += '-js';
+        if (href && !ThriveGlobal.$j('#' + _id).length) {
+            if (href.indexOf('connect.facebook.net') !== -1) {
+                ThriveGlobal.$j('<script type="text/javascript" src="' + href + '" id="' + _id + '"></script>').appendTo('head');
+                return true;
+            }
+            to_load++;
+            ThriveGlobal.$j.getScript(href, function() {
+                to_load--;
+            });
+        }
+    });
+    function check_loaded() {
+        if (to_load === 0) {
+            onLoad();
+            return;
+        }
+        setTimeout(check_loaded, 50);
+    }
+    check_loaded();
+};
+
 ThriveGlobal.$j(function() {
 
     function init() {
@@ -100,6 +128,8 @@ ThriveGlobal.$j(function() {
 
     if (TL_Const.ajax_load) {
 
+        var resources_loaded = false;
+
         /**
          * ajax load all the forms that are to be displayed on this page
          */
@@ -176,15 +206,29 @@ ThriveGlobal.$j(function() {
             if (response.body_end) {
                 ThriveGlobal.$j('body').append(response.body_end);
             }
+
+            TL_Front.add_page_js(response.res.js, function () {
+                resources_loaded = true;
+            });
+
             /**
              * rebind the TCB event listeners
              */
-            setTimeout(function () {
+            function dom_ready() {
+                if (!resources_loaded) {
+                    setTimeout(dom_ready, 50);
+                    return;
+                }
+
                 TCB_Front.event_triggers(ThriveGlobal.$j('body'));
                 TCB_Front.onDOMReady();
-            }, 10);
+                init();
+                ThriveGlobal.$j(TCB_Front).trigger('tl-ajax-loaded');
+            }
+
+            setTimeout(dom_ready, 50);
             TL_Const.forms = response.js;
-            init();
+
         });
         return;
     }

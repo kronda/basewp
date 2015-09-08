@@ -5,12 +5,12 @@ class Thrive_Leads_Widget extends WP_Widget
     /**
      * Constructor for the widget
      */
-    function Thrive_Leads_Widget()
+    public function __construct()
     {
         $widget_ops = array(
             'classname' => 'widget_thrive_leads',
             'description' => __('Simple widget to control the placement of thrive leads forms in the widget areas.', 'thrive-leads'));
-        $this->WP_Widget('widget_thrive_leads', __('Thrive Leads Widget', 'thrive-leads'), $widget_ops);
+        parent::__construct('widget_thrive_leads', __('Thrive Leads Widget', 'thrive-leads'), $widget_ops);
 
         add_action('save_post', array(&$this, 'flush_widget_cache'));
         add_action('deleted_post', array(&$this, 'flush_widget_cache'));

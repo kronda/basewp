@@ -8,6 +8,17 @@
   font-family: 'Source Sans Pro', sans-serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 $white: #fff;
 $black: #000;
 
@@ -20,6 +31,7 @@ $black: #000;
 
 #tve_seventeen_set {
   [class*='seventeen_set'] {
+    @include clearfix();
     .tve_editor_main_content {
       max-width: 1250px;
     }

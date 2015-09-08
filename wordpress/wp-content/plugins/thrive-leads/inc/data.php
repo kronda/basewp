@@ -618,6 +618,24 @@ function tve_leads_save_form_type($model)
             $ID = $model['ID'];
         }
     } else {
+        /*
+         * check if already exists a form type of the same type added elsewhere(new window)
+         */
+        if (!empty($model['post_parent'])) {
+            $q = new WP_Query(array(
+                'post_parent__in' => array($model['post_parent']),
+                'post_type' => TVE_LEADS_POST_FORM_TYPE,
+                'meta_key' => 'tve_form_type',
+                'meta_value' => $model['tve_form_type']
+            ));
+
+            $posts = $q->get_posts();
+            if (!empty($posts)) {
+                $existing = $posts[0];
+                return $existing->ID;
+            }
+        }
+
         $default = array(
             'post_type' => TVE_LEADS_POST_FORM_TYPE,
             'post_status' => 'publish'
@@ -866,6 +884,10 @@ function tve_leads_save_test_item($test_item)
                 break;
             }
         }
+        /**
+         * in case of a group level test, we need to archive all the variations that are not related to the winner form type
+         * in case of a form type level test, we need to archive all other variations
+         */
         do_action(TVE_LEADS_ACTION_SET_TEST_ITEM_WINNER, $winner_test_item, $test_model);
     }
 
@@ -1012,7 +1034,7 @@ function tve_leads_clone_form_states($parent_form, $original_children)
         $child = tve_leads_save_form_variation($child);
         $form_key_map[$original_child_key] = $child['key'];
 
-        $to_replace []= $child;
+        $to_replace [] = $child;
     }
 
     $event_config_pattern = '#__TCB_EVENT_\[\{(.+?):(&quot;)?____old_ID____(&quot;)?(.*?)\}\]_TNEVE_BCT__#ms';
@@ -1161,7 +1183,7 @@ function tve_leads_get_group_completed_tests($group_id)
 }
 
 /**
- * Return data for  the conversion report chart and table
+ * Return data for the conversion report chart and table
  * @param $filter
  * @return array
  */
@@ -1242,6 +1264,49 @@ function tve_leads_get_conversion_report_data($filter)
         'chart_y_axis' => __('Conversions', 'thrive-leads'),
         'table_data' => array('count_table_data' => $count_table_data)
     );
+}
+
+/**
+ * Get data for Growth Chart with the option to select cumulative or not.
+ * We already have those function implemented for the conversion report so what we'll is just get
+ * the data from them and add the data from all the groups
+ *
+ * @param array $filter
+ * @param boolean $cumulative
+ * @return array $data
+ */
+function tve_leads_get_list_growth($filter, $cumulative = false)
+{
+    //we select the data from all groups
+    $filter['main_group_id'] = -1;
+
+    if ($cumulative === true) {
+        $data = tve_leads_get_cumulative_conversion_report_data($filter);
+    } else {
+        $data = tve_leads_get_conversion_report_data($filter);
+    }
+
+    global $tve_leads_chart_colors;
+
+    $chart_data = array(
+        'id' => 1, //this is more or less useless
+        'name' => $cumulative ? __('Cumulative Lead Growth', 'thrive-leads') : __('Lead Growth', 'thrive-leads'),
+        'color' => $tve_leads_chart_colors[0], //we just use the first color
+        'data' => array_fill(0, count($data['chart_x_axis']), 0) //fill array with 0
+    );
+
+    foreach ($data['chart_data'] as $group) {
+        foreach ($group['data'] as $key => $growth) {
+            $chart_data['data'][$key] += $growth;
+        }
+    }
+
+    $title = 'Graph to show' . ($cumulative ? ' cumulative' : '') . ' list growth over time';
+    $data['chart_title'] = __($title, 'thrive-leads');
+    $data['chart_data'] = array($chart_data);
+    $data['chart_y_axis'] = __('Leads', 'thrive-leads');
+
+    return $data;
 }
 
 /**
@@ -1998,14 +2063,8 @@ function tve_leads_test_check_winner($test_id)
 
         if ($test_item->beat_original > $test_model->auto_win_chance_original) {
             $test_item->is_winner = 1;
-            tve_leads_save_test_item((array)$test_item);
-            /**
-             * $test_item is the winner
-             * in case of a group level test, we need to archive all the variations that are not related to the winner form type
-             * in case of a form type level test, we need to archive all other variations
-             */
-            do_action(TVE_LEADS_ACTION_SET_TEST_ITEM_WINNER, $test_item, $test_model);
 
+            tve_leads_save_test_item((array)$test_item);
             break;
         }
     }

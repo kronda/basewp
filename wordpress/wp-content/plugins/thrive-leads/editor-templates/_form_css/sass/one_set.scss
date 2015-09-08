@@ -38,6 +38,17 @@
   font-family: 'Open Sans', sans-serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 $white: #fff;
 $black: #000;
 body {
@@ -107,7 +118,7 @@ body {
               .thrv_lead_generation {
                 &.thrv_lead_generation_horizontal {
                   input[type="text"] {
-                    padding: 26px 10px!important;
+                    padding: 26px 10px !important;
                   }
                   button {
                     font-size: 18px;
@@ -186,7 +197,7 @@ body {
       &.thrv_lead_generation_vertical {
         input[type="text"] {
           margin-bottom: 25px;
-          padding: 26px 20px!important;
+          padding: 26px 20px !important;
         }
       }
       button {
@@ -196,7 +207,7 @@ body {
       &.thrv_lead_generation_horizontal {
         input[type="text"] {
           margin-bottom: 0;
-          padding: 11px 10px!important;
+          padding: 11px 10px !important;
         }
         button {
           font-size: 12px;
@@ -259,7 +270,7 @@ body {
       font-weight: 700;
       font-size: 23px;
       &.tve_normalBtn {
-        line-height: 23px!important;
+        line-height: 23px !important;
         a {
           text-shadow: none;
           padding: 45px 20px;
@@ -472,7 +483,7 @@ body {
       }
       .thrv_lead_generation.thrv_lead_generation_horizontal {
         input[type="text"] {
-          padding: 26px 10px!important;
+          padding: 26px 10px !important;
         }
         button {
           font-size: 18px;
@@ -532,7 +543,7 @@ body {
       .tve_p_lb_content {
         border-radius: 3px;
         max-width: 800px;
-        padding: 0 40px!important;
+        padding: 0 40px !important;
       }
       h2 {
         line-height: 1em;
@@ -544,6 +555,9 @@ body {
   }
 }
 
+[class*='tve_one_set'] {
+  @include clearfix();
+}
 //gradient 1 gradient 2 box shadow gradien 3 gradient 4 box shadow
 $color-pallete: 'blue' #6ab0dc #488acb #355e7f #5ca7d3 #3e7dbd #2e5878 #3e7dbd,
 'black' #868686 #5a5a5a #434343 #767676 #505050 #3b3b3b #505050,
@@ -604,7 +618,7 @@ $color-pallete: 'blue' #6ab0dc #488acb #355e7f #5ca7d3 #3e7dbd #2e5878 #3e7dbd,
     #tve_one_set {
       .tve_one_set_vms_step1 {
         .thrv_columns {
-          margin-top: 10px!important;
+          margin-top: 10px !important;
         }
         .tve_btn.tve_btn1 {
           a {
@@ -613,7 +627,7 @@ $color-pallete: 'blue' #6ab0dc #488acb #355e7f #5ca7d3 #3e7dbd #2e5878 #3e7dbd,
         }
       }
       .tve_one_set_v2 {
-        &.tve-leads-lightbox  {
+        &.tve-leads-lightbox {
           .tve_p_lb_close {
             top: 20px;
             right: 30px;
@@ -665,7 +679,7 @@ $color-pallete: 'blue' #6ab0dc #488acb #355e7f #5ca7d3 #3e7dbd #2e5878 #3e7dbd,
           .thrv_lead_generation.thrv_lead_generation_vertical {
             input[type="text"] {
               margin-bottom: 10px;
-              padding: 10px!important;
+              padding: 10px !important;
             }
             button {
               padding: 15px;

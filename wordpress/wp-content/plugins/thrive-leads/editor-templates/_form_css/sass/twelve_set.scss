@@ -4,6 +4,17 @@
   font-family: 'Roboto', sans-serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 $white: #fff;
 $black: #000;
 
@@ -17,6 +28,7 @@ $black: #000;
 body {
   #tve_twelve_set {
     [class*='twelve_set'] {
+      @include clearfix();
       a {
         color: inherit;
       }

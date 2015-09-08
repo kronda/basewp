@@ -47,7 +47,12 @@
         $body.removeClass(overflow_hidden).css('padding-right', '');
         $html.removeClass(overflow_hidden);
         setTimeout(function () {
-            $lightbox.removeClass('tve_lb_open tve_lb_opening tve_lb_closing tve_p_lb_background').css('display', 'none').find('tve_p_lb_content').trigger('tve.lightbox-close');
+            //$lightbox.removeClass('tve_lb_open tve_lb_opening tve_lb_closing tve_p_lb_background').css('display', 'none').find('tve_p_lb_content').trigger('tve.lightbox-close');
+            $lightbox.removeClass('tve_lb_open tve_lb_opening tve_lb_closing tve_p_lb_background').css({
+                'visibility': 'hidden',
+                'position': 'fixed',
+                'left': '-9000px'
+            }).find('tve_p_lb_content').trigger('tve.lightbox-close');
         }, 200);
 
         $lightbox.find('.thrv_responsive_video iframe').each(function () {
@@ -95,7 +100,16 @@
         /* close any other opened lightboxes */
         TL_Front.close_lightbox(ThriveGlobal.$j('.tve_p_lb_background.tve_lb_open'));
 
-        $target.css('display', '').parents('.tl-style').css('display', '');
+        //$target.css('display', '').parents('.tl-style').css('display', '');
+        $target.css({
+            'visibility': '',
+            'position': '',
+            'left': ''
+        }).parents('.tl-style').css({
+            'visibility': '',
+            'position': '',
+            'left': ''
+        });
 
         var $body = ThriveGlobal.$j('body'),
             $html = ThriveGlobal.$j('html'),
@@ -151,9 +165,9 @@
             }, 0);
 
             /* reload any iframe that might be in there, this was causing issues with google maps embeds in hidden tabs */
-            $target.find('iframe').each(function () {
+            $target.find('iframe').not('.thrv_social_default iframe').each(function () {
                 var $this = ThriveGlobal.$j(this);
-                if ($this.data('tve_ifr_loaded')) {
+                if ($this.data('tve_ifr_loaded') || !$this.attr('data-src')) {
                     return;
                 }
                 $this.data('tve_ifr_loaded', 1).attr('src', $this.attr('data-src'));
@@ -219,6 +233,12 @@
         }
 
         $target.find('.tve-ribbon-close').on('click', function () {
+            $target.find('.thrv_responsive_video iframe').each(function () {
+                var $this = ThriveGlobal.$j(this);
+                $this.attr('data-src', $this.attr('src'));
+                $this.attr('src', '');
+            });
+
             $target.removeClass('tve-leads-triggered');
             if (position === 'top') {
                 ThriveGlobal.$j('body').animate({'margin-top': 0 + 'px'}, 200);
@@ -252,9 +272,10 @@
                     ThriveGlobal.$j('body').animate({'margin-bottom': _h + 'px'}, 200);
                 }
             }, 100);
+
         $target.off('switchstate').on('switchstate', function (e, $target) {
             var args = Array.prototype.slice.call(arguments, 1);
-            TL_Front.switch_lightbox_state.apply(TL_Front, args);
+            TL_Front.switch_ribbon_state.apply(TL_Front, args);
         });
     };
 
@@ -270,12 +291,11 @@
     };
     <?php endif ?>
 
-    <?php if (!empty($GLOBALS['tl_triggers']['screen_filler'])) : ?>
     TL_Front.open_screen_filler = function ($target) {
         var overflow_hidden = 'tve-o-hidden tve-l-open tve-hide-overflow',
             html_body = ThriveGlobal.$j('html,body');
 
-        $target.css('top', ThriveGlobal.$j('#wpadminbar').length ? '32px' : '0px');
+        $target.css('top', ThriveGlobal.$j('#wpadminbar').length ? '32px' : '0px').css('visibility', '');
         $target.find('.tve-screen-filler-close').on('click', function () {
             close_it($target);
         });
@@ -283,6 +303,13 @@
         html_body.addClass(overflow_hidden);
 
         function close_it($screen_filler) {
+
+            $screen_filler.find('.thrv_responsive_video iframe').each(function () {
+                var $this = ThriveGlobal.$j(this);
+                $this.attr('data-src', $this.attr('src'));
+                $this.attr('src', '');
+            });
+
             $screen_filler.removeClass('tve-leads-triggered');
             ThriveGlobal.$j(document).off('keyup.close-screenfiller');
             ThriveGlobal.$j('body').animate({'margin-top': 0 + 'px'}, 200);
@@ -303,7 +330,6 @@
             }
         });
     };
-    <?php endif ?>
 
     <?php if (!empty($GLOBALS['tl_triggers']['slide_in'])) : ?>
     TL_Front.switch_slide_in_state = function ($state) {
@@ -371,6 +397,13 @@
     <?php endif ?>
 
     ThriveGlobal.$j(function () {
+        ThriveGlobal.$j('.tve-leads-screen-filler iframe, .tve-leads-ribbon iframe').not('.thrv_social_default iframe').not('.tcb-dr-done').each(function () {
+            var $frame = ThriveGlobal.$j(this).addClass('tcb-dr-done');
+            if ($frame.attr('src')) {
+                $frame.attr('data-src', $frame.attr('src'));
+            }
+            $frame.attr('src', '');
+        });
         ThriveGlobal.$j(TL_Front).on('showform.thriveleads', function (event, data) {
             var $target = data.$target ? data.$target : ThriveGlobal.$j('.' + data.form_id),
                 $anim_target;

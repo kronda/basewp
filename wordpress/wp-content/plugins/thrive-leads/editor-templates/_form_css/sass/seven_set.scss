@@ -1,6 +1,18 @@
 @import "bourbon";
+
 @mixin lato {
   font-family: 'Lato', sans-serif;
+}
+
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
 }
 
 @font-face {
@@ -37,6 +49,7 @@ $white: #fff;
 $black: #000;
 
 [class*='seven_set'] {
+  @include clearfix();
   &.tve_gray_bg {
     background-image: none;
     background: #b8bdc0;
@@ -668,7 +681,7 @@ body {
   .thrv-leads-screen-filler {
     .thrv_lead_generation_horizontal {
       input[type="text"] {
-        padding: 11px 10px 12px!important;
+        padding: 11px 10px 12px !important;
       }
       &.tve_2 {
         .tve_lg_input {
@@ -696,7 +709,7 @@ body {
       max-width: 1040px;
       padding-top: 100px;
     }
-    .tve-screen-filler-close{
+    .tve-screen-filler-close {
       border-radius: 50%;
       background: #333333;
       color: #000;
@@ -921,7 +934,7 @@ $content-boxes: 'blue' #acdae6 #1e8bb8,
 @each $color in $color-pallete {
   #tve_seven_set {
     .thrv-leads-screen-filler.tve_#{nth($color, 1)} {
-      background: nth($color, 10); 
+      background: nth($color, 10);
     }
     .thrv-ribbon.tve_#{nth($color, 1)} {
       background: nth($color, 10);
@@ -968,13 +981,12 @@ $content-boxes: 'blue' #acdae6 #1e8bb8,
         .tve_image_caption {
           display: table;
           margin: 0 auto;
-          width: auto!important;
+          width: auto !important;
           img {
             max-width: inherit;
             max-height: 200px;
-            width: auto!important;
+            width: auto !important;
           }
-
 
         }
       }

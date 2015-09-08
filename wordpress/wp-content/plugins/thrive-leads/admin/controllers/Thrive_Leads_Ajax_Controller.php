@@ -244,7 +244,7 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
                     ));
 
                     if ($result === false) {
-                        $this->error("Error on resetting form type statistics");
+                        $this->error(__("Error on resetting form type statistics", "thrive-leads"));
                     }
 
                     return array(
@@ -529,6 +529,8 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
             switch ($this->param('report_type')) {
                 case 'Conversion':
                 case 'CumulativeConversion':
+                case 'ListGrowth':
+                case 'CumulativeListGrowth':
                     die(json_encode(tve_leads_get_conversion_report_table_data($filters)));
                 case 'ConversionRate':
                     die(json_encode(tve_leads_get_conversion_rate_report_table_data($filters)));
@@ -550,6 +552,10 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
                 die(json_encode(tve_leads_get_cumulative_conversion_report_data($filters)));
             case 'ConversionRate':
                 die(json_encode(tve_leads_get_conversion_rate_report_chart($filters)));
+            case 'ListGrowth':
+                die(json_encode(tve_leads_get_list_growth($filters, false)));
+            case 'CumulativeListGrowth':
+                die(json_encode(tve_leads_get_list_growth($filters, true)));
             case 'ComparisonChart':
                 die(json_encode(tve_leads_get_comparison_report_data($filters)));
             case 'LeadReferral':
@@ -690,7 +696,7 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
 
         $json = array();
         foreach ($results as $id => $name) {
-            $json []= array(
+            $json [] = array(
                 'label' => $name,
                 'id' => $id,
                 'value' => $name
@@ -717,7 +723,7 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
 
         $json = array();
         foreach ($posts as $post) {
-            $json []= array(
+            $json [] = array(
                 'label' => $post->post_title,
                 'id' => $post->ID,
                 'value' => $post->post_title
@@ -727,4 +733,4 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
         wp_send_json($json);
     }
 
-} 
+}

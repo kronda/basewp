@@ -241,6 +241,7 @@ function tve_leads_enqueue_default_scripts()
             'page_events' => isset($events) ? $events : array(),
             'is_single' => (string)((int)is_singular()),
             'ajaxurl' => admin_url('admin-ajax.php'),
+            'social_fb_app_id' => function_exists('tve_get_social_fb_app_id') ? tve_get_social_fb_app_id() : '',
         );
         wp_localize_script('tve_frontend', 'tve_frontend_options', $frontend_options);
     }
@@ -263,7 +264,8 @@ function tve_leads_enqueue_variation_scripts($variation)
     if (empty($variation[TVE_LEADS_FIELD_TEMPLATE])) {
         return array(
             'fonts' => array(),
-            'css' => array()
+            'css' => array(),
+            'js' => array()
         );
     }
 
@@ -286,8 +288,22 @@ function tve_leads_enqueue_variation_scripts($variation)
         tve_leads_enqueue_style($css_key, TVE_LEADS_URL . 'editor-templates/_form_css/' . $config['css']);
     }
 
+    /**
+     * if any sdk is needed for the social sharing networks, enqueue that also
+     */
+    $globals = $variation[TVE_LEADS_FIELD_GLOBALS];
+    $js = array();
+    if (!empty($globals['js_sdk'])) {
+        foreach ($globals['js_sdk'] as $handle) {
+            $link = tve_social_get_sdk_link($handle);
+            $js['tve_js_sdk_' . $handle] = $link;
+            wp_script_is('tve_js_sdk_' . $handle) || wp_enqueue_script('tve_js_sdk_' . $handle, $link, array(), false);
+        }
+    }
+
     return array(
         'fonts' => $fonts,
+        'js' => $js,
         'css' => array(
             $css_key => TVE_LEADS_URL . 'editor-templates/_form_css/' . $config['css'] . '?ver=' . TVE_LEADS_VERSION,
             'tve_leads_forms' => TVE_LEADS_URL . 'editor-layouts/css/frontend.css?ver=' . TVE_LEADS_VERSION,
@@ -690,12 +706,16 @@ function tve_leads_print_footer_scripts()
 
     if (!empty($GLOBALS['tve_leads_two_step'])) {
         foreach ($GLOBALS['tve_leads_two_step'] as $id => $data) {
-            tve_leads_output_trigger_js($data, '2step-' . $id, 'lightbox');
-
             /**
-             * display these as lightboxes
+             * depending on the variation template we display as lightbox or screen filler
              */
-            tve_leads_display_form_lightbox('', $data['form_output'], $data, 'tve-leads-track-2step-' . $id);
+            if (strpos($data['tpl'], 'screen_filler') !== false) {
+                tve_leads_output_trigger_js($data, '2step-' . $id, 'screen_filler');
+                tve_leads_display_form_screen_filler('', $data['form_output'], $data, array(), 'tve-leads-track-2step-' . $id);
+            } elseif (strpos($data['tpl'], 'lightbox') !== false) {
+                tve_leads_output_trigger_js($data, '2step-' . $id, 'lightbox');
+                tve_leads_display_form_lightbox('', $data['form_output'], $data, 'tve-leads-track-2step-' . $id);
+            }
         }
     }
 
@@ -842,6 +862,7 @@ function tve_leads_display_form_lightbox($flag = '', $form_output = null, $varia
         'hide_inner' => true,
         'animation' => true,
     );
+
     $control = array_merge($defaults, $control);
 
     /**
@@ -873,7 +894,7 @@ function tve_leads_display_form_lightbox($flag = '', $form_output = null, $varia
         'tve_' . preg_replace('#_v(.*)$#', '', $key),
         $variation['key'],
         'tve_' . $key,
-        !empty($control['hide_inner']) ? 'display: none;' : '',
+        !empty($control['hide_inner']) ? 'visibility: hidden; position: fixed; left: -9000px' : '',
         $container_id . (empty($control['animation']) ? ' tve_p_lb_background' : '') . '" data-s-state="' . (empty($done) ? '' : $done['key']),
         $config['overlay']['css'],
         $config['overlay']['custom_color'],
@@ -912,10 +933,11 @@ function tve_leads_display_form_lightbox($flag = '', $form_output = null, $varia
  * @param string $form_output optional if present it will be used instead of the GLOBALS value
  * @param array $variation optional if present it will be used instead of the GLOBALS value
  * @param array $control used to control various pieces of content
+ * @param String $container_id optional if you want to specify a custom container ID
  *
  * @return string the generated content, appended to the $content
  */
-function tve_leads_display_form_screen_filler($flag = '', $form_output = null, $variation = null, $control = array())
+function tve_leads_display_form_screen_filler($flag = '', $form_output = null, $variation = null, $control = array(), $container_id = null)
 {
     if (!isset($form_output) && !isset($GLOBALS['tve_lead_forms']['screen_filler']['form_output'])) {
         return;
@@ -943,6 +965,7 @@ function tve_leads_display_form_screen_filler($flag = '', $form_output = null, $
     $control = array_merge($defaults, $control);
 
     $variation = !empty($variation) ? $variation : $GLOBALS['tve_lead_forms']['screen_filler']['variation'];
+    $container_id = $container_id ? $container_id : 'tve-leads-track-screen_filler-' . $variation['key'];
 
     /**
      * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
@@ -954,8 +977,8 @@ function tve_leads_display_form_screen_filler($flag = '', $form_output = null, $
 
     if (!empty($control['wrap'])) {
         $html = sprintf(
-                '<div class="tve-leads-screen-filler tl-state-root tve-leads-track-screen_filler-%s tve-tl-anim %s" style="display: none;">',
-                $variation['key'],
+                '<div class="tve-leads-screen-filler tl-state-root %s tve-tl-anim %s" style="visibility: hidden;">',
+                $container_id,
                 'tl-anim-' . $variation['display_animation'] .
                 (empty($variation['trigger']) || $variation['trigger'] == 'page_load' ? '' : ' tve-trigger-hide')
             ) . $html;
@@ -1482,6 +1505,7 @@ function tve_leads_ajax_load_forms()
         'res' => array(
             'fonts' => array(),
             'css' => array(),
+            'js' => array(),
         ), // resources = fonts / CSS
         'html' => array(), // form_output
         'js' => array(), // javascript variables to use on conversion tracking
@@ -1623,11 +1647,17 @@ function tve_leads_ajax_load_forms()
                 tve_editor_custom_content($variation)
             );
 
-            $response['html']['two_step_' . $ID] = tve_leads_display_form_lightbox('__return_content', $form_output, $variation, 'tve-leads-track-2step-' . $variation['key']);
-            $response['html']['two_step_' . $ID] = preg_replace('/__CONFIG_lead_generation_(.+?)__CONFIG_lead_generation_/ms', '', $response['html']['two_step_' . $ID]);
+            //determine the variation template type and get the html accordingly
+            if (isset($variation['tpl']) && strpos($variation['tpl'], 'screen_filler') !== false) {
+                $response['html']['two_step_' . $ID] = tve_leads_display_form_screen_filler('__return_content', $form_output, $variation, array(), 'tve-leads-track-2step-' . $variation['key']);
+                $variation['form_type'] = 'screen_filler';
+            } else {
+                $response['html']['two_step_' . $ID] = tve_leads_display_form_lightbox('__return_content', $form_output, $variation, 'tve-leads-track-2step-' . $variation['key']);
+                $variation['form_type'] = 'lightbox';
+            }
 
+            $response['html']['two_step_' . $ID] = preg_replace('/__CONFIG_lead_generation_(.+?)__CONFIG_lead_generation_/ms', '', $response['html']['two_step_' . $ID]);
             $variation['form_id'] = '2step-' . $variation['key'];
-            $variation['form_type'] = 'lightbox';
 
             /**
              * the trigger will always be a click event, and the element that receives the click already exists in the page
@@ -1668,6 +1698,7 @@ function tve_leads_ajax_load_forms()
             $links = tve_leads_enqueue_variation_scripts($variation);
             $response['res']['fonts'] = array_merge($response['res']['fonts'], $links['fonts']);
             $response['res']['css'] = array_merge($response['res']['css'], $links['css']);
+            $response['res']['js'] = array_merge($response['res']['js'], $links['js']);
 
             /**
              * the triggers should only be included for the default state of a variation
@@ -1739,4 +1770,16 @@ function tve_leads_filter_end_content($content)
     $content .= '<span id="tve_leads_end_content" style="display: block; visibility: hidden; border: 1px solid red;"></span>';
 
     return $content;
+}
+
+/**
+ * Set the path where the translation files are being kept
+ */
+function tve_leads_load_plugin_textdomain()
+{
+    $domain = 'thrive-leads';
+    $locale = $locale = apply_filters('plugin_locale', get_locale(), $domain);
+    $path = 'thrive-leads/languages/';
+    load_textdomain($domain, WP_LANG_DIR . '/thrive/' . $domain . "-" . $locale . ".mo");
+    load_plugin_textdomain($domain, false, $path);
 }

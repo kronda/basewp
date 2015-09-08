@@ -38,6 +38,17 @@
   font-family: 'Roboto', sans-serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 $white: #fff;
 $black: #000;
 
@@ -77,6 +88,7 @@ body {
     }
   }
   &[class*='three_set'] {
+    @include clearfix();
     &.tve_gray_bg {
       background: #ddd;
     }
@@ -575,6 +587,7 @@ body {
     }
   }
 }
+
 #tve_three_set {
   #tve_editor {
     .thrv-leads-screen-filler {
@@ -674,7 +687,7 @@ $color-pallete: 'blue' #415c71 #334858 #8d9daa #85919b #415c71 #3a5365 #415c71,
           }
         }
         h2.rft {
-          line-height: 35px!important;
+          line-height: 35px !important;
         }
       }
       .tve-screen-filler-content {

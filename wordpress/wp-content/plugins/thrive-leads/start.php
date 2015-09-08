@@ -31,6 +31,7 @@ require_once plugin_dir_path(__FILE__) . 'database/Thrive_Leads_Database_Manager
 Thrive_Leads_Database_Manager::check();
 
 add_action('init', 'tve_leads_init');
+add_action('init', 'tve_leads_load_plugin_textdomain');
 add_action('widgets_init', 'tve_leads_widget_init');
 
 /**

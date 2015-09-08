@@ -8,6 +8,17 @@
   font-family: 'Roboto', sans-serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 $white: #fff;
 $black: #000;
 
@@ -20,6 +31,7 @@ $black: #000;
 
 #tve_fourteen_set {
   [class*='fourteen_set'] {
+    @include clearfix();
     .tve-screen-filler-close {
       border-radius: 50%;
       @include robotocondensed();
@@ -292,7 +304,7 @@ $color-pallete: 'blue' #34a2f6 #2c8ad1 #34a2f6,
     [class*="tve_fourteen_set"] {
       .thrv_content_container_shortcode {
         .tve_content_inner {
-          margin-top: 10px!important;
+          margin-top: 10px !important;
         }
       }
     }

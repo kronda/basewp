@@ -1,0 +1,77 @@
+{
+	"IcoMoonType": "selection",
+	"icons": [
+		{
+			"icon": {
+				"paths": [
+					"M896 512h-160l-224 224-224-224h-160l-128 256v64h1024v-64l-128-256zM0 896h1024v64h-1024v-64zM576 320v-256h-128v256h-224l288 288 288-288h-224z"
+				],
+				"attrs": [],
+				"isMulticolor": false,
+				"tags": [
+					"download",
+					"save",
+					"store"
+				],
+				"defaultCode": 58046,
+				"grid": 16
+			},
+			"attrs": [],
+			"properties": {
+				"id": 796,
+				"order": 5,
+				"prevSize": 32,
+				"code": 59845,
+				"ligatures": "download2, save4",
+				"name": "download2"
+			},
+			"setIdx": 31,
+			"setId": 25,
+			"iconIdx": 197
+		}
+	],
+	"height": 1024,
+	"metadata": {
+		"name": "icomoon"
+	},
+	"preferences": {
+		"fontPref": {
+			"prefix": "icon-",
+			"metadata": {
+				"fontFamily": "icomoon",
+				"majorVersion": 1,
+				"minorVersion": 0
+			},
+			"showGlyphs": true,
+			"metrics": {
+				"emSize": 1024,
+				"baseline": 6.25,
+				"whitespace": 50
+			},
+			"resetPoint": 62976,
+			"showQuickUse": true,
+			"quickUsageToken": false,
+			"showMetrics": true,
+			"showMetadata": false
+		},
+		"imagePref": {
+			"color": 0,
+			"height": 32,
+			"columns": 16,
+			"margin": 16,
+			"png": false,
+			"sprites": true,
+			"prefix": "icon-"
+		},
+		"historySize": 100,
+		"showCodes": true,
+		"gridSize": 16,
+		"showLiga": false,
+		"showGrid": true,
+		"showGlyphs": true,
+		"showQuickUse": true,
+		"showQuickUse2": true,
+		"showSVGs": true,
+		"search": ""
+	}
+}

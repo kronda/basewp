@@ -8,6 +8,16 @@
   font-family: 'Open Sans', sans-serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
 @font-face {
   font-family: 'tve-leads-five-set-icons';
   src: url('fonts/five_set/five_set_icons.eot?-o8i8n4');
@@ -42,6 +52,7 @@ $white: #fff;
 $black: #000;
 
 [class*='five_set'] {
+  @include clearfix();
   &.tve_gray_bg {
     background: #ddd;
   }

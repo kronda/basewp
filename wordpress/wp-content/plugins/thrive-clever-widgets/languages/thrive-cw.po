@@ -1,0 +1,231 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Thrive Clever Widgets\n"
+"POT-Creation-Date: 2015-08-13 15:50+0300\n"
+"PO-Revision-Date: 2015-08-13 16:22+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: node_modules\n"
+"X-Poedit-SearchPathExcluded-1: .sass-cache\n"
+"X-Poedit-SearchPathExcluded-2: .idea\n"
+"X-Poedit-SearchPathExcluded-3: .git\n"
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:140
+msgid "Basic Settings"
+msgstr "Basic Settings"
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:141
+msgid "Categories etc."
+msgstr "Categories etc."
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:142
+msgid "Posts"
+msgstr "Posts"
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:143
+msgid "Pages"
+msgstr "Pages"
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:144
+msgid "Page Templates"
+msgstr "Page Templates"
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:145
+msgid "Post Types"
+msgstr "Post Types"
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:146
+msgid "Archive Pages"
+msgstr "Archive Pages"
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:147
+msgid "Other"
+msgstr "Other"
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:217
+msgid "Template saved with success !"
+msgstr "Template saved with success !"
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:255
+#, php-format
+msgid ""
+"An error occurred while connecting to the license server. Error: %s. Please "
+"login to thrivethemes.com, report this error message on the forums and we'll "
+"get this sorted for you"
+msgstr ""
+"An error occurred while connecting to the license server. Error: %s. Please "
+"login to thrivethemes.com, report this error message on the forums and we'll "
+"get this sorted for you"
+
+#: admin/class-thrive-clever-widgets-manager-admin.php:265
+#, php-format
+msgid ""
+"An error occurred while receiving the license status. The response was: %s. "
+"Please login to thrivethemes.com, report this error message on the forums "
+"and we'll get this sorted for you."
+msgstr ""
+"An error occurred while receiving the license status. The response was: %s. "
+"Please login to thrivethemes.com, report this error message on the forums "
+"and we'll get this sorted for you."
+
+#: admin/classes/Thrive_Clever_Widgets_Other_Screens_Tab.php:40
+msgid "Front Page"
+msgstr "Front Page"
+
+#: admin/classes/Thrive_Clever_Widgets_Other_Screens_Tab.php:41
+msgid "All Posts"
+msgstr "All Posts"
+
+#: admin/classes/Thrive_Clever_Widgets_Other_Screens_Tab.php:42
+msgid "All Pages"
+msgstr "All Pages"
+
+#: admin/classes/Thrive_Clever_Widgets_Other_Screens_Tab.php:43
+msgid "Blog Index"
+msgstr "Blog Index"
+
+#: admin/classes/Thrive_Clever_Widgets_Other_Screens_Tab.php:44
+msgid "404 Error Page"
+msgstr "404 Error Page"
+
+#: admin/classes/Thrive_Clever_Widgets_Other_Screens_Tab.php:45
+msgid "Search page"
+msgstr "Search page"
+
+#: admin/classes/Thrive_Clever_Widgets_Page_Templates_Tab.php:36
+msgid "Default"
+msgstr "Default"
+
+#: admin/classes/Thrive_Clever_Widgets_Tab.php:116
+msgid "Select All"
+msgstr "Select All"
+
+#: admin/classes/Thrive_Clever_Widgets_Tab.php:117
+msgid "Select None"
+msgstr "Select None"
+
+#: admin/classes/Thrive_Clever_Widgets_Visitors_Status_Tab.php:46
+msgid "Logged in"
+msgstr "Logged in"
+
+#: admin/classes/Thrive_Clever_Widgets_Visitors_Status_Tab.php:47
+msgid "Logged out"
+msgstr "Logged out"
+
+#: admin/partials/thrive-clever-widgets-button.php:1
+msgid "Thrive Clever Widgets Display Options"
+msgstr "Thrive Clever Widgets Display Options"
+
+#: admin/partials/thrive-clever-widgets-button.php:2
+msgid "Thrive Widget Display Options"
+msgstr "Thrive Widget Display Options"
+
+#: admin/partials/thrive-clever-widgets-license.php:5
+msgid "Thank you"
+msgstr "Thank you"
+
+#: admin/partials/thrive-clever-widgets-license.php:6
+msgid "Your license for the Thrive Clever Widgets Plugin is activated"
+msgstr "Your license for the Thrive Clever Widgets Plugin is activated"
+
+#: admin/partials/thrive-clever-widgets-licensing-form.php:25
+msgid "Thank you - You have successfully validated your license!"
+msgstr "Thank you - You have successfully validated your license!"
+
+#: admin/partials/thrive-clever-widgets-licensing-form.php:33
+msgid ""
+"License activation error - please contact support copying this message and "
+"we'll get this sorted for you."
+msgstr ""
+"License activation error - please contact support copying this message and "
+"we'll get this sorted for you."
+
+#: admin/partials/thrive-clever-widgets-licensing-form.php:48
+msgid "Validate your License:"
+msgstr "Validate your License:"
+
+#: admin/partials/thrive-clever-widgets-licensing-form.php:51
+msgid "Email Address:"
+msgstr "Email Address:"
+
+#: admin/partials/thrive-clever-widgets-popup.php:4
+msgid "Load Saved Options"
+msgstr "Load Saved Options"
+
+#: admin/partials/thrive-clever-widgets-popup.php:6
+msgid "Current selection"
+msgstr "Current selection"
+
+#: admin/partials/thrive-clever-widgets-popup.php:11
+msgid "Display Logic"
+msgstr "Display Logic"
+
+#: admin/partials/thrive-clever-widgets-popup.php:15
+msgid "Use this form to set when your widgets will be displayed."
+msgstr "Use this form to set when your widgets will be displayed."
+
+#: admin/partials/thrive-clever-widgets-popup.php:22
+msgid "Exclusions"
+msgstr "Exclusions"
+
+#: admin/partials/thrive-clever-widgets-popup.php:27
+msgid ""
+"Use this form to set when your widgets will not be displayed. This overrides "
+"the display logic above."
+msgstr ""
+"Use this form to set when your widgets will not be displayed. This overrides "
+"the display logic above."
+
+#: admin/partials/thrive-clever-widgets-popup.php:35
+msgid "Save as Template"
+msgstr "Save as Template"
+
+#: admin/partials/thrive-clever-widgets-popup.php:37
+msgid ""
+"You can save the display configuration that you've created if you'd like a "
+"template to re-use with other widgets."
+msgstr ""
+"You can save the display configuration that you've created if you'd like a "
+"template to re-use with other widgets."
+
+#: admin/partials/thrive-clever-widgets-popup.php:39
+msgid "Template name"
+msgstr "Template name"
+
+#: admin/partials/thrive-clever-widgets-popup.php:41
+msgid "Save Display Template"
+msgstr "Save Display Template"
+
+#: admin/partials/thrive-clever-widgets-popup.php:50
+msgid "Cancel"
+msgstr "Cancel"
+
+#: admin/partials/thrive-clever-widgets-popup.php:51
+msgid "Save & Close"
+msgstr "Save & Close"
+
+#: admin/partials/thrive-clever-widgets-popup.php:114
+msgid "Remove URL"
+msgstr "Remove URL"
+
+#: admin/partials/thrive-clever-widgets-popup.php:123
+msgid "Taxonomy:"
+msgstr "Taxonomy:"
+
+#: admin/partials/thrive-clever-widgets-popup.php:129
+msgid "Add new URL"
+msgstr "Add new URL"
+
+#: admin/partials/thrive-clever-widgets-popup.php:130
+msgid "Add URL"
+msgstr "Add URL"

@@ -6,6 +6,16 @@
 
 $white: #fff;
 $black: #000;
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
 
 [class*='nineteen_set'] {
   &.tve_gray_bg {
@@ -16,6 +26,7 @@ $black: #000;
 
 #tve_nineteen_set {
   [class*='nineteen_set'] {
+    @include clearfix();
     .tve_editor_main_content {
       max-width: 2200px;
       margin-left: 0;

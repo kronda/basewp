@@ -8,10 +8,22 @@
   font-family: 'Lato', sans-serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 $white: #fff;
 $black: #000;
 
 [class*='nine_set'] {
+  @include clearfix();
   &.tve_gray_bg {
     background-image: none;
     background: #c2c2c2;

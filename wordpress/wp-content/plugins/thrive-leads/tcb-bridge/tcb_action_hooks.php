@@ -356,6 +356,9 @@ function tve_leads_get_form_layout($current_templates, $post_id, $post_type)
     }
 
     $form_type = tve_leads_get_form_type_from_variation($variation);
+    if (isset($variation['tpl']) && strpos($variation['tpl'], 'screen_filler') !== false) {
+        $form_type = 'screen_filler';
+    }
 
     if (!array_key_exists($form_type, $available)) {
         return $current_templates;
@@ -417,6 +420,15 @@ function tve_leads_get_form_layout($current_templates, $post_id, $post_type)
     } else {
         /* include the custom fonts, if any -> this is the preview page */
         tve_leads_enqueue_custom_fonts($variation);
+    }
+
+    $globals = !empty($variation[TVE_LEADS_FIELD_GLOBALS]) ? $variation[TVE_LEADS_FIELD_GLOBALS] : array();
+    if (!empty($globals['js_sdk'])) {
+        foreach ($globals['js_sdk'] as $handle) {
+            $link = tve_social_get_sdk_link($handle);
+            $js['tve_js_sdk_' . $handle] = $link;
+            wp_script_is('tve_js_sdk_' . $handle) || wp_enqueue_script('tve_js_sdk_' . $handle, $link, array(), false);
+        }
     }
 
     /* "emulate" the default Thrive Lightbox using the same CSS for that */
@@ -1064,7 +1076,7 @@ function tve_leads_editor_check_tcb_version($valid)
         return $valid;
     }
 
-    if(!$valid) {
+    if (!$valid) {
         return false;
     }
 

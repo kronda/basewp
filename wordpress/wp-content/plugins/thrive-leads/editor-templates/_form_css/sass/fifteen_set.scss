@@ -8,6 +8,17 @@
   font-family: 'Roboto Slab', serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 @font-face {
   font-family: 'tve-leads-fifteen-set-icons';
   src: url('fonts/fifteen_set/fifteen_set_icons.eot?kbj5hd');
@@ -23,6 +34,7 @@ $white: #fff;
 $black: #000;
 
 [class*='fifteen_set'] {
+  @include clearfix();
   &.tve_gray_bg {
     background-image: none;
     background: #c2c2c2;

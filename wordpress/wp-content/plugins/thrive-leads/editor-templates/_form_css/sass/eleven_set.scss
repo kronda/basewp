@@ -4,6 +4,17 @@
   font-family: 'Lato', sans-serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 @font-face {
   font-family: 'tve-leads-eleven-set-icons';
   src: url('fonts/eleven_set/eleven_set_icons.eot?-kbj5hd');
@@ -19,6 +30,7 @@ $white: #fff;
 $black: #000;
 
 [class*='eleven_set'] {
+  @include clearfix();
   &.tve_gray_bg {
     background-image: none;
     background: #c2c2c2;

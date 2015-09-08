@@ -4,9 +4,22 @@
   font-family: 'Open Sans', sans-serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 $white: #fff;
 $black: #000;
-
+[class*='tve_two_set'] {
+  @include clearfix();
+}
 body {
   #tve_two_set {
     @include opensans();
@@ -71,10 +84,8 @@ body {
     .tve_btn.tve_btn1 {
       @include opensans();
       border-radius: 9px;
-      box-shadow:
-              0 0 3px 0 rgba($black, .3),
-              1px 1px 0 0 rgba($white, .3) inset
-      ;
+      box-shadow: 0 0 3px 0 rgba($black, .3),
+      1px 1px 0 0 rgba($white, .3) inset;
       font-weight: 400;
       &.tve_normalBtn {
         font-size: 42px;
@@ -84,10 +95,8 @@ body {
         }
       }
       &:hover {
-        box-shadow:
-                0 0 3px 0 rgba($black, .3),
-                7px 7px 21px 0 rgba($white, .22) inset
-        ;
+        box-shadow: 0 0 3px 0 rgba($black, .3),
+        7px 7px 21px 0 rgba($white, .22) inset;
       }
       &:active, &:focus {
         box-shadow: none;
@@ -116,15 +125,11 @@ body {
       button {
         @include opensans();
         border-radius: 9px;
-        box-shadow:
-                0 0 3px 0 rgba($black, .3),
-                1px 1px 0 0 rgba($white, .3) inset
-        ;
+        box-shadow: 0 0 3px 0 rgba($black, .3),
+        1px 1px 0 0 rgba($white, .3) inset;
         &:hover {
-          box-shadow:
-                  0 0 3px 0 rgba($black, .3),
-                  7px 7px 21px 0 rgba($white, .22) inset
-          ;
+          box-shadow: 0 0 3px 0 rgba($black, .3),
+          7px 7px 21px 0 rgba($white, .22) inset;
         }
         &:active, &:focus {
           box-shadow: none;
@@ -1032,13 +1037,13 @@ $color-pallete: 'blue' #23648c #32617d #1d5374 #2ea2cc #2a97be #4cafd3 #2ea2cc #
       .tve_two_set_vms_step1 {
         .tve_btn.tve_btn1.tve_normalBtn {
           font-size: 20px;
-          line-height: 25px!important;
+          line-height: 25px !important;
         }
         .settwo_ms_heading {
-          font-size: 40px!important;
+          font-size: 40px !important;
         }
         .settwo_ms_paragraph {
-          font-size: 18px!important;
+          font-size: 18px !important;
         }
         .tve_oth {
           .tve_image_caption {
@@ -1050,13 +1055,13 @@ $color-pallete: 'blue' #23648c #32617d #1d5374 #2ea2cc #2a97be #4cafd3 #2ea2cc #
       .tve_two_set_vms_step2 {
         .tve_btn.tve_btn1.tve_normalBtn {
           font-size: 20px;
-          line-height: 25px!important;
+          line-height: 25px !important;
         }
         .settwo_ms_heading {
-          font-size: 40px!important;
+          font-size: 40px !important;
         }
         .settwo_ms_paragraph {
-          font-size: 18px!important;
+          font-size: 18px !important;
         }
       }
       .tve-ribbon-content {
@@ -1084,12 +1089,12 @@ $color-pallete: 'blue' #23648c #32617d #1d5374 #2ea2cc #2a97be #4cafd3 #2ea2cc #
   #tve_two_set {
     .tve_two_set_vms_step1 {
       .settwo_ms_paragraph {
-        margin-bottom: 15px!important;
+        margin-bottom: 15px !important;
       }
     }
     .tve_two_set_vms_step2 {
       .settwo_ms_paragraph {
-        margin-bottom: 15px!important;
+        margin-bottom: 15px !important;
       }
       #tve_editor {
         .thrv_lead_generation.thrv_lead_generation_vertical {

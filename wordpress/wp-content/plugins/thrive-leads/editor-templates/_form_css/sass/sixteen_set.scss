@@ -3,19 +3,32 @@
 @mixin roboto {
   font-family: 'Roboto', sans-serif;
 }
+
 @mixin robotocondensed {
   font-family: 'Roboto Condensed', sans-serif;
 }
+
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 $white: #fff;
 $black: #000;
 
 [class*='sixteen_set'] {
+  @include clearfix();
   &.tve_gray_bg {
     background-image: none;
     background: #c2c2c2;
   }
 }
-
 
 #tve_sixteen_set {
   [class*='sixteen_set'] {
@@ -152,8 +165,7 @@ $black: #000;
   }
 }
 
-$color-pallete:
-'blue' #294f89 #34588f #192f52 #192f52,
+$color-pallete: 'blue' #294f89 #34588f #192f52 #192f52,
 'black' #222222 #2d2d2d #0e0e0e #0e0e0e,
 'green' #7e9334 #85993e #4c581f #4c581f,
 'white' #666666 #6e6e6e #292929 #fff,

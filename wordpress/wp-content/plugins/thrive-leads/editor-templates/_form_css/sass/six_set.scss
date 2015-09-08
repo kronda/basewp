@@ -8,6 +8,17 @@
   font-family: 'PT Serif', serif;
 }
 
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
 @font-face {
   font-family: 'tve-leads-six-set-icons';
   src: url('fonts/six_set/six_set_icons.eot?-o8i8n4');
@@ -18,7 +29,6 @@
   font-weight: normal;
   font-style: normal;
 }
-
 
 [class^="six-set-icon"], [class*=" six-set-icon"] {
   color: inherit;
@@ -43,6 +53,7 @@ $white: #fff;
 $black: #000;
 
 [class*='six_set'] {
+  @include clearfix();
   &.tve_gray_bg {
     background-image: none;
   }
