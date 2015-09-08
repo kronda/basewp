@@ -10,6 +10,7 @@ require_once 'class.conditional.php';
  * 
  * @author Srdjan
  */
+if ( !class_exists('WPToolset_Cred') ){  
 class WPToolset_Cred
 {
 
@@ -85,4 +86,5 @@ class WPToolset_Cred
         return $data;
     }
 
+}
 }

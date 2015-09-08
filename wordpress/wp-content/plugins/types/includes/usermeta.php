@@ -58,14 +58,16 @@ function wpcf_admin_usermeta_get_ajax_link($status, $group_id)
     /**
      * build link
      */
-    return add_query_arg(
-        array(
-            'action' => 'wpcf_ajax',
-            'wpcf_action' => $status.'_user_group',
-            'group_id' => $group_id,
-            'wpcf_ajax_update' => 'wpcf_list_ajax_response_' . $group_id,
-            '_wpnonce' => '' . wp_create_nonce($status.'_user_group'),
-        ),
-        admin_url('admin-ajax.php')
+    return esc_url(
+        add_query_arg(
+            array(
+                'action' => 'wpcf_ajax',
+                'wpcf_action' => $status.'_user_group',
+                'group_id' => $group_id,
+                'wpcf_ajax_update' => 'wpcf_list_ajax_response_' . $group_id,
+                '_wpnonce' => '' . wp_create_nonce($status.'_user_group'),
+            ),
+            admin_url('admin-ajax.php')
+        )
     );
 }

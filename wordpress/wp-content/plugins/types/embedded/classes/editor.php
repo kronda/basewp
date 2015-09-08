@@ -168,8 +168,7 @@ class WPCF_Editor
             $this->_data['tabs']['display'] = array(
                 'menu_title' => __( 'Display', 'wpcf' ),
                 'title' => __( 'Display', 'wpcf' ),
-                'content' => sprintf( __( 'There are no additional display options for the %s field.',
-                                'wpcf' ),
+                'content' => sprintf( __( 'There are no additional display options for the %s field.', 'wpcf' ),
                         $this->_data['field_type_data']['title'] ),
             );
         }

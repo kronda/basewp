@@ -2,8 +2,8 @@
 
 /**
  * Register data (called automatically).
- * 
- * @return type 
+ *
+ * @return type
  */
 function wpcf_fields_wysiwyg() {
     $settings = array(
@@ -22,9 +22,9 @@ function wpcf_fields_wysiwyg() {
 
 /**
  * Meta box form.
- * 
+ *
  * @param type $field
- * @return array 
+ * @return array
  */
 function wpcf_fields_wysiwyg_meta_box_form( $field, $f ) {
 
@@ -111,9 +111,9 @@ function wpcf_fields_wysiwyg_css() {
 
 /**
  * View function.
- * 
+ *
  * @param type $params
- * @return type 
+ * @return type
  */
 function wpcf_fields_wysiwyg_view( $params ) {
     $output = '';
@@ -128,11 +128,14 @@ function wpcf_fields_wysiwyg_view( $params ) {
         $output .= '>';
     }
 
+    remove_shortcode('playlist', 'wp_playlist_shortcode');
+
+    $content = stripslashes( $params['field_value'] );
+
     if ( isset( $params['suppress_filters'] ) && $params['suppress_filters'] == 'true' ) {
         $the_content_filters = array(
             'wptexturize', 'convert_smilies', 'convert_chars', 'wpautop',
             'shortcode_unautop', 'prepend_attachment', 'capital_P_dangit', 'do_shortcode');
-        $content = htmlspecialchars_decode( stripslashes( $params['field_value'] ) );
         foreach ($the_content_filters as $func) {
             if (  function_exists( $func ) ) {
                 $content = call_user_func($func, $content);
@@ -140,23 +143,57 @@ function wpcf_fields_wysiwyg_view( $params ) {
         }
         $output .= $content;
     } else {
-        /**
-         * remove_shortcode playlist to avoid htmlspecialchars_decode on json 
-         * data
-         */
-        remove_shortcode('playlist', 'wp_playlist_shortcode');
-        $output .= apply_filters( 'the_content', htmlspecialchars_decode( stripslashes( $params['field_value'] ) ) );
-        if ( preg_match_all('/playlist[^\]]+/', $output, $matches ) ) {
-            foreach( $matches[0] as $one ) {
-                $re = '/'.$one.'/';
-                $one = preg_replace('/\&\#(8221|8243);/', '"', $one);
-                $output = preg_replace($re, $one, $output);
-            }
-        }
-        add_shortcode( 'playlist', 'wp_playlist_shortcode' );
+        $filter_state = new WPCF_WP_filter_state( 'the_content' );
+        $output .= apply_filters( 'the_content', $content );
+        $filter_state->restore( );
     }
+
+    if ( preg_match_all('/playlist[^\]]+/', $output, $matches ) ) {
+        foreach( $matches[0] as $one ) {
+            $re = '/'.$one.'/';
+            $one = preg_replace('/\&\#(8221|8243);/', '"', $one);
+            $output = preg_replace($re, $one, $output);
+        }
+    }
+    add_shortcode( 'playlist', 'wp_playlist_shortcode' );
+
     if ( !empty( $params['style'] ) || !empty( $params['class'] ) ) {
         $output .= '</div>';
     }
     return $output;
+}
+
+/**
+ * Records the WP filter state.
+ *
+ * @since 1.9.1
+ */
+
+class WPCF_WP_filter_state {
+
+    private $current_index;
+    private $tag;
+
+    public function __construct( $tag ) {
+        global $wp_filter;
+
+        $this->tag = $tag;
+
+        if ( isset( $wp_filter[$tag] ) ) {
+            $this->current_index = current($wp_filter[$tag]);
+        }
+    }
+
+    public function restore( ) {
+        global $wp_filter;
+
+        if ( isset( $wp_filter[$this->tag] ) && $this->current_index ) {
+            reset($wp_filter[$this->tag]);
+            while ( $this->current_index && current($wp_filter[$this->tag]) && $this->current_index != current($wp_filter[$this->tag]) ) {
+                next( $wp_filter[$this->tag] );
+            }
+        }
+
+    }
+
 }

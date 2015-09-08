@@ -35,13 +35,14 @@ function wpcf_admin_custom_taxonomies_form() {
                 flush_rewrite_rules();
             }
         } else {
-            wpcf_admin_message( __( 'Wrong custom taxonomy specified', 'wpcf' ),
-                    'error' );
+            wpcf_admin_message( __( 'Wrong custom taxonomy specified', 'wpcf' ), 'error' );
             return false;
         }
     } else {
         $ct = wpcf_custom_taxonomies_default();
     }
+
+    $current_user_can_edit = WPCF_Roles::user_can_edit('custom-taxonomy', $ct);
 
     $form = array();
     /**
@@ -60,7 +61,7 @@ function wpcf_admin_custom_taxonomies_form() {
     $form['#form']['callback'] = 'wpcf_admin_custom_taxonomies_form_submit';
     $form['#form']['redirection'] = false;
 
-    if ( $update ) {
+    if ( $current_user_can_edit && $update ) {
         $form['id'] = array(
             '#type' => 'hidden',
             '#value' => $id,
@@ -76,7 +77,10 @@ function wpcf_admin_custom_taxonomies_form() {
 
     $form['form-open'] = array(
         '#type' => 'markup',
-        '#markup' => '<div id="poststuff">',
+        '#markup' => sprintf(
+            '<div id="poststuff" class="%s">',
+            $current_user_can_edit? '':'wpcf-types-read-only'
+        ),
     );
 
     $form['form-metabox-holder-columns-2-open'] = array(
@@ -91,8 +95,7 @@ function wpcf_admin_custom_taxonomies_form() {
 
     $form['table-1-open'] = array(
         '#type' => 'markup',
-        '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Name and description',
-                'wpcf' ) . '</th></tr></thead><tbody>',
+        '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Name and description', 'wpcf' ) . '</th></tr></thead><tbody>',
     );
     $table_row = '<tr><td><LABEL></td><td><ERROR><ELEMENT></td></tr>';
 
@@ -100,9 +103,8 @@ function wpcf_admin_custom_taxonomies_form() {
         '#type' => 'textfield',
         '#name' => 'ct[labels][name]',
         '#title' => __( 'Custom taxonomy name plural', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
-        '#description' => '<strong>' . __( 'Enter in plural!', 'wpcf' )
-        . '.',
-        '#value' => isset( $ct['labels']['name'] ) ? $ct['labels']['name'] : '',
+        '#description' => '<strong>' . __( 'Enter in plural!', 'wpcf' ) . '.',
+        '#value' => isset( $ct['labels']['name'] ) ? wp_kses_post($ct['labels']['name']):'',
         '#validate' => array(
             'required' => array('value' => true),
             'maxlength' => array('value' => 30),
@@ -116,12 +118,9 @@ function wpcf_admin_custom_taxonomies_form() {
     $form['name-singular'] = array(
         '#type' => 'textfield',
         '#name' => 'ct[labels][singular_name]',
-        '#title' => __( 'Custom taxonomy name singular', 'wpcf' ) . ' (<strong>' . __( 'required',
-                'wpcf' ) . '</strong>)',
-        '#description' => '<strong>' . __( 'Enter in singular!', 'wpcf' )
-        . '</strong><br />'
-        . '.',
-        '#value' => isset( $ct['labels']['singular_name'] ) ? $ct['labels']['singular_name'] : '',
+        '#title' => __( 'Custom taxonomy name singular', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
+        '#description' => '<strong>' . __( 'Enter in singular!', 'wpcf' ) . '</strong><br />' . '.',
+        '#value' => isset( $ct['labels']['singular_name'] ) ? wp_kses_post($ct['labels']['singular_name']):'',
         '#validate' => array(
             'required' => array('value' => true),
             'maxlength' => array('value' => 30),
@@ -155,8 +154,7 @@ function wpcf_admin_custom_taxonomies_form() {
         '#title' => __( 'Slug', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
         '#description' => '<strong>' . __( 'Enter in singular!', 'wpcf' )
         . '</strong><br />' . __( 'Machine readable name.', 'wpcf' )
-        . '<br />' . __( 'If not provided - will be created from singular name.',
-                'wpcf' ) . '<br />',
+        . '<br />' . __( 'If not provided - will be created from singular name.', 'wpcf' ) . '<br />',
         '#value' => isset( $ct['slug'] ) ? $ct['slug'] : '',
         '#pattern' => $table_row,
         '#inline' => true,
@@ -219,7 +217,10 @@ function wpcf_admin_custom_taxonomies_form() {
             $meta_boxes[$meta_box_key] = $ct;
         }
     }
-    $meta_boxes[ 'submitdiv'] = false;
+
+    if ( !$current_user_can_edit) {
+        $meta_boxes[ 'submitdiv'] = false;
+    }
 
     foreach ( $meta_box_order as $key => $value ) {
         if ( is_array($value) ) {
@@ -238,7 +239,7 @@ function wpcf_admin_custom_taxonomies_form() {
     );
     foreach( $meta_box_order['side'] as $key ) {
         $function = sprintf('wpcf_admin_metabox_%s', $key);
-        if ( is_callable($function) ) {
+        if ( is_callable($function) && isset($meta_boxes[$key])) {
             $form += $function($meta_boxes[$key], 'side');
             unset($meta_boxes[$key]);
         }
@@ -259,7 +260,7 @@ function wpcf_admin_custom_taxonomies_form() {
     );
     foreach( $meta_box_order['normal'] as $key ) {
         $function = sprintf('wpcf_admin_metabox_%s', $key);
-        if ( is_callable($function) ) {
+        if ( is_callable($function) && isset($meta_boxes[$key])) {
             $form += $function($meta_boxes[$key]);
             unset($meta_boxes[$key]);
         }
@@ -293,7 +294,14 @@ function wpcf_admin_custom_taxonomies_form() {
         '#markup' => '</div></div>',
     );
 
-    return $form;
+    /**
+     * return form if current_user_can edit
+     */
+    if ( $current_user_can_edit) {
+        return $form;
+    }
+
+    return wpcf_admin_common_only_show($form);
 }
 
 /**
@@ -369,6 +377,12 @@ function wpcf_admin_custom_taxonomies_form_submit( $form )
 
     // Check overwriting
     if ( !$update && array_key_exists( $tax, $custom_taxonomies ) ) {
+    /**
+     * set last edit author
+     */
+
+    $data[WPCF_AUTHOR] = get_current_user_id();
+
         wpcf_admin_message( __( 'Custom taxonomy already exists', 'wpcf' ), 'error' );
         return false;
     }
@@ -383,8 +397,16 @@ function wpcf_admin_custom_taxonomies_form_submit( $form )
     // Check if renaming
     if ( $update && $data['wpcf-tax'] != $tax ) {
         global $wpdb;
-        $wpdb->update( $wpdb->term_taxonomy, array('taxonomy' => $tax),
-                array('taxonomy' => $data['wpcf-tax']), array('%s'), array('%s')
+        $wpdb->update(
+            $wpdb->term_taxonomy,
+            array(
+                'taxonomy' => esc_sql($tax)
+            ),
+            array(
+                'taxonomy' => esc_sql($data['wpcf-tax']),
+            ),
+            array('%s'),
+            array('%s')
         );
         // Sync action
         do_action( 'wpcf_taxonomy_renamed', $tax, $data['wpcf-tax'] );
@@ -418,6 +440,15 @@ function wpcf_admin_custom_taxonomies_form_submit( $form )
 
     $custom_taxonomies[$tax] = $data;
     $custom_taxonomies[$tax][TOOLSET_EDIT_LAST] = time();
+
+    /**
+     * set last edit author
+     */
+    $custom_taxonomies[$tax][WPCF_AUTHOR] = get_current_user_id();
+
+    /**
+     * save
+     */
     update_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $custom_taxonomies );
 
     // WPML register strings
@@ -425,22 +456,23 @@ function wpcf_admin_custom_taxonomies_form_submit( $form )
 
     wpcf_admin_message_store(
             apply_filters( 'types_message_custom_taxonomy_saved',
-                    __( 'Custom taxonomy saved', 'wpcf' ), $data, $update ),
-            'custom' );
+                    __( 'Custom taxonomy saved', 'wpcf' ), $data, $update ), 'custom' );
 
     // Flush rewrite rules
     flush_rewrite_rules();
 
     // Redirect
-    wp_redirect(
-        add_query_arg(
-            array(
-                'page' => 'wpcf-edit-tax',
-                'wpcf-tax' => $tax,
-                'wpcf-rewrite' => 1,
-                'wpcf-message' => get_user_option('types-modal')
-            ),
-            admin_url( 'admin.php' )
+    wp_safe_redirect(
+        esc_url_raw(
+            add_query_arg(
+                array(
+                    'page' => 'wpcf-edit-tax',
+                    'wpcf-tax' => $tax,
+                    'wpcf-rewrite' => 1,
+                    'wpcf-message' => get_user_option('types-modal')
+                ),
+                admin_url( 'admin.php' )
+            )
         )
     );
     die();
@@ -606,7 +638,7 @@ function wpcf_admin_metabox_labels($data)
             '#name' => 'ct[labels][' . $name . ']',
             '#title' => $label['label'],
             '#description' => $label['description'],
-            '#value' => isset( $data['labels'][$name] ) ? $data['labels'][$name] : '',
+            '#value' => isset( $data['labels'][$name] ) ? wp_kses_post($data['labels'][$name]):'',
             '#inline' => true,
             '#pattern' => '<tr><td><LABEL></td><td><ELEMENT></td><td><DESCRIPTION></td>',
         );
@@ -626,9 +658,6 @@ function wpcf_admin_metabox_options($data)
         '#type' => 'radios',
         '#name' => 'ct[hierarchical]',
         '#default_value' => (empty( $data['hierarchical'] ) || $data['hierarchical'] == 'flat') ? 'flat' : 'hierarchical',
-//        '#title' => __('hierarchical', 'wpcf'),
-//        '#description' => __('Is this taxonomy hierarchical (have descendants) like categories or not hierarchical like tags.',
-//                'wpcf') . '<br />' . __('Default: false.', 'wpcf'),
         '#inline' => true,
         '#options' => array(
             __( 'Hierarchical - like post categories, with parent / children relationship and checkboxes to select taxonomy', 'wpcf' ) => 'hierarchical',

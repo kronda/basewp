@@ -230,18 +230,27 @@ var wptCond = (function ($) {
                  */
                 if ($obj.length < 1) {
                     $obj = $('[data-wpt-name="' + name + '[datepicker]"]', formID);
+                    if ($obj.length < 1) {
+                        $obj = $('[data-item_name="date-' + name + '"]', formID);
+                    }
                 }
                 /**
                  * handle skype field
                  */
                 if ($obj.length < 1) {
                     $obj = $('[data-wpt-name="' + name + '[skypename]"]', formID);
+                    if ($obj.length < 1) {
+                        $obj = $('[data-item_name="skype-' + name + '"]', formID);
+                    }
                 }
                 /**
                  * handle checkboxes field
                  */
                 if ($obj.length < 1) {
                     $obj = $('[data-wpt-name="' + name + '[]"]', formID);
+                    if ($obj.length < 1) {
+                        $obj = $('[data-item_name="checkboxes-' + name + '"]', formID);
+                    }
                 }
                 /**
                  * catch by id

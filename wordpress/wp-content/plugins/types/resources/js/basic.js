@@ -16,22 +16,6 @@ jQuery(document).ready(function($){
         }
     });
     /**
-     * settings toolset messages
-     */
-    $('#wpcf-toolset-messages-form input[type=checkbox]').on('change', function() {
-        parent = $(this).closest('form');
-        $('.spinner', parent).show();
-        $('.updated', parent).hide();
-        var data = {
-            action: 'toolset_messages',
-            value: $(this).attr('checked')
-
-        };
-        $.post(ajaxurl, data, function(response) {
-            $('.spinner', parent).hide().after(response);
-        });
-    });
-    /**
      * allow to sort CF
      */
     $("#custom_fields ul").sortable();

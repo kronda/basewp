@@ -246,10 +246,26 @@ class Enlimbo_Forms_Wpcf
      */
     private function _isValidType( $type )
     {
-        return in_array( $type,
-                        array('select', 'checkboxes', 'checkbox', 'radios',
-                    'radio', 'textfield', 'textarea', 'file', 'submit', 'reset',
-                    'hidden', 'fieldset', 'markup', 'button') );
+        return in_array(
+            $type,
+            array(
+                'button',
+                'checkbox',
+                'checkboxes',
+                'fieldset',
+                'file',
+                'hidden',
+                'markup',
+                'radio',
+                'radios',
+                'reset',
+                'select',
+                'submit',
+                'textarea',
+                'textfield',
+                'thumbnail',
+            )
+        );
     }
 
     /**
@@ -302,8 +318,7 @@ class Enlimbo_Forms_Wpcf
                 if ( isset( $element['#attributes']['id'] ) ) {
                     $element['#id'] = $element['#attributes']['id'];
                 } else {
-                    $element['#id'] = $element['#type'] . '-'
-                            . $this->_count( $element['#type'] );
+                    $element['#id'] = $element['#type'] . '-' . $this->_count( $element['#type'] );
                 }
             }
             if ( isset( $this->_errors[$element['#id']] ) ) {
@@ -378,11 +393,28 @@ class Enlimbo_Forms_Wpcf
         $element['_render']['suffix'] = isset( $element['#suffix'] ) ? $element['#suffix'] . "\r\n" : '';
         $element['_render']['before'] = isset( $element['#before'] ) ? $element['#before'] . "\r\n" : '';
         $element['_render']['after'] = isset( $element['#after'] ) ? $element['#after'] . "\r\n" : '';
-        $element['_render']['label'] = isset( $element['#title'] ) ? '<label class="'
-                . $this->css_class . '-label ' . $this->css_class . '-'
-                . $element['#type'] . '-label" for="' . $element['#id'] . '">'
-                . stripslashes( $element['#title'] )
-                . '</label>' . "\r\n" : '';
+        /**
+         * label
+         */
+        $element['_render']['label'] = $lebel = '';
+        if (isset($element['#label'])) {
+            $label = $element['#label'];
+        } else if (isset($element['#title'])) {
+            $label = $element['#title'];
+        }
+        if ( !empty($label) ) {
+            $element['_render']['label'] = sprintf(
+                '<label class="%s-label %s-%s-label" for="%s">%s</label>',
+                esc_attr($this->css_class),
+                esc_attr($this->css_class),
+                esc_attr($element['#type']),
+                esc_attr($element['#id']),
+                stripslashes( $label )
+            );
+        }
+        /**
+         * title
+         */
         $element['_render']['title'] = $this->_setElementTitle( $element );
         $element['_render']['description'] = !empty( $element['#description'] ) ? $this->_setElementDescription( $element ) : '';
         $element['_render']['error'] = $this->renderError( $element ) . "\r\n";
@@ -402,8 +434,7 @@ class Enlimbo_Forms_Wpcf
     private function _pattern( $pattern, $element )
     {
         foreach ( $element['_render'] as $key => $value ) {
-            $pattern = str_replace( '<' . strtoupper( $key ) . '>', $value,
-                    $pattern );
+            $pattern = str_replace( '<' . strtoupper( $key ) . '>', $value, $pattern );
         }
         return $pattern;
     }
@@ -458,11 +489,11 @@ class Enlimbo_Forms_Wpcf
     {
         $element['#description'] = stripslashes( $element['#description'] );
         $output = "\r\n"
-                . '<div class="description '
+                . '<p class="description '
                 . $this->css_class . '-description '
                 . $this->css_class . '-description-' . $element['#type'] . ' '
                 . 'description-' . $element['#type'] . '">'
-                . $element['#description'] . "</div>\r\n";
+                . $element['#description'] . "</p>\r\n";
         return $output;
     }
 
@@ -612,11 +643,13 @@ class Enlimbo_Forms_Wpcf
         $clone = $element;
         $clone['#type'] = 'checkbox';
         $element['_render']['element'] = '';
-        foreach ( $element['#options'] as $ID => $value ) {
-            if ( !is_array( $value ) ) {
-                $value = array('#title' => $ID, '#value' => $value, '#name' => $element['#name'] . '[]');
+        if ( isset($element['#options']) && !empty($element['#options'] ) ) {
+            foreach ( $element['#options'] as $ID => $value ) {
+                if ( !is_array( $value ) ) {
+                    $value = array('#title' => $ID, '#value' => $value, '#name' => $element['#name'] . '[]');
+                }
+                $element['_render']['element'] .= $this->checkbox( $value );
             }
-            $element['_render']['element'] .= $this->checkbox( $value );
         }
         $pattern = isset( $element['#pattern'] ) ? $element['#pattern'] : '<BEFORE><PREFIX><TITLE><DESCRIPTION><ELEMENT><SUFFIX><AFTER>';
         $output = $this->_pattern( $pattern, $element );
@@ -640,8 +673,23 @@ class Enlimbo_Forms_Wpcf
         $element['_render']['element'] .= isset( $element['#value'] ) ? htmlspecialchars( $element['#value'] ) : $this->_count['radio'];
         $element['_render']['element'] .= '"';
         $element['_render']['element'] .= $element['_attributes_string'];
-        $element['_render']['element'] .= ( isset( $element['#value'] )
-                && $element['#value'] === $element['#default_value']) ? ' checked="checked"' : '';
+        /**
+         * checked
+         */
+        if (
+            isset( $element['#value'] )
+            && (
+                $element['#value'] === $element['#default_value']
+                || (
+                    is_string($element['#value'])
+                    && '0' == $element['#value']
+                    && is_numeric($element['#default_value'])
+                    && 0 == $element['#default_value']
+                )
+            )
+        ) {
+            $element['_render']['element'] .= ' checked="checked"';
+        }
         if ( isset( $element['#disable'] ) && $element['#disable'] ) {
             $element['_render']['element'] .= ' disabled="disabled"';
         }
@@ -712,8 +760,7 @@ class Enlimbo_Forms_Wpcf
             $value['#type'] = 'option';
             $element['_render']['element'] .= '<option value="'
                     . htmlspecialchars( $value['#value'] ) . '"';
-            $element['_render']['element'] .= ( $element['#default_value']
-                    == $value['#value']) ? ' selected="selected"' : '';
+            $element['_render']['element'] .= ( isset($element['#default_value']) && $element['#default_value'] == $value['#value']) ? ' selected="selected"' : '';
             $element['_render']['element'] .= $this->_setElementAttributes( $value );
             $element['_render']['element'] .= '>';
             $element['_render']['element'] .= $this->strip( isset( $value['#title'] ) ? $value['#title'] : $value['#value'] );
@@ -832,7 +879,15 @@ class Enlimbo_Forms_Wpcf
      */
     public function markup( $element )
     {
-        return $element['#markup'];
+        if ( isset( $element['#pattern'] ) ) {
+            $element['_render']['label'] = isset($element['#title'])? $element['#title']:__('[no title]', 'wpcf');
+            $element['_render']['element'] = isset($element['#markup'])? $element['#markup']:'';
+            return $this->_pattern( $element['#pattern'], $element );
+        }
+        if ( isset($element['#markup'] ) ) {
+            return $element['#markup'];
+        }
+        return '';
     }
 
     /**
@@ -852,6 +907,9 @@ class Enlimbo_Forms_Wpcf
         $output .= sprintf( 'value="%s" ', isset( $element['#value'] ) ? $element['#value'] : 1 );
         $output .= $element['_attributes_string'];
         $output .= ' />';
+        if ( isset( $element['#after'] ) ) {
+            $output .= $element['#after'];
+        }
         return $output;
     }
 
@@ -878,7 +936,42 @@ class Enlimbo_Forms_Wpcf
     }
 
     /**
-     * Returns HTML formatted output for radio element.
+     * Returns HTML formatted output for thumbnail element.
+     *
+     * @param array $element
+     * @return string
+     */
+    public function thumbnail( $element )
+    {
+        /**
+         * allowed only on admin
+         */
+        if ( !is_admin() ) {
+            return '';
+        }
+        global $post;
+        if ( is_object($post) ) {
+            wp_enqueue_media(array('post' => $post->ID));
+        }
+
+        $image = $element['#value']? wp_get_attachment_image($element['#value']):'';
+        $element['#attributes'] = array(
+            'class' => 'feature-image-id',
+        );
+        $element['#after'] = sprintf(
+            '<div class="wpt-file-preview">%s</div><a href="#" id="%s_media" class="feature-image" data-set="%s" data-remove="%s" data-value="%d" data-wpt-type="image">%s</a>',
+            $image,
+            $element['#id'],
+            __('Set featured image', 'wpcf'),
+            __('Remove featured image', 'wpcf'),
+            $element['#value']? $element['#value']:0,
+            $image? __('Remove featured image', 'wpcf'):__('Set featured image', 'wpcf')
+        );
+        return $this->hidden($element);
+    }
+
+    /**
+     * Returns HTML formatted output for submit element.
      *
      * Used by reset and button.
      *
@@ -900,6 +993,7 @@ class Enlimbo_Forms_Wpcf
         $output = $this->_pattern( $pattern, $element );
         return $output;
     }
+
 
     /**
      * Searches and returns submitted data for element.

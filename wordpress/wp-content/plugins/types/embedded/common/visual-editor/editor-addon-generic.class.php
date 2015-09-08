@@ -39,8 +39,9 @@ if( !class_exists( 'Editor_addon_generic' ) )
 			// Scripts
 			wp_register_script( 'icl_editor-script', EDITOR_ADDON_RELPATH . '/res/js/icl_editor_addon_plugin.js', array( 'jquery', 'quicktags', 'wplink' ) );
 			$editor_script_translations = array(
+				'wpv_insert_conditional_shortcode' => __( 'Insert conditional shortcode', 'wpv-views' ),
 				'wpv_conditional_button' => __( 'conditional output', 'wpv-views' ),
-                'wpv_conditional_callback_nonce' => wp_create_nonce( 'wpv_editor_callback' )
+				'wpv_editor_callback_nonce' => wp_create_nonce( 'wpv_editor_callback' )
 			);
 			wp_localize_script( 'icl_editor-script', 'icl_editor_localization_texts', $editor_script_translations );
             wp_register_script( 'icl_media-manager-js', EDITOR_ADDON_RELPATH . '/res/js/icl_media_manager.js', array( 'jquery', 'icl_editor-script' ) );

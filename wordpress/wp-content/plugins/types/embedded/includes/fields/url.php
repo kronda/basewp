@@ -59,8 +59,7 @@ function wpcf_fields_url_editor_callback( $field, $settings ) {
     }
     $settings['target_options'] = array(
         '_blank' => __( '_blank: Opens in a new window or tab', 'wpcf' ),
-        '_self' => __( '_self: Opens in the same frame as it was clicked',
-                'wpcf' ),
+        '_self' => __( '_self: Opens in the same frame as it was clicked', 'wpcf' ),
         '_parent' => __( '_parent: Opens in the parent frame', 'wpcf' ),
         '_top' => __( '_top: Opens in the full body of the window', 'wpcf' ),
         'framename' => __( 'framename: Opens in a named frame', 'wpcf' ),

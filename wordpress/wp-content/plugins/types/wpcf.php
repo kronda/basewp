@@ -5,7 +5,7 @@
   Description: Define custom post types, custom taxonomies and custom fields.
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com
-  Version: 1.7.7
+  Version: 1.8.5
  */
 /**
  *
@@ -16,7 +16,7 @@ if ( !defined( 'WPCF_VERSION' ) ) {
     /**
      * make sure that WPCF_VERSION in embedded/bootstrap.php is the same!
      */
-    define( 'WPCF_VERSION', '1.7.7' );
+    define( 'WPCF_VERSION', '1.8.5' );
 }
 
 define( 'WPCF_REPOSITORY', 'http://api.wp-types.com/' );
@@ -145,14 +145,18 @@ function wpcf_wp_init()
         //Add submenu Installer to Types
         function setup_installer()
         {
-            wpcf_admin_add_submenu_page(
-                array(
-                    'page_title' => __('Installer', 'wpcf'),
-                    'menu_title' => __('Installer', 'wpcf'),
-                    'menu_slug' => 'installer',
-                    'function' => 'installer_content'
-                )
-            );
+            if (
+                isset( $_GET['page'] ) 
+                && 'installer' == $_GET['page']
+            ) {
+                wpcf_admin_add_submenu_page(
+                    array(
+                        'menu_title' => __('Installer', 'wpcf'),
+                        'menu_slug' => 'installer',
+                        'function' => 'installer_content'
+                    )
+                );
+            }
         }
     }
 }
@@ -245,6 +249,8 @@ function wpcf_reserved_names()
         'error',
         'exact',
         'feed',
+        'field',
+        'fields',
         'format',
         'hour',
         'link_category',
@@ -261,9 +267,10 @@ function wpcf_reserved_names()
         'orderby',
         'p',
         'page',
-        'page_id',
         'paged',
+        'page_id',
         'pagename',
+        'parent',
         'pb',
         'perm',
         'post',

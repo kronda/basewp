@@ -36,11 +36,42 @@ function wpcf_admin_custom_types_form()
                 flush_rewrite_rules();
             }
         } else {
-            wpcf_admin_message( __( 'Wrong custom post type specified', 'wpcf' ), 'error' );
-            return false;
+            $buildin_post_types = wpcf_get_builtin_in_post_types();
+            if ( isset($buildin_post_types[$id]) ) {
+                $ct = get_object_vars(get_post_type_object($id));
+                $ct['labels'] = get_object_vars($ct['labels']);
+                $ct['slug'] = esc_attr($id);
+                $ct['_builtin'] = true;
+            } else {
+                wpcf_admin_message( __( 'Wrong custom post type specified', 'wpcf' ), 'error' );
+                return false;
+            }
         }
     } else {
         $ct = wpcf_custom_types_default();
+    }
+
+    $current_user_can_edit = WPCF_Roles::user_can_edit('custom-post-type', $ct);
+
+    /**
+     * sanitize _builtin
+     */
+    if ( !isset($ct['_builtin']) ) {
+        $ct['_builtin'] = false;
+    }
+
+    /**
+     * fix taxonomies assigment for builitin post types
+     */
+    if ( $ct['_builtin']) {
+        $taxonomies = get_taxonomies( '', 'objects' );
+        foreach( $taxonomies as $slug => $tax ) {
+            foreach( $tax->object_type as $post_slug ) {
+                if ( $ct['slug'] == $post_slug) {
+                    $ct['taxonomies'][$slug] = 1;
+                }
+            }
+        }
     }
 
     $form = array();
@@ -52,6 +83,7 @@ function wpcf_admin_custom_types_form()
     $form['postbox-controll'] = array(
         '#type' => 'markup',
         '#markup' => $markup,
+        '_builtin' => true,
     );
 
     /**
@@ -60,11 +92,12 @@ function wpcf_admin_custom_types_form()
     $form['#form']['callback'] = 'wpcf_admin_custom_types_form_submit';
     $form['#form']['redirection'] = false;
 
-    if ( $update ) {
+    if ( $current_user_can_edit && $update ) {
         $form['id'] = array(
             '#type' => 'hidden',
             '#value' => $id,
             '#name' => 'ct[wpcf-post-type]',
+            '_builtin' => true,
         );
         /**
          * update taxonomy too
@@ -96,30 +129,35 @@ function wpcf_admin_custom_types_form()
 
     $form['form-open'] = array(
         '#type' => 'markup',
-        '#markup' => '<div id="poststuff">',
+        '#markup' => sprintf(
+            '<div id="poststuff" class="%s">',
+            $current_user_can_edit? '':'wpcf-types-read-only'
+        ),
+        '_builtin' => true,
     );
 
     $form['form-metabox-holder-columns-2-open'] = array(
         '#type' => 'markup',
         '#markup' => '<div id="post-body" class="metabox-holder columns-2">',
+        '_builtin' => true,
     );
 
     $form['post-body-content-open'] = array(
         '#type' => 'markup',
         '#markup' => '<div id="post-body-content">',
+        '_builtin' => true,
     );
 
     $form['table-1-open'] = array(
         '#type' => 'markup',
-        '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Name and description',
-                'wpcf' ) . '</th></tr></thead><tbody>',
+        '#markup' => '<table id="wpcf-types-form-name-table" class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th colspan="2">' . __( 'Name and description', 'wpcf' ) . '</th></tr></thead><tbody>',
+        '_builtin' => true,
     );
     $table_row = '<tr><td><LABEL></td><td><ERROR><ELEMENT></td></tr>';
     $form['name'] = array(
         '#type' => 'textfield',
         '#name' => 'ct[labels][name]',
-        '#title' => __( 'Custom post type name plural', 'wpcf' ) . ' (<strong>' . __( 'required',
-                'wpcf' ) . '</strong>)',
+        '#title' => __( 'Custom post type name plural', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
         '#description' => '<strong>' . __( 'Enter in plural!', 'wpcf' )
         . '.',
         '#value' => isset( $ct['labels']['name'] ) ? $ct['labels']['name'] : '',
@@ -134,12 +172,12 @@ function wpcf_admin_custom_types_form()
             'data-wpcf_warning_same_as_slug_ignore' => $wpcf->post_types->message( 'warning_singular_plural_match_ignore' ),
             'placeholder' => __('Enter post type name plural', 'wpcf' ),
         ),
+        '_builtin' => true,
     );
     $form['name-singular'] = array(
         '#type' => 'textfield',
         '#name' => 'ct[labels][singular_name]',
-        '#title' => __( 'Custom post type name singular', 'wpcf' ) . ' (<strong>' . __( 'required',
-                'wpcf' ) . '</strong>)',
+        '#title' => __( 'Custom post type name singular', 'wpcf' ) . ' (<strong>' . __( 'required', 'wpcf' ) . '</strong>)',
         '#description' => '<strong>' . __( 'Enter in singular!', 'wpcf' )
         . '</strong><br />'
         . '.',
@@ -154,6 +192,7 @@ function wpcf_admin_custom_types_form()
             'placeholder' => __('Enter post type name singular', 'wpcf' ),
             'class' => 'js-wpcf-slugize-source',
         ),
+        '_builtin' => true,
     );
 
     /**
@@ -188,6 +227,7 @@ function wpcf_admin_custom_types_form()
             'class' => 'js-wpcf-slugize',
         ),
         '#id' => 'slug',
+        '_builtin' => true,
     );
     $form['description'] = array(
         '#type' => 'textarea',
@@ -231,32 +271,36 @@ function wpcf_admin_custom_types_form()
                 'admin site' => 'admin-site',
                 'admin tools' => 'admin-tools',
                 'admin users' => 'admin-users',
+                'album' => 'album',
                 'align center' => 'align-center',
                 'align left' => 'align-left',
                 'align none' => 'align-none',
                 'align right' => 'align-right',
                 'analytics' => 'analytics',
                 'archive' => 'archive',
-                'arrow down' => 'arrow-down',
-                'arrow down alt' => 'arrow-down-alt',
                 'arrow down alt2' => 'arrow-down-alt2',
-                'arrow left' => 'arrow-left',
-                'arrow left alt' => 'arrow-left-alt',
+                'arrow down alt' => 'arrow-down-alt',
+                'arrow down' => 'arrow-down',
                 'arrow left alt2' => 'arrow-left-alt2',
-                'arrow right' => 'arrow-right',
-                'arrow right alt' => 'arrow-right-alt',
+                'arrow left alt' => 'arrow-left-alt',
+                'arrow left' => 'arrow-left',
                 'arrow right alt2' => 'arrow-right-alt2',
-                'arrow up' => 'arrow-up',
-                'arrow up alt' => 'arrow-up-alt',
+                'arrow right alt' => 'arrow-right-alt',
+                'arrow right' => 'arrow-right',
                 'arrow up alt2' => 'arrow-up-alt2',
+                'arrow up alt' => 'arrow-up-alt',
+                'arrow up' => 'arrow-up',
                 'art' => 'art',
                 'awards' => 'awards',
                 'backup' => 'backup',
-                'book' => 'book',
                 'book alt' => 'book-alt',
+                'book' => 'book',
+                'building' => 'building',
                 'businessman' => 'businessman',
+                'calendar alt' => 'calendar-alt',
                 'calendar' => 'calendar',
                 'camera' => 'camera',
+                'carrot' => 'carrot',
                 'cart' => 'cart',
                 'category' => 'category',
                 'chart area' => 'chart-area',
@@ -266,11 +310,19 @@ function wpcf_admin_custom_types_form()
                 'clipboard' => 'clipboard',
                 'clock' => 'clock',
                 'cloud' => 'cloud',
+                'controls back' => 'controls-back',
+                'controls forward' => 'controls-forward',
+                'controls pause' => 'controls-pause',
+                'controls play' => 'controls-play',
+                'controls repeat' => 'controls-repeat',
+                'controls skipback' => 'controls-skipback',
+                'controls skipforward' => 'controls-skipforward',
+                'controls volumeoff' => 'controls-volumeoff',
+                'controls volumeon' => 'controls-volumeon',
                 'dashboard' => 'dashboard',
                 'desktop' => 'desktop',
                 'dismiss' => 'dismiss',
                 'download' => 'download',
-                'edit' => 'edit',
                 'editor aligncenter' => 'editor-aligncenter',
                 'editor alignleft' => 'editor-alignleft',
                 'editor alignright' => 'editor-alignright',
@@ -279,6 +331,7 @@ function wpcf_admin_custom_types_form()
                 'editor code' => 'editor-code',
                 'editor contract' => 'editor-contract',
                 'editor customchar' => 'editor-customchar',
+                'editor distractionfree' => 'editor-distractionfree',
                 'editor expand' => 'editor-expand',
                 'editor help' => 'editor-help',
                 'editor indent' => 'editor-indent',
@@ -301,12 +354,14 @@ function wpcf_admin_custom_types_form()
                 'editor underline' => 'editor-underline',
                 'editor unlink' => 'editor-unlink',
                 'editor video' => 'editor-video',
-                'email' => 'email',
+                'edit' => 'edit',
                 'email alt' => 'email-alt',
+                'email' => 'email',
+                'excerpt view' => 'excerpt-view',
                 'exerpt view' => 'exerpt-view',
                 'external' => 'external',
-                'facebook' => 'facebook',
                 'facebook alt' => 'facebook-alt',
+                'facebook' => 'facebook',
                 'feedback' => 'feedback',
                 'flag' => 'flag',
                 'format aside' => 'format-aside',
@@ -314,29 +369,33 @@ function wpcf_admin_custom_types_form()
                 'format chat' => 'format-chat',
                 'format gallery' => 'format-gallery',
                 'format image' => 'format-image',
+                'format links' => 'format-links',
                 'format quote' => 'format-quote',
+                'format standard' => 'format-standard',
                 'format status' => 'format-status',
                 'format video' => 'format-video',
                 'forms' => 'forms',
                 'googleplus' => 'googleplus',
+                'grid view' => 'grid-view',
                 'groups' => 'groups',
                 'hammer' => 'hammer',
                 'heart' => 'heart',
-                'id' => 'id',
                 'id alt' => 'id-alt',
+                'id' => 'id',
+                'images alt2' => 'images-alt2',
+                'images alt' => 'images-alt',
                 'image crop' => 'image-crop',
                 'image flip horizontal' => 'image-flip-horizontal',
                 'image flip vertical' => 'image-flip-vertical',
                 'image rotate left' => 'image-rotate-left',
                 'image rotate right' => 'image-rotate-right',
-                'images alt' => 'images-alt',
-                'images alt2' => 'images-alt2',
+                'index card' => 'index-card',
                 'info' => 'info',
                 'leftright' => 'leftright',
                 'lightbulb' => 'lightbulb',
                 'list view' => 'list-view',
-                'location' => 'location',
                 'location alt' => 'location-alt',
+                'location' => 'location',
                 'lock' => 'lock',
                 'marker' => 'marker',
                 'media archive' => 'media-archive',
@@ -353,17 +412,21 @@ function wpcf_admin_custom_types_form()
                 'microphone' => 'microphone',
                 'migrate' => 'migrate',
                 'minus' => 'minus',
+                'money' => 'money',
                 'nametag' => 'nametag',
                 'networking' => 'networking',
-                'no' => 'no',
                 'no alt' => 'no-alt',
+                'no' => 'no',
+                'palmtree' => 'palmtree',
                 'performance' => 'performance',
+                'phone' => 'phone',
                 'playlist audio' => 'playlist-audio',
                 'playlist video' => 'playlist-video',
-                'plus' => 'plus',
                 'plus alt' => 'plus-alt',
+                'plus' => 'plus',
                 'portfolio' => 'portfolio',
                 'post status' => 'post-status',
+                'post trash' => 'post-trash',
                 'pressthis' => 'pressthis',
                 'products' => 'products',
                 'randomize' => 'randomize',
@@ -372,11 +435,12 @@ function wpcf_admin_custom_types_form()
                 'schedule' => 'schedule',
                 'screenoptions' => 'screenoptions',
                 'search' => 'search',
-                'share' => 'share',
-                'share alt' => 'share-alt',
+                'share1' => 'share1',
                 'share alt2' => 'share-alt2',
-                'shield' => 'shield',
+                'share alt' => 'share-alt',
+                'share' => 'share',
                 'shield alt' => 'shield-alt',
+                'shield' => 'shield',
                 'slides' => 'slides',
                 'smartphone' => 'smartphone',
                 'smiley' => 'smiley',
@@ -385,33 +449,36 @@ function wpcf_admin_custom_types_form()
                 'star empty' => 'star-empty',
                 'star filled' => 'star-filled',
                 'star half' => 'star-half',
+                'store' => 'store',
                 'tablet' => 'tablet',
-                'tag' => 'tag',
                 'tagcloud' => 'tagcloud',
+                'tag' => 'tag',
                 'testimonial' => 'testimonial',
                 'text' => 'text',
+                'tickets alt' => 'tickets-alt',
                 'tickets' => 'tickets',
                 'translation' => 'translation',
                 'trash' => 'trash',
                 'twitter' => 'twitter',
                 'undo' => 'undo',
-                'universal access' => 'universal-access',
                 'universal access alt' => 'universal-access-alt',
+                'universal access' => 'universal-access',
                 'update' => 'update',
                 'upload' => 'upload',
                 'vault' => 'vault',
-                'video alt' => 'video-alt',
                 'video alt2' => 'video-alt2',
                 'video alt3' => 'video-alt3',
+                'video alt' => 'video-alt',
                 'visibility' => 'visibility',
                 'welcome add page' => 'welcome-add-page',
                 'welcome comments' => 'welcome-comments',
+                'welcome edit page' => 'welcome-edit-page',
                 'welcome learn more' => 'welcome-learn-more',
                 'welcome view site' => 'welcome-view-site',
                 'welcome widgets menus' => 'welcome-widgets-menus',
                 'welcome write blog' => 'welcome-write-blog',
-                'wordpress' => 'wordpress',
                 'wordpress alt' => 'wordpress-alt',
+                'wordpress' => 'wordpress',
                 'yes' => 'yes',
             ),
         );
@@ -420,6 +487,7 @@ function wpcf_admin_custom_types_form()
     $form['table-1-close'] = array(
         '#type' => 'markup',
         '#markup' => '</tbody></table>',
+        '_builtin' => true,
     );
 
     global $sitepress;
@@ -429,12 +497,17 @@ function wpcf_admin_custom_types_form()
         && version_compare( ICL_SITEPRESS_VERSION, '2.6.2', '>=' )
         && function_exists( 'wpml_custom_post_translation_options' )
     ) {
-        $form['table-1-close']['#markup'] .= wpml_custom_post_translation_options( $ct['slug'] );
+        $form['table-sitepress'] = array(
+            '#type' => 'markup',
+            '#markup' => wpml_custom_post_translation_options( $ct['slug'] ),
+            '_builtin' => true,
+        );
     }
 
     $form['post-body-content-close'] = array(
         '#type' => 'markup',
         '#markup' => '</div>',
+        '_builtin' => true,
     );
 
     /**
@@ -463,7 +536,10 @@ function wpcf_admin_custom_types_form()
             $meta_boxes[$meta_box_key] = $ct;
         }
     }
-    $meta_boxes[ 'submitdiv'] = false;
+
+    if ( !$current_user_can_edit ) {
+        $meta_boxes[ 'submitdiv'] = false;
+    }
 
     foreach ( $meta_box_order as $key => $value ) {
         if ( is_array($value) ) {
@@ -479,10 +555,11 @@ function wpcf_admin_custom_types_form()
     $form['postbox-container-1-open'] = array(
         '#type' => 'markup',
         '#markup' => '<div id="postbox-container-1" class="postbox-container"><div class="meta-box-sortables ui-sortable" id="side-sortables">',
+        '_builtin' => true,
     );
     foreach( $meta_box_order['side'] as $key ) {
         $function = sprintf('wpcf_admin_metabox_%s', $key);
-        if ( is_callable($function) ) {
+        if ( is_callable($function) && isset($meta_boxes[$key])) {
             $form += $function($meta_boxes[$key]);
             unset($meta_boxes[$key]);
         }
@@ -491,6 +568,7 @@ function wpcf_admin_custom_types_form()
     $form['postbox-container-1-close'] = array(
         '#type' => 'markup',
         '#markup' => '</div></div>',
+        '_builtin' => true,
     );
 
     /**
@@ -500,10 +578,11 @@ function wpcf_admin_custom_types_form()
     $form['postbox-container-2-open'] = array(
         '#type' => 'markup',
         '#markup' => '<div id="postbox-container-2" class="postbox-container"><div class="meta-box-sortables ui-sortable">',
+        '_builtin' => true,
     );
     foreach( $meta_box_order['normal'] as $key ) {
         $function = sprintf('wpcf_admin_metabox_%s', $key);
-        if ( is_callable($function) ) {
+        if ( is_callable($function) && isset($meta_boxes[$key])) {
             $form += $function($meta_boxes[$key]);
             unset($meta_boxes[$key]);
         }
@@ -530,14 +609,46 @@ function wpcf_admin_custom_types_form()
     $form['postbox-container-2-close'] = array(
         '#type' => 'markup',
         '#markup' => '</div></div>',
+        '_builtin' => true,
     );
 
     $form['form-close'] = array(
         '#type' => 'markup',
         '#markup' => '</div></div>',
+        '_builtin' => true,
     );
 
-    return $form;
+    /**
+     * handle _builtin post types
+     */
+    if ( $ct['_builtin'] ) {
+
+        foreach( $form as $key => $data ) {
+            if ( !isset($data['#type'] ) ) {
+                continue;
+            }
+            if ( isset($data['_builtin']) ) {
+                switch( $data['#type'] ) {
+                case 'textfield':
+                case 'textarea':
+                    $form[$key]['#attributes']['readonly'] = 'readonly';
+                    break;
+                default:
+                }
+                continue;
+            }
+            unset($form[$key]);
+        }
+    }
+
+    /**
+     * return form if current_user_can edit
+     */
+    if ( $current_user_can_edit) {
+        return $form;
+    }
+
+    return wpcf_admin_common_only_show($form);
 }
 
 /**
@@ -581,6 +692,8 @@ function wpcf_admin_custom_types_form_submit($form)
         $data['rewrite']['slug'] = strtolower( $data['rewrite']['slug'] );
         $data['rewrite']['slug'] = trim( $data['rewrite']['slug'] );
     }
+    $data['_builtin'] = false;
+
 
     // Set post type name
     $post_type = null;
@@ -599,132 +712,137 @@ function wpcf_admin_custom_types_form_submit($form)
 
     $data['slug'] = $post_type;
     $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
+    $protected_data_check = array();
 
-    // Check reserved name
-    $reserved = wpcf_is_reserved_name( $post_type, 'post_type' );
-    if ( is_wp_error( $reserved ) ) {
-        wpcf_admin_message( $reserved->get_error_message(), 'error' );
-        return false;
-    }
-
-    // Check overwriting
-    if ( ( !array_key_exists( 'wpcf-post-type', $data ) || $data['wpcf-post-type'] != $post_type ) && array_key_exists( $post_type, $custom_types ) ) {
-        wpcf_admin_message( __( 'Custom post type already exists', 'wpcf' ), 'error' );
-        return false;
-    }
-
-    /*
-     * Since Types 1.2
-     * We do not allow plural and singular names to be same.
-     */
-    if ( $wpcf->post_types->check_singular_plural_match( $data ) ) {
-        wpcf_admin_message( $wpcf->post_types->message( 'warning_singular_plural_match' ), 'error' );
-        return false;
-    }
-
-    // Check if renaming then rename all post entries and delete old type
-    if ( !empty( $data['wpcf-post-type'] )
-            && $data['wpcf-post-type'] != $post_type ) {
-        global $wpdb;
-        $wpdb->update( $wpdb->posts, array('post_type' => $post_type),
-                array('post_type' => $data['wpcf-post-type']), array('%s'),
-                array('%s')
-            );
-
-        /**
-         * update post meta "_wp_types_group_post_types"
-         */
-        $sql = $wpdb->prepare(
-            sprintf(
-                'select meta_id, meta_value from %s where meta_key = %%s',
-                $wpdb->postmeta
-            ),
-            '_wp_types_group_post_types'
-        );
-        $all_meta = $wpdb->get_results($sql, OBJECT_K);
-        $re = sprintf( '/,%s,/', $data['wpcf-post-type'] );
-        foreach( $all_meta as $meta ) {
-            if ( !preg_match( $re, $meta->meta_value ) ) {
-                continue;
-            }
-            $wpdb->update(
-                $wpdb->postmeta,
-                array(
-                    'meta_value' => preg_replace( $re, ','.$post_type.',', $meta->meta_value ),
-                ),
-                array(
-                    'meta_id' => $meta->meta_id,
-                ),
-                array( '%s' ),
-                array( '%d' )
-            );
-        }
-
-        /**
-         * update _wpcf_belongs_{$data['wpcf-post-type']}_id
-         */
-        $wpdb->update(
-            $wpdb->postmeta,
-            array(
-                'meta_key' => sprintf( '_wpcf_belongs_%s_id', $post_type ),
-            ),
-            array(
-                'meta_key' => sprintf( '_wpcf_belongs_%s_id', $data['wpcf-post-type'] ),
-            ),
-            array( '%s' ),
-            array( '%s' )
-        );
-
-        /**
-         * update options "wpv_options"
-         */
-        $wpv_options = get_option( 'wpv_options', true );
-        if ( is_array( $wpv_options ) ) {
-            $re = sprintf( '/(views_template_(archive_)?for_)%s/', $data['wpcf-post-type'] );
-            foreach( $wpv_options as $key => $value ) {
-                if ( !preg_match( $re, $key ) ) {
-                    continue;
-                }
-                unset($wpv_options[$key]);
-                $key = preg_replace( $re, "$1".$post_type, $key );
-                $wpv_options[$key] = $value;
-            }
-            update_option( 'wpv_options', $wpv_options );
-        }
-
-        /**
-         * update option "wpcf-custom-taxonomies"
-         */
-        $wpcf_custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, true );
-        if ( is_array( $wpcf_custom_taxonomies ) ) {
-            $update_wpcf_custom_taxonomies = false;
-            foreach( $wpcf_custom_taxonomies as $key => $value ) {
-                if ( array_key_exists( 'supports', $value ) && array_key_exists( $data['wpcf-post-type'], $value['supports'] ) ) {
-                    unset( $wpcf_custom_taxonomies[$key]['supports'][$data['wpcf-post-type']] );
-                    $update_wpcf_custom_taxonomies = true;
-                }
-            }
-            if ( $update_wpcf_custom_taxonomies ) {
-                update_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $wpcf_custom_taxonomies );
-            }
-        }
-
-        // Sync action
-        do_action( 'wpcf_post_type_renamed', $post_type, $data['wpcf-post-type'] );
-
-        // Set protected data
-        $protected_data_check = $custom_types[$data['wpcf-post-type']];
-        // Delete old type
-        unset( $custom_types[$data['wpcf-post-type']] );
-        $data['wpcf-post-type'] = $post_type;
+    if ( wpcf_is_builtin_post_types($data['slug']) ) {
+        $data['_builtin'] = true;
     } else {
-        // Set protected data
-        $protected_data_check = !empty( $custom_types[$post_type] ) ? $custom_types[$post_type] : array();
-    }
+        // Check reserved name
+        $reserved = wpcf_is_reserved_name( $post_type, 'post_type' );
+        if ( is_wp_error( $reserved ) ) {
+            wpcf_admin_message( $reserved->get_error_message(), 'error' );
+            return false;
+        }
 
-    // Check if active
-    if ( isset( $custom_types[$post_type]['disabled'] ) ) {
-        $data['disabled'] = $custom_types[$post_type]['disabled'];
+        // Check overwriting
+        if ( ( !array_key_exists( 'wpcf-post-type', $data ) || $data['wpcf-post-type'] != $post_type ) && array_key_exists( $post_type, $custom_types ) ) {
+            wpcf_admin_message( __( 'Custom post type already exists', 'wpcf' ), 'error' );
+            return false;
+        }
+
+        /*
+         * Since Types 1.2
+         * We do not allow plural and singular names to be same.
+         */
+        if ( $wpcf->post_types->check_singular_plural_match( $data ) ) {
+            wpcf_admin_message( $wpcf->post_types->message( 'warning_singular_plural_match' ), 'error' );
+            return false;
+        }
+
+        // Check if renaming then rename all post entries and delete old type
+        if ( !empty( $data['wpcf-post-type'] )
+            && $data['wpcf-post-type'] != $post_type ) {
+                global $wpdb;
+                $wpdb->update( $wpdb->posts, array('post_type' => $post_type),
+                    array('post_type' => $data['wpcf-post-type']), array('%s'),
+                    array('%s')
+                );
+
+                /**
+                 * update post meta "_wp_types_group_post_types"
+                 */
+                $sql = $wpdb->prepare(
+                    sprintf(
+                        'select meta_id, meta_value from %s where meta_key = %%s',
+                        $wpdb->postmeta
+                    ),
+                    '_wp_types_group_post_types'
+                );
+                $all_meta = $wpdb->get_results($sql, OBJECT_K);
+                $re = sprintf( '/,%s,/', $data['wpcf-post-type'] );
+                foreach( $all_meta as $meta ) {
+                    if ( !preg_match( $re, $meta->meta_value ) ) {
+                        continue;
+                    }
+                    $wpdb->update(
+                        $wpdb->postmeta,
+                        array(
+                            'meta_value' => preg_replace( $re, ','.$post_type.',', $meta->meta_value ),
+                        ),
+                        array(
+                            'meta_id' => $meta->meta_id,
+                        ),
+                        array( '%s' ),
+                        array( '%d' )
+                    );
+                }
+
+                /**
+                 * update _wpcf_belongs_{$data['wpcf-post-type']}_id
+                 */
+                $wpdb->update(
+                    $wpdb->postmeta,
+                    array(
+                        'meta_key' => sprintf( '_wpcf_belongs_%s_id', $post_type ),
+                    ),
+                    array(
+                        'meta_key' => sprintf( '_wpcf_belongs_%s_id', $data['wpcf-post-type'] ),
+                    ),
+                    array( '%s' ),
+                    array( '%s' )
+                );
+
+                /**
+                 * update options "wpv_options"
+                 */
+                $wpv_options = get_option( 'wpv_options', true );
+                if ( is_array( $wpv_options ) ) {
+                    $re = sprintf( '/(views_template_(archive_)?for_)%s/', $data['wpcf-post-type'] );
+                    foreach( $wpv_options as $key => $value ) {
+                        if ( !preg_match( $re, $key ) ) {
+                            continue;
+                        }
+                        unset($wpv_options[$key]);
+                        $key = preg_replace( $re, "$1".$post_type, $key );
+                        $wpv_options[$key] = $value;
+                    }
+                    update_option( 'wpv_options', $wpv_options );
+                }
+
+                /**
+                 * update option "wpcf-custom-taxonomies"
+                 */
+                $wpcf_custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, true );
+                if ( is_array( $wpcf_custom_taxonomies ) ) {
+                    $update_wpcf_custom_taxonomies = false;
+                    foreach( $wpcf_custom_taxonomies as $key => $value ) {
+                        if ( array_key_exists( 'supports', $value ) && array_key_exists( $data['wpcf-post-type'], $value['supports'] ) ) {
+                            unset( $wpcf_custom_taxonomies[$key]['supports'][$data['wpcf-post-type']] );
+                            $update_wpcf_custom_taxonomies = true;
+                        }
+                    }
+                    if ( $update_wpcf_custom_taxonomies ) {
+                        update_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $wpcf_custom_taxonomies );
+                    }
+                }
+
+                // Sync action
+                do_action( 'wpcf_post_type_renamed', $post_type, $data['wpcf-post-type'] );
+
+                // Set protected data
+                $protected_data_check = $custom_types[$data['wpcf-post-type']];
+                // Delete old type
+                unset( $custom_types[$data['wpcf-post-type']] );
+                $data['wpcf-post-type'] = $post_type;
+            } else {
+                // Set protected data
+                $protected_data_check = !empty( $custom_types[$post_type] ) ? $custom_types[$post_type] : array();
+            }
+
+        // Check if active
+        if ( isset( $custom_types[$post_type]['disabled'] ) ) {
+            $data['disabled'] = $custom_types[$post_type]['disabled'];
+        }
     }
 
     // Sync taxes with custom taxes
@@ -752,35 +870,57 @@ function wpcf_admin_custom_types_form_submit($form)
      */
     $data[TOOLSET_EDIT_LAST] = time();
 
+    /**
+     * set last edit author
+     */
+
+    $data[WPCF_AUTHOR] = get_current_user_id();
+
+    /**
+     * add builid in
+     */
+    if ( $data['_builtin'] && !isset( $protected_data_check[$data['slug']])) {
+        $protected_data_check[$data['slug']] = array();
+    }
+
     // Merging protected data
     $custom_types[$post_type] = array_merge( $protected_data_check, $data );
 
     update_option( WPCF_OPTION_NAME_CUSTOM_TYPES, $custom_types );
 
     // WPML register strings
-    wpcf_custom_types_register_translation( $post_type, $data );
+    if ( !$data['_builtin'] ) {
+        wpcf_custom_types_register_translation( $post_type, $data );
+    }
 
-    wpcf_admin_message_store(
-            apply_filters( 'types_message_custom_post_type_saved',
-                    __( 'Custom post type saved', 'wpcf' ), $data, $update ),
-            'custom'
-    );
+    /**
+     * success message
+     */
+    $message = __( 'Custom post type saved', 'wpcf' );
+    if ( $data['_builtin'] ) {
+        $message = __( 'Post type saved', 'wpcf' );
+    }
+    wpcf_admin_message_store( apply_filters( 'types_message_custom_post_type_saved',$message, $data, $update ), 'custom');
 
-    // Flush rewrite rules
-    flush_rewrite_rules();
+    if ( !$data['_builtin'] ) {
+        // Flush rewrite rules
+        flush_rewrite_rules();
 
-    do_action( 'wpcf_custom_types_save', $data );
+        do_action( 'wpcf_custom_types_save', $data );
+    }
 
     // Redirect
-    wp_redirect(
-        add_query_arg(
-            array(
-                'page' => 'wpcf-edit-type',
-                'wpcf-post-type' => $post_type,
-                'wpcf-rewrite' => 1,
-                'wpcf-message' => 'view',
-            ),
-            admin_url( 'admin.php' )
+    wp_safe_redirect(
+        esc_url_raw(
+            add_query_arg(
+                array(
+                    'page' => 'wpcf-edit-type',
+                    'wpcf-post-type' => $post_type,
+                    'wpcf-rewrite' => 1,
+                    'wpcf-message' => 'view',
+                ),
+                admin_url( 'admin.php' )
+            )
         )
     );
     die();
@@ -793,10 +933,10 @@ function wpcf_admin_custom_types_form_submit($form)
 /**
  * save button
  */
-function wpcf_admin_metabox_submitdiv($cf)
+function wpcf_admin_metabox_submitdiv($ct)
 {
-    $button_text = __( 'Save Custom Post', 'wpcf' );
-    return wpcf_admin_common_metabox_save($cf, $button_text);
+    $button_text = __( 'Save Custom Post Type', 'wpcf' );
+    return wpcf_admin_common_metabox_save($ct, $button_text);
 }
 
 /**
@@ -875,9 +1015,15 @@ function wpcf_admin_metabox_taxonomies($ct)
             $options[$category_slug]['#before'] = '<div style="float:right;margin-left:10px;">';
             $options[$category_slug]['#after'] .= '</div>';
         }
+        $options[$category_slug]['_builtin'] = $category->_builtin;
+        if ( $ct['_builtin'] && $category->_builtin ) {
+            $options[$category_slug]['#attributes'] = array(
+                 'disabled' => 'disabled',
+            );
+        }
     }
 
-    $form['table-3-open'] = wpcf_admin_metabox_begin(__( 'Select Taxonomies', 'wpcf' ), 'taxonomies', 'wpcf-types-form-taxonomies-table', false);
+    $form['table-3-open'] = wpcf_admin_metabox_begin(__( 'Select Taxonomies', 'wpcf' ), 'taxonomies', 'wpcf-types-form-taxonomies-table', false, true, '_builtin');
     $form['taxonomies'] = array(
         '#type' => 'checkboxes',
         '#options' => $options,
@@ -886,8 +1032,9 @@ function wpcf_admin_metabox_taxonomies($ct)
         '#inline' => true,
         '#before' => '<ul>',
         '#after' => '</ul>',
+        '_builtin' => true,
     );
-    $form['table-3-close'] = wpcf_admin_metabox_end(false);
+    $form['table-3-close'] = wpcf_admin_metabox_end(false, '_builtin');
     return $form;
 }
 
@@ -911,13 +1058,12 @@ function wpcf_admin_metabox_labels($ct)
         ),
         'edit_item' => array(
             'title' => __( 'Edit %s', 'wpcf' ),
-            'description' => __( 'The edit item text. Default is Edit Post/Edit Page.',
-            'wpcf' ),
+            'description' => __( 'The edit item text. Default is Edit Post/Edit Page.', 'wpcf' ),
             'label' => __('Edit Item', 'wpcf'),
         ),
         'new_item' => array(
             'title' => __( 'New %s', 'wpcf' ),
-            'description' => __( 'The view item text. Default is View Post/View Page.', 'wpcf' ),
+            'description' => __( 'The new item text. Default is New Post/New Page.', 'wpcf' ),
             'label' => __('New Item', 'wpcf'),
         ),
         'view_item' => array(
@@ -978,8 +1124,7 @@ function wpcf_admin_metabox_display_sections($ct)
             '#name' => 'ct[supports][title]',
             '#default_value' => !empty( $ct['supports']['title'] ),
             '#title' => __( 'Title', 'wpcf' ),
-            '#description' => __( 'Text input field to create a post title.',
-                    'wpcf' ),
+            '#description' => __( 'Text input field to create a post title.', 'wpcf' ),
             '#inline' => true,
             '#id' => 'wpcf-supports-title',
         ),
@@ -1002,40 +1147,35 @@ function wpcf_admin_metabox_display_sections($ct)
             '#name' => 'ct[supports][trackbacks]',
             '#default_value' => !empty( $ct['supports']['trackbacks'] ),
             '#title' => __( 'Trackbacks', 'wpcf' ),
-            '#description' => __( 'Ability to turn trackbacks and pingbacks on/off.',
-                    'wpcf' ),
+            '#description' => __( 'Ability to turn trackbacks and pingbacks on/off.', 'wpcf' ),
             '#inline' => true,
         ),
         'revisions' => array(
             '#name' => 'ct[supports][revisions]',
             '#default_value' => !empty( $ct['supports']['revisions'] ),
             '#title' => __( 'Revisions', 'wpcf' ),
-            '#description' => __( 'Allows revisions to be made of your post.',
-                    'wpcf' ),
+            '#description' => __( 'Allows revisions to be made of your post.', 'wpcf' ),
             '#inline' => true,
         ),
         'author' => array(
             '#name' => 'ct[supports][author]',
             '#default_value' => !empty( $ct['supports']['author'] ),
             '#title' => __( 'Author', 'wpcf' ),
-            '#description' => __( 'Displays a dropdown menu for changing the post author.',
-                    'wpcf' ),
+            '#description' => __( 'Displays a dropdown menu for changing the post author.', 'wpcf' ),
             '#inline' => true,
         ),
         'excerpt' => array(
             '#name' => 'ct[supports][excerpt]',
             '#default_value' => !empty( $ct['supports']['excerpt'] ),
             '#title' => __( 'Excerpt', 'wpcf' ),
-            '#description' => __( 'A text area for writing a custom excerpt.',
-                    'wpcf' ),
+            '#description' => __( 'A text area for writing a custom excerpt.', 'wpcf' ),
             '#inline' => true,
         ),
         'thumbnail' => array(
             '#name' => 'ct[supports][thumbnail]',
             '#default_value' => !empty( $ct['supports']['thumbnail'] ),
             '#title' => __( 'Thumbnail', 'wpcf' ),
-            '#description' => __( 'Add a box for uploading a featured image.',
-                    'wpcf' ),
+            '#description' => __( 'Add a box for uploading a featured image.', 'wpcf' ),
             '#inline' => true,
         ),
         'custom-fields' => array(
@@ -1049,16 +1189,14 @@ function wpcf_admin_metabox_display_sections($ct)
             '#name' => 'ct[supports][page-attributes]',
             '#default_value' => !empty( $ct['supports']['page-attributes'] ),
             '#title' => __( 'page-attributes', 'wpcf' ),
-            '#description' => __( 'Menu order, hierarchical must be true to show Parent option',
-                    'wpcf' ),
+            '#description' => __( 'Menu order, hierarchical must be true to show Parent option', 'wpcf' ),
             '#inline' => true,
         ),
         'post-formats' => array(
             '#name' => 'ct[supports][post-formats]',
             '#default_value' => !empty( $ct['supports']['post-formats'] ),
             '#title' => __( 'post-formats', 'wpcf' ),
-            '#description' => sprintf( __( 'Add post formats, see %sPost Formats%s',
-                            'wpcf' ),
+            '#description' => sprintf( __( 'Add post formats, see %sPost Formats%s', 'wpcf' ),
                     '<a href="http://codex.wordpress.org/Post_Formats" title="Post Formats" target="_blank">',
                     '</a>' ),
             '#inline' => true,
@@ -1085,8 +1223,7 @@ function wpcf_admin_metabox_options($ct)
         '#type' => 'checkbox',
         '#title' => __( 'Rewrite', 'wpcf' ),
         '#name' => 'ct[rewrite][enabled]',
-        '#description' => __( 'Rewrite permalinks with this format. False to prevent rewrite. Default: true and use post type as slug.',
-                'wpcf' ),
+        '#description' => __( 'Rewrite permalinks with this format. False to prevent rewrite. Default: true and use post type as slug.', 'wpcf' ),
         '#default_value' => !empty( $ct['rewrite']['enabled'] ),
         '#inline' => true,
     );
@@ -1105,8 +1242,7 @@ function wpcf_admin_metabox_options($ct)
     $form['rewrite-slug'] = array(
         '#type' => 'textfield',
         '#name' => 'ct[rewrite][slug]',
-        '#description' => __( 'Optional.', 'wpcf' ) . ' ' . __( "Prepend posts with this slug - defaults to post type's name.",
-                'wpcf' ),
+        '#description' => __( 'Optional.', 'wpcf' ) . ' ' . __( "Prepend posts with this slug - defaults to post type's name.", 'wpcf' ),
         '#value' => isset( $ct['rewrite']['slug'] ) ? $ct['rewrite']['slug'] : '',
         '#inline' => true,
         '#before' => '<div id="wpcf-types-form-rewrite-toggle"' . $hidden . '>',
@@ -1115,11 +1251,9 @@ function wpcf_admin_metabox_options($ct)
     );
     $form['rewrite-with_front'] = array(
         '#type' => 'checkbox',
-        '#title' => __( 'Allow permalinks to be prepended with front base',
-                'wpcf' ),
+        '#title' => __( 'Allow permalinks to be prepended with front base', 'wpcf' ),
         '#name' => 'ct[rewrite][with_front]',
-        '#description' => __( 'Example: if your permalink structure is /blog/, then your links will be: false->/news/, true->/blog/news/.',
-                'wpcf' ) . ' ' . __( 'Defaults to true.', 'wpcf' ),
+        '#description' => __( 'Example: if your permalink structure is /blog/, then your links will be: false->/news/, true->/blog/news/.', 'wpcf' ) . ' ' . __( 'Defaults to true.', 'wpcf' ),
         '#default_value' => !empty( $ct['rewrite']['with_front'] ),
         '#inline' => true,
     );
@@ -1164,63 +1298,50 @@ function wpcf_admin_metabox_options($ct)
                 '#name' => 'ct[show_in_menu]',
                 '#default_value' => !empty( $ct['show_in_menu'] ),
                 '#title' => __( 'show_in_menu', 'wpcf' ),
-                '#description' => __( 'Whether to show the post type in the admin menu and where to show that menu. Note that show_ui must be true.',
-                        'wpcf' ) . '<br />' . __( 'Default: null.', 'wpcf' ),
-                '#after' => '<div id="wpcf-types-form-showinmenu-toggle"' . $hidden . '><input type="text" name="ct[show_in_menu_page]" style="width:50%;" value="' . $show_in_menu_page . '" /><div class="description wpcf-form-description wpcf-form-description-checkbox description-checkbox">' . __( 'Optional.',
-                        'wpcf' ) . ' ' . __( "Top level page like 'tools.php' or 'edit.php?post_type=page'",
-                        'wpcf' ) . '</div></div>',
+                '#description' => __( 'Whether to show the post type in the admin menu and where to show that menu. Note that show_ui must be true.', 'wpcf' ) . '<br />' . __( 'Default: null.', 'wpcf' ),
+                '#after' => '<div id="wpcf-types-form-showinmenu-toggle"' . $hidden . '><input type="text" name="ct[show_in_menu_page]" style="width:50%;" value="' . $show_in_menu_page . '" /><div class="description wpcf-form-description wpcf-form-description-checkbox description-checkbox">' . __( 'Optional.', 'wpcf' ) . ' ' . __( "Top level page like 'tools.php' or 'edit.php?post_type=page'", 'wpcf' ) . '</div></div>',
                 '#inline' => true,
             ),
             'show_ui' => array(
                 '#name' => 'ct[show_ui]',
                 '#default_value' => !empty( $ct['show_ui'] ),
                 '#title' => __( 'show_ui', 'wpcf' ),
-                '#description' => __( 'Generate a default UI for managing this post type.',
-                        'wpcf' ) . '<br />' . __( 'Default: value of public argument.',
-                        'wpcf' ),
+                '#description' => __( 'Generate a default UI for managing this post type.', 'wpcf' ) . '<br />' . __( 'Default: value of public argument.', 'wpcf' ),
                 '#inline' => true,
             ),
             'publicly_queryable' => array(
                 '#name' => 'ct[publicly_queryable]',
                 '#default_value' => !empty( $ct['publicly_queryable'] ),
                 '#title' => __( 'publicly_queryable', 'wpcf' ),
-                '#description' => __( 'Whether post_type queries can be performed from the front end.',
-                        'wpcf' ) . '<br />' . __( 'Default: value of public argument.',
-                        'wpcf' ),
+                '#description' => __( 'Whether post_type queries can be performed from the front end.', 'wpcf' ) . '<br />' . __( 'Default: value of public argument.', 'wpcf' ),
                 '#inline' => true,
             ),
             'exclude_from_search' => array(
                 '#name' => 'ct[exclude_from_search]',
                 '#default_value' => !empty( $ct['exclude_from_search'] ),
                 '#title' => __( 'exclude_from_search', 'wpcf' ),
-                '#description' => __( 'Whether to exclude posts with this post type from search results.',
-                        'wpcf' ) . '<br />' . __( 'Default: value of the opposite of the public argument.',
-                        'wpcf' ),
+                '#description' => __( 'Whether to exclude posts with this post type from search results.', 'wpcf' ) . '<br />' . __( 'Default: value of the opposite of the public argument.', 'wpcf' ),
                 '#inline' => true,
             ),
             'hierarchical' => array(
                 '#name' => 'ct[hierarchical]',
                 '#default_value' => !empty( $ct['hierarchical'] ),
                 '#title' => __( 'hierarchical', 'wpcf' ),
-                '#description' => __( 'Whether the post type is hierarchical. Allows Parent to be specified.',
-                        'wpcf' ) . '<br />' . __( 'Default: false.', 'wpcf' ),
+                '#description' => __( 'Whether the post type is hierarchical. Allows Parent to be specified.', 'wpcf' ) . '<br />' . __( 'Default: false.', 'wpcf' ),
                 '#inline' => true,
             ),
             'can_export' => array(
                 '#name' => 'ct[can_export]',
                 '#default_value' => !empty( $ct['can_export'] ),
                 '#title' => __( 'can_export', 'wpcf' ),
-                '#description' => __( 'Can this post_type be exported.', 'wpcf' ) . '<br />' . __( 'Default: true.',
-                        'wpcf' ),
+                '#description' => __( 'Can this post_type be exported.', 'wpcf' ) . '<br />' . __( 'Default: true.', 'wpcf' ),
                 '#inline' => true,
             ),
             'show_in_nav_menus' => array(
                 '#name' => 'ct[show_in_nav_menus]',
                 '#default_value' => !empty( $ct['show_in_nav_menus'] ),
                 '#title' => __( 'show_in_nav_menus', 'wpcf' ),
-                '#description' => __( 'Whether post_type is available for selection in navigation menus.',
-                        'wpcf' ) . '<br />' . __( 'Default: value of public argument.',
-                        'wpcf' ),
+                '#description' => __( 'Whether post_type is available for selection in navigation menus.', 'wpcf' ) . '<br />' . __( 'Default: value of public argument.', 'wpcf' ),
                 '#inline' => true,
             ),
         ),
@@ -1231,20 +1352,16 @@ function wpcf_admin_metabox_options($ct)
         '#type' => 'checkbox',
         '#name' => 'ct[query_var_enabled]',
         '#title' => 'query_var',
-        '#description' => __( 'False to prevent queries, or string value of the query var to use for this post type.',
-                'wpcf' ) . '<br />' . __( 'Default: true - set to $post_type.',
-                'wpcf' ),
+        '#description' => __( 'False to prevent queries, or string value of the query var to use for this post type.', 'wpcf' ) . '<br />' . __( 'Default: true - set to $post_type.', 'wpcf' ),
         '#default_value' => !empty( $ct['query_var_enabled'] ),
-        '#after' => '<div id="wpcf-types-form-queryvar-toggle"' . $hidden . '><input type="text" name="ct[query_var]" value="' . $query_var . '" style="width:50%;" /><div class="description wpcf-form-description wpcf-form-description-checkbox description-checkbox">' . __( 'Optional',
-                'wpcf' ) . '. ' . __( 'String to customize query var', 'wpcf' ) . '</div></div>',
+        '#after' => '<div id="wpcf-types-form-queryvar-toggle"' . $hidden . '><input type="text" name="ct[query_var]" value="' . $query_var . '" style="width:50%;" /><div class="description wpcf-form-description wpcf-form-description-checkbox description-checkbox">' . __( 'Optional', 'wpcf' ) . '. ' . __( 'String to customize query var', 'wpcf' ) . '</div></div>',
         '#inline' => true,
     );
     $form['permalink_epmask'] = array(
         '#type' => 'textfield',
         '#name' => 'ct[permalink_epmask]',
         '#title' => __( 'Permalink epmask', 'wpcf' ),
-        '#description' => sprintf( __( 'Default value EP_PERMALINK. More info here %s.',
-                        'wpcf' ),
+        '#description' => sprintf( __( 'Default value EP_PERMALINK. More info here %s.', 'wpcf' ),
                 '<a href="http://core.trac.wordpress.org/ticket/12605" target="_blank">link</a>' ),
         '#value' => isset( $ct['permalink_epmask'] ) ? $ct['permalink_epmask'] : '',
         '#inline' => true,

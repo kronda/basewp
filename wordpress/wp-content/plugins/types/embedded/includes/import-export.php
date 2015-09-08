@@ -94,7 +94,7 @@ function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types'
         foreach ( $groups as $group_id => $group ) {
             $post = array(
                 'post_status' => $group['post_status'],
-                'post_type' => 'wp-types-group',
+                'post_type' => TYPES_CUSTOM_FIELD_GROUP_CPT_NAME,
                 'post_title' => $group['post_title'],
                 'post_content' => !empty( $group['post_content'] ) ? $group['post_content'] : '',
             );
@@ -109,7 +109,7 @@ function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types'
                     $wpdb->prepare(
                         "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type = %s",
                         $group['post_title'],
-                        'wp-types-group'
+                        TYPES_CUSTOM_FIELD_GROUP_CPT_NAME
                     )
                 );
                 // Update (may be forced by bulk action)
@@ -172,7 +172,7 @@ function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types'
         if ( $delete_groups ) {
             $groups_to_delete = get_posts(
                 array(
-                    'post_type' => 'wp-types-group',
+                    'post_type' => TYPES_CUSTOM_FIELD_GROUP_CPT_NAME,
                     'post_status' => 'any',
                     'posts_per_page' => -1,
                 )
@@ -198,7 +198,7 @@ function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types'
             if ( !empty( $_POST['groups-to-be-deleted'] ) ) {
                 foreach ( $_POST['groups-to-be-deleted'] as $group_to_delete ) {
                     $group_to_delete_post = get_post( $group_to_delete );
-                    if ( !empty( $group_to_delete_post ) && $group_to_delete_post->post_type == 'wp-types-group' ) {
+                    if ( !empty( $group_to_delete_post ) && $group_to_delete_post->post_type == TYPES_CUSTOM_FIELD_GROUP_CPT_NAME ) {
                         $deleted = wp_delete_post( $group_to_delete, true );
                         if ( !$deleted ) {
                             wpcf_admin_message_store( sprintf( __( 'Group "%s" delete failed',
@@ -335,7 +335,7 @@ function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types'
         foreach ( $groups as $group_id => $group ) {
             $post = array(
                 'post_status' => $group['post_status'],
-                'post_type' => 'wp-types-user-group',
+                'post_type' => TYPES_USER_META_FIELD_GROUP_CPT_NAME,
                 'post_title' => $group['post_title'],
                 'post_content' => !empty( $group['post_content'] ) ? $group['post_content'] : '',
             );
@@ -344,7 +344,7 @@ function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types'
                     $wpdb->prepare(
                         "SELECT ID FROM $wpdb->posts WHERE post_title = %s AND post_type = %s",
                         $group['post_title'],
-                        'wp-types-user-group'
+                        TYPES_USER_META_FIELD_GROUP_CPT_NAME
                     )
                 );
 
@@ -396,7 +396,7 @@ function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types'
         if ( $delete_groups ) {
             $groups_to_delete = get_posts(
                 array(
-                    'post_type' => 'wp-types-user-group',
+                    'post_type' => TYPES_USER_META_FIELD_GROUP_CPT_NAME,
                     'post_status' => 'any',
                     'posts_per_page' => -1,
                 )
@@ -423,7 +423,7 @@ function wpcf_admin_import_data($data = '', $redirect = true, $context = 'types'
                 foreach ( $_POST['user-groups-to-be-deleted'] as
                             $group_to_delete ) {
                     $group_to_delete_post = get_post( $group_to_delete );
-                    if ( !empty( $group_to_delete_post ) && $group_to_delete_post->post_type == 'wp-types-user-group' ) {
+                    if ( !empty( $group_to_delete_post ) && $group_to_delete_post->post_type == TYPES_USER_META_FIELD_GROUP_CPT_NAME ) {
                         $deleted = wp_delete_post( $group_to_delete, true );
                         if ( !$deleted ) {
                             wpcf_admin_message_store( sprintf( __( 'User group "%s" delete failed',

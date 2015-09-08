@@ -34,8 +34,7 @@ function wpcf_fields_date_insert_form( $form_data ) {
     $form['name'] = array(
         '#type' => 'textfield',
         '#title' => __( 'Name of custom field', 'wpcf' ),
-        '#description' => __( 'Under this name field will be stored in DB (sanitized)',
-                'wpcf' ),
+        '#description' => __( 'Under this name field will be stored in DB (sanitized)', 'wpcf' ),
         '#name' => 'name',
         '#attributes' => array('class' => 'wpcf-forms-set-legend'),
         '#validate' => array('required' => array('value' => true)),

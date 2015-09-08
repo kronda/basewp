@@ -48,7 +48,7 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield {
             wp_enqueue_script('my_ajax_file_uploader', $scriptpath . 'file_upload.js', array('jquery'));
 
             //wp_localize_script('my_ajax_file_uploader_thing', 'settings', array('ajaxurl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('uploader_nonce')));
-            wp_localize_script('my_ajax_file_uploader', 'settings', array('ajaxurl' => plugins_url("submit.php", __FILE__)));
+            wp_localize_script('my_ajax_file_uploader', 'settings', array('ajaxurl' => plugins_url("submit.php", __FILE__), 'nonce' => wp_create_nonce('ajax_nonce')));
         }
     }
 

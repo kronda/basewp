@@ -1,5 +1,5 @@
 <?php
-//           'wp-types-user-group'
+//           TYPES_USER_META_FIELD_GROUP_CPT_NAME
 //      'wpcf-usermeta';
 define("WORKINGTYPE", "usermeta");
 

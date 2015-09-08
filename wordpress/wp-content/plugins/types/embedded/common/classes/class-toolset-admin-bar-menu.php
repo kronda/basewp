@@ -20,6 +20,7 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
             $this->done = false;
 
             add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ), 99 );
+			add_filter( 'toolset_filter_toolset_admin_bar_menu_disable', array( $this, 'admin_bar_menu_disable' ), 1 );
             
             if ( is_admin() ) {
                 
@@ -68,6 +69,19 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
             if ( $this->done ) {
                 return;
             }
+			
+			/**
+			* Filter to disable the Toolset Admin Bar menu
+			*
+			* Used to disable the Admin Bar Menu when the 'show_admin_bar_shortcut' entry on the 'toolset_options' option has an 'off' value
+			* It is up to the plugins to produce a GUI for setting that value
+			*
+			* @since 1.7
+			*/
+			
+			if ( apply_filters( 'toolset_filter_toolset_admin_bar_menu_disable', false ) ) {
+				return;
+			}
 
             if ( $this->get_default_plugin() && $this->has_capatibilities() && $this->is_assignable() ) {
                 
@@ -103,10 +117,33 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
                     'href' => $href,
                 );
                 $wp_admin_bar->add_node( $args );
+				
+				$settings_href = $this->get_settings_href();
+                $args = array(
+                    'parent' => 'toolset_admin_bar_menu',
+                    'id' => 'toolset_remove_this_menu',
+                    'title' => __( 'Remove this menu', 'wpv-views' ),
+                    'href' => $settings_href,
+                );
+                $wp_admin_bar->add_node( $args );
 
                 $this->done = true;
             }
         }
+		
+		/**
+		* Disable the Admin Bar Menu entry when the 'show_admin_bar_shortcut' entry on the 'toolset_options' option has an 'off' value
+		*
+		* @since 1.7
+		*/
+		public function admin_bar_menu_disable( $state ) {
+			$toolset_options = get_option( 'toolset_options', array() );
+			$toolset_admin_bar_menu_remove = ( isset( $toolset_options['show_admin_bar_shortcut'] ) && $toolset_options['show_admin_bar_shortcut'] == 'off' ) ? true : false;
+			if ( $toolset_admin_bar_menu_remove ) {
+				$state = true;
+			}
+			return $state;
+		}
 
         /**
          * User is admin or similar?
@@ -242,6 +279,16 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
             } else {
                 // Other toolset plugins may be present
                 return null;
+            }
+        }
+		
+		private function get_settings_href() {
+            $plugin_name = $this->get_default_plugin();
+            
+            if( 'layouts' === $plugin_name ) {
+                return admin_url( 'admin.php?page=dd_layout_settings' ).'#toolset-admin-bar-settings';
+            } else /* 'views' */ {
+                return admin_url( 'admin.php?page=views-settings' ).'#toolset-admin-bar-settings';
             }
         }
       

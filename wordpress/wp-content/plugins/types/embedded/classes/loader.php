@@ -30,10 +30,48 @@ class WPCF_Loader
         self::__registerScripts();
         self::__registerStyles();
         self::__toolset();
-        add_action( 'admin_print_scripts',
-                array('WPCF_Loader', 'renderJsSettings'), 5 );
+        add_action( 'admin_print_scripts', array('WPCF_Loader', 'renderJsSettings'), 5 );
 		add_filter( 'the_posts', array('WPCF_Loader', 'wpcf_cache_complete_postmeta') );
+		add_filter( 'wpcf_fields_postmeta_value_save', array( 'WPCF_Loader', 'wpcf_sanitize_postmeta_values_on_save' ) );
+		add_filter( 'wpcf_fields_usermeta_value_save', array( 'WPCF_Loader', 'wpcf_sanitize_usermeta_values_on_save' ) );
     }
+	
+	/**
+	* Sanitize fields values on save
+	*
+	*/
+	
+	public static function wpcf_sanitize_postmeta_values_on_save( $value ) {
+		if (
+			current_user_can( 'unfiltered_html' ) 
+			&& wpcf_get_settings('postmeta_unfiltered_html') != 'off'
+		) {
+			return $value;
+		}
+		if ( is_array( $value ) ) {
+			// Recursion
+			$value = array_map( array( 'WPCF_Loader', 'wpcf_sanitize_postmeta_values_on_save' ), $value );
+		} else {
+			$value = wp_filter_post_kses( $value );
+		}
+		return $value;
+	}
+	
+	public static function wpcf_sanitize_usermeta_values_on_save( $value ) {
+		if (
+			current_user_can( 'unfiltered_html' ) 
+			&& wpcf_get_settings('usermeta_unfiltered_html') != 'off'
+		) {
+			return $value;
+		}
+		if ( is_array( $value ) ) {
+			// Recursion
+			$value = array_map( array( 'WPCF_Loader', 'wpcf_sanitize_usermeta_values_on_save' ), $value );
+		} else {
+			$value = wp_filter_post_kses( $value );
+		}
+		return $value;
+	}
 
     /**
      * Cache the postmeta for posts returned by a WP_Query

@@ -197,15 +197,16 @@ class WPCF_Types_Marketing
 
     protected function add_ga_campain($url, $utm_medium = 'getting-started')
     {
-        $url = add_query_arg(
-            array(
-                'utm_source' => 'typesplugin',
-                'utm_medium' =>  $utm_medium,
-                'utm_campaign' => sprintf('%s-howto', $this->get_kind() ),
-            ),
-            $url
+        return esc_url(
+            add_query_arg(
+                array(
+                    'utm_source' => 'typesplugin',
+                    'utm_medium' =>  $utm_medium,
+                    'utm_campaign' => sprintf('%s-howto', $this->get_kind() ),
+                ),
+                $url
+            )
         );
-        return $url;
     }
 
     /**
@@ -216,12 +217,11 @@ class WPCF_Types_Marketing
         $menu = array(
             'page_title' => __( 'What kind of site are you building?', 'wpcf' ),
             'menu_title' => __( 'Getting Started', 'wpcf' ),
-            'menu_slug' => basename(dirname(dirname(__FILE__))).'/marketing/getting-started/index.php',
+            'menu_slug' => basename(dirname(dirname(dirname(__FILE__)))).'/marketing/getting-started/index.php',
             'hook' => 'wpcf_marketing',
             'load_hook' => 'wpcf_marketing_hook',
         );
         wpcf_admin_add_submenu_page($menu);
     }
-
 
 }

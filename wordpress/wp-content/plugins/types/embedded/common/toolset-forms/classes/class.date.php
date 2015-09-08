@@ -318,7 +318,7 @@ class WPToolset_Field_Date extends FieldFactory
     }
 
     public static function filterConditionalArgsPhp($args, $type)
-    { 
+    {
         if ($type == 'date') {
             foreach ($args as &$arg) {
                 $arg = self::filterConditionalValuePhp($arg, $type);

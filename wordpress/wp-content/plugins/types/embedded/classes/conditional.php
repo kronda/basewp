@@ -139,9 +139,6 @@ class WPCF_Conditional extends WPCF_Field
      */
     function add_js() {
         wp_enqueue_script( 'types-conditional' );
-        wpcf_admin_add_js_settings( 'wpcfConditionalVerify_nonce',
-                wp_create_nonce( 'cd_verify' )
-        );
     }
 
     /**
@@ -220,15 +217,5 @@ class WPCF_Conditional extends WPCF_Field
         return $this->passed;
     }
 
-    /**
-     * Processes AJAX call 'cd_verify'.
-     * 
-     * @param type $data
-     * @return type
-     */
-    function ajaxVerify( $data ) {
-        WPCF_Loader::loadClass( 'helper.ajax' );
-        return WPCF_Helper_Ajax::conditionalVerify( $data );
-    }
 
 }

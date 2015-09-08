@@ -81,6 +81,12 @@ abstract class FieldFactory extends FieldAbstract
     {
         global $post;
         $value = $this->_value;
+        /**
+         * default value
+         */
+        if ( empty( $value ) && array_key_exists('user_default_value', $this->_data)) {
+            $value = stripcslashes($this->_data['user_default_value']);
+        }
         $value = apply_filters( 'wpcf_fields_value_get', $value, $post );
         if ( array_key_exists('slug', $this->_data ) ) {
             $value = apply_filters( 'wpcf_fields_slug_' . $this->_data['slug'] . '_value_get', $value, $post );

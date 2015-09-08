@@ -21,6 +21,23 @@
 #wpcf-post-relationship .wpcf-pr-has-entries {
     margin: 0;
 }
+
+#wpcf-post-relationship .belongs p
+{
+    margin-bottom: 5px;
+}
+
+#wpcf-post-relationship .belongs .wpcf-form-item
+{
+    margin-bottom: .5em;
+}
+
+#wpcf-post-relationship .belongs .form-item
+{
+    padding-top: .5em;
+    max-width: 300px;
+}
+
 .wpcf-pr-sort-DESC,
 .wpcf-pr-sort-ASC {
     width: 7px;
@@ -67,6 +84,10 @@
 }
 #wpcf-post-relationship table .textfield {
     width: 100px !important;
+}
+#wpcf-post-relationship .wpcf-pr-belongs
+{
+    min-width: 300px;
 }
 #wpcf-post-relationship table .form-item-radio {
     white-space: nowrap;

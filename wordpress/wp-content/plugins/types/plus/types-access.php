@@ -35,15 +35,19 @@ function wpcf_access_teaser_init() {
  * Teaser menu hook.
  */
 function wpcf_access_teaser_admin_menu() {
-    $hook = wpcf_admin_add_submenu_page(
-        array(
-            'page_title' => __( 'Access Control and User Roles', 'wpcf' ),
-            'menu_title' => __( 'Access Control and User Roles', 'wpcf' ),
-            'menu_slug' => 'wpcf-access',
-            'function' => 'wpcf_access_teaser_admin_menu_page',
-            'load_hook' => 'wpcf_access_teaser_admin_menu_load',
-        )
-    );
+    if (
+        isset( $_GET['page'] ) 
+        && 'wpcf-access' == $_GET['page']
+    ) {
+        $hook = wpcf_admin_add_submenu_page(
+            array(
+                'menu_title' => __( 'Access', 'wpcf' ),
+                'menu_slug' => 'wpcf-access',
+                'function' => 'wpcf_access_teaser_admin_menu_page',
+                'load_hook' => 'wpcf_access_teaser_admin_menu_load',
+            )
+        );
+    }
 }
 
 /**
@@ -87,8 +91,8 @@ function wpcf_access_teaser_admin_menu_page()
                       '</a></strong>')
     . '</p>'
     . '<p><a href="http://wp-types.com/home/types-access/?utm_source=typesplugin&utm_medium=accessadmin&utm_term=AccessFeatures&utm_campaign=typesplugin" class="button-primary" target="_blank">'
-    . sprintf(__( 'Access Features' ) . '</a>&nbsp;<a href="%s" class="button-primary" target="_blank">', $access_buy_link )
-    . __( 'Buy Access - $39 (USD)' ) . '</a>' . '</p>';
+    . sprintf(__( 'Access Features', 'wpcf' ) . '</a>&nbsp;<a href="%s" class="button-primary" target="_blank">', $access_buy_link )
+    . __( 'Buy Access - $39 (USD)', 'wpcf' ) . '</a>' . '</p>';
     echo '</div></div>';
     require_once WPCF_ACCESS_INC . '/admin-edit-access.php';
     wpcf_access_admin_edit_access( false );

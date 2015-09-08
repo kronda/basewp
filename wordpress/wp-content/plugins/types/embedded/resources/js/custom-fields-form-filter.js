@@ -130,7 +130,7 @@ function wpcfFilterEditClick(object, edit, title, title_not_empty, title_empty) 
 
 		if (CSSLayoutEditor == ''){
 			jQuery("#wpcf-update-preview-div").resizable({});
-			document.getElementById("wpcf-form-groups-admin-html-preview").innerHTML = wpcfEditMode;
+			document.getElementById("wpcf-form-groups-admin-html-preview").innerHTML = typesBase64.decode( wpcfEditMode );
 			CSSLayoutEditor = CodeMirror.fromTextArea(document.getElementById("wpcf-form-groups-css-fields-editor"), {mode: "css", tabMode: "indent",
 				 lineWrapping: true, lineNumbers: true});
 			HTMMLLayoutEditor = CodeMirror.fromTextArea(document.getElementById("wpcf-form-groups-admin-html-preview"), {mode: "text/html", tabMode: "indent",
@@ -166,10 +166,10 @@ function wpcfFilterEditClick(object, edit, title, title_not_empty, title_empty) 
 
 function changePreviewHtml(mode){
 	if (mode == 'readonly'){
-		HTMMLLayoutEditor.setValue(wpcfReadOnly);
+		HTMMLLayoutEditor.setValue( typesBase64.decode( wpcfReadOnly) );
 	}
 	else{
-		HTMMLLayoutEditor.setValue(wpcfEditMode);
+		HTMMLLayoutEditor.setValue( typesBase64.decode( wpcfEditMode ) );
 	}
 	HTMMLLayoutEditor.refresh();
 	wpcfPreviewHtml();
@@ -436,7 +436,7 @@ function wpcfFilterCancelClick(object, edit, title, title_not_empty, title_empty
 	else if (edit == 'admin_styles') {
 	  jQuery("#wpcf-admin-styles-box").css({width:'400px','border-color':'#dfdfdf','box-shadow':'none','z-index':'0'});
 	  jQuery('html, body').animate({scrollTop:jQuery('#wpcf-admin-styles-box').position().top}, 'fast');
-      CSSLayoutEditor.setValue(wpcfDefaultCss);
+      CSSLayoutEditor.setValue( typesBase64.decode(wpcfDefaultCss) );
 	  toggle.slideUp();
     }
 

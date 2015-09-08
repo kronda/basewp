@@ -36,8 +36,7 @@ function wpcf_fields_colorpicker_meta_box_form( $field ) {
     wpcf_fields_colorpicker_enqueue_scripts();
 	//By Gen: changed minimal version from 3.4 to 3.5, because colorbox not works in 3.4.2
     if ( wpcf_compare_wp_version( '3.5', '<' ) ) {
-        $form['name']['#after'] .= '<a href="#" class="button-secondary js-types-pickcolor">' . __( 'Pick color',
-                        'wpcf' ) . '</a><div class="js-types-cp-preview types-cp-preview" style="background-color:' . $field['value'] . '"></div>';
+        $form['name']['#after'] .= '<a href="#" class="button-secondary js-types-pickcolor">' . __( 'Pick color', 'wpcf' ) . '</a><div class="js-types-cp-preview types-cp-preview" style="background-color:' . $field['value'] . '"></div>';
         wp_enqueue_script( 'farbtastic' );
         wp_enqueue_style( 'farbtastic' );
     } else {

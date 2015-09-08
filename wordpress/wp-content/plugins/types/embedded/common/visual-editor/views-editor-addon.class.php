@@ -199,6 +199,7 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
                 __( 'Post View', 'wpv-views' ),
                 __( 'View', 'wpv-views' ),
 				__( 'Post field', 'wpv-views' ),
+				__( 'User basic data', 'wpv-views' ),
                 __( 'Content Template', 'wpv-views' ),
                 __( 'Taxonomy', 'wpv-views' ),
                 __( 'Basic', 'wpv-views' )
@@ -211,7 +212,8 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
 			$menus_on_top = array(
 				__( 'Basic', 'wpv-views' ),
 				__( 'Taxonomy', 'wpv-views' ),
-				__( 'Content Template', 'wpv-views' )   
+				__( 'Content Template', 'wpv-views' ),
+				__( 'User basic data', 'wpv-views' )
 			);
 			
 			$menus_on_bottom = array(

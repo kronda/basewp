@@ -7,7 +7,6 @@
  * 
  * Append pagination and sort GET vars if present
  */
-
 ?>
 
 <!--WRAPPER-->
@@ -54,9 +53,7 @@ echo admin_url( 'admin-ajax.php?action=wpcf_ajax&amp;wpcf_action=pr_save_all'
 
         ?>
         <div class="wpcf-message wpcf-error"><p><?php
-    echo __( 'Repeating fields should not be used in child posts. Types will update all field values.',
-            'wpcf' );
-
+        _e( 'Repeating fields should not be used in child posts. Types will update all field values.', 'wpcf' );
         ?></p></div>
         <?php
     endif;
@@ -83,7 +80,7 @@ echo admin_url( 'admin-ajax.php?action=wpcf_ajax&amp;wpcf_action=pr_save_all'
                         ?>
                         <th>
                             <?php
-                            echo __( 'Action', 'wpcf' );
+                            _e( 'Action', 'wpcf' );
 
                             ?>
                         </th>

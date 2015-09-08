@@ -293,7 +293,7 @@ class Types_Image_View
         } catch ( Exception $e ) {
             imagedestroy( $new_image );
             return new WP_Error( __CLASS__ . '::' . __METHOD__,
-                    __( 'Resize path invalid' ), $croppedImg );
+                    __( 'Resize path invalid', 'wpcf' ), $croppedImg );
         }
 
         imagedestroy( $new_image );

@@ -30,6 +30,11 @@ function my_toolset_valid_image_extentions($valid_extensions)
 
 = Changelog =
 
+2015-06-29
+
+- Added ability to have default value for custom fields
+  https://onthegosystems.myjetbrains.com/youtrack/issue/types-58
+
 2015-03-25
 
 - Fixed missing warning for date type field.

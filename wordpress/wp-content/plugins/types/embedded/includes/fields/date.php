@@ -442,7 +442,7 @@ function wpcf_fields_date_editor_callback( $field, $settings ) {
     );
     $date_formats = apply_filters( 'date_formats',
         array(
-            __( 'F j, Y' ),
+            __( 'F j, Y', 'wpcf' ),
             'Y/m/d',
             'm/d/Y',
             'd/m/Y',

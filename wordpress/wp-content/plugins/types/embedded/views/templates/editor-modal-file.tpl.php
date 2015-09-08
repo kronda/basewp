@@ -26,7 +26,7 @@ $data = array_merge( array(
 <div class="fieldset">
 	<p>
 		<label for="file-title" class="input-title"><?php _e( 'Link title', 'wpcf' ); ?></label>
-		<input id="file-title" type="text" name="title" value="<?php echo $data['title']; ?>" />
+		<input id="file-title" type="text" name="title" value="<?php echo esc_attr($data['title']); ?>" />
 	</p>
 
 </div>

@@ -22,7 +22,7 @@
  */
 function wpcf_cred_post_groups_filter( $groups, $post ) {
     if ( isset( $post->post_type ) && $post->post_type == 'cred-form' ) {
-        return wpcf_admin_fields_get_groups( 'wp-types-group', 'group_active',
+        return wpcf_admin_fields_get_groups( TYPES_CUSTOM_FIELD_GROUP_CPT_NAME, 'group_active',
                         'fields_active' );
         return wpcf_admin_fields_get_groups();
     }

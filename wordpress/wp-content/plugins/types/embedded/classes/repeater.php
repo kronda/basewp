@@ -129,7 +129,8 @@ class WPCF_Repeater extends WPCF_Field
                         $meta_value, $this );
 
                 // Apply other filters
-                $_meta_value = $this->_filter_save_value( $meta_value );
+                $_meta_value = $this->_filter_save_postmeta_value( $meta_value );
+                $_meta_value = $this->_filter_save_value( $_meta_value );
 
                 // Adding each field will return $mid
                 if ( count($data) == $i++ ) {

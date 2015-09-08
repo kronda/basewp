@@ -73,16 +73,52 @@ var wptFile = (function($, w) {
                 var $parent = $el.parent();
                 switch( $type ) {
                     case 'image':
-                        $('.textfield', $parent).val(attachment.attributes.sizes.full.url);
+                        /**
+                         * value
+                         */
+                        var has_size_full = false;
+                        if (
+                            'undefined' != typeof attachment.attributes.sizes
+                            && 'undefined' != typeof attachment.attributes.sizes.full
+                            && 'undefined' != typeof attachment.attributes.sizes.full.url
+                           ) {
+                               has_size_full = true;
+                               $('.textfield', $parent).val(attachment.attributes.sizes.full.url);
+                           }
+                        else if ( 'undefined' != typeof(attachment.attributes.url) ) {
+                            $('.textfield', $parent).val(attachment.attributes.url);
+                        }
+
+                        /**
+                         * preview
+                         */
                         if ( 0 == $('.wpt-file-preview img', $parent.parent()).length) {
                             $('.wpt-file-preview', $parent.parent()).append('<img src="">');
                         }
-                        if ( 'undefined' != typeof attachment.attributes.sizes.thumbnail ) {
-                            $('.wpt-file-preview img', $parent.parent()).attr('src', attachment.attributes.sizes.thumbnail.url);
-                        } else {
+                        if (
+                            'undefined' != typeof attachment.attributes.sizes
+                            && 'undefined' != typeof attachment.attributes.sizes.thumbnail
+                            && 'undefined' != typeof attachment.attributes.sizes.thumbnail.url
+                           ) {
+                               $('.wpt-file-preview img', $parent.parent()).attr('src', attachment.attributes.sizes.thumbnail.url);
+                           }
+                        else if ( has_size_full ) {
                             $('.wpt-file-preview img', $parent.parent()).attr('src', attachment.attributes.sizes.full.url);
                         }
-                        $('.wpt-file-preview img', $parent.parent()).data('full-src', attachment.attributes.sizes.full.url);
+                        else if ( 'undefined' != typeof(attachment.attributes.url) ) {
+                            $('.wpt-file-preview img', $parent.parent()).attr('src', attachment.attributes.url);
+                        }
+                        /**
+                         * add full
+                         */
+                        if ( has_size_full ) {
+                            $('.wpt-file-preview img', $parent.parent()).data('full-src', attachment.attributes.sizes.full.url);
+                        } else if ( 'undefined' != typeof(attachment.attributes.url) ) {
+                            $('.wpt-file-preview img', $parent.parent()).data('full-src', attachment.attributes.url);
+                        }
+                        /**
+                         * bind preview
+                         */
                         if ( 'function' == typeof bind_colorbox_to_thumbnail_preview) {
                             bind_colorbox_to_thumbnail_preview();
                         }

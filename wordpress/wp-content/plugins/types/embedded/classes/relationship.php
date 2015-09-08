@@ -345,21 +345,21 @@ class WPCF_Relationship
 
         // Unset non-types
         unset( $save_fields['_wp_title'], $save_fields['_wp_body'],
-                $save_fields['parents'], $save_fields['taxonomies'] );
-        /*
-         *
-         *
-         *
-         *
-         *
-         *
+            $save_fields['parents'], $save_fields['taxonomies'] );
+
+        /**
+         * add filter to remove field name from error message
+         */
+        /** This filter is toolset-common/toolset-forms/classes/class.validation.php */
+        add_filter('toolset_common_validation_add_field_name_to_error', '__return_false', 1234, 1);
+
+        /**
          * UPDATE Loop over fields
          */
         foreach ( $save_fields as $slug => $value ) {
             if ( defined( 'WPTOOLSET_FORMS_VERSION' ) ) {
                 // Get field by slug
-                $field = wpcf_fields_get_field_by_slug( str_replace( WPCF_META_PREFIX,
-                                '', $slug ) );
+                $field = wpcf_fields_get_field_by_slug( str_replace( WPCF_META_PREFIX, '', $slug ) );
                 if ( empty( $field ) ) {
                     continue;
                 }
@@ -369,10 +369,12 @@ class WPCF_Relationship
                 $valid = wptoolset_form_validate_field( 'post', $config, $value );
                 if ( is_wp_error( $valid ) ) {
                     $errors = $valid->get_error_data();
-                    $msg = sprintf( __( 'Child post "%s" field "%s" not updated:',
-                                    'wpcf' ), $child->post_title, $field['name'] );
-                    wpcf_admin_message_store( $msg . ' ' . implode( ', ',
-                                    $errors ), 'error' );
+                    $msg = sprintf(
+                        __( 'Child post "%s" field "%s" not updated:', 'wpcf' ),
+                        $child->post_title,
+                        $field['name']
+                    );
+                    wpcf_admin_message_store( $msg . ' ' . implode( ', ', $errors ), 'error' );
                     continue;
                 }
             }
@@ -380,6 +382,20 @@ class WPCF_Relationship
             $this->cf->context = 'post_relationship';
             $this->cf->save( $value );
         }
+
+        /**
+         * save feature image
+         */
+        if ( isset( $save_fields['_wp_featured_image']) ) {
+            if ( $save_fields['_wp_featured_image'] ) {
+                set_post_thumbnail( $updated_id, $save_fields['_wp_featured_image']);
+            } else {
+                delete_post_thumbnail($updated_id);
+            }
+        }
+
+
+        remove_filter('toolset_common_validation_add_field_name_to_error', '__return_false', 1234, 1);
 
         do_action( 'wpcf_relationship_save_child', $child, $parent );
 
@@ -406,7 +422,7 @@ class WPCF_Relationship
             return new WP_Error( 'wpcf-relationship-no-parent', 'No parent' );
         }
         $new_post = array(
-            'post_title' => __('New'). ': '.$post_type,
+            'post_title' => __('New Child', 'wpcf'). ': '.$post_type,
             'post_type' => $post_type,
             'post_status' => 'draft',
         );

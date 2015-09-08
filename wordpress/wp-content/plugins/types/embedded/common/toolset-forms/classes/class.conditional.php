@@ -58,6 +58,7 @@ require_once WPTOOLSET_COMMON_PATH . '/expression-parser/parser.php';
  *
  * @author Srdjan
  */
+if ( !class_exists('WPToolset_Forms_Conditional') ){  
 class WPToolset_Forms_Conditional {
 
     private $__formID;
@@ -476,6 +477,7 @@ class WPToolset_Forms_Conditional {
         );
     }
 
+}
 }
 
 if (!class_exists('WPV_Handle_Users_Functions')) {

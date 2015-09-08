@@ -7,8 +7,12 @@ require_once 'class.textfield.php';
 
 class WPToolset_Field_Skype extends WPToolset_Field_Textfield
 {
-
-    protected $_defaults = array('skypename' => '', 'button_style' => 'btn2');
+    protected $_defaults = array(
+        'skypename' => '',
+        'action' => 'chat',
+        'color' => 'blue',
+        'size' => 32,
+    );
 
     public function init()
     {
@@ -16,9 +20,14 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
         add_action( 'wp_footer', array($this, 'editButtonTemplate') );
 
         wp_register_script(
+            'skype-uri-buttom',
+            '//www.skypeassets.com/i/scom/js/skype-uri.js'
+        );
+
+        wp_register_script(
             'wptoolset-field-skype',
             WPTOOLSET_FORMS_RELPATH . '/js/skype.js',
-            array('jquery'),
+            array('jquery', 'skype-uri-buttom'),
             WPTOOLSET_FORMS_VERSION,
             true
         );
@@ -41,7 +50,7 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
         } else {
             $attributes['class'] = '';
         }
-        $attributes['class'] = 'js-wpt-skypename js-wpt-cond-trigger';// What is this js-wpt-cond-trigger classname for?
+        $attributes['class'] = 'js-wpt-skypename js-wpt-cond-trigger regular-text';// What is this js-wpt-cond-trigger classname for?
         $form = array();
         $form[] = array(
             '#type' => 'textfield',
@@ -54,56 +63,197 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
             '#attributes' => $attributes,
             '#repetitive' => $this->isRepetitive(),
         );
-        $form['style'] = array(
+
+        /**
+         * action
+         */
+        $form[] = array(
             '#type' => 'hidden',
-            '#value' => $value['button_style'],
-            '#name' => $this->getName() . '[button_style]',
-            '#attributes' => array('class' => 'js-wpt-skypestyle'),
+            '#value' => $value['action'],
+            '#name' => $this->getName() . '[action]',
+            '#attributes' => array('class' => 'js-wpt-skype-action'),
         );
-		if (is_admin()) {
-			$form[] = array(
-				'#type' => 'markup',
-				'#markup' => $this->getButtonImage( $value['skypename'], $value['button_style'], 'js-wpt-skype-preview' ),
-			);
-            $button_element = array(
-                '#name' => '',
-                '#type' => 'button',
-                '#value' => esc_attr( __( 'Edit', 'wpv-views' ) )." Skype button",
-                '#attributes' => array('class' => 'js-wpt-skype-edit-button button button-small button-secondary'),
-            );
-			/*
-			We only need to add Bootstrap classnames to the frontend, and here we are just in is_admin()
-            if ( !is_admin() && array_key_exists( 'use_bootstrap', $this->_data ) && $this->_data['use_bootstrap'] ) {// TODO check if is_Admin() is enough as we might want to load forms using AJAX
-                $button_element['#attributes']['class'] .= ' btn btn-default btn-sm';
-            }
-			*/
-            $form[] = $button_element;
+
+        /**
+         * color
+         */
+        $form[] = array(
+            '#type' => 'hidden',
+            '#value' => $value['color'],
+            '#name' => $this->getName() . '[color]',
+            '#attributes' => array('class' => 'js-wpt-skype-color'),
+        );
+
+        /**
+         * size
+         */
+        $form[] = array(
+            '#type' => 'hidden',
+            '#value' => $value['size'],
+            '#name' => $this->getName() . '[size]',
+            '#attributes' => array('class' => 'js-wpt-skype-size'),
+        );
+
+        if (!is_admin()) {
+            return $form;
         }
+        $button_element = array(
+            '#name' => '',
+            '#type' => 'button',
+            '#value' => esc_attr( __( 'Edit Skype', 'wpv-views' ) ),
+            '#attributes' => array(
+                'class' => 'js-wpt-skype-edit-button button button-small button-secondary',
+            ),
+        );
+        foreach( $value as $key => $val ) {
+            $button_element['#attributes']['data-'.esc_attr($key)] = $val;
+        }
+        $form[] = $button_element;
         return $form;
     }
 
-    public function editButtonTemplate(){
-        $output = '';
-        $output .= '<div id="tpl-wpt-skype-edit-button" style="display:none;">'
-                . '<div id="wpt-skype-edit-button-popup">'
-                . '<h3>' .__( 'Enter your Skype Name', 'wpv-views' ) . '</h3>'
-                . '<input type="textfield" value="" class="js-wpt-skypename-popup">&nbsp;'
-                . '<h3>' . __( 'Select a button from below', 'wpv-views' ) . '</h3>';
-        for ( $index = 1; $index < 7; $index++ ) {
-            if ( $index == 5 ) {
-                $output .= '<h3>' . __( 'Skype buttons with status', 'wpv-views' ) . '</h3>'
-                        . '<p>' . __( 'If you choose to show your Skype status, your Skype button will always reflect your availability on Skype. This status will be shown to everyone, whether they’re in your contact list or not.', 'wpv-views' )
-                        . '</p>';
-            }
-            $output .= '<div><label><input type="radio" name="wpt-skypestyle-popup" value="btn'
-                    . $index . '">&nbsp;'
-                    . $this->getButtonImage( '', "btn{$index}",
-                            'js-wpt-skype-preview' )
-                    . '</label></div>';
+    public function editButtonTemplate()
+    {
+
+        static $edit_button_template_template_already_loaded;
+
+        if ( $edit_button_template_template_already_loaded ) {
+            return;
         }
-        $output .= '<input type="button" class="button-secondary js-wpt-close-thickbox" value="' . __( 'Save', 'wpv-views' ) . '">'
-                . '</div></div>';
-        echo $output;
+
+        $edit_button_template_template_already_loaded = true;
+
+        $form = array();
+        $form['full-open'] = array(
+            '#type' => 'markup',
+            '#markup' => '<div id="tpl-wpt-skype-edit-button" style="display:none;"><div id="wpt-skype-edit-button-popup">',
+        );
+        $form['preview'] = array(
+            '#type' => 'markup',
+            '#markup' => sprintf(
+                '<div id="wpt-skype-edit-button-popup-preview"><p class="bold">%s</p><div id="wpt-skype-edit-button-popup-preview-button"><div id="wpt-skype-preview"></div><small style="display:none">%s</small></div><p class="description"><strong>%s</strong>: %s</p></div>',
+                __('Preview of your Skype button', 'wpv-views'),
+                __('*Hover over to see the menu', 'wpv-views'),
+                __('Note', 'wpv-views'),
+                __('Skype button background is transparent and will work on any colour backgrounds.', 'wpv-views')
+            ),
+        );
+        $form['options-open'] = array(
+            '#type' => 'markup',
+            '#markup' => '<div class="main">',
+        );
+        $form['skypename'] = array(
+            '#type' => 'textfield',
+            '#name' => 'skype[name]',
+            '#attributes' => array(
+                'class' => 'js-wpt-skypename-popup js-wpt-skype',
+                'data-skype-field-name' => 'skypename',
+            ),
+            '#before' => sprintf('<h3>%s</h2>', __( 'Enter your Skype Name', 'wpv-views' )),
+        );
+        $form['skype-action'] = array(
+            '#type' => 'checkboxes',
+            '#name' => 'skype[action]',
+            '#options' => array(
+                'call' => array(
+                    '#name' => 'skype[action][call]',
+                    '#value' => 'call',
+                    '#title' => __('Call', 'wpv-views'),
+                    '#description' => __('Start a call with just a click.', 'wpv-views'),
+                    '#default_value' => 'call',
+                    '#attributes' => array(
+                        'class' => 'js-wpt-skype js-wpt-skype-action js-wpt-skype-action-call',
+                        'data-skype-field-name' => 'action',
+                    ),
+                ),
+                'chat' => array(
+                    '#name' => 'skype[action][chat]',
+                    '#title' => __('Chat', 'wpv-views'),
+                    '#value' => 'chat',
+                    '#description' => __('Start the conversation with an instant message.', 'wpv-views'),
+                    '#attributes' => array(
+                        'class' => 'js-wpt-skype js-wpt-skype-action js-wpt-skype-action-chat',
+                        'data-skype-field-name' => 'action',
+                    ),
+                ),
+            ),
+            '#before' =>  sprintf('<h3>%s</h3>', __( "Choose what you'd like your button to do", 'wpv-views' )),
+        );
+
+        $form['skype-color-header'] = array(
+            '#type' => 'markup',
+            '#markup' =>  sprintf('<h3>%s</h3>', __( 'Choose how you want your button to look', 'wpv-views' )),
+        );
+
+        $form['skype-color'] = array(
+            '#type' => 'select',
+            '#name' => 'skype[color]',
+            '#options' => array(
+                array(
+                    '#value' => 'blue',
+                    '#title' => __('Blue', 'wpv-views'),
+                    '#attributes' => array(
+                        'data-skype-field-name' => 'color',
+                        'class' => 'js-wpt-skype',
+                    ),
+                ),
+                array(
+                    '#value' => 'white',
+                    '#title' => __('White', 'wpv-views'),
+                    '#attributes' => array(
+                        'data-skype-field-name' => 'color',
+                        'class' => 'js-wpt-skype',
+                    ),
+                ),
+            ),
+            '#default_value' => 'blue',
+            '#attributes' => array(
+                'class' => 'js-wpt-skype js-wpt-skype-color'
+            ),
+            '#inline' => true,
+        );
+        $form['skype-size'] = array(
+            '#type' => 'select',
+            '#name' => 'skype[size]',
+            '#options' => array(),
+            '#default_value' => 32,
+            '#attributes' => array(
+                'class' => 'js-wpt-skype js-wpt-skype-size'
+            ),
+            '#inline' => true,
+        );
+        foreach( array(10,12,14,16,24,32) as $size ) {
+            $form['skype-size']['#options'][] = array(
+                '#value' => $size,
+                '#title' => sprintf('%dpx', $size),
+                '#attributes' => array(
+                    'data-skype-field-name' => 'size',
+                    'class' => 'js-wpt-skype',
+                ),
+            );
+        }
+        $form['options-close'] = array(
+            '#type' => 'markup',
+            '#markup' => '</div>',
+        );
+
+        $form['submit'] = array(
+            '#type' => 'button',
+            '#name' => 'skype[submit]',
+            '#attributes' => array(
+                'class' => 'button-secondary js-wpt-close-thickbox',
+            ),
+            '#value' => __( 'Save', 'wpv-views' ),
+        );
+
+        $form['full-close'] = array(
+            '#type' => 'markup',
+            '#markup' => '</div></div>',
+        );
+
+        $theForm = new Enlimbo_Forms( __FUNCTION__ );
+        $theForm->autoHandle( __FUNCTION__, $form);
+        echo $theForm->renderElements($form);
     }
 
     public function editform( $config = null ) {
@@ -112,123 +262,6 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
 
     public function mediaEditor(){
         return array();
-    }
-
-    /**
-     * Returns HTML formatted skype button.
-     *
-     * @param type $skypename
-     * @param type $template
-     * @param type $class
-     * @return type
-     */
-    function getButton( $skypename, $template = '', $class = false ) {
-
-        if ( empty( $skypename ) ) {
-            return '';
-        }
-
-        switch ( $template ) {
-
-            case 'btn1':
-                // Call me big drawn
-                $output = '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script><a href="skype:'
-                        . $skypename . '?call">'
-                        . $this->getButtonImage( $skypename, $template, $class )
-                        . '</a>';
-                break;
-
-            case 'btn4':
-                // Call me small
-                $output = '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>
-<a href="skype:' . $skypename . '?call">'
-                        . $this->getButtonImage( $skypename, $template, $class )
-                        . '</a>';
-                break;
-
-            case 'btn3':
-                // Call me small drawn
-                $output = '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>
-<a href="skype:' . $skypename . '?call">'
-                        . $this->getButtonImage( $skypename, $template, $class )
-                        . '</a>';
-                break;
-
-            case 'btn6':
-                // Status
-                $output = '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>
-<a href="skype:' . $skypename . '?call">'
-                        . $this->getButtonImage( $skypename, $template, $class )
-                        . '</a>';
-                break;
-
-            case 'btn5':
-                // Status drawn
-                $output = '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>
-<a href="skype:' . $skypename . '?call">'
-                        . $this->getButtonImage( $skypename, $template, $class )
-                        . '</a>';
-                break;
-
-            default:
-                // Call me big
-                $output = '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>
-<a href="skype:' . $skypename . '?call">'
-                        . $this->getButtonImage( $skypename, $template, $class )
-                        . '</a>';
-                break;
-        }
-
-        return $output;
-    }
-
-    /**
-     * Returns HTML formatted skype button image.
-     *
-     * @param type $skypename
-     * @param type $template
-     * @return type
-     */
-    public function getButtonImage( $skypename = '', $template = '', $class = '' ) {
-
-        if ( empty( $skypename ) ) {
-            $skypename = '--not--';
-        }
-
-        $class = !empty( $class ) ? ' class="' . strval( $class ) . '"' : '';
-
-        switch ( $template ) {
-            case 'btn1':
-                // Call me big drawn
-                $output = '<img src="http://download.skype.com/share/skypebuttons/buttons/call_green_white_153x63.png" style="border: none;" width="153" height="63" alt="Skype Me™!"' . $class . ' />';
-                break;
-
-            case 'btn4':
-                // Call me small
-                $output = '<img src="http://download.skype.com/share/skypebuttons/buttons/call_blue_transparent_34x34.png" style="border: none;" width="34" height="34" alt="Skype Me™!"' . $class . ' />';
-                break;
-
-            case 'btn3':
-                // Call me small drawn
-                $output = '<img src="http://download.skype.com/share/skypebuttons/buttons/call_green_white_92x82.png" style="border: none;" width="92" height="82" alt="Skype Me™!"' . $class . ' />';
-                break;
-
-            case 'btn6':
-                // Status
-                $output = '<img src="http://mystatus.skype.com/bigclassic/' . $skypename . '" style="border: none;" width="182" height="44" alt="My status"' . $class . ' />';
-                break;
-
-            case 'btn5':
-                // Status drawn
-                $output = '<img src="http://mystatus.skype.com/balloon/' . $skypename . '" style="border: none;" width="150" height="60" alt="My status"' . $class . ' />';
-                break;
-
-            default:
-                // Call me big
-                $output = '<img src="http://download.skype.com/share/skypebuttons/buttons/call_blue_white_124x52.png" style="border: none;" width="124" height="52" alt="Skype Me™!"' . $class . ' />';
-                break;
-        }
-        return $output;
     }
 
 }

@@ -340,3 +340,8 @@ span.toolset-alert {
 .wp-toolset-pointer.wp-pointer-left .wp-pointer-arrow {
 	border-right-color: #EF6223;
 }
+
+/* //// DON'T SHOW AGAIN STUFF ////////////*/
+span.dont-wrap{float:right;margin-right:12px;}
+.toolset-alert-not-again{}
+.toolset-alert-not-again-label{}

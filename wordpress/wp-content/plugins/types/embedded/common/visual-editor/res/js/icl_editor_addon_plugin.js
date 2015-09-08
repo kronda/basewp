@@ -47,7 +47,7 @@ if ( typeof WPV_Toolset.add_qt_editor_buttons !== 'function' ) {
 						if ( selection ) {
 						   //When texty selected
 						   current_editor_object = {'e' : e, 'c' : c, 'ed' : ed, 't' : t, 'post_id' : '', 'close_tag' : true, 'codemirror' : id};
-						   WPViews.shortcodes_gui.wpv_insert_popup_conditional('wpv-conditional', icl_editor_localization_texts.wpv_conditional_button, {}, icl_editor_localization_texts.wpv_conditional_callback_nonce, current_editor_object );
+						   WPViews.shortcodes_gui.wpv_insert_popup_conditional('wpv-conditional', icl_editor_localization_texts.wpv_insert_conditional_shortcode, {}, icl_editor_localization_texts.wpv_editor_callback_nonce, current_editor_object );
 						} else if ( ed.openTags ) {
 							// if we have an open tag, see if it's ours
 							var ret = false, i = 0, t = this;
@@ -64,7 +64,7 @@ if ( typeof WPV_Toolset.add_qt_editor_buttons !== 'function' ) {
 								ed.openTags.push(t.id);
 								e.value = '/' + e.value;
 								current_editor_object = {'e' : e, 'c' : c, 'ed' : ed, 't' : t, 'post_id' : '', 'close_tag' : false, 'codemirror' : id};
-								WPViews.shortcodes_gui.wpv_insert_popup_conditional('wpv-conditional', icl_editor_localization_texts.wpv_conditional_button, {},icl_editor_localization_texts.wpv_conditional_callback_nonce, current_editor_object );
+								WPViews.shortcodes_gui.wpv_insert_popup_conditional('wpv-conditional', icl_editor_localization_texts.wpv_insert_conditional_shortcode, {},icl_editor_localization_texts.wpv_editor_callback_nonce, current_editor_object );
 							} else {
 								// close tag
 								ed.openTags.splice(ret, 1);
@@ -83,7 +83,7 @@ if ( typeof WPV_Toolset.add_qt_editor_buttons !== 'function' ) {
 							ed.openTags.push(t.id);
 							e.value = '/' + e.value;
 							current_editor_object = {'e' : e, 'c' : c, 'ed' : ed, 't' : t, 'post_id' : '', 'close_tag' : false, 'codemirror' : id};
-							WPViews.shortcodes_gui.wpv_insert_popup_conditional('wpv-conditional', icl_editor_localization_texts.wpv_conditional_button, {}, icl_editor_localization_texts.wpv_conditional_callback_nonce, current_editor_object );
+							WPViews.shortcodes_gui.wpv_insert_popup_conditional('wpv-conditional', icl_editor_localization_texts.wpv_insert_conditional_shortcode, {}, icl_editor_localization_texts.wpv_editor_callback_nonce, current_editor_object );
 						}
 					}
                 }
@@ -1029,15 +1029,20 @@ var icl_editor = (function(window, $){
             {
                 var startPos = parseInt(myField.selectionStart);
                 var endPos = parseInt(myField.selectionEnd);
+				var correctedPos = endPos;
                 if (typeof(myValue2)!='undefined' && myValue2) // wrap
                 {
                     var sel = myField.value.substring(startPos, endPos);
                     myField.value = myField.value.substring(0, startPos) + myValue1 + sel + myValue2 +
                     myField.value.substring(endPos, myField.value.length);
+					correctedPos += myValue1.length + sel.length + myValue2.length;
+					myField.setSelectionRange(correctedPos, correctedPos);
                 }
-                else
-                    myField.value = myField.value.substring(0, startPos) + myValue1 +
-                    myField.value.substring(endPos, myField.value.length);
+                else {
+                    myField.value = myField.value.substring(0, startPos) + myValue1 + myField.value.substring(endPos, myField.value.length);
+					correctedPos += myValue1.length;
+					myField.setSelectionRange(correctedPos, correctedPos);
+				}
             }
             else
             {

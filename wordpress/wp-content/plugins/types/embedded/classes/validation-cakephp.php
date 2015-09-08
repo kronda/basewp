@@ -396,8 +396,7 @@ class Wpcf_Cake_Validation
                 break;
             default:
                 $_this = &Wpcf_Cake_Validation::getInstance();
-                $_this->errors[] = __( 'You must define the $operator parameter for Wpcf_Cake_Validation::comparison()',
-                        'wpcf' );
+                $_this->errors[] = __( 'You must define the $operator parameter for Wpcf_Cake_Validation::comparison()', 'wpcf' );
                 break;
         }
         return false;
@@ -421,8 +420,7 @@ class Wpcf_Cake_Validation
             $_this->_extract( $check );
         }
         if ( $_this->regex === null ) {
-            $_this->errors[] = __( 'You must define a regular expression for Wpcf_Cake_Validation::custom()',
-                    'wpcf' );
+            $_this->errors[] = __( 'You must define a regular expression for Wpcf_Cake_Validation::custom()', 'wpcf' );
             return false;
         }
         return $_this->_check();
@@ -1004,13 +1002,11 @@ class Wpcf_Cake_Validation
     function _pass( $method, $check, $classPrefix ) {
         $className = ucwords( $classPrefix ) . 'Validation';
         if ( !class_exists( $className ) ) {
-            trigger_error( sprintf( __( 'Could not find %s class, unable to complete validation.',
-                                    true ), $className ), E_USER_WARNING );
+            trigger_error( sprintf( __( 'Could not find %s class, unable to complete validation.', 'wpcf' ), $className ), E_USER_WARNING );
             return false;
         }
         if ( !is_callable( array($className, $method) ) ) {
-            trigger_error( sprintf( __( 'Method %s does not exist on %s unable to complete validation.',
-                                    true ), $method, $className ),
+            trigger_error( sprintf( __( 'Method %s does not exist on %s unable to complete validation.', 'wpcf' ), $method, $className ),
                     E_USER_WARNING );
             return false;
         }

@@ -186,11 +186,65 @@ img.ui-datepicker-trigger {
 #wpt-skype-edit-button-popup .button-secondary {
     display: block;
     clear: both;
-    margin-top: 80px;
+    margin-top: 2em;
 }
-#wpt-skype-edit-button-popup div {
+
+#wpt-skype-edit-button-popup .wpcf-form-item-select
+{
     float: left;
-    margin-right: 25px;
+    margin-right: 20px;
+}
+
+#wpt-skype-edit-button-popup .main
+{
+    width: 350px;
+}
+#wpt-skype-edit-button-popup-preview
+{
+    background-color: #e5eef3;
+    border: 1px solid #c1c1c1;
+    min-height: 250px;
+    padding: 10px 20px;
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    width: 200px;
+    z-index: 1000;
+}
+
+#TB_ajaxContent #wpt-skype-edit-button-popup-preview-button p
+{
+    line-height: 36px;
+    margin: 0;
+    padding: 0;
+}
+
+#wpt-skype-edit-button-popup-preview-button.dark-background
+{
+    background-color: #b2b5b8;
+}
+
+#wpt-skype-edit-button-popup-preview-button.dropdown small
+{
+    display: block;
+}
+
+#wpt-skype-edit-button-popup-preview-button small
+{
+    display: none;
+}
+
+#wpt-skype-edit-button-popup-preview-button li
+{
+    text-align: left;
+}
+
+#wpt-skype-edit-button-popup-preview-button
+{
+    background-color: #fff;
+    min-height: 120px;
+    text-align: center;
+    width: 200px;
 }
 #wpt-skype-edit-button-popup input {
     margin-top: 5px;

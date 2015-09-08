@@ -24,7 +24,7 @@ $data = array_merge( array(
 <div class="fieldset">
 	<p>
 		<label for="email-title" class="input-title"><?php _e( 'Title', 'wpcf' ); ?></label>
-		<input id="email-title" type="text" name="title" value="<?php echo $data['title']; ?>" />
+		<input id="email-title" type="text" name="title" value="<?php echo esc_attr($data['title']); ?>" />
 		<span class="help-text"><?php _e( 'If set, this text will be displayed instead of raw data', 'wpcf' ); ?></span>
 	</p>
 </div>

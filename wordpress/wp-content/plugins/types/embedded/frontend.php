@@ -30,13 +30,13 @@ add_shortcode( 'types', 'wpcf_shortcode' );
 
 /**
  * Shortcode processing.
- * 
+ *
  * Called by WP when rendering post on frontend.
  * From here follow these:
  * @see types_render_field() Renders shortcode. Can be used other ways too.
  * @see types_render_field_single() Renders single field. Useful for Repeater.
  * Afterwards wrapping options.
- *  
+ *
  * @param type $atts
  * @param type $content
  * @param type $code
@@ -45,7 +45,7 @@ add_shortcode( 'types', 'wpcf_shortcode' );
 function wpcf_shortcode( $atts, $content = null, $code = '' ) {
 
     global $wpcf;
-    
+
     // Switch the post if there is an attribute of 'id' in the shortcode.
     $post_id_atts = new WPV_wpcf_switch_post_from_attr_id( $atts );
 
@@ -73,10 +73,10 @@ function wpcf_shortcode( $atts, $content = null, $code = '' ) {
 
 /**
  * Calls view function for specific field type.
- * 
+ *
  * @param type $field
  * @param type $atts
- * @return type 
+ * @return type
  */
 function types_render_field( $field_id = null, $params = array(), $content = null, $code = '' )
 {
@@ -125,7 +125,7 @@ function types_render_field( $field_id = null, $params = array(), $content = nul
 
     // Get field
     $field = types_get_field( $field_id );
-
+	
     // If field not found return empty string
     if ( empty( $field ) ) {
 
@@ -214,10 +214,10 @@ function types_render_field( $field_id = null, $params = array(), $content = nul
 
 /**
  * Calls view function for specific field type by single field.
- * 
+ *
  * @param type $field
  * @param type $atts
- * @return type 
+ * @return type
  */
 function types_render_field_single( $field, $params, $content = null, $code = '', $meta_id = null )
 {
@@ -258,10 +258,10 @@ function types_render_field_single( $field, $params, $content = null, $code = ''
         }
     } else {
         if ((isset($field['data']['repetitive'])) && ($field['data']['repetitive'])) {
-    		    		
+
     		//Repetitive fields, used meta ID for proper string translation unique identification
     		$params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value '.$meta_id, $params['field_value'] );
-    		
+
     	} else {
     		//Non-repetitive fields, use post ID
     		$params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value '.$post->ID, $params['field_value'] );
@@ -327,7 +327,9 @@ function types_render_field_single( $field, $params, $content = null, $code = ''
     $output = strval( apply_filters( 'types_view', $output,
         $params['field_value'], $field['type'], $field['slug'],
         $field['name'], $params ) );
-    return htmlspecialchars_decode( stripslashes( strval( $output ) ) );
+
+	return stripslashes( strval( $output ) );
+
 }
 
 function wpcf_frontend_compat_html_output( $output, $field, $content, $params ) {
@@ -361,10 +363,10 @@ function wpcf_frontend_compat_html_output( $output, $field, $content, $params ) 
 
 /**
  * Wraps field content.
- * 
+ *
  * @param type $field
  * @param type $content
- * @return type 
+ * @return type
  */
 function wpcf_frontend_wrap_field( $field, $content, $params = array() ) {
     if ( isset( $params['output'] ) && $params['output'] == 'html' ) {
@@ -405,10 +407,10 @@ function wpcf_frontend_wrap_field( $field, $content, $params = array() ) {
 
 /**
  * Wraps field name.
- * 
+ *
  * @param type $field
  * @param type $content
- * @return type 
+ * @return type
  */
 function wpcf_frontend_wrap_field_name( $field, $content, $params = array() ) {
     if ( isset( $params['output'] ) && $params['output'] == 'html' ) {
@@ -449,10 +451,10 @@ function wpcf_frontend_wrap_field_name( $field, $content, $params = array() ) {
 
 /**
  * Wraps field value.
- * 
+ *
  * @param type $field
  * @param type $content
- * @return type 
+ * @return type
  */
 function wpcf_frontend_wrap_field_value( $field, $content, $params = array() ) {
     if ( isset( $params['output'] ) && $params['output'] == 'html' ) {
@@ -502,9 +504,9 @@ add_filter( 'wpv_filter_query', 'wpcf_views_query', 12, 2 ); // after custom fie
 
 /**
  * Filter to handle Views queries with checkboxes.
- * 
+ *
  * @todo DOCUMENT THIS!
- * 
+ *
  * @param type $query
  * @param type $view_settings
  * @return string
@@ -549,7 +551,7 @@ function wpcf_views_query( $query, $view_settings ) {
 
                     global $wp_version;
 
-					if ( version_compare( $wp_version, '4.1', '<' ) ) { 
+					if ( version_compare( $wp_version, '4.1', '<' ) ) {
 						// We can not use nested meta_query entries
 						foreach ( $values as $value ) {
 							foreach ( $options as $key => $option ) {
@@ -643,7 +645,7 @@ function _wpcf_is_checkboxes_field( $field_name ) {
 function wpcf_views_get_meta_sql( $clause, $queries, $type, $primary_table,
         $primary_id_column, $context ) {
 
-    // Look for the REGEXP code we added and covert it to a proper SQL REGEXP 
+    // Look for the REGEXP code we added and covert it to a proper SQL REGEXP
     $regex = '/= \'REGEXP\(([^\)]*)\)\'/siU';
 
     if ( preg_match_all( $regex, $clause['where'], $matches, PREG_SET_ORDER ) ) {
@@ -657,3 +659,115 @@ function wpcf_views_get_meta_sql( $clause, $queries, $type, $primary_table,
 
     return $clause;
 }
+
+
+/** Fix shortcode rendering for WP 4.2.3 security fixes.
+ *  We now pre-process before the main do_shortcode fitler so that we
+ *  can still use shortcodes in html attributes
+ *  like <img src="[types field="image-field"][/types]">
+ *  adding filter with priority 5 before do_shortcode and other WP standard filters
+ *
+ *  Heavily inspired in do_shortcodes_in_html_tags
+ */
+
+add_filter( 'the_content', 'wpcf_preprocess_shortcodes_in_html_elements', 5 );
+
+function wpcf_preprocess_shortcodes_in_html_elements( $content ) {
+
+	$shortcode = "/\\[types.*?\\](.*?)\\[\\/types\\]/is";
+
+	// Normalize entities in unfiltered HTML before adding placeholders.
+	$trans = array( '&#91;' => '&#091;', '&#93;' => '&#093;' );
+	$content = strtr( $content, $trans );
+	
+	$textarr = wpcf_html_split( $content );
+
+	foreach ( $textarr as &$element ) {
+		if ( '' == $element || '<' !== $element[0] ) {
+			continue;
+		}
+
+		$noopen = false === strpos( $element, '[' );
+		$noclose = false === strpos( $element, ']' );
+		if ( $noopen || $noclose ) {
+			// This element does not contain shortcodes.
+			continue;
+		}
+
+		if ( '<!--' === substr( $element, 0, 4 ) || '<![CDATA[' === substr( $element, 0, 9 ) ) {
+			continue;
+		}
+
+		$counts = preg_match_all( $shortcode, $element, $matches );
+
+		if ( $counts > 0 ) {
+			foreach ( $matches[0] as $index => &$match ) {
+
+				$string_to_replace = $match;
+
+				$inner_content = $matches[1][ $index ];
+				if ( $inner_content ) {
+					$new_inner_content = wpcf_preprocess_shortcodes_in_html_elements( $inner_content );
+					$match = str_replace( $inner_content, $new_inner_content, $match );
+				}
+
+				$replacement = do_shortcode( $match );
+				$element = str_replace( $string_to_replace, $replacement, $element );
+
+			}
+		}
+		
+	}
+
+	$content = implode( '', $textarr );
+
+	return $content;
+}
+
+/**
+ * Separate HTML elements and comments from the text. Needed for wpcf_preprocess_shortcodes_in_html_elements.
+ *
+ * Heavily inspired in wp_html_split
+ *
+ * @param string $input The text which has to be formatted.
+ * @return array The formatted text.
+ */
+function wpcf_html_split( $input ) {
+	static $regex;
+
+	if ( ! isset( $regex ) ) {
+		$comments =
+			  '!'           // Start of comment, after the <.
+			. '(?:'         // Unroll the loop: Consume everything until --> is found.
+			.     '-(?!->)' // Dash not followed by end of comment.
+			.     '[^\-]*+' // Consume non-dashes.
+			. ')*+'         // Loop possessively.
+			. '(?:-->)?';   // End of comment. If not found, match all input.
+
+		$cdata =
+			  '!\[CDATA\['  // Start of comment, after the <.
+			. '[^\]]*+'     // Consume non-].
+			. '(?:'         // Unroll the loop: Consume everything until ]]> is found.
+			.     '](?!]>)' // One ] not followed by end of comment.
+			.     '[^\]]*+' // Consume non-].
+			. ')*+'         // Loop possessively.
+			. '(?:]]>)?';   // End of comment. If not found, match all input.
+
+		$regex =
+			  '/('              // Capture the entire match.
+			.     '<'           // Find start of element.
+			.     '(?(?=!--)'   // Is this a comment?
+			.         $comments // Find end of comment.
+			.     '|'
+			.         '(?(?=!\[CDATA\[)' // Is this a comment?
+			.             $cdata // Find end of comment.
+			.         '|'
+			.             '[^>]*>?' // Find end of element. If not found, match all input.
+			.         ')'
+			.     ')'
+			. ')/s';
+	}
+
+	return preg_split( $regex, $input, -1, PREG_SPLIT_DELIM_CAPTURE );
+}
+

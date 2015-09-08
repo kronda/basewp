@@ -40,6 +40,7 @@ if(!class_exists('WP_List_Table')){
 class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
 {
     var $custom_types;
+    var $buildin_post_types;
     var $bulk_action_field_name = 'wpcf_cpt_ids';
 
     /** ************************************************************************
@@ -58,6 +59,7 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
         ) );
 
         $this->custom_types = get_option(WPCF_OPTION_NAME_CUSTOM_TYPES, array());
+        $this->buildin_post_types = wpcf_get_builtin_in_post_types();
     }
 
     /** ************************************************************************
@@ -120,50 +122,75 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
      **************************************************************************/
     function column_title($item)
     {
-        $edit_link = add_query_arg(
-            array(
-                'page' => 'wpcf-edit-type',
-                'wpcf-post-type' => $item['slug']
-            ),
-            admin_url('admin.php')
+        $edit_link = esc_url(
+            add_query_arg(
+                array(
+                    'page' => 'wpcf-view-type',
+                    'wpcf-post-type' => $item['slug'],
+                ),
+                admin_url('admin.php')
+            )
         );
+        if ( WPCF_Roles::user_can_edit('custom-post-type', $item ) ) {
+            $edit_link = esc_url(
+                add_query_arg(
+                    array(
+                        'page' => 'wpcf-edit-type',
+                        'wpcf-post-type' => $item['slug'],
+                    ),
+                    admin_url('admin.php')
+                )
+            );
+        }
 
         //Build row actions
-        $actions = array(
-            'edit'      => sprintf('<a href="%s">%s</a>', $edit_link, __('Edit', 'wpcf')),
-            'status' => 'active' == $item['status'] ? wpcf_admin_custom_types_get_ajax_deactivation_link($item['slug']):wpcf_admin_custom_types_get_ajax_activation_link($item['slug']),
-            'duplicate'     => sprintf(
-                '<a href="%s" class="submitduplicate wpcf-ajax-link" id="wpcf-list-duplicate-%s">%s</a>',
-                add_query_arg(
-                    array(
-                        'action' => 'wpcf_ajax',
-                        'wpcf_action' => 'duplicate_post_type',
-                        'wpcf-post-type' => $item['slug'],
-                        'wpcf_ajax_update' => 'wpcf_list_ajax_response_'.$item['slug'],
-                        '_wpnonce' => wp_create_nonce('duplicate_post_type'),
+        $actions = array();
+        $actions['edit'] = sprintf('<a href="%s">%s</a>', $edit_link, __('Edit', 'wpcf'));
+        if ( 'cpt' == $item['type'] ) {
+            $a = array(
+                'status' => 'active' == $item['status'] ? wpcf_admin_custom_types_get_ajax_deactivation_link($item['slug']):wpcf_admin_custom_types_get_ajax_activation_link($item['slug']),
+                'duplicate'     => sprintf(
+                    '<a href="%s" class="submitduplicate wpcf-ajax-link" id="wpcf-list-duplicate-%s">%s</a>',
+                    esc_url(
+                        add_query_arg(
+                            array(
+                                'action' => 'wpcf_ajax',
+                                'wpcf_action' => 'duplicate_post_type',
+                                'wpcf-post-type' => $item['slug'],
+                                'wpcf_ajax_update' => 'wpcf_list_ajax_response_'.$item['slug'],
+                                '_wpnonce' => wp_create_nonce('duplicate_post_type'),
+                            ),
+                            admin_url('admin-ajax.php')
+                        )
                     ),
-                    admin_url('admin-ajax.php')
+                    $item['slug'],
+                    __('Duplicate', 'wpcf')
                 ),
-                $item['slug'],
-                __('Duplicate', 'wpcf')
-            ),
-            'delete'     => sprintf(
-                '<a href="%s" class="submitdelete wpcf-ajax-link" id="wpcf-list-delete-%s">%s</a>',
-                add_query_arg(
-                    array(
-                        'action' => 'wpcf_ajax',
-                        'wpcf_action' => 'delete_post_type',
-                        'wpcf-post-type' => $item['slug'],
-                        'wpcf_ajax_update' => 'wpcf_list_ajax_response_'.$item['slug'],
-                        '_wpnonce' => wp_create_nonce('delete_post_type'),
-                        'wpcf_warning' => urlencode(__('Are you sure?', 'wpcf')),
+                'delete'     => sprintf(
+                    '<a href="%s" class="submitdelete wpcf-ajax-link" id="wpcf-list-delete-%s">%s</a>',
+                    esc_url(
+                        add_query_arg(
+                            array(
+                                'action' => 'wpcf_ajax',
+                                'wpcf_action' => 'delete_post_type',
+                                'wpcf-post-type' => $item['slug'],
+                                'wpcf_ajax_update' => 'wpcf_list_ajax_response_'.$item['slug'],
+                                '_wpnonce' => wp_create_nonce('delete_post_type'),
+                                'wpcf_warning' => urlencode(__('Are you sure?', 'wpcf')),
+                            ),
+                            admin_url('admin-ajax.php')
+                        )
                     ),
-                    admin_url('admin-ajax.php')
+                    $item['slug'],
+                    __('Delete', 'wpcf')
                 ),
-                $item['slug'],
-                __('Delete', 'wpcf')
-            ),
-        );
+            );
+            $actions += $a;
+        } elseif ( !wpcf_is_builtin_post_types( $item['slug'] ) ) {
+            $actions = array(
+                'view' => sprintf('<a href="%s">%s</a>', $edit_link, __('View', 'wpcf')),
+            );
+        }
 
         //Return the title contents
         return sprintf(
@@ -185,11 +212,20 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
      **************************************************************************/
     function column_cb($item)
     {
-        return sprintf(
-            '<input type="checkbox" name="%s[]" value="%s" />',
-            $this->bulk_action_field_name,
-            $item['slug']
-        );
+        /**
+         * do not show checkbox for build-in post types
+         */
+        if ( isset($item['_builtin']) && $item['_builtin'] ) {
+            return '';
+        }
+        if ( WPCF_Roles::user_can_edit('custom-post-type', $item ) ) {
+            return sprintf(
+                '<input type="checkbox" name="%s[]" value="%s" />',
+                $this->bulk_action_field_name,
+                $item['slug']
+            );
+        }
+        return '';
     }
 
     /** ************************************************************************
@@ -260,7 +296,7 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
         $actions = array(
             'activate'   => __('Activate', 'wpcf'),
             'deactivate' => __('Deactivate', 'wpcf'),
-            'delete'     => __('Delete permanently', 'wpcf'),
+            'delete'     => __('Delete', 'wpcf'),
         );
         return $actions;
     }
@@ -275,26 +311,68 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
     function process_bulk_action()
     {
         $action = $this->current_action();
+
+        /**
+         * check nounce
+         */
+        if (!empty($action)) {
+            $nonce = '';
+            if ( isset($_REQUEST['_wpnonce'] ) ) {
+                $nonce = $_REQUEST['_wpnonce'];
+            }
+            if ( !wp_verify_nonce($nonce, 'bulk-customposttypes')) {
+                die( 'Security check' );
+            }
+        }
+
         //Detect when a bulk action is being triggered...
-        switch($action) {
-        case 'delete':
-            if (
-                !empty($this->custom_types)
-                && isset($_POST[$this->bulk_action_field_name])
-                && !empty($_POST[$this->bulk_action_field_name])
-            ) {
-                $slugs_to_delete = array();
-                foreach( $_POST[$this->bulk_action_field_name] as $key ) {
-                    if ( !isset($this->custom_types[$key]) ) {
-                        continue;
-                    }
+        if (
+            !empty($this->custom_types)
+            && isset($_POST[$this->bulk_action_field_name])
+            && !empty($_POST[$this->bulk_action_field_name])
+        ) {
+            $slugs_to_delete = array();
+            foreach( $_POST[$this->bulk_action_field_name] as $key ) {
+                /**
+                 * do not process if there is no entry
+                 */
+                if ( !isset($this->custom_types[$key]) ) {
+                    continue;
+                }
+                /**
+                 * check capability
+                 */
+                if ( !WPCF_Roles::user_can_edit('custom-post-type', $this->custom_types[$key]) ){
+                    continue;
+                }
+                /**
+                 * do it!
+                 */
+                switch($action) {
+                case 'delete':
                     unset($this->custom_types[$key]);
                     $slugs_to_delete[] = $key;
+                    break;
+                case 'deactivate':
+                    $this->custom_types[$key]['disabled'] = 1;
+                    $this->custom_types[$key][TOOLSET_EDIT_LAST] = time();
+                    break;
+                case 'activate':
+                    if ( isset($this->custom_types[$key]['disabled']) ) {
+                        unset($this->custom_types[$key]['disabled']);
+                        $this->custom_types[$key][TOOLSET_EDIT_LAST] = time();
+                    }
+                    break;
                 }
-                update_option(WPCF_OPTION_NAME_CUSTOM_TYPES, $this->custom_types);
-                /**
-                 * update custom taxonomies
-                 */
+            }
+            /**
+             * update custom post types
+             */
+            update_option(WPCF_OPTION_NAME_CUSTOM_TYPES, $this->custom_types);
+            /**
+             * update custom taxonomies
+             */
+            if ( count($slugs_to_delete) ) {
                 $custom_taxonomies = get_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array());
                 if ( !empty($custom_taxonomies) ) {
                     foreach ( $slugs_to_delete as $slug ) {
@@ -310,41 +388,6 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
                     update_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $custom_taxonomies);
                 }
             }
-            break;
-        case 'deactivate':
-            if (
-                !empty($this->custom_types)
-                && isset($_POST[$this->bulk_action_field_name])
-                && !empty($_POST[$this->bulk_action_field_name])
-            ) {
-                foreach( $_POST[$this->bulk_action_field_name] as $key ) {
-                    if ( !isset($this->custom_types[$key]) ) {
-                        continue;
-                    }
-                    $this->custom_types[$key]['disabled'] = 1;
-                    $this->custom_types[$key][TOOLSET_EDIT_LAST] = time();
-                }
-                update_option(WPCF_OPTION_NAME_CUSTOM_TYPES, $this->custom_types);
-            }
-            break;
-        case 'activate':
-            if (
-                !empty($this->custom_types)
-                && isset($_POST[$this->bulk_action_field_name])
-                && !empty($_POST[$this->bulk_action_field_name])
-            ) {
-                foreach( $_POST[$this->bulk_action_field_name] as $key ) {
-                    if ( !isset($this->custom_types[$key]) ) {
-                        continue;
-                    }
-                    if ( isset($this->custom_types[$key]['disabled']) ) {
-                        unset($this->custom_types[$key]['disabled']);
-                        $this->custom_types[$key][TOOLSET_EDIT_LAST] = time();
-                    }
-                }
-                update_option(WPCF_OPTION_NAME_CUSTOM_TYPES, $this->custom_types);
-            }
-            break;
         }
     }
 
@@ -395,6 +438,22 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
         $this->process_bulk_action();
 
         /**
+         * map taxonomies to Post Types
+         */
+        $taxonomies = get_taxonomies(array('public'=>true),'objects');
+        $map_taxonomies_by_post_type = array();
+        foreach( $taxonomies as $slug => $data ) {
+            if ( isset($data->object_type) ) {
+                foreach( $data->object_type as $post_type ) {
+                    if ( !isset($map_taxonomies_by_post_type[$post_type]) ) {
+                        $map_taxonomies_by_post_type[$post_type] = array();
+                    }
+                    $map_taxonomies_by_post_type[$post_type][$slug] = 1;
+                }
+            }
+        }
+
+        /**
          * Instead of querying a database, we're going to fetch the example data
          * property we created for use in this plugin. This makes this example
          * package slightly different than one you might build on your own. In
@@ -409,12 +468,18 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
         $data = array();
         if ( !empty($this->custom_types) ){
             foreach( array_values($this->custom_types) as $type ) {
+                if (empty($type) || empty($type['slug'])) {
+                    continue;
+                }
                 $one = array(
-                    'description' => $type['description'],
-                    'taxonomies' => isset($type['taxonomies'])? $type['taxonomies']:array(),
+                    'description' => isset($type['description'])? $type['description']:'',
+                    'taxonomies' => isset($map_taxonomies_by_post_type[$type['slug']])? $map_taxonomies_by_post_type[$type['slug']]:array(),
                     'slug' => $type['slug'],
                     'status' => isset($type['disabled'])? 'inactive':'active',
                     'title' => stripslashes($type['labels']['singular_name']),
+                    'type' => 'cpt',
+                    '_builtin' => false,
+                    WPCF_AUTHOR => isset($type[WPCF_AUTHOR])? intval($type[WPCF_AUTHOR]):0,
                 );
                 $add_one = true;
                 if ( $s ) {
@@ -429,8 +494,40 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
                     }
                 }
                 if ( $add_one ) {
-                    $data[] = $one;
+                    $data[$one['slug']] = $one;
                 }
+            }
+        }
+
+
+        /**
+         * build-in post types
+         */
+        foreach( $this->buildin_post_types as $type ) {
+            $pt = get_post_type_object($type);
+            $one = array(
+                'description' => __('This is build-in WordPress post type.', 'wpcf'),
+                'taxonomies' => isset($map_taxonomies_by_post_type[$type])? $map_taxonomies_by_post_type[$type]:array(),
+                'slug' => $type,
+                'status' => 'active',
+                'title' => $pt->labels->singular_name,
+                '_builtin' => true,
+                'type' => '_builtin',
+            );
+            $add_one = true;
+            if ( $s ) {
+                $add_one = false;
+                foreach( array('description', 'slug', 'title' ) as $key ) {
+                    if ( $add_one || empty( $one[$key] ) ) {
+                        continue;
+                    }
+                    if ( is_numeric(strpos(mb_strtolower($one[$key]), $s))) {
+                        $add_one = true;
+                    }
+                }
+            }
+            if ( $add_one ) {
+                $data[$one['slug']] = $one;
             }
         }
 
@@ -485,7 +582,7 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
      *
      * @param object $item The current item
      */
-    public function single_row( $item )
+    public function single_row($item)
     {
         static $row_class = '';
         $row_class = ( $row_class == '' ? 'alternate' : '' );
@@ -504,11 +601,13 @@ class WPCF_Custom_Post_Types_List_Table extends WP_List_Table
         wpcf_admin_ctt_list_header();
         printf(
             '<a class="button-primary" href="%s">%s</a>',
-            add_query_arg(
-                array(
-                    'page' => 'wpcf-edit-type',
-                ),
-                admin_url('admin.php')
+            esc_url(
+                add_query_arg(
+                    array(
+                        'page' => 'wpcf-edit-type',
+                    ),
+                    admin_url('admin.php')
+                )
             ),
             __('Add New Custom Post Type', 'wpcf')
         );

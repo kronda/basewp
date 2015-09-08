@@ -118,35 +118,54 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
      **************************************************************************/
     function column_title($item)
     {
-        $edit_link = add_query_arg(
-            array(
-                'page' => 'wpcf-edit-usermeta',
-                'group_id' => $item['id']
-            ),
-            admin_url('admin.php')
+        $edit_link = esc_url(
+            add_query_arg(
+                array(
+                    'page' => 'wpcf-edit-usermeta',
+                    'group_id' => $item['id'],
+                ),
+                admin_url('admin.php')
+            )
         );
 
-        //Build row actions
-        $actions = array(
-            'edit'      => sprintf('<a href="%s">%s</a>', $edit_link, __('Edit', 'wpcf')),
-            'status' => 'active' == $item['status']? wpcf_admin_usermeta_get_ajax_deactivation_link($item['id']):wpcf_admin_usermeta_get_ajax_activation_link($item['id']),
-            'delete'     => sprintf(
-                '<a href="%s" class="submitdelete wpcf-ajax-link" id="wpcf-list-delete-%d"">%s</a>',
+        if ( WPCF_Roles::user_can_edit('user-meta-field', $item ) ) {
+            //Build row actions
+            $actions = array(
+                'edit'      => sprintf('<a href="%s">%s</a>', $edit_link, __('Edit', 'wpcf')),
+                'status' => 'active' == $item['status']? wpcf_admin_usermeta_get_ajax_deactivation_link($item['id']):wpcf_admin_usermeta_get_ajax_activation_link($item['id']),
+                'delete'     => sprintf(
+                    '<a href="%s" class="submitdelete wpcf-ajax-link" id="wpcf-list-delete-%d"">%s</a>',
+                    esc_url(
+                        add_query_arg(
+                            array(
+                                'action' => 'wpcf_ajax',
+                                'wpcf_action' => 'delete_usermeta_group',
+                                'group_id' => $item['id'],
+                                'wpcf_ajax_update' => 'wpcf_list_ajax_response_'.$item['id'],
+                                '_wpnonce' => wp_create_nonce('delete_usermeta_group'),
+                                'wpcf_warning' => urlencode(__('Are you sure?', 'wpcf')),
+                            ),
+                            admin_url('admin-ajax.php')
+                        )
+                    ),
+                    $item['id'],
+                    __('Delete', 'wpcf')
+                ),
+            );
+        } else {
+            $edit_link = esc_url(
                 add_query_arg(
                     array(
-                        'action' => 'wpcf_ajax',
-                        'wpcf_action' => 'delete_usermeta_group',
-                        'group_id' => $item['id'],
-                        'wpcf_ajax_update' => 'wpcf_list_ajax_response_'.$item['id'],
-                        '_wpnonce' => wp_create_nonce('delete_usermeta_group'),
-                        'wpcf_warning' => urlencode(__('Are you sure?', 'wpcf')),
+                        'page' => 'wpcf-view-usermeta',
+                        'group_id' => $item['id']
                     ),
-                    admin_url('admin-ajax.php')
-                ),
-                $item['id'],
-                __('Delete', 'wpcf')
-            ),
-        );
+                    admin_url('admin.php')
+                )
+            );
+            $actions = array(
+                'view' => sprintf('<a href="%s">%s</a>', $edit_link, __('View', 'wpcf')),
+            );
+        }
 
         //Return the title contents
         return sprintf(
@@ -168,11 +187,14 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
      **************************************************************************/
     function column_cb($item)
     {
-        return sprintf(
-            '<input type="checkbox" name="%s[]" value="%s" />',
-            $this->bulk_action_field_name,
-            $item['id']
-        );
+        if ( WPCF_Roles::user_can_edit('user-meta-field', $item ) ) {
+            return sprintf(
+                '<input type="checkbox" name="%s[]" value="%s" />',
+                $this->bulk_action_field_name,
+                $item['id']
+            );
+        }
+        return '';
     }
 
     /** ************************************************************************
@@ -197,6 +219,9 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
             'status'      => __('Active', 'wpcf'),
             'show_for'    => __('Available for', 'wpcf'),
         );
+        if ( !WPCF_Roles::user_can_create('user-meta-field') ) {
+            unset($columns['cb']);
+        }
         return $columns;
     }
 
@@ -240,10 +265,14 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
      **************************************************************************/
     function get_bulk_actions()
     {
-        $actions = array(
-            'activate'   => __('Activate', 'wpcf'),
-            'deactivate' => __('Deactivate', 'wpcf'),
-        );
+        $actions = array();
+        if ( WPCF_Roles::user_can_create('user-meta-field') ) {
+            $actions = array(
+                'activate'   => __('Activate', 'wpcf'),
+                'deactivate' => __('Deactivate', 'wpcf'),
+//                'delete'     => __('Delete', 'wpcf'),
+            );
+        }
         return $actions;
     }
 
@@ -260,32 +289,72 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
     {
         global $wpdb;
         $action = $this->current_action();
+
+        /**
+         * check nounce
+         */
+        if (!empty($action)) {
+            $nonce = '';
+            if ( isset($_REQUEST['_wpnonce'] ) ) {
+                $nonce = $_REQUEST['_wpnonce'];
+            }
+            if ( !wp_verify_nonce($nonce, 'bulk-userfieldgroups')) {
+                die( 'Security check' );
+            }
+        }
+
         //Detect when a bulk action is being triggered...
-        switch($action) {
-        case 'deactivate':
-            if (
-                true
-                && isset($_POST[$this->bulk_action_field_name])
-                && !empty($_POST[$this->bulk_action_field_name])
-            ) {
-                foreach( $_POST[$this->bulk_action_field_name] as $key ) {
+        if (
+            true
+            && isset($_POST[$this->bulk_action_field_name])
+            && !empty($_POST[$this->bulk_action_field_name])
+        ) {
+            $items = array();
+            $args = array(
+                'nopaging' => true,
+                'posts_per_page' => -1,
+                'post_type' => 'wp-types-user-group',
+                'post__in' => $_POST[$this->bulk_action_field_name],
+                'update_post_term_cache' => false,
+            );
+            $query = new WP_Query($args);
+            if ( $query->have_posts() ) {
+                while ( $query->have_posts() ) {
+                    $query->the_post();
+                    $items[ get_the_ID()] = array(
+                        'id' => get_the_ID(),
+                        WPCF_AUTHOR => get_the_author_meta('ID'),
+                    );
+                    wp_reset_postdata();
+                }
+            }
+            foreach( $_POST[$this->bulk_action_field_name] as $key ) {
+                /**
+                 * do not process if there is no entry
+                 */
+                if ( !isset($items[$key] ) ) {
+                    continue;
+                }
+                /**
+                 * check capability
+                 */
+                if ( !WPCF_Roles::user_can_edit('user-meta-field', $items[$key]) ){
+                    continue;
+                }
+                /**
+                 * do it!
+                 */
+                switch($action) {
+                case 'deactivate':
                     $wpdb->update(
                         $wpdb->posts,
                         array( 'post_status' => 'draft' ),
-                        array( 'ID' => $key, 'post_type' => 'wp-types-user-group' ),
+                        array( 'ID' => $key, 'post_type' => TYPES_USER_META_FIELD_GROUP_CPT_NAME ),
                         array('%s'),
                         array('%d', '%s')
                     );
-                }
-            }
-            break;
-        case 'activate':
-            if (
-                true
-                && isset($_POST[$this->bulk_action_field_name])
-                && !empty($_POST[$this->bulk_action_field_name])
-            ) {
-                foreach( $_POST[$this->bulk_action_field_name] as $key ) {
+                    break;
+                case 'activate':
                     $wpdb->update(
                         $wpdb->posts,
                         array( 'post_status' => 'publish' ),
@@ -293,11 +362,11 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
                         array('%s'),
                         array('%d')
                     );
+                    break;
                 }
             }
-            break;
+            wp_cache_delete(md5('group::_get_group'.TYPES_USER_META_FIELD_GROUP_CPT_NAME),'types_cache_groups');
         }
-        wp_cache_delete(md5('group::_get_group'.'wp-types-user-group'),'types_cache_groups');
     }
 
     /** ************************************************************************
@@ -359,7 +428,7 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
         $s = isset($_POST['s'])? mb_strtolower(trim($_POST['s'])):false;
 
         $data = array();
-        $groups = wpcf_admin_fields_get_groups('wp-types-user-group');
+        $groups = wpcf_admin_fields_get_groups(TYPES_USER_META_FIELD_GROUP_CPT_NAME);
         if ( !empty($groups) ){
             foreach( array_values($groups) as $group ) {
                 $one = array(
@@ -368,7 +437,8 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
                     'slug' => $group['slug'],
                     'status' => (isset($group['is_active']) && $group['is_active'])? 'active':'inactive',
                     'supports' => isset($group['supports'])? $group['supports']:array(),
-                    'title' => stripslashes($group['name']),
+                    'title' => wp_kses_post($group['name']),
+                    WPCF_AUTHOR => isset($group[WPCF_AUTHOR])? $group[WPCF_AUTHOR]:0,
                 );
                 $add_one = true;
                 if ( $s ) {
@@ -461,11 +531,13 @@ class WPCF_User_Fields_List_Table extends WP_List_Table
         );
         printf(
             '<a class="button-primary" href="%s">%s</a>',
-            add_query_arg(
-                array(
-                    'page' => 'wpcf-edit-usermeta',
-                ),
-                admin_url('admin.php')
+            esc_url(
+                add_query_arg(
+                    array(
+                        'page' => 'wpcf-edit-usermeta',
+                    ),
+                    admin_url('admin.php')
+                )
             ),
             __('Add New Usermeta Group', 'wpcf')
         );

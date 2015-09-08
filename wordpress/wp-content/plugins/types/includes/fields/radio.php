@@ -27,8 +27,7 @@ function wpcf_fields_radio_insert_form( $form_data = array(), $parent_name = '' 
     $form['name'] = array(
         '#type' => 'textfield',
         '#title' => __( 'Name of custom field', 'wpcf' ),
-        '#description' => __( 'Under this name field will be stored in DB (sanitized)',
-                'wpcf' ),
+        '#description' => __( 'Under this name field will be stored in DB (sanitized)', 'wpcf' ),
         '#name' => 'name',
         '#attributes' => array('class' => 'wpcf-forms-set-legend'),
         '#validate' => array('required' => array('value' => true)),
@@ -114,8 +113,7 @@ function wpcf_fields_radio_insert_form( $form_data = array(), $parent_name = '' 
         '#name' => 'display',
         '#options' => array(
             'display_from_db' => array(
-                '#title' => __( 'Display the value of this field from the database',
-                        'wpcf' ),
+                '#title' => __( 'Display the value of this field from the database', 'wpcf' ),
                 '#name' => 'display',
                 '#value' => 'db',
                 '#inline' => true,
@@ -224,8 +222,7 @@ function wpcf_fields_radio_get_option( $parent_name = '', $form_data = array() )
 function wpcf_fields_radio_get_option_alt_text( $id, $parent_name = '',
         $form_data = array() ) {
     $form = array();
-    $title = isset( $_GET['count'] ) ? __( 'Option title', 'wpcf' ) . ' ' . intval( $_GET['count'] ) : __( 'Option title',
-                    'wpcf' ) . ' 1';
+    $title = isset( $_GET['count'] ) ? __( 'Option title', 'wpcf' ) . ' ' . intval( $_GET['count'] ) : __( 'Option title', 'wpcf' ) . ' 1';
     $title = isset( $form_data['title'] ) ? $form_data['title'] : $title;
     $value = isset( $_GET['count'] ) ? intval( $_GET['count'] ) : 1;
     $value = isset( $form_data['value'] ) ? $form_data['value'] : $value;

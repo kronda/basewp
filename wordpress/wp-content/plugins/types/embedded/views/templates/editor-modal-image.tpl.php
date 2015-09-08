@@ -31,8 +31,7 @@ if ($data['warning_remote']) {
     if ( wpcf_is_embedded() ) {
         $warning_remote = __( 'Remote image resize is disabled, so Types will only resize images that you upload.', 'wpcf' );
     } else {
-        $warning_remote = sprintf( __( 'Remote image resize is currently disabled, so Types will only resize images that you upload. To change, go to the %sTypes settings page%s.',
-                        'wpcf' ),
+        $warning_remote = sprintf( __( 'Remote image resize is currently disabled, so Types will only resize images that you upload. To change, go to the %sTypes settings page%s.', 'wpcf' ),
                 '<a href="' . admin_url( 'admin.php?page=wpcf-custom-settings#types-image-settings' ) . '" target="_blank">',
                 '</a>' );
     }
@@ -83,7 +82,7 @@ if ($data['warning_remote']) {
 
 <?php if ( $data['warning_remote'] ) : ?>
 <!--		Conditional icon displaying for dismissed warning message -->
-<i class="icon-warning-sign js-show-tooltip" data-header="<?php _e( 'Image resize disabled', 'wpcf' ); ?>" data-content="<?php echo htmlspecialchars( $warning_remote ); ?>"></i>
+<i class="icon-warning-sign js-show-tooltip" data-header="<?php _e( 'Image resize disabled', 'wpcf' ); ?>" data-content="<?php echo esc_attr($warning_remote); ?>"></i>
 <?php endif; ?>
 
 	</p>

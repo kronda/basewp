@@ -122,7 +122,14 @@ jQuery(document).ready(function(){
         });
     });
     jQuery('.wpcf-forms-set-legend').live('keyup', function(){
-        jQuery(this).parents('fieldset').find('.wpcf-legend-update').html(jQuery(this).val());
+        var val = jQuery(this).val();
+        if ( val ) {
+            val = val.replace(/</, '&lt;');
+            val = val.replace(/>/, '&gt;');
+            val = val.replace(/'/, '&#39;');
+            val = val.replace(/"/, '&quot;');
+        }
+        jQuery(this).parents('fieldset').find('.wpcf-legend-update').html(val);
     });
     jQuery('.wpcf-form-groups-radio-update-title-display-value').live('keyup', function(){
         jQuery('#'+jQuery(this).attr('id')+'-display-value').prev('label').html(jQuery(this).val());
@@ -292,15 +299,9 @@ jQuery(document).ready(function(){
                             jQuery('#'+updateAdd).append(data.output);
                         }
                     }
-                    if (typeof data.execute != 'undefined'
-                        && (typeof data.wpcf_nonce_ajax_callback != 'undefined'
-                            && data.wpcf_nonce_ajax_callback == wpcf_nonce_ajax_callback)) {
-                        eval(data.execute);
-                    }
                     if (typeof data.status != 'undefined' ) {
                         if ( 'inactive' == data.status ) {
                             thisObjectTR.addClass('status-inactive');
-
                         } else {
                             thisObjectTR.removeClass('status-inactive');
                         }
@@ -308,8 +309,26 @@ jQuery(document).ready(function(){
                     if (typeof data.status_label != 'undefined' ) {
                         jQuery('td.status', thisObjectTR).html(data.status_label);
                     }
-                    if (typeof data.execute != 'undefined') {
-                        eval(data.execute);
+                    if (
+                        typeof data.execute != 'undefined'
+                        && (
+                            typeof data.wpcf_nonce_ajax_callback != 'undefined'
+                            && data.wpcf_nonce_ajax_callback == wpcf_nonce_ajax_callback
+                        )
+                    ) {
+                        switch(data.execute) {
+                            case 'reload':
+                                location.reload();
+                                break;
+                            case 'append':
+                                if (
+                                    typeof data.append_target != 'undefined'
+                                    && typeof data.append_value != 'undefined'
+                                ) {
+                                    jQuery(data.append_target).append(data.append_value);
+                                }
+                                break;
+                        }
                     }
                 }
                 if (callback != false) {

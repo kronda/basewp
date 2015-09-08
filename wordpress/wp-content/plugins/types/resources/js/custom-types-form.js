@@ -20,6 +20,12 @@ jQuery(document).ready(function(){
      * Submit form trigger
      */
     jQuery('.wpcf-types-form').submit(function(){
+        /**
+         * do not check builtin post types
+         */
+        if ( '_builtin' == jQuery('.wpcf-form-submit', jQuery(this)).data('post_type_is_builtin') ) {
+            return true;
+        }
         /*
          * Check if singular and plural are same
          */

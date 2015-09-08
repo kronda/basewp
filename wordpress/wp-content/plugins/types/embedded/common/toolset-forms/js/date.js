@@ -8,7 +8,7 @@ var wptDate = (function ($) {
                 if (/*!$(this).is(':disabled') &&*/ !$(this).hasClass('hasDatepicker')) {
                     a = wptDate.add($(this));
                     //a.next().after('<span style="margin-left:10px"><i>' + wptDateData.dateFormatNote + '</i></span>').data( 'dateFormatNote', true );
-                } 
+                }
             });
         }
 
@@ -40,7 +40,6 @@ var wptDate = (function ($) {
             el.val('');
             el_select.val('0');
             thiz.hide();
-            
         });
     }
 

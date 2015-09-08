@@ -32,8 +32,8 @@ if ( !class_exists('Types_Data_Installer') ) {
                 $data->$key = new stdClass;
             }
 
-            $data->groups->group = $this->get_data_by_group_name('wp-types-group');
-            $data->user_groups->group = $this->get_data_by_group_name('wp-types-user-group');
+            $data->groups->group = $this->get_data_by_group_name(TYPES_CUSTOM_FIELD_GROUP_CPT_NAME);
+            $data->user_groups->group = $this->get_data_by_group_name(TYPES_USER_META_FIELD_GROUP_CPT_NAME);
 
             $data->fields->field = $this->get_data_by_field_type('fields');
             $data->user_fields->field = $this->get_data_by_field_type('user_fields');
@@ -60,7 +60,7 @@ if ( !class_exists('Types_Data_Installer') ) {
         {
             $group = 'groups';
             $element = 'group';
-            if ( 'wp-types-user-group' == $group_name ) {
+            if ( TYPES_USER_META_FIELD_GROUP_CPT_NAME == $group_name ) {
                 $group = 'user_groups';
             }
 
@@ -104,10 +104,10 @@ if ( !class_exists('Types_Data_Installer') ) {
                 ) {
                     $new[] = $group;
                     switch($group_name) {
-                    case 'wp-types-group':
+                    case TYPES_CUSTOM_FIELD_GROUP_CPT_NAME:
                         $this->fields += explode(',', $group->meta->_wp_types_group_fields);
                         break;
-                    case 'wp-types-user-group':
+                    case TYPES_USER_META_FIELD_GROUP_CPT_NAME:
                         $this->user_fields += explode(',', $group->meta->_wp_types_group_fields);
                         break;
                     }
@@ -119,7 +119,7 @@ if ( !class_exists('Types_Data_Installer') ) {
                     && in_array($group->__types_id, $this->args['force_duplicate_post_name'][$group_name])
                 ) {
                     $one = $group;
-                    $one->__types_id = wp_unique_post_slug( sanitize_title_with_dashes($group->post_title, null, 'save'), null, 'publish', 'wp-types-group', null);
+                    $one->__types_id = wp_unique_post_slug( sanitize_title_with_dashes($group->post_title, null, 'save'), null, 'publish', TYPES_CUSTOM_FIELD_GROUP_CPT_NAME, null);
                     $one->__types_title = $one->post_title = sprintf('%s %s', $group->post_title, $date);
                     $new[$one->__types_id] = $one;
                     continue;
@@ -237,8 +237,8 @@ if ( !class_exists('Types_Data_Installer') ) {
             if (!empty($this->reset_toolset_edit_last_list)) {
                 foreach( $this->reset_toolset_edit_last_list as $group => $data) {
                     switch( $group ) {
-                    case 'wp-types-group':
-                    case 'wp-types-user-group':
+                    case TYPES_CUSTOM_FIELD_GROUP_CPT_NAME:
+                    case TYPES_USER_META_FIELD_GROUP_CPT_NAME:
                         foreach( $data as $slug) {
                             $post = get_page_by_path($slug, OBJECT, $group);
                             if ( $post ) {

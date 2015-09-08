@@ -6,7 +6,7 @@
  *
  */
 
-include_once dirname(__FILE__).'/class.wpcf-marketing.php';
+include_once dirname(__FILE__).'/class.wpcf.marketing.php';
 
 /**
  * Types Marketing Class
@@ -26,7 +26,6 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
     {
         parent::__construct();
         add_action('admin_enqueue_scripts', array($this, 'register_scripts'), 1);
-        add_action('wp_ajax_toolset_messages', array( $this, 'update_toolset_messages' ));
         add_action('admin_notices', array($this, 'add_message_after_activate'));
         $this->set_state();
     }
@@ -217,7 +216,6 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
             array_key_exists($this->option_name, $_POST)
             && array_key_exists($_POST[$this->option_name], $this->options)
         ) {
-			// @todo we need to sanitize $_POST[$this->option_name]: is it a string, an array or what?
             if ( !add_option($this->option_name, $_POST[$this->option_name], '', 'no') ) {
                 update_option($this->option_name, $_POST[$this->option_name]);
             }
@@ -299,35 +297,11 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
     public function get_content()
     {
         if ( $url = $this->get_kind_url() ) {
-            include_once dirname(__FILE__).'/class.wpcf-marketing-tutorial.php';
+            include_once dirname(__FILE__).'/class.wpcf.marketing.tutorial.php';
             $tutorial = new WPCF_Types_Marketing_Tutorial();
             return $tutorial->get_content('kind');
         }
         return;
-    }
-
-    // @todo nonce ?
-    // @todo auth ?
-    public function update_toolset_messages()
-    {
-        $settings = wpcf_get_settings();
-        if (
-            array_key_exists('value', $_POST)
-            && 'checked' == $_POST['value']
-        ) {
-            if ( !add_option($this->option_disable, '1', '', 'no') ) {
-                update_option($this->option_disable, '1');
-            }
-            $settings['toolset_messages'] = true;
-        } else {
-            delete_option($this->option_disable);
-            $settings['toolset_messages'] = false;
-        }
-        update_option('wpcf_settings', $settings);
-        echo '<div class="updated"><p>';
-        _e('Toolset Messages state saved!', 'wpcf');
-        echo '</p></div>';
-        die;
     }
 
     public function add_message_after_activate()
@@ -346,7 +320,7 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
         $data = array(
             'header' => __('Need help with <em>Types</em>?', 'wpcf'),
             'text' => __('Types plugin includes a lot of options. Tell us what kind of site you are building and we\'ll show you how to use Types in the best way.', 'wpcf'),
-            'button_primary_url' => add_query_arg( 'page', basename(dirname(dirname(__FILE__))).'/marketing/getting-started/index.php', admin_url('admin.php') ),
+            'button_primary_url' => esc_url(add_query_arg( 'page', basename(dirname(dirname(__FILE__))).'/marketing/getting-started/index.php', admin_url('admin.php') )),
             'button_primary_text' => __('Get Started', 'wpcf'),
             'button_dismiss_url' => '',
             'button_dismiss_text' =>  __('Dismiss', 'wpcf'),

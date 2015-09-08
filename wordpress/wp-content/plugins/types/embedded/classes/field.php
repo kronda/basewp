@@ -358,7 +358,8 @@ class WPCF_Field
         /**
          * apply filters
          */
-        $_value = $this->_filter_save_value( $value );
+        $_value = $this->_filter_save_postmeta_value( $value );
+        $_value = $this->_filter_save_value( $_value );
         /**
          * Save field if needed
          */
@@ -402,6 +403,18 @@ class WPCF_Field
         $value = apply_filters( 'wpcf_fields_slug_' . $this->cf['slug'] . '_value_save', $value, $this->cf, $this );
         $value = apply_filters( 'wpcf_fields_type_' . $this->cf['type'] . '_value_save', $value, $this->cf, $this );
 
+        return $value;
+    }
+
+    function _filter_save_postmeta_value( $value )
+    {
+        $value = apply_filters( 'wpcf_fields_postmeta_value_save', $value, $this->cf['type'], $this->cf['slug'], $this->cf, $this );
+        return $value;
+    }
+
+    function _filter_save_usermeta_value( $value )
+    {
+        $value = apply_filters( 'wpcf_fields_usermeta_value_save', $value, $this->cf['type'], $this->cf['slug'], $this->cf, $this );
         return $value;
     }
 
@@ -713,10 +726,10 @@ class WPCF_Field
         if ( isset( $params['raw'] ) && $params['raw'] == 'true' ) {
             return $html;
         } else {
-            $html = htmlspecialchars( $html );
-        }
+			$html = stripslashes( $html );
+		}
         // Process shortcodes too
-        $html = do_shortcode( htmlspecialchars_decode( stripslashes( $html ) ) );
+        $html = do_shortcode( $html );
         return $html;
     }
 

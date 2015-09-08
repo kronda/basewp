@@ -33,6 +33,29 @@ if ( !defined( 'TYPES_INIT_PRIORITY' ) ) {
     define( 'TYPES_INIT_PRIORITY', -1 );
 }
 
+/**
+ * custom filed groups - post type
+ */
+define('TYPES_CUSTOM_FIELD_GROUP_CPT_NAME', 'wp-types-group');
+
+/**
+ * user meta filed groups - post type
+ */
+define('TYPES_USER_META_FIELD_GROUP_CPT_NAME', 'wp-types-user-group');
+
+/**
+ * default capability
+ */
+
+define('TYPES_CAPABILITY', 'manage_options');
+
+/**
+ * last author
+ */
+if ( !defined('WPCF_AUTHOR' )){
+    define( 'WPCF_AUTHOR', '_wpcf_author_id');
+}
+
 /*
  *
  * Init
@@ -133,7 +156,7 @@ function wpcf_embedded_init() {
     // Define necessary constants if plugin is not present
     // This ones are skipped if used as embedded code!
     if ( !defined( 'WPCF_VERSION' ) ) {
-        define( 'WPCF_VERSION', '1.7.7' );
+        define( 'WPCF_VERSION', '1.8.5' );
         define( 'WPCF_META_PREFIX', 'wpcf-' );
     }
 
@@ -297,7 +320,7 @@ function wpcf_embedded_init() {
 
     // Define exceptions - privileged plugins and their data
     $wpcf->toolset_post_types = array(
-        'view', 'view-template', 'cred-form'
+        'view', 'view-template', 'cred-form', 'cred-user-form'
     );
     // 'attachment' = Media
     //

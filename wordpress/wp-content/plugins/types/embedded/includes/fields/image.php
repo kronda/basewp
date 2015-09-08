@@ -11,6 +11,27 @@ add_filter( 'wpcf_fields_type_image_value_save', 'wpcf_fields_image_value_filter
 add_filter( 'types_view', 'wpcf_fields_image_view_filter', 10, 6 );
 
 /**
+ * return array of valid extensions
+ *
+ * @since 1.8
+ *
+ * @return array
+ */
+function wpcf_fields_image_valid_extension()
+{
+    return array(
+        'bmp',
+        'gif',
+        'ico',
+        'jpeg',
+        'jpg',
+        'png',
+        'svg',
+        'webp',
+    );
+}
+
+/**
  * Register data (called automatically).
  * @return type
  */
@@ -289,8 +310,7 @@ function wpcf_fields_image_view( $params ) {
         //print_r('is_attachment');
         if ( isset( $params['url'] ) && $params['url'] == 'true' ) {
             //print_r('is_url');
-            $image_url = wp_get_attachment_image_src( $image_data['is_attachment'],
-                    $params['size'] );
+            $image_url = wp_get_attachment_image_src( $image_data['is_attachment'], $params['size'] );
             if ( !empty( $image_url[0] ) ) {
                 $output = $image_url[0];
             } else {
@@ -389,15 +409,14 @@ function wpcf_fields_image_view( $params ) {
             return $resized_image;
         }
 
-        $output = '<img alt="';
-        $output .= $alt !== false ? $alt : $resized_image;
-        $output .= '" title="';
-        $output .= $title !== false ? $title : $resized_image;
-        $output .= '"';
-        $output .=!empty( $params['onload'] ) ? ' onload="' . $params['onload'] . '"' : '';
-        $output .=!empty( $class ) ? ' class="' . implode( ' ', $class ) . '"' : '';
-        $output .=!empty( $style ) ? ' style="' . implode( ' ', $style ) . '"' : '';
-        $output .= ' src="' . $resized_image . '" />';
+        $output = sprintf( '<img alt="%s" ', $output .= $alt !== false ? esc_attr($alt) : '');
+        if ( $title !== false ) {
+            $output .= sprintf(' title="%s"', esc_attr($title));
+        }
+        $output .=!empty( $params['onload'] ) ? ' onload="' . esc_attr($params['onload']) . '"' : '';
+        $output .=!empty( $class ) ? ' class="' . esc_attr(implode( ' ', $class )) . '"' : '';
+        $output .=!empty( $style ) ? ' style="' . esc_attr(implode( ' ', $style )) . '"' : '';
+        $output .= sprintf(' src="%s" />', esc_attr($resized_image));
     }
 
     return $output;
@@ -470,8 +489,7 @@ function wpcf_fields_image_resize_image( $url_path, $width = 300, $height = 200,
         $suffix .= '_wpcf_' . $dst_w . 'x' . $dst_h;
     }
 
-    $image_data['extension'] = in_array( strtolower( $image_data['extension'] ),
-                    array('gif', 'png', 'jpeg') ) ? $image_data['extension'] : 'jpg';
+    $image_data['extension'] = in_array( strtolower( $image_data['extension'] ), wpcf_fields_image_valid_extension() ) ? $image_data['extension'] : 'jpg';
 
     $image_relpath = $image_data['relpath'] . '/' . $image_data['image_name'] . '-'
             . $suffix . '.' . $image_data['extension'];
@@ -563,10 +581,8 @@ function wpcf_fields_image_get_data( $image ) {
     }
     // Extension check
     $data['extension'] = pathinfo( $image, PATHINFO_EXTENSION );
-    if ( !in_array( strtolower( $data['extension'] ),
-                    array('jpg', 'jpeg', 'gif', 'png') ) ) {
-        return array('error' => sprintf( __( 'Image %s not valid', 'wpcf' ),
-                    $image ));
+    if ( !in_array( strtolower( $data['extension'] ), wpcf_fields_image_valid_extension() ) ) {
+        return array('error' => sprintf( __( 'Image %s not valid', 'wpcf' ), $image ));
     }
 
     // Check if it's on same domain
@@ -651,10 +667,13 @@ function wpcf_fields_image_get_cache_directory( $suppress_filters = false ) {
     if ( !$suppress_filters ) {
         $cache_dir = apply_filters( 'types_image_cache_dir', $cache_dir );
         if ( !wp_mkdir_p( $cache_dir ) ) {
-            return new WP_Error( 'wpcf_image_cache_dir',
-                    sprintf( __( 'Image cache directory %s could not be created',
-                                    'wpcf' ),
-                            '<strong>' . $cache_dir . '</strong>' ) );
+            return new WP_Error(
+                'wpcf_image_cache_dir',
+                sprintf(
+                    __( 'Image cache directory %s could not be created', 'wpcf' ),
+                    '<strong>' . $cache_dir . '</strong>'
+                )
+            );
         }
     }
     return $cache_dir;
@@ -684,9 +703,8 @@ function wpcf_fields_image_get_remote( $url ) {
 
     // Validate image
     $extension = pathinfo( $url, PATHINFO_EXTENSION );
-    if ( !in_array( strtolower( $extension ), array('jpg', 'jpeg', 'gif', 'png') ) ) {
-        return new WP_Error( 'wpcf_image_cache_not_valid', sprintf( __( 'Image %s not valid',
-                                        'wpcf' ), $url ) );
+    if ( !in_array( strtolower( $extension ), wpcf_fields_image_valid_extension() ) ) {
+        return new WP_Error( 'wpcf_image_cache_not_valid', sprintf( __( 'Image %s not valid', 'wpcf' ), $url ) );
     }
 
     $image = $cache_dir . md5( $url ) . '.' . $extension;
@@ -712,14 +730,13 @@ function wpcf_fields_image_get_remote( $url ) {
         // fetch the remote url and write it to the placeholder file
         add_filter( 'http_request_timeout', 'wpcf_image_http_request_timeout',
                 10, 1 );
-        $resp = wp_remote_get( $url );
+        $resp = wp_safe_remote_get( $url );
 
         // Check if response type is expected
         if ( is_object( $resp ) ) {
             return new WP_Error(
                             'wpcf_image_cache_file_error',
-                            sprintf( __( 'Remote server returned error response %1$d %2$s',
-                                            'wpcf' ),
+                            sprintf( __( 'Remote server returned error response %1$d %2$s', 'wpcf' ),
                                     esc_html( $resp->errors["http_request_failed"][0] ),
                                     get_status_header_desc( $resp->errors["http_request_failed"][0] )
                             )
@@ -730,21 +747,22 @@ function wpcf_fields_image_get_remote( $url ) {
                 'wpcf_image_http_request_timeout', 10, 1 );
         // make sure the fetch was successful
         if ( $resp['response']['code'] != '200' ) {
-            return new WP_Error( 'wpcf_image_cache_file_error', sprintf( __( 'Remote server returned error response %1$d %2$s',
-                                            'wpcf' ),
-                                    esc_html( $resp['response'] ),
-                                    get_status_header_desc( $resp['response'] ) ) );
+            return new WP_Error( 'wpcf_image_cache_file_error',
+                sprintf(
+                    __( 'Remote server returned error response %1$d %2$s', 'wpcf' ),
+                    esc_html( $resp['response'] ),
+                    get_status_header_desc( $resp['response'] ) 
+                )
+            );
         }
         if ( !isset( $resp['headers']['content-length'] )
                 || strlen( $resp['body'] ) != $resp['headers']['content-length'] ) {
-            return new WP_Error( 'wpcf_image_cache_file_error', __( 'Remote file is incorrect size',
-                                    'wpcf' ) );
+            return new WP_Error( 'wpcf_image_cache_file_error', __( 'Remote file is incorrect size', 'wpcf' ) );
         }
 
         $out_fp = fopen( $image, 'w' );
         if ( !$out_fp ) {
-            return new WP_Error( 'wpcf_image_cache_file_error', __( 'Could not create cache file',
-                                    'wpcf' ) );
+            return new WP_Error( 'wpcf_image_cache_file_error', __( 'Could not create cache file', 'wpcf' ) );
         }
 
         fwrite( $out_fp, $resp['body'] );
@@ -754,8 +772,7 @@ function wpcf_fields_image_get_remote( $url ) {
         $filesize = filesize( $image );
         if ( !empty( $max_size ) && $filesize > $max_size ) {
             @unlink( $image );
-            return new WP_Error( 'wpcf_image_cache_file_error', sprintf( __( 'Remote file is too large, limit is %s',
-                                            'wpcf' ), size_format( $max_size ) ) );
+            return new WP_Error( 'wpcf_image_cache_file_error', sprintf( __( 'Remote file is too large, limit is %s', 'wpcf' ), size_format( $max_size ) ) );
         }
     }
 
@@ -884,12 +901,12 @@ function wpcf_image_resize( $file, $max_w, $max_h, $crop = false,
 
     $size = @getimagesize( $file );
     if ( !$size )
-        return new WP_Error( 'invalid_image', __( 'Could not read image size' ), $file );
+        return new WP_Error( 'invalid_image', __( 'Could not read image size', 'wpcf' ), $file );
     list($orig_w, $orig_h, $orig_type) = $size;
 
     $dims = image_resize_dimensions( $orig_w, $orig_h, $max_w, $max_h, $crop );
     if ( !$dims )
-        return new WP_Error( 'error_getting_dimensions', __( 'Could not calculate resized image dimensions' ) );
+        return new WP_Error( 'error_getting_dimensions', __( 'Could not calculate resized image dimensions', 'wpcf' ) );
     list($dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h) = $dims;
 
     $newimage = wp_imagecreatetruecolor( $dst_w, $dst_h );
@@ -919,10 +936,10 @@ function wpcf_image_resize( $file, $max_w, $max_h, $crop = false,
 
     if ( IMAGETYPE_GIF == $orig_type ) {
         if ( !imagegif( $newimage, $destfilename ) )
-            return new WP_Error( 'resize_path_invalid', __( 'Resize path invalid' ) );
+            return new WP_Error( 'resize_path_invalid', __( 'Resize path invalid', 'wpcf' ) );
     } elseif ( IMAGETYPE_PNG == $orig_type ) {
         if ( !imagepng( $newimage, $destfilename ) )
-            return new WP_Error( 'resize_path_invalid', __( 'Resize path invalid' ) );
+            return new WP_Error( 'resize_path_invalid', __( 'Resize path invalid', 'wpcf' ) );
     } else {
         // all other formats are converted to jpg
         if ( 'jpg' != $ext && 'jpeg' != $ext )
@@ -930,7 +947,7 @@ function wpcf_image_resize( $file, $max_w, $max_h, $crop = false,
         if ( !imagejpeg( $newimage, $destfilename,
                         apply_filters( 'jpeg_quality', $jpeg_quality,
                                 'image_resize' ) ) )
-            return new WP_Error( 'resize_path_invalid', __( 'Resize path invalid' ) );
+            return new WP_Error( 'resize_path_invalid', __( 'Resize path invalid', 'wpcf' ) );
     }
 
     imagedestroy( $newimage );

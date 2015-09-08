@@ -126,7 +126,7 @@ class WPCF_Helper_Ajax
                 }
             }
         }
-        return $js_execute;
+        return 'console.log("asdasdsdasdasdasdasd");'.$js_execute;
     }
 
 }

@@ -150,6 +150,7 @@ function wpcf_ajax_embedded() {
             break;
 
         case 'pr_save_all':
+            ob_start(); // Try to catch any errors
             $output = '';
             if ( current_user_can( 'edit_posts' ) && isset( $_POST['post_id'] ) ) {
 
@@ -169,14 +170,18 @@ function wpcf_ajax_embedded() {
                 // TODO Move to conditional
                 $output .= '<script type="text/javascript">wpcfConditionalInit();</script>';
             }
+            wpcf_show_admin_messages('echo');
+            $errors = ob_get_clean();
             if ( !defined( 'WPTOOLSET_FORMS_VERSION' ) ) {
                 echo json_encode( array(
                     'output' => $output,
+                    'errors' => $errors
                 ) );
             } else {
                 echo json_encode( array(
                     'output' => $output,
                     'conditionals' => array('#post' => wptoolset_form_get_conditional_data( 'post' )),
+                    'errors' => $errors
                 ) );
             }
             break;
@@ -210,6 +215,7 @@ function wpcf_ajax_embedded() {
                     }
                 }
             }
+            wpcf_show_admin_messages('echo');
             $errors = ob_get_clean();
             if ( !defined( 'WPTOOLSET_FORMS_VERSION' ) ) {
                 echo json_encode( array(
@@ -234,34 +240,6 @@ function wpcf_ajax_embedded() {
             echo json_encode( array(
                 'output' => $output,
             ) );
-            break;
-
-        case 'pr-update-belongs':
-            require_once WPCF_EMBEDDED_ABSPATH . '/includes/post-relationship.php';
-            $output = 'Passed wrong parameters';
-            if ( current_user_can( 'edit_posts' )
-                && isset( $_POST['post_id'] )
-                && isset( $_POST['wpcf_pr_belongs'][$_POST['post_id']] ) )
-            {
-                $parent_post_id = intval( $_POST['post_id'] );
-                $belongs_assignments = array();
-                foreach( $_POST['wpcf_pr_belongs'][$parent_post_id] as $post_type_raw => $post_id_raw ) {
-                    $belongs_assignments[ sanitize_text_field( $post_type_raw) ] = intval( $post_id_raw );
-                }
-
-                $updated = wpcf_pr_admin_update_belongs( $parent_post_id, $belongs_assignments );
-                $output = is_wp_error( $updated ) ? $updated->get_error_message() : $updated;
-            }
-            if ( !defined( 'WPTOOLSET_FORMS_VERSION' ) ) {
-                echo json_encode( array(
-                    'output' => $output,
-                ) );
-            } else {
-                echo json_encode( array(
-                    'output' => $output,
-                    'conditionals' => array('#post' => wptoolset_form_get_conditional_data( 'post' )),
-                ) );
-            }
             break;
 
         case 'pr_pagination':
@@ -485,87 +463,6 @@ function wpcf_ajax_embedded() {
                     'output' => 'params missing',
                 ) );
             }
-            break;
-
-        case 'cd_verify':
-
-            if ( !current_user_can( 'edit_posts' ) || ( empty( $_POST['wpcf'] ) && empty( $_POST['wpcf_post_relationship'] ) )  ){
-                die();
-            }
-            WPCF_Loader::loadClass( 'helper.ajax' );
-            $js_execute = WPCF_Helper_Ajax::conditionalVerify( $_POST );
-
-            // Render JSON
-            if ( !empty( $js_execute ) ) {
-                echo json_encode( array(
-                    'output' => '',
-                    'execute' => $js_execute,
-                    'wpcf_nonce_ajax_callback' => wp_create_nonce( 'execute' ),
-                ) );
-            }
-            die();
-            break;
-
-        case 'cd_group_verify':
-            require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields.php';
-            require_once WPCF_EMBEDDED_INC_ABSPATH . '/conditional-display.php';
-            $group = wpcf_admin_fields_get_group( sanitize_text_field( $_POST['group_id'] ) );
-            if ( !current_user_can( 'edit_posts' ) || empty( $group ) ) {
-                echo json_encode( array(
-                    'output' => ''
-                ) );
-                die();
-            }
-            $execute = '';
-            $group['conditional_display'] = get_post_meta( $group['id'],
-                    '_wpcf_conditional_display', true );
-            // Filter meta values (switch them with $_POST values)
-            add_filter( 'get_post_metadata',
-                    'wpcf_cd_meta_ajax_validation_filter', 10, 4 );
-            $parent_post = false;
-            if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-                $split = explode( '?', $_SERVER['HTTP_REFERER'] );
-                if ( isset( $split[1] ) ) {
-                    parse_str( $split[1], $vars );
-                    if ( isset( $vars['post'] ) ) {
-                        $parent_post = get_post( $vars['post'] );
-                    }
-                }
-            }
-            // Dummy post
-            if ( !$parent_post ) {
-                $parent_post = new stdClass();
-                $parent_post->ID = 1;
-            }
-            if ( !empty( $group['conditional_display']['conditions'] ) ) {
-                $result = wpcf_cd_post_groups_filter( array(0 => $group), $parent_post,
-                        'group' );
-                if ( !empty( $result ) ) {
-                    $result = array_shift( $result );
-                    $passed = $result['_conditional_display'] == 'passed' ? true : false;
-                } else {
-                    $passed = false;
-                }
-                if ( !$passed ) {
-                    $execute = 'jQuery("#wpcf-group-' . $group['slug']
-                            . '").slideUp().find(".wpcf-cd-group")'
-                            . '.addClass(\'wpcf-cd-group-failed\')'
-                            . '.removeClass(\'wpcf-cd-group-passed\').hide();';
-                } else {
-                    $execute = 'jQuery("#wpcf-group-' . $group['slug']
-                            . '").show().find(".wpcf-cd-group")'
-                            . '.addClass(\'wpcf-cd-group-passed\')'
-                            . '.removeClass(\'wpcf-cd-group-failed\').slideDown();';
-                }
-            }
-            // Remove filter meta values (switch them with $_POST values)
-            remove_filter( 'get_post_metadata',
-                    'wpcf_cd_meta_ajax_validation_filter', 10, 4 );
-            echo json_encode( array(
-                'output' => '',
-                'execute' => $execute,
-                'wpcf_nonce_ajax_callback' => wp_create_nonce( 'execute' ),
-            ) );
             break;
 
         default:

@@ -92,7 +92,8 @@ class WPCF_Usermeta_Repeater extends WPCF_Usermeta_Field
                 }
 
                 // Apply filters
-                $_meta_value = $this->_filter_save_value( $meta_value );
+                $_meta_value = $this->_filter_save_usermeta_value( $meta_value );
+                $_meta_value = $this->_filter_save_value( $_meta_value );
 
                 // Adding each field will return $mid
                 // $unique = false

@@ -92,7 +92,8 @@ class WPCF_Usermeta_Field extends WPCF_Field
             }
 
             // Apply filters
-            $_value = $this->_filter_save_value( $value );
+            $_value = $this->_filter_save_usermeta_value( $value );
+            $_value = $this->_filter_save_value( $_value );
             if ( !empty( $_value ) || is_numeric( $_value ) ) {
                 // Save field
                 $mid = update_user_meta( $this->currentUID, $this->slug, $_value );

@@ -10,9 +10,14 @@ function _pre($v) {
     echo "</pre>";
 }
 
+function get_root_path() {
+    $urlp = explode('wp-content', $_SERVER['SCRIPT_FILENAME']);
+    return $urlp[0];
+}
+
 function get_local($url) {
     $urlParts = parse_url($url);
-    return $_SERVER['DOCUMENT_ROOT'] . "/" . $urlParts['path'];
+    return get_root_path() . $urlParts['path'];
 }
 
 function clean($string) {
@@ -31,38 +36,59 @@ define('DOING_AJAX', true);
 //    define('WP_ADMIN', true);
 //}
 
-/** Load WordPress Bootstrap */
-require_once( $_SERVER['DOCUMENT_ROOT'] . '/wp-load.php' );
+require_once( get_root_path() . 'wp-load.php' );
+require_once( get_root_path() . 'wp-admin/includes/file.php' );
+require_once ( get_root_path() . 'wp-admin/includes/media.php' );
+require_once ( get_root_path() . 'wp-admin/includes/image.php' );
 
 /** Allow for cross-domain requests (from the frontend). */
 send_origin_headers();
 
-if (!function_exists('wp_handle_upload')) {
-    require_once( ABSPATH . '/wp-admin/includes/file.php' );
-}
-
 $data = array();
 
-if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['file'])) {
-    $file = $_POST['file'];
+if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false)) {
+    $post_id = intval($_POST['id']);
+    if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['file'])) {
+        $file = $_POST['file'];
 
-    $del_nonce = $_POST['nonce'];
+        $data = array('result' => true);
 
-    if (!isset($del_nonce) || (time() - $del_nonce > 100)) {
-        $data = array('result' => false, 'error' => 'Delete Error: Invalid NONCE', 'debug' => $_POST['nonce'] . " " . $md5);
-    } else {
         $local_file = get_local($file);
 
-        if (file_exists($local_file))
-            $res = unlink($local_file);
+//get all image attachments
+        $attachments = get_children(
+                array(
+                    'post_parent' => $post->ID,
+                    //'post_mime_type' => 'image',
+                    'post_type' => 'attachment'
+                )
+        );
 
-        $data = ($res) ? array('result' => $res) : array('result' => $res, 'error' => 'Error Deleting ' . $file);
-    }
-} else {
-    
-    if (!isset($_REQUEST['un'])) { // || !wp_verify_nonce($_REQUEST['un'], '_cred_cred_wpnonce')) {
-        $data = array('result' => false, 'error' => 'Upload Error: Invalid NONCE ');
+//loop through the array
+        if (!empty($attachments)) {
+            foreach ($attachments as $attachment) {
+                $attach_file = strtolower(basename($attachment->guid));
+                $my_local_file = strtolower(basename($local_file));
+                if ($attach_file == $my_local_file)
+                    wp_delete_attachment($attachment->ID);
+
+                // Update the post into the database
+//          wp_update_post( array(
+//                    'ID' => $attachment->ID,
+//                    'post_parent' => 0
+//                )
+//            );
+            }
+        }
+
+
+//        if (file_exists($local_file)) {
+//            $res = unlink($local_file);
+//        }
+        //$data = ($res) ? array('result' => $res) : array('result' => $res, 'error' => 'Error Deleting ' . $file);
     } else {
+
+
 
         $error = false;
         $files = array();
@@ -70,7 +96,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['fil
         $upload_overrides = array('test_form' => false);
         if (!empty($_FILES)) {
             foreach ($_FILES as $file) {
-                //For repetitive
+//For repetitive
                 foreach ($file as &$f) {
                     if (is_array($f)) {
                         foreach ($f as $p) {
@@ -81,7 +107,22 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['fil
                 }
 
                 $res = wp_handle_upload($file, $upload_overrides);
+
                 if (!isset($res['error'])) {
+
+                    $attachment = array(
+                        'post_mime_type' => $res['type'],
+                        'post_title' => basename($res['file']),
+                        'post_content' => '',
+                        'post_status' => 'inherit',
+                        'post_parent' => $post_id,
+                        'post_type' => 'attachment',
+                        'guid' => $res['url'],
+                    );
+                    $attach_id = wp_insert_attachment($attachment, $res['file']);
+                    $attach_data = wp_generate_attachment_metadata($attach_id, $res['file']);
+                    wp_update_attachment_metadata($attach_id, $attach_data);
+
                     $files[] = $res['url'];
                 } else {
                     $error = true;
@@ -92,6 +133,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['fil
             $data = array('error' => 'Error: Files is too big, Max upload size is: ' . ini_get('post_max_size'));
         }
     }
+} else {
+    $data = array('result' => false, 'error' => 'Upload Error: Invalid NONCE ');
 }
 
 echo json_encode($data);

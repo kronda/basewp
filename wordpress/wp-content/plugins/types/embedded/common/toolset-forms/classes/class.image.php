@@ -23,6 +23,7 @@ class WPToolset_Field_Image extends WPToolset_Field_File
         $valid_extensions = array(
             'bmp',
             'gif',
+            'ico',
             'jpeg',
             'jpg',
             'png',

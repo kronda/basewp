@@ -10,6 +10,7 @@
  *
  * @author Srdjan
  */
+if ( !class_exists('WPToolset_Types') ){   
 class WPToolset_Types
 {
 
@@ -80,6 +81,7 @@ class WPToolset_Types
             'validation' => self::filterValidation( $field ), // Validation settings
             'conditional' => self::filterConditional( $field, $post_id, $_post_wpcf ), // Conditional settings
             'placeholder' => isset($field['data']) && isset($field['data']['placeholder'])? $field['data']['placeholder']:null, // HTML5 placeholder
+            'user_default_value' => isset($field['data']) && isset($field['data']['user_default_value'])? $field['data']['user_default_value']:null, // HTML5 default_value
         );
 
         /* Specific field settings
@@ -533,4 +535,5 @@ class WPToolset_Types
         }
         return strval( $array );
     }
+}
 }

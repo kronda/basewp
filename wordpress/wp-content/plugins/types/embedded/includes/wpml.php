@@ -963,13 +963,13 @@ function wpcf_wpml_taxonomy_renamed( $new_slug, $old_slug ) {
  * @param type $child
  * @param type $parent
  */
-function wpcf_wpml_relationship_save_child( $child, $parent ) {
-    global $sitepress;
-    $lang_details = $sitepress->get_element_language_details( $parent->ID,
-            'post_' . $parent->post_type );
-    if ( $lang_details ) {
-        $sitepress->set_element_language_details( $child->ID,
-                'post_' . $child->post_type, null, $lang_details->language_code );
+function wpcf_wpml_relationship_save_child( $child, $parent )
+{
+    $lang_details = apply_filters('wpml_post_language_details', null, $parent->ID);
+    if ( ! $lang_details ) {
+        global $sitepress;
+        //Here we still need to create an action, so we have to stick with this dependency for the time being
+        $sitepress->set_element_language_details( $child->ID, 'post_' . $child->post_type, null, $lang_details->language_code );
     }
 }
 

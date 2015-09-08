@@ -26,16 +26,16 @@ get_admin_page_title();
 $title = esc_html( strip_tags( $title ) );
 
 if ( is_network_admin() )
-    $admin_title = __( 'Network Admin' );
+    $admin_title = __( 'Network Admin', 'wpcf' );
 elseif ( is_user_admin() )
-    $admin_title = __( 'Global Dashboard' );
+    $admin_title = __( 'Global Dashboard', 'wpcf' );
 else
     $admin_title = get_bloginfo( 'name' );
 
 if ( $admin_title == $title )
-    $admin_title = sprintf( __( '%1$s &#8212; WordPress' ), $title );
+    $admin_title = sprintf( __( '%1$s &#8212; WordPress', 'wpcf' ), $title );
 else
-    $admin_title = sprintf( __( '%1$s &lsaquo; %2$s &#8212; WordPress' ),
+    $admin_title = sprintf( __( '%1$s &lsaquo; %2$s &#8212; WordPress', 'wpcf' ),
             $title, $admin_title );
 
 $admin_title = apply_filters( 'admin_title', $admin_title, $title );
@@ -120,7 +120,7 @@ if ( wp_script_is( 'customize-loader', 'queue' ) && current_user_can( 'edit_them
 ?>
 <div id="wpcf-ajax">
     <div id="wpwrap">
-        <!--<a tabindex="1" href="#wpbody-content" class="screen-reader-shortcut"><?php _e( 'Skip to main content' ); ?></a>-->
+        <!--<a tabindex="1" href="#wpbody-content" class="screen-reader-shortcut"><?php _e( 'Skip to main content', 'wpcf' ); ?></a>-->
                 <?php //require(ABSPATH . 'wp-admin/menu-header.php'); ?>
         <div id="wpcontent">
 
@@ -138,7 +138,7 @@ if ( wp_script_is( 'customize-loader', 'queue' ) && current_user_can( 'edit_them
 
                     ?>
 
-                <div id="wpbody-content" aria-label="<?php esc_attr_e( 'Main content' ); ?>" tabindex="0">
+                <div id="wpbody-content" aria-label="<?php esc_attr_e( 'Main content', 'wpcf' ); ?>" tabindex="0">
                     <?php
                     $current_screen->render_screen_meta();
 

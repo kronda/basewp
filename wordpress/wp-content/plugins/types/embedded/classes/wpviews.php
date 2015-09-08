@@ -131,7 +131,7 @@ class WPCF_WPViews
         if ( empty( $post ) ) {
             $post = (object) array('ID' => -1);
         }
-        $groups = wpcf_admin_fields_get_groups( 'wp-types-group', 'group_active' );
+        $groups = wpcf_admin_fields_get_groups( TYPES_CUSTOM_FIELD_GROUP_CPT_NAME, 'group_active' );
         $all_post_types = implode( ' ',
                 get_post_types( array('public' => true) ) );
         $add = array();

@@ -1,3 +1,6 @@
+Common 1.X (month day, 2015)
+	- Added "ico" file type as proper image file.
+
 Common 1.6 (June 11, 2015)
 	- Tagged for Types 1.7, Views 1.9 and Layouts 1.2
 

@@ -20,7 +20,7 @@ if ( !defined( 'ABSPATH' ) )
     <?php do_action( 'in_admin_footer' ); ?>
     <p id="footer-left" class="alignleft"><?php
     echo apply_filters( 'admin_footer_text',
-            '<span id="footer-thankyou">' . __( 'Thank you for creating with <a href="http://wordpress.org/">WordPress</a>.' ) . '</span>' );
+            '<span id="footer-thankyou">' . __( 'Thank you for creating with <a href="http://wordpress.org/">WordPress</a>.', 'wpcf' ) . '</span>' );
 
     ?></p>
 <!--    <p id="footer-upgrade" class="alignright"><?php //echo apply_filters( 'update_footer', '' ); ?></p>-->

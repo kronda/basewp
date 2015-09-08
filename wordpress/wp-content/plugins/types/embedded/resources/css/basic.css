@@ -59,8 +59,13 @@ NO DUPLICATES
 .wpcf-form-fieldset .collapsed {
     display: none;
 }
-.wpcf-form-item {
+.wpcf-form-item
+{
     margin-bottom: 25px;
+}
+.form-table .wpcf-form-item
+{
+    margin-bottom: .25em;
 }
 .wpcf-form-fieldset .wpcf-form-item:first-child {
     margin-top: 5px;
@@ -183,7 +188,8 @@ input.wpcf-form-error {
 #wpcf-table-group_taxonomies {
     width: 200px;
 }
-#wpcf-form-fields-main {
+.wpcf-form-fields-main
+{
     width: 400px;
 }
 
@@ -249,6 +255,27 @@ input.wpcf-form-error {
 #wpcf-types-form-name-table tbody tr td:first-child {
     text-align: right;
 }
+#wpcf-types-form-name-table tbody tr:first-child td
+{
+    padding-top: 10px;
+}
+#wpcf-types-form-name-table tbody td:first-child
+{
+    min-width: 200px;
+    width: 20%;
+}
+.wpcf-types-form-table td:first-child
+{
+    width: 20%;
+    max-width: 300px;
+    min-width: 100px;
+}
+
+.wpcf-types-form #custom_fields .menu-item-handle
+{
+    padding: 10px 15px;
+}
+
 #wpcf-types-form-name-table tbody tr:first-child td {
     padding-top: 10px;
 }
@@ -421,7 +448,8 @@ input.wpcf-form-error {
     border: 0 !important;
 }
 
-.modman-inline-table {
+.modman
+{
     margin-top: 20px;
 }
 .wpcf-pagination-top {
@@ -626,3 +654,46 @@ input.wpcf-form-error {
     font-size: 1.5em;
 }
 
+#poststuff .dashicons-no:before
+{
+    color: #f20;
+}
+
+#poststuff .dashicons-yes:before
+{
+    color: green;
+}
+
+.wpcf-types-read-only #relationship p
+,.wpcf-types-read-only #relationship a
+,.wpcf-types-read-only .ui-draggable
+,.wpcf-types-read-only .wpcf-fields-checkboxes-draggable
+,.wpcf-types-read-only .wpcf-fields-form-move-field
+,.wpcf-types-read-only .wpcf-form-fields-delete
+,.wpcf-types-read-only #conditional-logic-button-open
+{
+    display: none;
+}
+
+.wpcf-types-read-only dl
+{
+      border: 1px solid #e5e5e5;
+      background-color: #fff;
+      padding: 10px;
+}
+
+#types-tools
+{
+    margin-top: 3em;
+}
+
+#cf-filter
+,#usermeta-filter
+{
+    margin-bottom: 3em;
+}
+
+#tab-panel-wpcf dt
+{
+    font-weight: bold;
+}

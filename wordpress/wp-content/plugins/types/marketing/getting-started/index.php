@@ -3,7 +3,7 @@
  *
  *
  */
-include_once WPCF_ABSPATH.'/classes/class.wpcf-marketing-messages.php';
+include_once WPCF_ABSPATH.'/includes/classes/class.wpcf.marketing.messages.php';
 $marketing = new WPCF_Types_Marketing_Messages();
 $marketing->update_options();
 $content = $marketing->get_content();

@@ -145,7 +145,20 @@ class WPToolset_Forms_Validation
             $errors = array();
             foreach ( $rules as $rule => $args ) {
                 if ( !$this->validate( $rule, $args['args'] ) ) {
-                    $errors[] = $field->getTitle() .  ' ' . $args['message'];
+                    /**
+                     * Allow turn off field name.
+                     *
+                     * Allow turn off field name from error message.
+                     *
+                     * @since x.x.x
+                     *
+                     * @param boolean $var show field title in message, * default true.
+                     */
+                    if ( apply_filters('toolset_common_validation_add_field_name_to_error', true) ) {
+                        $errors[] = $field->getTitle() .  ' ' . $args['message'];
+                    } else {
+                        $errors[] = $args['message'];
+                    }
                 }
             }
             if ( !empty( $errors ) ) {

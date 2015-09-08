@@ -37,8 +37,7 @@ function wpcf_cd_form_field_filter( $form, $data ) {
         return $form + array(
             'cd_not_available' => array(
                 '#type' => 'markup',
-                '#markup' => '<p>' . __( 'You will be able to set conditional field display once this group is saved.',
-                        'wpcf' ) . '</p>',
+                '#markup' => '<p>' . __( 'You will be able to set conditional field display once this group is saved.', 'wpcf' ) . '</p>',
             ),
         );
     }
@@ -161,10 +160,8 @@ function wpcf_cd_admin_form_filter( $data, $group = false ) {
         );
         $form['cd']['wrap'] = array(
             '#type' => 'markup',
-            '#markup' => '<strong>' . sprintf( __( 'Data-dependent display filters %s',
-                            'wpcf' ), $count_text ) . '</strong><br />'
-            . __( "Specify additional filters that control this group's display, based on values of custom fields.",
-                    'wpcf' )
+            '#markup' => '<strong>' . sprintf( __( 'Data-dependent display filters %s', 'wpcf' ), $count_text ) . '</strong><br />'
+            . __( "Specify additional filters that control this group's display, based on values of custom fields.", 'wpcf' )
             . '<br /><a class="button-secondary" id="conditional-logic-button-open" onclick="jQuery(this).css(\'display\',\'none\').next().slideToggle();" ' . $wpcf_button_style30 . '  href="javascript:void(0);">'
             . __( 'Edit', 'wpcf' ) . '</a><div id="wpcf-cd-group" class="wpcf-cd-fieldset" style="display:none;">',
         );
@@ -184,8 +181,7 @@ function wpcf_cd_admin_form_filter( $data, $group = false ) {
     if ( isset( $_GET['page'] ) && $_GET['page'] == 'wpcf-edit-usermeta' ) {
         $form['cd']['message'] = array(
             '#type' => 'markup',
-            '#markup' => '<p>' . __( 'Conditional display is not supported yet for Usermeta fields.',
-                    'wpcf' ) . '</p>',
+            '#markup' => '<p>' . __( 'Conditional display is not supported yet for Usermeta fields.', 'wpcf' ) . '</p>',
         );
         return $form;
     }
@@ -291,8 +287,7 @@ function wpcf_cd_admin_form_filter( $data, $group = false ) {
     $form['cd']['date_notice'] = array(
         '#type' => 'markup',
         '#markup' => '<div style="display:none; margin-top:15px;" class="wpcf-cd-notice-date">'
-        . sprintf( __( '%sDates can be entered using the date filters &raquo;%s',
-            'wpcf' ),
+        . sprintf( __( '%sDates can be entered using the date filters &raquo;%s', 'wpcf' ),
         '<a href="http://wp-types.com/documentation/user-guides/date-filters/" target="_blank">',
         '</a>' ) . '</div>',
     );
@@ -436,8 +431,7 @@ function wpcf_cd_admin_form_single_filter( $data, $condition, $key = null,
         return array(
             'cd' => array(
                 '#type' => 'markup',
-                '#markup' => '<p class="wpcf-error">' . __( 'Conditional display is only working based on non-repeating fields. All fields in this group are repeating, so you cannot set their display based on other fields.',
-                        'wpcf' ) . '</p>' . wpcf_conditional_disable_add_js( $data['id'] ),
+                '#markup' => '<p class="wpcf-error">' . __( 'Conditional display is only working based on non-repeating fields. All fields in this group are repeating, so you cannot set their display based on other fields.', 'wpcf' ) . '</p>' . wpcf_conditional_disable_add_js( $data['id'] ),
             )
         );
     } else {
@@ -445,8 +439,7 @@ function wpcf_cd_admin_form_single_filter( $data, $condition, $key = null,
             return array(
                 'cd' => array(
                     '#type' => 'markup',
-                    '#markup' => '<p>' . __( 'You will be able to set conditional field display when you save more fields.',
-                            'wpcf' ) . '</p>',
+                    '#markup' => '<p>' . __( 'You will be able to set conditional field display when you save more fields.', 'wpcf' ) . '</p>',
                 )
             );
         }
@@ -540,11 +533,11 @@ function wpcf_cd_fields_form_additional_filters( $filters, $update ) {
  *
  * @param type $group
  */
-function wpcf_cd_save_group_action( $group ) {
+function wpcf_cd_save_group_action( $group )
+{
     if ( !empty( $group['conditional_display'] ) ) {
-        update_post_meta( $group['id'], '_wpcf_conditional_display',
-                $group['conditional_display'] );
-    } else {
+        update_post_meta( $group['id'], '_wpcf_conditional_display', $group['conditional_display'] );
+    } elseif (isset($group['id'])) {
         update_post_meta( $group['id'], '_wpcf_conditional_display', array() );
     }
 }
@@ -606,10 +599,9 @@ function wpcf_conditional_add_date_controls( $function, $value, $name ) {
     $day = '<input name="' . $name . '[date]" type="text" value="' . $jj . '" size="2" maxlength="2" autocomplete="off" />';
     $year = '<input name="' . $name . '[year]" type="text" value="' . $aa . '" size="4" maxlength="4" autocomplete="off" />';
 
-    $output .= sprintf( __( '%1$s%2$s, %3$s' ), $month, $day, $year );
+    $output .= sprintf( __( '%1$s%2$s, %3$s', 'wpcf' ), $month, $day, $year );
 
-    $output .= '<div class="wpcf_custom_field_invalid_date wpcf-form-error"><p>' . __( 'Please enter a valid date here',
-                    'wpcf' ) . '</p></div>' . "\n";
+    $output .= '<div class="wpcf_custom_field_invalid_date wpcf-form-error"><p>' . __( 'Please enter a valid date here', 'wpcf' ) . '</p></div>' . "\n";
 
     $output .= "</div>\n";
 

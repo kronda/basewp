@@ -246,6 +246,11 @@ class Wpcf_Validate
         return true;
     }
 
+    public static function skype( $args, $value )
+    {
+        return true;
+    }
+
     /**
      * Returns form data.
      * 

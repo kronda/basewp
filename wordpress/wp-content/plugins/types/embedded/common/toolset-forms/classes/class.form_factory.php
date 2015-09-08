@@ -33,7 +33,7 @@ class FormFactory extends FormAbstract
 
         wp_register_script( 'wptoolset-forms',
             WPTOOLSET_FORMS_RELPATH . '/js/main.js',
-            array('jquery', 'underscore', 'suggest'), WPTOOLSET_FORMS_VERSION, false );
+            array('jquery', 'underscore', 'suggest'), WPTOOLSET_FORMS_VERSION, true );
         wp_enqueue_script( 'wptoolset-forms' );
 		$wptoolset_forms_localization = array(
 			'ajaxurl' => admin_url( 'admin-ajax.php', null )
@@ -178,10 +178,35 @@ class FormFactory extends FormAbstract
          */
         $config['use_bootstrap'] = $this->theForm->form_settings['use_bootstrap'];
         $config['has_media_button'] = $this->theForm->form_settings['has_media_button'];
+
         /**
          * WMPL configuration
          */
         $config['wpml_action'] = $this->get_wpml_action($config['id']);
+
+        /**
+         * Change config options.
+         *
+         * This filter allow to chenge value of key 'options' for field config..
+         *
+         * @since 1.8.0
+         *
+         * @param array $options Array options for field.
+         * @param string $slug Field slug.
+         * @param string $type field type
+         */
+        if (
+            isset($config['type'])
+            && isset($config['slug'])
+            && isset($config['options'])
+        ) {
+            $config['options'] = apply_filters(
+                'wpcf_config_options_'.$config['type'],
+                $config['options'],
+                $config['slug'],
+                $config['type']
+            );
+        }
 
         $htmlArray = array();
         $_gnf = $global_name_field;
