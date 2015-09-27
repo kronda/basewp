@@ -21,7 +21,7 @@ class Thrive_Api_Html_Renderer
                 'type' => 'text',
                 'name' => 'name',
                 'label' => __('Name', 'thrive-cb'),
-                'required' => true,
+                'required' => false,
             ),
             'email' => array(
                 'display' => 1,
@@ -105,7 +105,7 @@ class Thrive_Api_Html_Renderer
      */
     public function fieldsTable($elements = array())
     {
-        $html = '<table class="">';
+        $html = '<table class="tve_autoresponder_table">';
         $html .= $this->_tableHead() . '<tbody>';
         $input_index = 1;
         foreach ($elements as $element) {
@@ -142,12 +142,12 @@ class Thrive_Api_Html_Renderer
     {
         ob_start();
         ?><thead><tr>
-        <?php if ($this->show_order) : ?><th width="5%">&nbsp;</th><?php endif ?>
+        <?php if ($this->show_order) : ?><th style="width: 1%;">&nbsp;</th><?php endif ?>
             <th style="width: 10%; text-align: center"><?php echo $this->show_display_options ? __('Display', 'thrive-cb') : __('Field Number', 'thrive-cb'); ?></th>
             <th style="width: 17%;"><?php echo __("Field Properties", "thrive-cb"); ?></th>
-            <th style="width: 25%;"><?php echo __("Field Label / Description", "thrive-cb"); ?></th>
+            <th style="width: 23%;"><?php echo __("Field Label / Description", "thrive-cb"); ?></th>
             <th style="width: 16%;"><?php echo __("Validation", "thrive-cb") ?></th>
-            <th style="width: 11%;"><?php echo __("Required Field", "thrive-cb"); ?></th>
+            <th style="width: 10%;"><?php echo __("Required Field", "thrive-cb"); ?></th>
             <th><?php echo __('Show Icon', "thrive-cb") ?></th>
         </tr></thead><?php
 
@@ -208,8 +208,8 @@ class Thrive_Api_Html_Renderer
                     <input data-elem-field="show_icon" type="checkbox" id="icon_<?php echo $field ?>"/>
                     <label for="icon_<?php echo $field ?>"></label>
                 </div>
-                <button class="tve_editor_button tve_editor_button_default tve_lightbox_input_inline tve_click" data-ctrl="function:auto_responder.open_icon_picker"
-                data-field="<?php echo $field; ?>"><?php echo __('Choose icon', "thrive-cb") ?></button>
+                <button class="tve_editor_button tve_editor_button_default tve_lightbox_input_inline tve_click tve_editor_small_button" data-ctrl="function:auto_responder.open_icon_picker"
+                data-field="<?php echo $field; ?>"><?php echo __('Add icon', "thrive-cb") ?></button>
             </td></tr><?php
 
         $row = ob_get_contents();
@@ -253,8 +253,8 @@ class Thrive_Api_Html_Renderer
                 <input data-elem-field="show_icon" type="checkbox" id="icon_<?php echo $field ?>"/>
                 <label for="icon_<?php echo $field ?>"></label>
             </div>
-            <button class="tve_editor_button tve_editor_button_default tve_click" data-ctrl="function:auto_responder.open_icon_picker"
-                    data-field="<?php echo $field; ?>"><?php echo __('Choose icon', "thrive-cb") ?></button>
+            <button class="tve_editor_button tve_editor_button_default tve_click tve_editor_small_button" data-ctrl="function:auto_responder.open_icon_picker"
+                    data-field="<?php echo $field; ?>"><?php echo __('Add icon', "thrive-cb") ?></button>
         </td>
         </tr><?php
 

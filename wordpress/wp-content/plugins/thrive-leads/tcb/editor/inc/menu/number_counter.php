@@ -13,7 +13,13 @@
                     <ul>
                         <li class="tve_no_hover tve_no_click">
                             <label class="tve_text">
-                                <span class="tve_label_spacer tve_large"><?php echo __("Value: ", "thrive-cb") ?></span>
+                                <span class="tve_label_spacer tve_large"><?php echo __("Start Value: ", "thrive-cb") ?></span>
+                                <input type="text" class="tve_change" id="tve_data_element_value_start" data-ctrl="controls.change.data_element_value" placeholder="<?php echo __("Value", "thrive-cb") ?>" value="0" size="15"/>
+                            </label>
+                        </li>
+                        <li class="tve_no_hover tve_no_click">
+                            <label class="tve_text">
+                                <span class="tve_label_spacer tve_large"><?php echo __("End Value: ", "thrive-cb") ?></span>
                                 <input type="text" class="tve_change" id="tve_data_element_value_n" data-ctrl="controls.change.data_element_value" placeholder="<?php echo __("Value", "thrive-cb") ?>" value="1" size="15"/>
                             </label>
                         </li>

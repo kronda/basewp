@@ -82,7 +82,7 @@ $selectors = array(
                 <input class="tve_text tve_change tve_landing_fonts_size" value="0"
                        data-ctrl="function:landing_fonts.setFontSize" type="text"
                        data-selector="<?php echo $selector ?>"
-                       size="3" maxlength="2"/>
+                       size="3" maxlength="4"/>
             </label>
         </li>
         <li class="tve_ed_btn tve_btn_text">
@@ -113,7 +113,7 @@ $selectors = array(
                 <input class="tve_text tve_change tve_landing_fonts_line_height" value="0"
                        data-ctrl="function:landing_fonts.setFontLineHeight" type="text"
                        data-selector="<?php echo $selector ?>"
-                       size="3" maxlength="2"/>
+                       size="3" maxlength="4"/>
             </label>
         </li>
         <li class="tve_ed_btn tve_btn_text">

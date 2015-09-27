@@ -1,7 +1,7 @@
 <?php
 
 /* global constants */
-defined('TVE_VERSION') || DEFINE("TVE_VERSION", '1.101.4');
+defined('TVE_VERSION') || DEFINE("TVE_VERSION", '1.101.7');
 defined('TVE_TCB_DB_VERSION') || define('TVE_TCB_DB_VERSION', '1.1');
 defined('TVE_TEMPLATES_PATH') || DEFINE("TVE_TEMPLATES_PATH", plugin_dir_path(__FILE__) . 'shortcodes/templates');
 defined('TVE_LANDING_PAGE_TEMPLATE') || DEFINE("TVE_LANDING_PAGE_TEMPLATE", plugins_url() . '/thrive-visual-editor/landing-page/templates');
@@ -215,3 +215,6 @@ add_filter('tcb_clean_frontend_content', 'tcb_clean_frontend_content');
  * init the Pinterest SDK
  */
 add_action('tve_socials_init_pinterest', 'tve_socials_init_pinterest');
+
+/* find content for quick link, by post types and input text*/
+add_action('wp_ajax_tve_find_quick_link_contents','tve_find_quick_link_contents');

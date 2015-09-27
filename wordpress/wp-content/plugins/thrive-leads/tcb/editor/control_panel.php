@@ -376,6 +376,10 @@ $tve_display_save_notification = get_option('tve_display_save_notification', 1);
     <?php include $menu_path . 'social_sort.php'; ?>
 </div>
 
+<div style="display: none" id="tve_toggle_reorder_menu" class="tve_focused_menu tve_event_root">
+    <?php include $menu_path . 'toggle_reorder.php'; ?>
+</div>
+
 <div style="display: none" id="tve_static_elements">
     <div data-elem="paragraph">
         <p data-default="<?php echo __("Enter your text here...", "thrive-cb") ?>"><?php echo __("Enter your text here...", "thrive-cb") ?></p>
@@ -414,7 +418,7 @@ $tve_display_save_notification = get_option('tve_display_save_notification', 1);
     <div data-elem="sc_content_container">
         <div class="thrv_wrapper thrv_content_container_shortcode">
             <div class="tve_clear"></div>
-            <div class="tve_left tve_content_inner" style="width: 300px;min-width:50px; min-height: 2em;">
+            <div class="tve_center tve_content_inner" style="min-width: 50px; min-height: 2em;">
                 <p><?php echo __("Your content here...", "thrive-cb") ?></p>
             </div>
             <div class="tve_clear"></div>

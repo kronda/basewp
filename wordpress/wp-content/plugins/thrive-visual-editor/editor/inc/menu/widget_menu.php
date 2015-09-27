@@ -40,7 +40,7 @@
 
     <li class="tve_btn_text">
         <label>
-            <?php echo __("Font Size", "thrive-cb") ?> <input class="tve_text tve_font_size tve_change" type="text" size="3" maxlength="3"/> px
+            <?php echo __("Font Size", "thrive-cb") ?> <input class="tve_text tve_font_size tve_change" type="text" size=4" maxlength="5"/> px
         </label>
     </li>
 

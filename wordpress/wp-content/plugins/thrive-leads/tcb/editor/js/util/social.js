@@ -170,7 +170,8 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
             }
 
             if (type == 'custom') {
-                $menu.find('.tve_font_size').val(parseInt($element.find('.tve_social_items').css('font-size')));
+                var _temp_value = tve_handle_integer_or_float($element.find('.tve_social_items').css('font-size'));
+                $menu.find('.tve_font_size').val(_temp_value);
                 tve_set_selected_dropdown($menu.find('li#tve_social_' + $social.getSize()));
                 tve_set_selected_dropdown($menu.find('li#' + $social.getType()));
                 tve_set_selected_dropdown($menu.find('li#' + $social.getStyle()));
@@ -247,7 +248,8 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
             }
             $socialElement.addClass(new_class);
             if ($btn.attr('data-size')) {
-                $btn.parents().find('.tve_font_size').val(parseInt($element.find('.tve_social_items').css('font-size')));
+                var _temp_value = tve_handle_integer_or_float($element.find('.tve_social_items').css('font-size'));
+                $btn.parents().find('.tve_font_size').val(_temp_value);
             }
             tve_set_selected_dropdown($btn);
         },

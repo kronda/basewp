@@ -51,25 +51,25 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
         },
         setFontSize: function ($input) {
             var _selector = $input.data('selector'),
-                _size = parseInt($input.val()),
+                _size = tve_handle_integer_or_float($input.val()),
                 _unit = this.getSelectorMenu(_selector).find('.tve_landing_fonts_size_unit[data-selector="' + _selector + '"]').text();
 
-            this.add_css_rule(_selector, 'font-size:' + _size + _unit + " !important");
-            this.addToGlobals(_selector, 'font-size', _size + _unit + " !important");
+            this.add_css_rule(_selector, 'font-size:' + _size + _unit + "");
+            this.addToGlobals(_selector, 'font-size', _size + _unit + "");
         },
         setFontSizeUnit: function ($button) {
             var _selector = $button.data('selector'),
-                _size = parseInt(this.getSelectorMenu(_selector).find('input.tve_landing_fonts_size[data-selector="' + _selector + '"]').val()),
+                _size = tve_handle_integer_or_float(this.getSelectorMenu(_selector).find('input.tve_landing_fonts_size[data-selector="' + _selector + '"]').val()),
                 _unit = $button.text().indexOf("em") !== -1 ? 'em' : 'px';
 
             tve_set_selected_dropdown($button);
 
-            this.add_css_rule(_selector, 'font-size:' + _size + _unit + " !important");
-            this.addToGlobals(_selector, 'font-size', _size + _unit + " !important");
+            this.add_css_rule(_selector, 'font-size:' + _size + _unit + "");
+            this.addToGlobals(_selector, 'font-size', _size + _unit + "");
         },
         setFontLineHeight: function ($input) {
             var _selector = $input.data('selector'),
-                _size = parseInt($input.val()),
+                _size = tve_handle_integer_or_float($input.val()),
                 _unit = this.getSelectorMenu(_selector).find('.tve_landing_fonts_line_height_unit[data-selector="' + _selector + '"]').text();
 
             this.add_css_rule(_selector, 'line-height:' + _size + _unit + "");
@@ -77,7 +77,7 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
         },
         setFontLineHeightUnit: function ($button) {
             var _selector = $button.data('selector'),
-                _size = parseInt(this.getSelectorMenu(_selector).find('input.tve_landing_fonts_line_height[data-selector="' + _selector + '"]').val()),
+                _size = tve_handle_integer_or_float(this.getSelectorMenu(_selector).find('input.tve_landing_fonts_line_height[data-selector="' + _selector + '"]').val()),
                 _unit = $button.text().indexOf("em") !== -1 ? 'em' : 'px';
 
             tve_set_selected_dropdown($button);
@@ -109,7 +109,7 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 }
 
                 if (rules['font-size']) {
-                    var _font_size = parseInt(rules['font-size']),
+                    var _font_size = tve_handle_integer_or_float(rules['font-size']),
                         _unit = rules['font-size'].indexOf("px") !== -1 ? "px" : "em",
                         _unit_li = _submenu.find("li.tve_landing_fonts_size_" + _unit + "[data-selector='" + selector + "']");
                     _submenu.find('input.tve_landing_fonts_size[data-selector="' + selector + '"]').val(_font_size);
@@ -117,7 +117,7 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 }
 
                 if (rules['line-height']) {
-                    var _line_height = parseInt(rules['line-height']),
+                    var _line_height = tve_handle_integer_or_float(rules['line-height']),
                         _unit = rules['line-height'].indexOf("px") !== -1 ? "px" : "em",
                         _unit_li = _submenu.find("li.tve_landing_fonts_line_height_" + _unit + "[data-selector='" + selector + "']");
                     _submenu.find('input.tve_landing_fonts_line_height[data-selector="' + selector + '"]').val(_line_height);

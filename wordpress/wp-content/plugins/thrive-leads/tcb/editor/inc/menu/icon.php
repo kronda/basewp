@@ -46,6 +46,7 @@
     <li class="tve_ed_btn tve_firstOnRow tve_hide_cb">
         <span class="tve_click tve_lb_small tve_icm tve-ic-chain" id="lb_image_link" data-ctrl="controls.lb_open"></span>
     </li>
+    <?php include dirname(__FILE__) . '/_quick_link.php' ?>
     <!-- this only shows when the user clicks on a hyperlink -->
     <li class="tve_ed_btn tve_link_btns tve_firstOnRow tve_hide_cb">
         <span class="tve_icm tve-ic-unlink tve_click" data-ctrl="controls.click.image_unlink"></span>

@@ -19,6 +19,10 @@
             <div class="tve-logo tve_leads_clearfix">
                 <?php echo '<img src="' . plugins_url('thrive-leads/admin/img') . '/logo.png" > '; ?>
                 <div class="tve-global-settings">
+                    <a href="javascript:void(0)" class="tl-inbound-link-builder" title="<?php echo __('Thrive Leads SmartLinks', 'thrive-leads') ?>">
+                        <span class="tve-icon-link"></span>
+                    </a>
+                    &nbsp;
                     <a href="javascript:void(0)" class="tl-open-settings" title="<?php echo __('Settings', 'thrive-leads') ?>">
                         <span class="tve-icon-cog"></span>
                     </a>
@@ -42,6 +46,14 @@
                                 </div>
                                 <span class="tve-field-desc">
                                     <?php echo __('Using lazy loading can speed up the loading of your page and ensure compatibility with the various WordPress caching plugins such as W3 Total Cache, WP Super Cache and WP Rocket. If set to Off while caching plugins are enabled, tracking and conversions will not be recorded correctly', 'thrive-leads') ?>
+                                </span>
+                            </div>
+                            <div class="tve-input-group tve_leads_clearfix">
+                                <h3 class="tve-settings-title" style="padding-left:0"><?php echo __('Reset cached statistics') ?></h3>
+
+                                <span class="tve-field-desc">
+                                    <?php echo __('In order to increase overall performance, Thrive Leads caches the number of impressions and conversions for each Lead Group, Shortcode, 2 Step Lightbox and Form. Click the following link to purge the cache and re-build it.', 'thrive-leads') ?>
+                                    <a class="tve-leads-clear-cache" href="javascript:void(0)"><?php echo __('Purge cache', 'thrive-leads') ?></a>
                                 </span>
                             </div>
                         </div>

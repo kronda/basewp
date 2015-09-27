@@ -61,10 +61,12 @@
             <div class="tve_icm tve-ic-list tve_left"></div>
             <span class="tve_expanded tve_left"><?php echo __("Thrive Posts List", "thrive-cb") ?></span>
         </div>
+        <?php /*
         <div class="cp_draggable sc_thrive_custom_menu tve_option_separator tve_clearfix" title="<?php echo __("Thrive Custom Menu", "thrive-cb") ?>" data-elem="sc_thrive_custom_menu" data-wpapi="1" data-overlay="1">
             <div class="tve_icm tve-ic-paragraph-justify tve_left"></div>
             <span class="tve_expanded tve_left"><?php echo __("Thrive Custom Menu", "thrive-cb") ?></span>
         </div>
+        */?>
 	    <?php if(!in_array($current_theme_name, $banned_themes_names)) : ?>
 	        <div class="cp_draggable sc_thrive_custom_phone tve_option_separator tve_clearfix" title="<?php echo __("Thrive Click To Call", "thrive-cb") ?>" data-elem="sc_thrive_custom_phone" data-wpapi="1" data-overlay="1">
 	            <div class="tve_icm tve-ic-phone tve_left"></div>

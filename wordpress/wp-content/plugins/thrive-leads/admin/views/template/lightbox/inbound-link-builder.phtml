@@ -1,0 +1,83 @@
+<p>
+    <?php echo __('Using our link builder, you can decide which forms are displayed depending on where your visits are coming from.', 'thrive-leads') ?>
+</p>
+<p>
+    <?php echo __("For instance, if you're sending a broadcast to your email list, and you don't want any of your visitors to see forms on the site, then you can use this tool to build a link to send them to. You can even target by lead group, if you prefer.", 'thrive-leads') ?>
+</p>
+
+<h2><?php echo __('Step 1 - Define where you want to send your visitors', 'thrive-leads') ?></h2>
+<?php
+$all_post_types = get_post_types(array(
+    'public' => true
+    ));
+$exceptionList = apply_filters('tve_leads_inbound_post_types_blacklist', array('attachment', 'focus_area', 'thrive_optin', 'tcb_lightbox', 'wysijap'));
+$post_types = array_diff($all_post_types, $exceptionList);
+$home_url = get_home_url();
+$blog_index_url = get_permalink(get_option('page_for_posts'));
+?>
+<div class="tve-form tve-Inbound-links">
+    <input class="home-base-url" type="hidden" value="<?php echo $home_url ?>"/>
+    <select class="tl-post-type-select">
+        <option value="home" rel="<?php echo $home_url ?>"><?php echo __('Homepage', 'thrive-leads') ?></option>
+        <?php if ($blog_index_url) { ?>
+            <option value="blog-index" rel="<?php echo $blog_index_url ?>"><?php echo __('Blog Index', 'thrive-leads') ?></option>
+        <?php } ?>
+        <?php foreach ($post_types as $key => $post_type) : ?>
+            <option class="request-posts" value="<?php echo $key ?>"><?php echo $post_type; ?></option>
+        <?php endforeach ?>
+        <option value="custom-url"><?php echo __('Custom URL', 'thrive-leads') ?></option>
+    </select>
+    <div class="tl-find-content" style="display: none">
+        <label><?php echo __('Start typing to find content:', 'thrive-leads') ?></label>
+        <input name="find-content" class="tl-find-content-input tve-leads-autocomplete" placeholder="<?php echo __('Search...', 'thrive-leads') ?>" type="text" value=""/>
+        <div class="tl-selected-posts"></div>
+    </div>
+    <div class="tl-custom-url" style="display: none">
+        <input class="tl-custom-url-input"/>
+        <a href="javascript:void(0)" class="tl-update-inbound-link"><?php echo __('Update', 'thrive-leads') ?></a>
+    </div>
+
+    <h2><?php echo __('Step 2 - Tell us which Lead Groups you would like to target:', 'thrive-leads') ?></h2>
+    <label class="tl-targetAllGroups">
+        <input type="radio" name="targetAll" value="1" checked/>
+        <span><?php echo __('I want to target all forms on my site', 'thrive-leads') ?></span>
+    </label>
+    <label class="tl-targetCertainGroups">
+        <input type="radio" name="targetAll" value="0"/>
+        <span><?php echo __('I only want to target certain lead groups', 'thrive-leads') ?></span>
+    </label>
+
+    <h2><?php echo __('Step 3 - Tell us which lead groups to target', 'thrive-leads') ?></h2>
+    <div class="tl-step3-wrapper-options"></div>
+
+    <h2><?php echo __('Step 4 - What should be the behaviour of the forms?', 'thrive-leads') ?></h2>
+    <select class="tl-form-behaviour">
+        <option value="0"><?php echo __('Hide the forms', 'thrive-leads') ?></option>
+        <option value="1"><?php echo __('Displaying the "Already subscribed" state of the form', 'thrive-leads') ?></option>
+    </select>
+    <p><?php echo __('If the "already subscribed" state doesn\'t exist for any given form, then nothing will be shown.', 'thrive-leads') ?></p>
+
+    <h2><?php echo __('Step 5 - How long should this behaviour last for?', 'thrive-leads') ?></h2>
+    <select class="tl-behaviour-period">
+        <option value="0"><?php echo __('Only once', 'thrive-leads') ?></option>
+        <option value="1"><?php echo __('Until the visitor closes the browser tab', 'thrive-leads') ?></option>
+        <option value="2" rel="custom"><?php echo __('A custom period of time', 'thrive-leads') ?></option>
+        <option value="3"><?php echo __('For as long as possible', 'thrive-leads') ?></option>
+    </select>
+    <div class="tl-custom-period" style="display: none">
+        <label><?php echo __('days', 'thrive-leads') ?></label>
+        <input type="text" class="tl-custom-period-input" name="custom-period" value="0"/>
+    </div>
+
+    <div class="tl-center tl-text-center" style="width: 90%;position:relative">
+        <h2><?php echo __('Here is your Link', 'thrive-leads') ?></h2>
+        <input readonly style="width:350px;height:32px;display:inline-block" class="tl-inbound-link-input tve-php-code tve-shortcode tve-form-control" type="text" value="<?php echo $home_url ?>" />
+        <span class="tl-btn-container" style="position:relative;display: inline-block;top:-9px;">
+            <a class="tl-inbound-link-copy-btn tve-copy-to-clipboard tve-btn tve-btn-blue" href="javascript:void(0)" style="padding:7px 10px;vertical-align: top;position:relative;z-index: 1;">
+                <span class="tve-icon-clone2"></span>
+                <span class="tl-copy-text"><?php echo __('Copy', 'thrive-leads') ?> &nbsp;</span>
+            </a>
+            <span class="tl-copy-btn-overlay" style="display: block;width:100%;height:100%;left: 0;top:0;z-index:3;position: absolute;"></span>
+        </span>
+    </div>
+</div>

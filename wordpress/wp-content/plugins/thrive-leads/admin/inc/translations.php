@@ -38,6 +38,7 @@ return array(
     'DisplaySettingsTemplateSaved' => __('Display Settings Template Saved', 'thrive-leads'),
     'GeneralError' => __('An unexpected error occurred. Please try again and, if this still happens, try reloading the page.', 'thrive-leads'),
     'Copied' => __('Copied', 'thrive-leads'),
+    'Copy' => __('Copy', 'thrive-leads'),
     'SetWinnerFormTypeMessage' => __('You have successfully selected a winner. It is now being show as the default form. All non-winning forms have been added to the "Archived Forms" section at the bottom.', 'thrive-leads'),
     'SetWinnerGroupMessage' => __('You have successfully selected a winner. It is now being show as the default form. All non-winning forms have been added to the "Archived Forms" section at the bottom.', 'thrive-leads'),
     'SetWinnerShortcodeMessage' => __('You have successfully selected a winner. It is now being show as the default form. All non-winning forms have been added to the "Archived Forms" section at the bottom.', 'thrive-leads'),
@@ -88,5 +89,8 @@ return array(
         '<a href="%s" title="%s" class="tl-play-link wistia-popover[height=450,playerColor=2bb914,width=800]"><span class="tve-icon-play"> </span></a>',
         $tve_leads_help_videos['GroupDisplaySettings'],
         __('Group settings', 'thrive-leads')
-    )
+    ),
+    'InboundLinkBuilder' => __('Thrive Leads SmartLinks', 'thrive-leads'),
+    'MissingCustomUrl' => __('Custom URL cannot be empty', 'thrive-leads'),
+    'MissingTargetGroup' => __('Please select at least one target group', 'thrive-leads')
 );

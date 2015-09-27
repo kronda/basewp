@@ -1154,12 +1154,16 @@ function tve_leads_get_event_actions($actions, $scope, $post_id)
     /**
      * at this point, we are sure we are not editing a Thrive Leads Form - we can leave Thrive Lightboxes and add the 2-step lightboxes from TL
      */
-
     require_once dirname(__FILE__) . '/event-manager/actions/Thrive_Leads_Two_Step_Action.php';
-
     $actions['thrive_leads_2_step'] = array(
         'class' => 'Thrive_Leads_Two_Step_Action',
         'order' => 20
+    );
+
+    require_once dirname(__FILE__) . '/event-manager/actions/Thrive_Leads_Form_Close_Action.php';
+    $actions['thrive_leads_form_close'] = array(
+        'class' => 'Thrive_Leads_Form_Close_Action',
+        'order' => 27
     );
 
     return $actions;

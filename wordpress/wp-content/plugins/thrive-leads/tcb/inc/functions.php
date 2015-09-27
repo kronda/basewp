@@ -119,7 +119,7 @@ function tve_admin_button()
         ?>
         <script type="text/javascript">
             function tve_confirm_revert_to_theme() {
-                if (confirm(<?php echo __('Are you sure you want to DELETE all of the content that was created in this landing page and revert to the theme page?\nIf you click OK, any custom content you added to the landing page will be deleted.', 'thrive-cb') ?>)) {
+                if (confirm("<?php echo __('Are you sure you want to DELETE all of the content that was created in this landing page and revert to the theme page?\nIf you click OK, any custom content you added to the landing page will be deleted.', 'thrive-cb') ?>")) {
                     location.href = location.href + '&tve_revert_theme=1';
                 }
                 return false;
@@ -154,8 +154,12 @@ function tcb_get_editor_url($post_id = false)
      */
     $admin_ssl = strpos(admin_url(), 'https') === 0;
     $post_id = ($post_id) ? $post_id : get_the_ID();
+    /*
+     * We need the post to complete the full arguments for the preview_post_link filter
+     */
+    $post = get_post($post_id);
     $editor_link = set_url_scheme(get_permalink($post_id));
-    $editor_link = esc_url(apply_filters('preview_post_link', add_query_arg(apply_filters('tcb_editor_edit_link_query_args', array(TVE_EDITOR_FLAG => 'true'), $post_id), $editor_link)));
+    $editor_link = esc_url(apply_filters('preview_post_link', add_query_arg(apply_filters('tcb_editor_edit_link_query_args', array(TVE_EDITOR_FLAG => 'true'), $post_id), $editor_link), $post));
 
     return $admin_ssl ? str_replace('http://', 'https://', $editor_link) : $editor_link;
 }
@@ -171,8 +175,12 @@ function tcb_get_editor_url($post_id = false)
 function tcb_get_preview_url($post_id = false)
 {
     $post_id = ($post_id) ? $post_id : get_the_ID();
+    /*
+     * We need the post to complete the full arguments for the preview_post_link filter
+     */
+    $post = get_post($post_id);
     $preview_link = set_url_scheme(get_permalink($post_id));
-    $preview_link = esc_url(apply_filters('preview_post_link', add_query_arg(apply_filters('tcb_editor_preview_link_query_args', array('preview' => 'true'), $post_id), $preview_link)));
+    $preview_link = esc_url(apply_filters('preview_post_link', add_query_arg(apply_filters('tcb_editor_preview_link_query_args', array('preview' => 'true'), $post_id), $preview_link), $post));
     return $preview_link;
 }
 
@@ -325,7 +333,7 @@ function tve_load_font_css()
             $css[$font->font_class][] = "font-style: {$fontStyle};";
         }
         if (!empty($font->font_bold)) {
-            $css["{$font->font_class}.bold_text,{$font->font_class} .bold_text,{$font->font_class} b,{$font->font_class} strong"] = array(
+            $css["{$font->font_class}.bold_text,.{$font->font_class} .bold_text,.{$font->font_class} b,.{$font->font_class} strong"] = array(
                 "font-weight: {$font->font_bold} !important;"
             );
         }
@@ -876,7 +884,7 @@ function tcb_custom_editable_content()
         exit();
     } elseif (!empty($lp_template)) {
 
-        //  tve_landing_page_reset($post_id, $lp_template);
+        //tve_landing_page_reset($post_id, $lp_template);
 
         /**
          * the template should always default to "blank"
@@ -1619,7 +1627,7 @@ function tve_enqueue_editor_scripts()
                         'OnlyDigitsAreAccepted' => __('Only digits are accepted !', 'thrive-cb'),
                         'MinWidthLowerZero' => __('Min width cannot be lower than zero !', 'thrive-cb'),
                         'OnlyThreeHeadingsSelected' => __('Only three headings can be selected at once !', 'thrive-cb'),
-                        'DeleteContentInLandingPage' => __('Are you sure you want to DELETE all of the content that was created in this landing page and revert to the theme page?\nIf you click OK, any custom content you added to the landing page will be deleted.', 'thrive-cb'),
+                        'DeleteContentInLandingPage' => __("Are you sure you want to DELETE all of the content that was created in this landing page and revert to the theme page?\nIf you click OK, any custom content you added to the landing page will be deleted.", 'thrive-cb'),
                         'SelectTemplate' => __('First, you must select a template from the available ones.', 'thrive-cb'),
                         'ClearContentOfLandingPage' => __('Are you sure you want to CLEAR all content from this Landing Page? This action cannot be undone', 'thrive-cb'),
                         'EnterTemplateName' => __('Please enter a template name, it will be easier to reload it after.', 'thrive-cb'),
@@ -2016,7 +2024,7 @@ function tve_thrive_shortcodes($content, $keepConfig = false)
     $shortcode_pattern = '#>__CONFIG_%s__(.+?)__CONFIG_%s__</div>#';
 
     foreach ($tve_thrive_shortcodes as $shortcode => $callback) {
-        if (!tve_check_if_thrive_theme() && $shortcode !== 'widget' && $shortcode !== 'post_grid' && $shortcode !== 'widget_menu' && $shortcode !== 'leads_shortcode' && $shortcode !== 'tve_leads_additional_fields_filters') {
+        if (!tve_check_if_thrive_theme() && $shortcode !== 'widget' && $shortcode !== 'post_grid' && $shortcode !== 'widget_menu' && $shortcode !== 'leads_shortcode' && $shortcode !== 'tve_leads_additional_fields_filters' && $shortcode !== 'social_default') {
             continue;
         }
 
@@ -2222,7 +2230,7 @@ function tve_do_wp_shortcodes($content, $is_editor_page = false)
             '{tcb_post_title}',
             '{tcb_post_image}'
         ), array(
-            get_the_permalink($post_id), // TODO: I think get_the_permalink is slow, we need to cache this somehow
+            get_permalink($post_id), // TODO: I think get_the_permalink is slow, we need to cache this somehow
             get_the_title($post_id),
             !empty($featured_image) && !empty($featured_image[0]) ? $featured_image[0] : ''
         ), $content);
@@ -2286,7 +2294,16 @@ function tve_get_post_meta($post_id, $meta_key, $single = true)
         $meta_key = $meta_key . '_' . $template;
     }
 
-    return get_post_meta($post_id, $meta_key, $single);
+    $value = get_post_meta($post_id, $meta_key, $single);
+
+    /**
+     * I'm not sure why this is happening, but we had some instances where these meta values were being serialized twice
+     */
+    if ($single) {
+        $value = maybe_unserialize($value);
+    }
+
+    return $value;
 }
 
 /**
@@ -2979,9 +2996,16 @@ function tve_do_action()
 
 function tve_categories_list()
 {
+    $taxonomies = array('category');
+
+    if(taxonomy_exists('apprentice')) {
+        $taxonomies[] = 'apprentice';
+    }
+
     check_ajax_referer("tve-le-verify-sender-track129", "security");
     $search_term = isset($_POST['term']) ? $_POST['term'] : '';
-    $terms = get_terms('category', array('search' => $search_term));
+    $terms = get_terms($taxonomies, array('search' => $search_term));
+
     $response = array();
     foreach ($terms as $item) {
         $term = array();
@@ -3417,4 +3441,41 @@ function tve_load_plugin_textdomain()
 
     load_textdomain($domain, WP_LANG_DIR . '/thrive/' . $domain . "-" . $locale . ".mo");
     load_plugin_textdomain($domain, false, $path);
+}
+
+/**
+ * AJAX for searching posts by a quicklink key
+ */
+function tve_find_quick_link_contents()
+{
+    $s = wp_unslash($_REQUEST['q']);
+    $s = trim($s);
+
+    $all_post_types = get_post_types(array(
+        'public' => true
+    ));
+    $exceptionList = apply_filters('tve_post_types_blacklist', array('attachment', 'focus_area', 'thrive_optin', 'tcb_lightbox', 'wysijap'));
+    $post_types = array_diff($all_post_types, $exceptionList);
+
+    $args = array(
+        'post_type' => $post_types,
+        'post_status' => 'publish',
+        's' => $s,
+        'numberposts' => -1
+    );
+    $posts_array = get_posts($args);
+    $postList = array();
+    foreach ($posts_array as $id => $item) {
+
+        $item->post_title = str_ireplace($s, "<strong>" . $s . "</strong>", $item->post_title);
+        $postList [] = array(
+            'label' => $item->post_title,
+            'id' => $item->ID,
+            'value' => $item->post_title,
+            'url' => get_permalink($item->ID),
+            'type' => $item->post_type
+        );
+    }
+    include dirname(__FILE__) . '/views/quick-links-table.php';
+    exit;
 }

@@ -80,6 +80,9 @@
         <div class="tve_ed_btn tve_btn_text tve_center tve_left tve_click" id="tve_table_manage_cells">
             <?php echo __("Manage cells...", "thrive-cb") ?>
         </div>
+        <div class="tve_ed_btn tve_btn_text tve_center tve_left tve_click" id="tve_table_clear_alternating" title="<?php echo __("Clear the alternating colors set for rows", "thrive-cb") ?>">
+            <?php echo __("Clear alternating colors", "thrive-cb") ?>
+        </div>
     </li>
     <?php include dirname(__FILE__) . '/_margin.php' ?>
 </ul>

@@ -53,6 +53,11 @@ class Thrive_Leads_Database_Manager
      */
     public static function check()
     {
+        if (is_admin() && !empty($_REQUEST['tve_leads_db_reset'])) {
+            delete_option('tve_leads_db_version');
+            delete_option('tve_leads_version');
+        }
+
         if (version_compare(self::dbVersion(), TVE_LEADS_DB_VERSION, '<')) {
 
             $scripts = self::getScripts(self::dbVersion(), TVE_LEADS_DB_VERSION);

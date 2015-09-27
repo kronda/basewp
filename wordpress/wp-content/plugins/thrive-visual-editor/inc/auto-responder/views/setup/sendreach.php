@@ -14,7 +14,7 @@
             <th scope="row"><label><?php echo __("Secret", "thrive-cb") ?>:</label></th>
             <td>
                 <input placeholder="<?php echo __("Secret", "thrive-cb") ?>" type="text" class="text" name="connection[secret]"
-                       value="<?php echo $this->param('key', @$_POST['connection']['secret']) ?>"/>
+                       value="<?php echo $this->param('secret', @$_POST['connection']['secret']) ?>"/>
             </td>
         </tr>
         <tr>

@@ -1,4 +1,4 @@
-<li class="tve_ed_btn tve_btn_text<?php if (isset($btn_class)) echo ' ' . $btn_class; unset($btn_class) ?>">
+<li class="tve_ed_btn tve_btn_text<?php if (isset($btn_class)) echo ' ' . $btn_class; unset($btn_class) ?>" <?php if (isset($extra_attr)) echo ' ' . $extra_attr; unset($extra_attr); ?>>
     <div class="tve_option_separator">
         <i class="tve_icm tve-ic-color-lens tve_left"></i><span class="tve_caret tve_left tve_icm" id="sub_01"></span>
 

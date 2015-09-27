@@ -80,17 +80,23 @@ class Thrive_Leads_DB
         $prefix = tve_leads_table_name('');
         $sql = preg_replace('/\{(.+?)\}/', '`' . $prefix . '$1' . '`', $sql);
 
+        if (strpos($sql, '%') === false) {
+            return $sql;
+        }
+
         return $this->wpdb->prepare($sql, $params);
     }
 
     /**
-     * Insert a new event in the log table
+     * Insert a new event in the log table and automatically update the related cached entries for the related Lead Group, Form Type and form variations
      *
      * @param array $data
      * @param int $active_test , if any
-     * @return  id
+     * @param bool $cache_variation_data whether or not to increase the cached number of impressions / conversions for the variation. this will be true for all variations that have cached data, and false if there is no cache for the variation
+     *
+     * @return int
      */
-    public function insert_event($data, $active_test)
+    public function insert_event($data, $active_test, $cache_variation_data = false)
     {
         if (!isset($data['date'])) {
             $data['date'] = date('Y-m-d H:i:s');
@@ -101,6 +107,32 @@ class Thrive_Leads_DB
 
         if ($active_test) {
             $this->update_test_item_data($data, $active_test, '+');
+        }
+
+        $field = $data['event_type'] === TVE_LEADS_UNIQUE_IMPRESSION ? 'impressions' : 'conversions';
+        if ($cache_variation_data) {
+            $this->wpdb->query($this->prepare("UPDATE {form_variations} SET `cache_{$field}` = `cache_{$field}` + 1 WHERE `key` = %d", array($data['variation_key'])));
+        }
+
+        /**
+         * increase the impressions / conversions for the Lead Group / Form Type / Shortcode
+         */
+        $main_group_id = $data['main_group_id'];
+        $form_type_id = $data['form_type_id'];
+
+        if (!empty($main_group_id)) {
+            $count = tve_leads_get_post_tracking_data($main_group_id, $data['event_type'], false);
+            if ($count !== '') { // this means we have a cached value for the Lead Group, it's ok to increment that
+                $count++;
+                tve_leads_set_post_tracking_data($main_group_id, $count, $data['event_type']);
+            }
+        }
+        if (!empty($form_type_id) && $form_type_id != $main_group_id) {
+            $count = tve_leads_get_post_tracking_data($form_type_id, $data['event_type'], false);
+            if ($count !== '') { // this means we have a cached value for the form type, it's ok to increment that
+                $count++;
+                tve_leads_set_post_tracking_data($form_type_id, $count, $data['event_type']);
+            }
         }
 
         return $log_id;
@@ -633,6 +665,48 @@ class Thrive_Leads_DB
         }
     }
 
+    function  tve_leads_get_lead_source_data($filter, $return_count = false)
+    {
+        $sql = "SELECT screen_type, screen_id,
+                    SUM(IF(event_type=" . TVE_LEADS_CONVERSION . ",1,0)) AS conversions,
+                    SUM(IF(event_type=" . TVE_LEADS_UNIQUE_IMPRESSION . ",1,0)) AS impressions,
+                    (SUM(IF(event_type=" . TVE_LEADS_CONVERSION . ",1,0))/SUM(IF(event_type=" . TVE_LEADS_UNIQUE_IMPRESSION . ",1,0))) AS conversion_rate
+                FROM " . tve_leads_table_name('event_log') . "
+                WHERE screen_type IS NOT NULL AND screen_id IS NOT NULL ";
+
+        $params = array();
+        if (!empty($filter['main_group_id']) && $filter['main_group_id'] > 0) {
+            $sql .= "AND `main_group_id` = %d ";
+            $params [] = $filter['main_group_id'];
+        }
+
+        if (!empty($filter['start_date']) && !empty($filter['end_date'])) {
+            $filter['end_date'] .= ' 23:59:59';
+            $sql .= "AND DATE(`date`) BETWEEN  %s AND %s ";
+            $params [] = $filter['start_date'];
+            $params [] = $filter['end_date'];
+        }
+
+        if (isset($filter['archived_log'])) {
+            $sql .= "AND `archived` = %d ";
+            $params [] = $filter['archived_log'];
+        }
+
+        $sql .= "GROUP BY screen_type, screen_id";
+
+        if (!empty($filter['order_by']) && !empty($filter['order_dir'])) {
+            $sql .= " ORDER BY " . $filter['order_by'] . " " . $filter['order_dir'] . " ";
+        }
+
+        if (!$return_count && !empty($filter['itemsPerPage']) && !empty($filter['page'])) {
+            $sql .= " LIMIT %d, %d ";
+            $params [] = $filter['itemsPerPage'] * ($filter['page'] - 1);
+            $params [] = $filter['itemsPerPage'];
+        }
+
+        return $this->wpdb->get_results($this->prepare($sql, $params));
+    }
+
     /**
      * check if the identified variation is included in a running test
      *
@@ -715,7 +789,7 @@ class Thrive_Leads_DB
 
         if (!empty($filters['parent_id'])) {
             $sql .= " AND `parent_id` = %d";
-            $params []= $filters['parent_id'];
+            $params [] = $filters['parent_id'];
         } else {
             $sql .= " AND `parent_id` = 0";
         }
@@ -783,6 +857,8 @@ class Thrive_Leads_DB
             'form_state',
             'parent_id',
             'state_order',
+            'cache_impressions',
+            'cache_conversions'
         );
 
         if (is_array($data['trigger_config'])) {
@@ -840,6 +916,43 @@ class Thrive_Leads_DB
             $first = true;
         }
         $sql .= $or ? " AND ({$or})" : "";
+
+        return $this->wpdb->query($this->prepare($sql, $params));
+    }
+
+    /**
+     * mass update ALL entries from a table, setting a list of fields to corresponding values
+     *
+     * @param string $table
+     * @param array $column_values associative array with column_name => value
+     *
+     *
+     */
+    public function update_all_fields($table, $column_values)
+    {
+        $table = '{' . $table . '}';
+        $sql = "UPDATE {$table} SET";
+
+        $params = array();
+
+        if (empty($column_values)) {
+            return 0;
+        }
+
+        foreach ($column_values as $field => $value) {
+            $sql .= "`{$field}` = ";
+
+            if (is_null($value)) {
+                $sql .= 'NULL';
+            } else {
+                $sql .= '%s';
+                $params [] = $value;
+            }
+
+            $sql .= ', ';
+        }
+
+        $sql = rtrim($sql, ', ');
 
         return $this->wpdb->query($this->prepare($sql, $params));
     }
@@ -1042,7 +1155,7 @@ class Thrive_Leads_DB
 
         foreach ($where as $field => $v) {
             $sql .= " AND `{$field}` = %s";
-            $params []= $v;
+            $params [] = $v;
         }
 
         return $this->wpdb->query($this->prepare($sql, $params));
@@ -1056,6 +1169,29 @@ class Thrive_Leads_DB
         return $this->count_events(array(
             'event_type' => TVE_LEADS_IMPRESSION
         ));
+    }
+
+    /**
+     *
+     * update some particular fields for a variation
+     *
+     * @param array|int|string $variation variation or variation key
+     *
+     * @param array $data key => value pairs with data to be saved for the variation
+     */
+    public function update_variation_fields($variation, $data = array())
+    {
+        if (is_array($variation)) {
+            if (empty($variation['key'])) {
+                return false;
+            }
+            $variation_key = $variation['key'];
+        } else {
+            $variation_key = $variation;
+        }
+
+        return $this->wpdb->update(tve_leads_table_name('form_variations'), $data, array('key' => $variation_key));
+
     }
 
 }

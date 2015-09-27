@@ -243,6 +243,11 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
                         'form_type_id' => $this->param('ID')
                     ));
 
+                    /*
+                     * also clear out the cached impressions and conversions for the Form Type
+                     */
+                    tve_leads_reset_post_tracking_data($post);
+
                     if ($result === false) {
                         $this->error(__("Error on resetting form type statistics", "thrive-leads"));
                     }
@@ -331,11 +336,18 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
                 // reset all logs associated with this form type
                 case 'reset_statistics':
                     global $tvedb;
+
+                    $variation = tve_leads_get_form_variation(null, $this->param('key'), array('tracking_data' => true));
+
                     $tvedb->archive_logs(array(
                         'variation_key' => $this->param('key')
                     ));
-                    return tve_leads_get_form_variation(null, $this->param('key'), array('tracking_data' => true));
-                    break;
+
+                    tve_leads_reset_variation_tracking_data($variation);
+
+                    $variation['impressions'] = $variation['conversions'] = $variation['unique_impressions'] = 0;
+                    $variation['conversion_rate'] = 'N/A';
+                    return $variation;
             }
         }
 
@@ -520,6 +532,8 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
             'main_group_id' => $this->param('tve-chart-source', -1),
             'start_date' => $this->param('tve-report-start-date'),
             'end_date' => $this->param('tve-report-end-date'),
+            'order_by' => $this->param('order_by'),
+            'order_dir' => $this->param('order_dir'),
             'archived_log' => 0
         );
 
@@ -540,6 +554,9 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
                 case 'LeadTracking':
                     $filters['count'] = false;
                     die(json_encode(tve_leads_get_lead_tracking_report_data($filters)));
+                case 'LeadSource':
+                    $filters['count'] = false;
+                    die(json_encode(tve_leads_get_lead_source_report_data($filters)));
                 default:
                     die;
             }
@@ -562,6 +579,8 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
                 die(json_encode(tve_leads_get_lead_referral_report_data($filters)));
             case 'LeadTracking':
                 die(json_encode(tve_leads_get_lead_tracking_report_data($filters)));
+            case 'LeadSource':
+                die(json_encode(tve_leads_get_lead_source_report_data($filters)));
         }
     }
 
@@ -733,4 +752,32 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
         wp_send_json($json);
     }
 
+    /**
+     * clear all cached impression and conversion counts for all Lead Groups, Form Types, Form Variations and shortcodes
+     */
+    public function clearCacheStatisticsAction()
+    {
+        global $tvedb;
+
+        /**
+         * for Groups, Form Types, Shortcodes, and 2 step lightboxes
+         */
+        delete_post_meta_by_key('tve_leads_impressions');
+        delete_post_meta_by_key('tve_leads_conversions');
+
+        /**
+         * form variations
+         */
+        $tvedb->update_all_fields('form_variations', array('cache_impressions' => null, 'cache_conversions' => null));
+        die('done');
+    }
+
+    /**
+     * display inboundLink Builder lightbox
+     */
+    public function displayInboundLinkBuilderAction()
+    {
+        include dirname(dirname(__FILE__)) . '/views/inbound_link_builder.php';
+        die;
+    }
 }

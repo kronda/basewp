@@ -66,12 +66,12 @@ if (tve_leads_get_option('ajax_load')) {
 /**
  * logic to be applied on form impression (display) - TL will save the display as a new event in the log table
  */
-add_action(TVE_LEADS_ACTION_FORM_IMPRESSION, 'tve_leads_register_impression', 10, 4);
+add_action(TVE_LEADS_ACTION_FORM_IMPRESSION, 'tve_leads_register_impression', 10, 5);
 
 /**
  * logic to be applied on form conversion (successfull submit) - TL will save the conversion as a new event in the log table
  */
-add_action(TVE_LEADS_ACTION_FORM_CONVERSION, 'tve_leads_register_conversion', 10, 5);
+add_action(TVE_LEADS_ACTION_FORM_CONVERSION, 'tve_leads_register_conversion', 10, 6);
 
 /**
  * called when a winner is decided in a test (either manually, by admin or automatically, after a conversion)
@@ -130,4 +130,8 @@ if (!is_admin()) {
      */
     add_action('wp', 'tve_leads_query_group');
 
+    /**
+     * filter sidebar params
+     */
+    add_action('dynamic_sidebar_params', 'thrive_dynamic_sidebar_params');
 }

@@ -84,15 +84,22 @@ ThriveGlobal.$j(function() {
                 return true;
             }
 
+            var ajax_data = {
+                security: TL_Const.security,
+                action: TL_Const.action_conversion,
+                type: type,
+                tl_data: TL_Const.forms[type],
+                email: try_getting_email($form),
+                current_screen: TL_Const.current_screen
+            };
+
+            ThriveGlobal.$j.each(TL_Const.custom_post_data, function (k, v) {
+                ajax_data[k] = v;
+            });
+
             ThriveGlobal.$j.ajax({
                 url: TL_Const.ajax_url,
-                data: {
-                    security: TL_Const.security,
-                    action: TL_Const.action_conversion,
-                    type: type,
-                    tl_data: TL_Const.forms[type],
-                    email: try_getting_email($form)
-                },
+                data: ajax_data,
                 type: 'post',
                 async: false
             });
@@ -111,11 +118,18 @@ ThriveGlobal.$j(function() {
                 return true;
             }
 
-            event.post_data = event.post_data || {};
-            event.post_data.thrive_leads = {
+            var ajax_data = {
                 type: type,
-                tl_data: TL_Const.forms[type]
+                tl_data: TL_Const.forms[type],
+                current_screen: TL_Const.current_screen
             };
+
+            ThriveGlobal.$j.each(TL_Const.custom_post_data, function (k, v) {
+                ajax_data[k] = v;
+            });
+
+            event.post_data = event.post_data || {};
+            event.post_data.thrive_leads = ajax_data;
         }).on('lead_conversion_success.tcb', '.tve_lead_lock_shortcode form', function (event) {
             var $form = ThriveGlobal.$j(this),
                 $container = $form.parents('.tve_content_lock');
@@ -139,7 +153,8 @@ ThriveGlobal.$j(function() {
             two_step_ids: TL_Const.two_step_ids,
             action: 'tve_leads_ajax_load_forms',
             security: TL_Const.security,
-            display_options: TL_Const.display_options
+            display_options: TL_Const.display_options,
+            current_screen: TL_Const.current_screen
         };
         ThriveGlobal.$j.each(TL_Const.custom_post_data, function (k, v) {
             ajax_data[k] = v;
@@ -164,11 +179,14 @@ ThriveGlobal.$j(function() {
                     ThriveGlobal.$j('.tl-widget-container').remove();
                 }
                 ThriveGlobal.$j.each(response.html, function (elem_type, html) {
+                    if (!html) {
+                        return true;
+                    }
                     if (elem_type === 'in_content') {
                         // move the placeholder after the nth paragraph
                         var fn = 'after',
                             post = ThriveGlobal.$j('.tve-tl-cnt-wrap'),
-                            p = post.find('p');
+                            p = post.find('p').filter(':visible');
                         if (p.length === 0 && response.in_content_pos == 0) {
                             ThriveGlobal.$j('.tve-tl-cnt-wrap').prepend(html);
                         } else {

@@ -122,6 +122,14 @@ function tve_compat_content_filters_before_shortcode($content)
         $content = dap_product_links($content);
     }
 
+    /**
+     * s3 amazon links - they don't handle shortcodes in the "WP" way
+     */
+    if (function_exists('s3mv')) {
+        $content = s3mv($content);
+    }
+
+
     return $content;
 }
 

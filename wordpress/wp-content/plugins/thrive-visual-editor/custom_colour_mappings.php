@@ -2619,11 +2619,27 @@ return array(
                     "value" => "[color]",
                 ),
                 array(
-                    "label" => "Inner shadow",
+                    "label" => "Internal shadow color",
+                    'opacity' => 1,
+                    'inset' => 1,
                     "selector" => ".out",
                     "property" => "box-shadow",
-                    "value" => "inset-box-shadow",
-                )
+                    "value" => "box-shadow-all"
+                ),
+                array(
+                    "label" => "External shadow color",
+                    'opacity' => 1,
+                    "selector" => ".out",
+                    "property" => "box-shadow",
+                    "value" => "box-shadow-all"
+                ),
+                array(
+                    "label" => "Border color",
+                    'opacity' => 1,
+                    "selector" => ".out",
+                    "property" => "border-color",
+                    "value" => "[color]"
+                ),
             ),
             "Classy" => array(
                 array(
@@ -2634,11 +2650,27 @@ return array(
                     'opacity' => 1
                 ),
                 array(
-                    "label" => "Inner shadow",
+                    "label" => "Internal shadow color",
+                    'opacity' => 1,
+                    'inset' => 1,
                     "selector" => ".out",
                     "property" => "box-shadow",
-                    "value" => "inset-box-shadow"
-                )
+                    "value" => "box-shadow-all"
+                ),
+                array(
+                    "label" => "External shadow color",
+                    'opacity' => 1,
+                    "selector" => ".out",
+                    "property" => "box-shadow",
+                    "value" => "box-shadow-all"
+                ),
+                array(
+                    "label" => "Border color",
+                    'opacity' => 1,
+                    "selector" => ".out",
+                    "property" => "border-color",
+                    "value" => "[color]"
+                ),
             ),
             "Minimal" => array(
                 array(
@@ -2649,11 +2681,27 @@ return array(
                     'opacity' => 1
                 ),
                 array(
-                    "label" => "Inner shadow",
+                    "label" => "Internal shadow color",
+                    'opacity' => 1,
+                    'inset' => 1,
                     "selector" => ".out",
                     "property" => "box-shadow",
-                    "value" => "inset-box-shadow"
-                )
+                    "value" => "box-shadow-all"
+                ),
+                array(
+                    "label" => "External shadow color",
+                    'opacity' => 1,
+                    "selector" => ".out",
+                    "property" => "box-shadow",
+                    "value" => "box-shadow-all"
+                ),
+                array(
+                    "label" => "Border color",
+                    'opacity' => 1,
+                    "selector" => ".out",
+                    "property" => "border-color",
+                    "value" => "[color]"
+                ),
             )
         )
     ),
@@ -2790,6 +2838,24 @@ return array(
                     "property" => "border-color",
                     "value" => "[color]"
                 ),
+                array(
+                    "label" => "Odd rows color",
+                    "selector" => "> .tve_table tbody",
+                    "selector_suffix" => " > tr:nth-child(2n+1) > td", /* the real selector (this will get appended to the CSS rule */
+                    'selector_prefix' => '#tve_editor ',
+                    'important' => false,
+                    "property" => "background-color",
+                    "value" => "[color]",
+                ),
+                array(
+                    "label" => "Even rows color",
+                    "selector" => "> .tve_table tbody",
+                    "selector_suffix" => " > tr:nth-child(2n) > td", /* the real selector (this will get appended to the CSS rule */
+                    'selector_prefix' => '#tve_editor ',
+                    'important' => false,
+                    "property" => "background-color",
+                    "value" => "[color]",
+                ),
             ),
             "Classy" => array(
                 array(
@@ -2822,6 +2888,24 @@ return array(
                     "property" => "border-color",
                     "value" => "[color]"
                 ),
+                array(
+                    "label" => "Odd rows color",
+                    "selector" => "> .tve_table tbody",
+                    "selector_suffix" => " > tr:nth-child(2n+1) > td", /* the real selector (this will get appended to the CSS rule */
+                    'selector_prefix' => '#tve_editor ',
+                    'important' => false,
+                    "property" => "background-color",
+                    "value" => "[color]",
+                ),
+                array(
+                    "label" => "Even rows color",
+                    "selector" => "> .tve_table tbody",
+                    "selector_suffix" => " > tr:nth-child(2n) > td", /* the real selector (this will get appended to the CSS rule */
+                    'selector_prefix' => '#tve_editor ',
+                    'important' => false,
+                    "property" => "background-color",
+                    "value" => "[color]",
+                ),
             ),
             "Minimal" => array(
                 array(
@@ -2853,6 +2937,24 @@ return array(
                     "selector" => "> .tve_table tbody tr td",
                     "property" => "border-color",
                     "value" => "[color]"
+                ),
+                array(
+                    "label" => "Odd rows color",
+                    "selector" => "> .tve_table tbody",
+                    "selector_suffix" => " > tr:nth-child(2n+1) > td", /* the real selector (this will get appended to the CSS rule */
+                    'selector_prefix' => '#tve_editor ',
+                    'important' => false,
+                    "property" => "background-color",
+                    "value" => "[color]",
+                ),
+                array(
+                    "label" => "Even rows color",
+                    "selector" => "> .tve_table tbody",
+                    "selector_suffix" => " > tr:nth-child(2n) > td", /* the real selector (this will get appended to the CSS rule */
+                    'selector_prefix' => '#tve_editor ',
+                    'important' => false,
+                    "property" => "background-color",
+                    "value" => "[color]",
                 ),
             )
         )
@@ -3550,4 +3652,16 @@ return array(
             )
         )
     ),
+    'responsive_video' => array(
+        "undefined" => array(
+            "all" => array(
+                array(
+                    "label" => "Video color",
+                    "selector" => ".tve_responsive_video_container",
+                    "property" => "color",
+                    "value" => "[color]",
+                )
+            )
+        )
+    )
 );

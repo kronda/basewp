@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Thrive Leads\n"
-"POT-Creation-Date: 2015-08-17 16:33+0300\n"
-"PO-Revision-Date: 2015-08-17 16:34+0300\n"
+"POT-Creation-Date: 2015-09-23 12:42+0300\n"
+"PO-Revision-Date: 2015-09-23 12:42+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.4\n"
-"X-Poedit-Basepath: .\n"
+"X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __\n"
@@ -18,23 +18,24 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: .git\n"
 "X-Poedit-SearchPathExcluded-1: .idea\n"
 "X-Poedit-SearchPathExcluded-2: node_modules\n"
+"X-Poedit-SearchPathExcluded-3: tcb\n"
 
-#: admin/controllers/Thrive_Leads_Ajax_Controller.php:247
+#: admin/controllers/Thrive_Leads_Ajax_Controller.php:252
 msgid "Error on resetting form type statistics"
 msgstr ""
 
-#: admin/controllers/Thrive_Leads_Ajax_Controller.php:361
+#: admin/controllers/Thrive_Leads_Ajax_Controller.php:373
 msgid "here"
 msgstr ""
 
-#: admin/controllers/Thrive_Leads_Ajax_Controller.php:362
+#: admin/controllers/Thrive_Leads_Ajax_Controller.php:374
 #, php-format
 msgid ""
 "A test is currently running at this level. You cannot make any modifications "
 "to this form until the test is completed. Click %s to view the test"
 msgstr ""
 
-#: admin/controllers/Thrive_Leads_Ajax_Controller.php:388
+#: admin/controllers/Thrive_Leads_Ajax_Controller.php:400
 msgid "Copy of"
 msgstr ""
 
@@ -75,6 +76,7 @@ msgstr ""
 
 #: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:29
 #: admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php:83
+#: inc/helpers.php:1647 inc/helpers.php:1648
 msgid "Other"
 msgstr ""
 
@@ -95,6 +97,7 @@ msgid "All Pages"
 msgstr ""
 
 #: admin/inc/classes/display_settings/Thrive_Leads_Other_Screens_Tab.php:52
+#: admin/views/template/lightbox/inbound-link-builder.phtml:23
 msgid "Blog Index"
 msgstr ""
 
@@ -133,7 +136,7 @@ msgstr ""
 msgid "Add New Form"
 msgstr ""
 
-#: admin/inc/translations.php:13 admin/views/dashboard.php:130
+#: admin/inc/translations.php:13 admin/views/dashboard.php:142
 msgid "Add New Lead Shortcode"
 msgstr ""
 
@@ -141,7 +144,7 @@ msgstr ""
 msgid "Add New Lead 2 Step Lightbox"
 msgstr ""
 
-#: admin/inc/translations.php:15 admin/views/dashboard.php:103
+#: admin/inc/translations.php:15 admin/views/dashboard.php:115
 msgid "Add New Lead Group"
 msgstr ""
 
@@ -245,63 +248,84 @@ msgstr ""
 msgid "Copied"
 msgstr ""
 
-#: admin/inc/translations.php:41 admin/inc/translations.php:42
-#: admin/inc/translations.php:43 admin/inc/translations.php:44
+#: admin/inc/translations.php:41 admin/views/template/form-type/edit.phtml:24
+#: admin/views/template/form-type/edit.phtml:35
+#: admin/views/template/lightbox/inbound-link-builder.phtml:78
+#: admin/views/template/lightbox/php-insert-code.phtml:12
+#: admin/views/template/shortcode/item.phtml:20
+#: admin/views/template/two-step-lightbox/item.phtml:16
+msgid "Copy"
+msgstr ""
+
+#: admin/inc/translations.php:42 admin/inc/translations.php:43
+#: admin/inc/translations.php:44 admin/inc/translations.php:45
 msgid ""
 "You have successfully selected a winner. It is now being show as the default "
 "form. All non-winning forms have been added to the \"Archived Forms\" "
 "section at the bottom."
 msgstr ""
 
-#: admin/inc/translations.php:55
+#: admin/inc/translations.php:56
 msgid "Creating Forms"
 msgstr ""
 
-#: admin/inc/translations.php:60 admin/views/dashboard.php:101
-#: admin/views/reporting.php:58
+#: admin/inc/translations.php:61 admin/views/dashboard.php:113
+#: admin/views/reporting.php:60
 msgid "Lead Groups"
 msgstr ""
 
-#: admin/inc/translations.php:65 admin/inc/translations.php:70
-#: admin/views/dashboard.php:128
+#: admin/inc/translations.php:66 admin/inc/translations.php:71
+#: admin/views/dashboard.php:140
 msgid "Lead Shortcodes"
 msgstr ""
 
-#: admin/inc/translations.php:75
+#: admin/inc/translations.php:76
 msgid "Trigger settings"
 msgstr ""
 
-#: admin/inc/translations.php:80
+#: admin/inc/translations.php:81
 msgid "Testing Form Variations"
 msgstr ""
 
-#: admin/inc/translations.php:85
+#: admin/inc/translations.php:86
 msgid "Testing Opt-In Form Types"
 msgstr ""
 
-#: admin/inc/translations.php:90
+#: admin/inc/translations.php:91
 msgid "Group settings"
 msgstr ""
 
-#: admin/start.php:43
+#: admin/inc/translations.php:93 admin/views/dashboard.php:22
+msgid "Thrive Leads SmartLinks"
+msgstr ""
+
+#: admin/inc/translations.php:94
+msgid "Custom URL cannot be empty"
+msgstr ""
+
+#: admin/inc/translations.php:95
+msgid "Please select at least one target group"
+msgstr ""
+
+#: admin/start.php:45
 msgid ""
 "Current version of Thrive Leads is not compatible with the current version "
 "of Thrive Content Builder. Please update both plugins to the latest versions."
 msgstr ""
 
-#: admin/start.php:46 admin/views/tcb_version_incompatible.php:17
+#: admin/start.php:48 admin/views/tcb_version_incompatible.php:17
 msgid "Manage plugins"
 msgstr ""
 
-#: admin/start.php:357
+#: admin/start.php:410
 msgid "API"
 msgstr ""
 
-#: admin/views/dashboard.php:22
+#: admin/views/dashboard.php:26
 msgid "Settings"
 msgstr ""
 
-#: admin/views/dashboard.php:27 editor-templates/slide_in/eight_set.php:64
+#: admin/views/dashboard.php:31 editor-templates/slide_in/eight_set.php:64
 #: editor-templates/slide_in/five_set.php:59
 #: editor-templates/slide_in/four_set_v1.php:45
 #: editor-templates/slide_in/four_set_v2.php:34
@@ -312,18 +336,19 @@ msgstr ""
 #: editor-templates/slide_in/six_set.php:55
 #: editor-templates/slide_in/three_set.php:64
 #: editor-templates/slide_in/two_set.php:50
+#: tcb-bridge/event-manager/actions/Thrive_Leads_Form_Close_Action.php:30
 msgid "Close"
 msgstr ""
 
-#: admin/views/dashboard.php:29
+#: admin/views/dashboard.php:33
 msgid "General Settings"
 msgstr ""
 
-#: admin/views/dashboard.php:33
+#: admin/views/dashboard.php:37
 msgid "Lazy load forms"
 msgstr ""
 
-#: admin/views/dashboard.php:44
+#: admin/views/dashboard.php:48
 msgid ""
 "Using lazy loading can speed up the loading of your page and ensure "
 "compatibility with the various WordPress caching plugins such as W3 Total "
@@ -332,33 +357,49 @@ msgid ""
 msgstr ""
 
 #: admin/views/dashboard.php:52
+msgid "Reset cached statistics"
+msgstr ""
+
+#: admin/views/dashboard.php:55
+msgid ""
+"In order to increase overall performance, Thrive Leads caches the number of "
+"impressions and conversions for each Lead Group, Shortcode, 2 Step Lightbox "
+"and Form. Click the following link to purge the cache and re-build it."
+msgstr ""
+
+#: admin/views/dashboard.php:56
+msgid "Purge cache"
+msgstr ""
+
+#: admin/views/dashboard.php:64
 msgid "Today's Summary"
 msgstr ""
 
-#: admin/views/dashboard.php:59
+#: admin/views/dashboard.php:71
 msgid "We've detected that your Thrive Leads database could be optimized"
 msgstr ""
 
-#: admin/views/dashboard.php:60
+#: admin/views/dashboard.php:72
 msgid "click here to optimize it"
 msgstr ""
 
-#: admin/views/dashboard.php:61
+#: admin/views/dashboard.php:73
 msgid ""
 "This will clear some old data that it not used anymore, and free up database "
 "space."
 msgstr ""
 
-#: admin/views/dashboard.php:73 admin/views/dashboard.php:80
-#: admin/views/dashboard.php:88
+#: admin/views/dashboard.php:85 admin/views/dashboard.php:92
+#: admin/views/dashboard.php:100
 msgid "View More"
 msgstr ""
 
-#: admin/views/dashboard.php:87 admin/views/dashboard.php:111
-#: admin/views/dashboard.php:138 admin/views/dashboard.php:166
-#: inc/data.php:1554 inc/data.php:1609 inc/data.php:1624
+#: admin/views/dashboard.php:99 admin/views/dashboard.php:123
+#: admin/views/dashboard.php:150 admin/views/dashboard.php:178
+#: inc/data.php:1586 inc/data.php:1641 inc/data.php:1656
 #: admin/views/template/form-type/edit.phtml:59
 #: admin/views/template/form-type/edit.phtml:128
+#: admin/views/template/reporting/lead-source-report/list.phtml:8
 #: admin/views/template/shortcode/edit.phtml:26
 #: admin/views/template/shortcode/edit.phtml:74
 #: admin/views/template/tests/view.phtml:58
@@ -367,20 +408,20 @@ msgstr ""
 msgid "Conversion Rate"
 msgstr ""
 
-#: admin/views/dashboard.php:93
+#: admin/views/dashboard.php:105
 msgid ""
 "In this area, a daily snapshot will be displayed. Stats will be gathered "
 "automatically as soon as you create and publish at least one form using the "
 "options below."
 msgstr ""
 
-#: admin/views/dashboard.php:104 admin/views/dashboard.php:131
-#: admin/views/dashboard.php:157
+#: admin/views/dashboard.php:116 admin/views/dashboard.php:143
+#: admin/views/dashboard.php:169
 msgid "Add New"
 msgstr ""
 
-#: admin/views/dashboard.php:109 admin/views/dashboard.php:136
-#: admin/views/dashboard.php:164 admin/views/template/form-type/edit.phtml:57
+#: admin/views/dashboard.php:121 admin/views/dashboard.php:148
+#: admin/views/dashboard.php:176 admin/views/template/form-type/edit.phtml:57
 #: admin/views/template/form-type/edit.phtml:126
 #: admin/views/template/lightbox/stop-variation-test.phtml:8
 #: admin/views/template/shortcode/edit.phtml:24
@@ -391,12 +432,13 @@ msgstr ""
 msgid "Form Impressions"
 msgstr ""
 
-#: admin/views/dashboard.php:110 admin/views/dashboard.php:137
-#: admin/views/dashboard.php:165 inc/data.php:1264
+#: admin/views/dashboard.php:122 admin/views/dashboard.php:149
+#: admin/views/dashboard.php:177 inc/data.php:1296
 #: admin/views/template/form-type/edit.phtml:58
 #: admin/views/template/form-type/edit.phtml:127
 #: admin/views/template/lightbox/stop-variation-test.phtml:9
 #: admin/views/template/reporting/lead-referral-report/list.phtml:5
+#: admin/views/template/reporting/lead-source-report/list.phtml:7
 #: admin/views/template/reporting/lead-tracking-report/list.phtml:7
 #: admin/views/template/shortcode/edit.phtml:25
 #: admin/views/template/shortcode/edit.phtml:73
@@ -406,39 +448,39 @@ msgstr ""
 msgid "Conversions"
 msgstr ""
 
-#: admin/views/dashboard.php:112
+#: admin/views/dashboard.php:124
 msgid "Display On Mobile"
 msgstr ""
 
-#: admin/views/dashboard.php:113
+#: admin/views/dashboard.php:125
 msgid "Display Status"
 msgstr ""
 
-#: admin/views/dashboard.php:120
+#: admin/views/dashboard.php:132
 msgid ""
 "You don't have any Lead Groups created yet. Click the 'Add new' button to "
 "create one."
 msgstr ""
 
-#: admin/views/dashboard.php:139
+#: admin/views/dashboard.php:151
 msgid "Content Locking"
 msgstr ""
 
-#: admin/views/dashboard.php:146
+#: admin/views/dashboard.php:158
 msgid ""
 "You don't have any Lead Shortcodes created yet. Click the 'Add new' button "
 "to create one."
 msgstr ""
 
-#: admin/views/dashboard.php:154 admin/views/reporting.php:78
+#: admin/views/dashboard.php:166 admin/views/reporting.php:80
 msgid "2 Step Lightboxes"
 msgstr ""
 
-#: admin/views/dashboard.php:156
+#: admin/views/dashboard.php:168
 msgid "Add New 2 Step Lightbox"
 msgstr ""
 
-#: admin/views/dashboard.php:173
+#: admin/views/dashboard.php:185
 msgid ""
 "You don't have any 2 Step Lightboxes created yet. Click the 'Add new' button "
 "to create one."
@@ -532,7 +574,11 @@ msgstr ""
 msgid "Lead Tracking Report"
 msgstr ""
 
-#: admin/views/reporting.php:43 admin/views/template/form-type/edit.phtml:107
+#: admin/views/reporting.php:38
+msgid "Lead Source Report"
+msgstr ""
+
+#: admin/views/reporting.php:45 admin/views/template/form-type/edit.phtml:107
 #: admin/views/template/groups/item.phtml:45
 #: admin/views/template/groups/item.phtml:67
 #: admin/views/template/shortcode/edit.phtml:55
@@ -541,7 +587,7 @@ msgstr ""
 msgid "Start Date"
 msgstr ""
 
-#: admin/views/reporting.php:49 admin/views/template/form-type/edit.phtml:108
+#: admin/views/reporting.php:51 admin/views/template/form-type/edit.phtml:108
 #: admin/views/template/groups/item.phtml:68
 #: admin/views/template/shortcode/edit.phtml:56
 #: admin/views/template/tests/view.phtml:86
@@ -549,40 +595,41 @@ msgstr ""
 msgid "End Date"
 msgstr ""
 
-#: admin/views/reporting.php:55
+#: admin/views/reporting.php:57
+#: admin/views/template/reporting/lead-source-report/list.phtml:4
 #: admin/views/template/reporting/lead-tracking-report/list.phtml:4
 msgid "Source"
 msgstr ""
 
-#: admin/views/reporting.php:57
+#: admin/views/reporting.php:59
 msgid "All"
 msgstr ""
 
-#: admin/views/reporting.php:68
+#: admin/views/reporting.php:70
 msgid "Shortcodes"
 msgstr ""
 
-#: admin/views/reporting.php:93 admin/views/template/tests/view.phtml:20
+#: admin/views/reporting.php:95 admin/views/template/tests/view.phtml:20
 msgid "Graph Interval"
 msgstr ""
 
-#: admin/views/reporting.php:95 admin/views/template/tests/view.phtml:22
+#: admin/views/reporting.php:97 admin/views/template/tests/view.phtml:22
 msgid "Daily"
 msgstr ""
 
-#: admin/views/reporting.php:96 admin/views/template/tests/view.phtml:23
+#: admin/views/reporting.php:98 admin/views/template/tests/view.phtml:23
 msgid "Weekly"
 msgstr ""
 
-#: admin/views/reporting.php:97 admin/views/template/tests/view.phtml:24
+#: admin/views/reporting.php:99 admin/views/template/tests/view.phtml:24
 msgid "Monthly"
 msgstr ""
 
-#: admin/views/reporting.php:108
+#: admin/views/reporting.php:110
 msgid "No Report Data (Yet)"
 msgstr ""
 
-#: admin/views/reporting.php:111
+#: admin/views/reporting.php:113
 msgid ""
 "Here you will see a graph with the report data from all of your forms. "
 "Currently there is no data to display yet."
@@ -635,11 +682,11 @@ msgstr ""
 msgid "New State"
 msgstr ""
 
-#: editor-layouts/_form_states.php:60 inc/data.php:2158
+#: editor-layouts/_form_states.php:60 inc/data.php:2229
 msgid "Already Subscribed"
 msgstr ""
 
-#: editor-layouts/_form_states.php:62 inc/data.php:2157 inc/helpers.php:34
+#: editor-layouts/_form_states.php:62 inc/data.php:2228 inc/helpers.php:34
 msgid "Lightbox"
 msgstr ""
 
@@ -832,11 +879,7 @@ msgid ""
 "areas."
 msgstr ""
 
-#: inc/classes/thrive_leads_widget.php:13
-msgid "Thrive Leads Widget"
-msgstr ""
-
-#: inc/classes/thrive_leads_widget.php:95
+#: inc/classes/thrive_leads_widget.php:102
 msgid "Chose Lead Group:"
 msgstr ""
 
@@ -852,43 +895,43 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: inc/data.php:1261
+#: inc/data.php:1293
 msgid "Graph to show lead generation conversions over time"
 msgstr ""
 
-#: inc/data.php:1293
+#: inc/data.php:1325
 msgid "Cumulative Lead Growth"
 msgstr ""
 
-#: inc/data.php:1293
+#: inc/data.php:1325
 msgid "Lead Growth"
 msgstr ""
 
-#: inc/data.php:1307
+#: inc/data.php:1339
 msgid "Leads"
 msgstr ""
 
-#: inc/data.php:1451
+#: inc/data.php:1483
 msgid "Graph to show cumulative lead generation conversions by date"
 msgstr ""
 
-#: inc/data.php:1454
+#: inc/data.php:1486
 msgid "Signups"
 msgstr ""
 
-#: inc/data.php:1551 inc/data.php:1621
+#: inc/data.php:1583 inc/data.php:1653
 msgid "Graph to show Lead Generation conversions by date"
 msgstr ""
 
-#: inc/data.php:1748
+#: inc/data.php:1780
 msgid "Pie Chart to show relative conversion source"
 msgstr ""
 
-#: inc/data.php:2159
+#: inc/data.php:2230
 msgid "State"
 msgstr ""
 
-#: inc/data.php:2166
+#: inc/data.php:2237
 msgid "Default State"
 msgstr ""
 
@@ -928,70 +971,84 @@ msgstr ""
 msgid "2 Step Lightbox"
 msgstr ""
 
-#: inc/helpers.php:281 inc/helpers.php:290
+#: inc/helpers.php:290 inc/helpers.php:299
 #: admin/views/template/form-type/edit.phtml:65
 #: admin/views/template/form-type/edit.phtml:134
 msgid "Position"
 msgstr ""
 
-#: inc/helpers.php:283 inc/helpers.php:913
+#: inc/helpers.php:292 inc/helpers.php:922
 msgid "Bottom Left"
 msgstr ""
 
-#: inc/helpers.php:284 inc/helpers.php:911
+#: inc/helpers.php:293 inc/helpers.php:920
 msgid "Bottom Right"
 msgstr ""
 
-#: inc/helpers.php:285 inc/helpers.php:915
+#: inc/helpers.php:294 inc/helpers.php:924
 msgid "Top Left"
 msgstr ""
 
-#: inc/helpers.php:286 inc/helpers.php:917
+#: inc/helpers.php:295 inc/helpers.php:926
 msgid "Top Right"
 msgstr ""
 
-#: inc/helpers.php:292 inc/helpers.php:919
+#: inc/helpers.php:301 inc/helpers.php:928
 msgid "Top"
 msgstr ""
 
-#: inc/helpers.php:293 inc/helpers.php:921
+#: inc/helpers.php:302 inc/helpers.php:930
 msgid "Bottom"
 msgstr ""
 
-#: inc/helpers.php:297
+#: inc/helpers.php:306
 msgid "Show after how many paragraphs?"
 msgstr ""
 
-#: inc/helpers.php:459
+#: inc/helpers.php:468
 msgid "Invalid shortcode parameters"
 msgstr ""
 
-#: inc/helpers.php:625
+#: inc/helpers.php:634
 msgid "Invalid shortcode attributes"
 msgstr ""
 
-#: inc/helpers.php:638
+#: inc/helpers.php:647
 msgid "No form found"
 msgstr ""
 
-#: inc/helpers.php:897
+#: inc/helpers.php:906
 msgid "All the time"
 msgstr ""
 
-#: inc/helpers.php:925
+#: inc/helpers.php:934
 msgid "At the beginning of the post"
 msgstr ""
 
-#: inc/helpers.php:927
+#: inc/helpers.php:936
 msgid "After the first paragraph"
 msgstr ""
 
-#: inc/helpers.php:929
+#: inc/helpers.php:938
 msgid "After "
 msgstr ""
 
-#: inc/helpers.php:1509
+#: inc/helpers.php:1522
 msgid "There is a problem with this PHP insert: missing both parameters"
+msgstr ""
+
+#: inc/helpers.php:1616 inc/helpers.php:1617
+#: admin/views/template/lightbox/inbound-link-builder.phtml:21
+msgid "Homepage"
+msgstr ""
+
+#: inc/helpers.php:1623 inc/helpers.php:1624
+msgid "Blog"
+msgstr ""
+
+#: inc/helpers.php:1639 inc/helpers.php:1640
+#: admin/views/template/form-type/variation.phtml:91
+msgid "Archive"
 msgstr ""
 
 #: inc/license_activation.php:24
@@ -1275,14 +1332,6 @@ msgstr ""
 msgid "Back To Dashboard"
 msgstr ""
 
-#: admin/views/template/form-type/edit.phtml:24
-#: admin/views/template/form-type/edit.phtml:35
-#: admin/views/template/lightbox/php-insert-code.phtml:12
-#: admin/views/template/shortcode/item.phtml:20
-#: admin/views/template/two-step-lightbox/item.phtml:16
-msgid "Copy"
-msgstr ""
-
 #: admin/views/template/form-type/edit.phtml:28
 #: admin/views/template/form-type/item.phtml:8
 #: admin/views/template/shortcode/item.phtml:7
@@ -1466,10 +1515,6 @@ msgstr ""
 msgid "Clone"
 msgstr ""
 
-#: admin/views/template/form-type/variation.phtml:91
-msgid "Archive"
-msgstr ""
-
 #: admin/views/template/groups/item.phtml:16
 msgid "View details"
 msgstr ""
@@ -1496,6 +1541,7 @@ msgstr ""
 
 #: admin/views/template/groups/item.phtml:43
 #: admin/views/template/groups/item.phtml:65
+#: admin/views/template/reporting/lead-source-report/list.phtml:5
 msgid "Type"
 msgstr ""
 
@@ -1589,6 +1635,7 @@ msgstr ""
 
 #: admin/views/template/groups/settings/posts_filter.phtml:2
 #: admin/views/template/groups/settings/tags_filter.phtml:3
+#: admin/views/template/lightbox/inbound-link-builder.phtml:32
 msgid "Search..."
 msgstr ""
 
@@ -1721,6 +1768,7 @@ msgid "Show once every*"
 msgstr ""
 
 #: admin/views/template/lightbox/display-frequency-settings.phtml:15
+#: admin/views/template/lightbox/inbound-link-builder.phtml:68
 #: admin/views/template/lightbox/variation-test.phtml:44
 msgid "days"
 msgstr ""
@@ -1773,6 +1821,94 @@ msgstr ""
 
 #: admin/views/template/lightbox/edit-variation-test.phtml:40
 msgid "Save Settings"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:2
+msgid ""
+"Using our link builder, you can decide which forms are displayed depending "
+"on where your visits are coming from."
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:5
+msgid ""
+"For instance, if you're sending a broadcast to your email list, and you "
+"don't want any of your visitors to see forms on the site, then you can use "
+"this tool to build a link to send them to. You can even target by lead "
+"group, if you prefer."
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:8
+msgid "Step 1 - Define where you want to send your visitors"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:28
+msgid "Custom URL"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:31
+msgid "Start typing to find content:"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:37
+msgid "Update"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:40
+msgid "Step 2 - Tell us which Lead Groups you would like to target:"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:43
+msgid "I want to target all forms on my site"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:47
+msgid "I only want to target certain lead groups"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:50
+msgid "Step 3 - Tell us which lead groups to target"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:53
+msgid "Step 4 - What should be the behaviour of the forms?"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:55
+msgid "Hide the forms"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:56
+msgid "Displaying the \"Already subscribed\" state of the form"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:58
+msgid ""
+"If the \"already subscribed\" state doesn't exist for any given form, then "
+"nothing will be shown."
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:60
+msgid "Step 5 - How long should this behaviour last for?"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:62
+msgid "Only once"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:63
+msgid "Until the visitor closes the browser tab"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:64
+msgid "A custom period of time"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:65
+msgid "For as long as possible"
+msgstr ""
+
+#: admin/views/template/lightbox/inbound-link-builder.phtml:73
+msgid "Here is your Link"
 msgstr ""
 
 #: admin/views/template/lightbox/lock-display-settings.phtml:6
@@ -1946,6 +2082,10 @@ msgstr ""
 
 #: admin/views/template/reporting/lead-referral-report/list.phtml:4
 msgid "Referring URL"
+msgstr ""
+
+#: admin/views/template/reporting/lead-source-report/list.phtml:6
+msgid "Impressions"
 msgstr ""
 
 #: admin/views/template/reporting/lead-tracking-report/list.phtml:5

@@ -74,6 +74,255 @@ return array(
         ),
         'style_family' => 'Flat',
     ),
+    'author-focused-homepage' => array(
+        'name' => 'Author Focused Homepage', //required
+        'tags' => array('lead generation', '2-step', 'homepage'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic',
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'has_lightbox' => true,
+        'lightbox' => array(
+            'max_width' => '970px',
+            'max_height' => '480px'
+        ),
+        'style_family' => 'Flat',
+    ),
+    'offer-focused-homepage' => array(
+        'name' => 'Offer Focused Homepage', //required
+        'tags' => array('lead generation', '2-step', 'homepage'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic',
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'icons' => array (
+            'offerfocused-icon-arrow'
+        ),
+        'has_lightbox' => true,
+        'lightbox' => array(
+            'max_width' => '970px',
+            'max_height' => '480px'
+        ),
+        'style_family' => 'Flat',
+    ),
+    'content-focused-homepage' => array(
+        'name' => 'Content Focused Homepage', //required
+        'tags' => array('lead generation', '2-step', 'homepage'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,800italic,800,700,400,300',
+            '//fonts.googleapis.com/css?family=Montserrat:400,700'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'icons' => array (
+            'contentfocused-icon-arrow', 'offerfocused-icon-speaker'
+        ),
+        'has_lightbox' => true,
+        'lightbox' => array(
+            'max_width' => '970px',
+            'max_height' => '480px'
+        ),
+        'style_family' => 'Classy',
+    ),
+    'hybrid-homepage1' => array(
+        'name' => 'Hybrid Homepage 1', //required
+        'tags' => array('lead generation', '2-step', 'homepage'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,800italic,800,700,400,300',
+            '//fonts.googleapis.com/css?family=Montserrat:400,700'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'icons' => array (
+            'hybrid-icon-chart', 'hybrid-icon-speaker', 'hybrid-icon-ribbon'
+        ),
+        'has_lightbox' => true,
+        'lightbox' => array(
+            'max_width' => '970px',
+            'max_height' => '480px'
+        ),
+        'style_family' => 'Flat',
+    ),
+    'hybrid-homepage2' => array(
+        'name' => 'Hybrid Homepage 2', //required
+        'tags' => array('lead generation', '2-step', 'homepage'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic',
+            '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'icons' => array (
+            'hybrid-icon-chart', 'hybrid-icon-speaker', 'hybrid-icon-ribbon'
+        ),
+        'has_lightbox' => true,
+        'lightbox' => array(
+            'max_width' => '970px',
+            'max_height' => '480px'
+        ),
+        'style_family' => 'Flat',
+    ),
+    'copy-2-coming-soon' => array(
+        'name' => 'Copy 2.0 Coming Soon Page', //required
+        'tags' => array('lead generation', '1-step', 'coming soon'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Gentium+Basic:400,700,400italic',
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'style_family' => 'Classy',
+    ),
+    'copy-2-download-page' => array(
+        'name' => 'Copy 2.0 Download Page', //required
+        'tags' => array('download'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Gentium+Basic:400,700,400italic',
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'icons' => array(
+            'copy2-icon-book'
+        ),
+        'style_family' => 'Classy',
+    ),
+    'copy-2-email-confirmation' => array(
+        'name' => 'Copy 2.0 Email Confirmation Page', //required
+        'tags' => array('email confirmation'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Gentium+Basic:400,700,400italic',
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'style_family' => 'Classy',
+    ),
+    'copy-2-product-launch' => array(
+        'name' => 'Copy 2.0 Product Launch Page', //required
+        'tags' => array('product launch', 'video'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Gentium+Basic:400,700,400italic',
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'has_lightbox' => true,
+        'lightbox' => array(
+            'max_width' => '1080px',
+            'max_height' => '550px'
+        ),
+        'style_family' => 'Classy',
+    ),
+    'copy-2-lead-generation' => array(
+        'name' => 'Copy 2.0 Lead Generation Page', //required
+        'tags' => array('lead generation', '1-step'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Gentium+Basic:400,700,400italic',
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'style_family' => 'Classy',
+    ),
+    'copy-2-lead-generation-2step' => array(
+        'name' => 'Copy 2.0 2-Step Lead Generation Page', //required
+        'tags' => array('lead generation', '2-step'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Gentium+Basic:400,700,400italic',
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'has_lightbox' => true,
+        'lightbox' => array(
+            'max_width' => '1080px',
+            'max_height' => '550px'
+        ),
+        'style_family' => 'Classy',
+    ),
+    'copy-2-sold-out' => array(
+        'name' => 'Copy 2.0 Sold Out Page', //required
+        'tags' => array('lead generation', '1-step'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Gentium+Basic:400,700,400italic',
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'style_family' => 'Classy',
+    ),
+    'copy-2-video-sales-page' => array(
+        'name' => 'Copy 2.0 Video Sales Page', //required
+        'tags' => array('sales page', 'video'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Gentium+Basic:400,700,400italic',
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'style_family' => 'Classy',
+    ),
+    'copy-2-hybrid-sales-image' => array(
+        'name' => 'Copy 2.0 Hybrid Sales Page (Image Version)', //required
+        'tags' => array('sales page', 'long form'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Gentium+Basic:400,700,400italic',
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'icons' => array(
+            'copy2-icon-paperplane', 'copy2-icon-speaker', 'copy2-icon-idea'
+        ),
+        'style_family' => 'Classy',
+    ),
+    'copy-2-hybrid-sales-video' => array(
+        'name' => 'Copy 2.0 Hybrid Sales Page (Video Version)', //required
+        'tags' => array('sales page', 'video', 'long form'),
+        'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
+        'fonts' => array(
+            '//fonts.googleapis.com/css?family=Gentium+Basic:400,700,400italic',
+            '//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic'
+        ),
+        'hidden_menu_items' => array(
+            'max_width', 'bg_full_height', 'border_radius'
+        ),
+        'icons' => array(
+            'copy2-icon-paperplane', 'copy2-icon-speaker', 'copy2-icon-idea'
+        ),
+        'style_family' => 'Classy',
+    ),
     'phonic-bonus-episode-optin' => array(
         'name' => 'Phonic Podcast Bonus Episode Opt-In Page', //required
         'tags' => array('lead generation', '2-step', 'video', 'podcast'),
@@ -144,7 +393,7 @@ return array(
         'style_family' => 'Classy',
     ),
     'phonic-email-first-landing-page' => array(
-        'name' => 'Phonic Podcast “Email First” Landing Page', //required
+        'name' => 'Phonic Podcast “Email First Landing Page', //required
         'tags' => array('lead generation', 'podcast', '1-step'),
         'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
         'fonts' => array(
@@ -160,7 +409,7 @@ return array(
         'style_family' => 'Classy',
     ),
     'phonic-email-first-download-page' => array(
-        'name' => 'Phonic Podcast “Email First” Download Page', //required
+        'name' => 'Phonic Podcast “Email First Download Page', //required
         'tags' => array('lead generation', 'podcast', '1-step'),
         'extended_dropzone_elements' => '.tve_lp_content, .tve_lp_header, .tve_lp_footer',
         'fonts' => array(

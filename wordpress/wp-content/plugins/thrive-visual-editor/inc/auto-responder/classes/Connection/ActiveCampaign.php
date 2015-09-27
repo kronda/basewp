@@ -183,7 +183,9 @@ class Thrive_List_Connection_ActiveCampaign extends Thrive_List_Connection_Abstr
                 $first_name,
                 $last_name,
                 empty($arguments['phone']) ? '' : $arguments['phone'],
-                empty($arguments['activecampaign_form']) ? 0 : $arguments['activecampaign_form']);
+                empty($arguments['activecampaign_form']) ? 0 : $arguments['activecampaign_form'],
+                '',
+                trim($arguments['activecampaign_tags'], ','));
             return true;
 
         } catch (Thrive_Api_ActiveCampaign_Exception $e) {

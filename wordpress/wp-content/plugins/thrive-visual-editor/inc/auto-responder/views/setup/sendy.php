@@ -18,7 +18,7 @@
                 <button type="button" class="tve-sendy-add-list-input"><?php echo __("Add", "thrive-cb") ?></button>
                 <?php foreach ($this->param('lists', !empty($_POST['connection']['lists']) ? $_POST['connection']['lists'] : array()) as $id) : ?>
                     <?php if (empty($id)) continue; ?>
-                    <input placeholder="<?php echo __("Secret", "thrive-cb") ?>" type="text" class="text" name="connection[lists][]"
+                    <input type="text" class="text" name="connection[lists][]"
                            value="<?php echo $id ?>"/>
                     <button type="button" class="tve-sendy-remove-list-input"><?php echo __("Remove", "thrive-cb") ?></button>
                 <?php endforeach; ?>

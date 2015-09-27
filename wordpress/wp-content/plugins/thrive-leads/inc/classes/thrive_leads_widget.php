@@ -10,7 +10,7 @@ class Thrive_Leads_Widget extends WP_Widget
         $widget_ops = array(
             'classname' => 'widget_thrive_leads',
             'description' => __('Simple widget to control the placement of thrive leads forms in the widget areas.', 'thrive-leads'));
-        parent::__construct('widget_thrive_leads', __('Thrive Leads Widget', 'thrive-leads'), $widget_ops);
+        parent::__construct('widget_thrive_leads', 'Thrive Leads Widget', $widget_ops);
 
         add_action('save_post', array(&$this, 'flush_widget_cache'));
         add_action('deleted_post', array(&$this, 'flush_widget_cache'));
@@ -28,24 +28,31 @@ class Thrive_Leads_Widget extends WP_Widget
             return;
         }
 
+        $content = '';
+
         if (in_array($GLOBALS['tve_lead_forms']['widget']['form_type']->post_parent, $instance['lead_group'])) {
             if (!empty($GLOBALS['tve_lead_forms']['widget']['placeholder'])) {
                 $args['before_widget'] = '<div style="display:none" class="tl-widget-container">' . $args['before_widget'];
                 $args['after_widget'] .= '</div>';
             }
 
-            echo $args['before_widget'];
             /**
              * this is not empty when AJAX loading of forms is enabled
              */
             if (!empty($GLOBALS['tve_lead_forms']['widget']['placeholder'])) {
-                echo $GLOBALS['tve_lead_forms']['widget']['form_output'];
+                $content = $GLOBALS['tve_lead_forms']['widget']['form_output'];
             } else {
-                tve_leads_display_form_widget();
+                echo $args['before_widget'];
+                $content = tve_leads_display_form_widget();
+                echo $args['after_widget'];
             }
-
-            echo $args['after_widget'];
         }
+
+        if (empty($content)) {
+            return;
+        }
+
+        echo $args['before_widget'] . $content . $args['after_widget'];
     }
 
     /**

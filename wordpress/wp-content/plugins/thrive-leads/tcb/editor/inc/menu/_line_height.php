@@ -1,7 +1,7 @@
 <li class="tve_btn_text">
     <?php $line_height_label = empty($line_height_label) ? __('Line height', "thrive-cb") : $line_height_label ?>
     <label><?php echo $line_height_label?></label>
-    <input id="tve_line_height" class="tve_change tve_mousedown" data-ctrl-mousedown="controls.save_selection" data-key="textSel" value="" type="text" size="3" data-css-property="line-height"
+    <input id="tve_line_height" class="tve_change tve_mousedown" data-ctrl-mousedown="controls.save_selection" data-key="textSel" value="" type="text" size="4" data-css-property="line-height"
            data-size="1">
 </li>
 <li class="tve_ed_btn tve_btn_text">

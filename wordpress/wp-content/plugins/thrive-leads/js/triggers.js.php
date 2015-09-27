@@ -18,11 +18,17 @@
             return;
         }
 
-        ThriveGlobal.$j.post(TL_Const.ajax_url, {
+        var ajax_data = {
             security: TL_Const.security,
             action: TL_Const.action_impression,
-            tl_data: data
-        }).done(function () {
+            tl_data: data,
+            current_screen: TL_Const.current_screen
+        };
+        ThriveGlobal.$j.each(TL_Const.custom_post_data, function (k, v) {
+            ajax_data[k] = v;
+        });
+
+        ThriveGlobal.$j.post(TL_Const.ajax_url, ajax_data).done(function () {
             //TODO: do something here if required
         });
     };
@@ -104,11 +110,13 @@
         $target.css({
             'visibility': '',
             'position': '',
-            'left': ''
+            'left': '',
+            'display': ''
         }).parents('.tl-style').css({
             'visibility': '',
             'position': '',
-            'left': ''
+            'left': '',
+            'display': ''
         });
 
         var $body = ThriveGlobal.$j('body'),
@@ -258,7 +266,7 @@
          * Mozilla is really slow at applying the loaded css. we need this workaround to have it work in mozilla.
          */
 
-         var iterations = 0,
+        var iterations = 0,
             initial_height = $target.outerHeight(),
             ii = setInterval(function () {
                 iterations++;
@@ -396,6 +404,45 @@
     };
     <?php endif ?>
 
+    TL_Front.close_form = function (element, trigger, action, config) {
+        var $element = ThriveGlobal.$j(element),
+            $parent = $element.parents('.tve-leads-triggered'), //every form has this class on its wrapper
+            type = $parent.attr('data-tl-type'); //some of them have its type in data-tl-type
+
+        //if no type then identify it from class
+        if (type === undefined && $parent.hasClass('tve-leads-widget')) {
+            type = 'widget';
+        } else if (type === undefined && $parent.hasClass('tve-leads-post-footer')) {
+            type = 'post-footer';
+        } else if (type === undefined && $parent.hasClass('tve-leads-slide-in')) {
+            type = 'slide-in';
+        } else if (type === undefined && $parent.hasClass('tve-leads-in-content')) {
+            type = 'in-content';
+        } else if (type === undefined && $parent.hasClass('tve-leads-shortcode')) {
+            type = 'shortcode';
+        }
+
+        //remove this class just because it is added dynamically and maybe we want to trigger it again
+        $parent.removeClass('tve-leads-triggered');
+
+        switch (type) {
+            case 'ribbon':
+                $parent.find('.tve-ribbon-close').trigger('click');//there already exists a bind for close
+                break;
+            case 'slide-in':
+                $parent.find('.tve-leads-close').trigger('click');//there already exists a bind for close
+                break;
+            case 'post-footer'://case able for PHP Insert form too
+            case 'in-content':
+            case 'shortcode':
+                $parent.fadeOut(200);
+                break;
+            case 'widget':
+                $parent.parent().slideUp(200);//its parent is a section tag; see the function thrive_dynamic_sidebar_params()
+                break;
+        }
+    };
+
     ThriveGlobal.$j(function () {
         ThriveGlobal.$j('.tve-leads-screen-filler iframe, .tve-leads-ribbon iframe').not('.thrv_social_default iframe').not('.tcb-dr-done').each(function () {
             var $frame = ThriveGlobal.$j(this).addClass('tcb-dr-done');
@@ -407,6 +454,9 @@
         ThriveGlobal.$j(TL_Front).on('showform.thriveleads', function (event, data) {
             var $target = data.$target ? data.$target : ThriveGlobal.$j('.' + data.form_id),
                 $anim_target;
+            if (!$target.length) {
+                return;
+            }
             if ($target.attr('data-s-state')) {
                 /**
                  * find the already subscribed state and show it

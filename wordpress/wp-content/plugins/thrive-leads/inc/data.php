@@ -39,8 +39,8 @@ function tve_leads_get_groups($filter = array())
 
     foreach ($posts as $post) {
         if (!empty($filter['tracking_data'])) {
-            $post->impressions = tve_leads_get_tracking_data(TVE_LEADS_UNIQUE_IMPRESSION, array('main_group_id' => $post->ID));
-            $post->conversions = tve_leads_get_tracking_data(TVE_LEADS_CONVERSION, array('main_group_id' => $post->ID));
+            $post->impressions = tve_leads_get_post_tracking_data($post, TVE_LEADS_UNIQUE_IMPRESSION);
+            $post->conversions = tve_leads_get_post_tracking_data($post, TVE_LEADS_CONVERSION);
             $post->conversion_rate = tve_leads_conversion_rate($post->impressions, $post->conversions);
         }
         if (!empty($filter['active_tests'])) {
@@ -118,8 +118,8 @@ function tve_leads_get_group($ID, $filter = array())
     }
 
     if (!empty($filter['tracking_data'])) {
-        $post->impressions = tve_leads_get_tracking_data(TVE_LEADS_UNIQUE_IMPRESSION, array('main_group_id' => $post->ID));
-        $post->conversions = tve_leads_get_tracking_data(TVE_LEADS_CONVERSION, array('main_group_id' => $post->ID));
+        $post->impressions = tve_leads_get_post_tracking_data($post, TVE_LEADS_UNIQUE_IMPRESSION);
+        $post->conversions = tve_leads_get_post_tracking_data($post, TVE_LEADS_CONVERSION);
         $post->conversion_rate = tve_leads_conversion_rate($post->impressions, $post->conversions);
     }
     if (!empty($filter['active_tests'])) {
@@ -180,8 +180,8 @@ function tve_leads_get_shortcodes($filter = array())
             ));
         }
         if (!empty($filter['tracking_data'])) {
-            $post->impressions = tve_leads_get_tracking_data(TVE_LEADS_UNIQUE_IMPRESSION, array('main_group_id' => $post->ID));
-            $post->conversions = tve_leads_get_tracking_data(TVE_LEADS_CONVERSION, array('main_group_id' => $post->ID));
+            $post->impressions = tve_leads_get_post_tracking_data($post, TVE_LEADS_UNIQUE_IMPRESSION);
+            $post->conversions = tve_leads_get_post_tracking_data($post, TVE_LEADS_CONVERSION);
             $post->conversion_rate = tve_leads_conversion_rate($post->impressions, $post->conversions);
         }
         if (!empty($filter['get_variations'])) {
@@ -228,8 +228,8 @@ function tve_leads_get_two_step_lightboxes($filter = array())
             ));
         }
         if (!empty($filter['tracking_data'])) {
-            $post->impressions = tve_leads_get_tracking_data(TVE_LEADS_UNIQUE_IMPRESSION, array('main_group_id' => $post->ID));
-            $post->conversions = tve_leads_get_tracking_data(TVE_LEADS_CONVERSION, array('main_group_id' => $post->ID));
+            $post->impressions = tve_leads_get_post_tracking_data($post, TVE_LEADS_UNIQUE_IMPRESSION);
+            $post->conversions = tve_leads_get_post_tracking_data($post, TVE_LEADS_CONVERSION);
             $post->conversion_rate = tve_leads_conversion_rate($post->impressions, $post->conversions);
         }
         if (!empty($filter['get_variations'])) {
@@ -315,8 +315,6 @@ function tve_leads_get_tracking_data($type, $filter = array())
  * get all "form_type" posts based on a $params filter
  * usually, $params should hold the parent Lead Group id
  *
- * TODO: test if we can get better / faster results when querying directly also the impressions / conversions counts
- *
  * @param $params
  * @return mixed
  */
@@ -342,8 +340,8 @@ function tve_leads_get_form_types($params = array())
 
     foreach ($posts as $post) {
         if (!empty($params['tracking_data'])) {
-            $post->impressions = tve_leads_get_tracking_data(TVE_LEADS_UNIQUE_IMPRESSION, array('form_type_id' => $post->ID));
-            $post->conversions = tve_leads_get_tracking_data(TVE_LEADS_CONVERSION, array('form_type_id' => $post->ID));
+            $post->impressions = tve_leads_get_post_tracking_data($post, TVE_LEADS_UNIQUE_IMPRESSION);
+            $post->conversions = tve_leads_get_post_tracking_data($post, TVE_LEADS_CONVERSION);
             $post->conversion_rate = tve_leads_conversion_rate($post->impressions, $post->conversions);
             $post->active_test = tve_leads_get_form_active_test($post->ID);
 
@@ -398,8 +396,14 @@ function tve_leads_get_form_variations($ID, $filters = array())
 
     foreach ($variations as $k => $variation) {
         if (!empty($filters['tracking_data'])) {
-            $variations[$k]['impressions'] = $impressions = tve_leads_get_tracking_data(TVE_LEADS_UNIQUE_IMPRESSION, array('variation_key' => $variation['key']));
-            $variations[$k]['conversions'] = $conversions = tve_leads_get_tracking_data(TVE_LEADS_CONVERSION, array('variation_key' => $variation['key']));
+            $variations[$k]['impressions'] = $impressions = tve_leads_get_variation_tracking_data($variation, TVE_LEADS_UNIQUE_IMPRESSION);
+            $variations[$k]['conversions'] = $conversions = tve_leads_get_variation_tracking_data($variation, TVE_LEADS_CONVERSION);
+            if (!empty($variation['save_flag'])) {
+                $tvedb->update_variation_fields($variations[$k], array(
+                    'cache_impressions' => $impressions,
+                    'cache_conversions' => $conversions
+                ));
+            }
             $variations[$k]['conversion_rate'] = tve_leads_conversion_rate($impressions, $conversions);
         }
         $variations[$k]['tcb_edit_url'] = tve_leads_get_editor_url($ID, $variation['key']);
@@ -528,6 +532,11 @@ function tve_leads_save_group($model)
             'post_status' => 'publish'
         );
         $ID = wp_insert_post(array_merge($default, $model));
+        /**
+         * save these from here, as they will be 0 for new Lead Groups
+         */
+        update_post_meta($ID, 'tve_leads_impressions', 0);
+        update_post_meta($ID, 'tve_leads_conversions', 0);
     }
 
     if (isset($model['order'])) {
@@ -559,6 +568,11 @@ function tve_leads_save_shortcode($model)
             'post_status' => 'publish'
         );
         $ID = wp_insert_post(array_merge($default, $model));
+        /**
+         * save these from here, as they will be 0 for new Shortcodes
+         */
+        update_post_meta($ID, 'tve_leads_impressions', 0);
+        update_post_meta($ID, 'tve_leads_conversions', 0);
     }
 
     if (isset($ID)) {
@@ -591,6 +605,11 @@ function tve_leads_save_two_step_lightbox($model)
             'post_status' => 'publish'
         );
         $ID = wp_insert_post(array_merge($default, $model));
+        /**
+         * save these from here, as they will be 0 for newly created 2-step Lightboxes
+         */
+        update_post_meta($ID, 'tve_leads_impressions', 0);
+        update_post_meta($ID, 'tve_leads_conversions', 0);
     }
 
     if (isset($ID)) {
@@ -641,6 +660,11 @@ function tve_leads_save_form_type($model)
             'post_status' => 'publish'
         );
         $ID = wp_insert_post(array_merge($default, $model));
+        /**
+         * these will be 0 for new form types
+         */
+        update_post_meta($ID, 'tve_leads_impressions', 0);
+        update_post_meta($ID, 'tve_leads_conversions', 0);
     }
 
     if (isset($ID)) {
@@ -720,8 +744,14 @@ function tve_leads_get_form_variation($form_type_id, $variation_key, $filter = a
     }
 
     if (!empty($filter['tracking_data'])) {
-        $variation['impressions'] = $impressions = tve_leads_get_tracking_data(TVE_LEADS_UNIQUE_IMPRESSION, array('variation_key' => $variation['key']));
-        $variation['conversions'] = $conversions = tve_leads_get_tracking_data(TVE_LEADS_CONVERSION, array('variation_key' => $variation['key']));
+        $variation['impressions'] = $impressions = tve_leads_get_variation_tracking_data($variation, TVE_LEADS_UNIQUE_IMPRESSION);
+        $variation['conversions'] = $conversions = tve_leads_get_variation_tracking_data($variation, TVE_LEADS_CONVERSION);
+        if (!empty($variation['save_flag'])) {
+            $tvedb->update_variation_fields($variation, array(
+                'cache_impressions' => $impressions,
+                'cache_conversions' => $conversions
+            ));
+        }
         $variation['conversion_rate'] = tve_leads_conversion_rate($impressions, $conversions);
     }
     if (empty($variation['trigger'])) {
@@ -935,7 +965,9 @@ function tve_leads_save_form_variation($model)
             'trigger' => 'page_load',
             'trigger_config' => array(),
             'tcb_fields' => array(),
-            'content' => ''
+            'content' => '',
+            'cache_impressions' => 0,
+            'cache_conversions' => 0
         );
 
     } else {
@@ -1704,7 +1736,7 @@ function tve_leads_get_comparison_report_data($filter)
     $defaults = array(
         'group_by' => array('main_group_id'),
         'data_group' => 'main_group_id',
-        'event_type' => TVE_LEADS_CONVERSION
+        'event_type' => TVE_LEADS_CONVERSION,
     );
     $filter = array_merge($defaults, $filter);
 
@@ -1775,6 +1807,45 @@ function tve_leads_get_lead_referral_report_data($filter)
         return array('table_data' => array('count_table_data' => $lead_referral));
     } else {
         return $lead_referral;
+    }
+}
+
+/**
+ * Return data for the Lead Referral Report table
+ * @param $filter Array containing parameters for filtering the data logs
+ * @return array
+ */
+function tve_leads_get_lead_source_report_data($filter)
+{
+    $defaults = array(
+        'count' => true,
+        'itemsPerPage' => 500,
+        'page' => 1,
+        'order_by' => '',
+        'order_dir' => ''
+    );
+    $filter = array_merge($defaults, $filter);
+
+    global $tvedb;
+    $lead_report = $tvedb->tve_leads_get_lead_source_data($filter, $filter['count']);
+
+    $result = array();
+    foreach ($lead_report as $row) {
+        list($url, $type, $name) = tve_get_current_screen_for_reporting_table($row->screen_type, $row->screen_id);
+        $result[] = array(
+            'url' => $url,
+            'type' => $type,
+            'name' => $name,
+            'conversions' => $row->conversions,
+            'impressions' => $row->impressions,
+            'conversion_rate' => tve_leads_conversion_rate($row->impressions, $row->conversions),
+        );
+    }
+
+    if ($filter['count'] == true) {
+        return array('table_data' => array('count_table_data' => count($result)));
+    } else {
+        return $result;
     }
 }
 
@@ -2216,4 +2287,192 @@ function tve_leads_get_already_subscribed_state($default_state)
     global $tvedb;
 
     return $tvedb->get_variation_already_subscribed_state($default_state['key']);
+}
+
+/**
+ * get the tracking data for a post from the post-meta option
+ * if no value is present there, count the logs and update the meta option value with that number
+ *
+ * applies to: Lead Groups, Form Types, Shortcodes, 2-step Shortcodes
+ *
+ * @param WP_Post|int $post
+ * @param int $event_type
+ * @param bool $fetch_if_not_found whether or not to count the logs if there is no entry in the cache
+ *
+ * @return int
+ */
+function tve_leads_get_post_tracking_data($post, $event_type = TVE_LEADS_UNIQUE_IMPRESSION, $fetch_if_not_found = true)
+{
+    $post_id = $post;
+    if (is_array($post)) {
+        $post_id = $post['ID'];
+    } elseif (is_a($post, 'WP_Post')) {
+        $post_id = $post->ID;
+    }
+
+    $meta_key = 'tve_leads_' . ($event_type === TVE_LEADS_UNIQUE_IMPRESSION ? 'impressions' : 'conversions');
+
+    $value = get_post_meta($post_id, $meta_key, true);
+
+    if ($value === '' && $fetch_if_not_found === true) {
+        $value = tve_leads_get_tracking_data($event_type, array($post->post_type === TVE_LEADS_POST_FORM_TYPE ? 'form_type_id' : 'main_group_id' => $post->ID));
+        update_post_meta($post_id, $meta_key, $value);
+    }
+
+    return $value;
+}
+
+/**
+ * get tracking data for a form variation (design). Form variations are stored in a separate table, so we cannot use the WP post_meta API
+ *
+ * applies to: Form Variations
+ *
+ * @param array $variation
+ * @param int $event_type
+ *
+ * @return int
+ */
+function tve_leads_get_variation_tracking_data(&$variation, $event_type = TVE_LEADS_UNIQUE_IMPRESSION)
+{
+    $key = 'cache_' . ($event_type === TVE_LEADS_UNIQUE_IMPRESSION ? 'impressions' : 'conversions');
+
+    if ($variation[$key] === null) {
+        $variation[$key] = (int)tve_leads_get_tracking_data($event_type, array('variation_key' => $variation['key']));
+        $variation['save_flag'] = true;
+    }
+
+    return $variation[$key];
+}
+
+/**
+ * update the cached impression or conversion count for a post
+ *
+ * applies to: Lead Groups, Form Types, Shortcodes, 2-step Lightboxes
+ *
+ * @param mixed $post
+ * @param int $value
+ * @param int $event_type
+ *
+ * @return int|bool
+ */
+function tve_leads_set_post_tracking_data($post, $value, $event_type = TVE_LEADS_UNIQUE_IMPRESSION)
+{
+    $post_id = $post;
+    if (is_array($post)) {
+        $post_id = $post['ID'];
+    } elseif (is_a($post, 'WP_Post')) {
+        $post_id = $post->ID;
+    }
+
+    $meta_key = 'tve_leads_' . ($event_type === TVE_LEADS_UNIQUE_IMPRESSION ? 'impressions' : 'conversions');
+
+    return update_post_meta($post_id, $meta_key, $value);
+}
+
+/**
+ * reset all cached impression and conversion count for a post (Lead Group / Form Type / Shortcode / 2-step Lightbox
+ *
+ * @param WP_Post $post
+ *
+ * @return bool
+ */
+function tve_leads_reset_post_tracking_data($post)
+{
+    global $tvedb;
+
+    if ($post->post_parent) {
+        /**
+         * if this is a Form Type, we need to also update the parent cached impression count
+         */
+        $impressions = tve_leads_get_post_tracking_data($post, TVE_LEADS_UNIQUE_IMPRESSION);
+        $conversions = tve_leads_get_post_tracking_data($post, TVE_LEADS_CONVERSION);
+
+        $parent_impressions = tve_leads_get_post_tracking_data($post->post_parent, TVE_LEADS_UNIQUE_IMPRESSION, false);
+        $parent_conversions = tve_leads_get_post_tracking_data($post->post_parent, TVE_LEADS_CONVERSION, false);
+
+        if ($parent_impressions !== '') {
+            $parent_impressions -= $impressions;
+            tve_leads_set_post_tracking_data($post->post_parent, $parent_impressions, TVE_LEADS_UNIQUE_IMPRESSION);
+        }
+
+        if ($parent_conversions !== '') {
+            $parent_conversions -= $conversions;
+            tve_leads_set_post_tracking_data($post->post_parent, $parent_conversions, TVE_LEADS_CONVERSION);
+        }
+    }
+
+    tve_leads_set_post_tracking_data($post, 0, TVE_LEADS_UNIQUE_IMPRESSION);
+    tve_leads_set_post_tracking_data($post, 0, TVE_LEADS_CONVERSION);
+
+    /**
+     * also, we need to reset the data for all variations that have $post as post_parent
+     */
+    $variations = tve_leads_get_form_variations($post->ID, array(
+        'tracking_data' => false,
+        'post_status' => array(TVE_LEADS_STATUS_PUBLISH, TVE_LEADS_STATUS_ARCHIVED)
+    ));
+    foreach ($variations as $v) {
+        $tvedb->update_variation_fields($v, array(
+            'cache_impressions' => 0,
+            'cache_conversions' => 0
+        ));
+    }
+
+    return true;
+}
+
+/**
+ * reset the cached tracking data for a variation and also update the cached tracking data for its parents (the Form Type and the Lead Group, if any)
+ *
+ * @param array $variation
+ */
+function tve_leads_reset_variation_tracking_data($variation)
+{
+    global $tvedb;
+
+    /**
+     * reset the cached variation logs
+     */
+    $tvedb->update_variation_fields($variation['key'], array(
+        'cache_impressions' => 0,
+        'cache_conversions' => 0
+    ));
+
+    /**
+     * decrease the number of impressions and conversions from the parent cached variations (if any)
+     */
+    $parent_impressions = tve_leads_get_post_tracking_data($variation['post_parent'], TVE_LEADS_UNIQUE_IMPRESSION, false);
+    $parent_conversions = tve_leads_get_post_tracking_data($variation['post_parent'], TVE_LEADS_CONVERSION, false);
+
+    /**
+     * update only if there actually is some cached data
+     */
+    if ($parent_impressions !== '') {
+        $parent_impressions -= $variation['impressions'];
+        tve_leads_set_post_tracking_data($variation['post_parent'], $parent_impressions, TVE_LEADS_UNIQUE_IMPRESSION);
+    }
+
+    if ($parent_conversions !== '') {
+        $parent_conversions -= $variation['conversions'];
+        tve_leads_set_post_tracking_data($variation['post_parent'], $parent_conversions, TVE_LEADS_CONVERSION);
+    }
+
+    /**
+     * go a level higher, and change the cached data for the Lead Group, if any is found
+     */
+    $parent = get_post($variation['post_parent']);
+    if ($parent && $parent->post_parent) {
+        $parent_impressions = tve_leads_get_post_tracking_data($parent->post_parent, TVE_LEADS_UNIQUE_IMPRESSION, false);
+        $parent_conversions = tve_leads_get_post_tracking_data($parent->post_parent, TVE_LEADS_CONVERSION, false);
+
+        if ($parent_impressions !== '') {
+            $parent_impressions -= $variation['impressions'];
+            tve_leads_set_post_tracking_data($parent->post_parent, $parent_impressions, TVE_LEADS_UNIQUE_IMPRESSION);
+        }
+
+        if ($parent_conversions !== '') {
+            $parent_conversions -= $variation['conversions'];
+            tve_leads_set_post_tracking_data($parent->post_parent, $parent_conversions, TVE_LEADS_CONVERSION);
+        }
+    }
 }

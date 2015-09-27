@@ -153,6 +153,13 @@ a.tl-play-link {
   }
 }
 
+.tve-table-sortable {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 /*
  * Wistia embed fix
 */
@@ -173,18 +180,18 @@ body {
  *********
 */
 @font-face {
-  font-family: 'ThriveLeads11';
-  src: url('../fonts/ThriveLeads11.eot?9640kj');
-  src: url('../fonts/ThriveLeads11.eot?#iefix9640kj') format('embedded-opentype'),
-  url('../fonts/ThriveLeads11.woff?9640kj') format('woff'),
-  url('../fonts/ThriveLeads11.ttf?9640kj') format('truetype'),
-  url('../fonts/ThriveLeads11.svg?9640kj#ThriveLeads11') format('svg');
+  font-family: 'ThriveLeads';
+  src: url('../fonts/ThriveLeads.eot?xkgret');
+  src: url('../fonts/ThriveLeads.eot?#iefixxkgret') format('embedded-opentype'),
+  url('../fonts/ThriveLeads.ttf?xkgret') format('truetype'),
+  url('../fonts/ThriveLeads.woff?xkgret') format('woff'),
+  url('../fonts/ThriveLeads.svg?xkgret#ThriveLeads') format('svg');
   font-weight: normal;
   font-style: normal;
 }
 
 [class^="tve-icon-"], [class*="tve-icon-"] {
-  font-family: 'ThriveLeads11';
+  font-family: 'ThriveLeads';
   font-style: normal;
   font-variant: normal;
   font-weight: normal;
@@ -205,11 +212,9 @@ body {
   }
 }
 
-// icon for ">>"
 .tve-icon-double-angle-quotes {
   &:before {
     color: #666666;
-    content: "\00AB";
     display: inline-block;
     font-size: 1.5em;
     line-height: 16px;
@@ -268,6 +273,9 @@ body {
       text-decoration: none;
       span {
         font-size: 30px;
+        &.tve-icon-link {
+          font-size: 28px;
+        }
       }
       &:focus {
         color: #2ea2cc;
@@ -1745,7 +1753,7 @@ label.tve-custom-select {
     bottom: 0;
     color: #333333;
     content: "\e600";
-    font-family: 'ThriveLeads11';
+    font-family: 'ThriveLeads';
     font-size: 24px;
     height: 26px;
     line-height: 25px;
@@ -2027,4 +2035,34 @@ input.tve-leads-input-error {
       display: none;
     }
   }
+}
+
+/*****************
+ * Inbound Links *
+******************/
+.tve-Inbound-links label {
+  display: block !important;
+  float: none !important;
+  width: auto !important;
+  margin-bottom: 10px;
+}
+
+.tve-Inbound-links select,
+.tve-Inbound-links input[type="text"] {
+  margin-bottom: 15px;
+}
+
+.ui-autocomplete {
+  background-color: #fff;
+  li {
+    margin: 0;
+    padding: 4px 10px;
+    white-space: nowrap;
+    text-align: left;
+    &.ui-state-focus {
+      background-color: #ddd;
+      cursor: pointer;
+    }
+  }
+
 }

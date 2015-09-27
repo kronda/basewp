@@ -5,6 +5,7 @@ define('TVE_LEADS_ADMIN_URL', plugin_dir_url(__FILE__));
 add_action('admin_init', 'tve_leads_admin_init');
 add_action('admin_menu', 'tve_leads_admin_menu');
 add_action('admin_enqueue_scripts', 'tve_leads_admin_enqueue', 1);
+add_action('admin_enqueue_scripts', 'tve_leads_dequeue_conflicting_scripts', PHP_INT_MAX);
 add_action('admin_print_scripts', 'tve_leads_remove_junk_scripts', 11);
 
 add_filter('tve_leads_settings_post_types_blacklist', 'tve_leads_settings_post_types_blacklist');
@@ -14,6 +15,7 @@ if (defined('DOING_AJAX') && DOING_AJAX) {
     add_filter('tve_autoresponder_connection_types', 'tve_leads_ajax_filter_connection_types');
     add_filter('tve_autoresponder_show_submit', 'tve_leads_filter_autoresponder_submit_option');
     add_action('wp_ajax_tve_leads_ajax_tag_search', 'tve_leads_ajax_tag_search');
+    add_action('wp_ajax_tve_leads_find_content_action', 'tve_leads_find_content_action');
 }
 
 require_once plugin_dir_path(__FILE__) . 'inc/helpers.php';
@@ -206,16 +208,67 @@ function tve_leads_admin_enqueue($hook)
 }
 
 /**
+ * called in admin_enqueue_scripts hook
+ *
+ * dequeue scripts added site-wide
+ *
+ * @param string $hook
+ */
+function tve_leads_dequeue_conflicting_scripts($hook)
+{
+    /* first, the license check */
+    if (!tve_leads_license_activated()) {
+        return;
+    }
+
+    /* second, the minimum required TCB version */
+    if (!tve_leads_check_tcb_version()) {
+        return;
+    }
+
+    /* load scripts only on our dashboard page, the entry point for the backbone app */
+    if ($hook != 'toplevel_page_thrive_leads_dashboard' && $hook != 'thrive-leads_page_thrive_leads_reporting') {
+        return;
+    }
+
+    /* membermouse jquery loaded sitewide */
+    wp_dequeue_script('jquery-ui-1.10.3.custom.min.js');
+
+    /* edit flow scripts loaded sitewide */
+    wp_dequeue_script('edit_flow-timepicker');
+    wp_dequeue_script('edit_flow-date_picker');
+}
+
+/**
  * some plugins add their scripts via admin_print_scripts - this is not cool
  *
  */
 function tve_leads_remove_junk_scripts()
 {
+    $screen = get_current_screen();
+    $hook = $screen->id;
+
+    /* first, the license check */
+    if (!tve_leads_license_activated()) {
+        return;
+    }
+
+    /* second, the minimum required TCB version */
+    if (!tve_leads_check_tcb_version()) {
+        return;
+    }
+
+    /* load scripts only on our dashboard page, the entry point for the backbone app */
+    if ($hook != 'toplevel_page_thrive_leads_dashboard' && $hook != 'thrive-leads_page_thrive_leads_reporting') {
+        return;
+    }
+
     /* the following lines address the "Show the URL" plugin - what a piece of software ... ! */
     wp_dequeue_script('smpso_zclip');
     wp_deregister_script('smpso_zclip');
     wp_dequeue_script('smpso_custom');
     wp_deregister_script('smpso_custom');
+
 }
 
 /**
@@ -377,4 +430,32 @@ function tve_leads_filter_autoresponder_submit_option($show_submit)
     }
 
     return false;
+}
+
+/**
+ * AJAX for searching posts by a specific post type
+ */
+function tve_leads_find_content_action()
+{
+    $type = $_GET['type'];
+    $s = wp_unslash($_GET['q']);
+    $s = trim($s);
+
+    $args = array(
+        'post_type' => $type,
+        'post_status' => 'publish',
+        's' => $s
+    );
+    $posts_array = get_posts($args);
+
+    $json = array();
+    foreach ($posts_array as $id => $item) {
+        $json [] = array(
+            'label' => $item->post_title,
+            'id' => $item->ID,
+            'value' => $item->post_title,
+            'url' => get_the_permalink($item->ID)
+        );
+    }
+    wp_send_json($json);
 }

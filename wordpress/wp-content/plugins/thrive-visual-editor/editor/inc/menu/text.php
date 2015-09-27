@@ -111,6 +111,7 @@
     <li class="tve_ed_btn tve_btn_icon tve_nolink_btns">
         <span class="tve_click tve_lb_small tve_icm tve-ic-chain tve_mousedown" data-ctrl-click="controls.lb_open" data-ctrl-mousedown="controls.save_selection" data-key="linkSel" id="lb_text_link" title="<?php echo __("Create link", "thrive-cb") ?>"></span>
     </li>
+    <?php include dirname(__FILE__) . '/_quick_link.php' ?>
     <li class="tve_ed_btn tve_link_btns">
         <span class="tve_icm tve-ic-unlink tve_click tve_mousedown" data-key="linkSel" data-ctrl-mousedown="controls.save_selection" data-ctrl="controls.text_unlink"></span>
     </li>
@@ -145,7 +146,7 @@
     </li>
     <li class="tve_btn_text">
         <label>
-            <?php echo __("Font Size", "thrive-cb") ?> <input class="tve_text tve_font_size tve_change tve_mousedown" data-ctrl-mousedown="controls.save_selection" data-key="textSel" type="text" size="3" maxlength="3"/> px
+            <?php echo __("Font Size", "thrive-cb") ?> <input class="tve_text tve_font_size tve_change tve_mousedown" data-ctrl-mousedown="controls.save_selection" data-key="textSel" type="text" size="4" maxlength="5"/> px
         </label>
     </li>
     <li class="tve_ed_btn tve_btn_text tve_click" id="tve_clear_font_size"><?php echo __("Clear font size", "thrive-cb") ?></li>

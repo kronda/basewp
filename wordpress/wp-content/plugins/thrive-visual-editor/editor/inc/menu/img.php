@@ -30,16 +30,16 @@
                    data-size="1"> px
         </label>
     </li>
-    <li class="tve_ed_btn tve_btn_icon">
+    <li class="tve_ed_btn tve_btn_icon tve_hidden_borderless">
         <span class="tve_icm tve-ic-paragraph-left tve_click" id="img_left_align"></span>
     </li>
-    <li class="tve_ed_btn tve_btn_icon tve_hidden_feature_grid">
+    <li class="tve_ed_btn tve_btn_icon tve_hidden_feature_grid tve_hidden_borderless">
         <span class="tve_icm tve-ic-paragraph-center tve_click" id="img_center_align"></span>
     </li>
-    <li class="tve_ed_btn tve_btn_icon">
+    <li class="tve_ed_btn tve_btn_icon tve_hidden_borderless">
         <span class="tve_icm tve-ic-paragraph-right tve_click" id="img_right_align"></span>
     </li>
-    <li id="img_no_align" class="tve_ed_btn tve_btn_text tve_center tve_click tve_hidden_feature_grid">None</li>
+    <li id="img_no_align" class="tve_ed_btn tve_btn_text tve_center tve_click tve_hidden_feature_grid tve_hidden_borderless">None</li>
 
     <?php $css_selector = '_parent::.tve_image_caption'; $btn_class = 'tve_hidden_feature_grid';
     include dirname(__FILE__) . '/_margin.php' ?>
@@ -47,20 +47,10 @@
     <li class="tve_ed_btn">
         <span class="tve_click tve_lb_small tve_icm tve-ic-chain" data-ctrl="controls.lb_open" id="lb_image_link"></span>
     </li>
+    <?php include dirname(__FILE__) . '/_quick_link.php' ?>
     <!-- this only shows when the user clicks on a hyperlink -->
     <li class="tve_ed_btn tve_link_btns">
         <span class="tve_icm tve-ic-unlink tve_click" data-ctrl="controls.click.image_unlink"></span>
-    </li>
-    <li class="tve_text tve_slider_config tve_hidden_feature_grid" data-value="300" data-min-value="0" data-max-value="available"
-        data-input-selector="#image_width_input">
-        <label for="image_width_input" class="tve_left">&nbsp;<?php echo __("Image size", "thrive-cb") ?></label>
-
-        <div class="tve_slider tve_left">
-            <div class="tve_slider_element" id="tve_img_size_slider"></div>
-        </div>
-        <input class="tve_left" type="text" id="image_width_input" value="20px">
-
-        <div class="clear"></div>
     </li>
     <li id="change_image" class="tve_ed_btn tve_center tve_btn_text btn_alignment upload_image_cpanel"><?php echo __("Change Image", "thrive-cb") ?></li>
     <li class="tve_text clearfix">
@@ -70,6 +60,17 @@
     <li class="tve_text clearfix tve_btn_text">
         <label for="img_title_att" class="tve_left"><?php echo __("Title text", "thrive-cb") ?>&nbsp;</label>
         <input type="text" id="img_title_att" class="tve_left tve_change">
+    </li>
+    <li class="tve_text tve_slider_config tve_hidden_feature_grid tve_image_slider_menu tve_hidden_borderless" data-value="300" data-min-value="0" data-max-value="available"
+        data-input-selector="#image_width_input">
+        <label for="image_width_input" class="tve_left">&nbsp;<?php echo __("Image size", "thrive-cb") ?></label>
+
+        <div class="tve_slider tve_left">
+            <div class="tve_slider_element" id="tve_img_size_slider"></div>
+        </div>
+        <input class="tve_left" type="text" id="image_width_input" value="20px">
+
+        <div class="clear"></div>
     </li>
     <li class=""><input type="text" class="element_class tve_change" data-ctrl="controls.change.cls" placeholder="<?php echo __("Custom class", "thrive-cb")?>"></li>
     <li class="tve_ed_btn tve_btn_text tve_hidden_feature_grid">

@@ -23,10 +23,10 @@ $available = Thrive_List_Manager::getAvailableAPIs(true);
         <tbody>
         <?php foreach ($connection_config as $key => $list_id) : if (!isset($available[$key])) continue; ?>
             <tr>
-                <td width="93%">
+                <td width="90%">
                     <?php echo $available[$key]->getTitle() ?>
                 </td>
-                <td width="7%">
+                <td width="10%">
                     <a href="javascript:void(0)" class="tve_click" data-ctrl="function:auto_responder.connection_form"
                        data-connection-type="api" data-key="<?php echo $key ?>" title="<?php echo __("Settings", "thrive-cb") ?>">
                         <span class="tve_icm tve-ic-cog tve_ic_small tve_lightbox_icon_small"></span>
@@ -44,9 +44,9 @@ $available = Thrive_List_Manager::getAvailableAPIs(true);
     <div class="tve-sp"></div>
     <?php if (count($available) != count($connection_config)) : ?>
         <div class="clearfix">
-            <a href="javascript:void(0)" class="tve_click tve_right tve_editor_btn tve_btn_success"
+            <a href="javascript:void(0)" class="tve_click tve_right tve_editor_button tve_editor_button_success"
                data-ctrl="function:auto_responder.connection_form" data-connection-type="api">
-                <span><?php echo __("Add New Connection", "thrive-cb") ?></span>
+                <?php echo __("Add New Connection", "thrive-cb") ?>
             </a>
         </div>
     <?php endif ?>

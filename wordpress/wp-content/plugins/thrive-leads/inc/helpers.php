@@ -128,6 +128,7 @@ function tve_leads_conversion_rate($impressions, $conversions, $suffix = '%', $d
  * get the configuration array for a specific editor template for a form variation
  *
  * @param string $key
+ * @return array
  */
 function tve_leads_get_editor_template_config($key)
 {
@@ -172,8 +173,12 @@ function tve_leads_get_editor_url($post_id, $variation_key)
         $cache[$post_id] = set_url_scheme(get_permalink($post_id));
         $GLOBALS['TVE_LEADS_CACHE_PERMALINKS'] = $cache;
     }
+    /*
+     * We need the post to complete the full arguments
+     */
+    $post = get_post($post_id);
     $editor_link = $cache[$post_id];
-    $editor_link = esc_url(apply_filters('preview_post_link', add_query_arg(array('tve' => 'true', '_key' => $variation_key, 'r' => uniqid()), $editor_link)));
+    $editor_link = esc_url(apply_filters('preview_post_link', add_query_arg(array('tve' => 'true', '_key' => $variation_key, 'r' => uniqid()), $editor_link), $post));
 
     /**
      * we need to make sure that if the admin is https, then the editor link is also https, otherwise any ajax requests through wp ajax api will not work
@@ -199,8 +204,12 @@ function tve_leads_get_preview_url($post_id, $variation_key)
         $cache[$post_id] = set_url_scheme(get_permalink($post_id));
         $GLOBALS['TVE_LEADS_CACHE_PERMALINKS'] = $cache;
     }
+    /*
+     * We need the post to complete the full arguments
+     */
+    $post = get_post($post_id);
     $editor_link = $cache[$post_id];
-    $editor_link = esc_url(apply_filters('preview_post_link', add_query_arg(array('_key' => $variation_key, 'r' => uniqid()), $editor_link)));
+    $editor_link = esc_url(apply_filters('preview_post_link', add_query_arg(array('_key' => $variation_key, 'r' => uniqid()), $editor_link), $post));
     return $editor_link;
 }
 
@@ -1385,12 +1394,16 @@ function tve_leads_is_preview_page()
  * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
  *
  * @param array $variation the main variation where the "Already Subscribed" state should have been setup
+ * @param string $type type of form
+ * @param bool $skip_inbound_link_check whether or not to skip the check for 'already_subscribed' state from the inbound link params
  *
  * @return string
  */
-function tve_leads_get_already_subscribed_html($variation, $type)
+function tve_leads_get_already_subscribed_html($variation, $type, $skip_inbound_link_check = false)
 {
-    if (empty($variation) || !empty($variation['parent_id']) || !isset($_COOKIE['tl-conv-' . $variation['key']])) {
+    $show_already_subscribed = $skip_inbound_link_check ? false : tve_leads_force_subscribed_state();
+
+    if (empty($variation) || !empty($variation['parent_id']) || (!isset($_COOKIE['tl-conv-' . $variation['key']]) && !$show_already_subscribed)) {
         return '';
     }
 
@@ -1493,7 +1506,7 @@ function tve_leads_is_customize_preview()
 
     global $wp_customize;
 
-    return is_a( $wp_customize, 'WP_Customize_Manager' ) && $wp_customize->is_preview();
+    return is_a($wp_customize, 'WP_Customize_Manager') && $wp_customize->is_preview();
 }
 
 /**
@@ -1534,6 +1547,125 @@ function tve_leads_form_display($main_group_id = null, $form_type_or_shortcode_i
             break;
     }
 
+}
+
+/**
+ * Checks to see if the current screen represents a page, post, blog, index, front and so on.
+ * Returns an array with the ID and type.
+ * @return array
+ */
+function tve_get_current_screen()
+{
+    $ID = get_the_ID();
+    if (is_front_page()) {
+        $data = array(
+            'screen_type' => TVE_SCREEN_HOMEPAGE,
+            'screen_id' => 0
+        );
+    } else if (is_home()) {
+        $data = array(
+            'screen_type' => TVE_SCREEN_BLOG,
+            'screen_id' => 0
+        );
+    } else if (is_singular()) {
+        switch (get_post_type($ID)) {
+            case 'post':
+                $type = TVE_SCREEN_POST;
+                break;
+            case 'page':
+                $type = TVE_SCREEN_PAGE;
+                break;
+            default:
+                $type = TVE_SCREEN_CUSTOM_POST;
+        }
+        $data = array(
+            'screen_type' => $type,
+            'screen_id' => $ID
+        );
+    } else if (is_archive()) {
+        $data = array(
+            'screen_type' => TVE_SCREEN_ARCHIVE,
+            'screen_id' => 0
+        );
+    } else {
+        $data = array(
+            'screen_type' => TVE_SCREEN_OTHER,
+            'screen_id' => 0
+        );
+    }
+
+    return $data;
+}
+
+
+/**
+ * Returns readable information for reporting table of the screen from where the log was made
+ * @see tve_get_current_screen()
+ * @param $screen_type
+ * @param $screen_id
+ * @return array Array with url, type and name of the page
+ */
+function tve_get_current_screen_for_reporting_table($screen_type, $screen_id)
+{
+    global $wp_rewrite;
+    $wp_rewrite = new WP_Rewrite();
+    switch ($screen_type) {
+        case TVE_SCREEN_HOMEPAGE:
+            return array(
+                get_home_url(),
+                __('Homepage', 'thrive-leads'),
+                __('Homepage', 'thrive-leads')
+            );
+            break;
+        case TVE_SCREEN_BLOG:
+            return array(
+                get_permalink(get_option('page_for_posts')),
+                __('Blog', 'thrive-leads'),
+                __('Blog', 'thrive-leads')
+            );
+            break;
+        case TVE_SCREEN_POST:
+        case TVE_SCREEN_PAGE:
+        case TVE_SCREEN_CUSTOM_POST:
+            return array(
+                get_permalink($screen_id),
+                get_post_type($screen_id) ? get_post_type($screen_id) : '',
+                get_the_title($screen_id),
+            );
+            break;
+        case TVE_SCREEN_ARCHIVE:
+            return array(
+                '',
+                __('Archive', 'thrive-leads'),
+                __('Archive', 'thrive-leads')
+            );
+            break;
+        case TVE_SCREEN_OTHER:
+        default:
+            return array(
+                '',
+                __('Other', 'thrive-leads'),
+                __('Other', 'thrive-leads')
+            );
+            break;
+    }
+}
+
+/**
+ * check if there is a cookie set that forces the "Already Subscribed" state to be displayed.
+ * this can only come from the inbound link functionality
+ *
+ * @return bool
+ */
+function tve_leads_force_subscribed_state()
+{
+    $show_already_subscribed = false;
+    if (isset($_COOKIE['tl_use_inbound_link_params'])) {
+        $inbound_link_params = unserialize(stripslashes($_COOKIE['tl_inbound_link_params']));
+        $show_already_subscribed = !empty($inbound_link_params['tl_form_type']);
+    }
+
+    return $show_already_subscribed;
 }
 
 //tve_leads_generate_test_data();die;

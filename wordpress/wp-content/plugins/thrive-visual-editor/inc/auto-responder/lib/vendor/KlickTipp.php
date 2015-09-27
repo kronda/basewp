@@ -60,7 +60,7 @@ class Thrive_Api_KlickTipp
      * @param mixed $fields (optional) Additional fields of the subscriber.
      * @throws Thrive_Api_KlickTipp_Exception Exception
      *
-     * @return An object representing the Klicktipp subscriber object.
+     * @return mixed An object representing the Klicktipp subscriber object.
      */
     public function subscribe($email, $listid = 0, $tagid = 0, $fields = array())
     {

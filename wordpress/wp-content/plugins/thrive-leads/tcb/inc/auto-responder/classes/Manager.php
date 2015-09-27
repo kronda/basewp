@@ -19,12 +19,18 @@ class Thrive_List_Manager
         'gotowebinar' => 'Thrive_List_Connection_GoToWebinar',
         'ontraport' => 'Thrive_List_Connection_Ontraport',
         'icontact' => 'Thrive_List_Connection_iContact',
+        'convertkit' => 'Thrive_List_Connection_ConvertKit',
         'activecampaign' => 'Thrive_List_Connection_ActiveCampaign',
         'infusionsoft' => 'Thrive_List_Connection_Infusionsoft',
         'sendreach' => 'Thrive_List_Connection_Sendreach',
         'klicktipp' => 'Thrive_List_Connection_KlickTipp',
         'sendy' => 'Thrive_List_Connection_Sendy',
-        'webinarjamstudio' => 'Thrive_List_Connection_WebinarJamStudio'
+        'webinarjamstudio' => 'Thrive_List_Connection_WebinarJamStudio',
+        'arpreach' => 'Thrive_List_Connection_ArpReach',
+        'drip' => 'Thrive_List_Connection_Drip',
+        'constantcontact' => 'Thrive_List_Connection_ConstantContact',
+        'webinarjamstudio' => 'Thrive_List_Connection_WebinarJamStudio',
+        'madmimi' => 'Thrive_List_Connection_MadMimi'
     );
 
     /**
@@ -144,7 +150,6 @@ class Thrive_List_Manager
     public static function encodeConnectionString($connections = array())
     {
         return base64_encode(serialize($connections));
-//        return htmlspecialchars(serialize($connections));
     }
 
     /**
@@ -156,11 +161,6 @@ class Thrive_List_Manager
      */
     public static function decodeConnectionString($string)
     {
-//        $str = @unserialize(stripslashes(htmlspecialchars_decode($string)));
-//        if (empty($str)) {
-//            return array();
-//        }
-//        return $str;
         if (empty($string)) {
             return array();
         }

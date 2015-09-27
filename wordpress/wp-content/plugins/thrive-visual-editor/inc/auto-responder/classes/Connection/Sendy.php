@@ -122,4 +122,14 @@ class Thrive_List_Connection_Sendy extends Thrive_List_Connection_Abstract
         return false;
     }
 
+    /**
+     * output any (possible) extra editor settings for this API
+     *
+     * @param array $params allow various different calls to this method
+     */
+    public function renderExtraEditorSettings($params = array())
+    {
+        $this->_directFormHtml('sendy/note', $params);
+    }
+
 }

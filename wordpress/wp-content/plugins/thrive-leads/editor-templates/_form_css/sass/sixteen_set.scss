@@ -40,11 +40,14 @@ $black: #000;
       right: 30px;
       bottom: 30px;
       left: 30px;
+      z-index: 0;
     }
     .tve_editor_main_content {
       margin: 50px auto;
       max-width: 1330px;
       padding: 50px;
+      position: relative;
+      z-index: 1; 
     }
     .tve-screen-filler-close {
       @include roboto();

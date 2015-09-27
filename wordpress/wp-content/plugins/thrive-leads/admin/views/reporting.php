@@ -34,6 +34,8 @@
                                     value="LeadReferral"><?php echo __('Lead Referral Report', 'thrive-leads'); ?></option>
                                 <option
                                     value="LeadTracking"><?php echo __('Lead Tracking Report', 'thrive-leads'); ?></option>
+                                <option
+                                    value="LeadSource"><?php echo __('Lead Source Report', 'thrive-leads'); ?></option>
                             </select>
                         </label>
                     </div>

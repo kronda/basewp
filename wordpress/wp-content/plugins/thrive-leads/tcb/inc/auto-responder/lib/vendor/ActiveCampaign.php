@@ -100,7 +100,9 @@ class Thrive_Api_ActiveCampaign
             'first_name' => $firstName,
             'last_name' => $lastName,
             'phone' => $phone,
-            'p[' . $list_id . ']' => $list_id
+            'p[' . $list_id . ']' => $list_id,
+            'instantresponders['. $list_id . ']' => 1,
+            'status[' . $list_id . ']' => 1
         );
         if (!empty($form_id)) {
             $body['form'] = $form_id;
@@ -120,7 +122,7 @@ class Thrive_Api_ActiveCampaign
             $body['ip4'] = $ip;
         }
 
-        return $this->call('contact_add', array(), $body, 'POST');
+        return $this->call('contact_sync', array(), $body, 'POST');
     }
 
     /**
