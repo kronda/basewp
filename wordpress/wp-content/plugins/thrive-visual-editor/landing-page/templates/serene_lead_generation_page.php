@@ -92,7 +92,7 @@ $events_config = array(
                     </div>
                     <p class="float-left tve_p_left"
                        style="margin: 0; padding: 0; color: #a2a2a2; font-size: 18px; font-weight: 300; line-height: 52px;">
-                        2014 &copy 2014. All rights reserved</p>
+                        &copy {tcb_current_year}. All rights reserved</p>
 
                     <p class="float-right tve_p_right"
                        style="margin: 0; padding: 0; color: #a2a2a2; font-size: 18px; font-weight: 300; line-height: 52px;">

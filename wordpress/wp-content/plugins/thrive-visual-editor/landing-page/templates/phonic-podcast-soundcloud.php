@@ -165,7 +165,7 @@ $events_config = array(
             <div class="in darkSec">
                 <div class="cck clearfix">
                     <p style="font-size: 16px;color: #666666;margin-top: 0;margin-bottom: 0;" class="tve_p_center">
-                        &copy 2015 Thrive  Landing Pages |  <a href="#">Disclaimer</a>  |  <a href="#">Privacy Policy</a>
+                        &copy {tcb_current_year} Thrive  Landing Pages |  <a href="#">Disclaimer</a>  |  <a href="#">Privacy Policy</a>
                     </p>
                 </div>
             </div>

@@ -26,7 +26,7 @@ function tve_leads_init()
         'hierarchical' => true //Allows Parent to be specified.
     ));
 
-    /* slightly different behaviour: 2 step lightbox */
+    /* slightly different behaviour: 2 step lightbox (new name: ThriveBox) */
     register_post_type(TVE_LEADS_POST_TWO_STEP_LIGHTBOX, array(
         'public' => false,
         'publicly_queryable' => true,
@@ -182,13 +182,6 @@ function tve_leads_query_group()
     $GLOBALS['tve_leads_form_config']['ajax_load'] = tve_leads_get_option('ajax_load');
 
     tve_leads_set_inbound_link_cookies();
-    if (!empty($_COOKIE['tl_use_inbound_link_params'])) {
-        $inbound_link_params = unserialize(stripslashes($_COOKIE['tl_inbound_link_params']));
-        $target_groups = isset($inbound_link_params['tl_groups']) ? $inbound_link_params['tl_groups'] : array();
-        if ($inbound_link_params['tl_target_all'] == 1 && empty($inbound_link_params['tl_form_type'])) {
-            return;
-        }
-    }
 
     global $tve_lead_group;
     require plugin_dir_path(dirname(__FILE__)) . 'admin/inc/classes/display_settings/Thrive_Leads_Display_Settings_Manager.php';
@@ -205,8 +198,11 @@ function tve_leads_query_group()
         $savedOptions = new Thrive_Leads_Group_Options($group->ID);
         $savedOptions->initOptions();
         if ($savedOptions->displayGroup()) {
-            if (isset($_COOKIE['tl_use_inbound_link_params']) && empty($inbound_link_params['tl_target_all']) && !empty($target_groups) && in_array($group->ID, $target_groups) && empty($inbound_link_params['tl_form_type'])) {
-                continue;
+            if (isset($_COOKIE['tl_inbound_link_params_' . $group->ID])) {
+                $inbound_link_params = unserialize(stripslashes($_COOKIE['tl_inbound_link_params_' . $group->ID]));
+                if (empty($inbound_link_params['tl_form_type'])) {
+                    continue;
+                }
             }
             $tve_lead_group = $group;
             $tve_lead_group->saved_display_options = array(
@@ -1953,10 +1949,14 @@ function tve_leads_load_plugin_textdomain()
 
 
 /**
- * set cookies for the inboundlink functionality
+ * set cookies for the inbound link functionality
  */
 function tve_leads_set_inbound_link_cookies()
 {
+    //needed for backwards compatibility for the old inbound links (newly named = smartlinks)
+    tve_convert_old_inbound_link_cookies();
+
+    //prepare the inbound link params and save them as cookies
     if (isset($_REQUEST['tl_inbound'])) {
         $expected = array(
             'tl_target_all',
@@ -1969,34 +1969,72 @@ function tve_leads_set_inbound_link_cookies()
         foreach ($expected as $field) {
             $cookie_data[$field] = isset($_REQUEST[$field]) ? $_REQUEST[$field] : '';
         }
-        $params = serialize($cookie_data);
-        $period = $cookie_data['tl_period_type'];
+        if ($cookie_data['tl_target_all']) {
+            $groups = tve_leads_get_group_ids();
+        } else {
+            $groups = isset($cookie_data['tl_groups']) ? $cookie_data['tl_groups'] : array();
+        }
+        tve_save_inbound_link_cookies($groups, $cookie_data);
+    }
+}
 
+/**
+ * backwards compatibility for the old inbound links (newly named = smartlinks)
+ * convert old inbound link cookies to the new format of inbound link cookies
+ */
+function tve_convert_old_inbound_link_cookies()
+{
+    if (isset($_COOKIE['tl_use_inbound_link_params']) && isset($_COOKIE['tl_inbound_link_params'])) {
+        $params = unserialize(stripslashes($_COOKIE['tl_inbound_link_params']));
+        if ($params['tl_target_all'] == 1) {
+            $groups = tve_leads_get_group_ids();
+        } else {
+            $groups = isset($params['tl_groups']) ? $params['tl_groups'] : array();
+        }
+        tve_save_inbound_link_cookies($groups, $params);
+        unset($_COOKIE['tl_use_inbound_link_params']);
+        unset($_COOKIE['tl_inbound_link_params']);
+        setcookie('tl_use_inbound_link_params', null, -1, '/');
+        setcookie('tl_inbound_link_params', null, -1, '/');
+    }
+}
+
+/**
+ * save the inbound link cookies having the group ids and the display params
+ * @param $groups
+ * @param $cookie_data
+ */
+function tve_save_inbound_link_cookies($groups, $cookie_data)
+{
+    foreach ($groups as $group) {
+        $groupParams = array(
+            'tl_form_type' => $cookie_data['tl_form_type'],
+            'tl_period_type' => $cookie_data['tl_period_type'],
+            'tl_period_days' => $cookie_data['tl_period_days']
+        );
+        $params = serialize($groupParams);
+        $period = $groupParams['tl_period_type'];
+        $group_cookie_name = 'tl_inbound_link_params_' . $group;
         switch ($period) {
             case '':
                 //Until the visitor closes the browser tab
-                setcookie('tl_use_inbound_link_params', '1', time() + 3, '/');
-                setcookie('tl_inbound_link_params', $params, time() + 3, '/');
+                setcookie($group_cookie_name, $params, time() + 3, '/');
                 break;
             case '1':
                 //Only once
-                setcookie('tl_use_inbound_link_params', '1', 0, '/');
-                setcookie('tl_inbound_link_params', $params, 0, '/');
+                setcookie($group_cookie_name, $params, 0, '/');
                 break;
             case '2':
                 //A custom period of time
                 $expire = time() + ((int)$cookie_data['tl_period_days'] * 24 * 3600);
-                setcookie('tl_use_inbound_link_params', '1', $expire, '/');
-                setcookie('tl_inbound_link_params', $params, $expire, '/');
+                setcookie($group_cookie_name, $params, $expire, '/');
                 break;
             case '3':
                 //For as long as possible -> added 1+ year
-                setcookie('tl_use_inbound_link_params', '1', time() + 31536000, '/');
-                setcookie('tl_inbound_link_params', $params, time() + 31536000, '/');
+                setcookie($group_cookie_name, $params, time() + 31536000, '/');
                 break;
         }
-        $_COOKIE['tl_use_inbound_link_params'] = '1';
-        $_COOKIE['tl_inbound_link_params'] = $params;
+        $_COOKIE[$group_cookie_name] = $params;
     }
 }
 
@@ -2008,6 +2046,12 @@ function tve_leads_set_inbound_link_cookies()
  */
 function thrive_dynamic_sidebar_params($params)
 {
+    if (!tve_check_if_thrive_theme()) {
+        return $params;
+    }
+    /**
+     * on our themes, we need to remove any other inside div in order for the widget to have the correct padding
+     */
     if ($params[0]['widget_name'] === 'Thrive Leads Widget') {
         $params[0]['before_widget'] = '<section id="' . $params[0]['widget_id'] . '">';
         $params[0]['after_widget'] = '</section>';

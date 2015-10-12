@@ -35,7 +35,7 @@ class WPV_Admin_Messages {
 	*
 	* @since unknown
 	*
-	* @todo when wpvToolsetHelp() is moved to a common utils.js file, this can be moved to a common file too
+	* @todo Use Toolset_Utils::help_box()
 	*/
 	
 	static function toolset_help_box( $data = array() ) {
@@ -373,8 +373,7 @@ class WPV_Admin_Messages {
 *
 * @since unknown
 *
-* @todo when wpvToolsetHelp() is moved to a common utils.js file, this can be moved to a common file too
-* @todo use the method above
+* @todo use Toolset_Utils::help_box()
 */
 
 function wpv_toolset_help_box( $data ) { 
@@ -1395,7 +1394,9 @@ function wpv_views_instructions_section_data( $section = '' ) {
 				'classname' => 'js-wpv-editor-instructions-for-extra-css',
 				'title' => __( 'Adding custom CSS to Views', 'wpv-views' ),
 				'content' => '<p>'
-						. __( 'You can add custom CSS styling to this box and it will be loaded when you display this View.', 'wpv-views' )
+						. __( 'You can add custom CSS styling to the CSS editor and it will be loaded when you display this View.', 'wpv-views' )
+						. WPV_MESSAGE_SPACE_CHAR
+						. __( 'Note that you do not need to add any &lt;style&gt;&lt;/style&gt; tag at all: we will wrap your CSS before adding it to the page.', 'wpv-views' )
 						. '</p><p>'
 						. __( 'For example, if you would want to style the h3 tags featured in your view, you would add this CSS styling here:', 'wpv-views' )
 						. '<code>'
@@ -1417,7 +1418,9 @@ function wpv_views_instructions_section_data( $section = '' ) {
 				'classname' => 'js-wpv-editor-instructions-for-extra-js',
 				'title' => __( 'Adding custom JavaScript to Views', 'wpv-views' ),
 				'content' => '<p>'
-						. __( 'You can add custom JavaScript to this box and it will be loaded when you display this View.', 'wpv-views' )
+						. __( 'You can add custom JavaScript to the JS editor and it will be loaded when you display this View.', 'wpv-views' )
+						. WPV_MESSAGE_SPACE_CHAR
+						. __( 'Note that you do not need to add any &lt;script&gt;&lt;/script&gt; tag at all: we will wrap your JavaScript before adding it to the page.', 'wpv-views' )
 						. '</p><p>'
 						. __( 'For example, if you would want to present an important message to your users through an alert pop-up, you would add this JavaScript here:', 'wpv-views' )
 						. '<code>'
@@ -1443,7 +1446,7 @@ function wpv_views_instructions_section_data( $section = '' ) {
 }
 
 function wpv_formatting_help_filter() {
-	$sections = array( 'filter_section', 'pagination', 'parametric', 'fields-and-views', 'media', 'styling' );
+	$sections = array( 'filter_section', 'pagination', 'parametric', 'fields-and-views', 'extra_css', 'extra_js', 'media', 'styling' );
 	$sections = apply_filters( 'wpv_filter_formatting_help_filter', $sections );
 	$args = array(
 		'toggler_classname' => 'wpv-editor-instructions-toggle js-wpv-editor-instructions-toggle',
@@ -1469,7 +1472,7 @@ function wpv_formatting_help_filter() {
 }
 
 function wpv_formatting_help_layout() {
-	$sections = array( 'layout_section', 'pagination', 'fields-and-views', 'media', 'styling' );
+	$sections = array( 'layout_section', 'pagination', 'fields-and-views', 'extra_css', 'extra_js', 'media', 'styling' );
 	$sections = apply_filters( 'wpv_filter_formatting_help_layout', $sections );
 	$cred_intro = '';
 	if ( in_array( 'cred', $sections ) ) {
@@ -1514,7 +1517,7 @@ function wpv_formatting_help_inline_content_template( $template = null ) {
 	) {
 		return;
 	}
-	$sections = array( 'fields-and-views', 'media', 'styling' );
+	$sections = array( 'fields-and-views', 'extra_css', 'extra_js', 'media', 'styling' );
 	$sections = apply_filters( 'wpv_filter_formatting_help_inline_content_template', $sections );
 	$args = array(
 		'toggler_classname' => 'wpv-editor-instructions-toggle js-wpv-editor-instructions-toggle',
@@ -1594,12 +1597,15 @@ function wpv_formatting_help_combined_output() {
 }
 
 // @todo when moving the CT to their own editor we will need to review/delete this hook
-
+// @todo after CT editor is refreshed, remove the hook and the $template argument
 add_action ( 'edit_form_after_editor', 'wpv_formatting_help_content_template', 5 );
 
-function wpv_formatting_help_content_template( $template ) {
-	if ( $template->post_type == 'view-template' ) {
-		$sections = array( 'fields-and-views', 'media', 'styling' );
+/**
+ * @param null|WP_Post $template Will be deprecated after new CT edit page is finished.
+ */
+function wpv_formatting_help_content_template( $template = null ) {
+	if ( ( null == $template ) || $template->post_type == 'view-template' ) {
+		$sections = array( 'fields-and-views', 'extra_css', 'extra_js', 'media', 'styling' );
 		$sections = apply_filters( 'wpv_filter_formatting_help_content_template', $sections );
 		$args = array(
 			'toggler_classname' => 'wpv-editor-instructions-toggle js-wpv-editor-instructions-toggle',
@@ -1619,6 +1625,7 @@ function wpv_formatting_help_content_template( $template ) {
 	}
 }
 
+// DEPRECATED
 function wpv_formatting_help_extra_css( $section = 'filter' ) {
 	$sections = array( 'extra_css' );
 	$sections = apply_filters( 'wpv_filter_formatting_help_extra_css', $sections );
@@ -1635,6 +1642,7 @@ function wpv_formatting_help_extra_css( $section = 'filter' ) {
 	WPV_Admin_Messages::render_toggle_structure( $args );
 }
 
+// DEPRECATED
 function wpv_formatting_help_extra_js( $section = 'filter' ) {
 	$sections = array( 'extra_js' );
 	$sections = apply_filters( 'wpv_filter_formatting_help_extra_js', $sections );
@@ -1688,6 +1696,14 @@ function wpv_views_editor_hidden_messages_boxes_pointers( $view_settings, $view_
 			isset( $view_settings['view-query-mode'] ) 
 			&& 'normal' ==  $view_settings['view-query-mode']
 		) {
+			$query_type = '';
+			if (
+				isset( $view_settings['query_type'] )
+				&& is_array( $view_settings['query_type'] ) 
+			) {
+				$query_type = $view_settings['query_type'][0];
+			}
+			
 			// =======
 			// Pointers
 			// =======
@@ -1723,71 +1739,174 @@ function wpv_views_editor_hidden_messages_boxes_pointers( $view_settings, $view_
 			// Dialogs
 			// =======
 			
+			// Query filters dialog
+			?>
+			<div id="js-wpv-filter-add-filter-form-dialog">
+				<div class="wpv-dialog wpv-dialog-query-filter">
+					<label for="filter-add-select" class="label-alignleft"><?php _e('Select what to filter by:', 'wpv-views'); ?></label>
+					<?php wpv_filters_add_filter_select( $view_settings ); ?>
+				</div>
+			</div>
+			<?php
+			
 			// Insert pagination dialog
 			?>
-			<div class="wpv-dialog wpv-dialog-pagination-wizard js-wpv-pagination-form-dialog">
-				<div class="wpv-dialog-header">
-					<h2><?php _e('Would you like to insert transition controls for the pagination?','wpv-views') ?></h2>
-					<i class="icon-remove js-dialog-close"></i>
-				</div>
-				<div class="wpv-dialog-sidebar filter-preview">
-					<h3>
-						<?php _e('Preview', 'wpv-views'); ?>
-					</h3>
-					<div class="js-pagination-preview pagination-preview">
-						<p class="js-pagination-preview-element" data-name="current-page-number">
-							<?php _e('Showing page','wpv-views'); ?>: 2
-						</p>
+			<div class="js-wpv-pagination-form-dialog">
+				<div class="wpv-dialog wpv-dialog-pagination-wizard js-wpv-dialog-pagination-wizard">
+					<div class="wpv-dialog-sidebar filter-preview">
+						<h3>
+							<?php _e('Preview', 'wpv-views'); ?>
+						</h3>
+						<div class="js-pagination-preview pagination-preview">
+							<p class="js-pagination-preview-element" data-name="current-page-number">
+								<?php _e('Showing page','wpv-views'); ?>: 2
+							</p>
+							<p class="js-pagination-preview-element next-previous-controls" data-name="next-previous-controls">
+								<a href="#" class="js-disable-events">&laquo; <?php _e('Previous','wpv-views') ?></a>
+								<a href="#" class="js-disable-events"><?php _e('Next','wpv-views') ?> &raquo;</a>
+							</p>
+							<p>
+								<span class="js-pagination-preview-element" data-name="page-selector" data-type="page-selector-link page-selector-select"><?php _e('Choose page','wpv-views'); ?></span>
+								<select class="js-disable-events js-pagination-preview-element" disabled data-name="page-selector" data-type="page-selector-select">
+									<option>2</option>
+								</select>
+								<span data-name="page-selector" data-type="page-selector-link" class="js-pagination-preview-element hidden">
+									<img src="<?php echo (WPV_URL . '/res/img/dots.png'); ?>" alt="dots" style="vertical-align: middle" />
+								</span>
+								<span class="js-pagination-preview-element" data-name="total-pages"><?php _e('of','wpv-views'); ?> 3</span>
+							</p>
+						</div>
+					</div>
+					<div class="wpv-dialog-content">
+						<h3><?php _e('Pagination controls', 'wpv-views'); ?></h3>
+						<ul>
+							<li>
+								<input type="checkbox" name="pagination_control" class="js-wpv-pagination-dialog-control" id="pagination-include-page-num" value="page_num" data-target="current-page-number" />
+								<label for="pagination-include-page-num"><?php _e('Current page number','wpv-views'); ?></label>
+							</li>
+							<li>
+								<input type="checkbox" name="pagination_control" class="js-wpv-pagination-dialog-control" id="pagination-include-controls" value="page_controls" data-target="next-previous-controls" />
+								<label for="pagination-include-controls"><?php _e('Next and previous page controls','wpv-views'); ?></label>
+							</li>
+							<li>
+								<input type="checkbox" name="pagination_control" class="js-wpv-pagination-dialog-control" id="pagination-include-page-selector" value="page_selector" data-target="page-selector"/>
+								<label for="pagination-include-page-selector"><?php _e('Page number selector using','wpv-views'); ?></label>
+								<ul style="margin: 8px 0 0 25px;">
+									<li>
+									<input type="radio" value="drop_down" name="pagination_controls_type" id="pagination-controls-type-dropdown" class="js-pagination-control-type js-pagination-control-type-dropdown" />
+									<label for="pagination-controls-type-dropdown"><?php _e('dropdown','wpv-views') ?></label>
+									</li>
+									<li>
+									<input type="radio" value="link" name="pagination_controls_type" id="pagination-controls-type-link" class="js-pagination-control-type js-pagination-control-type-link" />
+									<label for="pagination-controls-type-link"><?php _e('links','wpv-views') ?></label>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<input type="checkbox" name="pagination_control" class="js-wpv-pagination-dialog-control" id="pagination-include-page-total" value="page_total" data-target="total-pages" />
+								<label for="pagination-include-page-total"><?php _e('Total pages count','wpv-views'); ?></label>
+							</li>
+						</ul>
+					</div>
+					<div style="clear:both;border-top:solid 1px #ededed;">
+						<h3><?php _e('Pagination display', 'wpv-views'); ?></h3>
 						<p>
-							<span class="js-pagination-preview-element" data-name="page-selector" data-type="page-selector-link page-selector-select"><?php _e('Choose page','wpv-views'); ?></span>
-							<select class="js-disable-events js-pagination-preview-element" disabled data-name="page-selector" data-type="page-selector-select">
-								<option>2</option>
-							</select>
-							<span data-name="page-selector" data-type="page-selector-link" class="js-pagination-preview-element hidden">
-								<img src="<?php echo (WPV_URL . '/res/img/dots.png'); ?>" alt="dots" style="vertical-align: middle" />
-							</span>
-							<span class="js-pagination-preview-element" data-name="total-pages"><?php _e('of','wpv-views'); ?> 3</span>
-						</p>
-						<p class="js-pagination-preview-element next-previous-controls" data-name="next-previous-controls">
-							<a href="#" class="js-disable-events">&laquo; <?php _e('Previous','wpv-views') ?></a>
-							<a href="#" class="js-disable-events"><?php _e('Next','wpv-views') ?> &raquo;</a>
+							<input type="checkbox" name="pagination_display" class="js-wpv-pagination-dialog-display" id="pagination-include-wrapper" />
+							<label for="pagination-include-wrapper"><?php _e('Don\'t show pagination controls if there is only one page','wpv-views'); ?></label>
 						</p>
 					</div>
 				</div>
-				<div class="wpv-dialog-content">
-					<h3><?php _e('Pagination controls', 'wpv-views'); ?></h3>
+			</div>
+			<?php
+			
+			// Insert frontend events dialog
+			?>
+			<div id="js-wpv-dialog-views-frontend-events" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container wpv-dialog-frontend-events">
+				<div class="wpv-dialog wpv-shortcode-gui-content-wrapper">
+				<p class="toolset-alert toolset-alert-info" style="margin-top:0;">
+					<i class="icon-fire toolset-rounded-icon"></i>
+					<?php _e( 'You can add javascript callbacks when some events are triggered', 'wpv-views' ); ?>
+				</p>
+					<h3><?php _e( 'Pagination events', 'wpv-views' ); ?></h3>
 					<p>
-						<input type="radio" name="pagination_control" class="js-wpv-pagination-dialog-control" id="pagination-include-page-num" value="page_num" data-target="current-page-number" />
-						<label for="pagination-include-page-num"><?php _e('Current page number','wpv-views'); ?></label>
+						<?php _e( 'The Views AJAX pagination triggers some events.', 'wpv-views' ); ?>
 					</p>
-					<p>
-						<input type="radio" name="pagination_control" class="js-wpv-pagination-dialog-control" id="pagination-include-page-total" value="page_total" data-target="total-pages" />
-						<label for="pagination-include-page-total"><?php _e('Number of pages','wpv-views'); ?></label>
-					</p>
-					<p>
-						<input type="radio" name="pagination_control" class="js-wpv-pagination-dialog-control" id="pagination-include-page-selector" value="page_selector" data-target="page-selector"/>
-						<label for="pagination-include-page-selector"><?php _e('Page selector using','wpv-views'); ?></label>
-						<select name="pagination_controls_type" id="pagination-controls-type" class="js-pagination-control-type">
-							<option value="drop_down"><?php _e('dropdown','wpv-views') ?></option>
-							<option value="link"><?php _e('links','wpv-views') ?></option>
-						</select>
-					</p>
-					<p>
-						<input type="radio" name="pagination_control" class="js-wpv-pagination-dialog-control" id="pagination-include-controls" value="page_controls" data-target="next-previous-controls" />
-						<label for="pagination-include-controls"><?php _e('Next and previous page controls','wpv-views'); ?></label>
-					</p>
-
-					<h3><?php _e('Pagination display', 'wpv-views'); ?></h3>
-					<p>
-						<input type="checkbox" name="pagination_display" class="js-wpv-pagination-dialog-display" id="pagination-include-wrapper" />
-						<label for="pagination-include-wrapper"><?php _e('Don\'t show pagination controls if there is only one page','wpv-views'); ?></label>
-					</p>
-				</div>
-				<div class="wpv-dialog-footer">
-					<button class="button js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
-					<button class="button button-primary js-wpv-insert-pagination"><?php _e('Insert pagination','wpv-views') ?></button>
+					<ul>
+						<li>
+							<input type="checkbox" id="wpv-frontent-event-pagination-completed" value="1" class="js-wpv-frontend-event-gui" data-event="js_event_wpv_pagination_completed" />
+							<label for="wpv-frontent-event-pagination-completed"><?php _e( 'The AJAX pagination has been completed', 'wpv-views' ); ?></label>
+							<span class="wpv-helper-text"><?php _e( 'This happens after the Views AJAX pagination has been completed', 'wpv-views' ); ?></span>
+						</li>
+					</ul>
+					<div class="wpv-settings-query-type-posts<?php if ( $query_type != 'posts' ) { echo ' hidden'; } ?>">
+						<h3><?php _e( 'Parametric search events', 'wpv-views' ); ?></h3>
+						<p>
+							<?php _e( 'The Views parametric search triggers some events when set to update options or results automatically.', 'wpv-views' ); ?>
+						</p>
+						<ul>
+							<li>
+								<input type="checkbox" id="wpv-frontent-event-parametric-search-triggered" value="1" class="js-wpv-frontend-event-gui" data-event="js_event_wpv_parametric_search_triggered" />
+								<label for="wpv-frontent-event-parametric-search-triggered"><?php _e( 'The parametric search has been triggered', 'wpv-views' ); ?></label>
+								<span class="wpv-helper-text"><?php _e( 'This happens before Views collects any form data', 'wpv-views' ); ?></span>
+							</li>
+							<li>
+								<input type="checkbox" id="wpv-frontend-event-parametric-search-started" value="1" class="js-wpv-frontend-event-gui" data-event="js_event_wpv_parametric_search_started" />
+								<label for="wpv-frontend-event-parametric-search-started"><?php _e( 'The parametric search data has been collected', 'wpv-views' ); ?></label>
+								<span class="wpv-helper-text"><?php _e( 'This happens after the data has been collected, but before performing any action', 'wpv-views' ); ?></span>
+							</li>
+							<li>
+								<input type="checkbox" id="wpv-frontend-event-parametric-search-form-updated" value="1" class="js-wpv-frontend-event-gui" data-event="js_event_wpv_parametric_search_form_updated" />
+								<label for="wpv-frontend-event-parametric-search-form-updated"><?php _e( 'The parametric search form has been updated', 'wpv-views' ); ?></label>
+								<span class="wpv-helper-text"><?php _e( 'This happens after Views updates the form to show only relevant options', 'wpv-views' ); ?></span>
+							</li>
+							<li>
+								<input type="checkbox" id="wpv-frontend-event-parametric-search-results-updated" value="1" class="js-wpv-frontend-event-gui" data-event="js_event_wpv_parametric_search_results_updated" />
+								<label for="wpv-frontend-event-parametric-search-results-updated"><?php _e( 'The parametric search results have been updated', 'wpv-views' ); ?></label>
+								<span class="wpv-helper-text"><?php _e( 'This happens after Views updates the search results', 'wpv-views' ); ?></span>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
+			<?php
+			
+			// Delete or edit taxonomy filters on bulk delete
+			?>
+			<div id="js-wpv-filter-taxonomy-delete-filter-row-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container wpv-dialog-frontend-events">
+				<div class="wpv-dialog">
+					<h3><?php _e('There are more than one taxonomy filters', 'wpv-views'); ?></h3>
+					<p>
+						<?php _e( 'You can delete them all at once or open the editor and delete individual filters.', 'wpv-views' ); ?>
+					</p>
+				</div>
+			</div>
+			
+			<?php
+			
+			// Delete or edit custom field filters on bulk delete
+			?>
+			<div id="js-wpv-filter-custom-field-delete-filter-row-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container wpv-dialog-frontend-events">
+				<div class="wpv-dialog">
+					<h3><?php _e('There are more than one custom field filters', 'wpv-views'); ?></h3>
+					<p>
+						<?php _e( 'You can delete them all at once or open the editor and delete individual filters.', 'wpv-views' ); ?>
+					</p>
+				</div>
+			</div>
+
+			<?php
+			
+			// Delete or edit custom field filters on bulk delete
+			?>
+			<div id="js-wpv-filter-usermeta-field-delete-filter-row-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container wpv-dialog-frontend-events">
+				<div class="wpv-dialog">
+					<h3><?php _e('There are more than one usermeta field filters', 'wpv-views'); ?></h3>
+					<p>
+						<?php _e( 'You can delete them all at once or open the editor and delete individual filters.', 'wpv-views' ); ?>
+					</p>
+				</div>
+			</div>
+			
 			<?php
 		}
 
@@ -1811,13 +1930,8 @@ function wpv_views_editor_hidden_messages_boxes_pointers( $view_settings, $view_
 
 			// Archive pagination controls dialog
 			?>
-			<div class="wpv-dialog js-wpv-archive-pagination-dialog">
-				<div class="wpv-dialog-header">
-					<h2><?php _e( 'Archive pagination controls', 'wpv-views' ) ?></h2>
-					<i class="icon-remove js-dialog-close"></i>
-				</div>
-				<div class="wpv-dialog-content">
-
+			<div class="js-wpv-archive-pagination-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container">
+				<div class="wpv-dialog">
 					<p><?php _e( 'Which pagination controls do you want to insert?', 'wpv-views' ); ?></p>
 					<p>
 						<input type="checkbox" checked="checked"
@@ -1831,10 +1945,6 @@ function wpv_views_editor_hidden_messages_boxes_pointers( $view_settings, $view_
 								class="js-wpv-archive-pagination-option" />
 						<label for="archive-pagination-insert-next"><?php _e( 'Link to next page','wpv-views' ); ?></label>
 					</p>
-				</div>
-				<div class="wpv-dialog-footer">
-					<button class="button js-dialog-close"><?php _e( 'Cancel','wpv-views' ); ?></button>
-					<button class="button button-primary js-wpv-insert-archive-pagination"><?php _e( 'Insert pagination','wpv-views' ); ?></button>
 				</div>
 			</div>
 			<?php
@@ -1879,7 +1989,7 @@ function wpv_views_editor_hidden_messages_boxes_pointers( $view_settings, $view_
 		
 		?>
 			<div class="js-wpv-inserted-layout-loop-pointer<?php echo $dismissed_classname; ?>">
-				<h3><?php _e( 'Content Template used as a View loop', 'wpv-views' ); ?></h3>
+				<h3><?php _e( 'Fields updated in the Loop Output', 'wpv-views' ); ?></h3>
 				<p>
 					<?php
 						_e( 'The Loop Wizard just updated the editor with the fields that you added.', 'wpv-views' );
@@ -1895,11 +2005,34 @@ function wpv_views_editor_hidden_messages_boxes_pointers( $view_settings, $view_
 				</p>
 			</div>
 		<?php
+		
 		// =======
 		// Dialogs
 		// =======
 		
 		?>
+		
+		<?php
+		$dismissed_classname = '';
+		if ( isset( $dismissed_dialogs['remove-content-template-from-view'] ) ) {
+			$dismissed_classname = ' js-wpv-dialog-dismissed';
+		}
+		
+		// Remove CT from View or WPA assignment
+		?>
+		<div id="js-wpv-dialog-remove-content-template-from-view-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container<?php echo $dismissed_classname; ?>">
+            <div class="wpv-dialog">
+                <p class="toolset-alert toolset-alert-info">
+                    <?php _e( "This will not delete the Content Template, it will just remove the link between it and the current View." ) ?>
+                </p>
+				<p>
+					<input type="checkbox" id="wpv-dettach-inline-content-template-dismiss" class="js-wpv-dettach-inline-content-template-dismiss" />
+					<label for="wpv-dettach-inline-content-template-dismiss">
+						<?php _e("Don't show this message again",'wpv-views') ?>
+					</label>
+            	</p>
+            </div>
+		</div>
 	</div>
 	<?php
 }

@@ -1,10 +1,6 @@
 <?php
 /**
  *
- * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/classes/class.radios.php $
- * $LastChangedDate: 2015-02-10 11:32:01 +0000 (Tue, 10 Feb 2015) $
- * $LastChangedRevision: 31572 $
- * $LastChangedBy: marcin $
  *
  */
 require_once 'class.field_factory.php';

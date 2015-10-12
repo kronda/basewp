@@ -98,11 +98,27 @@ function wpcf_admin_fields_adjust_group( $post, $add_fields = false ) {
     $group['filters_association'] = get_post_meta( $post->ID, '_wp_types_group_filters_association', true );
     $group[WPCF_AUTHOR] = $post->post_author;
 
+    /**
+     * add _wp_types_group_showfor
+     *
+     * "all" - for all groups
+     * array() - if any
+     */
+    if ( TYPES_USER_META_FIELD_GROUP_CPT_NAME == $post->post_type ) {
+        $data = get_post_meta($post->ID, '_wp_types_group_showfor', true);
+        if ( 'all' != $data ) {
+            $data = array_values(array_filter(explode(',',$data)));
+        }
+        if ( empty($data) ) {
+            $data = 'all';
+        }
+        $group['_wp_types_group_showfor'] = $data;
+    }
+
     // Attach fields if required (since 1.3)
     if ( $add_fields ) {
         $active = $add_fields == 'fields_active' ? true : false;
-        $group['fields'] = wpcf_admin_fields_get_fields_by_group( $post->ID,
-                'slug', $active );
+        $group['fields'] = wpcf_admin_fields_get_fields_by_group( $post->ID, 'slug', $active );
     }
 
     return $group;

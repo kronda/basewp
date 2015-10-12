@@ -56,19 +56,18 @@ function wpv_module_manager_init() {
 }
 
 /**
-* wpv_modules_library_link_components
-*
-* Hooks into the Module Manager Library listing and offers links to edit/readonly versions of each Views component
-*
-* @param $current_module
-* @param $modman_modules (array) installed modules as stored in the Options table
-*
-* @since 1.6.2
-*/
-
+ * wpv_modules_library_link_components
+ *
+ * Hooks into the Module Manager Library listing and offers links to edit/readonly versions of each Views component
+ *
+ * @param $current_module
+ * @param $modman_modules (array) installed modules as stored in the Options table
+ *
+ * @since 1.6.2
+ */
 function wpv_modules_library_link_components( $current_module = array(), $modman_modules = array() ) {
 	$this_module_data = array();
-	foreach ( $modman_modules as $hackey => $hackhack ) {
+	foreach ( $modman_modules as $hackey => $hackhack /* nice :D :D */ ) {
 		if ( strtolower( $hackey ) == strtolower( $current_module['name'] ) ) {
 			$this_module_data = $hackhack;
 		}
@@ -156,7 +155,15 @@ function wpv_modules_library_link_components( $current_module = array(), $modman
 					if ( $embedded ) {
 						echo '<li class="views-element"><a href="' . admin_url() . 'admin.php?page=view-templates-embedded&view_id=' . $template_data->ID . '"><i class="icon-views ont-icon-19 ont-color-orange"></i>' . $template_data->post_title . '</a></li>';
 					} else {
-						echo '<li class="views-element"><a href="' . admin_url() . 'post.php?post=' . $template_data->ID . '&action=edit"><i class="icon-views ont-icon-19 ont-color-orange"></i>' . $template_data->post_title . '</a></li>';
+                        // We have full Views, so we can safely use the WPV_CT_EDITOR_PAGE_NAME constant.
+						printf(
+                            '<li class="views-element"><a href="%s"><i class="icon-views ont-icon-19 ont-color-orange"></i>%s</a></li>',
+                            add_query_arg(
+                                array( 'page' => WPV_CT_EDITOR_PAGE_NAME, 'ct_id' => $template_data->ID, 'action' => 'edit' ),
+                                admin_url( 'admin.php' )
+                            ),
+                            sanitize_text_field( $template_data->post_title )
+                        );
 					}
 				}
 			}

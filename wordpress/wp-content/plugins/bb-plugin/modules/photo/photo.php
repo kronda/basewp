@@ -263,6 +263,22 @@ class FLPhotoModule extends FLBuilderModule {
 	}
 
 	/**
+	 * @method get_attributes
+	 */
+	public function get_attributes()
+	{
+		$attrs = '';
+		
+		if ( isset( $this->settings->attributes ) ) {
+			foreach ( $this->settings->attributes as $key => $val ) {
+				$attrs .= $key . '="' . $val . '" ';
+			}
+		}
+		
+		return $attrs;
+	}
+
+	/**
 	 * @method _has_source
 	 * @protected
 	 */
@@ -401,7 +417,7 @@ FLBuilder::register_module('FLPhotoModule', array(
 						'label'         => __('Crop', 'fl-builder'),
 						'default'       => '',
 						'options'       => array(
-							''              => _x( 'None', 'Crop.', 'fl-builder' ),
+							''              => _x( 'None', 'Photo Crop.', 'fl-builder' ),
 							'landscape'     => __('Landscape', 'fl-builder'),
 							'panorama'      => __('Panorama', 'fl-builder'),
 							'portrait'      => __('Portrait', 'fl-builder'),

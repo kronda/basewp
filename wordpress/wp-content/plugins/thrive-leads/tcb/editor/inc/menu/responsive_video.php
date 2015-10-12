@@ -12,6 +12,64 @@
         &nbsp;
     </li>
     <?php include dirname(__FILE__) . '/_margin.php'; ?>
+    <li class="tve_ed_btn tve_btn_text">
+        <div class="tve_option_separator">
+            <span class="tve_ind tve_left"><?php echo __("No Style", "thrive-cb") ?></span>
+            <span id="sub_02" class="tve_caret tve_icm tve_left"></span>
+
+            <div class="tve_clear"></div>
+            <div class="tve_sub_btn" style="width: 482px">
+                <div class="tve_sub active_sub_menu" style="width: 100%; box-sizing: border-box;">
+                    <ul class="tve_clearfix">
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="rv_style_white_frame" data-cls="rv_style_white_frame" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo __("White Frame", "thrive-cb") ?></div>
+                        </li>
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="rv_style_gray_frame" data-cls="rv_style_gray_frame" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo __("Gray Frame", "thrive-cb") ?></div>
+                        </li>
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="rv_style_dark_frame" data-cls="rv_style_dark_frame" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo __("Dark Frame", "thrive-cb") ?></div>
+                        </li>
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="rv_style_light_frame" data-cls="rv_style_light_frame" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo __("Light Frame", "thrive-cb") ?></div>
+                        </li>
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="rv_style_lifted_style1" data-cls="rv_style_lifted_style1" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo sprintf(__("Lifted Style %s", 'thrive-cb'), "1") ?></div>
+                        </li>
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="rv_style_lifted_style2" data-cls="rv_style_lifted_style2" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo sprintf(__("Lifted Style %s", 'thrive-cb'), "2") ?></div>
+                        </li>
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="rv_style_lifted_style3" data-cls="rv_style_lifted_style3" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo sprintf(__("Lifted Style %s", 'thrive-cb'), "3") ?></div>
+                        </li>
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="rv_style_lifted_style4" data-cls="rv_style_lifted_style4" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo sprintf(__("Lifted Style %s", 'thrive-cb'), "4") ?></div>
+                        </li>
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="rv_style_lifted_style5" data-cls="rv_style_lifted_style5" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo sprintf(__("Lifted Style %s", 'thrive-cb'), "5") ?></div>
+                        </li>
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="rv_style_lifted_style6" data-cls="rv_style_lifted_style6" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo sprintf(__("Lifted Style %s", 'thrive-cb'), "6") ?></div>
+                        </li>
+                        <li class="rv_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" data-cls="rv_style_none" data-ctrl="controls.click.add_class">
+                            <div class="rv_style_image"></div>
+                            <div><?php echo __("No Style", "thrive-cb") ?></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </li>
     <?php
     $extra_attr = 'data-apply-to="[wistia|vimeo]"';
     $btn_class = "responsive_video_color responsive_video_option";

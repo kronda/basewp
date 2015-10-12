@@ -108,16 +108,18 @@ function wpv_scan_wpv_if_callback() {
 			}
 			$edit_link_item = '';
             if ( $row->post_type == 'view' ) {
-                $settings = $WP_Views->get_view_settings( $row->ID );
-				if ( $settings['view-query-mode'] == 'normal' ) {
-					$edit_link_item = get_admin_url()."admin.php?page=views-editor&view_id=".$row->ID;
-				} else if ( $settings['view-query-mode'] == 'archive' ) {
-					if ( !isset( $items[$wpa_label] ) ) {
-						$items[$wpa_label] = array();
-					}
-					$type = $wpa_label;
-					$edit_link_item = get_admin_url()."admin.php?page=view-archives-editor&view_id=".$row->ID;
-				}
+                $settings = $WP_Views->get_view_settings($row->ID);
+                if ($settings['view-query-mode'] == 'normal') {
+                    $edit_link_item = get_admin_url() . "admin.php?page=views-editor&view_id=" . $row->ID;
+                } else if ($settings['view-query-mode'] == 'archive') {
+                    if (!isset($items[$wpa_label])) {
+                        $items[$wpa_label] = array();
+                    }
+                    $type = $wpa_label;
+                    $edit_link_item = get_admin_url() . "admin.php?page=view-archives-editor&view_id=" . $row->ID;
+                }
+            } else if( WPV_Content_Template_Embedded::POST_TYPE == $row->post_type ) {
+                $edit_link_item = wpv_ct_editor_url( $row->ID );
             } else {
                 $edit_link_item = get_admin_url()."post.php?post=".$row->ID."&action=edit";
 			}

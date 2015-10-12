@@ -61,7 +61,7 @@
             }).find('tve_p_lb_content').trigger('tve.lightbox-close');
         }, 200);
 
-        $lightbox.find('.thrv_responsive_video iframe').each(function () {
+        $lightbox.find('.thrv_responsive_video iframe, .thrv_custom_html_shortcode iframe').each(function () {
             var $this = ThriveGlobal.$j(this);
             $this.attr('data-src', $this.attr('src'));
             $this.attr('src', '');
@@ -159,7 +159,7 @@
         }
 
         //load the responsive video iframes
-        $target.find('.thrv_responsive_video iframe').each(function () {
+        $target.find('.thrv_responsive_video iframe, .thrv_custom_html_shortcode iframe').each(function () {
             var $this = jQuery(this);
             if ($this.attr('data-src')) {
                 $this.attr('src', $this.attr('data-src'));
@@ -241,12 +241,11 @@
         }
 
         $target.find('.tve-ribbon-close').on('click', function () {
-            $target.find('.thrv_responsive_video iframe').each(function () {
+            $target.find('.thrv_responsive_video iframe, .thrv_custom_html_shortcode iframe').each(function () {
                 var $this = ThriveGlobal.$j(this);
                 $this.attr('data-src', $this.attr('src'));
                 $this.attr('src', '');
             });
-
             $target.removeClass('tve-leads-triggered');
             if (position === 'top') {
                 ThriveGlobal.$j('body').animate({'margin-top': 0 + 'px'}, 200);
@@ -312,7 +311,7 @@
 
         function close_it($screen_filler) {
 
-            $screen_filler.find('.thrv_responsive_video iframe').each(function () {
+            $screen_filler.find('.thrv_responsive_video iframe, .thrv_custom_html_shortcode iframe').each(function () {
                 var $this = ThriveGlobal.$j(this);
                 $this.attr('data-src', $this.attr('src'));
                 $this.attr('src', '');
@@ -378,7 +377,7 @@
             ThriveGlobal.$j(document).off('keyup.close-slidein');
             $body.removeClass(overflow_hidden);
             $html.removeClass(overflow_hidden);
-            $slidein.find('.thrv_responsive_video iframe').each(function () {
+            $slidein.find('.thrv_responsive_video iframe, .thrv_custom_html_shortcode iframe').each(function () {
                 var $this = ThriveGlobal.$j(this);
                 $this.attr('data-src', $this.attr('src'));
                 $this.attr('src', '');
@@ -476,7 +475,7 @@
                 $target.show();
             }
             setTimeout(function () {
-                $target.find('.thrv_responsive_video iframe').each(function () {
+                $target.find('.thrv_responsive_video iframe, .thrv_custom_html_shortcode iframe').each(function () {
                     var $this = ThriveGlobal.$j(this);
                     if ($this.attr('data-src')) {
                         $this.attr('src', $this.attr('data-src'));

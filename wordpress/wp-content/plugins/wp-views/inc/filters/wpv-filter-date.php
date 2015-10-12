@@ -192,7 +192,7 @@ class WPV_Date_Filter {
 			<div class="js-wpv-filter-multiple-toolset-messages"></div>
 			<span class="filter-doc-help">
 				<?php echo sprintf(__('%sLearn about filtering by Post Date%s', 'wpv-views'),
-					'<a class="wpv-help-link" href="' . WPV_FILTER_BY_AUTHOR_LINK . '" target="_blank">',
+					'<a class="wpv-help-link" href="' . WPV_FILTER_BY_POST_DATE_LINK . '" target="_blank">',
 					' &raquo;</a>'
 				); ?>
 			</span>
@@ -280,7 +280,7 @@ class WPV_Date_Filter {
 					isset( $date_cond['date_operator'] ) 
 					&& ! empty( $date_cond['date_operator'] )
 				) {
-					$new_date_conditions['date_condition_' . $date_key]['date_operator'] = sanitize_text_field( $date_cond['date_operator'] );
+					$new_date_conditions['date_condition_' . $date_key]['date_operator'] = WPV_Date_Filter::fix_lower_saving( sanitize_text_field( $date_cond['date_operator'] ) );
 				} else {
 					$new_date_conditions['date_condition_' . $date_key]['date_operator'] = '=';
 				}
@@ -659,6 +659,28 @@ class WPV_Date_Filter {
 		);
 		WPV_Date_Filter::wpv_render_post_date_condition( $default_conditions );
 		die();
+	}
+	
+	/**
+	* fix_lower_saving
+	*
+	* Fix saving of "lower than" and "lower or equal to" comparisons, which get HTML-encoded when passed through sanitize_text_field
+	*
+	* @param $data string
+	*
+	* @return string
+	*
+	* @since 1.8.10
+	*/
+	
+	static function fix_lower_saving( $data ) {
+		if (
+			'&lt;' == $data 
+			|| '&lt;=' == $data
+		) {
+			$data = str_replace( '&lt;', '<', $data );
+		}
+		return $data;
 	}
 
 }

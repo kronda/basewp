@@ -133,9 +133,9 @@ function render_view_loop_selection_form( $view_id = 0 ) {
 					"archive_url" => get_day_link( $post_year, $post_month, $post_day ) )
 	);
 
-	// === Selection for Native WordPress Archive Loops === //
+	// === Selection for Standard Archives === //
 	?>
-	<h3><?php _e( 'Native WordPress Archive Loops', 'wpv-views' ); ?></h3>
+	<h3><?php _e( 'Standard Archives', 'wpv-views' ); ?></h3>
 	<div class="wpv-advanced-setting">
 		<ul class="enable-scrollbar wpv-mightlong-list">
 			<?php
@@ -178,7 +178,7 @@ function render_view_loop_selection_form( $view_id = 0 ) {
 	</div>
 	<?php
 
-	// === Selection for Post Type Archive Loops === //
+	// === Selection for Custom Post Archives === //
 
 	/* Definition of post type archive loops. Keys are post type slugs and each array element contains array of
 	 * "display_name" and "archive_url" (url to display the archive in frontend) and "loop".*/
@@ -198,7 +198,7 @@ function render_view_loop_selection_form( $view_id = 0 ) {
 
 	if ( count( $pt_loops ) > 0 ) {
 		?>
-		<h3><?php _e( 'Post Type Archive Loops', 'wpv-views' ); ?></h3>
+		<h3><?php _e( 'Custom Post Archives', 'wpv-views' ); ?></h3>
 		<div class="wpv-advanced-setting">
 			<ul class="enable-scrollbar wpv-mightlong-list">
 				<?php
@@ -242,7 +242,7 @@ function render_view_loop_selection_form( $view_id = 0 ) {
 		<?php
 	}
 
-	// === Selection for Taxonomy Archive Loops === //
+	// === Selection for Taxonomy Archives === //
 	$taxonomies = get_taxonomies( '', 'objects' );
 	$exclude_tax_slugs = apply_filters( 'wpv_admin_exclude_tax_slugs', array() );
 
@@ -251,7 +251,7 @@ function render_view_loop_selection_form( $view_id = 0 ) {
 	// get_terms( $taxonomy_slug, array( "fields" => "id", "hide_empty" => 1, "number" => 1 ) )
 
 	?>
-	<h3><?php _e( 'Taxonomy Archive Loops', 'wpv-views' ); ?></h3>
+	<h3><?php _e( 'Taxonomy Archives', 'wpv-views' ); ?></h3>
 	<?php $show_asterisk_explanation = false; ?>
 	<div class="wpv-advanced-setting">
 		<ul class="enable-scrollbar wpv-mightlong-list">

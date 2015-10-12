@@ -95,93 +95,64 @@ function _wpv_get_all_view_ids( $view_query_mode, $args = array() ) {
 
 
 /**
-* wpv_count_dissident_posts_from_template
-*
-* Counts the amount of posts of a given type that do not use a given Template and creates the HTML structure to notify about it
-* Used on the Views popups for the Content Templates listing page on single usage and for the Template edit screen
-*
-* @param $template_id the ID of the Content Template we want to check against
-* @param $content_type the post type to check
-* @param $message_header (optional) to override the default message on the HTML structure header "Do you want to apply to all?"
-*
-* @return nothing
-*
-* @since 1.5.1
-*/
-
+ * Counts the amount of posts of a given type that do not use a given Template and creates the HTML structure to notify about it
+ * Used on the Views popups for the Content Templates listing page on single usage
+ *
+ * @param int $template_id the ID of the Content Template we want to check against
+ * @param string $content_type the post type to check
+ * @param string $message_header (optional) to override the default message on the HTML structure header "Do you want to apply to all?"
+ *
+ * @return void
+ *
+ * @since 1.5.1
+ *
+ * @deprecated since 1.10
+ */
 function wpv_count_dissident_posts_from_template( $template_id, $content_type, $message_header = null ) {
-	global $wpdb;
 	
-	if ( is_null( $message_header ) ) {
-		$message_header = __('Do you want to apply to all?','wpv-views');
-	}
-	
-	$posts = $wpdb->get_col( 
-		$wpdb->prepare( 
-			"SELECT {$wpdb->posts}.ID FROM {$wpdb->posts} 
-			WHERE post_type = %s 
-			AND post_status != 'auto-draft'", 
-			$content_type 
-		) 
-	);
-	$count = sizeof( $posts );
-	if ( $count > 0 ) {
-		$posts = "'" . implode( "','", $posts ) . "'";
-		$set_count = $wpdb->get_var( 
-			$wpdb->prepare(
-				"SELECT COUNT(post_id) FROM {$wpdb->postmeta} 
-				WHERE meta_key = '_views_template' 
-				AND meta_value = %s
-				AND post_id IN ({$posts})",
-				$template_id
-			)
-		);
-		if ( ( $count - $set_count ) > 0 ) {
-			$ptype = get_post_type_object( $content_type );
-			$type_label = $ptype->labels->singular_name;
-			$message = sprintf( __( '%d %s uses a different Content Template.', 'wpv-views' ), ( $count - $set_count ) , $type_label );
-			if ( ( $count - $set_count ) > 1 ){
-				$type_label = $ptype->labels->name;
-				$message = sprintf( __( '%d %s use a different Content Template.', 'wpv-views' ), ( $count - $set_count ) , $type_label );
-			}
-		?>
+    try {
+        $ct = new WPV_Content_Template_Embedded( $template_id );
+    } catch( Exception $e ) {
+        // well, we were not handling non-existent CTs before and I am not sure how to do that now...
+        return;
+    }
 
-			<div class="wpv-dialog">
-				<div class="wpv-dialog-header">
-					<h2><?php echo $message_header; ?></h2>
-					<i class="icon-remove js-dialog-close"></i>
-				</div>
-				<div class="wpv-dialog-content">
-				<?php echo $message; ?>
-				</div>
-				<div class="wpv-dialog-footer">
-					<button class="button js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
-					<button class="button button-primary js-wpv-content-template-update-posts-process"
-					data-type="<?php echo $content_type;?>"
-					data-id="<?php echo $template_id;?>">
-					<?php echo sprintf( __( 'Update %s now', 'wpv-views' ), $type_label ) ?></button>
-				</div>
-			</div>
-		<?php
-		}
-	}
+    $dissident_post_count = $ct->get_dissident_posts( $content_type, 'count' );
+
+    if ( $dissident_post_count > 0 ) {
+        $ptype = get_post_type_object( $content_type );
+
+        if ( $dissident_post_count > 1 ){
+            $type_label = $ptype->labels->name;
+            $message = sprintf( __( '<strong>%d %s</strong> use a different Content Template.', 'wpv-views' ), $dissident_post_count , $type_label );
+        } else {
+            $type_label = $ptype->labels->singular_name;
+            $message = sprintf(__('<strong>%d %s</strong> uses a different Content Template.', 'wpv-views'), $dissident_post_count, $type_label);
+        }
+
+        ?>
+        <div class="wpv-dialog wpv-shortcode-gui-content-wrapper">
+			<?php echo $message; ?>
+        </div>
+    <?php
+    }
+
 }
 
-/**
-* wpv_update_dissident_posts_from_template
-*
-* Updates all the of posts of a given type to use a given Template and creates the HTML structure to notify about it
-* Used on the Views popups for the Content Templates listing page on single usage and for the Template edit screen
-*
-* @param $template_id the ID of the Content Template we want to check against
-* @param $content_type the post type to check
-*
-* @return nothing
-*
-* @since 1.5.1
-*/
 
-function wpv_update_dissident_posts_from_template( $template_id, $content_type ) {
+/**
+ * wpv_update_dissident_posts_from_template
+ *
+ * Updates all the of posts of a given type to use a given Template and creates the HTML structure to notify about it
+ * Used on the Views popups for the Content Templates listing page on single usage and for the Template edit screen
+ *
+ * @param int $template_id the ID of the Content Template we want to check against
+ * @param string $content_type the post type to check
+ * @param bool $echo If set to false, no HTML template for a dialog will be rendered. Default is true.
+ *
+ * @since 1.5.1
+ */
+function wpv_update_dissident_posts_from_template( $template_id, $content_type, $echo = true ) {
 	global $wpdb;
 	
 	$posts = $wpdb->get_col( 
@@ -203,37 +174,37 @@ function wpv_update_dissident_posts_from_template( $template_id, $content_type )
 			}
 		}
 	}
-	echo '<div class="wpv-dialog wpv-dialog-change js-wpv-dialog-change">
+
+    if( $echo ) {
+        echo '<div class="wpv-dialog wpv-dialog-change js-wpv-dialog-change">
 				<div class="wpv-dialog-header">
 					<h2>' . __('Success!', 'wpv-views') . '</h2>
 				</div>
 				<div class="wpv-dialog-content">
-					<p>'. sprintf(__('All %ss were updated', 'wpv-views'), $content_type) .'</p>
+					<p>' . sprintf(__('All %ss were updated', 'wpv-views'), $content_type) . '</p>
 				</div>
 				<div class="wpv-dialog-footer">
-					<button class="button-secondary js-dialog-close">'. esc_js( __('Close','wpv-views') ) .'</button>
+					<button class="button-secondary js-dialog-close">' . esc_js(__('Close', 'wpv-views')) . '</button>
 				</div>
 			</div>';
+    }
 }
 
 /**
-* wpv_count_filter_controls
-*
-* Counts the number of different parametric searches by kind (tax, cf, pr)
-*
-* @param $view_settings
-*
-* @return (array) $return
-*    $return['pr'] = 0;
-*    $return['cf'] = 0;
-*    $return['tax'] = 0;
-*    $return['search'] = 0;
-*    $return['warning'] = There is something wrong, but keep going
-*    $return['error'] = This view does not allow parametric searches
-*
-* @since 1.6.0
-*/
-
+ * Counts the number of different parametric searches by kind (tax, cf, pr)
+ *
+ * @param $view_settings
+ *
+ * @return array $return
+ *    $return['pr'] = 0;
+ *    $return['cf'] = 0;
+ *    $return['tax'] = 0;
+ *    $return['search'] = 0;
+ *    $return['warning'] = There is something wrong, but keep going
+ *    $return['error'] = This view does not allow parametric searches
+ *
+ * @since 1.6.0
+ */
 function wpv_count_filter_controls( $view_settings ) {
 	
 	$return = array();
@@ -318,24 +289,32 @@ function wpv_count_filter_controls( $view_settings ) {
 }
 
 /**
-* wpv_types_get_field_type
-*
-* Get the Types type of a given custom field
-*
-* @param $field_name (string) the field meta_key
-*
-* @return (string) the field type if any or an empty string if not
-*/
-
-function wpv_types_get_field_type( $field_name ) {
-    $field_type = '';
-	if ( !empty( $field_name ) ) {
-		$opt = get_option( 'wpcf-fields', array() );
-		if( $opt && !empty( $opt ) ) {
+ * wpv_types_get_field_type
+ *
+ * Get the Types type of a given custom field
+ *
+ * @param $field_name (string) the field meta_key
+ *
+ * @param string $field_type
+ *
+ * @return string (string) the field type if any or an empty string if not
+ */
+function wpv_types_get_field_type( $field_name, $field_type = 'cf' ) {
+	$option_slug = ( $field_type == 'cf' ) ? 'wpcf-fields' : 'wpcf-usermeta';
+	if ( ! empty( $field_name ) ) {
+		$opt = get_option( $option_slug, array() );
+		if ( 
+			$opt 
+			&& ! empty( $opt ) 
+		) {
 			if ( strpos( $field_name, 'wpcf-' ) === 0 ) {
 				$field_name = substr( $field_name, 5 );
 			}
-			if ( isset( $opt[$field_name] ) && is_array( $opt[$field_name] ) && isset( $opt[$field_name]['type'] ) ) {
+			if ( 
+				isset( $opt[$field_name] ) 
+				&& is_array( $opt[$field_name] ) 
+				&& isset( $opt[$field_name]['type'] ) 
+			) {
 				$field_type = strtolower( $opt[$field_name]['type'] );
 			}
 		}
@@ -343,23 +322,26 @@ function wpv_types_get_field_type( $field_name ) {
     return $field_type;
 }
 
-/**
-* wpv_types_get_field_name
-*
-* Get the Types name of a given custom field
-*
-* @param $field_name (string) the field meta_key
-*
-* @return (string) the Types field name if any or the same $field_name if not
-*
-* @since 1.8.0
-*/
 
-function wpv_types_get_field_name( $field_name ) {
+/**
+ * wpv_types_get_field_name
+ *
+ * Get the Types name of a given custom field
+ *
+ * @param $field_name (string) the field meta_key
+ *
+ * @param string $field_type
+ *
+ * @return  (string) the Types field name if any or the same $field_name if not
+ *
+ * @since 1.8.0
+ */
+function wpv_types_get_field_name( $field_name, $field_type = 'cf' ) {
     $field_nicename = $field_name;
+	$option_slug = ( $field_type == 'cf' ) ? 'wpcf-fields' : 'wpcf-usermeta';
 	if ( ! empty( $field_name ) ) {
-		$opt = get_option( 'wpcf-fields', array() );
-		if( 
+		$opt = get_option( $option_slug, array() );
+		if ( 
 			$opt 
 			&& ! empty( $opt ) 
 		) {
@@ -376,6 +358,77 @@ function wpv_types_get_field_name( $field_name ) {
 		}
 	}
     return $field_nicename;
+}
+
+/**
+ * wpv_types_get_field_real_slug
+ *
+ * MAKES _wpv_get_field_real_slug DEPRECATED and DUPLICATED
+ *
+ * Check if a field is a Types one and return its real slug, the passed slug otherwise
+ *
+ * @param $field_name (string) the field name
+ *
+ * @param string $field_type
+ *
+ * @return  (string)
+ *
+ * @since 1.10
+ *
+ */
+function wpv_types_get_field_real_slug( $field_name, $field_type = 'cf' ) {
+	$real_slug = $field_name;
+	$option_slug = ( $field_type == 'cf' ) ? 'wpcf-fields' : 'wpcf-usermeta';
+	$opt = get_option( $option_slug, array() );
+    if ( 
+		$opt 
+		&& ! empty( $opt ) 
+	) {
+		if ( strpos( $field_name, 'wpcf-' ) === 0 ) {
+			$field_name = substr( $field_name, 5 );
+		}
+        if ( 
+			isset( $opt[$field_name] ) 
+			&& is_array( $opt[$field_name] ) 
+			&& isset( $opt[$field_name]['meta_key'] ) 
+		) {
+            $real_slug = $opt[$field_name]['meta_key'];
+        }
+        
+    }
+	return $real_slug;
+}
+
+/**
+ * wpv_is_types_custom_field
+ *
+ * Checks whether the provided key corresponds to a Types custom field, and returns its data if any
+ *
+ * @param $field_name string
+ *
+ * @param string $field_type
+ *
+ * @return array|bool
+ * @since 1.9
+ */
+function wpv_is_types_custom_field( $field_name, $field_type = 'cf' ) {
+	$is_types_field = false;
+	$option_slug = ( $field_type == 'cf' ) ? 'wpcf-fields' : 'wpcf-usermeta';
+	if ( ! empty( $field_name ) ) {
+		$opt = get_option( $option_slug, array() );
+		if ( 
+			$opt 
+			&& ! empty( $opt ) 
+		) {
+			if ( strpos( $field_name, 'wpcf-' ) === 0 ) {
+				$field_name = substr( $field_name, 5 );
+			}
+			if ( isset( $opt[$field_name] ) ) {
+				$is_types_field = $opt[$field_name];
+			}
+		}
+	}
+    return $is_types_field;
 }
 
 /** 
@@ -633,5 +686,99 @@ function wpv_maybe_add_query_arg( $args, $url ) {
             unset( $args[ $key ] );
         }
     }
-    return add_query_arg( $args, $url );
+    return esc_url( add_query_arg( $args, $url ) );
+}
+
+
+/**
+ * array_merge_recursive does indeed merge arrays, but it converts values with duplicate
+ * keys to arrays rather than overwriting the value in the first array with the duplicate
+ * value in the second array, as array_merge does. I.e., with array_merge_recursive,
+ * this happens (documented behavior):
+ *
+ * array_merge_recursive(array('key' => 'org value'), array('key' => 'new value'));
+ *     => array('key' => array('org value', 'new value'));
+ *
+ * array_merge_recursive_distinct does not change the datatypes of the values in the arrays.
+ * Matching keys' values in the second array overwrite those in the first array, as is the
+ * case with array_merge, i.e.:
+ *
+ * array_merge_recursive_distinct(array('key' => 'org value'), array('key' => 'new value'));
+ *     => array('key' => array('new value'));
+ *
+ * Parameters are passed by reference, though only for performance reasons. They're not
+ * altered by this function.
+ *
+ * @param array $array1
+ * @param array $array2
+ * @return array
+ * @author Daniel <daniel (at) danielsmedegaardbuus (dot) dk>
+ * @author Gabriel Sobrinho <gabriel (dot) sobrinho (at) gmail (dot) com>
+ */
+function wpv_array_merge_recursive_distinct( array &$array1, array &$array2 ) {
+    $merged = $array1;
+
+    foreach ( $array2 as $key => &$value )
+    {
+        if ( is_array ( $value ) && isset ( $merged [$key] ) && is_array ( $merged [$key] ) )
+        {
+            $merged [$key] = wpv_array_merge_recursive_distinct ( $merged [$key], $value );
+        }
+        else
+        {
+            $merged [$key] = $value;
+        }
+    }
+
+    return $merged;
+}
+
+
+/**
+ * Shortcut function to dump variable content in an easily-readable way on a page.
+ *
+ * This is meant mainly for debugging purposes.
+ *
+ * @param mixed $value Variable to be dumped.
+ * @param null|string $title Optional title of the dump.
+ * @since 1.10
+ */
+function wpv_predump( $value, $title = null ) {
+    if( null != $title ) {
+        printf( '<strong>%s</strong><br />', $title );
+    }
+    echo '<pre>';
+    print_r( $value );
+    echo '</pre>';
+}
+
+/*
+* wpv_get_loop_content_template_ids
+*
+* Query the database for IDs of CT used as loop templates
+* Note that we might be storing zero as this field value for no loop template assigned
+*
+* @return (array) Loop Content Template IDs or empty if none
+*
+* @since 1.10
+*/
+
+function wpv_get_loop_content_template_ids() {
+	static $loop_ct_ids = null;
+	if ( $loop_ct_ids === null ) {
+		global $wpdb;
+		$view_loop_template_key = '_view_loop_template';
+		$view_loop_template_not_set = '0';
+		$loop_ct_ids = $wpdb->get_col( 
+			$wpdb->prepare( 
+				"SELECT DISTINCT meta_value FROM {$wpdb->postmeta} 
+				WHERE meta_key = %s 
+				AND meta_value != %s
+				ORDER BY post_id",
+				$view_loop_template_key,
+				$view_loop_template_not_set
+			)
+		);
+	}
+	return $loop_ct_ids;
 }

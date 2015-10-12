@@ -1,5 +1,10 @@
 <?php
-  
+
+/**
+ * Register the post type of Content Templates.
+ *
+ * @since unknown
+ */
 function wpv_register_type_view_template() 
 {
   $labels = array(
@@ -30,7 +35,7 @@ function wpv_register_type_view_template()
     'has_archive' => false, 
     'hierarchical' => false,
     'menu_position' => null,
-    'supports' => array('title','editor','author')
+    'supports' => array('title','editor','author'),
   ); 
   register_post_type('view-template',$args);
 }

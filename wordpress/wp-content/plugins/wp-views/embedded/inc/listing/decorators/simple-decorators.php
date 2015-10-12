@@ -84,7 +84,7 @@ class WPV_Embedded_Title_Decorator implements IWPV_Title_Decorator {
         }
 
         printf(
-            '<h2>%s <a href="#" class="add-new-h2 js-open-promotional-message">%s</a>%s</h2><br />',
+            '<h2>%s <a href="#" class="add-new-h2 page-title-action js-open-promotional-message">%s</a>%s</h2><br />',
             $this->title,
             $this->add_new_label,
             $search_term );
@@ -144,7 +144,7 @@ class WPV_Stub_Table_Decorator implements IWPV_Table_Decorator {
         echo "<table>";
 
         foreach( $items as $item ) {
-            printf( '<tr><td>%s</td></tr>', $item->post_title );
+            printf( '<tr><td>%s</td></tr>', esc_html( $item->post_title ) );
         }
 
         echo "</table>";

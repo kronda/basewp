@@ -40,6 +40,14 @@ class WPV_Taxonomy_Filter {
 		add_action( 'wp_ajax_wpv_filter_taxonomy_delete', array( 'WPV_Taxonomy_Filter', 'wpv_filter_taxonomy_delete_callback' ) );
 		add_filter( 'wpv-view-get-summary', array( 'WPV_Taxonomy_Filter', 'wpv_taxonomy_summary_filter' ), 6, 3 );
 		// Register scripts
+		wp_register_script( 'views-filter-category-js', ( WPV_URL . "/res/js/redesign/views_filter_category.js" ), array( 'views-filters-js'), WPV_VERSION, true );
+		$filter_texts = array(
+			'dialog_title'		=> __( 'Delete taxonomy filters', 'wpv-views' ),
+			'cancel'			=> __( 'Cancel', 'wpv-views' ),
+			'edit_filters'		=> __( 'Edit the taxonomy filters', 'wpv-views' ),
+			'delete_filters'	=> __( 'Delete all taxonomy filters', 'wpv-views' )
+		);
+		wp_localize_script( 'views-filter-category-js', 'wpv_category_filter_texts', $filter_texts );
 		add_action( 'admin_enqueue_scripts', array( 'WPV_Taxonomy_Filter','admin_enqueue_scripts' ), 20 );
 	}
 	
@@ -52,7 +60,6 @@ class WPV_Taxonomy_Filter {
 	*/
 	
 	static function admin_enqueue_scripts( $hook ) {
-		wp_register_script( 'views-filter-category-js', ( WPV_URL . "/res/js/redesign/views_filter_category.js" ), array( 'views-filters-js'), WPV_VERSION, true );
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
 			wp_enqueue_script( 'views-filter-category-js' );
 		}
@@ -225,7 +232,7 @@ class WPV_Taxonomy_Filter {
 			! isset( $view_settings['taxonomy-' . $taxonomy . '-attribute-url'] ) 
 			|| empty( $view_settings['taxonomy-' . $taxonomy . '-attribute-url'] ) 
 		) {
-			$view_settings['taxonomy-' . $taxonomy . '-attribute-url'] = 'wpv' . $taxonomy;
+			$view_settings['taxonomy-' . $taxonomy . '-attribute-url'] = 'wpv' . preg_replace( "/[^a-z0-9]+/", "", $taxonomy );
 		}
 		if ( 
 			isset( $view_settings['taxonomy-' . $taxonomy . '-attribute-url-format'] ) 
@@ -263,7 +270,8 @@ class WPV_Taxonomy_Filter {
 						<option value="IN" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'IN' ); ?>><?php _e('Any of the following', 'wpv-views'); ?></option>
 						<option value="NOT IN" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'NOT IN' ); ?>><?php _e('No one of the following', 'wpv-views'); ?></option>
 						<option value="AND" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'AND' ); ?>><?php _e('All of the following', 'wpv-views'); ?></option>
-						<option value="FROM PAGE" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'FROM PAGE' ); ?>><?php _e('Set by the current page', 'wpv-views'); ?></option>
+						<option value="FROM PAGE" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'FROM PAGE' ); ?>><?php _e('Set by the current single page', 'wpv-views'); ?></option>
+						<option value="FROM ARCHIVE" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'FROM ARCHIVE' ); ?>><?php _e('Set by the current archive page', 'wpv-views'); ?></option>
 						<option value="FROM PARENT VIEW" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'FROM PARENT VIEW' ); ?>><?php _e('Set by the parent View', 'wpv-views'); ?></option>
 						<option value="FROM ATTRIBUTE" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'FROM ATTRIBUTE' ); ?>><?php _e('Set by one View shortcode attribute', 'wpv-views'); ?></option>
 						<option value="FROM URL" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'FROM URL' ); ?>><?php _e('Set by one URL parameter', 'wpv-views'); ?></option>
@@ -399,10 +407,19 @@ class WPV_Taxonomy_Filter {
 			wp_send_json_error( $data );
 		}
 		$change = false;
+		$involved_taxonomies = array();
 		$view_id = $_POST['id'];
 		parse_str( $_POST['filter_taxonomy'], $filter_taxonomy );
 		$view_array = get_post_meta( $view_id, '_wpv_settings', true );
 		foreach ( $filter_taxonomy as $filter_key => $filter_data ) {
+			if ( 
+				strpos( $filter_key, 'tax_' ) === 0 
+				&& strpos( $filter_key, '_relationship' ) === strlen( $filter_key ) - strlen( '_relationship' )
+			) {
+				$tax_name = substr( $filter_key, 0, strlen( $filter_key ) - strlen( '_relationship' ) );
+				$tax_name = substr( $tax_name, strlen( 'tax_' ) );
+				$involved_taxonomies[] = $tax_name;
+			}
 			if ( 
 				! isset( $view_array[$filter_key] ) 
 				|| $filter_data != $view_array[$filter_key] 
@@ -416,12 +433,24 @@ class WPV_Taxonomy_Filter {
 				$view_array[$filter_key] = $filter_data;
 			}
 		}
+		foreach ( $involved_taxonomies as $involved_tax ) {
+			if ( 'category' == $involved_tax ) {
+				$needle_tax = 'post_category';
+			} else {
+				$needle_tax = 'tax_input_' . $involved_tax;
+			}
+			if ( ! isset( $filter_taxonomy[$needle_tax] ) ) {
+				$view_array[$needle_tax] = array();
+				$change = true;
+			}
+		}
 		if ( $change ) {
 			update_post_meta( $view_id, '_wpv_settings', $view_array );
 			do_action( 'wpv_action_wpv_save_item', $view_id );
 		}
 		$summary = __( 'Select posts with taxonomy: ', 'wpv-views' );
 		$result = '';
+		// @todo maybe we can use here the $involved_taxonomies instead remove the $save_name construct repetition
 		$taxonomies = get_taxonomies( '', 'objects' );
 		foreach ( $taxonomies as $category_slug => $category ) {
 			$relationship_name = ( $category->name == 'category' ) ? 'tax_category_relationship' : 'tax_' . $category->name . '_relationship';

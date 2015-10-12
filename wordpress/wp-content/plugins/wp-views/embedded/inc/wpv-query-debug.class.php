@@ -9,7 +9,9 @@ function wpv_debuger()
 	return;
 }
 
-
+/**
+ * @todo this needs so much comments
+ */
 class WPV_Debug{
 
 	function __construct(){
@@ -258,7 +260,8 @@ class WPV_Debug{
     }
 
 	function user_can_debug(){
-		if ( !function_exists('wpv_view_defaults') ){
+        global $WP_Views;
+		if ( $WP_Views->is_embedded() ) {
 			return false;
 		}
 		if ( !$this->status){
@@ -549,7 +552,12 @@ class WPV_Debug{
 		}
 					$edit_link = admin_url().'admin.php?page=views-editor&view_id='.$current['view_id'];
 					if ( $current['type'] == 'content-template' ){
-						$edit_link = admin_url().'post.php?post='.$current['view_id'].'&action=edit';
+
+						$edit_link = esc_attr( add_query_arg(
+                            array( 'page' => WPV_CT_EDITOR_PAGE_NAME, 'ct_id' => $current['view_id'], 'action' => 'edit' ),
+                            admin_url( 'admin.php' )
+                        ) );
+
 					}elseif( $current['type'] == 'archive' ){
 						$edit_link = admin_url().'admin.php?page=view-archives-editor&view_id='.$current['view_id'];
 					}

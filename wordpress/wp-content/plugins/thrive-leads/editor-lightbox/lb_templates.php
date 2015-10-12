@@ -44,6 +44,10 @@ if ($post_type->post_type == TVE_LEADS_POST_TWO_STEP_LIGHTBOX) {
 }
 
 $form_type_name = tve_leads_get_form_type_name($variation['post_parent']);
+/* this is a special case where the user is editing a "lightbox" state for an inline form (shortcode, widget etc) */
+if (!empty($variation['parent_id']) && $variation['form_state'] == 'lightbox') {
+    $form_type_name = __('Lightbox', 'thrive-leads');
+}
 ?>
 <div class="tve_large_lightbox">
     <h4>
@@ -98,7 +102,7 @@ $form_type_name = tve_leads_get_form_type_name($variation['post_parent']);
                                 <span
                                     class="tve-tpl-<?php echo $form_type ?> tve_grid_cell tve_landing_page_template tve_click<?php echo $current_template == $data['key'] ? ' tve_cell_selected' : '' ?>">
                                 <input type="hidden" class="lp_code" value="<?php echo $data['key'] ?>"/>
-                                <img src="<?php echo $data['thumbnail'] ?>" width="180" height="152"/>
+                                <img src="<?php echo $data['thumbnail'] ?>" width="166" height="140"/>
                                 <span class="tve_cell_caption_holder"><span
                                         class="tve_cell_caption"><?php echo $data['name'] ?></span></span>
                                 <span class="tve_cell_check tve_icm tve-ic-checkmark"></span>
@@ -138,7 +142,7 @@ $form_type_name = tve_leads_get_form_type_name($variation['post_parent']);
                                         class="tve-tpl-<?php echo $form_type ?> tve_grid_cell tve_landing_page_template tve_click">
                                     <input type="hidden" class="lp_code" value="<?php echo $data['key'] ?>"/>
                                     <input type="hidden" class="multi_step" value="1"/>
-                                    <img src="<?php echo $data['thumbnail'] ?>" width="180" height="152"/>
+                                    <img src="<?php echo $data['thumbnail'] ?>" width="166" height="140"/>
                                     <span class="tve_cell_caption_holder"><span
                                             class="tve_cell_caption"><?php echo $data['name'] ?></span></span>
                                     <span class="tve_cell_check tve_icm tve-ic-checkmark"></span>

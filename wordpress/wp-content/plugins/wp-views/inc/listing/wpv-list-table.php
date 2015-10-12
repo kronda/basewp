@@ -330,7 +330,7 @@ abstract class WPV_List_Table extends WPV_List_Table_Embedded {
         list( $columns, $hidden, $sortable ) = $this->get_column_info();
 
         $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-        $current_url = remove_query_arg( 'paged', $current_url );
+        $current_url = esc_url( remove_query_arg( 'paged', $current_url ) );
 
         if ( isset( $_GET['orderby'] ) )
             $current_orderby = $_GET['orderby'];

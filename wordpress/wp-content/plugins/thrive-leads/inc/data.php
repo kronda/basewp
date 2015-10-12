@@ -90,6 +90,25 @@ function tve_leads_get_groups($filter = array())
 }
 
 /**
+ * get a list of ids from all the existing lead groups
+ * @return array
+ */
+function tve_leads_get_group_ids()
+{
+    $groups = array();
+    $all_lead_groups = tve_leads_get_groups(array(
+        'full_data' => false,
+        'tracking_data' => false,
+        'active_tests' => false,
+        'completed_tests' => false
+    ));
+    foreach ($all_lead_groups as $lead_group) {
+        array_push($groups, $lead_group->ID);
+    }
+    return $groups;
+}
+
+/**
  *
  * get one lead group by id
  *
@@ -477,7 +496,7 @@ function tve_leads_get_group_empty_form_variations($group_id)
 }
 
 /**
- * Delete posts like Group, Shortcode and 2 Step Lightbox
+ * Delete posts like Group, Shortcode and 2 Step Lightbox (new name: ThriveBox)
  * @param $group_id
  * @return mixed
  */
@@ -584,7 +603,7 @@ function tve_leads_save_shortcode($model)
 }
 
 /**
- * create or update a 2 Step Lightbox post
+ * create or update a 2 Step Lightbox post (new name: ThriveBox)
  *
  * can also be used to delete a lead group "internally", by setting the post_status to 'trash'
  *
@@ -1290,7 +1309,7 @@ function tve_leads_get_conversion_report_data($filter)
     $count_table_data = $tvedb->tve_leads_get_log_data_info($filter, true);
 
     return array(
-        'chart_title' => __('Graph to show lead generation conversions over time', 'thrive-leads'),
+        'chart_title' => __('Number of lead generation conversions over time', 'thrive-leads'),
         'chart_data' => $chart_data,
         'chart_x_axis' => $dates,
         'chart_y_axis' => __('Conversions', 'thrive-leads'),
@@ -1321,8 +1340,8 @@ function tve_leads_get_list_growth($filter, $cumulative = false)
     global $tve_leads_chart_colors;
 
     $chart_data = array(
-        'id' => 1, //this is more or less useless
-        'name' => $cumulative ? __('Cumulative Lead Growth', 'thrive-leads') : __('Lead Growth', 'thrive-leads'),
+        'id' => $cumulative ? 1 : 2, //this is more or less useless
+        'name' => $cumulative ? __('Total leads since start date', 'thrive-leads') : __('Lead Growth', 'thrive-leads'),
         'color' => $tve_leads_chart_colors[0], //we just use the first color
         'data' => array_fill(0, count($data['chart_x_axis']), 0) //fill array with 0
     );
@@ -1333,7 +1352,7 @@ function tve_leads_get_list_growth($filter, $cumulative = false)
         }
     }
 
-    $title = 'Graph to show' . ($cumulative ? ' cumulative' : '') . ' list growth over time';
+    $title = 'Total number of opt-ins across all forms and lead groups' . ($cumulative ? '(cumulative)' : '');
     $data['chart_title'] = __($title, 'thrive-leads');
     $data['chart_data'] = array($chart_data);
     $data['chart_y_axis'] = __('Leads', 'thrive-leads');
@@ -1480,7 +1499,7 @@ function tve_leads_get_cumulative_conversion_report_data($filter)
     $count_table_data = $tvedb->tve_leads_get_log_data_info($filter, true);
 
     return array(
-        'chart_title' => __('Graph to show cumulative lead generation conversions by date', 'thrive-leads'),
+        'chart_title' => __('Cumulative lead generation conversions over time', 'thrive-leads'),
         'chart_data' => $chart_data,
         'chart_x_axis' => $dates,
         'chart_y_axis' => __('Signups', 'thrive-leads'),
@@ -1580,7 +1599,7 @@ function tve_leads_get_conversion_rate_test_data($filter)
     $average_rate = (float)tve_leads_conversion_rate($impressions, $conversions, '', 2);
 
     return array(
-        'chart_title' => __('Graph to show Lead Generation conversions by date', 'thrive-leads'),
+        'chart_title' => __('Lead generation conversion rate over time', 'thrive-leads'),
         'chart_data' => $chart_data,
         'chart_x_axis' => $dates,
         'chart_y_axis' => __('Conversion Rate', 'thrive-leads') . ' (%)',
@@ -1650,7 +1669,7 @@ function tve_leads_get_conversion_rate_report_chart($filter)
     $average_rate = (float)tve_leads_conversion_rate($count[TVE_LEADS_UNIQUE_IMPRESSION], $count[TVE_LEADS_CONVERSION], '', 2);
 
     return array(
-        'chart_title' => __('Graph to show Lead Generation conversions by date', 'thrive-leads'),
+        'chart_title' => __('Lead generation conversion rate over time', 'thrive-leads'),
         'chart_data' => array($chart_data),
         'chart_x_axis' => $dates,
         'chart_y_axis' => __('Conversion Rate', 'thrive-leads') . ' (%)',
@@ -1777,7 +1796,7 @@ function tve_leads_get_comparison_report_data($filter)
     }
 
     return array(
-        'chart_title' => __('Pie Chart to show relative conversion source', 'thrive-leads'),
+        'chart_title' => __('How the total number of opt ins is distributed between Lead Groups and individual forms', 'thrive-leads'),
         'chart_data' => $chart_data,
         'chart_y_axis' => '',
         'chart_x_axis' => '',

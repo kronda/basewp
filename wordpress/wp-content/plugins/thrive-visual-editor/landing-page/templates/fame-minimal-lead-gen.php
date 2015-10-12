@@ -50,7 +50,7 @@
                 <div class="tve_cb tve_cb4 tve_orange" style="background: transparent; border-radius: 200px;">
                     <div class="tve_cb_cnt">
                         <p class="tve_p_center" style="margin: 0; padding: 0; font-size: 16px; color: #fff;font-weight: 100;">
-                            &copy; 2014 Landing Page. All rights Reserved.
+                            &copy; {tcb_current_year} Landing Page. All rights Reserved.
                             <a href="http://thrivethemes.com" target="_blank">
                                 <font color="#fff">
                                     <span class="underline_text">Disclaimer</span>

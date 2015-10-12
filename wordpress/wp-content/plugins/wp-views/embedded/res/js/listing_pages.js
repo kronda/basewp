@@ -6,6 +6,19 @@ var WPViews = WPViews || {};
 WPViews.ListingPagesEmbedded = function( $ ) {
 
     var self = this;
+	
+	$( '#posts-filter' ).submit( function( e ) {
+		e.preventDefault();
+		var url_params = self.decodeURIParams( $( this ).serialize() );
+		if (
+			typeof( url_params['search'] ) !== 'undefined' 
+			&& url_params['search'] == ''
+		) {
+			url_params['search'] = null;
+		}
+		self.navigateWithURIParams( url_params );
+		return false;
+	});
 
     /**
      * Reload a page with given URL parameters.

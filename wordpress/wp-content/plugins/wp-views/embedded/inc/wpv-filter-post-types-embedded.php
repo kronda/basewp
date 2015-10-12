@@ -56,7 +56,17 @@ function wpv_filter_get_post_types_arg($query, $view_settings) {
 			} else {
 				$query['post__not_in'] = array( $_GET['wpv_post_id'] );
 			}
-        }
+        } else {
+			global $post;
+			if ( $post instanceof WP_Post ) {
+				$post_not_in_list = array( $post->ID );
+				if ( isset( $query['post__not_in'] ) ) {
+					$query['post__not_in'] = array_merge( (array)$query['post__not_in'], $post_not_in_list );
+				} else {
+					$query['post__not_in'] = $post_not_in_list;
+				}
+			}
+		}
     }
     
     return $query;

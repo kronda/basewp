@@ -17,7 +17,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Top Bar Layout', 'fl-automator'),
+						'label'         => __('Layout', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'none'          => __('None', 'fl-automator'),
@@ -42,7 +42,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'   => 'WP_Customize_Control',
-						'label'   => sprintf( _x( 'Top Bar Column %d Layout', '%d stands for column order number.', 'fl-automator' ), 1 ),
+						'label'   => sprintf( _x( 'Column %d Layout', '%d stands for column order number.', 'fl-automator' ), 1 ),
 						'type'    => 'select',
 						'choices' => array(
 							'text'              => __('Text', 'fl-automator'),
@@ -62,7 +62,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class' => 'WP_Customize_Control',
-						'label' => sprintf( _x( 'Top Bar Column %d Text', '%d stands for column order number.', 'fl-automator' ), 1 ),
+						'label' => sprintf( _x( 'Column %d Text', '%d stands for column order number.', 'fl-automator' ), 1 ),
 						'type'  => 'textarea'
 					)
 				),
@@ -82,7 +82,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'   => 'WP_Customize_Control',
-						'label'   => sprintf( _x( 'Top Bar Column %d Layout', '%d stands for column order number.', 'fl-automator' ), 2 ),
+						'label'   => sprintf( _x( 'Column %d Layout', '%d stands for column order number.', 'fl-automator' ), 2 ),
 						'type'    => 'select',
 						'choices' => array(
 							'text'              => __('Text', 'fl-automator'),
@@ -102,7 +102,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class' => 'WP_Customize_Control',
-						'label' => sprintf( _x( 'Top Bar Column %d Text', '%d stands for column order number.', 'fl-automator' ), 2 ),
+						'label' => sprintf( _x( 'Column %d Text', '%d stands for column order number.', 'fl-automator' ), 2 ),
 						'type'  => 'textarea'
 					)
 				)
@@ -121,7 +121,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Top Bar Background Color', 'fl-automator')
+						'label'     => __('Background Color', 'fl-automator')
 					)
 				),
 
@@ -132,7 +132,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Top Bar Background Gradient', 'fl-automator'),
+						'label'         => __('Background Gradient', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'0'             => _x( 'Disabled', 'Used for multiple Customizer options values. Use generalized form of the word when translating.', 'fl-automator' ),
@@ -148,7 +148,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Image_Control',
-						'label'     => __('Top Bar Background Image', 'fl-automator')
+						'label'     => __('Background Image', 'fl-automator')
 					)
 				),
 
@@ -160,7 +160,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Top Bar Background Repeat', 'fl-automator'),
+						'label'     => __('Background Repeat', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'no-repeat'  => __('None', 'fl-automator'),
@@ -179,7 +179,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Top Bar Background Position', 'fl-automator'),
+						'label'     => __('Background Position', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'left top'      => __( 'Left Top', 'fl-automator' ),
@@ -203,7 +203,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Top Bar Background Attachment', 'fl-automator'),
+						'label'     => __('Background Attachment', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'scroll'    => __('Scroll', 'fl-automator'),
@@ -220,7 +220,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Top Bar Background Scale', 'fl-automator'),
+						'label'     => __('Background Scale', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'auto'      => __('None', 'fl-automator'),
@@ -237,7 +237,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Top Bar Text Color', 'fl-automator')
+						'label'     => __('Text Color', 'fl-automator')
 					)
 				),
 
@@ -248,7 +248,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Top Bar Link Color', 'fl-automator')
+						'label'     => __('Link Color', 'fl-automator')
 					)
 				),
 
@@ -259,7 +259,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Top Bar Hover Color', 'fl-automator')
+						'label'     => __('Hover Color', 'fl-automator')
 					)
 				)
 			)
@@ -277,7 +277,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Header Layout', 'fl-automator'),
+						'label'     => __('Layout', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'none'      => __('None', 'fl-automator'),
@@ -296,7 +296,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Header Padding (px)', 'fl-automator'),
+						'label'     => __('Padding (px)', 'fl-automator'),
 						'type'      => 'text'
 					)
 				),
@@ -333,7 +333,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Header Content Layout', 'fl-automator'),
+						'label'         => __('Content Layout', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'none'              => __('None', 'fl-automator'),
@@ -351,7 +351,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Header Content Text', 'fl-automator'),
+						'label'     => __('Content Text', 'fl-automator'),
 						'type'      => 'textarea'
 					)
 				)
@@ -370,7 +370,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Header Background Color', 'fl-automator')
+						'label'     => __('Background Color', 'fl-automator')
 					)
 				),
 
@@ -381,7 +381,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Header Background Gradient', 'fl-automator'),
+						'label'         => __('Background Gradient', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'0'             => _x( 'Disabled', 'Used for multiple Customizer options values. Use generalized form of the word when translating.', 'fl-automator' ),
@@ -397,7 +397,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Image_Control',
-						'label'     => __('Header Background Image', 'fl-automator')
+						'label'     => __('Background Image', 'fl-automator')
 					)
 				),
 
@@ -409,7 +409,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Header Background Repeat', 'fl-automator'),
+						'label'     => __('Background Repeat', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'no-repeat'  => __('None', 'fl-automator'),
@@ -428,7 +428,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Header Background Position', 'fl-automator'),
+						'label'     => __('Background Position', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'left top'      => __( 'Left Top', 'fl-automator' ),
@@ -452,7 +452,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Header Background Attachment', 'fl-automator'),
+						'label'     => __('Background Attachment', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'scroll'    => __('Scroll', 'fl-automator'),
@@ -469,7 +469,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Header Background Scale', 'fl-automator'),
+						'label'     => __('Background Scale', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'auto'      => __('None', 'fl-automator'),
@@ -486,7 +486,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Header Text Color', 'fl-automator')
+						'label'     => __('Text Color', 'fl-automator')
 					)
 				),
 
@@ -497,7 +497,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Header Link Color', 'fl-automator')
+						'label'     => __('Link Color', 'fl-automator')
 					)
 				),
 
@@ -508,7 +508,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Header Hover Color', 'fl-automator')
+						'label'     => __('Hover Color', 'fl-automator')
 					)
 				)
 			)
@@ -578,7 +578,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'FLCustomizerControl',
-						'label'     => __('Logo Font Family', 'fl-automator'),
+						'label'     => __('Font Family', 'fl-automator'),
 						'type'      => 'font',
 						'connect'   => 'fl-logo-font-weight'
 					)
@@ -591,7 +591,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'FLCustomizerControl',
-						'label'     => __('Logo Font Weight', 'fl-automator'),
+						'label'     => __('Font Weight', 'fl-automator'),
 						'type'      => 'font-weight',
 						'connect'   => 'fl-logo-font-family'
 					)
@@ -606,7 +606,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Logo Font Size (px)', 'fl-automator'),
+						'label'     => __('Font Size (px)', 'fl-automator'),
 						'type'      => 'text'
 					)
 				)
@@ -677,7 +677,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Nav Background Color', 'fl-automator')
+						'label'     => __('Background Color', 'fl-automator')
 					)
 				),
 
@@ -688,7 +688,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Nav Background Gradient', 'fl-automator'),
+						'label'         => __('Background Gradient', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'0'             => _x( 'Disabled', 'Used for multiple Customizer options values. Use generalized form of the word when translating.', 'fl-automator' ),
@@ -704,7 +704,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Image_Control',
-						'label'     => __('Nav Background Image', 'fl-automator')
+						'label'     => __('Background Image', 'fl-automator')
 					)
 				),
 
@@ -716,7 +716,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Nav Background Repeat', 'fl-automator'),
+						'label'     => __('Background Repeat', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'no-repeat'  => __('None', 'fl-automator'),
@@ -735,7 +735,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Nav Background Position', 'fl-automator'),
+						'label'     => __('Background Position', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'left top'      => __( 'Left Top', 'fl-automator' ),
@@ -759,7 +759,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Nav Background Attachment', 'fl-automator'),
+						'label'     => __('Background Attachment', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'scroll'    => __('Scroll', 'fl-automator'),
@@ -776,7 +776,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Nav Background Scale', 'fl-automator'),
+						'label'     => __('Background Scale', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'auto'      => __('None', 'fl-automator'),
@@ -793,7 +793,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Nav Link Color', 'fl-automator')
+						'label'     => __('Link Color', 'fl-automator')
 					)
 				),
 				
@@ -804,7 +804,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Nav Hover Color', 'fl-automator')
+						'label'     => __('Hover Color', 'fl-automator')
 					)
 				),
 
@@ -816,7 +816,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'FLCustomizerControl',
-						'label'     => __('Nav Font Family', 'fl-automator'),
+						'label'     => __('Font Family', 'fl-automator'),
 						'type'      => 'font',
 						'connect'   => 'fl-nav-font-weight'
 					)
@@ -829,7 +829,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'FLCustomizerControl',
-						'label'     => __('Nav Font Weight', 'fl-automator'),
+						'label'     => __('Font Weight', 'fl-automator'),
 						'type'      => 'font-weight',
 						'connect'   => 'fl-nav-font-family'
 					)
@@ -843,7 +843,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Nav Font Format', 'fl-automator'),
+						'label'     => __('Font Format', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'none'       => __('Regular', 'fl-automator'),
@@ -863,7 +863,7 @@ FLCustomizer::add_panel('fl-header', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Nav Font Size (px)', 'fl-automator'),
+						'label'     => __('Font Size (px)', 'fl-automator'),
 						'type'      => 'text'
 					)
 				)

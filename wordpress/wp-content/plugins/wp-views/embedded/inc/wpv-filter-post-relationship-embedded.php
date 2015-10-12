@@ -385,22 +385,20 @@ function wpv_filter_post_relationship( $query, $view_settings ) {
  */
 
 
-add_action('wpv-before-display-post', 'wpv_before_display_post_post_relationship', 10, 2);
-function wpv_before_display_post_post_relationship($post, $view_id) {
+add_action( 'wpv-before-display-post', 'wpv_before_display_post_post_relationship', 10, 2 );
 
+function wpv_before_display_post_post_relationship( $post, $view_id ) {
     static $related = array();
     global $WP_Views;
-    
-    if (function_exists('wpcf_pr_get_belongs')) {
-        
-        if (!isset($related[$post->post_type])) {
-            $related[$post->post_type] = wpcf_pr_get_belongs($post->post_type);
+    if ( function_exists( 'wpcf_pr_get_belongs' ) ) {
+        if ( ! isset( $related[$post->post_type] ) ) {
+            $related[$post->post_type] = wpcf_pr_get_belongs( $post->post_type );
         }
-        if (is_array($related[$post->post_type])) {
-            foreach($related[$post->post_type] as $post_type => $data) {
-                $related_id = wpcf_pr_post_get_belongs($post->ID, $post_type);
-                if ($related_id) {
-                    $WP_Views->set_variable($post_type . '_id', $related_id);
+        if ( is_array( $related[$post->post_type] ) ) {
+            foreach( $related[$post->post_type] as $post_type => $data ) {
+                $related_id = wpcf_pr_post_get_belongs( $post->ID, $post_type );
+                if ( $related_id ) {
+                    $WP_Views->set_variable( $post_type . '_id', $related_id );
                 }
             }
         }
@@ -408,24 +406,71 @@ function wpv_before_display_post_post_relationship($post, $view_id) {
     
 }
 
-add_filter('wpv_filter_requires_current_page', 'wpv_filter_post_relationship_requires_current_page', 10, 2);
-function wpv_filter_post_relationship_requires_current_page($state, $view_settings) {
-	if ($state) {
+add_filter( 'wpv_filter_requires_current_page', 'wpv_filter_post_relationship_requires_current_page', 10, 2 );
+
+function wpv_filter_post_relationship_requires_current_page( $state, $view_settings ) {
+	if ( $state ) {
 		return $state; // Already set
 	}
-
-    if (isset($view_settings['post_relationship_mode'][0])) {
-        
-        if ($view_settings['post_relationship_mode'][0] == 'current_page') {
+    if ( isset( $view_settings['post_relationship_mode'][0] ) ) {   
+        if ( $view_settings['post_relationship_mode'][0] == 'current_page' ) {
             $state = true;
         }
-
-        if ($view_settings['post_relationship_mode'][0] == 'parent_view') {
+        if ( $view_settings['post_relationship_mode'][0] == 'parent_view' ) {
             $state = true;
         }
 	}
-    
     return $state;
 }
 
+/**
+* wpv_filter_post_relationship_requires_framework_values
+*
+* Check if the current filter by post relationship needs info about the framework values
+*
+* @since 1.10
+*/
 
+add_filter( 'wpv_filter_requires_framework_values', 'wpv_filter_post_relationship_requires_framework_values', 10, 2 );
+
+function wpv_filter_post_relationship_requires_framework_values( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+    if ( isset( $view_settings['post_relationship_mode'][0] ) ) {
+        if ( $view_settings['post_relationship_mode'][0] == 'framework' ) {
+            $state = true;
+        }
+    }
+    return $state;
+}
+
+/**
+* wpv_filter_register_post_relationship_shortcode_attributes
+*
+* Register the filter by post relationship on the method to get View shortcode attributes
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_register_shortcode_attributes_for_posts', 'wpv_filter_register_post_relationship_shortcode_attributes', 10, 2 );
+
+function wpv_filter_register_post_relationship_shortcode_attributes( $attributes, $view_settings ) {
+	if (
+		isset( $view_settings['post_relationship_mode'] ) 
+		&& isset( $view_settings['post_relationship_mode'][0] ) 
+		&& $view_settings['post_relationship_mode'][0] == 'shortcode_attribute' 
+	) {
+		$attributes[] = array(
+			'query_type'	=> $view_settings['query_type'][0],
+			'filter_type'	=> 'post_relationship',
+			'filter_label'	=> __( 'Post relationship', 'wpv-views' ),
+			'value'			=> 'ancestor_id',
+			'attribute'		=> $view_settings['post_relationship_shortcode_attribute'],
+			'expected'		=> 'number',
+			'placeholder'	=> '103',
+			'description'	=> __( 'Please type a post ID to get its children', 'wpv-views' )
+		);
+	}
+	return $attributes;
+}

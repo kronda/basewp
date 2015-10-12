@@ -348,11 +348,13 @@ class Thrive_Leads_Template_Manager extends Thrive_Leads_Request_Handler
     {
         $close_screen_filler = '__TCB_EVENT_[{"t":"click","a":"tl_state_sf_close","config":{}}]_TNEVE_BCT__';
         $close_lightbox = '__TCB_EVENT_[{"t":"click","a":"tl_state_lb_close","config":{}}]_TNEVE_BCT__';
+        $close_form = '__TCB_EVENT_[{"t":"click","a":"thrive_leads_form_close","config":{}}]_TNEVE_BCT__';
         $switch_state = '__TCB_EVENT_[{"t":"click","a":"tl_state_switch","config":{"s":"%s"}}]_TNEVE_BCT__';
         $open_lightbox = '__TCB_EVENT_[{"t":"click","a":"tl_state_lightbox","config":{"s":"%s","a":"zoom_in"}}]_TNEVE_BCT__';
 
         $content = str_replace('|close_screen_filler|', htmlspecialchars($close_screen_filler), $content);
         $content = str_replace('|close_lightbox|', htmlspecialchars($close_lightbox), $content);
+        $content = str_replace('|close_form|', htmlspecialchars($close_form), $content);
 
         foreach ($state_config as $state_index => $data) {
             /**
@@ -467,10 +469,11 @@ class Thrive_Leads_Template_Manager extends Thrive_Leads_Request_Handler
         $only_current_template = (int)$this->param('current_template');
         $form_type = get_post_meta((int)$this->param('post_id'), 'tve_form_type', true);
 
+        $variation_key = (int)$this->param('_key');
+        $variation = tve_leads_get_form_variation(null, $variation_key);
+
         //for two step lightbox we have two types of forms: lightbox and screenfiller
         if ($form_type == 'two_step_lightbox') {
-            $variation_key = (int)$this->param('_key');
-            $variation = tve_leads_get_form_variation(null, $variation_key);
             //if the current variation is the default one, then we display both screen filler and lightbox saved templates
             if ($variation['parent_id'] == 0) {
                 $form_type = array('screen_filler', 'lightbox');
@@ -480,7 +483,12 @@ class Thrive_Leads_Template_Manager extends Thrive_Leads_Request_Handler
                 $form_type = array($this->type($parent_variation));
             }
         } else {
-            $form_type = array(self::tpl_type_map($form_type));
+            /* if the user is editing a multi-step form (e.g. a shortcode) and the current state is a lightbox state, we need to return the saved lightbox templates */
+            if (!empty($variation['parent_id']) && $variation['form_state'] == 'lightbox') {
+                $form_type = array('lightbox');
+            } else {
+                $form_type = array(self::tpl_type_map($form_type));
+            }
         }
 
         $templates = get_option(self::OPTION_TPL_META);
@@ -489,7 +497,7 @@ class Thrive_Leads_Template_Manager extends Thrive_Leads_Request_Handler
         $html = '';
 
         $input = '<input type="hidden" class="lp_code" value="user-saved-template-%s"/>';
-        $img = '<img src="' . TVE_LEADS_URL . 'editor-templates/%s/thumbnails/%s" width="178" height="150"/>';
+        $img = '<img src="' . TVE_LEADS_URL . 'editor-templates/%s/thumbnails/%s" width="166" height="140"/>';
         $caption = '<span class="tve_cell_caption_holder"><span class="tve_cell_caption">%s</span></span><span class="tve_cell_check tve_icm tve-ic-checkmark"></span>';
 
         $item = '<span class="tve_grid_cell tve_landing_page_template tve_click" title="Choose %s">%s</span>';

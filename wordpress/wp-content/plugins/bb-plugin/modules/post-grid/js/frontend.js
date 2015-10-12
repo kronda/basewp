@@ -87,7 +87,7 @@ var FLBuilderPostGrid;
 				loading         : {
 					msgText         : 'Loading',
 					finishedMsg     : '',
-					img             : flBuilderUrl + 'img/ajax-loader-grey.gif',
+					img             : FLBuilderLayoutConfig.paths.pluginUrl + 'img/ajax-loader-grey.gif',
 					speed           : 1
 				}
 			}, $.proxy(this._infiniteScrollComplete, this));

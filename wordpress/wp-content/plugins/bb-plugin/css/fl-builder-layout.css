@@ -75,9 +75,12 @@
 	margin-left: auto;
 	margin-right: auto;
 }
+.fl-row-content-wrap {
+	position: relative;
+}
 
 /* Photo Bg */
-.fl-builder-touch .fl-row-bg-photo .fl-row-content-wrap {
+.fl-builder-mobile .fl-row-bg-photo .fl-row-content-wrap {
 	background-attachment: scroll;
 }
 
@@ -136,9 +139,6 @@
 }
 
 /* Row Bg Overlay */
-.fl-row-bg-overlay .fl-row-content-wrap {
-	position: relative;
-}
 .fl-row-bg-overlay .fl-row-content-wrap:after {
 	content: '';
 	display: block;
@@ -187,6 +187,15 @@
 .fl-module img {
 	max-width: 100%;
 } 
+
+/* Module Templates
+------------------------------------------------------ */
+
+.fl-builder-module-template {
+	margin: 0 auto;
+	max-width: 1100px;
+	padding: 20px;
+}
 
 /* Buttons
 ------------------------------------------------------ */
@@ -471,7 +480,7 @@ img.mfp-img {
 .fl-animation {
 	opacity: 0;
 }
-.fl-builder-touch .fl-animation,
+.fl-builder-mobile .fl-animation,
 .fl-builder-edit .fl-animation,
 .fl-animated {
 	opacity: 1;

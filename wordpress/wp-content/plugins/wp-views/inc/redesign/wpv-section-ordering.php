@@ -45,6 +45,7 @@ function add_view_ordering( $view_settings, $view_id ) {
 		$hide = ' hidden';
 	}
 	$section_help_pointer = WPV_Admin_Messages::edit_section_help_pointer( 'ordering' );
+	$view_settings = wpv_order_orderby_default_settings( $view_settings );
 	?>
 	<div class="wpv-setting-container wpv-settings-ordering js-wpv-settings-ordering<?php echo $hide; ?>">
 		<div class="wpv-settings-header">
@@ -58,7 +59,6 @@ function add_view_ordering( $view_settings, $view_id ) {
 		</div>
 		<div class="wpv-setting js-wpv-setting">
 			<p class="wpv-settings-query-type-posts js-wpv-settings-posts-order"<?php echo ( $view_settings['query_type'][0] != 'posts' ) ? ' style="display: none;"' : ''; ?>>
-				<?php $view_settings = wpv_order_by_default_settings( $view_settings ); // TODO this should not be needed ?>
 				<label for="wpv-settings-orderby"><?php _e( 'Order by: ', 'wpv-views' ) ?></label>
 				<select id="wpv-settings-orderby" class="js-wpv-posts-orderby" name="_wpv_settings[orderby]" autocomplete="off" data-rand="<?php echo esc_attr( __('Pagination and random ordering do not work together and would produce unexpected results. Please disable pagination or random ordering.', 'wpv-views') ); ?>">
 					<option value="post_date"><?php _e('Post date', 'wpv-views'); ?></option>
@@ -96,7 +96,7 @@ function add_view_ordering( $view_settings, $view_id ) {
 				</select>
 			</p>
 			<p class="wpv-settings-query-type-taxonomy"<?php echo ( $view_settings['query_type'][0] != 'taxonomy' ) ? ' style="display: none;"' : ''; ?>>
-				<?php $view_settings = wpv_taxonomy_order_by_default_settings( $view_settings );
+				<?php
 				$taxonomy_order_by = array(
 					'id' => __('Term ID'),
 					'count' => __('Post count'),

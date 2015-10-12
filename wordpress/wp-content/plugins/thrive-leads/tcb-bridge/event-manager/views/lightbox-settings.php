@@ -4,11 +4,11 @@ if ($this->success_message) : ?>
     <br>
     <div class="tve_message tve_success" id="tve_landing_page_msg"><?php echo $this->success_message ?></div>
 <?php endif ?>
-<h5><?php echo __('Thrive Leads 2 Step Lightbox', 'thrive-leads') ?></h5>
+<h5><?php echo __('Thrive Leads ThriveBox', 'thrive-leads') ?></h5>
 
 <table class="tve_no_brdr">
     <tr>
-        <td width="35%"><?php echo __('Which 2 Step Lightbox should be displayed ?', 'thrive-leads') ?></td>
+        <td width="35%"><?php echo __('Which ThriveBox should be displayed ?', 'thrive-leads') ?></td>
         <td width="65%">
             <select name="l_id" class="tve_ctrl_validate" id="tl-choose-2-step" data-validators="required">
                 <option value=""><?php echo __('Select Lighbox', 'thrive-leads') ?></option>
@@ -23,7 +23,7 @@ if ($this->success_message) : ?>
         <td><?php echo __('Lightbox animation', 'thrive-leads') ?></td>
         <td>
             <div class="two-step-edit-message tl-no-lightbox" style="display:none">
-                <?php echo __('Choose a 2 Step Lightbox', 'thrive-leads') ?>
+                <?php echo __('Choose a ThriveBox', 'thrive-leads') ?>
             </div>
             <div class="two-step-edit-message tl-test-running" style="display:none">
                 <?php echo __('You cannot change the animation settings, as you currently have an A/B test running on this lightbox.', 'thrive-leads') ?>

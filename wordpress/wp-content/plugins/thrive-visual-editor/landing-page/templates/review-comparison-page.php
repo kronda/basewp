@@ -675,7 +675,7 @@
 
 <div class="tve_lp_footer tve_empty_dropzone">
     <p class="tve_p_center" style="color: #666666; font-size: 16px; margin: 20px 0; padding: 0;">
-        &copy; 2015 Thrive Landing Pages. All rights Reserved | <a href="#">Privacy Policy </a> | <a href="#"><span
+        &copy; {tcb_current_year} Thrive Landing Pages. All rights Reserved | <a href="#">Privacy Policy </a> | <a href="#"><span
                 class="underline_text">Disclaimer</span></a>
     </p>
 </div>

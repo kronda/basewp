@@ -34,6 +34,14 @@
 *
 */
 function get_view_query_results( $view_id, $post_in = null, $current_user_in = null, $args = array() ) {
+	$view_post = get_post( $view_id );
+	if (
+		! $view_post 
+		|| $view_post->post_status != 'publish' 
+		|| $view_post->post_type != 'view'
+	) {
+		return array();
+	}
 	global $WP_Views, $post, $current_user, $authordata;
 	// Save current globals to restore them later
 	$post_old = $post;
@@ -179,9 +187,10 @@ function render_view( $args, $get_override = array() ) {
 *
 * Returns the content of a Content Template applied to a Post
 *
-* @param $view_template_id (integer) ID of the relevant Content Template
-* @param $post_in (post object) post to apply the Content Template to
-* @param $current_user_in (optional) (user object) sets the global $current_user
+* @param integer	$view_template_id	ID of the relevant Content Template
+* @param object		$post_in			Post to apply the Content Template to
+* @param object		$current_user_in	Sets the global $current_user
+* @param array		$args				Extra arguments to be used
 *
 * @usage  <?php echo render_view_template(80, $mypost)); ?>
 *
@@ -190,7 +199,16 @@ function render_view( $args, $get_override = array() ) {
 * @since unknown
 */
 
-function render_view_template( $view_template_id, $post_in = null, $current_user_in = null ) {
+function render_view_template( $view_template_id, $post_in = null, $current_user_in = null, $args = array() ) {
+	$ct_post = get_post( $view_template_id );
+	if (
+		! $ct_post 
+		|| $ct_post->post_status != 'publish' 
+		|| $ct_post->post_type != 'view-template'
+	) {
+		return '';
+	}
+	
 	global $WPV_templates, $post, $current_user, $authordata;
 	// Save current globals to restore them later
 	$post_old = $post;
@@ -216,7 +234,32 @@ function render_view_template( $view_template_id, $post_in = null, $current_user
 			$WPV_templates->remove_wpautop();
 		}
 		$content = wpml_content_fix_links_to_translated_content( $content );
-		$content = apply_filters( 'the_content', $content );
+		if (
+			
+			/**
+			* wpv_filter_wpv_render_view_template_force_suppress_filters
+			*
+			* Force the use of the restricted wpv_filter_wpv_the_content_suppressed filter instead of the the_content one.
+			*
+			* @param bool 						Defaults to false
+			* @param object	$ct_post 			The Content Template post object
+			* @param object	$post_in			Post object to overwrote the global $post
+			* @param object $current_user_in	User object that overwrote the global $current_user
+			* @param array	$args				Extra arguments passed to the function
+			*
+			* Since 1.10
+			*/
+
+			apply_filters( 'wpv_filter_wpv_render_view_template_force_suppress_filters', false, $ct_post, $post_in, $current_user_in, $args )
+			|| (
+				isset( $args['suppress_filters'] )
+				&& $args['suppress_filters']
+			)
+		) {
+			$content = apply_filters( 'wpv_filter_wpv_the_content_suppressed', $content );
+		} else {
+			$content = apply_filters( 'the_content', $content );
+		}
 	}
 	// Restore current globals
 	$post = $post_old;

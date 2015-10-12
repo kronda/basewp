@@ -85,9 +85,9 @@ class WPV_WPA_List_Table_Embedded extends WPV_List_Table_Embedded {
 
         $title = sprintf(
             '<span class="row-title"><a href="%s">%s</a></span>',
-            add_query_arg(
+            esc_url( add_query_arg(
                 array( 'page' => 'view-archives-embedded', 'view_id' => $item->id ),
-                admin_url( 'admin.php' ) ),
+                admin_url( 'admin.php' ) ) ),
             $item->title );
 
         return $title . $description;

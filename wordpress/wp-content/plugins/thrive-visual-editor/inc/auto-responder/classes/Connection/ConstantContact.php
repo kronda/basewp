@@ -9,6 +9,15 @@
 class Thrive_List_Connection_ConstantContact extends Thrive_List_Connection_Abstract
 {
     /**
+     * Return the connection type
+     * @return String
+     */
+    public static function getType()
+    {
+        return 'autoresponder';
+    }
+
+    /**
      * Application API Key
      */
     const TOKEN_URL = 'https://api.constantcontact.com/mashery/account/';

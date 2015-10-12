@@ -1,3 +1,137 @@
+<h4>1.6.3.4 - 10/10/2015</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a content rendering issue that can cause an infinite loop with certain shortcodes or widgets.</li>
+</ul>
+
+<h4>1.6.3.3 - 10/06/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added a default option to the date format setting in the post modules. When set to default, the date format set in wp-admin will be used.</li>
+	<li>Added FLBuilderLayoutConfig JS global with path vars and anchor link animation vars. Allows you to override anchor link animation settings.</li>
+	<li>Added the ability to add MP4 and WebM videos to row backgrounds.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a bug with widgets that have nested settings arrays.</li>
+	<li>Fixed a bug with the Post Carousel moduel's image size setting.</li>
+	<li>Fixed a bug with white text in inputs fields.</li>
+	<li>Fixed a bug with plugins like Soil that remove the ID attribute from link tags.</li>
+	<li>Fixed a bug with row background videos when caching is enabled.</li>
+	<li>Fixed a bug with multiple fields.</li>
+	<li>Fixed a bug with the Content Slider module where text/photo content renders below the video when the background is set to a video.</li>
+	<li>Fixed a bug that caused row actions to be inaccessible when negative margins are present.</li>
+</ul>
+
+<h4>1.6.3.2 - 09/14/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Updated Font Awesome.</li>
+	<li>Added Mobile Width setting to the Menu Module.</li>
+	<li>The $id variable is now always available in a module's frontend.php file.</li>
+	<li>Added fl_builder_layout_style_media filter.</li>
+	<li>Added fl_builder_render_css filter.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Added more specificity to link color selectors in the Menu module to prevent them from being overridden by themes.</li>
+	<li>Reworked parallax logic so it works on touch screen laptops.</li>
+</ul>
+
+<h4>1.6.3.1 - 09/03/2015</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed an issue with deleting rows and resizing columns.</li>
+	<li>CSS tweak to fix overlay global tag when a row color is set.</li>
+	<li>CSS tweak to fix media modal close button.</li>
+</ul>
+
+<h4>1.6.3 - 09/01/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Rows and modules can now be saved as either standard or global templates! Be sure to check out <a href="https://www.wpbeaverbuilder.com/row-and-module-templates-are-now-in-beta/" target="_blank">the blog post</a> for more info on how that works.</li>
+	<li>Agency members now have the option to add categorized sections of their row and module templates to the builder's panel.</li>
+	<li>Added a new admin setting under Settings > Page Builder > Editing to disable the ability to edit global rows and modules.</li>
+	<li>Duplicating global row and module templates now converts them to standard templates.</li>
+	<li>The text editor font size setting now uses px instead of pt.</li>
+	<li>Added additional sizes to the text editor font size setting.</li>
+	<li>Added access to the $settings object in the fl_builder_control_ action.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Added AJAX check for the builder's init method to prevent issues with WooCommerce AJAX.</li>
+	<li>Added more specificity to selectors for row and column colors to prevent themes from overriding them.</li>
+	<li>Fixed Menu module typo.</li>
+	<li>Fixed linking issues with the content slider.</li>
+</ul>
+
+<h4>1.6.2.1 - 08/25/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Replaced image arrows with SVG arrows in the Content Slider module.</li>
+	<li>Added a setting to the Post Slider module for selecting the thumbnail size.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a rendering issue with widgets that output styles in wp_enqueue_script.</li>
+	<li>Fixed an issue with the edit_url method so all urls get set_url_scheme.</li>
+	<li>Fixed styling issues with the Menu module.</li>
+	<li>Fixed styling issues with the Posts module.</li>
+	<li>Fixed broken arrows in the Posts Slider module.</li>
+</ul>
+
+<h4>1.6.2 - 08/16/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>The Menu module is now out of beta! Be sure to check out <a href="https://www.wpbeaverbuilder.com/the-menu-module-is-now-in-beta/" target="_blank">the blog post</a> for more info on how that works.</li>
+	<li>Added opacity settings for menu background colors in the Menu module.</li>
+	<li>Added vertical and horizontal spacing settings for menu items in the Menu module.</li>
+	<li>Added Polish translation.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed an issue with the Menu module when an empty menu is selected.</li>
+	<li>Fixed an issue with the Menu module when resizing from desktop to mobile.</li>
+	<li>Fixed an issue with the width of the Menu module accordion layout.</li>
+	<li>Fixed an issue with widgets such as the Master Slider widget that only register their scripts in the wp_enqueue_scripts action instead of enqueuing them there.</li>
+</ul>
+
+<h4>1.6.1.1 - 08/11/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Tested WordPress 4.3 compatibility.</li>
+	<li>Updated translation files.</li>
+	<li>The CSS class fl-scroll-link can now be added to links to have them scroll to an element on the page.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a bug with toggling settings tabs in the Posts module.</li>
+	<li>Fixed a bug with images in the Posts module gallery layout getting stretched on mobile.</li>
+</ul>
+
+<h4>1.6.1 - 08/03/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added the Posts Carousel module.</li>
+	<li>Added the Posts Slider module.</li>
+	<li>Added style options to the Posts module gallery layout.</li>
+	<li>The builder is now compatible with scheduled posts.</li>
+	<li>The fullscreen slideshow button now shows at smaller sizes.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a bug with row margins not working when a slideshow or video background is present.</li>
+</ul>
+
+<h4>1.6.0.3 - 07/21/2015</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a bug with the fl_builder_global_posts filter not returning all posts.</li>       
+	<li>Fixed a bug with all checkboxes being checked in some widgets when saving.</li>       
+	<li>Fixed a bug with floating content breaking out of tabs.</li>       
+	<li>Fixed a bug with autosuggest fields breaking when posts have special characters in the title.</li>       
+</ul>
+
 <h4>1.6.0.2 - 07/08/2015</h4>
 <p><strong>Enhancements</strong></p>
 <ul>

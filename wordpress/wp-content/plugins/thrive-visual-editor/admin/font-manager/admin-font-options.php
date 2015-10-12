@@ -6,74 +6,9 @@ $key = 'AIzaSyDJhU1bXm2YTz_c4VpWZrAyspOS37Nn-kI';
 $request = wp_remote_get($link . $key, array('sslverify' => true));
 $response = json_decode(wp_remote_retrieve_body($request), true);
 $google_fonts = $response['items'];
-$safe_fonts = array(
-    array(
-        'family' => 'Georgia, serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Palatino Linotype, Book Antiqua, Palatino, serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Times New Roman, Times, serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Arial, Helvetica, sans-serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Arial Black, Gadget, sans-serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Comic Sans MS, cursive, sans-serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Impact, Charcoal, sans-serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Lucida Sans Unicode, Lucida Grande, sans-serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Tahoma, Geneva, sans-serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Trebuchet MS, Helvetica, sans-serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Verdana, Geneva, sans-serif',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Courier New, Courier, monospace',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-    array(
-        'family' => 'Lucida Console, Monaco, monospace',
-        'variants' => array('regular', 'italic', '600'),
-        'subsets' => array('latin'),
-    ),
-);
-//$google_fonts = array_merge($google_fonts, $safe_fonts);
+$safe_fonts = tve_font_manager_get_safe_fonts();
+
+$imported_fonts = Thrive_Font_Import_Manager::getImportedFonts();
 
 $prefered_fonts = array();
 foreach ($google_fonts as $key => $font) {
@@ -102,14 +37,24 @@ if (isset($_GET['font_action']) && $_GET['font_action'] == 'update') {
     </div>
     <hr>
     <div>
-        <input type="radio" name="display_fonts" id="ttfm_google_fonts"
-               value="google_fonts"/> <?php echo __("Show all fonts", 'thrive-cb'); ?>
-        <input type="radio" name="display_fonts" id="ttfm_prefered_fonts" value="prefered_fonts"
-               checked/> <?php echo __("Recommended Fonts Only", 'thrive-cb'); ?>
-        <input type="radio" name="display_fonts" id="ttfm_safe_fonts"
-               value="safe_fonts"/> <?php echo __("Web Safe Fonts", 'thrive-cb'); ?>
+        <div>
+            <input type="radio" name="display_fonts" id="ttfm_google_fonts"
+                   value="google_fonts"/> <?php echo __("Show all fonts", 'thrive-cb'); ?>
+        </div>
+        <div>
+            <input type="radio" name="display_fonts" id="ttfm_prefered_fonts" value="prefered_fonts"
+                   checked/> <?php echo __("Recommended Fonts Only", 'thrive-cb'); ?>
+        </div>
+        <div>
+            <input type="radio" name="display_fonts" id="ttfm_safe_fonts"
+                   value="safe_fonts"/> <?php echo __("Web Safe Fonts", 'thrive-cb'); ?>
+        </div>
+        <div>
+            <input type="radio" name="display_fonts" id="ttfm_imported_fonts"
+                   value="imported_fonts"/> <?php _e("Imported Fonts", 'thrive'); ?>
+        </div>
         <a style="float: right" target="_blank"
-           href="//www.google.com/fonts"><?php echo __("View All Font Previews", 'thrive-cb'); ?></a>
+           href="//www.google.com/fonts"><?php echo __("View All Google Font Previews", 'thrive-cb'); ?></a>
     </div>
 
     <div>
@@ -217,6 +162,7 @@ if (isset($_GET['font_action']) && $_GET['font_action'] == 'update') {
         window.prefered_fonts = <?php echo json_encode($prefered_fonts); ?>;
         window.google_fonts = <?php echo json_encode($google_fonts); ?>;
         window.safe_fonts = <?php echo json_encode($safe_fonts); ?>;
+        window.imported_fonts = <?php echo json_encode($imported_fonts); ?>;
         var update_font = '<?php
                            if (isset($font['font_name']))
                                echo $font['font_name'];
@@ -281,16 +227,33 @@ if (isset($_GET['font_action']) && $_GET['font_action'] == 'update') {
             add_fonts(safe_fonts);
             selected_fonts_set = this.value;
         });
+        jQuery(document).on('change', 'input#ttfm_imported_fonts', function () {
+            add_fonts(imported_fonts);
+            selected_fonts_set = this.value;
+            jQuery('#ttfm_fonts').trigger('change');
+        });
         function isSafeFont(font) {
             var _isSafeFont = false;
             jQuery(safe_fonts).each(function (index, safe_font) {
-                if(font === safe_font.family) {
+                if (font === safe_font.family) {
                     _isSafeFont = true;
                     return;
                 }
             });
 
             return _isSafeFont;
+        }
+
+        function isImportedFont(font) {
+            var _isImportedFont = false;
+            jQuery(imported_fonts).each(function (index, imported_font) {
+                if (font === imported_font.family) {
+                    _isImportedFont = true;
+                    return;
+                }
+            });
+
+            return _isImportedFont;
         }
 
         function add_fonts(fonts) {
@@ -380,8 +343,10 @@ if (isset($_GET['font_action']) && $_GET['font_action'] == 'update') {
         });
 
         if (update_font != 0) {
-            if(isSafeFont(update_font)) {
+            if (isSafeFont(update_font)) {
                 jQuery('input#ttfm_safe_fonts').click();
+            } else if (isImportedFont(update_font)) {
+                jQuery('input#ttfm_imported_fonts').click();
             } else {
                 jQuery('input#ttfm_google_fonts').click();
             }
@@ -399,6 +364,19 @@ if (isset($_GET['font_action']) && $_GET['font_action'] == 'update') {
             }).prop('checked', true);
         }
     });
+    function prepareFontFamily(font_family) {
+        var chunks = font_family.split(","),
+            length = chunks.length,
+            font = '';
+
+        jQuery(chunks).each(function (i, value) {
+            font += "'" + value.trim() + "'";
+            font += i + 1 != length ? ", " : '';
+        });
+
+        return font;
+
+    }
     function importFont() {
 
         var font = jQuery('#ttfm_fonts').val();
@@ -413,14 +391,14 @@ if (isset($_GET['font_action']) && $_GET['font_action'] == 'update') {
             subset = undefined;
         }
 
-        if (selected_fonts_set !== 'safe_fonts') {
+        if (selected_fonts_set === 'google_fonts' || selected_fonts_set === 'prefered_fonts') {
             var font_link = "//fonts.googleapis.com/css?family=" + font.replace(" ", "+") + (style !== undefined ? ":" + style : "") + (subset !== undefined ? "&subset=" + subset : "");
             jQuery('.imported-font').remove();
             jQuery("head").prepend("<link class='imported-font' href='" + font_link + "' rel='stylesheet' type='text/css'>");
             jQuery('#fontPreview').css({'font-family': font});
         } else {
             var _css = {
-                'font-family': font,
+                'font-family': prepareFontFamily(font),
                 'font-style': 'normal',
                 'font-weight': 'normal'
             };

@@ -180,7 +180,7 @@
 					weightValue = weightObject[ 0 ];
 					selected 	= ' selected="selected"';
 				}
-				else if ( '' == selected ) {
+				else {
 					selected = weightObject[ i ] == weightValue ? ' selected="selected"' : '';
 				}
 				

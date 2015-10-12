@@ -79,7 +79,7 @@ $events_config = array(
         <div class="out" style="background-color: #fff;">
             <div class="in">
                 <div class="cck tve_clearfix">
-                    <p style="color: #959595; font-size: 13px;margin-top: 30px;margin-bottom: 30px;" class="tve_p_center">Copyright &copy; 2015 <a href="#"><span class="underline_text">Legal Information</span></a></p>
+                    <p style="color: #959595; font-size: 13px;margin-top: 30px;margin-bottom: 30px;" class="tve_p_center">Copyright &copy; {tcb_current_year} <a href="#"><span class="underline_text">Legal Information</span></a></p>
                 </div>
             </div>
         </div>

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Thrive Leads\n"
-"POT-Creation-Date: 2015-09-23 12:42+0300\n"
-"PO-Revision-Date: 2015-09-23 12:42+0300\n"
+"POT-Creation-Date: 2015-10-07 10:59+0300\n"
+"PO-Revision-Date: 2015-10-07 11:06+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -13,12 +13,11 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __\n"
+"X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: .git\n"
 "X-Poedit-SearchPathExcluded-1: .idea\n"
 "X-Poedit-SearchPathExcluded-2: node_modules\n"
-"X-Poedit-SearchPathExcluded-3: tcb\n"
 
 #: admin/controllers/Thrive_Leads_Ajax_Controller.php:252
 msgid "Error on resetting form type statistics"
@@ -140,8 +139,8 @@ msgstr ""
 msgid "Add New Lead Shortcode"
 msgstr ""
 
-#: admin/inc/translations.php:14
-msgid "Add New Lead 2 Step Lightbox"
+#: admin/inc/translations.php:14 admin/views/dashboard.php:168
+msgid "Add New ThriveBox"
 msgstr ""
 
 #: admin/inc/translations.php:15 admin/views/dashboard.php:115
@@ -363,8 +362,8 @@ msgstr ""
 #: admin/views/dashboard.php:55
 msgid ""
 "In order to increase overall performance, Thrive Leads caches the number of "
-"impressions and conversions for each Lead Group, Shortcode, 2 Step Lightbox "
-"and Form. Click the following link to purge the cache and re-build it."
+"impressions and conversions for each Lead Group, Shortcode, ThriveBox and "
+"Form. Click the following link to purge the cache and re-build it."
 msgstr ""
 
 #: admin/views/dashboard.php:56
@@ -396,7 +395,7 @@ msgstr ""
 
 #: admin/views/dashboard.php:99 admin/views/dashboard.php:123
 #: admin/views/dashboard.php:150 admin/views/dashboard.php:178
-#: inc/data.php:1586 inc/data.php:1641 inc/data.php:1656
+#: inc/data.php:1605 inc/data.php:1660 inc/data.php:1675
 #: admin/views/template/form-type/edit.phtml:59
 #: admin/views/template/form-type/edit.phtml:128
 #: admin/views/template/reporting/lead-source-report/list.phtml:8
@@ -433,7 +432,7 @@ msgid "Form Impressions"
 msgstr ""
 
 #: admin/views/dashboard.php:122 admin/views/dashboard.php:149
-#: admin/views/dashboard.php:177 inc/data.php:1296
+#: admin/views/dashboard.php:177 inc/data.php:1315
 #: admin/views/template/form-type/edit.phtml:58
 #: admin/views/template/form-type/edit.phtml:127
 #: admin/views/template/lightbox/stop-variation-test.phtml:9
@@ -473,17 +472,13 @@ msgid ""
 msgstr ""
 
 #: admin/views/dashboard.php:166 admin/views/reporting.php:80
-msgid "2 Step Lightboxes"
-msgstr ""
-
-#: admin/views/dashboard.php:168
-msgid "Add New 2 Step Lightbox"
+msgid "ThriveBoxes"
 msgstr ""
 
 #: admin/views/dashboard.php:185
 msgid ""
-"You don't have any 2 Step Lightboxes created yet. Click the 'Add new' button "
-"to create one."
+"You don't have any ThriveBoxes created yet. Click the 'Add new' button to "
+"create one."
 msgstr ""
 
 #: admin/views/license_inactive.php:12
@@ -597,7 +592,6 @@ msgstr ""
 
 #: admin/views/reporting.php:57
 #: admin/views/template/reporting/lead-source-report/list.phtml:4
-#: admin/views/template/reporting/lead-tracking-report/list.phtml:4
 msgid "Source"
 msgstr ""
 
@@ -682,11 +676,12 @@ msgstr ""
 msgid "New State"
 msgstr ""
 
-#: editor-layouts/_form_states.php:60 inc/data.php:2229
+#: editor-layouts/_form_states.php:60 inc/data.php:2248
 msgid "Already Subscribed"
 msgstr ""
 
-#: editor-layouts/_form_states.php:62 inc/data.php:2228 inc/helpers.php:34
+#: editor-layouts/_form_states.php:62 editor-lightbox/lb_templates.php:49
+#: inc/data.php:2247 inc/helpers.php:34
 msgid "Lightbox"
 msgstr ""
 
@@ -805,71 +800,71 @@ msgstr ""
 msgid "Invalid data"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:50
+#: editor-lightbox/lb_templates.php:54
 #, php-format
 msgid "Choose the %s template you would like to use for this form"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:57
+#: editor-lightbox/lb_templates.php:61
 msgid "Warning - your changes will be lost"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:60
+#: editor-lightbox/lb_templates.php:64
 msgid ""
 "If you change your the template without saving the current revision, you "
 "won't be able to revert back to it later."
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:64
+#: editor-lightbox/lb_templates.php:68
 msgid "Template Name"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:68
+#: editor-lightbox/lb_templates.php:72
 msgid "Save As Template"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:77
+#: editor-lightbox/lb_templates.php:81
 msgid "Quick filter..."
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:83
+#: editor-lightbox/lb_templates.php:87
 msgid "Opt In Templates"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:86
+#: editor-lightbox/lb_templates.php:90
 #, php-format
 msgid "Your Saved %s Templates"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:90
+#: editor-lightbox/lb_templates.php:94
 msgid "Multi-step Templates"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:112
+#: editor-lightbox/lb_templates.php:116
 msgid "Delete template"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:113
+#: editor-lightbox/lb_templates.php:117
 msgid "Choose from your saved templates"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:121
+#: editor-lightbox/lb_templates.php:125
 msgid "Show only saved versions of the current template"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:156
+#: editor-lightbox/lb_templates.php:160
 msgid "Choose template"
 msgstr ""
 
-#: editor-lightbox/lb_templates.php:162
+#: editor-lightbox/lb_templates.php:166
 msgid "Reset contents"
 msgstr ""
 
-#: inc/classes/Thrive_Leads_Template_Manager.php:513
+#: inc/classes/Thrive_Leads_Template_Manager.php:521
 msgid "No saved templates found"
 msgstr ""
 
-#: inc/classes/Thrive_Leads_Template_Manager.php:551
+#: inc/classes/Thrive_Leads_Template_Manager.php:559
 msgid "Template saved."
 msgstr ""
 
@@ -883,55 +878,57 @@ msgstr ""
 msgid "Chose Lead Group:"
 msgstr ""
 
-#: inc/data.php:66 inc/data.php:79 inc/data.php:143
+#: inc/data.php:66 inc/data.php:79 inc/data.php:162
 msgid "No"
 msgstr ""
 
-#: inc/data.php:68 inc/data.php:81 inc/data.php:145
+#: inc/data.php:68 inc/data.php:81 inc/data.php:164
 msgid "Yes"
 msgstr ""
 
-#: inc/data.php:70 inc/data.php:83 inc/data.php:147
+#: inc/data.php:70 inc/data.php:83 inc/data.php:166
 msgid "Custom"
 msgstr ""
 
-#: inc/data.php:1293
-msgid "Graph to show lead generation conversions over time"
+#: inc/data.php:1312
+msgid "Number of lead generation conversions over time"
 msgstr ""
 
-#: inc/data.php:1325
-msgid "Cumulative Lead Growth"
+#: inc/data.php:1344
+msgid "Total leads since start date"
 msgstr ""
 
-#: inc/data.php:1325
+#: inc/data.php:1344
 msgid "Lead Growth"
 msgstr ""
 
-#: inc/data.php:1339
+#: inc/data.php:1358
 msgid "Leads"
 msgstr ""
 
-#: inc/data.php:1483
-msgid "Graph to show cumulative lead generation conversions by date"
+#: inc/data.php:1502
+msgid "Cumulative lead generation conversions over time"
 msgstr ""
 
-#: inc/data.php:1486
+#: inc/data.php:1505
 msgid "Signups"
 msgstr ""
 
-#: inc/data.php:1583 inc/data.php:1653
-msgid "Graph to show Lead Generation conversions by date"
+#: inc/data.php:1602 inc/data.php:1672
+msgid "Lead generation conversion rate over time"
 msgstr ""
 
-#: inc/data.php:1780
-msgid "Pie Chart to show relative conversion source"
+#: inc/data.php:1799
+msgid ""
+"How the total number of opt ins is distributed between Lead Groups and "
+"individual forms"
 msgstr ""
 
-#: inc/data.php:2230
+#: inc/data.php:2249
 msgid "State"
 msgstr ""
 
-#: inc/data.php:2237
+#: inc/data.php:2256
 msgid "Default State"
 msgstr ""
 
@@ -968,7 +965,7 @@ msgid "Shortcode"
 msgstr ""
 
 #: inc/helpers.php:88
-msgid "2 Step Lightbox"
+msgid "ThriveBox"
 msgstr ""
 
 #: inc/helpers.php:290 inc/helpers.php:299
@@ -1163,7 +1160,7 @@ msgid "Open lightbox state"
 msgstr ""
 
 #: tcb-bridge/event-manager/actions/Thrive_Leads_State_Lightbox_Action.php:94
-#: tcb-bridge/tcb_action_hooks.php:1149
+#: tcb-bridge/tcb_action_hooks.php:1151
 msgid "Switch lightbox state"
 msgstr ""
 
@@ -1192,7 +1189,7 @@ msgid "Edit State"
 msgstr ""
 
 #: tcb-bridge/event-manager/actions/Thrive_Leads_Two_Step_Action.php:69
-msgid "Open Thrive Leads 2 Step Lightbox"
+msgid "Open Thrive Leads ThriveBox"
 msgstr ""
 
 #: tcb-bridge/event-manager/actions/Thrive_Leads_Two_Step_Action.php:114
@@ -1204,15 +1201,15 @@ msgid "View test"
 msgstr ""
 
 #: tcb-bridge/event-manager/actions/Thrive_Leads_Two_Step_Action.php:122
-msgid "Edit 2 Step Lightbox"
+msgid "Edit ThriveBox"
 msgstr ""
 
 #: tcb-bridge/event-manager/views/lightbox-settings.php:7
-msgid "Thrive Leads 2 Step Lightbox"
+msgid "Thrive Leads ThriveBox"
 msgstr ""
 
 #: tcb-bridge/event-manager/views/lightbox-settings.php:11
-msgid "Which 2 Step Lightbox should be displayed ?"
+msgid "Which ThriveBox should be displayed ?"
 msgstr ""
 
 #: tcb-bridge/event-manager/views/lightbox-settings.php:14
@@ -1224,7 +1221,7 @@ msgid "Lightbox animation"
 msgstr ""
 
 #: tcb-bridge/event-manager/views/lightbox-settings.php:26
-msgid "Choose a 2 Step Lightbox"
+msgid "Choose a ThriveBox"
 msgstr ""
 
 #: tcb-bridge/event-manager/views/lightbox-settings.php:29
@@ -1683,17 +1680,16 @@ msgstr ""
 
 #: admin/views/template/lightbox/add-two-step-lightbox.phtml:1
 msgid ""
-"Give your 2 Step Lightbox a name. Usually your 2 Step Lightbox would be "
-"named after the promotion that you're running. For instance \"Weight Loss "
-"Report\""
+"Give your ThriveBox a name. Usually your ThriveBox would be named after the "
+"promotion that you're running. For instance \"Weight Loss Report\""
 msgstr ""
 
 #: admin/views/template/lightbox/add-two-step-lightbox.phtml:4
-msgid "2 Step Lightbox Name"
+msgid "ThriveBox Name"
 msgstr ""
 
 #: admin/views/template/lightbox/add-two-step-lightbox.phtml:11
-msgid "Add 2 Step Lightbox"
+msgid "Add ThriveBox"
 msgstr ""
 
 #: admin/views/template/lightbox/animation-settings.phtml:16
@@ -1750,11 +1746,11 @@ msgid "Delete Lead Shortcode"
 msgstr ""
 
 #: admin/views/template/lightbox/delete-two-step-lightbox.phtml:1
-msgid "Warning! You are about to delete 2 Step Lightbox"
+msgid "Warning! You are about to delete ThriveBox"
 msgstr ""
 
 #: admin/views/template/lightbox/delete-two-step-lightbox.phtml:9
-msgid "Delete 2 Step Lightbox"
+msgid "Delete ThriveBox"
 msgstr ""
 
 #: admin/views/template/lightbox/display-frequency-settings.phtml:4
@@ -2088,12 +2084,16 @@ msgstr ""
 msgid "Impressions"
 msgstr ""
 
+#: admin/views/template/reporting/lead-tracking-report/list.phtml:4
+msgid "Campaign Source"
+msgstr ""
+
 #: admin/views/template/reporting/lead-tracking-report/list.phtml:5
-msgid "Medium"
+msgid "Campaign Medium"
 msgstr ""
 
 #: admin/views/template/reporting/lead-tracking-report/list.phtml:6
-msgid "Name"
+msgid "Campaign Name"
 msgstr ""
 
 #: admin/views/template/shortcode/edit.phtml:63
@@ -2187,7 +2187,7 @@ msgid "Back To Shortcode"
 msgstr ""
 
 #: admin/views/template/tests/view.phtml:113
-msgid "Back To 2 Step Lightbox"
+msgid "Back To ThriveBox"
 msgstr ""
 
 #: admin/views/template/two-step-lightbox/item.phtml:47

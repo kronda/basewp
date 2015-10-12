@@ -5,7 +5,7 @@ Tags: CMS, custom field, custom fields, custom post type, custom post types, fie
 License: GPLv2
 Requires at least: 3.4
 Tested up to: 4.3
-Stable tag: 1.8.5
+Stable tag: 1.8.6.2
 
 The Embedded version lets you create custom types, taxonomies and fields for your theme or plugin, without requiring any plugin.
 

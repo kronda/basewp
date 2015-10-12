@@ -70,3 +70,35 @@ function wpv_users_query_usermeta_filters( $args, $view_settings ) {
 	return $args;
 }
 
+/**
+* wpv_filter_usermeta_field_requires_framework_values
+*
+* Whether the current View requires framework data for the filter by usermeta fields
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_requires_framework_values', 'wpv_filter_usermeta_field_requires_framework_values', 20, 2 );
+
+function wpv_filter_usermeta_field_requires_framework_values( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+	if ( $view_settings['query_type'][0] == 'users' ) {
+		foreach ( $view_settings as $key => $value ) {
+			if ( 
+				preg_match( "/usermeta-field-(.*)_value/", $key, $res )
+				&& preg_match( "/FRAME_KEY\(([^\)]+)\)/", $value, $shortcode ) 
+			) {
+				$state = true;
+				break;
+			}
+		}
+	}
+	return $state;
+}

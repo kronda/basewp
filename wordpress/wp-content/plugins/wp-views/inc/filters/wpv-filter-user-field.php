@@ -11,9 +11,9 @@
 WPV_Usermeta_Field_Filter::on_load();
 
 /**
-* WPV_Custom_Field_Filter
+* WPV_Usermeta_Field_Filter
 *
-* Views Custom Field Filter Class
+* Views Usermeta Field Filter Class
 *
 * @since 1.7.0
 */
@@ -38,6 +38,14 @@ class WPV_Usermeta_Field_Filter {
 		add_action( 'wp_ajax_wpv_filter_usermeta_field_delete', array( 'WPV_Usermeta_Field_Filter', 'wpv_filter_usermeta_field_delete_callback' ) );
 		add_filter( 'wpv-view-get-summary', array( 'WPV_Usermeta_Field_Filter', 'wpv_usermeta_field_summary_filter' ), 7, 3 );
 		// Register scripts
+		wp_register_script( 'views-filter-usermeta-field-js', ( WPV_URL . "/res/js/redesign/views_filter_usermeta_field.js" ), array( 'views-filters-js'), WPV_VERSION, true );
+		$filter_texts = array(
+			'dialog_title'		=> __( 'Delete usermeta field filters', 'wpv-views' ),
+			'cancel'			=> __( 'Cancel', 'wpv-views' ),
+			'edit_filters'		=> __( 'Edit the usermeta field filters', 'wpv-views' ),
+			'delete_filters'	=> __( 'Delete all usermeta field filters', 'wpv-views' )
+		);
+		wp_localize_script( 'views-filter-usermeta-field-js', 'wpv_usermeta_field_filter_texts', $filter_texts );
 		add_action( 'admin_enqueue_scripts', array( 'WPV_Usermeta_Field_Filter','admin_enqueue_scripts' ), 20 );
 	}
 	
@@ -50,12 +58,12 @@ class WPV_Usermeta_Field_Filter {
 	*/
 	
 	static function admin_enqueue_scripts( $hook ) {
-		wp_register_script( 'views-filter-usermeta-field-js', ( WPV_URL . "/res/js/redesign/views_filter_usermeta_field.js" ), array( 'views-filters-js'), WPV_VERSION, true );
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
 			wp_enqueue_script( 'views-filter-usermeta-field-js' );
 		}
 	}
 
+	// @todo unify this with the filter by postmeta custom field logic - this is insanely expensive!!
 	static function wpv_filters_add_filter_usermeta_field( $filters ) {
         $basic = array( 
             array( __( 'First Name', 'wpv-views' ), 'first_name','Basic','' ),
@@ -123,7 +131,9 @@ class WPV_Usermeta_Field_Filter {
                  }
             }
         }
-        $meta_keys = get_user_meta_keys();
+		
+		global $WP_Views;
+        $meta_keys = $WP_Views->get_usermeta_keys();
         foreach ( $meta_keys as $key ) {
             $key_nicename = '';
             if ( stripos( $key, 'wpcf-' ) === 0 ) {
@@ -569,8 +579,10 @@ class WPV_Usermeta_Field_Filter {
 			) {
 				if ( is_array( $filter_data ) ) {
 					$filter_data = array_map( 'sanitize_text_field', $filter_data );
+					$filter_data = array_map( array( 'WPV_Usermeta_Field_Filter', 'fix_lower_saving' ), $filter_data );
 				} else {
 					$filter_data = sanitize_text_field( $filter_data );
+					$filter_data = WPV_Usermeta_Field_Filter::fix_lower_saving( $filter_data );
 				}
 				$change = true;
 				$view_array[$filter_key] = $filter_data;
@@ -668,10 +680,32 @@ class WPV_Usermeta_Field_Filter {
 		$summary .= $result;
 		return $summary;
 	}
+	
+	/**
+	* fix_lower_saving
+	*
+	* Fix saving of "lower than" and "lower or equal to" comparisons, which get HTML-encoded when passed through sanitize_text_field
+	*
+	* @param $data string
+	*
+	* @return string
+	*
+	* @since 1.8.10
+	*/
+	
+	static function fix_lower_saving( $data ) {
+		if (
+			'&lt;' == $data 
+			|| '&lt;=' == $data
+		) {
+			$data = str_replace( '&lt;', '<', $data );
+		}
+		return $data;
+	}
     
 }
 
-// @todo maybe it is better to do a larger query and then remove the unwanted values, instead of crafting a wrong list of them
+// @todo get_user_meta_keys is DEPRECATED and kept for backwards compatibility as it is called from common - let's remove it from there before deleting this.
 
 function get_user_meta_keys( $include_hidden = false ) {
 	global $wpdb;
@@ -716,25 +750,13 @@ function get_user_meta_keys( $include_hidden = false ) {
 
 
 function wpv_usermeta_fields_get_url_params($view_settings) {
-	global $WP_Views;
-
 	$pattern = '/URL_PARAM\(([^(]*?)\)/siU';
-	$meta_keys = $WP_Views->get_meta_keys();
-	
 	$results = array();
-
 	foreach (array_keys($view_settings) as $key) {
 		if (strpos($key, 'usermeta-field-') === 0 && strpos($key, '_compare') === strlen($key) - strlen('_compare')) {
 			$name = substr($key, 0, strlen($key) - strlen('_compare'));
 			$name = substr($name, strlen('usermeta-field-'));
-			
-			$meta_name = $name;
-			if (!in_array($meta_name, $meta_keys)) {
-				$meta_name = str_replace('_', ' ', $meta_name);
-			}
-
 			$value = $view_settings['usermeta-field-' . $name . '_value'];
-			
 			if(preg_match_all($pattern, $value, $matches, PREG_SET_ORDER)) {
 				foreach($matches as $match) {
 					$results[] = array('name' => $name, 'param' => $match[1], 'mode' => 'cf');
@@ -742,6 +764,5 @@ function wpv_usermeta_fields_get_url_params($view_settings) {
 			}
 		}
 	}
-	
 	return $results;
 }

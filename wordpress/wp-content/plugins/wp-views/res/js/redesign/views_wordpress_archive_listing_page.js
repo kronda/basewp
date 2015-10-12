@@ -1,269 +1,115 @@
-jQuery(document).ready(function($) {
+var WPViews = WPViews || {};
 
-	// @todo transform this to OOP model
+WPViews.WPAListingScreen = function( $ ) {
+
+    var self = this;
 	
-    $('.js-list-views-action option').removeAttr('selected');
-
-    /*
-     * Sorting by usage
-     *
-     */
-
-    /**
-     * Create Archive for loop popup.
-     *
-     * @since unknown
-     */ 
-    $(document).on('click', '.js-create-view-for-archive', function(e) {
-	    e.preventDefault();
-	    var data = {
-		    wpnonce: $('#wpv_wp_archive_arrange_usage').val(),
-		       action: 'wpv_create_usage_archive_view_popup',
-		       for_whom: $(this).data('forwhom')
-	    }
-
-	    $.colorbox({
-		    href: ajaxurl,
-			inline : false,
-			data: data,
-			onComplete: function() {
-				$('.wpv-dialog-content').append('<div class="js-error-container"></div>');
-			}
-	    });
-	    return false;
-    });
-
-
-    /**
-     * Create Archive for loop action.
-     *
-     * @since unknown
-     */ 
-    $(document).on('click', '.js-wpv-add-wp-archive-for-loop', function(e){
-	    e.preventDefault();
-	    $('.js-wpv-add-archive').addClass('button-secondary').removeClass('button-primary');
-
-	    showSpinnerBefore( $(this) );
-	    
-	    var error = $(this).data('error');
-	    $('.toolset-alert').remove();
-	    $(this).prop('disabled',true).addClass('button-secondary').removeClass('button-primary');
-	    var data = {
-		    action: 'wpv_create_usage_archive_view',
-		    form: $('#wpv-add-wp-archive-for-loop-form').serialize(),
-			    wpnonce : $('#work_views_listing').attr('value')
-	    };
-	    $.ajax({
-		async:false,
-		type:"POST",
-		url:ajaxurl,
-		data:data,
-		success:function(response){
-			if ( ( typeof(response) !== 'undefined' ) && ( response == 'error' ) ) {
-				$('.js-wp-archive-create-error')
-					.wpvToolsetMessage({
-						text: error,
-						stay: true,
-						close: false,
-						type: ''
-					});
-				hideSpinner();
-			} else if ( ( typeof(response) !== 'undefined' ) && ( typeof(response) == 'string' ) ) {
-				$(location).attr('href', $('.js-wpv-add-wp-archive-for-loop').data('url') + response );
-			} else {
-				console.log( "Error: AJAX returned ", response );
-			}
-		},
-		error: function (ajaxContext) {
-			console.log( "Error: ", ajaxContext.responseText );
-		},
-		complete: function() {
-
-		}
-	    });
-    });
-
-
-    /**
-     * This happens when user clicks on the "Change WordPress Archive" action link on the "listing by usage" page.
-     *
-     * Calls wpv_show_views_for_loop by AJAX and shows result of the call as a popup. When user confirms it,
-     * they click on 'js-update-archive-for-loop'.
-     */
-    $(document).on('click','.js-list-views-usage-action-change-usage', function (e) {
-        e.preventDefault();
-        // This is actually a slug of the loop.
-		var data_view_id = $(this).data('view-id');
-
-		var data = {
-			action: 'wpv_show_views_for_loop',
-			id: data_view_id,
-			wpnonce : $('#wpv_wp_archive_arrange_usage').attr('value')
-		};
-		$.colorbox({
-			href: ajaxurl,
-			data: data,
-			onComplete: function() { },
-			onClosed : function() { }
-		});
-    });
-
-
+	self.dialog_create_or_change_usage = '';
+	self.deleting_id = 0;
+	self.creating_archive_loop_title = '';
+	self.creating_archive_loop = '';
+	self.bulk_trashing_ids = [];
+	self.bulk_deleting_ids = [];
+	
+	self.shortcodeDialogSpinnerContent = $(
+        '<div style="min-height: 150px;">' +
+            '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; ">' +
+                '<div class="wpv-spinner ajax-loader"></div>' +
+                '<p>' + wpa_listing_texts.loading_options + '</p>' +
+            '</div>' +
+        '</div>'
+    );
+	
 	/**
-	 * This happens when user confirms updating assigned WordPress Archive for a loop.
-	 */ 
-	$(document).on('click','.js-update-archive-for-loop', function (e) {
+	* -----------------
+	* Search and pagination
+	* -----------------
+	*/
+	
+	$( '#posts-filter' ).submit( function( e ) {
 		e.preventDefault();
-		disablePrimaryButton( $(this) );
-		showSpinnerBefore( $(this) );
-		
-		var data = {
-			action: 'wpv_update_archive_for_view',
-			selected: $('input[name=wpv-view-loop-archive]:checked', '#wpv-archive-view-form-for-loop').val(),
-			loop: $('[name=wpv-archive-loop-key]').val(),
-			wpnonce : $('#wpv_wp_archive_arrange_usage').attr('value')
-		};
-
-		$.ajax({
-			async:false,
-			type:"POST",
-			url:ajaxurl,
-			data:data,
-			success:function(response){
-				if ( ( typeof(response) !== 'undefined' ) && ( response == 'ok' ) ) {
-					navigateWithURIParams(decodeURIParams());
-				} else {
-					console.log( "Error: AJAX returned ", response );
-				}
-			},
-			error: function (ajaxContext) {
-				console.log( "Error: ", ajaxContext.responseText );
-			},
-			complete: function() {
-
-			}
-		});
-	});
-
-	/* ************************************************************************** *\
-	 * Sort by name
-	\* ************************************************************************** */
-
-
-	/**
-	 * Search box action.
-	 */ 
-	$('#posts-filter').submit(function(e) {
-		e.preventDefault();
-		var url_params = decodeURIParams($(this).serialize());
-		if (typeof(url_params['s']) !== 'undefined' && url_params['s'] == '') {
+		var url_params = decodeURIParams( $( this ).serialize() );
+		if (
+			typeof( url_params['s'] ) !== 'undefined' 
+			&& url_params['s'] == ''
+		) {
 			url_params['s'] = null;
 		}
-		navigateWithURIParams(url_params);
+		navigateWithURIParams( url_params );
 		return false;
 	});
+	
+	$( document ).on( 'change', '.js-items-per-page', function() {
+	    navigateWithURIParams(decodeURIParams('paged=1&items_per_page=' + $(this).val()));
+    });
 
+    $( document ).on( 'click', '.js-wpv-display-all-items', function(e){
+	    e.preventDefault();
+	    navigateWithURIParams(decodeURIParams('paged=1&items_per_page=-1'));
+    });
 
-	/**
-	 * Fires when user clicks on "delete" action.
-	 */
-	$(document).on('click','.js-list-views-action-delete', function (e) {
-		e.preventDefault();
-		var data_view_id = $(this).data('view-id');
-		var view_listing_action_nonce = $(this).data('viewactionnonce');
-
-		// Show confirmation dialog.
-		// confirm --> js-remove-archive-permanent click
-		$.colorbox({
-			html:
-				'<div class="wpv-dialog">'+
-					'<div class="wpv-dialog-header">'+
-						'<h2>Delete Archive</h2>'+
-					'</div>'+
-					'<div class="wpv-dialog-content"><p>Are you sure want delete this Archive?</p></div>'+
-					'<div class="wpv-dialog-footer">'+
-						'<button class="button js-dialog-close">Cancel</button> '+
-						'<button class="button button-primary js-remove-archive-permanent" data-id="'+data_view_id+'">Delete</button>'+
-					'</div>'+
-				'</div>',
-			onComplete: function() { },
-			onClosed : function() { }
-		});
-	});
-
-
-	/**
-	 * Fires when user clicks on "change" action.
-	 */
-	$(document).on('click','.js-list-views-action-change', function (e) {
-		e.preventDefault();
-		var data_view_id = $(this).data('view-id');
-		var view_listing_action_nonce = $(this).data('viewactionnonce');
-
-		var data = {
-			action: 'wpv_archive_change_usage_popup',
-			id: data_view_id,
-			wpnonce : $('#work_views_listing').attr('value')
-		};
-		$.colorbox({
-			href: ajaxurl,
-			data: data,
-			onComplete: function() { },
-			onClosed : function() { }
-		});
-	});
-
-
+    $( document ).on( 'click', '.js-wpv-display-default-items', function(e){
+	    e.preventDefault();
+	    navigateWithURIParams(decodeURIParams('paged=1&items_per_page=20'));
+    });
+	
+	/* ****************************************************************************\
+            Action links
+    \* ****************************************************************************/
+	
 	/**
 	 * Fires when user clicks on "trash" action.
 	 *
 	 * @since unknown
 	 */
-	$(document).on('click','.js-list-views-action-trash', function (e) {
+	$( document ).on( 'click','.js-list-views-action-trash', function( e ) {
 		e.preventDefault();
 		showSpinner();
 
-		var wpaId = $(this).data( 'view-id' );
-		var nonce = $(this).data( 'viewactionnonce' );
+		var thiz = $( this ),
+		wpaId = thiz.data( 'view-id' ),
+		nonce = thiz.data( 'viewactionnonce' );
 
 		// Just act as if this was a bulk action.
-		maybeTrashWPAs( [ wpaId ], nonce );
+		self.maybeTrashWPAs( [ wpaId ], nonce );
 	});
 
 
 	/**
 	 * Fires when user clicks on "restore-from-trash" action.
 	 */
-	$(document).on('click','.js-list-views-action-restore-from-trash', function (e) {
+	$( document ).on( 'click','.js-list-views-action-restore-from-trash', function( e ) {
 		e.preventDefault();
-		var data_view_id = $(this).data('view-id');
-		var view_listing_action_nonce = $(this).data('viewactionnonce');
 		
-		showSpinner();
-		
-		var data = {
+		var thiz = $( this ),
+		data_view_id = thiz.data('view-id'),
+		view_listing_action_nonce = thiz.data('viewactionnonce'),
+		data = {
 			action: 'wpv_view_change_status',
 			id: data_view_id,
 			newstatus: 'publish',
 			wpnonce : view_listing_action_nonce
 		};
+		
+		showSpinner();
+		
 		$.ajax({
-			async:false,
-			type:"POST",
-			url:ajaxurl,
-			data:data,
-			success:function(response){
+			async: false,
+			type: "POST",
+			url: ajaxurl,
+			data: data,
+			success: function( response ) {
 				if ( (typeof(response) !== 'undefined') && (response == data.id)) {
 					var url_params = decodeURIParams();
 					url_params['paged'] = updatePagedParameter( url_params, 1 );
 					url_params['untrashed'] = 1;
 					navigateWithURIParams(url_params);
 				} else {
-					console.log( "Error: AJAX returned ", response );
+					//console.log( "Error: AJAX returned ", response );
 				}
 			},
 			error: function (ajaxContext) {
-				console.log( "Error: ", ajaxContext.responseText );
+				//console.log( "Error: ", ajaxContext.responseText );
 			},
 			complete: function() { }
 		});
@@ -277,94 +123,494 @@ jQuery(document).ready(function($) {
 	 *
 	 * @see wpv_admin_view_listing_message_undo() in wpv-views-listing-page.php
 	 */ 
-	$(document).on('click', '.js-wpv-untrash', function(e) {
+	$( document ).on( 'click', '.js-wpv-untrash', function( e ) {
 		e.preventDefault();
-		showSpinnerAfter( $(this) );
-
-		var nonce = $(this).data( 'nonce' );
-		var viewIDs = decodeURIComponent( $(this).data( 'ids' ) ).split( ',' );
+		
+		var thiz = $( this ),
+		nonce = thiz.data( 'nonce' ),
+		viewIDs = decodeURIComponent( thiz.data( 'ids' ) ).split( ',' );
+		
+		showSpinnerAfter( thiz );
 
 		untrashViews( viewIDs, nonce );
 	});
+	
+	/**
+	 * Fires when user clicks on "delete" action.
+	 */
+	$( document ).on( 'click', '.js-list-views-action-delete', function( e ) {
+		e.preventDefault();
+		
+		var thiz = $( this ),
+		data_view_id = thiz.data( 'view-id' ),
+		dialog_height = $( window ).height() - 100;
+		
+		self.deleting_id = data_view_id;
+		
+		self.dialog_delete_wpa.dialog( "open" ).dialog({
+            width: 770,
+            maxHeight: dialog_height,
+            draggable: false,
+            resizable: false,
+			position: { my: "center top+50", at: "center top", of: window }
+        });
 
-
-
+	});
+	
 	/**
 	 * Delete action
 	 */ 
-	$(document).on('click','.js-remove-archive-permanent', function (e) {
+	$( document ).on( 'click', '.js-wpv-remove-wpa-permanent', function( e ) {
 		e.preventDefault();
-		showSpinnerBefore( $(this) );
-		$(this).prop('disabled', true).addClass('button-secondary').removeClass('button-primary');
 		
-
-		var data_view_id = $(this).data('id');
-		var data = {
-			action: 'wpv_delete_view_permanent',
-			id: data_view_id,
-			wpnonce : $('#wpv_remove_view_permanent_nonce').attr('value')
+		var thiz = $( this ),
+		data = {
+			action: 'wpv_delete_wpa_permanent',
+			id: self.deleting_id,
+			wpnonce : $('#wpv_remove_view_permanent_nonce').val()
         };
-
+		
+		showSpinnerBefore( thiz );
+		disablePrimaryButton( thiz );
+		
 		$.ajax({
-			async:false,
-			type:"POST",
-			url:ajaxurl,
-			data:data,
-			success:function(response){
-				if ( (typeof(response) !== 'undefined') && (response == data.id)) {
+			async: false,
+			type: "POST",
+			dataType: "json",
+			url: ajaxurl,
+			data: data,
+			success: function( response ) {
+				if ( response.success ) {
 					var url_params = decodeURIParams();
 					url_params['paged'] = updatePagedParameter( url_params, 1 );
 					url_params['deleted'] = 1;
 					navigateWithURIParams( url_params );
-				} else {
-					console.log( "Error: AJAX returned ", response );
 				}
 			},
 			error: function (ajaxContext) {
-				console.log( "Error: ", ajaxContext.responseText );
+				//console.log( "Error: ", ajaxContext.responseText );
 			},
 			complete: function() {	}
 		});
 	});
 
 
-	/**
-	 * Change usage action
-	 */ 
-	$(document).on('click', '.js-wpv-update-archive', function(e){
-		e.preventDefault();
-		$(this).attr('disabled', true).addClass('button-secondary').removeClass('button-primary');
-		showSpinnerBefore( $(this) );
+    /* ****************************************************************************\
+            Create new WPA dialog
+    \* ****************************************************************************/
+
+
+    /**
+     * When a dialog for creating new WPA is open, this indicates whether user
+     * has changed WPA name field in any way.
+     *
+     * If they didn't we feel free to suggest WPA name based on selected usage.
+     *
+     * @type {boolean}
+     *
+     * @since 1.9
+     */
+    var isWPANameCustomized = false;
+
+
+    /**
+     * WPA name field has changed.
+     *
+     * @since 1.9
+     */
+    $(document).on('change', '.js-wpv-new-archive-name', function() {
+        isWPANameCustomized = true;
+    });
+
+
+    /**
+     * Some WPA usage checkbox value has been changed.
+     *
+     * Update WPA name suggestion if applicable.
+     *
+     * @since 1.9
+     */
+    $(document).on('change', '.js-wpv-create-wpa-usage-checkbox', function() {
+
+        if(!isWPANameCustomized) {
+
+            // Collect display names of selected loops.
+            var selectedLoops = [];
+            $('.js-wpv-create-wpa-usage-checkbox').each(function() {
+                var checkbox = $(this);
+                if(checkbox.is(':checked')) {
+                    selectedLoops.push(checkbox.data('loop-name'));
+                }
+            });
+
+            // Suggest a WPA name by concatenating loop names.
+            var wpaNameField = $('.js-wpv-new-archive-name');
+            wpaNameField.val(selectedLoops.join(', '));
+
+            // This will update button availability.
+            wpaNameField.change();
+
+            // User still didn't make any customizations.
+            isWPANameCustomized = false;
+        }
+
+    });
+	
+	$( document ).on( 'click', '.js-wpv-views-archive-add-new, .js-wpv-views-archive-create-new', function( e ) {
+        e.preventDefault();
 		
-		var error = $(this).data('error');
-		$('.toolset-alert').remove();
-		var data = {
-			action: 'wpv_archive_change_usage',
-			form: $('#wpv-create-archive-view-form').serialize(),
-			wpnonce : $('#work_views_listing').attr('value')
-		};
+        var thiz = $( this ),
+		dialog_height = $( window ).height() - 100,
+        data = {
+			action: 'wpv_create_wp_archive_popup',
+            wpnonce: $('#work_views_listing').val()
+        };
+		
+		self.dialog_create_or_change_usage = 'create';
+		
+		self.dialog_create_wpa.dialog( 'open' ).dialog({
+            width: 770,
+			title: wpa_listing_texts.dialog_create_dialog_title,
+            maxHeight: dialog_height,
+            draggable: false,
+            resizable: false,
+			position: { my: "center top+50", at: "center top", of: window }
+        });
+		
+		self.dialog_create_wpa.html( self.shortcodeDialogSpinnerContent );
+		
 		$.ajax({
-			async:false,
-			type:"POST",
-			url:ajaxurl,
-			data:data,
-			success:function(response){
-				if ( ( typeof(response) !== 'undefined' ) && ( response == 'ok' ) ) {
-					navigateWithURIParams(decodeURIParams());
-				} else {
-					console.log( "Error: AJAX returned ", response );
+			async: false,
+			type: "GET",
+			dataType: "json",
+			url: ajaxurl,
+			data: data,
+			success: function( response ) {
+				if ( response.success ) {
+					self.dialog_create_wpa.html( response.data.dialog_content );
+					$( '.js-wpv-new-archive-name' ).focus();
+					disablePrimaryButton( $( '.js-wpv-create-new-wpa' ) );
 				}
 			},
-			error: function (ajaxContext) {
-				console.log( "Error: ", ajaxContext.responseText );
+			error: function( ajaxContext ) {
+				//console.log( "Error: ", ajaxContext.responseText );
+			},
+			complete: function() { }
+		});
+
+    });
+	
+	$(document).on( 'keypress','.js-wpv-new-archive-name', function(event){
+        if ( event.which == 13 ) {
+            event.preventDefault();
+        }
+    });
+
+    /**
+     * Create Archive from the create dialog
+     *
+     * @since unknown
+     */
+    $( document ).on( 'click', '.js-wpv-create-new-wpa', function( e ) {
+        e.preventDefault();
+        var thiz = $( this ),
+        thiz_container = thiz.closest( '.js-wpv-dialog-wpa-manager' ),
+        thiz_message_container = thiz_container.find( '.js-wpv-error-container' ),
+		data;
+		
+		disablePrimaryButton( thiz );
+        showSpinnerAfter( thiz );
+        thiz_container.find('.toolset-alert').remove();
+		
+		if ( self.dialog_create_or_change_usage == 'create' ) {
+			data = {
+				action: 'wpv_wp_archive_create_new',
+				form: $('#wpv-create-archive-view-form').serialize(),
+				wpnonce : $('#work_views_listing').val()
+			};
+		} else if ( self.dialog_create_or_change_usage == 'change' ) {
+			data = {
+				action: 'wpv_wp_archive_change_usage',
+				form: $('#wpv-create-archive-view-form').serialize(),
+				wpnonce : $('#work_views_listing').attr('value')
+			};
+		}
+        $.ajax({
+            async: false,
+            type: "POST",
+			dataType: "json",
+            url: ajaxurl,
+            data: data,
+            success: function( response ) {
+				if ( response.success ) {
+					if ( self.dialog_create_or_change_usage == 'create' ) {
+						$( location ).attr( 'href', wpa_listing_texts.edit_url + response.data.id );
+					} else if ( self.dialog_create_or_change_usage == 'change' ) {
+						navigateWithURIParams(decodeURIParams());
+					}
+				} else {
+					thiz_message_container
+                        .wpvToolsetMessage({
+                            text: response.data.message,
+                            stay: true,
+                            close: false,
+                            type: 'error'
+                        });
+                    hideSpinner();
+				}
+            },
+            error: function (ajaxContext) {
+                //console.log( "Error: ", ajaxContext.responseText );
+            },
+            complete: function() {
+
+            }
+        });
+    });
+
+    /**
+     * Controls the buttons in WP Archive creation popup
+     *
+     * @since unknown
+     */
+    $( document ).on( 'change input cut paste','.js-wpv-new-archive-name', function() {
+        if ( $( this ).val() === "" ) {
+			disablePrimaryButton( $( '.js-wpv-create-new-wpa' ) );
+        } else {
+			enablePrimaryButton( $( '.js-wpv-create-new-wpa' ) );
+        }
+    });
+
+    /**
+     * Create Archive for loop popup.
+     *
+     * @since unknown
+     */
+    $( document ).on( 'click', '.js-wpv-create-wpa-for-archive-loop', function( e ) {
+        e.preventDefault();
+		
+		var thiz = $( this ),
+		dialog_height = $( window ).height() - 100;
+		
+		self.creating_archive_loop_title = thiz.data( 'forwhomtitle' );
+		self.creating_archive_loop = thiz.data( 'forwhomloop' );
+		
+		self.dialog_create_wpa_for_archive_loop.dialog( "open" ).dialog({
+            width: 770,
+            maxHeight: dialog_height,
+            draggable: false,
+            resizable: false,
+			position: { my: "center top+50", at: "center top", of: window }
+        });
+		
+    });
+	
+	$( document ).on( 'change input cut paste', '.js-wpv-create-wpa-for-archive-loop-title', function() {
+		var thiz = $( this ),
+		thiz_button = $( '.js-wpv-add-wp-archive-for-loop' );
+		if ( thiz.val() == '' ) {
+			disablePrimaryButton( thiz_button );
+		} else {
+			enablePrimaryButton( thiz_button );
+		}
+	});
+	
+	$( document ).on( 'click', '.js-wpv-add-wp-archive-for-loop', function( e ) {
+		e.preventDefault();
+		
+		var thiz = $( this ),
+		thiz_container = thiz.closest( '.js-wpv-create-wpa-for-archive-loop' ),
+        thiz_message_container = thiz_container.find( '.js-wpv-error-container' ),
+		data = {
+            action: 'wpv_create_wpa_for_archive_loop',
+			title: $( '.js-wpv-create-wpa-for-archive-loop-title' ).val(),
+			loop: self.creating_archive_loop,
+            wpnonce : $('#work_views_listing').val()
+        };
+
+        showSpinnerBefore( thiz );
+		disablePrimaryButton( thiz );
+		thiz_message_container.html( '' );
+
+        $.ajax({
+            async: false,
+            type: "POST",
+			dataType: "json",
+            url: ajaxurl,
+            data: data,
+            success: function( response ) {
+				if ( response.success ) {
+					$( location ).attr( 'href', wpa_listing_texts.edit_url + response.data.id );
+				} else {
+					thiz_message_container
+						.wpvToolsetMessage({
+                            text: response.data.message,
+                            stay: true,
+                            close: false,
+                            type: 'error'
+                        });
+				}
+            },
+            error: function( ajaxContext ) {
+                //console.log( "Error: ", ajaxContext.responseText );
+            },
+            complete: function() {
+
+            }
+        });
+		
+	});
+	
+	
+	/**
+	* -----------------
+	* Change WPA usage
+	* -----------------
+	*/
+	
+	/**
+	 * Fires when user clicks on "change" action.
+	 */
+	$( document ).on( 'click','.js-list-views-action-change', function( e ) {
+		e.preventDefault();
+		
+		var thiz = $( this ),
+		dialog_height = $( window ).height() - 100,
+        data = {
+			action: 'wpv_change_wp_archive_usage_popup',
+			id: thiz.data('view-id'),
+            wpnonce: $('#work_views_listing').val()
+        };
+		
+		self.dialog_create_or_change_usage = 'change';
+		
+		self.dialog_create_wpa.dialog( 'open' ).dialog({
+            width: 770,
+			title: wpa_listing_texts.dialog_change_usage_dialog_title,
+            maxHeight: dialog_height,
+            draggable: false,
+            resizable: false,
+			position: { my: "center top+50", at: "center top", of: window }
+        });
+		
+		self.dialog_create_wpa.html( self.shortcodeDialogSpinnerContent );
+		
+		$.ajax({
+			async: false,
+			type: "GET",
+			dataType: "json",
+			url: ajaxurl,
+			data: data,
+			success: function( response ) {
+				if ( response.success ) {
+					self.dialog_create_wpa.html( response.data.dialog_content );
+					enablePrimaryButton( $( '.js-wpv-create-new-wpa' ) );
+				}
+			},
+			error: function( ajaxContext ) {
+				//console.log( "Error: ", ajaxContext.responseText );
+			},
+			complete: function() { }
+		});
+		
+	});
+	
+	self.manage_dialog_create_wpa_button_labels = function() {
+		if ( self.dialog_create_or_change_usage == 'create' ) {
+			$( '.js-wpv-create-new-wpa .ui-button-text' ).html( wpa_listing_texts.dialog_create_action );
+		} else if ( self.dialog_create_or_change_usage == 'change' ) {
+			$( '.js-wpv-create-new-wpa .ui-button-text' ).html( wpa_listing_texts.dialog_change_usage_action );
+		}
+	};
+	
+	/**
+     * This happens when user clicks on the "Change WordPress Archive" action link on the "listing by usage" page.
+     *
+     */
+    $( document ).on( 'click', '.js-wpv-wpa-usage-action-change-usage', function( e ) {
+        e.preventDefault();
+        
+		var thiz = $( this ),
+		data_view_id = thiz.data( 'view-id' ),// This is actually a slug of the loop.
+		dialog_height = $( window ).height() - 100,
+		data = {
+			action: 'wpv_change_wpa_for_archive_loop_popup',
+			id: data_view_id,
+			wpnonce : $('#wpv_wp_archive_arrange_usage').val()
+		};
+		
+		self.dialog_change_wpa_for_archive_loop.dialog( "open" ).dialog({
+            width: 770,
+            maxHeight: dialog_height,
+            draggable: false,
+            resizable: false,
+			position: { my: "center top+50", at: "center top", of: window }
+        });
+		
+		self.dialog_change_wpa_for_archive_loop.html( self.shortcodeDialogSpinnerContent );
+		
+		$.ajax({
+			async: false,
+			type: "GET",
+			dataType: "json",
+			url: ajaxurl,
+			data: data,
+			success: function( response ) {
+				if ( response.success ) {
+					self.dialog_change_wpa_for_archive_loop.html( response.data.dialog_content );
+				}
+			},
+			error: function( ajaxContext ) {
+				//console.log( "Error: ", ajaxContext.responseText );
+			},
+			complete: function() { }
+		});
+		
+    });
+	
+	/**
+	 * This happens when user confirms updating assigned WordPress Archive for a loop.
+	 */ 
+	$( document ).on( 'click', '.js-wpv-change-wpa-for-archive-loop', function( e ) {
+		e.preventDefault();
+		
+		var thiz = $( this ),
+		data = {
+			action: 'wpv_change_wpa_for_archive_loop',
+			selected: $( 'input[name=wpv-view-loop-archive]:checked', '#js-wpv-change-wpa-for-archive-loop-list' ).val(),
+			loop: $( '#js-wpv-change-wpa-for-archive-loop-key' ).val(),
+			wpnonce : $( '#wpv_wp_archive_arrange_usage' ).val()
+		};
+		
+		disablePrimaryButton( thiz );
+		showSpinnerBefore( thiz );
+		
+		$.ajax({
+			async: false,
+			type: "POST",
+			dataType: "json",
+			url: ajaxurl,
+			data: data,
+			success: function( response ) {
+				if ( response.success ) {
+					navigateWithURIParams(decodeURIParams());
+				}
+			},
+			error: function( ajaxContext ) {
+				//console.log( "Error: ", ajaxContext.responseText );
 			},
 			complete: function() {
 
 			}
 		});
 	});
-
-
+	
+	/**
+	* -----------------
+	* Bulk actions
+	* -----------------
+	*/
+	
 	/**
 	 * Bulk action.
 	 *
@@ -402,13 +648,13 @@ jQuery(document).ready(function($) {
 		var action = $('.js-wpv-wpa-listing-bulk-action-select.position-' + selectPosition).val();
 		switch(action) {
 			case 'trash':
-				maybeTrashWPAs( checkedWPAs, nonce );
+				self.maybeTrashWPAs( checkedWPAs, nonce );
 				break;
 			case 'restore-from-trash':
 				untrashViews( checkedWPAs, nonce );
 				break;
 			case 'delete':
-				deleteWPAConfirmation( checkedWPAs, nonce );
+				self.deleteWPAConfirmation( checkedWPAs, nonce );
 				break;
 			default:
 				// do nothing
@@ -426,7 +672,7 @@ jQuery(document).ready(function($) {
 	 * 
 	 * @since 1.7
 	 */
-	function maybeTrashWPAs( wpaIDs, nonce ) {
+	self.maybeTrashWPAs = function( wpaIDs, nonce ) {
 
 		var data = {
 			action: 'wpv_archive_check_usage',
@@ -436,35 +682,36 @@ jQuery(document).ready(function($) {
 
 		$.ajax({
 			async: false,
-			type: "POST",
+			type: "GET",
+			dataType: "json",
 			url: ajaxurl,
 			data: data,
 			success: function( response ) {
-				response = JSON.parse( response );
-				if( ( 'used_wpa_ids' in response ) && ( 'colorbox_html' in response ) ) {
-					var usedWPAs = response['used_wpa_ids'];
-					if( usedWPAs.length == 0 ) {
-						// no WPAs are used, we can trash them right away
+				if ( response.success ) {
+					if ( response.data.used_wpa_ids.length == 0 ) {
 						trashViews( wpaIDs, nonce, true );
 					} else {
-						// some WPAs are used, show prepared colorbox
-						$.colorbox({
-							html: response['colorbox_html'],
-							onComplete: function() { }
+						var dialog_height = $( window ).height() - 100;
+						self.bulk_trashing_ids = wpaIDs;
+						self.dialog_bulk_trash_wpa.dialog( "open" ).dialog({
+							width: 770,
+							maxHeight: dialog_height,
+							draggable: false,
+							resizable: false,
+							position: { my: "center top+50", at: "center top", of: window }
 						});
-						// We're waiting on user input - hide the spinner shown at the start of bulk action
-						hideSpinner();
+						self.dialog_bulk_trash_wpa.html( response.data.dialog_content )
 					}
-				} else {
-					console.log( "Error: unexpected output: ", response );
+					hideSpinner();
 				}
+				
 			},
 			error: function( ajaxContext ) {
-				console.log( "Error: ", ajaxContext.responseText );
+				//console.log( "Error: ", ajaxContext.responseText );
 			},
 			complete: function() { }
 		});
-	}
+	};
 
 
 	/**
@@ -474,14 +721,16 @@ jQuery(document).ready(function($) {
 	 *
 	 * @todo comment
 	 */ 
-	$(document).on( 'click', '.js-bulk-trash-archives-confirm', function(e) {
+	$( document ).on( 'click', '.js-bulk-trash-wpa-confirm', function( e ) {
 		e.preventDefault();
-		// Disable "Trash all" button
-		$(this).prop( 'disabled', true ).addClass( 'button-secondary' ).removeClass( 'button-primary' );
-		showSpinnerAfter( $(this) );
 		
-		var wpaIDs = decodeURIComponent( $(this).data( 'archive-ids' ) ).split( ',' );
-		var nonce = $(this).data( 'nonce' );
+		var thiz = $( this );
+		
+		disablePrimaryButton( thiz );
+		showSpinnerBefore( thiz );
+		
+		var wpaIDs = self.bulk_trashing_ids;
+		var nonce = wpa_listing_texts.dialog_bulktrash_nonce;
 
 		trashViews( wpaIDs, nonce, true );
 	});
@@ -490,39 +739,32 @@ jQuery(document).ready(function($) {
 	/**
 	 * Show a popup with confirmation message. 
 	 *
-	 * Archives are deleted after clicking on .js-bulk-remove-archives-permanent.
+	 * Archives are deleted after clicking on .js-wpv-bulk-remove-wpa-permanent.
 	 *
 	 * @since 1.7
 	 */
-	function deleteWPAConfirmation( wpaIDs, nonce ) {
+	self.deleteWPAConfirmation = function( wpaIDs, nonce ) {
 	
 		// Do AJAX call to generate popup code
+		/*
 		var data = {
 			action: 'wpv_archive_bulk_delete_render_popup',
 			ids: wpaIDs,
 			wpnonce : nonce
 		};
+		*/
+		var dialog_height = $( window ).height() - 100;
+		
+		self.bulk_deleting_ids = wpaIDs;
+		
+		self.dialog_bulk_delete_wpa.dialog( "open" ).dialog({
+            maxHeight: dialog_height,
+            draggable: false,
+            resizable: false,
+			position: { my: "center top+50", at: "center top", of: window }
+        });
 
-		$.ajax({
-			async: false,
-			type: "POST",
-			url: ajaxurl,
-			data: data,
-			success: function( response ) {
-				// Show a colorbox with recieved content.
-				$.colorbox({
-					html: response,
-					onComplete: function() { }
-				});
-				// We're waiting on user input - hide the spinner shown at the start of bulk action
-				hideSpinner();
-			},
-			error: function( ajaxContext ) {
-				console.log( "Error: ", ajaxContext.responseText );
-			},
-			complete: function() { }
-		});
-	}
+	};
 
 
 	/**
@@ -530,20 +772,19 @@ jQuery(document).ready(function($) {
 	 *
 	 * @since 1.7
 	 */
-	$(document).on( 'click', '.js-bulk-remove-archives-permanent', function(e) {
+	$( document ).on( 'click', '.js-wpv-bulk-remove-wpa-permanent', function( e ) {
 		e.preventDefault();
-		// Disable "Delete all" button
-		$(this).prop( 'disabled', true ).addClass( 'button-secondary' ).removeClass( 'button-primary' );
-		showSpinnerAfter( $(this) );
 		
-		var wpaIDs = decodeURIComponent( $(this).data( 'archive-ids' ) ).split( ',' );
-		var nonce = $(this).data( 'nonce' );
-
-		var data = {
+		var thiz = $( this ),
+		data = {
 			action: 'wpv_bulk_delete_views_permanent',
-			ids: wpaIDs,
-			wpnonce : nonce
+			ids: self.bulk_deleting_ids,
+			wpnonce : wpa_listing_texts.dialog_bulkdel_nonce
 		};
+		
+		disablePrimaryButton( thiz );
+		showSpinnerBefore( thiz );
+
 		$.ajax({
 			async: false,
 			type: "POST",
@@ -554,160 +795,258 @@ jQuery(document).ready(function($) {
 				if ( ( typeof( response ) !== 'undefined' ) && ( 1 == response ) ) {
 					// reload the page with "deleted" message
 					var url_params = decodeURIParams();
-					var affectedItemCount = wpaIDs.length;
+					var affectedItemCount = self.bulk_deleting_ids.length;
 					url_params['paged'] = updatePagedParameter( url_params, affectedItemCount );
 					url_params['deleted'] = affectedItemCount;
 					navigateWithURIParams( url_params );
 				} else {
-					console.log( "Error: AJAX returned ", response );
+					//console.log( "Error: AJAX returned ", response );
 				}
 			},
 			error: function (ajaxContext) {
-				console.log( "Error: ", ajaxContext.responseText );
+				//console.log( "Error: ", ajaxContext.responseText );
 			},
 			complete: function() {	}
 		});
         
 	});
-
 	
+	/**
+	* -----------------
+	* Init dialogs
+	* -----------------
+	*/
+	
+	self.init_dialogs = function() {
+		
+		$( 'body' ).append( '<div id="js-wpv-create-wpa-form-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-wpv-shortcode-gui-dialog-container"></div>' );
+		
+		self.dialog_create_wpa = $( "#js-wpv-create-wpa-form-dialog" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: wpa_listing_texts.dialog_create_dialog_title,
+			minWidth: 600,
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				$( 'body' ).addClass( 'modal-open' );
+				self.manage_dialog_create_wpa_button_labels();
+				disablePrimaryButton( $( '.js-wpv-create-new-wpa' ) );
+			},
+			close: function( event, ui ) {
+				$( 'body' ).removeClass( 'modal-open' );
+				self.dialog_create_or_change_usage = '';
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: wpa_listing_texts.dialog_cancel,
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				{
+					class: 'button-primary js-wpv-create-new-wpa',
+					text: wpa_listing_texts.dialog_create_action,
+					click: function() {
 
-	/* ****************************************************************************\
-	 * Common
-	\* ****************************************************************************/
-
-	// Create Archive up & down popup
-
-    $(document).on('click', '.js-wpv-views-archive-add-new-top', function(e) {
-	    e.preventDefault();
-        $('.js-wpv-views-archive-add-new').click();
-        return false;
-    });
-
-    $(document).on('click', '.js-wpv-views-archive-add-new', function(e) {
-	    e.preventDefault();
-        var $thiz = $(this);
-        var data = {
-            wpnonce: $('#work_views_listing').val()
-        }
-
-        $.colorbox({
-            href: $thiz.data('target'),
-            inline : false,
-            data: data,
-            onComplete: function() {
-		    if ( $('.js-wpv-add-archive').prop('disabled') ) {
-			    $('.js-wpv-add-archive').addClass('button-secondary').removeClass('button-primary');
-		    }
-                if ( !$thiz.data('disabled') ){
-                    $('.js-create-new-temlate').prop('disabled',true).addClass('button-secondary').removeClass('button-primary');
-                }
-            }
-        });
-        return false;
-    });
-
-    // Creation of first Archive TODO merge with the above
-
-    $(document).on('click', '.js-wpv-views-archive-create-new', function(e) {
-	    e.preventDefault();
-	    var data = {
-		    wpnonce : $('#work_views_listing').attr('value')
-	    }
-
-	    $.colorbox({
-		    href: $(this).data('target'),
-				       inline: false,
-			 data: data,
-			 onComplete: function() {
-				 if ( $('.js-wpv-add-archive').prop('disabled') ) {
-					 $('.js-wpv-add-archive').addClass('button-secondary').removeClass('button-primary');
-				 }
-			 }
-	    });
-	 return false;
-    });
-
-    // Create Archive up, down, first action
-
-    $( document ).on( 'click', '.js-wpv-add-archive', function( e ) {
-	    e.preventDefault();
-		var thiz = $( this ),
-		thiz_container = thiz.parents( '.js-wpv-dialog-wpa-manager' ),
-		thiz_message_container = thiz_container.find( '.js-wpv-error-container' ),
-		error_message = thiz.data('error');
-	    thiz.attr('disabled', true).addClass('button-secondary').removeClass('button-primary');
-	    showSpinnerBefore( $(this) );
-	    thiz_container.find('.toolset-alert').remove();
-	    var data = {
-			action: 'wpv_create_archive_view',
-			form: $('#wpv-create-archive-view-form').serialize(),
-			wpnonce : $('#work_views_listing').attr('value')
-	    };
-	    $.ajax({
-			async:false,
-			type:"POST",
-			url:ajaxurl,
-			data:data,
-			success: function( response ) {
-				if ( ( typeof( response ) !== 'undefined' ) && ( response == 'error' ) ) {
-					thiz_message_container
-						.wpvToolsetMessage({
-							text: error_message,
-							stay: true,
-							close: false,
-							type: ''
-						});
-					hideSpinner();
-				} else if ( ( typeof(response) !== 'undefined' ) && ( typeof( response ) == 'string' ) ) {
-					$(location).attr('href', $('.js-wpv-add-archive').data('url') + response );
-				} else {
-					console.log( "Error: AJAX returned ", response );
+					}
 				}
+			]
+		});
+		
+		self.dialog_delete_wpa = $( "#js-wpv-delete-wpa-dialog" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: wpa_listing_texts.dialog_delete_dialog_title,
+			minWidth: 600,
+			show: { 
+				effect: "blind", 
+				duration: 800 
 			},
-			error: function (ajaxContext) {
-				console.log( "Error: ", ajaxContext.responseText );
+			open: function( event, ui ) {
+				$( 'body' ).addClass( 'modal-open' );
 			},
-			complete: function() {
+			close: function( event, ui ) {
+				$( 'body' ).removeClass( 'modal-open' );
+				self.deleting_id = 0;
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: wpa_listing_texts.dialog_cancel,
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				{
+					class: 'button-primary js-wpv-remove-wpa-permanent',
+					text: wpa_listing_texts.dialog_delete_action,
+					click: function() {
 
-			}
-	    });
-    });
+					}
+				}
+			]
+		});
+		
+		self.dialog_create_wpa_for_archive_loop = $( "#js-wpv-create-wpa-for-archive-loop-dialog" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: wpa_listing_texts.dialog_create_wpa_for_archive_loop_dialog_title,
+			minWidth: 600,
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				$( 'body' ).addClass( 'modal-open' );
+				$( '.js-wpv-create-wpa-for-archive-loop-hint' ).html( self.creating_archive_loop_title );
+				$( '.js-wpv-create-wpa-for-archive-loop-title' ).val( self.creating_archive_loop_title );
+			},
+			close: function( event, ui ) {
+				$( 'body' ).removeClass( 'modal-open' );
+				self.creating_archive_loop_title = '';
+				self.creating_archive_loop = '';
+				
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: wpa_listing_texts.dialog_cancel,
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				{
+					class: 'button-primary js-wpv-add-wp-archive-for-loop',
+					text: wpa_listing_texts.dialog_create_wpa_for_archive_loop_action,
+					click: function() {
 
-    // Controls the buttons in WP Archive creation popup (for usage arrange maybe shared)
+					}
+				}
+			]
+		});
+		
+		$( 'body' ).append( '<div id="js-wpv-change-wpa-for-archive-loop-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-wpv-shortcode-gui-dialog-container"></div>' );
+		
+		self.dialog_change_wpa_for_archive_loop = $( "#js-wpv-change-wpa-for-archive-loop-dialog" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: wpa_listing_texts.dialog_change_wpa_for_archive_loop_dialog_title,
+			minWidth: 600,
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				$( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				$( 'body' ).removeClass( 'modal-open' );				
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: wpa_listing_texts.dialog_cancel,
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				{
+					class: 'button-primary js-wpv-change-wpa-for-archive-loop',
+					text: wpa_listing_texts.dialog_change_wpa_for_archive_loop_action,
+					click: function() {
 
-    $(document).on('input','.js-wpv-new-archive-name', function(e){
-        $('.toolset-alert').remove();
-	if ($(this).val() === ""){
-			$('.js-wpv-add-archive').prop('disabled',true).addClass('button-secondary').removeClass('button-primary');
-			$('.js-wpv-add-wp-archive-for-loop').prop('disabled',true).addClass('button-secondary').removeClass('button-primary');
-		}
-        else{
-			$('.js-wpv-add-archive').prop('disabled',false).removeClass('button-secondary').addClass('button-primary');
-			$('.js-wpv-add-wp-archive-for-loop').prop('disabled',false).removeClass('button-secondary').addClass('button-primary');
-		}
-    });
+					}
+				}
+			]
+		});
+		
+		$( 'body' ).append( '<div id="js-wpv-bulk-trash-wpa-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-wpv-shortcode-gui-dialog-container"></div>' );
+		
+		self.dialog_bulk_trash_wpa = $( "#js-wpv-bulk-trash-wpa-dialog" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: wpa_listing_texts.dialog_bulk_trash_dialog_title,
+			minWidth: 600,
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				$( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				$( 'body' ).removeClass( 'modal-open' );
+				self.bulk_trashing_ids = [];
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: wpa_listing_texts.dialog_cancel,
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				{
+					class: 'button-primary js-bulk-trash-wpa-confirm',
+					text: wpa_listing_texts.dialog_bulk_trash_action,
+					click: function() {
 
-    $(document).on('keypress','.js-wpv-new-archive-name', function(event){
-        if ( event.which == 13 ) {
-            event.preventDefault();
-        }
-    });
+					}
+				}
+			]
+		});
+		
+		self.dialog_bulk_delete_wpa = $( "#js-wpv-bulk-delete-wpa-dialog" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: wpa_listing_texts.dialog_bulk_delete_dialog_title,
+			minWidth: 600,
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				$( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				$( 'body' ).removeClass( 'modal-open' );
+				self.bulk_deleting_ids = [];
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: wpa_listing_texts.dialog_cancel,
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				{
+					class: 'button-primary js-wpv-bulk-remove-wpa-permanent',
+					text: wpa_listing_texts.dialog_delete_action,
+					click: function() {
 
-    // Change pagination items per page
+					}
+				}
+			]
+		});
+		
+	};
+	
+	self.init = function() {
+		$('.js-list-views-action option').removeAttr('selected');
+		self.init_dialogs();
+	};
+	
+	self.init();
+	
+};
 
-    $(document).on('change', '.js-items-per-page', function() {
-	    navigateWithURIParams(decodeURIParams('paged=1&items_per_page=' + $(this).val()));
-    });
+jQuery( document ).ready( function( $ ) {
 
-    $(document).on('click', '.js-wpv-display-all-items', function(e){
-	    e.preventDefault();
-	    navigateWithURIParams(decodeURIParams('paged=1&items_per_page=-1'));
-    });
-
-    $(document).on('click', '.js-wpv-display-default-items', function(e){
-	    e.preventDefault();
-	    navigateWithURIParams(decodeURIParams('paged=1&items_per_page=20'));
-    });
+    WPViews.wpa_listing_screen = new WPViews.WPAListingScreen( $ );
 
 });

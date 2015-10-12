@@ -1,0 +1,1225 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2015-02-12 10:30-0800\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Hans Harsevoord <hans@marissen.net>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl_NL\n"
+
+#: 404.php:9
+msgid "Sorry! That page doesn't seem to exist."
+msgstr "Sorry! Deze pagina is niet beschikbaar"
+
+#: classes/class-fl-customizer-control.php:148
+msgid ""
+"Please install and activate the \"Customizer Export/Import\" plugin to "
+"proceed."
+msgstr ""
+"Installeer en activeer de “Customizer Export/Import” plugin om door te gaan."
+
+#: classes/class-fl-customizer-control.php:149
+msgctxt "...a plugin."
+msgid "Install &amp; Activate"
+msgstr "Installeer &amp; Activeer"
+
+#: classes/class-fl-customizer.php:271
+msgctxt "Customizer section title. Theme design/style presets."
+msgid "Presets"
+msgstr "Presets"
+
+#: classes/class-fl-customizer.php:291
+msgid "Start by selecting a preset for your theme."
+msgstr "Begin bij het selecteren van je thema."
+
+#: classes/class-fl-customizer.php:382
+msgctxt "Customizer section title."
+msgid "Export/Import"
+msgstr "Exporteren/Importeren"
+
+#: classes/class-fl-theme.php:85
+msgid "Top Bar Menu"
+msgstr "Bovenste Menu"
+
+#: classes/class-fl-theme.php:86
+msgid "Header Menu"
+msgstr "Hoofdmenu"
+
+#: classes/class-fl-theme.php:87
+msgid "Footer Menu"
+msgstr "Footer Menu"
+
+#: classes/class-fl-theme.php:146
+msgid "Primary Sidebar"
+msgstr "Hoofd Sidebar"
+
+#: classes/class-fl-theme.php:157
+#, php-format
+msgctxt ""
+"Sidebar title. %d stands for the order number of the auto-created sidebar, 4 "
+"in total."
+msgid "Footer Column %d"
+msgstr "Footer Kolom %d"
+
+#: classes/class-fl-theme.php:169
+msgid "WooCommerce Sidebar"
+msgstr "WooCommerce Sidebar"
+
+#: classes/class-fl-theme.php:327
+msgid "Choose Menu"
+msgstr "Kies Menu"
+
+#: classes/class-fl-theme.php:327
+msgid "Home"
+msgstr "Home"
+
+#: classes/class-fl-theme.php:774
+#, php-format
+msgctxt "Archive title: tag."
+msgid "Posts Tagged &#8216;%s&#8217;"
+msgstr "Berichten Tagged &#8216;%s&#8217;"
+
+#: classes/class-fl-theme.php:778
+#, php-format
+msgctxt "Archive title: day."
+msgid "Archive for %s"
+msgstr "Archiveren voor %s"
+
+#: classes/class-fl-theme.php:782
+#, php-format
+msgctxt "Archive title: month."
+msgid "Archive for %s"
+msgstr "Archiveren voor %s"
+
+#: classes/class-fl-theme.php:786
+#, php-format
+msgctxt "Archive title: year."
+msgid "Archive for %s"
+msgstr "Archiveren voor %s"
+
+#: classes/class-fl-theme.php:790
+#, php-format
+msgctxt "Archive title: author."
+msgid "Posts by %s"
+msgstr "Berichten door %s"
+
+#: classes/class-fl-theme.php:794
+#, php-format
+msgctxt "Search results title."
+msgid "Search results for: %s"
+msgstr "Zoek resultaten voor %s"
+
+#: classes/class-fl-theme.php:798
+msgctxt "Archive title: paged archive."
+msgid "Archives"
+msgstr "Archieven"
+
+#: classes/class-fl-theme.php:824
+msgid "&laquo; Newer Posts"
+msgstr "&laquo; Nieuwere Berichten"
+
+#: classes/class-fl-theme.php:825
+msgid "Older Posts &raquo;"
+msgstr "Oudere Berichten &raquo;"
+
+#: classes/class-fl-theme.php:875
+#, php-format
+msgctxt "Post meta info: author."
+msgid "By %s"
+msgstr "Door %s"
+
+#: classes/class-fl-theme.php:942
+#, php-format
+msgctxt "Post meta info: category."
+msgid "Posted in %s"
+msgstr "Geplaatst in %s"
+
+#: classes/class-fl-theme.php:947
+#, php-format
+msgctxt ""
+"Post meta info: tags. Continuing of the sentence started with \"Posted in "
+"Category\"."
+msgid " and tagged %s"
+msgstr " en tagged %s"
+
+#: classes/class-fl-theme.php:949
+#, php-format
+msgctxt "Post meta info: tags."
+msgid "Tagged %s"
+msgstr "Tagged %s"
+
+#: classes/class-fl-theme.php:958
+msgctxt "Comments popup link title."
+msgid "Leave a comment"
+msgstr "Laat een reactie achter"
+
+#: classes/class-fl-theme.php:958
+msgid "1 Comment"
+msgstr "1 Reactie"
+
+#: classes/class-fl-theme.php:958
+msgctxt "Comments popup link title."
+msgid "1 Comment"
+msgid_plural "% Comments"
+msgstr[0] "1 Reactie"
+msgstr[1] "% Reacties"
+
+#: comments.php:21
+#, php-format
+msgctxt "Comments list title."
+msgid "1 Comment"
+msgid_plural "%d Comments"
+msgstr[0] "1 Reactie"
+msgstr[1] "%d Reacties"
+
+#: comments.php:27
+msgid "No Comments"
+msgstr "Geen Reacties"
+
+#: comments.php:50
+msgctxt "Respond form title."
+msgid "Leave a Comment"
+msgstr "Laat een reactie achter"
+
+#: comments.php:57
+#, php-format
+msgctxt "Please, keep the HTML tags."
+msgid "You must be <a%s>logged in</a> to post a comment."
+msgstr "Je moet <a%s>ingelogd</a> zijn om een reactie te kunnen plaatsen."
+
+#: comments.php:69
+#, php-format
+msgid "Logged in as %s."
+msgstr "Ingelogd als %s."
+
+#: comments.php:69
+msgid "Log out of this account"
+msgstr "Dit account uitloggen"
+
+#: comments.php:69
+msgid "Log out &raquo;"
+msgstr "Log uit &raquo;"
+
+#: comments.php:73
+msgctxt "Comment form label: comment author name."
+msgid "Name"
+msgstr "Naam"
+
+#: comments.php:73 comments.php:77
+msgid " (required)"
+msgstr "(verplicht)"
+
+#: comments.php:77
+msgctxt "Comment form label: comment author email."
+msgid "Email (will not be published)"
+msgstr "E-mail (word niet zichtbaar)"
+
+#: comments.php:81
+msgctxt "Comment form label: comment author website."
+msgid "Website"
+msgstr "Website"
+
+#: comments.php:87
+msgctxt "Comment form label: comment content."
+msgid "Comment"
+msgstr "Reacties"
+
+#: comments.php:91
+msgid "Submit Comment"
+msgstr "Reactie plaatsen"
+
+#: content-no-results.php:4
+msgid "Nothing Found"
+msgstr "Niks gevonden"
+
+#: content-no-results.php:10
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+"Sorry, er zijn geen resultaten gevonden op uw zoektermen. Probeer het "
+"nogmaals met andere zoekwoorden."
+
+#: content-no-results.php:15
+msgid ""
+"It seems we can't find what you're looking for. Perhaps searching can help."
+msgstr ""
+"Het lijkt er op dat we niet kunnen vinden waar u naar zoekt. U zou eventueel "
+"onze zoekfunctie kunnen gebruiken."
+
+#: content-page.php:6
+msgctxt "Edit page link text."
+msgid "Edit"
+msgstr "Bewerk"
+
+#: content-page.php:15 content-single.php:38
+msgctxt "Text before page links on paginated post."
+msgid "Pages:"
+msgstr "Pagina’s:"
+
+#: content-single.php:11 content.php:13
+msgctxt "Edit post link text."
+msgid "Edit"
+msgstr "Bewerken"
+
+#: includes/comment.php:10
+#, php-format
+msgid ""
+"<span class=\"comment-author-link\">%1$s</span> <span class=\"comment-date"
+"\">on %2$s at %3$s</span>"
+msgstr ""
+"<span class=\"comment-author-link\">%1$s</span> <span class=\"comment-date"
+"\">op %2$s at %3$s</span>"
+
+#: includes/comment.php:17
+msgid "Your comment is awaiting moderation."
+msgstr "Uw reactie moet nog word goedgekeurd."
+
+#: includes/comment.php:20
+msgctxt "Comment edit link text."
+msgid "(Edit)"
+msgstr "(bewerk)"
+
+#: includes/comment.php:26
+msgid "Reply"
+msgstr "Reageer"
+
+#: includes/copyright.php:4
+msgid "Credits"
+msgstr "Credits"
+
+#: includes/customizer-panel-code.php:5
+msgctxt "Customizer panel title."
+msgid "Code"
+msgstr "Code"
+
+#: includes/customizer-panel-code.php:10
+msgctxt "Customizer section title."
+msgid "CSS Code"
+msgstr "CSS Code"
+
+#: includes/customizer-panel-code.php:19
+msgid ""
+"CSS entered in the box below will be rendered within &lt;style&gt; tags."
+msgstr ""
+"De CSS die u invoert in het veld hieronder zal worden gerenderd binnen &lt;"
+"style&gt; tags."
+
+#: includes/customizer-panel-code.php:29
+msgctxt "Customizer section title."
+msgid "JavaScript Code"
+msgstr "JavaScript Code"
+
+#: includes/customizer-panel-code.php:38
+msgid ""
+"JavaScript entered in the box below will be rendered within &lt;script&gt; "
+"tags."
+msgstr ""
+"De JavaScript die u invoert in het veld hieronder zal worden gerenderd "
+"binnen &lt;script&gt; tags."
+
+#: includes/customizer-panel-code.php:48
+msgctxt "Customizer section title."
+msgid "Head Code"
+msgstr "Head Code"
+
+#: includes/customizer-panel-code.php:57
+msgid ""
+"Code entered in the box below will be rendered within the page &lt;head&gt; "
+"tag."
+msgstr ""
+"Code die u invoert in het veld hieronder zal worden gerenderd in de pagina "
+"&lt;head&gt; tag."
+
+#: includes/customizer-panel-code.php:67
+msgctxt "Customizer section title."
+msgid "Header Code"
+msgstr "Header Code"
+
+#: includes/customizer-panel-code.php:76
+msgid ""
+"Code entered in the box below will be rendered directly after the opening "
+"&lt;body&gt; tag."
+msgstr ""
+"Code die wordt ingevoerd in het veld hieronder zal direct worden gerenderd "
+"na de opening &lt;body&gt; tag."
+
+#: includes/customizer-panel-code.php:86
+msgctxt "Customizer section title."
+msgid "Footer Code"
+msgstr "Footer Code"
+
+#: includes/customizer-panel-code.php:95
+msgid ""
+"Code entered in the box below will be rendered directly before the closing "
+"&lt;body&gt; tag."
+msgstr ""
+"Code die wordt ingevoerd in het veld hieronder zal direct worden gerenderd "
+"voor het sluiten &lt;body&gt; tag."
+
+#: includes/customizer-panel-content.php:5
+msgctxt "Customizer panel title."
+msgid "Content"
+msgstr "Content"
+
+#: includes/customizer-panel-content.php:10
+msgctxt "Customizer section title."
+msgid "Content Background"
+msgstr "Content Achtergrond"
+
+#: includes/customizer-panel-content.php:20
+msgid "Content Background Color"
+msgstr "Content Achtergrondkleur"
+
+#: includes/customizer-panel-content.php:28
+msgctxt "Customizer section title."
+msgid "Blog Layout"
+msgstr "Blog Layout"
+
+#: includes/customizer-panel-content.php:38
+msgid "Blog Sidebar Position"
+msgstr "Blog Sidebar Positie"
+
+#: includes/customizer-panel-content.php:41
+#: includes/customizer-panel-content.php:264
+msgid "Sidebar Right"
+msgstr "Sidebar Rechts"
+
+#: includes/customizer-panel-content.php:42
+#: includes/customizer-panel-content.php:265
+msgid "Sidebar Left"
+msgstr "Sidebar Links"
+
+#: includes/customizer-panel-content.php:43
+#: includes/customizer-panel-content.php:266
+msgid "No Sidebar"
+msgstr "Geen Sidebar"
+
+#: includes/customizer-panel-content.php:55
+msgid "Blog Sidebar Size"
+msgstr "Blog Sidebar Grootte"
+
+#: includes/customizer-panel-content.php:58
+#: includes/customizer-panel-content.php:281
+msgctxt "Sidebar size."
+msgid "Large"
+msgstr "Groot"
+
+#: includes/customizer-panel-content.php:59
+#: includes/customizer-panel-content.php:282
+msgctxt "Sidebar size."
+msgid "Medium"
+msgstr "Middel"
+
+#: includes/customizer-panel-content.php:60
+#: includes/customizer-panel-content.php:283
+msgctxt "Sidebar size."
+msgid "Small"
+msgstr "Klein"
+
+#: includes/customizer-panel-content.php:72
+msgid "Blog Sidebar Display"
+msgstr "Blog Sidebar weergave"
+
+#: includes/customizer-panel-content.php:75
+#: includes/customizer-panel-content.php:298
+msgid "Desktop Only"
+msgstr "Alleen Desktop"
+
+#: includes/customizer-panel-content.php:76
+#: includes/customizer-panel-content.php:299
+msgid "Always"
+msgstr "Altijd"
+
+#: includes/customizer-panel-content.php:96
+msgid "Post Author"
+msgstr "Bericht Auteur"
+
+#: includes/customizer-panel-content.php:99
+#: includes/customizer-panel-content.php:115
+#: includes/customizer-panel-content.php:208
+#: includes/customizer-panel-content.php:224
+#: includes/customizer-panel-content.php:240
+#: includes/customizer-panel-content.php:323
+msgid "Visible"
+msgstr "Zichtbaar"
+
+#: includes/customizer-panel-content.php:100
+#: includes/customizer-panel-content.php:116
+#: includes/customizer-panel-content.php:167
+#: includes/customizer-panel-content.php:191
+#: includes/customizer-panel-content.php:209
+#: includes/customizer-panel-content.php:225
+#: includes/customizer-panel-content.php:241
+#: includes/customizer-panel-content.php:324
+msgid "Hidden"
+msgstr "Verborgen"
+
+#: includes/customizer-panel-content.php:112
+msgid "Post Date"
+msgstr "Bericht datum"
+
+#: includes/customizer-panel-content.php:125
+msgctxt "Customizer section title."
+msgid "Archive Layout"
+msgstr "Archive Layout"
+
+#: includes/customizer-panel-content.php:135
+msgid "Show Full Text"
+msgstr "Laat volledige tekst zien"
+
+#: includes/customizer-panel-content.php:136
+msgid "Whether or not to show the full post. If no, the excerpt will be shown."
+msgstr ""
+"Of om het volledige bericht te tonen. Zo nee, zal het uittreksel worden "
+"getoond."
+
+#: includes/customizer-panel-content.php:139
+msgid "Yes"
+msgstr "Ja"
+
+#: includes/customizer-panel-content.php:140
+msgid "No"
+msgstr "Nee"
+
+#: includes/customizer-panel-content.php:148
+msgid "Read More"
+msgstr "Lees meer"
+
+#: includes/customizer-panel-content.php:152
+msgid "\"Read More\" Text"
+msgstr "\"Lees Meer\" Tekst"
+
+#: includes/customizer-panel-content.php:164
+#: includes/customizer-panel-content.php:188
+msgid "Featured Image"
+msgstr "Uitgelichte afbeelding"
+
+#: includes/customizer-panel-content.php:168
+msgid "Above Posts"
+msgstr "Boven berichten"
+
+#: includes/customizer-panel-content.php:169
+msgid "Beside Posts"
+msgstr "Naast berichten"
+
+#: includes/customizer-panel-content.php:178
+msgctxt "Customizer section title."
+msgid "Post Layout"
+msgstr "Bericht Layout"
+
+#: includes/customizer-panel-content.php:192
+msgid "Above Post"
+msgstr "Boven Berichten"
+
+#: includes/customizer-panel-content.php:193
+msgid "Beside Post"
+msgstr "Naast Berichten"
+
+#: includes/customizer-panel-content.php:205
+msgid "Post Categories"
+msgstr "Bericht Categorieën"
+
+#: includes/customizer-panel-content.php:221
+msgid "Post Tags"
+msgstr "Bericht Tags"
+
+#: includes/customizer-panel-content.php:237
+msgid "Prev/Next Post Links"
+msgstr "Vorige/Volgende Bericht Links"
+
+#: includes/customizer-panel-content.php:250
+msgctxt "Customizer section title."
+msgid "WooCommerce Layout"
+msgstr "WooCommerce Layout"
+
+#: includes/customizer-panel-content.php:260
+msgid "WooCommerce Sidebar Position"
+msgstr "WooCommerce Sidebar Positie"
+
+#: includes/customizer-panel-content.php:261
+msgid "The location of the WooCommerce sidebar."
+msgstr "De locatie van de WooCommerce sidebar"
+
+#: includes/customizer-panel-content.php:278
+msgid "WooCommerce Sidebar Size"
+msgstr "WooCommerce Sidebar Grootte"
+
+#: includes/customizer-panel-content.php:295
+msgid "WooCommerce Sidebar Display"
+msgstr "WooCommerce Sidebar weergave"
+
+#: includes/customizer-panel-content.php:319
+msgid "\"Add to Cart\" Button"
+msgstr "“Toevoegen aan winkelwagen” Knop"
+
+#: includes/customizer-panel-content.php:320
+msgid "Show the \"Add to Cart\" button on product category pages?"
+msgstr ""
+"“toevoegen aan winkelwagen” knop laten zien op product categorie pagina’s?"
+
+#: includes/customizer-panel-content.php:333
+msgctxt "Customizer section title."
+msgid "Lightbox"
+msgstr "Lightbox"
+
+#: includes/customizer-panel-content.php:343
+msgid "Lightbox"
+msgstr "Lightbox"
+
+#: includes/customizer-panel-content.php:346
+msgid "Enabled"
+msgstr "ingeschakeld"
+
+#: includes/customizer-panel-content.php:347
+#: includes/customizer-panel-footer.php:23
+msgid "Disabled"
+msgstr "Uitgeschakeld"
+
+#: includes/customizer-panel-footer.php:5
+msgctxt "Customizer panel title."
+msgid "Footer"
+msgstr "Footer"
+
+#: includes/customizer-panel-footer.php:10
+msgctxt "Customizer section title."
+msgid "Footer Widgets Layout"
+msgstr "Footer Widgets Layout"
+
+#: includes/customizer-panel-footer.php:20
+msgid "Footer Widgets Display"
+msgstr "Footer Widgets weergave"
+
+#: includes/customizer-panel-footer.php:24
+msgid "All Pages"
+msgstr "Alle Pagina’s"
+
+#: includes/customizer-panel-footer.php:25
+msgid "Homepage Only"
+msgstr "Alleen Homepagina"
+
+#: includes/customizer-panel-footer.php:34
+msgctxt "Customizer section title."
+msgid "Footer Widgets Background"
+msgstr "Footer Widgets Achtergond"
+
+#: includes/customizer-panel-footer.php:44
+msgid "Footer Widgets Background Type"
+msgstr "Footer Widgets Achtergrond Type"
+
+#: includes/customizer-panel-footer.php:47
+#: includes/customizer-panel-footer.php:82
+#: includes/customizer-panel-footer.php:184
+#: includes/customizer-panel-general.php:107
+#: includes/customizer-panel-general.php:167
+#: includes/customizer-panel-header.php:23
+#: includes/customizer-panel-header.php:127
+#: includes/customizer-panel-header.php:178
+#: includes/customizer-panel-header.php:250
+#: includes/customizer-panel-header.php:287
+#: includes/customizer-panel-header.php:437
+msgid "None"
+msgstr "Geen"
+
+#: includes/customizer-panel-footer.php:48
+#: includes/customizer-panel-footer.php:185
+#: includes/customizer-panel-header.php:128
+#: includes/customizer-panel-header.php:288
+#: includes/customizer-panel-header.php:438
+msgid "Same as Content"
+msgstr "Zelfde als Inhoud"
+
+#: includes/customizer-panel-footer.php:49
+#: includes/customizer-panel-footer.php:186
+#: includes/customizer-panel-header.php:129
+#: includes/customizer-panel-header.php:289
+#: includes/customizer-panel-header.php:439
+msgid "Custom"
+msgstr "Custom"
+
+#: includes/customizer-panel-footer.php:61
+msgid "Footer Widgets Background Color"
+msgstr "Footer Widgets Achtergondkleur"
+
+#: includes/customizer-panel-footer.php:69
+msgctxt "Customizer section title."
+msgid "Footer Layout"
+msgstr "Footer Layout"
+
+#: includes/customizer-panel-footer.php:79
+msgid "Footer Layout"
+msgstr "Footer Layout"
+
+#: includes/customizer-panel-footer.php:83
+#: includes/customizer-panel-header.php:24
+msgid "1 Column"
+msgstr "1 kolom"
+
+#: includes/customizer-panel-footer.php:84
+#: includes/customizer-panel-header.php:25
+msgid "2 Columns"
+msgstr "2 kolommen"
+
+#: includes/customizer-panel-footer.php:104
+#: includes/customizer-panel-footer.php:143
+#, php-format
+msgctxt "%d stands for column order number."
+msgid "Footer Column %d Layout"
+msgstr "Footer Kolom %d Layout"
+
+#: includes/customizer-panel-footer.php:107
+#: includes/customizer-panel-footer.php:146
+#: includes/customizer-panel-header.php:48
+#: includes/customizer-panel-header.php:88
+#: includes/customizer-panel-header.php:251
+#: includes/customizer-panel-header.php:338
+msgid "Text"
+msgstr "Tekst"
+
+#: includes/customizer-panel-footer.php:108
+#: includes/customizer-panel-footer.php:147
+#: includes/customizer-panel-header.php:52
+#: includes/customizer-panel-header.php:92
+#: includes/customizer-panel-header.php:252
+msgid "Social Icons"
+msgstr "Social Icons"
+
+#: includes/customizer-panel-footer.php:109
+#: includes/customizer-panel-footer.php:148
+#: includes/customizer-panel-header.php:49
+#: includes/customizer-panel-header.php:89
+#: includes/customizer-panel-header.php:253
+msgid "Text &amp; Social Icons"
+msgstr "Tekst &amp; Social Icons"
+
+#: includes/customizer-panel-footer.php:110
+#: includes/customizer-panel-footer.php:149
+#: includes/customizer-panel-header.php:50
+#: includes/customizer-panel-header.php:90
+msgid "Menu"
+msgstr "Menu"
+
+#: includes/customizer-panel-footer.php:123
+#: includes/customizer-panel-footer.php:162
+#, php-format
+msgctxt "%d stands for column order number."
+msgid "Footer Column %d Text"
+msgstr "Footer Kolom %d Tekst"
+
+#: includes/customizer-panel-footer.php:171
+msgctxt "Customizer section title."
+msgid "Footer Background"
+msgstr "Footer Achtergrond"
+
+#: includes/customizer-panel-footer.php:181
+msgid "Footer Background Type"
+msgstr "Footer Achtergond Type"
+
+#: includes/customizer-panel-footer.php:198
+msgid "Footer Background Color"
+msgstr "Footer Achtergrond kleur"
+
+#: includes/customizer-panel-general.php:5
+msgctxt "Customizer panel title."
+msgid "General"
+msgstr "Algemeen"
+
+#: includes/customizer-panel-general.php:10
+msgctxt "Customizer section title."
+msgid "Layout"
+msgstr "Layout"
+
+#: includes/customizer-panel-general.php:20
+msgid "Layout Width"
+msgstr "Layout Breedte"
+
+#: includes/customizer-panel-general.php:23
+msgid "Boxed"
+msgstr "Boxed"
+
+#: includes/customizer-panel-general.php:24
+msgid "Full Width"
+msgstr "Volledige Breedte"
+
+#: includes/customizer-panel-general.php:37
+msgid "Spacing (px)"
+msgstr "Ruimte (px)"
+
+#: includes/customizer-panel-general.php:50
+msgid "Drop Shadow Size (px)"
+msgstr "Schaduw grootte (px)"
+
+#: includes/customizer-panel-general.php:62
+msgid "Drop Shadow Color"
+msgstr "Schaduw kleur"
+
+#: includes/customizer-panel-general.php:70
+msgctxt "Customizer section title."
+msgid "Background"
+msgstr "Achtergrond"
+
+#: includes/customizer-panel-general.php:80
+msgid "Background Color"
+msgstr "Achtergrond kleur"
+
+#: includes/customizer-panel-general.php:92
+msgid "Background Image"
+msgstr "Achtergrond afbeelding"
+
+#: includes/customizer-panel-general.php:104
+msgid "Background Repeat"
+msgstr "Achtergrond herhaling"
+
+#: includes/customizer-panel-general.php:108
+msgid "Tile"
+msgstr "Tegel"
+
+#: includes/customizer-panel-general.php:109
+msgid "Horizontal"
+msgstr "Horizontaal"
+
+#: includes/customizer-panel-general.php:110
+msgid "Vertical"
+msgstr "Verticaal"
+
+#: includes/customizer-panel-general.php:123
+msgid "Background Position"
+msgstr "Achtergrond positie"
+
+#: includes/customizer-panel-general.php:126
+msgid "Left Top"
+msgstr "Links Boven"
+
+#: includes/customizer-panel-general.php:127
+msgid "Left Center"
+msgstr "Links Midden"
+
+#: includes/customizer-panel-general.php:128
+msgid "Left Bottom"
+msgstr "Links Onder"
+
+#: includes/customizer-panel-general.php:129
+msgid "Right Top"
+msgstr "Rechts Boven"
+
+#: includes/customizer-panel-general.php:130
+msgid "Right Center"
+msgstr "Rechts Midden"
+
+#: includes/customizer-panel-general.php:131
+msgid "Right Bottom"
+msgstr "Rechts Onder"
+
+#: includes/customizer-panel-general.php:132
+msgid "Center Top"
+msgstr "Midden Boven"
+
+#: includes/customizer-panel-general.php:133
+msgid "Center"
+msgstr "Midden"
+
+#: includes/customizer-panel-general.php:134
+msgid "Center Bottom"
+msgstr "Midden Onder"
+
+#: includes/customizer-panel-general.php:147
+msgid "Background Attachment"
+msgstr "Achtergrond Bijlage"
+
+#: includes/customizer-panel-general.php:150
+msgid "Scroll"
+msgstr "Scroll"
+
+#: includes/customizer-panel-general.php:151
+msgid "Fixed"
+msgstr "Vast"
+
+#: includes/customizer-panel-general.php:164
+msgid "Background Scale"
+msgstr "Achtergrond schaal"
+
+#: includes/customizer-panel-general.php:168
+msgid "Fit"
+msgstr "Passend"
+
+#: includes/customizer-panel-general.php:169
+msgid "Fill"
+msgstr "Vullen"
+
+#: includes/customizer-panel-general.php:178
+msgctxt "Customizer section title."
+msgid "Accent Color"
+msgstr "Accent Kleur"
+
+#: includes/customizer-panel-general.php:188
+msgid "Accent Color"
+msgstr "Accent Kleur"
+
+#: includes/customizer-panel-general.php:189
+msgid ""
+"The accent color will be used to color elements such as links and buttons as "
+"well as various elements in your theme."
+msgstr ""
+"Deze accent kleur zal gebruikt worden voor kleurelementen zoals links en "
+"knoppen maar ook verschillende elementen van het thema."
+
+#: includes/customizer-panel-general.php:197
+msgctxt "Customizer section title."
+msgid "Headings"
+msgstr "Headings"
+
+#: includes/customizer-panel-general.php:208
+msgid "Heading Color"
+msgstr "Heading Kleur"
+
+#: includes/customizer-panel-general.php:220
+msgid "Heading Font Family"
+msgstr "Heading lettertype"
+
+#: includes/customizer-panel-general.php:233
+msgid "Heading Font Weight"
+msgstr "Heading Lettertype gewicht"
+
+#: includes/customizer-panel-general.php:247
+msgid "Heading Font Format"
+msgstr "Heading lettertype grootte"
+
+#: includes/customizer-panel-general.php:250
+#: includes/customizer-panel-header.php:532
+msgid "Regular"
+msgstr "Regular"
+
+#: includes/customizer-panel-general.php:251
+#: includes/customizer-panel-header.php:533
+msgid "Capitalize"
+msgstr "Capitalize"
+
+#: includes/customizer-panel-general.php:252
+#: includes/customizer-panel-header.php:534
+msgid "Uppercase"
+msgstr "Uppercase"
+
+#: includes/customizer-panel-general.php:253
+#: includes/customizer-panel-header.php:535
+msgid "Lowercase"
+msgstr "Lowercase"
+
+#: includes/customizer-panel-general.php:275
+#: includes/customizer-panel-general.php:289
+#: includes/customizer-panel-general.php:303
+#: includes/customizer-panel-general.php:317
+#: includes/customizer-panel-general.php:331
+#: includes/customizer-panel-general.php:345
+#, php-format
+msgctxt "%s stands for HTML heading tag."
+msgid "%s Font Size (px)"
+msgstr "%s Lettertype grootte (px)"
+
+#: includes/customizer-panel-general.php:354
+msgctxt "Customizer section title."
+msgid "Text"
+msgstr "Tekst"
+
+#: includes/customizer-panel-general.php:364
+msgid "Text Color"
+msgstr "Tekst kleur"
+
+#: includes/customizer-panel-general.php:375
+msgid "Text Font Family"
+msgstr "Tekst lettertype"
+
+#: includes/customizer-panel-general.php:388
+msgid "Text Font Size (px)"
+msgstr "Tekst lettertype grootte (px)"
+
+#: includes/customizer-panel-header.php:5
+msgctxt "Customizer panel title."
+msgid "Header"
+msgstr "Header"
+
+#: includes/customizer-panel-header.php:10
+msgctxt "Customizer section title."
+msgid "Top Bar Layout"
+msgstr "Bovenste balk layout"
+
+#: includes/customizer-panel-header.php:20
+msgid "Top Bar Layout"
+msgstr "Bovenste balk layout"
+
+#: includes/customizer-panel-header.php:45
+#: includes/customizer-panel-header.php:85
+#, php-format
+msgctxt "%d stands for column order number."
+msgid "Top Bar Column %d Layout"
+msgstr "Bovenste balk kolom %d Layout"
+
+#: includes/customizer-panel-header.php:51
+#: includes/customizer-panel-header.php:91
+msgid "Menu &amp; Social Icons"
+msgstr "Menu &amp; Social Icons"
+
+#: includes/customizer-panel-header.php:65
+#: includes/customizer-panel-header.php:105
+#, php-format
+msgctxt "%d stands for column order number."
+msgid "Top Bar Column %d Text"
+msgstr "Bovenste balk kolom %d Tekst"
+
+#: includes/customizer-panel-header.php:114
+msgctxt "Customizer section title."
+msgid "Top Bar Background"
+msgstr "Bovenste balk achtergrond"
+
+#: includes/customizer-panel-header.php:124
+msgid "Top Bar Background Type"
+msgstr "Bovenste balk achtergrond type"
+
+#: includes/customizer-panel-header.php:141
+msgid "Top Bar Background Color"
+msgstr "Bovenste balk achtergrond kleur"
+
+#: includes/customizer-panel-header.php:152
+msgid "Top Bar Background Gradient"
+msgstr "Bovenste balk achtergrond verloop"
+
+#: includes/customizer-panel-header.php:155
+#: includes/customizer-panel-header.php:210
+#: includes/customizer-panel-header.php:227
+#: includes/customizer-panel-header.php:315
+#: includes/customizer-panel-header.php:465
+msgctxt ""
+"Used for multiple Customizer options values. Use generalized form of the "
+"word when translating."
+msgid "Disabled"
+msgstr "Uitgeschakeld"
+
+#: includes/customizer-panel-header.php:156
+#: includes/customizer-panel-header.php:211
+#: includes/customizer-panel-header.php:226
+#: includes/customizer-panel-header.php:316
+#: includes/customizer-panel-header.php:466
+msgctxt ""
+"Used for multiple Customizer options values. Use generalized form of the "
+"word when translating."
+msgid "Enabled"
+msgstr "Ingeschakeld"
+
+#: includes/customizer-panel-header.php:165
+msgctxt "Customizer section title."
+msgid "Header Layout"
+msgstr "Header Layout"
+
+#: includes/customizer-panel-header.php:175
+msgid "Header Layout"
+msgstr "Header Layout"
+
+#: includes/customizer-panel-header.php:179
+msgid "Navigation Bottom"
+msgstr "Navigatie onder"
+
+#: includes/customizer-panel-header.php:180
+msgid "Navigation Right"
+msgstr "Navigatie rechts"
+
+#: includes/customizer-panel-header.php:181
+msgid "Navigation Centered"
+msgstr "Navigatie midden"
+
+#: includes/customizer-panel-header.php:194
+msgid "Header Padding (px)"
+msgstr "Header Padding (px)"
+
+#: includes/customizer-panel-header.php:206
+msgid "Fixed Header"
+msgstr "Vaste Header"
+
+#: includes/customizer-panel-header.php:207
+msgid "Show a fixed header as the page is scrolled."
+msgstr "Laat een vaste header zien wanneer de pagina is gescrold."
+
+#: includes/customizer-panel-header.php:223
+msgid "Navigation Search Icon"
+msgstr "Navigatie zoek icoon"
+
+#: includes/customizer-panel-header.php:247
+msgid "Header Content Layout"
+msgstr "Header content layout"
+
+#: includes/customizer-panel-header.php:265
+msgid "Header Content Text"
+msgstr "Header content tekst"
+
+#: includes/customizer-panel-header.php:274
+msgctxt "Customizer section title."
+msgid "Header Background"
+msgstr "Header achtergrond"
+
+#: includes/customizer-panel-header.php:284
+msgid "Header Background Type"
+msgstr "Header achtergrond type"
+
+#: includes/customizer-panel-header.php:301
+msgid "Header Background Color"
+msgstr "Header achtergrondkleur"
+
+#: includes/customizer-panel-header.php:312
+msgid "Header Background Gradient"
+msgstr "Header achtergrond verloop"
+
+#: includes/customizer-panel-header.php:325
+msgctxt "Customizer section title."
+msgid "Header Logo"
+msgstr "Header logo"
+
+#: includes/customizer-panel-header.php:335
+msgid "Logo Type"
+msgstr "Logo type"
+
+#: includes/customizer-panel-header.php:339
+msgid "Image"
+msgstr "Afbeelding"
+
+#: includes/customizer-panel-header.php:351
+msgid "Logo Image (Regular)"
+msgstr "Logo afbeelding"
+
+#: includes/customizer-panel-header.php:362
+msgid "Logo Image (Retina)"
+msgstr "Logo afbeelding (Retina)"
+
+#: includes/customizer-panel-header.php:374
+msgid "Logo Text"
+msgstr "Logo tekst"
+
+#: includes/customizer-panel-header.php:387
+msgid "Logo Font Family"
+msgstr "Logo font"
+
+#: includes/customizer-panel-header.php:400
+msgid "Logo Font Weight"
+msgstr "Logo font gewicht"
+
+#: includes/customizer-panel-header.php:415
+msgid "Logo Font Size (px)"
+msgstr "Logo font grootte"
+
+#: includes/customizer-panel-header.php:424
+msgctxt "Customizer section title."
+msgid "Navigation Background"
+msgstr "Navigatie achtergrond"
+
+#: includes/customizer-panel-header.php:434
+msgid "Navigation Background Type"
+msgstr "Navigatie achtergrond type"
+
+#: includes/customizer-panel-header.php:451
+msgid "Navigation Background Color"
+msgstr "Navigatie achtergrondkleur"
+
+#: includes/customizer-panel-header.php:462
+msgid "Navigation Background Gradient"
+msgstr "Navigatie achtergrondverloop"
+
+#: includes/customizer-panel-header.php:475
+msgctxt "Customizer section title."
+msgid "Navigation Text"
+msgstr "Navigatie tekst"
+
+#: includes/customizer-panel-header.php:485
+msgid "Navigation Text Type"
+msgstr "Navigatie tekst type"
+
+#: includes/customizer-panel-header.php:488
+msgctxt "Navigation text type."
+msgid "Default"
+msgstr "Standaard"
+
+#: includes/customizer-panel-header.php:489
+msgctxt "Navigation text type."
+msgid "Custom"
+msgstr "Custom"
+
+#: includes/customizer-panel-header.php:502
+msgid "Navigation Font Family"
+msgstr "Navigatie font"
+
+#: includes/customizer-panel-header.php:515
+msgid "Navigation Font Weight"
+msgstr "Navigatie font gewicht"
+
+#: includes/customizer-panel-header.php:529
+msgid "Navigation Font Format"
+msgstr "Navigatie font grootte"
+
+#: includes/customizer-panel-header.php:549
+msgid "Navigation Font Size (px)"
+msgstr "Navigatie font grootte (px)"
+
+#: includes/customizer-panel-settings.php:5
+msgctxt "Customizer panel title."
+msgid "Settings"
+msgstr "Instellingen"
+
+#: includes/customizer-panel-settings.php:10
+msgctxt "Customizer section title."
+msgid "Social Links"
+msgstr "Social Links"
+
+#: includes/customizer-panel-settings.php:20
+msgid "Social Icons Color"
+msgstr "Social Icons kleur"
+
+#: includes/customizer-panel-settings.php:23
+msgid "Branded"
+msgstr "Branded"
+
+#: includes/customizer-panel-settings.php:24
+msgid "Monochrome"
+msgstr "Monochroom"
+
+#: includes/customizer-panel-settings.php:123
+msgid "RSS"
+msgstr "RSS"
+
+#: includes/customizer-panel-settings.php:129
+msgid "Email"
+msgstr "E-mail"
+
+#: includes/customizer-panel-settings.php:137
+msgctxt "Customizer section title."
+msgid "Favicons"
+msgstr "Favicons"
+
+#: includes/customizer-panel-settings.php:147
+msgid "Favicon"
+msgstr "Favicon"
+
+#: includes/customizer-panel-settings.php:158
+msgid "Apple Touch Icon"
+msgstr "Apple aanraaktoets"
+
+#: includes/customizer-panel-widgets.php:5
+msgctxt "Customizer panel title."
+msgid "Widgets"
+msgstr "Widgets"
+
+#: includes/nav-bottom.php:22 includes/nav-centered.php:17
+#: includes/nav-right.php:14
+msgctxt "Mobile navigation toggle button text."
+msgid "Menu"
+msgstr "Menu"
+
+#: includes/nav-search.php:3 searchform.php:1
+msgctxt "Search form mouse hover title."
+msgid "Type and press Enter to search."
+msgstr "Typ en druk op Enter om te zoeken"
+
+#: includes/nav-search.php:4 searchform.php:2
+msgctxt "Search form field placeholder text."
+msgid "Search"
+msgstr "Zoeken"

@@ -1,9 +1,23 @@
 <wpml-config>
     <custom-fields>
         <custom-field action="copy">_views_template</custom-field>
-        <custom-field action="ignore">_wpv_view_template_extra_css</custom-field>
-        <custom-field action="ignore">_wpv_view_template_extra_js</custom-field>
-        <custom-field action="ignore">_wpv_view_template_extra_state</custom-field>
+		<custom-field action="ignore">_views_template_new_type</custom-field>
+		<custom-field action="ignore">_wpv_settings</custom-field>
+		<custom-field action="ignore">_wpv_layout_settings</custom-field>
+		<custom-field action="ignore">_wpv_view_sync</custom-field>
+
+		<custom-field action="ignore">_view_loop_template</custom-field>
+
+        <!-- Content Template fields, @since 1.9 -->
+        <!-- todo can we make this conditional for a specific post type? -->
+        <custom-field action="ignore">_view_loop_id</custom-field>
+        <custom-field action="ignore">_edit_lock</custom-field>
+        <custom-field action="ignore">_wpv_view_template_extra_state</custom-field> <!-- deprecated -->
+        <custom-field action="copy">_wpv_view_template_mode</custom-field>
+        <custom-field action="copy">_wpv_view_template_extra_css</custom-field>
+        <custom-field action="copy">_wpv_view_template_extra_js</custom-field>
+        <custom-field action="translate">_wpv-content-template-decription</custom-field>
+
     </custom-fields>
     <custom-types>
         <custom-type translate="0">view</custom-type>

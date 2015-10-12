@@ -1,72 +1,110 @@
 <?php
 
-add_filter( 'wpv_view_settings', 'wpv_order_by_default_settings' );
-add_filter( 'wpv_view_settings', 'wpv_taxonomy_order_by_default_settings' );
-add_filter( 'wpv_view_settings', 'wpv_users_order_by_default_settings' );
-
 /**
-* wpv_order_by_default_settings
+* wpv-filter-order-by-embedded.php
 *
-* Sets the default sorting settings for Views listing posts
+* @package Views
 *
 * @since unknown
 */
 
-function wpv_order_by_default_settings( $view_settings ) {
-	if (!isset($view_settings['orderby'])) {
+/**
+* wpv_order_orderby_default_settings
+*
+* Sets the default order and orderby settings
+*
+* @since unknown
+*/
+
+add_filter( 'wpv_view_settings', 'wpv_order_orderby_default_settings' );
+
+function wpv_order_orderby_default_settings( $view_settings ) {
+	if ( ! isset( $view_settings['orderby'] ) ) {
 		$view_settings['orderby'] = 'post_date';
 	}
-	if (!isset($view_settings['order'])) {
+	if ( ! isset( $view_settings['order'] ) ) {
 		$view_settings['order'] = 'DESC';
 	}
-	return $view_settings;
-}
-
-/**
-* wpv_taxonomy_order_by_default_settings
-*
-* Sets the default sorting settings for Views listing taxonomy terms
-*
-* @since unknown
-*/
-
-function wpv_taxonomy_order_by_default_settings( $view_settings ) {
-	if ( !isset( $view_settings['taxonomy_orderby'] ) ) {
+	if ( ! isset( $view_settings['taxonomy_orderby'] ) ) {
 		$view_settings['taxonomy_orderby'] = 'name';
 	}
-	if ( !isset( $view_settings['taxonomy_order'] ) ) {
+	if ( ! isset( $view_settings['taxonomy_order'] ) ) {
 		$view_settings['taxonomy_order'] = 'DESC';
 	}
-	return $view_settings;
-}
-
-/**
-* wpv_users_order_by_default_settings
-*
-* Sets the default sorting settings for Views listing users
-*
-* @since unknown
-*/
-
-function wpv_users_order_by_default_settings( $view_settings ) {
-	if ( !isset( $view_settings['users_orderby'] ) ) {
+	if ( ! isset( $view_settings['users_orderby'] ) ) {
 		$view_settings['users_orderby'] = 'user_login';
 	}
-	if ( !isset( $view_settings['users_order'] ) ) {
+	if ( ! isset( $view_settings['users_order'] ) ) {
 		$view_settings['users_order'] = 'DESC';
 	}
 	return $view_settings;
 }
 
-$orderby_meta = '';
+/**
+* wpv_filter_get_order_arg
+*
+* Apply order and orderby settings to Views listing posts
+*
+* @since unknown
+*
+* @note Make this happens after custom fields
+*/
 
-add_filter('wpv_filter_query', 'wpv_filter_get_order_arg', 100, 2); // Make this happens after custom fields
+add_filter( 'wpv_filter_query', 'wpv_filter_get_order_arg', 100, 2 );
 
 function wpv_filter_get_order_arg( $query, $view_settings ) {
 	global $WP_Views;
     $orderby = $view_settings['orderby'];
+	$order = $view_settings['order'];
+	// Override with attributes
+	$override_allowed = array(
+		'orderby'	=> array(),
+		'order'		=> array( 'asc', 'ASC', 'desc', 'DESC' )
+	);
+	$override_values = wpv_override_view_orderby_order( $override_allowed );
+	if ( isset( $override_values['orderby'] ) ) {
+		$orderby = $override_values['orderby'];
+	}
+	if ( isset( $override_values['order'] ) ) {
+		$order = strtoupper( $override_values['order'] );
+	}
+	
+	// Override with URL parameters
+	
+	/*
+	* -------------
+	* Order
+	* -------------
+	*/
+	
+	// Legacy order URL override
+    if ( 
+		isset( $_GET['wpv_order'] ) 
+		&& isset( $_GET['wpv_view_count'] )
+		&& isset( $_GET['wpv_order'][0] )
+		&& in_array( $_GET['wpv_order'][0], array( 'ASC', 'DESC' ) )
+	) {
+        $order = esc_attr( $_GET['wpv_order'][0] );
+    }
+	// Modern order URL override
+	if (
+		isset( $_GET['wpv_column_sort_dir'] ) 
+		&& isset( $_GET['wpv_view_count'] )
+		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
+		&& in_array( strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) ), array( 'ASC', 'DESC' ) )
+	) {
+        $order = strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) );
+    }
+	
+	/*
+	* -------------
+	* Orderby
+	* -------------
+	*/
+	
     if (
 		isset( $_GET['wpv_column_sort_id'] ) 
+		&& isset( $_GET['wpv_view_count'] )
 		&& esc_attr( $_GET['wpv_column_sort_id'] ) != 'undefined' 
 		&& esc_attr( $_GET['wpv_column_sort_id'] ) != '' 
 		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count() 
@@ -74,91 +112,66 @@ function wpv_filter_get_order_arg( $query, $view_settings ) {
         $orderby = esc_attr( $_GET['wpv_column_sort_id'] );
     }
     
-    $orderby_set = false;
+	// Adjust values for custom field sorting
     
     if ( strpos( $orderby, 'field-' ) === 0 ) {
-        // we need to order by meta data.
+        // Natural Views sorting by custom field
         $query['meta_key'] = substr( $orderby, 6 );
         $orderby = 'meta_value';
-
-        $orderby_set = true;
-        
-        // Fix for numeric custom field , need to user meta_value_num
-        if (
-			_wpv_is_numeric_field( $view_settings['orderby'] ) 
-			|| _wpv_is_numeric_field( 'field-wpcf-' . $query['meta_key'] )
-		) { // This OR will ensure that numeric fields created outside Types but under Types control can sort properly
-            $orderby = 'meta_value_num';
-        }
-    }
-    $query['orderby'] = $orderby;
+    } else if ( strpos( $orderby, 'post-field' ) === 0 ) {
+		// Table sorting for custom field
+		$query['meta_key'] = substr( $orderby, 11 );
+		$orderby = 'meta_value';
+	} else if ( strpos( $orderby, 'types-field' ) === 0 ) {
+		// Table sorting for Types custom field
+		$query['meta_key'] = strtolower( substr( $orderby, 12 ) );
+		$orderby = 'meta_value';
+	} else {
+		$orderby = str_replace( '-', '_', $orderby );
+	}
 	
-	// This seems legacy code ??
-    if ( 
-		isset( $_GET['wpv_order'] ) 
-		&& isset( $_GET['wpv_order'][0] )
-		&& in_array( $_GET['wpv_order'][0], array( 'ASC', 'DESC' ) )
+	if ( 
+		'meta_value' == $orderby 
+		&& isset( $query['meta_key'] )
 	) {
-        $query['order'] = esc_attr( $_GET['wpv_order'][0] );
-    }
+		$is_types_field_data = wpv_is_types_custom_field ( $query['meta_key'] );
+		if ( 
+			$is_types_field_data 
+			&& isset( $is_types_field_data['meta_key'] ) 
+			&& isset( $is_types_field_data['type'] )
+		) {
+			$query['meta_key'] = $is_types_field_data['meta_key'];
+			if ( in_array( $is_types_field_data['type'], array( 'numeric', 'date' ) ) ) {
+				$orderby = 'meta_value_num';
+			}
+		}		
+	}
     
-    // check for column sorting GET parameters.
-    
-    if (
-		! $orderby_set 
-		&& isset( $_GET['wpv_column_sort_id'] ) 
-		&& esc_attr( $_GET['wpv_column_sort_id'] ) != 'undefined' 
-		&& esc_attr( $_GET['wpv_column_sort_id'] ) != '' 
-		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
-	) {
-        $field = esc_attr( $_GET['wpv_column_sort_id'] );
-        if ( strpos( $field, 'post-field' ) === 0 ) {
-            $query['meta_key'] = substr( $field, 11 );
-            $query['orderby'] = 'meta_value';
-            if ( _wpv_is_numeric_field( 'field-wpcf-' . $query['meta_key'] ) ) {
-				// This will ensure that numeric fields created outside Types but under Types control can sort properly
-                $query['orderby'] = 'meta_value_num';
-            }
-        } elseif ( strpos( $field, 'types-field' ) === 0 ) {
-            $query['meta_key'] = strtolower( substr( $field, 12 ) );
-            if ( function_exists( 'wpcf_types_get_meta_prefix' ) ) {
-                $query['meta_key'] = wpcf_types_get_meta_prefix() . $query['meta_key'];
-            }
-            if ( _wpv_is_numeric_field('field-' . $query['meta_key'] ) ) {
-                $query['orderby'] = 'meta_value_num';
-            } else {
-                $query['orderby'] = 'meta_value';
-            }
-        } else {
-            $query['orderby'] = str_replace( '-', '_', $field );
-        }
-    }
-    
-    if (
-		isset( $_GET['wpv_column_sort_dir'] ) 
-		&& esc_attr( $_GET['wpv_column_sort_dir'] ) != 'undefined' 
-		&& esc_attr( $_GET['wpv_column_sort_dir'] ) != '' 
-		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
-		&& in_array( strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) ), array( 'ASC', 'DESC' ) )
-	) {
-        $query['order'] = strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) );
-    }    
-
-    if ( $query['orderby'] == 'post_link' ) {
-        $query['orderby'] = 'post_title';
-    } else if ( $query['orderby'] == 'post_body' ) {
-        $query['orderby'] = 'post_content';
-    } else if ( $query['orderby'] == 'post_slug' ) {
-        $query['orderby'] = 'name';
-    } else if ( $query['orderby'] == 'post_id' ) {
-        $query['orderby'] = 'ID';
-    } else if ( strpos( $query['orderby'], 'post_' ) === 0 ) {
-        $query['orderby'] = substr( $query['orderby'], 5 );
-    }
-    
-    global $orderby_meta;
-    
-    $orderby_meta = array();
+    // Correct orderby options
+	switch ( $orderby ) {
+		case 'post_link':
+			$orderby = 'post_title';
+			break;
+		case 'post_body':
+			$orderby = 'post_content';
+			break;
+		case 'post_slug':
+			$orderby = 'name';
+			break;
+		case 'post_id':
+		case 'id':
+			$orderby = 'ID';
+			break;
+		default:
+			if ( strpos( $orderby, 'post_' ) === 0 ) {
+				$orderby = substr( $orderby, 5 );
+			}
+			break;
+	}
+	
+	$query['orderby'] = $orderby;
+	$query['order'] = $order;
+	
     // See if filtering by custom fields and sorting by custom field too
     if (
 		isset( $query['meta_key'] ) 
@@ -203,28 +216,249 @@ function wpv_filter_get_order_arg( $query, $view_settings ) {
         }
         
     }
+	
     return $query;
 }
 
-// TODO review this function: a Types field created outside Types will not pass this test
-// TODO use a common function to check Types field types
+/**
+* wpv_taxonomy_query_add_sort
+*
+* Apply sorting settings to Views listing taxonomy terms
+*
+* @since 1.10
+*/
 
-function _wpv_is_numeric_field( $field_name ) {
-    $opt = get_option('wpcf-fields');
-    if (
-		$opt 
-		&& strpos( $field_name, 'field-wpcf-' ) === 0
+add_filter( 'wpv_filter_taxonomy_query', 'wpv_taxonomy_query_add_sort', 10, 3 );
+
+function wpv_taxonomy_query_add_sort( $tax_query_settings, $view_settings, $view_id ) {
+	global $WP_Views;
+	$orderby = $view_settings['taxonomy_orderby'];
+	$order = $view_settings['taxonomy_order'];
+	// Override with attributes
+	$override_allowed = array(
+		'orderby'	=> array( 'id', 'count', 'name', 'slug' ),
+		'order'		=> array( 'asc', 'ASC', 'desc', 'DESC' )
+	);
+	$override_values = wpv_override_view_orderby_order( $override_allowed );
+	if ( 
+		isset( $override_values['orderby'] ) 
+		&& in_array( $override_values['orderby'], $override_allowed['orderby'] )
 	) {
-        $field_name = substr( $field_name, 11 );
-        if ( isset( $opt[$field_name]['type'] ) ) {
-            $field_type = strtolower( $opt[$field_name]['type'] );
-            if ( 
-				$field_type == 'numeric' 
-				|| $field_type == 'date' 
-			) {
-                return true;
-            }
-        }
+		$orderby = $override_values['orderby'];
+	}
+	if ( isset( $override_values['order'] ) ) {
+		$order = strtoupper( $override_values['order'] );
+	}
+	// Override with URL parameters
+	if (
+		isset( $_GET['wpv_view_count'] )
+		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
+	) {
+		if (
+			isset( $_GET['wpv_column_sort_id'] ) 
+			&& esc_attr( $_GET['wpv_column_sort_id'] ) != '' 
+		) {
+			$field = esc_attr( $_GET['wpv_column_sort_id'] );
+			if ( $field == 'taxonomy-link' ) {
+				$orderby = 'name';
+			} else if ( $field == 'taxonomy-title' ) {
+				$orderby = 'name';
+			} else if ( $field == 'taxonomy-post_count' ) {
+				$orderby = 'count';
+			}
+		}
+		if (
+			isset( $_GET['wpv_column_sort_dir'] ) 
+			&& esc_attr( $_GET['wpv_column_sort_dir'] ) != '' 
+			&& in_array( strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) ), array( 'ASC', 'DESC' ) )
+		) {
+			$order = strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) );
+		}
+	}
+	$tax_query_settings['orderby'] = $orderby;
+	$tax_query_settings['order'] = $order;
+	return $tax_query_settings;
+}
+
+/**
+* wpv_users_query_add_sort
+*
+* Apply sorting settings to Views listing users
+*
+* @since 1.6.2
+*/
+
+add_filter( 'wpv_filter_user_query', 'wpv_users_query_add_sort', 40, 2 );
+
+function wpv_users_query_add_sort( $args, $view_settings ) {
+	global $WP_Views;
+	$orderby = '';
+	$order = '';
+	// @todo check this is most likely set!! No need to pretend it might not be
+	if ( isset( $view_settings['users_orderby'] ) ) {
+        $orderby = $view_settings['users_orderby'];
     }
-    return false;
+    if ( isset( $view_settings['users_order'] ) ) {
+        $order = $view_settings['users_order'];
+    }
+	// Override with attributes
+	$override_allowed = array(
+		'orderby'	=> array( 'user_email', 'user_login', 'display_name', 'user_url', 'user_registered' ),
+		'order'		=> array( 'asc', 'ASC', 'desc', 'DESC' )
+	);
+	$override_values = wpv_override_view_orderby_order( $override_allowed );
+	if ( 
+		isset( $override_values['orderby'] ) 
+		&& in_array( $override_values['orderby'], $override_allowed['orderby'] )
+	) {
+		$orderby = $override_values['orderby'];
+	}
+	if ( isset( $override_values['order'] ) ) {
+		$order = strtoupper( $override_values['order'] );
+	}
+    // Override with URL parameters
+	if (
+		isset( $_GET['wpv_view_count'] )
+		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
+	) {
+		if (
+			isset( $_GET['wpv_column_sort_id'] ) 
+			&& esc_attr( $_GET['wpv_column_sort_id'] ) != '' 
+			&& in_array( esc_attr( $_GET['wpv_column_sort_id'] ), array('user_email', 'user_login', 'display_name', 'user_url', 'user_registered') )
+		) {
+			$orderby = $field;
+		}
+		if (
+			isset( $_GET['wpv_column_sort_dir'] ) 
+			&& esc_attr( $_GET['wpv_column_sort_dir'] ) != '' 
+			&& in_array( strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) ), array( 'ASC', 'DESC' ) )
+		) {
+			$order = strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) );
+		}
+	}
+	if ( ! empty( $orderby ) ) {
+		$args['orderby'] = $orderby;
+	}
+	if ( ! empty( $order ) ) {
+		$args['order'] = $order;
+	}
+	return $args;
+}
+
+/*
+* wpv_override_view_orderby_order
+*
+* Auxiliary function that will provide limit and offset settings coming from the Views shortcode atributes, if possible
+*
+* @param $allowed (array) Valid values that can be used to override
+*
+* @return $return (array)
+*
+* @since 1.10
+*/
+
+function wpv_override_view_orderby_order( $allowed = array() ) {
+	$defaults = array(
+		'orderby'	=> array(),
+		'order'		=> array()
+	);
+	$allowed = wp_parse_args( $allowed, $defaults );
+	global $WP_Views;
+	$return = array();
+	$view_attrs = $WP_Views->get_view_shortcodes_attributes();
+	if ( isset( $view_attrs['orderby'] ) ) {
+		if ( count( $allowed['orderby'] ) > 0 ) {
+			if ( in_array( $view_attrs['orderby'], $allowed['orderby'] ) ) {
+				$return['orderby'] = $view_attrs['orderby'];
+			}
+		} else {
+			$return['orderby'] = $view_attrs['orderby'];
+		}
+	}
+	if ( isset( $view_attrs['order'] ) ) {
+		if ( count( $allowed['order'] ) > 0 ) {
+			if ( in_array( $view_attrs['order'], $allowed['order'] ) ) {
+				$return['order'] = $view_attrs['order'];
+			}
+		} else {
+			$return['order'] = $view_attrs['order'];
+		}
+	}
+	return $return;
+}
+
+// @todo temporary shortcodes
+
+add_shortcode( 'wpv-orderby', 'wpv_shortcode_wpv_orderby' );
+
+function wpv_shortcode_wpv_orderby( $atts ) {
+	extract(
+		shortcode_atts( array(
+			'values'			=> '',
+			'display_values'	=> '',
+			'default'			=> '',
+			'empty'				=> ''
+		), $atts )
+	);
+	$return = '';
+	$values = explode( ',', $values );
+	$values = array_map( 'trim', $values );
+	$values = array_map( 'sanitize_text_field', $values );
+	$display_values = explode( ',', $display_values ) ;
+	$display_values = array_map( 'trim', $display_values );
+	$display_values = array_map( 'sanitize_text_field', $display_values );
+	if ( 
+		count( $values ) != count( $display_values ) 
+		|| empty( $values )
+	) {
+		return $return;
+	}
+	$selected = isset( $_GET['wpv_column_sort_id'] ) ? esc_attr( $_GET['wpv_column_sort_id'] ) : esc_attr( $default );
+	$return .= '<select name="wpv_column_sort_id" class="js-wpv-filter-trigger">';
+		if ( ! empty( $empty ) ) {
+			// Empty
+			$return .= '<option value="">';
+			$return .= $empty;
+			$return .= '</option>';
+		}
+	foreach ( $values as $key => $val ) {
+		$return .= '<option value="' . esc_attr( $val ) . '" ' . selected( $val, $selected, false ) . '>';
+		$return .= $display_values[$key];
+		$return .= '</option>';
+	}
+	$return .= '</select>';
+	return $return;
+}
+
+add_shortcode( 'wpv-order', 'wpv_shortcode_wpv_order' );
+
+function wpv_shortcode_wpv_order( $atts ) {
+	extract(
+		shortcode_atts( array(
+			'asc'		=> 'ASC',
+			'desc'		=> 'DESC',
+			'default'	=> '',
+			'empty'		=> ''
+		), $atts )
+	);
+	$return = '';
+	$selected = isset( $_GET['wpv_column_sort_dir'] ) ? esc_attr( $_GET['wpv_column_sort_dir'] ) : esc_attr( $default );
+	$selected = strtolower( $selected );
+	$return .= '<select name="wpv_column_sort_dir" class="js-wpv-filter-trigger">';
+		if ( ! empty( $empty ) ) {
+			// Empty
+			$return .= '<option value="">';
+			$return .= $empty;
+			$return .= '</option>';
+		}
+		// ASC
+		$return .= '<option value="asc" ' . selected( 'asc', $selected, false ) . '>';
+		$return .= $asc;
+		$return .= '</option>';
+		// ASC
+		$return .= '<option value="desc" ' . selected( 'desc', $selected, false ) . '>';
+		$return .= $desc;
+		$return .= '</option>';
+	$return .= '</select>';
+	return $return;
 }

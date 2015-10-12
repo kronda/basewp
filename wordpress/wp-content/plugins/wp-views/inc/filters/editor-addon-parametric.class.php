@@ -8,8 +8,7 @@ if ( file_exists( WPV_PATH_EMBEDDED . '/common/visual-editor/editor-addon-generi
 
 	require_once( WPV_PATH_EMBEDDED . '/common/visual-editor/editor-addon-generic.class.php' );
 
-	class Editor_addon_parametric extends Editor_addon_generic
-	{
+	class Editor_addon_parametric extends Editor_addon_generic {
 		private static $is_localized = false;
 
 		private $view_id = null;
@@ -40,7 +39,9 @@ if ( file_exists( WPV_PATH_EMBEDDED . '/common/visual-editor/editor-addon-generi
 			add_action( 'wp_ajax_get_' . $this->name, array( $this, 'get_data_from_parametric_form' ) );
 			add_action( 'wp_ajax_create_parametric_dialog', array( $this, 'create_parametric_dialog' ) );
 			add_action( 'wp_ajax_validate_post_relationship_tree', array( $this, 'validate_post_relationship_tree' ) );
-			add_action( 'admin_head', array( $this, 'init' ) );
+			add_action( 'admin_init', array( $this, 'register_assets' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'parametric_enqueue_scripts' ) );
+			add_action( 'admin_head', array( $this, 'admin_head' ) );
 			add_action( 'wp_ajax_wpv_suggest_auto_fill_default', array( $this, 'wpv_suggest_auto_fill_default' ) );
 			add_action( 'wp_ajax_nopriv_wpv_suggest_auto_fill_default', array( $this, 'wpv_suggest_auto_fill_default' ) );
 		}
@@ -200,6 +201,174 @@ if ( file_exists( WPV_PATH_EMBEDDED . '/common/visual-editor/editor-addon-generi
 			}
 		}
 
+		public function register_assets() {
+			wp_register_script( 'knockout', WPV_URL . '/res/js/redesign/lib/knockout-2.2.1.debug.js', array(), '2.2.1' );
+
+			/**
+			 * Knockout binding handler for interop with jQuery.Sortable.
+			 *
+			 * See link below for more information.
+			 *
+			 * @since 1.7
+			 *
+			 * @link https://github.com/rniemeyer/knockout-sortable
+			 */
+			wp_register_script( 'knockout-sortable', WPV_URL . '/res/js/lib/knockout-sortable.min.js', array( 'jquery', 'knockout' ), '0.11.0' );
+
+			if ( ! wp_script_is( 'toolset-utils', 'registered' ) ) {
+				wp_register_script( 'toolset-utils', ( WPV_URL_EMBEDDED . "/common/utility/js/utils.js" ), array( 'jquery', 'underscore', 'backbone'), '1.0', true );
+			}
+
+			wp_register_script( 
+				'wpv-parametric-admin-script' ,
+				WPV_URL . '/res/js/redesign/views_parametric.js',
+				array( 'jquery', 'jquery-ui-dialog', 'toolset-utils', 'icl_editor-script', 'views-codemirror-script', 'knockout-sortable' ),
+				WPV_VERSION 
+			);
+			if ( ! self::$is_localized ) {
+				wp_localize_script(
+					'wpv-parametric-admin-script',
+					'WPV_Parametric',
+					array(
+						// Data
+						'WPV_URL' =>  WPV_URL,
+						'wpv_parametric_create_nonce' => wp_create_nonce( 'wpv_parametric_create_nonce' ),
+						'wpv_parametric_submit_create_nonce' => wp_create_nonce( 'wpv_parametric_submit_create_nonce' ),
+						'wpv_parametric_create_dialog_nonce' => wp_create_nonce( 'wpv_parametric_create_dialog_nonce' ),
+						'wpv_view_filter_search_nonce' => wp_create_nonce( 'wpv_view_filter_post_search_nonce' ),
+						'wpv_view_filter_search_delete_nonce' => wp_create_nonce( "wpv_view_filter_post_search_delete_nonce" ),
+						'wpv_view_filters_add_filter_nonce' => wp_create_nonce('wpv_view_filters_add_filter_nonce'),
+						'wpv_parametric_validate_post_relationship_tree' => wp_create_nonce('wpv_parametric_validate_post_relationship_tree'),
+						'view_id' => $this->view_id,
+						'is_wpml_active' => self::is_wpml_active(),
+						'view_purpose' => $this->get_view_type(),
+						'debug' => true,
+						
+						'dialog_title_create' => __( 'Insert a parametric search filter', 'epv-views' ),
+						'dialog_title_edit' => __( 'Edit this filter', 'epv-views' ),
+						
+						'make_valid_selection' => __('Please make a valid selection.', 'wpv-views'),
+						'something_bad' => __("Something bad happened with shortcode building, check the console", 'wpv-views'),
+						'field_mandatory' => __('The value for "Refer to this field as" is mandatory, please provide one.', 'wpv-views'),
+						'relationship_tree_mandatory' => __('Please make a valid tree selection.'),
+
+						'basic_field_mandatory' => __('This field can not be left empty', 'wpv-views'),// MAYBE DEPRECATED
+
+						'reserved_word' => __('" is a reserved word for ', 'wpv-views'),
+						'avoid_conflicts' => __('Change this value to avoid conflicts', 'wpv-views'),
+						'ajax_error' => __("Error: AJAX returned ", 'wpv-views'),
+
+						'error_generic' => __("Error: ", 'wpv-views'),// MAYBE DEPRECATED
+
+						'db_insert_problem' => __("There are problems inserting your data. Check the console. ", 'wpv-views'),
+						'select_post_types' => __('Please select at least one post type to filter by.', 'wpv-views'),
+						'data_loading_problem' => __('Something went wrong loading data ', 'wpv-views'),
+						'model_build_problem' => __('Something went wrong while building model.', 'wpv-views'),
+						'select_taxonomy_alert' => __('Select posts with taxonomy:', 'wpv-views'),
+						'select_taxonomy_alert_2' => __('the same as set by the URL parameter', 'wpv-views'),
+						'error_building_filter' => __("Something went wrong in building the filter ", 'wpv-views'),
+						'editing_manual_filter' => __( 'This filter appears to have been entered manually, so you cannot modify it with this editor. You can continue editing the shortcode manually or re-insert it using the Filters button.', 'wpv-views' ),
+						'taxonomy' => __('Taxonomy', 'wpv-views'),
+						'basic_filters' => __('Basic filters', 'wpv-views'),
+						'relationship_select_tree' => __('Select one tree', 'wpv-views'),
+						
+						'add_submit_shortcode_button' => __('Submit button', 'wpv-views'),
+						'add_submit_shortcode_dialog_title' => __( 'Create a submit button for this parametric search.', 'wpv-views' ),
+						'add_submit_shortcode_button_label' => __('Submit', 'wpv-views'),
+						'add_toolbar_submit_button_title' => __( 'Use the submit button to get results based on the form values', 'wpv-views' ),
+						'add_toolbar_submit_button_title_complete' => __( 'This form has a submit button already', 'wpv-views' ),
+						'add_toolbar_submit_button_title_incomplete' => __( 'You need to add a submit button', 'wpv-views' ),
+						'add_toolbar_submit_button_title_irrelevant' => __( 'You do not need a submit button in this form', 'wpv-views' ),
+						'add_toolbar_submit_button_title_irrelevant_added' => __( 'You do not need a submit button in this form, although you already have one', 'wpv-views' ),
+						'add_submit_shortcode_dialog_label_default' => __('Submit', 'wpv-views'),
+						
+						'add_reset_shortcode_button' => __('Clear form', 'wpv-views'),
+						'add_reset_shortcode_dialog_title' => __( 'Create a reset button for this parametric search.', 'wpv-views' ),
+						'add_reset_shortcode_button_label' => __('Clear', 'wpv-views'),
+						'add_toolbar_reset_button_title' => __( 'You can use a reset button that will take the search form to its original state', 'wpv-views' ),
+						'add_toolbar_reset_button_title_complete' => __( 'This form has a reset button already', 'wpv-views' ),
+						'add_toolbar_reset_button_title_incomplete' => __( 'You can add a reset button to this form', 'wpv-views' ),
+						'add_reset_shortcode_dialog_label_default' => __('Reset', 'wpv-views'),
+						
+						'add_spinner_shortcode_button' => __('Spinner graphics', 'wpv-views'),
+						'add_spinner_shortcode_dialog_title' => __( 'Create a spinner container for this parametric search.', 'wpv-views' ),
+						'add_toolbar_spinner_button_title' => __( 'You can use a spinner container that will be shown when performing any automatic update', 'wpv-views' ),
+						'add_toolbar_spinner_button_title_complete' => __( 'This form has a spinner container already', 'wpv-views' ),
+						'add_toolbar_spinner_button_title_useless' => __( 'No spinner container will be shown as this parametric search is not performing any automatic update', 'wpv-views' ),
+						
+						'add_search_shortcode_button' => __('Content search', 'wpv-views'),
+						'add_search_shortcode_dialog_title' => __( 'Create a search box for this parametric search', 'wpv-views' ),
+						'add_search_shortcode_dialog_title_override' => __( 'Complete the search filter for this parametric search', 'wpv-views' ),
+						'add_toolbar_search_button_title' => __( 'You can add a search box to this form', 'wpv-views' ),
+						'add_toolbar_search_button_title_complete' => __( 'This form contains a search box already', 'wpv-views' ),
+						'add_toolbar_search_button_title_missing' => __( 'You have a search box in this form, click here to create the search filter that is missing', 'wpv-views' ),
+						'add_toolbar_search_button_title_wrong' => __( 'You have a search box in this form, but it is linked to a broken search filter', 'wpv-views' ),
+
+						'add_submit_button_to_shortcode_input_default' => __('Search', 'wpv-views'),// MAYBE DEPRECATED
+
+						'pointer_button_close' => __( 'Close', 'wpv-views' ),
+						'pointer_button_dismiss' => __( 'Don\'t show again', 'wpv-views' ),
+
+						'consider_adding_label_to_button_shortcode' => __( 'Consider adding a label before inserting the button.', 'wpv-views' ),
+						'place_cursor_inside_wpv_controls' => __( 'Place cursor within the [wpv-filter-controls][/wpv-filter-controls] tags.', 'wpv-views' ),
+						'place_cursor_inside_wpv_filter' => __( 'Place cursor within the [wpv-filter-start][wpv-filter-end] tags.', 'wpv-views' ),
+
+						'place_cursor_inside_wpv_control' => __( 'Place your cursor inside [wpv-control] tags.', 'wpv-views' ),// MAYBE DEPRECATED
+
+						'place_in_wpv_control_not_wrong' => __("You should select a [wpv-control] short tag instead of ", 'wpv-views'),// MAYBE DEPRECATED
+
+						'place_cursor_inside_valid_control_shortcodes' => __('Place your cursor over a [wpv-control] or a [wpv-control-set] tag to edit it.', 'wpv-views'),
+						'place_cursor_inside_wpv_control_set' => __( 'To edit this filter, place your cursor over the [wpv-control-set] tag.', 'wpv-views'),
+
+						//	'no_submit_button' => __('There is no submit button in the form just created. Use "Submit button" button to create one.', 'wpv-views'),
+
+						'cursorInside' => __('Warning: the cursor is inside another short code, this may cause problems.', 'wpv-views'),// MAYBE DEPRECATED
+
+						'insert' => __( 'Insert', 'wpv-views' ),
+						'cancel' => __('Cancel', 'wpv-views'),
+						'update_input' => __('Update input', 'wpv-views'),
+						'problems_inserting_new_shortcode' => __('There are problems inserting the shortcode.', 'wpv-views'),
+
+						'add_submit_input_label' => __('Button label:', 'wpv-views'),// MAYBE DEPRECATED
+
+						'add_submit_classname_input_label' => __('Button classname:', 'wpv-views'),// MAYBE DEPRECATED
+
+						'expand_button_expand' => __('Expand', 'wpv-views'),
+						'expand_button_hide' => __('Hide', 'wpv-views'),
+						'check_values_and_values_labels' => __( 'Please ensure that values don\'t repeat themselves, they don\'t contain only whitespaces (however blank value is allowed) and display values aren\'t empty.', 'wpv-views'),
+						'ajax_callback_undefined' => __('You should define a callback for your ajax call to async load data', 'wpv-views')
+					)
+				);
+				self::$is_localized = true;
+			}
+			
+			if ( ! wp_style_is( 'toolset-notifications-css', 'registered' ) ) {
+				wp_register_style( 'toolset-notifications-css', WPV_URL_EMBEDDED . '/common/utility/css/notifications.css', array(), WPV_VERSION );
+			}
+		}
+		
+		/**
+		 * parametric_enqueue_scripts function.
+		 *
+		 * @access public
+		 * @return void
+		 */
+		function parametric_enqueue_scripts() {
+			global $pagenow;
+			if ( 
+				$pagenow == 'admin.php' 
+				&& isset( $_GET['page'] ) 
+				&& $_GET['page'] == 'views-editor' 
+			) {
+				wp_enqueue_script( 'knockout' );
+				wp_enqueue_script( 'knockout-sortable' );
+				wp_enqueue_script( 'wpv-parametric-admin-script' );
+
+				if ( ! wp_style_is( 'toolset-notifications-css' ) ) {
+					wp_enqueue_style('toolset-notifications-css');
+				}
+			}
+	   	}
 
 		/**
 		 * init function.
@@ -207,13 +376,13 @@ if ( file_exists( WPV_PATH_EMBEDDED . '/common/visual-editor/editor-addon-generi
 		 * @access public
 		 * @return void
 		 */
-		public function init()
-		{
+		public function admin_head() {
 			global $pagenow;
-
-			// do your stuff only in the views edit page
-			if( $pagenow == 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
-				$this->initStatics();
+			if ( 
+				$pagenow == 'admin.php' 
+				&& isset( $_GET['page'] ) 
+				&& $_GET['page'] == 'views-editor' 
+			) {
 				//append the button
 				add_action( 'wpv_parametric_search_buttons', array( $this, 'add_parametric_search_buttons' ) );
 				// this is useless for me; I added it only to try to debug Cred bug
@@ -1180,17 +1349,6 @@ if ( file_exists( WPV_PATH_EMBEDDED . '/common/visual-editor/editor-addon-generi
 		}
 
 
-		/**
-		 * initScripts function.
-		 *
-		 * @access public
-		 * @return void
-		 */
-		public function initStatics() {
-			$this->parametric_enqueue_scripts();
-		}
-
-
 		public static function is_wpml_active()	{
 			global $sitepress;
 			if ( isset( $sitepress ) && function_exists( 'icl_object_id' ) ) {
@@ -1199,153 +1357,6 @@ if ( file_exists( WPV_PATH_EMBEDDED . '/common/visual-editor/editor-addon-generi
 				return false;
 			}
 		}
-
-
-		/**
-		 * parametric_enqueue_scripts function.
-		 *
-		 * @access public
-		 * @return void
-		 */
-		private function parametric_enqueue_scripts()
-		{
-			wp_register_script( 'knockout', WPV_URL . '/res/js/redesign/lib/knockout-2.2.1.debug.js', array(), '2.2.1' );
-
-			/**
-			 * Knockout binding handler for interop with jQuery.Sortable.
-			 *
-			 * See link below for more information.
-			 *
-			 * @since 1.7
-			 *
-			 * @link https://github.com/rniemeyer/knockout-sortable
-			 */
-			wp_register_script( 'knockout-sortable', WPV_URL . '/res/js/lib/knockout-sortable.min.js', array( 'jquery', 'knockout' ), '0.9.2' );
-
-			if ( ! wp_script_is( 'toolset-utils', 'registered' ) ) {
-				wp_register_script( 'toolset-utils', ( WPV_URL_EMBEDDED . "/common/utility/js/utils.js" ), array( 'jquery', 'underscore', 'backbone'), '1.0', true );
-			}
-
-			wp_register_script(
-					'wpv-parametric-admin-script' ,
-					WPV_URL . '/res/js/redesign/views_parametric.js',
-					array( 'jquery', 'toolset-utils', 'icl_editor-script', 'views-codemirror-script', 'knockout-sortable' ),
-					WPV_VERSION );
-
-			wp_enqueue_script( 'knockout' );
-			wp_enqueue_script( 'wpv-parametric-admin-script' );
-
-			if( self::$is_localized ) {
-				wp_localize_script(
-						'wpv-parametric-admin-script',
-						'WPV_Parametric',
-						array(
-								// Data
-								'WPV_URL' =>  WPV_URL,
-								'wpv_parametric_create_nonce' => wp_create_nonce( 'wpv_parametric_create_nonce' ),
-								'wpv_parametric_submit_create_nonce' => wp_create_nonce( 'wpv_parametric_submit_create_nonce' ),
-								'wpv_parametric_create_dialog_nonce' => wp_create_nonce( 'wpv_parametric_create_dialog_nonce' ),
-								'wpv_view_filter_search_nonce' => wp_create_nonce( 'wpv_view_filter_post_search_nonce' ),
-								'wpv_view_filter_search_delete_nonce' => wp_create_nonce( "wpv_view_filter_post_search_delete_nonce" ),
-								'wpv_view_filters_add_filter_nonce' => wp_create_nonce('wpv_view_filters_add_filter_nonce'),
-								'wpv_parametric_validate_post_relationship_tree' => wp_create_nonce('wpv_parametric_validate_post_relationship_tree'),
-								'view_id' => $this->view_id,
-								'is_wpml_active' => self::is_wpml_active(),
-								'view_purpose' => $this->get_view_type(),
-								'debug' => true,
-								// General strings
-								'make_valid_selection' => __('Please make a valid selection.', 'wpv-views'),
-								'something_bad' => __("Something bad happened with shortcode building, check the console", 'wpv-views'),
-								'field_mandatory' => __('The value for "Refer to this field as" is mandatory, please provide one.', 'wpv-views'),
-								'relationship_tree_mandatory' => __('Please make a valid tree selection.'),
-
-								'basic_field_mandatory' => __('This field can not be left empty', 'wpv-views'),// MAYBE DEPRECATED
-
-								'reserved_word' => __('" is a reserved word for ', 'wpv-views'),
-								'avoid_conflicts' => __('Change this value to avoid conflicts', 'wpv-views'),
-								'ajax_error' => __("Error: AJAX returned ", 'wpv-views'),
-
-								'error_generic' => __("Error: ", 'wpv-views'),// MAYBE DEPRECATED
-
-								'db_insert_problem' => __("There are problems inserting your data. Check the console. ", 'wpv-views'),
-								'select_post_types' => __('Please select at least one post type to fiter by.', 'wpv-views'),
-								'data_loading_problem' => __('Something went wrong loading data ', 'wpv-views'),
-								'model_build_problem' => __('Something went wrong while building model.', 'wpv-views'),
-								'select_taxonomy_alert' => __('Select posts with taxonomy:', 'wpv-views'),
-								'select_taxonomy_alert_2' => __('the same as set by the URL parameter', 'wpv-views'),
-								'error_building_filter' => __("Something went wrong in building the filter ", 'wpv-views'),
-								'editing_manual_filter' => __( 'This filter appears to have been entered manually, so you cannot modify it with this editor. You can continue editing the shortcode manually or re-insert it using the Filters button.', 'wpv-views' ),
-								'taxonomy' => __('Taxonomy', 'wpv-views'),
-								'basic_filters' => __('Basic filters', 'wpv-views'),
-								'relationship_select_tree' => __('Select one tree', 'wpv-views'),
-								'add_submit_shortcode_button' => __('Submit button', 'wpv-views'),
-								'add_submit_shortcode_button_label' => __('Submit', 'wpv-views'),
-								'add_toolbar_submit_button_title' => __( 'Use the submit button to get results based on the form values', 'wpv-views' ),
-								'add_toolbar_submit_button_title_complete' => __( 'This form has a submit button already', 'wpv-views' ),
-								'add_toolbar_submit_button_title_incomplete' => __( 'You need to add a submit button', 'wpv-views' ),
-								'add_toolbar_submit_button_title_irrelevant' => __( 'You do not need a submit button in this form', 'wpv-views' ),
-								'add_toolbar_submit_button_title_irrelevant_added' => __( 'You do not need a submit button in this form, although you already have one', 'wpv-views' ),
-								'add_reset_shortcode_button' => __('Clear form', 'wpv-views'),
-								'add_reset_shortcode_button_label' => __('Clear', 'wpv-views'),
-								'add_toolbar_reset_button_title' => __( 'You can use a reset button that will take the search form to its original state', 'wpv-views' ),
-								'add_toolbar_reset_button_title_complete' => __( 'This form has a reset button already', 'wpv-views' ),
-								'add_toolbar_reset_button_title_incomplete' => __( 'You can add a reset button to this form', 'wpv-views' ),
-								'add_spinner_shortcode_button' => __('Spinner graphics', 'wpv-views'),
-								'add_toolbar_spinner_button_title' => __( 'You can use a spinner container that will be shown when performing any automatic update', 'wpv-views' ),
-								'add_toolbar_spinner_button_title_complete' => __( 'This form has a spinner container already', 'wpv-views' ),
-								'add_toolbar_spinner_button_title_useless' => __( 'No spinner container will be shown as this parametric search is not performing any automatic update', 'wpv-views' ),
-								'add_search_shortcode_button' => __('Content search', 'wpv-views'),
-								'add_toolbar_search_button_title' => __( 'You can add a search box to this form', 'wpv-views' ),
-								'add_toolbar_search_button_title_complete' => __( 'This form contains a search box already', 'wpv-views' ),
-								'add_toolbar_search_button_title_missing' => __( 'You have a search box in this form, click here to create the search filter that is missing', 'wpv-views' ),
-								'add_toolbar_search_button_title_wrong' => __( 'You have a search box in this form, but it is linked to a broken search filter', 'wpv-views' ),
-
-								'add_submit_button_to_shortcode_input_default' => __('Search', 'wpv-views'),// MAYBE DEPRECATED
-
-								'pointer_button_close' => __( 'Close', 'wpv-views' ),
-								'pointer_button_dismiss' => __( 'Don\'t show again', 'wpv-views' ),
-
-								'consider_adding_label_to_button_shortcode' => __( 'Consider adding a label before inserting the button.', 'wpv-views' ),
-								'place_cursor_inside_wpv_controls' => __( 'Place cursor within the [wpv-filter-controls][/wpv-filter-controls] tags.', 'wpv-views' ),
-								'place_cursor_inside_wpv_filter' => __( 'Place cursor within the [wpv-filter-start][wpv-filter-end] tags.', 'wpv-views' ),
-
-								'place_cursor_inside_wpv_control' => __( 'Place your cursor inside [wpv-control] tags.', 'wpv-views' ),// MAYBE DEPRECATED
-
-								'place_in_wpv_control_not_wrong' => __("You should select a [wpv-control] short tag instead of ", 'wpv-views'),// MAYBE DEPRECATED
-
-								'place_cursor_inside_valid_control_shortcodes' => __('Place your cursor over a [wpv-control] or a [wpv-control-set] tag to edit it.', 'wpv-views'),
-								'place_cursor_inside_wpv_control_set' => __( 'To edit this filter, place your cursor over the [wpv-control-set] tag.', 'wpv-views'),
-
-								//	'no_submit_button' => __('There is no submit button in the form just created. Use "Submit button" button to create one.', 'wpv-views'),
-
-								'cursorInside' => __('Warning: the cursor is inside another short code, this may cause problems.', 'wpv-views'),// MAYBE DEPRECATED
-
-								'cancel' => __('Cancel', 'wpv-views'),
-								'edit_filter_field' => __('Edit filter field', 'wpv-views'),
-								'update_input' => __('Update input', 'wpv-views'),
-								'problems_inserting_new_shortcode' => __('There are problems inserting the shortcode.', 'wpv-views'),
-
-								'add_submit_input_label' => __('Button label:', 'wpv-views'),// MAYBE DEPRECATED
-
-								'add_submit_classname_input_label' => __('Button classname:', 'wpv-views'),// MAYBE DEPRECATED
-
-								'expand_button_expand' => __('Expand', 'wpv-views'),
-								'expand_button_hide' => __('Hide', 'wpv-views'),
-								'check_values_and_values_labels' => __( 'Please ensure that values don\'t repeat themselves, they don\'t contain only whitespaces (however blank value is allowed) and display values aren\'t empty.', 'wpv-views'),
-								'ajax_callback_undefined' => __('You should define a callback for your ajax call to async load data', 'wpv-views')
-						)
-				);
-			}
-
-			self::$is_localized = true;
-
-			if ( ! wp_style_is( 'toolset-notifications-css' ) ) {
-				wp_register_style( 'toolset-notifications-css', WPV_URL_EMBEDDED . '/common/utility/css/notifications.css', array(), WPV_VERSION );
-				wp_enqueue_style('toolset-notifications-css');
-			}
-
-	   	}
-
 
 		/**
 		* add_parametric_search_buttons

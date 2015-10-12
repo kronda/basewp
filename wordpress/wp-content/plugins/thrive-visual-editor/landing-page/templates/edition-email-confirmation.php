@@ -92,7 +92,7 @@
                         <div class="tve_colm tve_twc">
                             <p class="tve_p_left"
                                style="margin: 0; padding: 0; color: #6e757c; font-size: 16px;">
-                                &copy; 2015 Thrive Landing Pages. All rights Reserved
+                                &copy; {tcb_current_year} Thrive Landing Pages. All rights Reserved
                             </p>
                         </div>
                         <div class="tve_colm tve_twc tve_lst">

@@ -48,7 +48,7 @@ function wpv_get_query_type_summary( $view_settings, $context = 'listing' ) {
 				if ( isset( $post_types[$selected[0]] ) ) {
 					$name = $post_types[$selected[0]]->labels->name;
 				} else {
-					$name = $selected[0];
+					$name = sprintf( __( '%s (missing post type)', 'wpv-views' ), $selected[0] );
 				}
 				if ( $name == 'any' ) {
 					$name = __('All post types', 'wpv-views');
@@ -61,7 +61,7 @@ function wpv_get_query_type_summary( $view_settings, $context = 'listing' ) {
 					if ( isset( $post_types[$select_pt] ) ) {
 						$name_array[] = $post_types[$select_pt]->labels->name;
 					} else {
-						$name_array[] = $select_pt;
+						$name_array[] = sprintf( __( '%s (missing post type)', 'wpv-views' ), $select_pt );
 					}
 				}
 				$return .= esc_html( implode( ', ', $name_array ) );
@@ -133,9 +133,7 @@ function wpv_get_query_type_summary( $view_settings, $context = 'listing' ) {
 */
 
 function wpv_get_ordering_summary( $view_settings, $context = 'listing' ) {
-	$view_settings = wpv_order_by_default_settings( $view_settings );
-	$view_settings = wpv_taxonomy_order_by_default_settings( $view_settings );
-	$view_settings = wpv_users_order_by_default_settings( $view_settings );
+	$view_settings = wpv_order_orderby_default_settings( $view_settings );
 	$return = '';
 	if ( 
 		! isset( $view_settings['query_type'] ) 
@@ -258,7 +256,7 @@ function wpv_get_ordering_summary( $view_settings, $context = 'listing' ) {
 * @since 1.6.0
 */
 function wpv_get_limit_offset_summary( $view_settings, $context = 'listing' ) {
-	$view_settings = wpv_limit_default_settings( $view_settings );
+	$view_settings = wpv_limit_offset_default_settings( $view_settings );
 	$output = '';
 	$limit = 0;
 	$offset = 0;
@@ -829,7 +827,10 @@ function wpv_get_taxonomy_summary( $type, $view_settings, $category_selected ) {
 			echo sprintf( __( '<strong>%s</strong> in <strong>no one</strong> of these: <strong>%s</strong>', 'wpv-views' ), $taxonomy_name, $cat_text );
 			break;
 		case "FROM PAGE":
-			echo sprintf( __( '<strong>%s</strong> the same as the <strong>current page</strong>', 'wpv-views' ), $taxonomy_name );
+			echo sprintf( __( '<strong>%s</strong> the same as the <strong>current single page</strong>', 'wpv-views' ), $taxonomy_name );
+			break;
+		case "FROM ARCHIVE":
+			echo sprintf( __( '<strong>%s</strong> the same as the <strong>current archive page</strong>', 'wpv-views' ), $taxonomy_name );
 			break;
 		case "FROM ATTRIBUTE":
 			echo sprintf( __( '<strong>%s</strong> <strong>%s</strong> in <strong>%s</strong> of those set by the View shortcode attribute <strong>%s</strong>', 'wpv-views' ), $taxonomy_name, $origin_text, $operator_text, $view_settings['taxonomy-' . $taxonomy . '-attribute-url'] );

@@ -184,7 +184,7 @@ $events_config = array(
             <div class="in lightSec">
                 <div class="cck tve_clearfix">
                     <p class="tve_p_center">
-                        &copy 2015 by Thrive Themes - <a href="">Disclaimer</a>
+                        &copy {tcb_current_year} by Thrive Themes - <a href="">Disclaimer</a>
                     </p>
                 </div>
             </div>

@@ -3,33 +3,80 @@ var WPViews = WPViews || {};
 WPViews.ViewEditScreenPaginationUX = function( $ ) {
 	
 	var self = this;
-	self.pag_mode = $( '.js-wpv-pagination-mode:checked' ).val();
 	self.pagination_pointer = null;
 	self.pagination_insert_newline = false;
 	self.codemirror_highlight_options = {
 		className: 'wpv-codemirror-highlight'
 	};
 	
+	self.dialog = null;
+	
+	// ---------------------------------
+	// Dialogs
+	// ---------------------------------
+	
+	self.init_dialogs = function() {
+		var dialog_height = $( window ).height() - 100;
+		self.dialog = $( "#js-hidden-messages-boxes-pointers-container .js-wpv-pagination-form-dialog" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: wpv_pagination_texts.add_pagination_dialog_title,
+			minWidth: 650,
+			maxHeight: dialog_height,
+			draggable: false,
+			resizable: false,
+			position: { my: "center top+50", at: "center top", of: window },
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				$( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				$( 'body' ).removeClass( 'modal-open' );
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: wpv_pagination_texts.add_pagination_dialog_cancel,
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				{
+					class: 'button-primary js-wpv-insert-pagination',
+					text: wpv_pagination_texts.add_pagination_dialog_insert,
+					click: function() {
+
+					}
+				}
+			],
+			open: function() {
+				$( '.js-wpv-insert-pagination' )
+					.prop( 'disabled', true )
+					.removeClass( 'button-primary' )
+					.addClass( 'button-secondary' );
+				$( 'input.js-wpv-pagination-dialog-control, input.js-wpv-pagination-dialog-display' ).prop( 'checked', false );
+				$( '.js-pagination-control-type.js-pagination-control-type-dropdown' )
+					.prop( 'checked', true )
+					.trigger( 'change' );
+				$( '.js-pagination-control-type' ).prop( 'disabled', true );
+				$( '.js-pagination-preview-element' ).addClass( 'disabled' );
+			}
+		});
+	};
+	
 	// ---------------------------------
 	// Functions
 	// ---------------------------------
-	
-	self.toolbar_pagination_button_state = function() {
-		if ( self.pag_mode == 'none' ) {
-			$( '.js-editor-pagination-button-wrapper' )
-				.addClass( 'hidden' );
-		} else {
-			$( '.js-editor-pagination-button-wrapper' )
-				.removeClass( 'hidden' );
-		}
-	};
 	
 	self.pagination_insert_pointer = function() {
 		self.pagination_pointer.pointer('close');
 		if ( ! $( '.js-wpv-enabled-view-pagination-pointer' ).hasClass( 'js-wpv-pointer-dismissed' ) ) {
 			var filter_html = codemirror_views_query.getValue();
 			if (
-				self.pag_mode != 'none'
+				$( '.js-wpv-pagination-mode:checked' ).val() != 'none'
 				&& filter_html.search('wpv-pager-current-page') == -1
 				&& filter_html.search('wpv-pager-prev-page') == -1
 				&& filter_html.search('wpv-pager-next-page') == -1
@@ -39,29 +86,19 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 			}
 		}
 	};
-	
-	self.get_pagination_preview = function(pag_control, pag_selector_mode) {
-		var output = '';
-		if (pag_control == 'page_num') {
-			
-		} else if (pag_control == 'page_selector') {
-			
-		} else if (pag_control == 'page_controls') {
-			
-		}
-		return output;
-	};
 
-	self.get_pagination_shortcode = function( pag_control, pag_selector_mode ) {
+	self.get_pagination_shortcode = function() {
 		var output = '';
-		$.each( pag_control, function( name, value ) {
-			if ( value.value == 'page_num' ) {
+		$.each( $( 'input.js-wpv-pagination-dialog-control:checked' ), function() {
+			var thiz = $( this ),
+			value = thiz.val();
+			if ( value == 'page_num' ) {
 				output += '[wpv-pager-current-page]';
-			} else if ( value.value == 'page_total' ) {
+			} else if ( value == 'page_total' ) {
 				output += '[wpv-pager-num-page]';
-			} else if ( value.value == 'page_selector' ) {
-				output += '[wpv-pager-current-page style="' + pag_selector_mode + '"]';
-			} else if ( value.value == 'page_controls' ) {
+			} else if ( value == 'page_selector' ) {
+				output += '[wpv-pager-current-page style="' + $( '.js-pagination-control-type:checked' ).val() + '"]';
+			} else if ( value == 'page_controls' ) {
 				output += '[wpv-pager-prev-page][wpml-string context="wpv-views"]Previous[/wpml-string][/wpv-pager-prev-page][wpv-pager-next-page][wpml-string context="wpv-views"]Next[/wpml-string][/wpv-pager-next-page]';
 			}
 		});
@@ -73,8 +110,6 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 	// ---------------------------------
 	
 	$( document ).on( 'change', '.js-wpv-pagination-mode', function() {
-		self.pag_mode = $( '.js-wpv-pagination-mode:checked' ).val();
-		self.toolbar_pagination_button_state();
 		self.pagination_insert_pointer();
 	});
 	
@@ -93,9 +128,10 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 			current_cursor = codemirror_views_query.getCursor(true);
 			text_before = codemirror_views_query.getRange({line:0,ch:0}, current_cursor);
 			text_after = codemirror_views_query.getRange(current_cursor, {line:codemirror_views_query.lastLine(),ch:null});
-			if ( text_before.search(/\[wpv-filter-start.*?\]/g) != -1 && text_after.search(/\[wpv-filter-end.*?\]/g) != -1 ) {
-				
-			} else {
+			if ( 
+				text_before.search(/\[wpv-filter-start.*?\]/g) == -1 
+				|| text_after.search(/\[wpv-filter-end.*?\]/g) == -1 
+			) {
 				// Set the cursor at the end and open popup
 				insert_position = codemirror_views_query.getSearchCursor( '[wpv-filter-end]', false );
 				insert_position.findNext();
@@ -107,9 +143,10 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 			current_cursor = codemirror_views_layout.getCursor(true);
 			text_before = codemirror_views_layout.getRange({line:0,ch:0}, current_cursor);
 			text_after = codemirror_views_layout.getRange(current_cursor, {line:codemirror_views_layout.lastLine(),ch:null});
-			if ( text_before.search(/\[wpv-layout-start.*?\]/g) != -1 && text_after.search(/\[wpv-layout-end.*?\]/g) != -1 ) {
-				
-			} else {
+			if ( 
+				text_before.search(/\[wpv-layout-start.*?\]/g) == -1 
+				|| text_after.search(/\[wpv-layout-end.*?\]/g) == -1 
+			) {
 				// Set the cursor at the end and open popup
 				insert_position = codemirror_views_layout.getSearchCursor( '[wpv-layout-end]', false );
 				insert_position.findNext();
@@ -117,56 +154,42 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 				self.pagination_insert_newline = true;
 			}
 		}
-		jQuery.colorbox({
-			inline: true,
-			href: '#js-hidden-messages-boxes-pointers-container .js-wpv-pagination-form-dialog',
-			open: true,
-			onComplete : function() {
-				self.initialize_pagination_dialog();
-			}
-		});
+		self.dialog.dialog( 'open' );
 	});
 	
-	self.initialize_pagination_dialog = function() {
-		var thiz_dialog = $( '.js-wpv-pagination-form-dialog' );
-		thiz_dialog
-			.find( '.js-wpv-insert-pagination' )
-				.prop( 'disabled', true )
-				.removeClass( 'button-primary' )
-				.addClass( 'button-secondary' );
-		thiz_dialog
-			.find( 'input.js-wpv-pagination-dialog-control, input.js-wpv-pagination-dialog-display' )
-				.prop( 'checked', false );
-		thiz_dialog
-			.find( '.js-pagination-preview-element[data-type="page-selector-link"]' )
-				.hide();
-		thiz_dialog
-			.find( '.js-pagination-preview-element[data-type="page-selector-select"]' )
-				.show();
-		thiz_dialog
-			.find( '.js-pagination-control-type' )
-				.val( 'drop_down' );
-		thiz_dialog
-			.find( '.js-pagination-preview-element' )
-				.addClass( 'disabled' );
-	};
-	
 	$( document ).on( 'change', 'input.js-wpv-pagination-dialog-control', function() {
-		var thiz = $( this ),
-		target = thiz.data( 'target' ),
-		preview_elements = $( '.js-pagination-preview-element' ),
-		target_element = preview_elements.filter('[data-name="' + target + '"]');
-		$( '.js-wpv-insert-pagination' )
-			.prop( 'disabled', false )
-			.addClass( 'button-primary' )
-			.removeClass( 'button-secondary' );
-		preview_elements.addClass('disabled');
-		target_element.removeClass('disabled');
+		var options_checked = $( '.js-wpv-pagination-dialog-control:checked' ),
+		preview_elements = $( '.js-pagination-preview-element' );
+		if ( options_checked.length > 0 ) {
+			preview_elements.addClass('disabled');
+			$.each( options_checked, function() {
+				var thiz = $( this ),
+				target = thiz.data( 'target' );
+				preview_elements
+					.filter('[data-name="' + target + '"]')
+						.removeClass('disabled');
+			});
+			$( '.js-wpv-insert-pagination' )
+				.prop( 'disabled', false )
+				.addClass( 'button-primary' )
+				.removeClass( 'button-secondary' );
+		} else {
+			preview_elements.addClass('disabled');
+			$( '.js-wpv-insert-pagination' )
+				.prop( 'disabled', true )
+				.addClass( 'button-secondary' )
+				.removeClass( 'button-primary' );
+		}
+		if ( $( '#pagination-include-page-selector:checked' ).length > 0 ) {
+			$( '.js-pagination-control-type' ).prop( 'disabled', false );
+		} else {
+			$( '.js-pagination-control-type' ).prop( 'disabled', true );
+		}
 	});
 	
 	$( document ).on( 'change', '.js-pagination-control-type', function() {
 		var page_selectors = $('.js-pagination-preview-element').filter('[data-name="page-selector"]'),
-		val = $( this ).val();
+		val = $( '.js-pagination-control-type:checked' ).val();
 		if ( val === 'link' ) {
 			page_selectors.hide();
 			page_selectors.filter('[data-type*="page-selector-link"]').show();
@@ -178,41 +201,43 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 	});
 	
 	$( document ).on( 'click', '.js-wpv-insert-pagination', function() {
-		var pag_control = $( 'input.js-wpv-pagination-dialog-control:checked' ).serializeArray(),
-		pag_selector_mode = $( 'select.js-pagination-control-type' ).val(),
-		pag_wrap = $( 'input.js-wpv-pagination-dialog-display' ).prop('checked'),
-		pag_preview = self.get_pagination_preview( pag_control, pag_selector_mode ),
-		pag_shortcode = self.get_pagination_shortcode( pag_control, pag_selector_mode );
-		if ( pag_wrap ) {
-			pag_shortcode = '[wpv-pagination]' +  pag_shortcode + '[/wpv-pagination]';
+		var shortcode = '',
+		wrap = $( 'input.js-wpv-pagination-dialog-display' ).prop('checked'),
+		current_cursor,
+		end_cursor,
+		pagination_marker;
+		shortcode = self.get_pagination_shortcode();
+		if ( wrap ) {
+			shortcode = '[wpv-pagination]' +  shortcode + '[/wpv-pagination]';
 		}
 		if ( self.pagination_insert_newline ) {
-			pag_shortcode += '\n';
+			shortcode += '\n';
 			self.pagination_insert_newline = false;
 		}
 		if ( window.wpcfActiveEditor == 'wpv_filter_meta_html_content' ) {
-			var current_cursor = codemirror_views_query.getCursor( true );
+			current_cursor = codemirror_views_query.getCursor( true );
 			codemirror_views_query.setSelection( current_cursor, current_cursor );
-			codemirror_views_query.replaceSelection( pag_shortcode, 'end' );
-			var end_cursor = codemirror_views_query.getCursor( true ),
+			codemirror_views_query.replaceSelection( shortcode, 'end' );
+			end_cursor = codemirror_views_query.getCursor( true );
 			pagination_marker = codemirror_views_query.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+			self.dialog.dialog( 'close' );
 			codemirror_views_query.focus();
 			setTimeout( function() {
 				  pagination_marker.clear();
 			}, 2000);
 		}
 		if ( window.wpcfActiveEditor == 'wpv_layout_meta_html_content' ) {
-			var current_cursor = codemirror_views_layout.getCursor( true );
+			current_cursor = codemirror_views_layout.getCursor( true );
 			codemirror_views_layout.setSelection( current_cursor, current_cursor );
-			codemirror_views_layout.replaceSelection( pag_shortcode, 'end' );
-			var end_cursor = codemirror_views_layout.getCursor( true ),
+			codemirror_views_layout.replaceSelection( shortcode, 'end' );
+			end_cursor = codemirror_views_layout.getCursor( true );
 			pagination_marker = codemirror_views_layout.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+			self.dialog.dialog( 'close' );
 			codemirror_views_layout.focus();
 			setTimeout( function() {
 				  pagination_marker.clear();
 			}, 2000);
 		}
-		$.colorbox.close();
 	});
 	
 	// Helper
@@ -249,14 +274,13 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 				return button_close;
 			}
 		});
-		// Init toolbar pagination button
-		self.toolbar_pagination_button_state();
 		// Init pagination insert pointer
 		// Ugly solution, but otherwise we can not be sure it will be added to the right position
 		// due to some sections being shown/hidden on document.ready too, after this one
 		setTimeout( function() {
 			self.pagination_insert_pointer();
 		}, 3000);
+		self.init_dialogs();
 	};
 	
 	self.init();

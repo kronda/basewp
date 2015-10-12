@@ -570,10 +570,10 @@ function wpcf_pr_admin_wpcf_relationship_search()
 {
     wpcf_pr_admin_wpcf_relationship_check(array('s'));
 
-    $numberposts = apply_filters( 'wpcf_pr_belongs_post_numberposts', 10 );
+    $posts_per_page = apply_filters( 'wpcf_pr_belongs_post_numberposts', 10 );
 
     $args = array(
-        'numberposts' => $numberposts,
+        'posts_per_page' => apply_filters( 'wpcf_pr_belongs_post_posts_per_page', $posts_per_page ),
         'post_status' => apply_filters( 'wpcf_pr_belongs_post_status', array( 'publish', 'private' ) ),
         'post_type' => $_REQUEST['post_type'],
         'suppress_filters' => 1,

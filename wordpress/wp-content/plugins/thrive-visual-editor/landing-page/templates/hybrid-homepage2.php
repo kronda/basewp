@@ -471,7 +471,7 @@ $config_post_grid = json_encode(array(
     <div class="thrv_wrapper thrv_columns">
         <div class="tve_colm tve_twc">
             <p style="color: #3d3a3a; font-size: 18px;margin-top: 0;margin-bottom: 0;">
-                Copyright 2015 by Company Name
+                Copyright {tcb_current_year} by Company Name
             </p>
         </div>
         <div class="tve_colm tve_twc tve_lst">

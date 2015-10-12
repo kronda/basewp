@@ -58,16 +58,44 @@ function wpv_filter_post_category( $query, $view_settings ) {
 								"include_children" => $include_child
 							);
 						} else { // if the current page has no term in the given taxonomy, return nothing
-							$include_child = true;
-							$include_child = apply_filters( 'wpv_filter_tax_filter_include_children', $include_child, $category->name, $WP_Views->current_view );
 							$query['tax_query'][] = array(
 								'taxonomy' => $category->name,
 								'field' => 'id',
 								'terms' => 0,
+								'operator' => "IN"
+							);
+						}
+					}
+					break;
+				case 'FROM ARCHIVE':
+					if ( 
+						is_tax() 
+						|| is_category() 
+						|| is_tag() 
+					) {
+						global $wp_query;
+						$term = $wp_query->get_queried_object();
+						if ( 
+							$term 
+							&& isset( $term->taxonomy )
+							&& $term->taxonomy == $category->name
+						) {
+							$include_child = apply_filters( 'wpv_filter_tax_filter_include_children', $include_child, $category->name, $WP_Views->current_view );
+							$query['tax_query'][] = array(
+								'taxonomy' => $category->name,
+								'field' => 'id',
+								'terms' => $term->term_id,
 								'operator' => "IN",
 								"include_children" => $include_child
 							);
 						}
+					} else {
+						$query['tax_query'][] = array(
+							'taxonomy' => $category->name,
+							'field' => 'id',
+							'terms' => 0,
+							'operator' => "IN"
+						);
 					}
 					break;
 				case 'FROM ATTRIBUTE':
@@ -78,8 +106,11 @@ function wpv_filter_post_category( $query, $view_settings ) {
 						$attribute_format = 'name';
 					}
 					$view_attrs = $WP_Views->get_view_shortcodes_attributes();
-					if ( isset( $view_attrs[$attribute] ) ) {
-						$terms = explode( ',', $view_attrs[$attribute] );
+					if ( 
+						isset( $view_attrs[$attribute] ) 
+						&& '' != $view_attrs[$attribute]
+					) {
+						$terms = explode(',', $view_attrs[$attribute]);
 						$term_ids = array();
 						foreach ( $terms as $t ) {
 							// get_term_by does sanitization
@@ -98,14 +129,11 @@ function wpv_filter_post_category( $query, $view_settings ) {
 								"include_children" => $include_child
 							);
 						} else if ( count( $terms ) > 0 ) { // if the shortcode attribute exists and is not empty, and no term matches the value, return nothing
-							$include_child = true;
-							$include_child = apply_filters( 'wpv_filter_tax_filter_include_children', $include_child, $category->name, $WP_Views->current_view );
 							$query['tax_query'][] = array(
 								'taxonomy' => $category->name,
 								'field' => 'id',
 								'terms' => 0,
-								'operator' => "IN",
-								"include_children" => $include_child
+								'operator' => "IN"
 							);
 						}
 					}
@@ -141,14 +169,11 @@ function wpv_filter_post_category( $query, $view_settings ) {
 								"include_children" => $include_child
 							);
 						} else if ( ! empty( $_GET[$url_parameter] ) ) {
-							$include_child = true;
-							$include_child = apply_filters( 'wpv_filter_tax_filter_include_children', $include_child, $category->name, $WP_Views->current_view );
 							$query['tax_query'][] = array(
 								'taxonomy' => $category->name,
 								'field' => 'id',
 								'terms' => 0,
-								'operator' => "IN",
-								"include_children" => $include_child
+								'operator' => "IN"
 							);
 						}
 					}
@@ -166,14 +191,11 @@ function wpv_filter_post_category( $query, $view_settings ) {
 							"include_children" => $include_child
 						);
 					} else {
-						$include_child = true;
-						$include_child = apply_filters( 'wpv_filter_tax_filter_include_children', $include_child, $category->name, $WP_Views->current_view );
 						$query['tax_query'][] = array(
 							'taxonomy' => $category->name,
 							'field' => 'id',
 							'terms' => 0,
-							'operator' => "IN",
-							"include_children" => $include_child
+							'operator' => "IN"
 						);
 					}
 					break;
@@ -278,24 +300,130 @@ function _wpv_get_adjusted_terms( $term_ids, $category_name ) {
 	return $term_ids;	
 }
 
-add_filter('wpv_filter_requires_current_page', 'wpv_filter_cat_requires_current_page', 10, 2);
-function wpv_filter_cat_requires_current_page($state, $view_settings) {
-	if ($state) {
+/**
+* wpv_filter_cat_requires_current_page
+*
+* Whether the current View requires the current page data for any filter by taxonomy
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since unknown
+*/
+
+add_filter( 'wpv_filter_requires_current_page', 'wpv_filter_cat_requires_current_page', 10, 2 );
+
+function wpv_filter_cat_requires_current_page( $state, $view_settings ) {
+	if ( $state ) {
 		return $state; // Already set
 	}
-
 	$taxonomies = get_taxonomies('', 'objects');
-	foreach ($taxonomies as $category_slug => $category) {
+	foreach ( $taxonomies as $category_slug => $category ) {
 		$relationship_name = ( $category->name == 'category' ) ? 'tax_category_relationship' : 'tax_' . $category->name . '_relationship';
-		
-		if (isset($view_settings[$relationship_name])) {
-			if ($view_settings['tax_' . $category->name . '_relationship'] == "FROM PAGE") {
+		if ( isset( $view_settings[$relationship_name] ) ) {
+			if ( $view_settings['tax_' . $category->name . '_relationship'] == "FROM PAGE" ) {
 				$state = true;
 				break;
 			}
 		}
 	}
-	
 	return $state;
-	
+}
+
+/**
+* wpv_filter_cat_requires_parent_term
+*
+* Whether the current View is nested and requires the user set by the parent View for any filter by taxonomy
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.9.0
+*/
+
+add_filter( 'wpv_filter_requires_parent_term', 'wpv_filter_cat_requires_parent_term', 10, 2 );
+
+function wpv_filter_cat_requires_parent_term( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+	$taxonomies = get_taxonomies('', 'objects');
+	foreach ( $taxonomies as $category_slug => $category ) {
+		if ( 
+			isset( $view_settings['tax_' . $category->name . '_relationship'] ) 
+			&& $view_settings['tax_' . $category->name . '_relationship'] == 'FROM PARENT VIEW'
+		) {
+			$state = true;
+			break;
+		}
+	}
+	return $state;
+}
+
+/**
+* wpv_filter_cat_requires_current_archive
+*
+* Whether the current View requires the current archive loop
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_requires_current_archive', 'wpv_filter_cat_requires_current_archive', 10, 2 );
+
+function wpv_filter_cat_requires_current_archive( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+	$taxonomies = get_taxonomies('', 'objects');
+	foreach ( $taxonomies as $category_slug => $category ) {
+		if ( 
+			isset( $view_settings['tax_' . $category->name . '_relationship'] ) 
+			&& $view_settings['tax_' . $category->name . '_relationship'] == 'FROM ARCHIVE'
+		) {
+			$state = true;
+			break;
+		}
+	}
+	return $state;
+}
+
+/**
+* wpv_filter_cat_requires_framework_values
+*
+* Whether the current View requires values from a framework
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_requires_framework_values', 'wpv_filter_cat_requires_framework_values', 10, 2 );
+
+function wpv_filter_cat_requires_framework_values( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+	$taxonomies = get_taxonomies('', 'objects');
+	foreach ( $taxonomies as $category_slug => $category ) {
+		if ( 
+			isset( $view_settings['tax_' . $category->name . '_relationship'] ) 
+			&& $view_settings['tax_' . $category->name . '_relationship'] == 'framework'
+		) {
+			$state = true;
+			break;
+		}
+	}
+	return $state;
 }

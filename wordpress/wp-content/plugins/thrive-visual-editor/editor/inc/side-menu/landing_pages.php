@@ -1,4 +1,3 @@
-<?php $landing_pages = tve_get_landing_page_templates() ?>
 <div class="tve_cpanel_sec tve_lp_sub" style="padding-right: 14px;">
     <div class="tve_option_separator tve_dropdown_submenu tve_drop_style ">
         <div class="tve_ed_btn tve_btn_text" style="display: block;">
@@ -10,24 +9,20 @@
         <div class="tve_sub_btn">
             <div class="tve_sub" style="bottom: auto;top: 30px;width: 159px;">
                 <ul>
+                    <li class="tve_click" data-ctrl="controls.landing_page_import" data-btntitle="<?php echo __('Import File', 'thrive-cb') ?>" data-title="<?php echo __('Import Landing Page', 'thrive-cb') ?>">
+                        <?php echo __('Import Landing Page', 'thrive-cb') ?>
+                    </li>
                     <?php if ($landing_page_template) : ?>
                         <li class="tve_click" id="tve_lp_settings">
                             <?php echo __("Landing Page Settings", "thrive-cb") ?>
                         </li>
+                        <li class="tve_click" data-ctrl="controls.lb_open" data-lb="lb_static_lp_export" data-btntext="<?php echo __('Download File', 'thrive-cb') ?>">
+                            <?php echo __('Export Landing Page', 'thrive-cb') ?>
+                        </li>
                     <?php endif ?>
-                    <li class="tve_click" data-ctrl="controls.lb_open" id="lb_landing_pages">
+                    <li class="tve_click" data-ctrl="controls.lb_open" id="lb_landing_pages" data-load="1">
                         <?php echo __("Choose landing page ...", "thrive-cb") ?>
                         <input type="hidden" name="landing_page" value="<?php echo $_POST['landing_page'] ?>"/>
-                        <?php foreach ($landing_pages as $code => $data) : ?>
-                            <input type="hidden" name="landing_pages[<?php echo $code ?>][name]" value="<?php echo $data['name'] ?>"/>
-                            <input type="hidden" name="landing_pages[<?php echo $code ?>][thumbnail]"
-                                   value="<?php echo $landing_page_dir . '/thumbnails/' . $code . '.png' ?>"/>
-                            <?php if (!empty($data['tags'])) : ?>
-                                <?php foreach ($data['tags'] as $tag) : ?>
-                                    <input type="hidden" name="landing_pages[<?php echo $code ?>][tags][]" value="<?php echo $tag ?>"/>
-                                <?php endforeach ?>
-                            <?php endif ?>
-                        <?php endforeach ?>
                     </li>
                     <?php if ($landing_page_template) : ?>
                         <li class="tve_click" id="tve_landing_page_disable"><?php echo __("Revert to theme", "thrive-cb") ?></li>

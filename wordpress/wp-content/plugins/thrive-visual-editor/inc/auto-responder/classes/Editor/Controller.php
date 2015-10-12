@@ -141,6 +141,8 @@ class Thrive_List_Editor_Controller
                 $content = $this->_view('dashboard');
                 break;
         }
+        $captcha_api = Thrive_List_Manager::credentials('recaptcha');
+        $response['captcha_site_key'] = empty($captcha_api['site_key']) ? '' : $captcha_api['site_key'];
 
         $response['lb_html'] = $content;
 
@@ -228,9 +230,9 @@ class Thrive_List_Editor_Controller
     protected function _prepareApiData()
     {
         /**
-         * list of all connected APIs (that have been setup from admin)
+         * list of all connected APIs (that have been setup from admin) but exclude captcha
          */
-        $connected_apis = Thrive_List_Manager::getAvailableAPIs(true);
+        $connected_apis = Thrive_List_Manager::getAvailableAPIs(true, array('captcha'));
         /**
          * existing setup connections for this form
          */

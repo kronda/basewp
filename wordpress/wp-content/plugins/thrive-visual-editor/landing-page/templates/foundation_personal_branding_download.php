@@ -72,5 +72,5 @@
 </div>
 
 <div class="tve_lp_footer tve_empty_dropzone tve_drop_constraint" data-forbid=".thrv_page_section,.sc_page_section">
-    <p class="tve_p_center" style="color: #333333;"><a href="">&copy; 2014 ACME Inc</a> | <a href="">Disclaimer</a></p>
+    <p class="tve_p_center" style="color: #333333;"><a href="">&copy; {tcb_current_year} ACME Inc</a> | <a href="">Disclaimer</a></p>
 </div>

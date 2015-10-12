@@ -3186,6 +3186,13 @@ return array(
                     "value" => "[color]",
                 ),
                 array(
+                    "label" => "Color (mouseover)",
+                    "selector" => "span.tve_sc_icon",
+                    "property" => "color",
+                    "value" => "[color]",
+                    'hover' => 1
+                ),
+                array(
                     "label" => "Border Color",
                     "selector" => "",
                     "property" => "border-color",
@@ -3208,6 +3215,13 @@ return array(
                     "value" => "[color]",
                 ),
                 array(
+                    "label" => "Color (mouseover)",
+                    "selector" => "span.tve_sc_icon",
+                    "property" => "color",
+                    "value" => "[color]",
+                    'hover' => 1
+                ),
+                array(
                     "label" => "Border Color",
                     "selector" => "",
                     "property" => "border-color",
@@ -3227,6 +3241,13 @@ return array(
                     "selector" => "span.tve_sc_icon",
                     "property" => "color",
                     "value" => "[color]",
+                ),
+                array(
+                    "label" => "Color (mouseover)",
+                    "selector" => "span.tve_sc_icon",
+                    "property" => "color",
+                    "value" => "[color]",
+                    'hover' => 1
                 ),
                 array(
                     "label" => "Border Color",

@@ -33,33 +33,52 @@ WPViews.LayoutWizard = function( $ ) {
 	self.wizard_dialog_style = null;
 	self.wizard_dialog_fields = null;
 	
+	self.wizard_dialog_data = null;
+	
+	self.saved_fields_html = null;
+		
 	self.edit_screen = ( typeof WPViews.view_edit_screen != 'undefined' ) ? WPViews.view_edit_screen : WPViews.wpa_edit_screen;
+		
+	self.doing_shortcode_gui = false;
+	self.doing_shortcode_gui_for = null;
+	self.doing_shortcode_gui_for_selected = null;
 	
 	// ---------------------------------
 	// Functions
 	// ---------------------------------
 	
-	// Fetch initial settings - on document ready
+	// Fetch initial settings - on document ready, from variables added directly to the page, see wpv_loop_wizard_add_data_to_js
 	
 	self.fetch_initial_settings = function() {
-		var data = {
-				action: 'wpv_layout_wizard',
-				view_id: self.view_id
-			};
-		$.post( ajaxurl, data, function( response ) {
-			if ( response.length <= 0 ) {
-				return;
-			}
-			self.initial_settings = $.parseJSON( response );
-		});
+		self.initial_settings = {};
+		self.initial_settings.dialog = WPViews.layout_wizard_saved_dialog;
+		self.initial_settings.settings = WPViews.layout_wizard_saved_settings;
 	};
 	
 	// Render the dialog, and apply the existing settings
-	// @todo find a better way of managing the fields rendering
 	
 	self.render_dialog = function( response ) {
+		var layout_value = codemirror_views_layout.getValue(),
+		loop_start_tag = layout_value.indexOf( '<wpv-loop' ),// This tag can contain wrap and pad attributes
+		loop_start = 0,
+		loop_end = layout_value.indexOf( '</wpv-loop>' ),
+		layout_loop_content = '';
+		if ( loop_start_tag >= 0 ) {
+			loop_start = layout_value.indexOf( '>', loop_start_tag );
+		}
+		// Merge response with local settings
+		self.wizard_dialog_data = self.merge_with_saved_settings( response.settings );
 		$.colorbox({
 			html: response.dialog,
+			onOpen: function() {
+				WPViews.shortcodes_gui.shortcode_gui_insert = false;
+			},
+			onLoad: function() {
+				
+			},
+			onClosed: function() {
+				WPViews.shortcodes_gui.shortcode_gui_insert = true;
+			},
 			onComplete: function() {
 				$( '.js-insert-layout' )
 					.addClass( 'button-secondary' )
@@ -67,150 +86,86 @@ WPViews.LayoutWizard = function( $ ) {
 				// Set the first tab as active
 				$( '.js-layout-wizard-tab' ).not( ':first-child' ).hide();
 				// Show the overwrite notice when needed
-				var layout_value = codemirror_views_layout.getValue(),
-				loop_start_tag = layout_value.indexOf( '<wpv-loop' ),// This tag can contain wrap and pad attributes
-				loop_start = 0,
-				loop_end = layout_value.indexOf( '</wpv-loop>' ),
-				layout_loop_content = '';
-				if ( loop_start_tag >= 0 ) {
-					loop_start = layout_value.indexOf( '>', loop_start_tag );
-				}
 				if ( ( loop_start >= 0 ) && ( loop_end >= 0 ) ) {
 					layout_loop_content = layout_value.slice( loop_start, loop_end ).replace(/\s+/g, '');
 					if ( layout_loop_content != '>' ) {
 						$( '.js-wpv-layout-wizard-overwrite-notice' ).show();
 					}
 				}
-				// Merge response with local settings
-				data = self.merge_with_saved_settings( response.settings );
 				// Set incoming values, if any
-				if ( typeof( data.style ) != 'undefined' ) {
-					$( 'input.js-wpv-layout-wizard-style[value="' + data.style + '"]' ).click();
+				if ( typeof( self.wizard_dialog_data.style ) != 'undefined' ) {
+					$( 'input.js-wpv-layout-wizard-style[value="' + self.wizard_dialog_data.style + '"]' ).click();
 				}
-				if ( typeof( data.table_cols ) != 'undefined' ) {
-					$( 'select.js-wpv-layout-wizard-table-cols[name="table_cols"]' ).val( data.table_cols );
+				if ( typeof( self.wizard_dialog_data.table_cols ) != 'undefined' ) {
+					$( 'select.js-wpv-layout-wizard-table-cols[name="table_cols"]' ).val( self.wizard_dialog_data.table_cols );
 				}
-				if ( typeof( data.wpv_bootstrap_version ) != 'undefined' ) {
-					if ( data.wpv_bootstrap_version == '1' ) {
-						$( '#layout-wizard-style-bootstrap-grid' ).attr( 'disabled', true );
-						$( 'label[for=layout-wizard-style-bootstrap-grid]' ).css({ opacity: 0.5 });
-						$( '.js-wpv-bootstrap-disabled' ).show();
-					} else {
-						$( '#layout-wizard-style-bootstrap-grid' ).attr( 'disabled', false );
-						$( 'label[for=layout-wizard-style-bootstrap-grid]' ).css({ opacity: 1 });
-						$( '.js-wpv-bootstrap-disabled' ).hide();
-						if ( data.wpv_bootstrap_version == 3 ) {
-							$( 'input[name="bootstrap_grid_row_class"]' ).prop( 'disabled', true );
-						} else {
-							if ( typeof( data.bootstrap_grid_row_class ) != 'undefined' && data.bootstrap_grid_row_class === 'true' ) {
-								$( 'input[name="bootstrap_grid_row_class"]' ).prop( 'checked', true );
-							}
-						}
-					}
+
+                // Determine used bootstrap version and:
+                // - if it's not set, disable the bootstrap option, show a message with link to Views settings
+                // - if it's set to "no bootstrap", disable the option and show a different message
+                // - for bootstrap 2 or 3, adjust other related fields and show message with version number
+                var bootstrapVersion = 1; // meaning "not set"
+				if ( typeof( self.wizard_dialog_data.wpv_bootstrap_version ) != 'undefined' ) {
+                    bootstrapVersion = parseInt( self.wizard_dialog_data.wpv_bootstrap_version );
+                }
+
+                // Decide what needs to be done about bootstrap version
+                var isBootstrapOptionDisabled = false;
+                var bootstrapOptionMessage = null;
+
+                switch( bootstrapVersion ) {
+                    case 2:
+                        if ( typeof( self.wizard_dialog_data.bootstrap_grid_row_class ) != 'undefined' && self.wizard_dialog_data.bootstrap_grid_row_class === 'true' ) {
+                            $( 'input[name="bootstrap_grid_row_class"]' ).prop( 'checked', true );
+                        }
+                        $( 'input[name="bootstrap_grid_row_class"]' ).prop( 'disabled', false );
+                        bootstrapOptionMessage = 'bootstrap_2';
+                        break;
+                    case 3:
+                        $( 'input[name="bootstrap_grid_row_class"]' ).prop( 'disabled', true );
+                        bootstrapOptionMessage = 'bootstrap_3';
+                        break;
+                    case -1:
+                        isBootstrapOptionDisabled = true;
+                        bootstrapOptionMessage = 'bootstrap_not_used';
+                        break;
+                    default:
+                    case 1:
+                        isBootstrapOptionDisabled = true;
+                        bootstrapOptionMessage = 'bootstrap_not_set';
+                        break;
+                }
+
+                // Disable or enable the option
+                $( '#layout-wizard-style-bootstrap-grid' ).attr( 'disabled', isBootstrapOptionDisabled );
+                $( 'label[for=layout-wizard-style-bootstrap-grid]' ).css({ opacity: (isBootstrapOptionDisabled ? 0.5 : 1) });
+
+                // Display the selected translated message
+                var bootstrapOptionMessagePlaceholder = $('.js-wpv-bootstrap-message');
+                if(bootstrapOptionMessage != null) {
+                    bootstrapOptionMessagePlaceholder.show();
+                    bootstrapOptionMessagePlaceholder.html(wpv_layout_wizard_strings[ bootstrapOptionMessage ]);
+                } else {
+                    bootstrapOptionMessagePlaceholder.hide();
+                }
+
+				if ( typeof( self.wizard_dialog_data.bootstrap_grid_cols ) != 'undefined' ) {
+					$( 'select.js-wpv-layout-wizard-bootstrap-grid-cols[name="bootstrap_grid_cols"]' ).val( self.wizard_dialog_data.bootstrap_grid_cols );
 				}
-				// Not sure why we remove the options and add them back, being the same
-				// @todo review this
-				$( 'select.js-wpv-layout-wizard-bootstrap-grid-cols[name="bootstrap_grid_cols"] option' ).remove();
-				var grid_options = '';
-				grid_options	+= '<option value="1">1</option>';
-				grid_options	+= '<option value="2">2</option>';
-				grid_options	+= '<option value="3">3</option>';
-				grid_options	+= '<option value="4">4</option>';
-				grid_options	+= '<option value="6">6</option>';
-				grid_options	+= '<option value="12">12</option>';
-				$( 'select.js-wpv-layout-wizard-bootstrap-grid-cols[name="bootstrap_grid_cols"]' ).append(grid_options);
-				if ( typeof( data.bootstrap_grid_cols ) != 'undefined' ) {
-					$( 'select.js-wpv-layout-wizard-bootstrap-grid-cols[name="bootstrap_grid_cols"]' ).val( data.bootstrap_grid_cols );
-				}
-				if ( typeof( data.bootstrap_grid_container ) != 'undefined' && data.bootstrap_grid_container === 'true' ) {
+				if ( typeof( self.wizard_dialog_data.bootstrap_grid_container ) != 'undefined' && self.wizard_dialog_data.bootstrap_grid_container === 'true' ) {
 					$( 'input[name="bootstrap_grid_container"]' ).prop( 'checked', true );
 				}
 				$( '#bootstrap_grid_individual_yes' ).prop( 'checked', true );
-				if ( typeof( data.bootstrap_grid_individual ) != 'undefined' && data.bootstrap_grid_individual != '' ) {
+				if ( typeof( self.wizard_dialog_data.bootstrap_grid_individual ) != 'undefined' && self.wizard_dialog_data.bootstrap_grid_individual != '' ) {
 					$( '#bootstrap_grid_individual_yes' ).prop( 'checked', false );
 					$( '#bootstrap_grid_individual_no' ).prop( 'checked', true );	
 				}
-				if ( typeof( data.include_field_names ) != 'undefined' ) {
-					$('input[name="include_field_names"]').attr('checked', data.include_field_names === 'true');
+				if ( typeof( self.wizard_dialog_data.include_field_names ) != 'undefined' ) {
+					$('input[name="include_field_names"]').attr('checked', self.wizard_dialog_data.include_field_names === 'true');
 				}
-				// Load existing fields
-				// @todo this needs a hard review
-				if ( typeof( data.fields ) != 'undefined' ) {
-					var ii = 0,
-					vcount = 0,
-					flist = [];
-					for( s in data.fields ) {
-						flist[ii] = data.fields[s];
-						ii++;
-						if ( ii % 6 == 0 ) {
-							vcount++;
-						}
-					}
-					if ( vcount == 0 ) {
-						return;
-					}
-					for ( j = 0; j < vcount; j+=1 ) {
-						$('.js-wpv-layout-wizard-layout-fields').append('<div class="spacer_' + j + '"></div>');
-					}
-					for ( i = 0; i < vcount; i+=1 ) {
-						var sel = '';
-						if ( typeof( data.real_fields) != 'undefined' ) {
-							sel = data.real_fields[i];
-						} else {
-							if ( ( flist[( i*6 ) + 1 ] ) === 'types-field' )
-								sel = flist[( i*6 ) + 3];
-							else
-								sel = '[' + flist[( i*6 ) + 1] + ']';
-						}
-						var ajaxdata = {
-							action: 'layout_wizard_add_field',
-							id: i,
-							wpnonce : $('#layout_wizard_nonce').attr('value'),
-							selected: sel,
-							view_id: self.view_id
-						};
-						$.post( ajaxurl, ajaxdata, function( response ) {
-							if ( response.length <= 0 ) {
-								$.colorbox.close();
-								$('.js-wpv-settings-layout-extra .js-wpv-toolset-messages')
-									.wpvToolsetMessage({
-										text: wpv_layout_wizard_strings.unknown_error,
-										type:'error',
-										inline:true,
-										stay:false
-									});
-								return;
-							}
-							response = $.parseJSON( response );
-							if ( response.selected_found === true ) {
-								var field_html = response.html,
-								count = $( '.wpv-dialog-nav-tab' ).index( $( 'li' ).has( '.active' ) );
-								field = field_html.match(/(layout-wizard-style_)[0-9]+/);
-								key = field[0].match(/[0-9]+/);
-								$( field_html ).insertAfter( $('.js-wpv-layout-wizard-layout-fields div.spacer_' + key ) );
-								// This should be done once all fields are finished
-								self.manage_dialog_buttons( count );
-								// This should be done once all fields are finished
-								$.each( $('.js-wpv-dialog-layout-wizard select.js-select2' ),function() {
-									if ( ! $( this ).hasClass( 'select2-offscreen' ) ) {
-										$( this ).select2();
-									}
-								});
-							}
-						}, 'html' )
-						.done( function() {
-							if ( typeof key !== 'undefined' ) {
-								$('div.spacer_' + key).remove();
-							}
-						});
-						$('.js-wpv-layout-wizard-layout-fields').sortable({
-							handle: ".js-layout-wizard-move-field",
-							axis: 'y',
-							containment: "parent",
-							helper: 'clone',
-							tolerance: "pointer"
-						});
-					}
+				
+				if ( self.use_loop_template ) {
+					$( 'input#js-wpv-use-view-loop-ct' ).prop( 'checked', true );
 				}
 			}
 		});
@@ -228,7 +183,7 @@ WPViews.LayoutWizard = function( $ ) {
 			data.bootstrap_grid_cols = self.settings_from_wizard.bootstrap_grid_cols;
 			data.bootstrap_grid_container = self.settings_from_wizard.bootstrap_grid_container;
 			data.bootstrap_grid_row_class = self.settings_from_wizard.bootstrap_grid_row_class;
-			data.bootstrap_grid_individual = self.settings_from_wizard.bootstrap_grid_individual;			
+			data.bootstrap_grid_individual = self.settings_from_wizard.bootstrap_grid_individual;
 		}
 		return data;
 	};
@@ -276,7 +231,7 @@ WPViews.LayoutWizard = function( $ ) {
 				prev_button.hide();
 				break;
 			case 1:
-				next_enable = ( $( 'ul.js-wpv-layout-wizard-layout-fields > li' ).length > 0 );
+				next_enable = ( $( '.js-wpv-layout-wizard-layout-fields > .js-wpv-loop-wizard-item-container' ).length > 0 );
 				insert_button.text( wpv_layout_wizard_strings.button_insert );
 				prev_button.show();
 				break;
@@ -297,14 +252,21 @@ WPViews.LayoutWizard = function( $ ) {
 	// Add field UI
 	
 	self.add_field_ui_callback = function( field_html ) {
-		var count = $('li[id*="layout-wizard-style_"]').size(),
+		var count = $('.js-wpv-loop-wizard-item-container').size(),
 		field_html = field_html.replace( '__wpv_layout_count_placeholder__', count + 1 );
-		$('.js-wpv-layout-wizard-layout-fields').append( field_html );
-		$('.js-wpv-layout-wizard-layout-fields').sortable();
+		//$( '.js-wpv-layout-wizard-layout-fields' ).sortable( "destroy" );
+		$( '.js-wpv-layout-wizard-layout-fields' ).append( field_html );
+		$( '.js-wpv-layout-wizard-layout-fields' ).sortable({
+			handle: ".js-layout-wizard-move-field",
+			axis: 'y',
+			containment: ".js-wpv-layout-wizard-layout-fields",
+			helper: 'clone',
+			tolerance: "pointer"
+		});
 		self.manage_dialog_buttons( 1 );
-		$.each( $('.js-wpv-dialog-layout-wizard select.js-select2' ),function() {
+		$.each( $('.js-wpv-dialog-layout-wizard select.js-wpv-select2' ),function() {
 			if ( ! $( this ).hasClass( 'select2-offscreen' ) ) {
-				$( this ).select2();
+				$( this ).select2().trigger( 'change' );
 			}
 		});
 	};
@@ -316,8 +278,8 @@ WPViews.LayoutWizard = function( $ ) {
 	 * Tries to replace string within "<!-- wpv-loop-start -->" and "<!-- wpv-loop-end -->" (included) by new one. If
 	 * those tags aren't found, it appends the new string at the end.
 	 *
-	 * @param string content The loop output.
-	 * @param string data New string which should replace wpv-loop.
+	 * @param {string} content The loop output.
+	 * @param {string} data New string which should replace wpv-loop.
 	 *
 	 * @return string The result.
 	 *
@@ -327,7 +289,7 @@ WPViews.LayoutWizard = function( $ ) {
         if ( content.search(/<!-- wpv-loop-start -->[\s\S]*\<!-- wpv-loop-end -->/g) == -1 ) {
             content += data;
         } else {
-            content = content.replace(/<!-- wpv-loop-start -->[\s\S]*\<!-- wpv-loop-end -->/g, "<!-- wpv-loop-start -->\n" + data + "<!-- wpv-loop-end -->");
+            content = content.replace(/<!-- wpv-loop-start -->[\s\S]*<!-- wpv-loop-end -->/g, "<!-- wpv-loop-start -->\n" + data + "<!-- wpv-loop-end -->");
         }
         return content;
     };
@@ -374,17 +336,14 @@ WPViews.LayoutWizard = function( $ ) {
 			tab_column_count: $('[name="table_cols"]').val(),
 			bootstrap_column_count: $('[name="bootstrap_grid_cols"]').val(),
 			// @todo Request for comment: Where does this 'data' come from?
-			bootstrap_version: data.wpv_bootstrap_version,
+			bootstrap_version: self.wizard_dialog_data.wpv_bootstrap_version,
 			add_container: $('[name="bootstrap_grid_container"]').prop('checked'),
 			add_row_class: $('[name="bootstrap_grid_row_class"]').prop('checked'),
 			render_individual_columns: $('[name="bootstrap_grid_individual"]:checked').val(),
 			use_loop_template: self.use_loop_template,
 			loop_template_title: self.use_loop_template_title,
 			render_only_wpv_loop: true
-		}
-
-		//console.log( layout_args );
-		
+		}		
 		// Content of the Loop Output.
 		// Content of a Content Template to be created (if self.use_loop_template is true).
 		var loop_output = '',
@@ -413,7 +372,7 @@ WPViews.LayoutWizard = function( $ ) {
 					ct_content = response.data.ct_content;
 				} else {
 					self.edit_screen.manage_ajax_fail( response.data, messages_container );
-					current_dialog.find('.spinner.ajax-loader' ).remove();
+					current_dialog.find('.wpv-spinner.ajax-loader' ).remove();
 					halt_execution = true;
 				}
 			},
@@ -444,8 +403,15 @@ WPViews.LayoutWizard = function( $ ) {
 			}
 			
 			// Update the Loop Output content
-			c = self.replace_layout_loop_content( c, loop_output );
-			codemirror_views_layout.setValue( c );
+			c_new = self.replace_layout_loop_content( c, loop_output );
+			if ( c == c_new ) {
+				// We are updating the loop output, but the layout content did not change
+				// So the layout will not need to be updated, which would trigger the loop wizard data saving
+				// So we need to save the loop wizard data manually
+				self.force_save_loop_wizard_data();
+			} else {
+				codemirror_views_layout.setValue( c_new );
+			}
 			
 			// Update the Loop Template content
 			var ct_inline_editor_index = "wpv-ct-inline-editor-" + self.use_loop_template_id;
@@ -585,6 +551,46 @@ WPViews.LayoutWizard = function( $ ) {
 			callback();
 		}
     };
+	
+	/**
+	* force_save_loop_wizard_data
+	*
+	* Force saving the loop wizard data
+	* When updating the fields, if the layout output is not updated, we need to trigger this saving manually
+	* It happens when only changing the included fields but keep using a loop template
+	*
+	* @since 1.9
+	*/
+	
+	self.force_save_loop_wizard_data = function() {
+		var data = {
+			action: 'wpv_update_loop_wizard_data',
+			id: self.view_id,
+			wpnonce: $( '.js-wpv-layout-extra-update' ).data( 'nonce' )
+		};
+		if ( self.settings_from_wizard ) {
+			data.include_wizard_data = 'true';
+			for (var attr_name in self.settings_from_wizard) {
+				data[attr_name] = self.settings_from_wizard[attr_name];
+			}
+		}
+		$.ajax({
+			//async: false,
+			type: "POST",
+			dataType: "json",
+			url: ajaxurl,
+			data: data,
+			success: function( response ) {
+				
+			},
+			error: function (ajaxContext) {
+				
+			},
+			complete: function() {
+				
+			}
+		});
+	};
 
 	// ---------------------------------
 	// Events
@@ -599,22 +605,20 @@ WPViews.LayoutWizard = function( $ ) {
 		} else {
 			// fetch and load the popup via ajax.
 			var data = {
-				action: 'wpv_layout_wizard',
-				view_id: self.view_id
+			action: 'wpv_layout_wizard',
+			view_id: self.view_id
 			};
-			$.post( ajaxurl, data, function( response ) {
-				if ( response.length <= 0 ) {
-					$( '.js-wpv-settings-layout-extra .js-wpv-toolset-messages' )
-						.wpvToolsetMessage({
-							text: wpv_layout_wizard_strings.unknown_error,
-							type:'error',
-							inline:true,
-							stay:false
-						});
-					return;
+			$.ajax({
+				type: "POST",
+				dataType: "json",
+				url: ajaxurl,
+				data: data,
+				success: function( response ) {
+					if ( response.success ) {
+						self.initial_settings = response.data;
+						self.render_dialog( self.initial_settings );
+					}
 				}
-				self.initial_settings = $.parseJSON( response );
-				self.render_dialog( self.initial_settings );
 			});
 		}
 	});
@@ -640,21 +644,6 @@ WPViews.LayoutWizard = function( $ ) {
 		self.change_tab( true );
 	});
 	
-	// Set the loop template default on specific Loop output styles
-	
-	$( document ).on( 'change', '.js-wpv-layout-wizard-style', function() {
-        var style_selected = $( '.js-wpv-layout-wizard-style:checked' ).val();
-		if ( 
-			style_selected === 'bootstrap-grid' 
-			|| style_selected === 'table_of_fields'
-            || style_selected === 'table' 
-		) {
-            $( '#js-wpv-use-view-loop-ct' ).prop( 'checked', true );
-        } else {
-            $( '#js-wpv-use-view-loop-ct' ).prop( 'checked', false );
-        }
-    });
-	
 	// Clear the dialog ui once the query type options have changed
 	
 	$( document ).on( 'js_event_wpv_query_type_options_saved', '.js-wpv-query-type-update', function() {
@@ -664,7 +653,7 @@ WPViews.LayoutWizard = function( $ ) {
 	// Remove a field
 	
 	$( document ).on( 'click', '.js-layout-wizard-remove-field', function( e ) {
-		var row_to_delete = $( this ).parents( 'li' );
+		var row_to_delete = $( this ).closest( '.js-wpv-loop-wizard-item-container' );
 		row_to_delete.addClass( 'wpv-layout-wizard-field-deleted' );
 		setTimeout( function () {
 			row_to_delete.remove();
@@ -675,10 +664,24 @@ WPViews.LayoutWizard = function( $ ) {
 	// Change the Loop output style - display extra options for some styles
 	
 	$( document ).on( 'change', '.js-wpv-layout-wizard-style', function() {
-		var style_selected = $( this ).val(),
+		var style_selected = $( '.js-wpv-layout-wizard-style:checked' ).val(),
 		style_container = $( '.js-wpv-layout-wizard-layout-style' ),
 		style_settings_container = $( '.js-wpv-layout-wizard-layout-style-options' ),
 		dialog_pointer = $( '<div class="wpv-dialog-arrow-left js-wpv-dialog-arrow-left"></div>' );
+		
+		if ( ! self.use_loop_template ) {
+			if ( 
+				style_selected === 'bootstrap-grid' 
+				|| style_selected === 'table_of_fields'
+				|| style_selected === 'table' 
+			) {
+				$( '#js-wpv-use-view-loop-ct' ).prop( 'checked', true );
+			} else {
+				$( '#js-wpv-use-view-loop-ct' ).prop( 'checked', false );
+			}
+		}
+		
+		
 		$( '.js-insert-layout' )
 			.prop( 'disabled', false )
 			.removeClass( 'button-secondary' )
@@ -692,6 +695,8 @@ WPViews.LayoutWizard = function( $ ) {
 			$( 'input[value=' + style_selected + ']' )
 				.parents( 'li' )
 					.append( dialog_pointer );
+		} else if ( style_container.find( '.js-wpv-layout-wizard-layout-style-options-' + style_selected ).length > 0 ) {
+			style_container.find( '.js-wpv-layout-wizard-layout-style-options-' + style_selected ).show();
 		}
 	});
 	
@@ -701,48 +706,56 @@ WPViews.LayoutWizard = function( $ ) {
 		if ( self.add_field_ui ) {
 			self.add_field_ui_callback( self.add_field_ui );
 		} else {
-			data_view_id = $('.js-post_ID').val();
 			var data = {
-				action: 'layout_wizard_add_field',
+				action: 'wpv_loop_wizard_add_field',
 				id: '__wpv_layout_count_placeholder__',
-				wpnonce : $('#layout_wizard_nonce').attr('value'),
-				view_id: data_view_id
+				wpnonce : wpv_layout_wizard_strings.wpnonce,
+				view_id: self.view_id
 			};
-			$.post( ajaxurl, data, function( response ) {
-				if (response.length <=0) {
-					$.colorbox.close();
-					$('.js-wpv-settings-layout-extra .js-wpv-toolset-messages')
-						.wpvToolsetMessage({
-							text: wpv_layout_wizard_strings.unknown_error,
-							type:'error',
-							inline:true,
-							stay:false
-						});
-					return;
+			$.ajax({
+				type: "POST",
+				dataType: "json",
+				url: ajaxurl,
+				data: data,
+				async: false,
+				success: function( response ) {
+					if ( response.success ) {
+						self.add_field_ui = response.data.html;
+						self.add_field_ui_callback( self.add_field_ui );
+					}
+				},
+				complete: function() {
+					
 				}
-				self.add_field_ui = $.parseJSON( response ).html;
-				self.add_field_ui_callback( self.add_field_ui );
-			}, 'html');
+			});
 		}
 	});
 	
 	// Shows or hides the Content Template dropdown when selecting a field
-	// @todo rename this selector
 	
-	$( document ).on( 'change', 'select[name="layout-wizard-style"]', function() {
+	$( document ).on( 'change', 'select.js-wpv-layout-wizard-item', function() {
 		var thiz = $( this ),
-		thiz_container = thiz.parents( 'li' );
+		thiz_container = thiz.closest( '.js-wpv-loop-wizard-item-container' );
 		option = thiz.find( ':selected' );
-		if ( option.data( 'rowtitle' ) === 'Body' ) {
+		if ( option.data( 'shortcodehandle' ) === 'wpv-post-body' ) {
 			thiz_container.find('.js-layout-wizard-body-template-text').show();
 			thiz_container.find('.js-custom-types-fields').hide();
+			thiz_container.find('.js-wpv-loop-wizard-shortcode-ui').hide();
 		} else if ( option.data( 'istype' ) == 1 ) {
 			thiz_container.find('.js-layout-wizard-body-template-text').hide();
 			thiz_container.find('.js-custom-types-fields')
 				.attr( 'rel', option.data( 'typename' ) )
 				.show();
+			thiz_container.find('.js-wpv-loop-wizard-shortcode-ui').hide();
+		} else if ( option.data( 'hasattributesgui' ) == 1 ) {
+			thiz_container.find('.js-layout-wizard-body-template-text').hide();
+			thiz_container.find('.js-custom-types-fields').hide();
+			thiz_container.find('.js-wpv-loop-wizard-shortcode-ui')
+				.attr( 'rel', option.data( 'shortcodehandle' ) )
+				.attr( 'onclick', option.data( 'onclick' ) )
+				.show();
 		} else {
-			thiz_container.find('.js-layout-wizard-body-template-text, .js-custom-types-fields').hide();
+			thiz_container.find('.js-layout-wizard-body-template-text, .js-custom-types-fields, .js-wpv-loop-wizard-shortcode-ui').hide();
 		}
 	});
 	
@@ -750,8 +763,8 @@ WPViews.LayoutWizard = function( $ ) {
 	
 	$( document ).on( 'change', 'select.js-wpv-layout-wizard-body-template', function() {
 		var thiz = $( this ),
-		thiz_container = thiz.parents( 'li' );
-        thiz_container.find('[name="layout-wizard-style"] [data-rowtitle="Body"]').val( thiz.val() );
+		thiz_container = thiz.closest( '.js-wpv-loop-wizard-item-container' );
+        thiz_container.find('select.js-wpv-layout-wizard-item [data-shortcodehandle="wpv-post-body"]').val( thiz.val() );
     });
 	
 	// Insert layout
@@ -759,10 +772,100 @@ WPViews.LayoutWizard = function( $ ) {
 	$( document ).on( 'click', '.js-insert-layout', function( e ) {
 		var thiz = $( this ),
 		index = $('.wpv-dialog-nav-tab').index( $('li').has('.active') );
-        if ( index === 1 ) {
+		if ( index === 0 ) {
+			// Load existing fields
+			// @todo this needs a hard review
+			if ( 
+				! $( '.js-wpv-layout-wizard-layout-fields' ).hasClass( 'js-wpv-layout-wizard-layout-fields-loaded' )
+				&& typeof( self.wizard_dialog_data.fields ) != 'undefined' 
+			) {
+				if ( self.saved_fields_html != null ) {
+					$( self.saved_fields_html ).appendTo( '.js-wpv-layout-wizard-layout-fields' );
+				} else if ( self.wizard_dialog_data.fields.length > 0 ) {
+					var ii = 0,
+					vcount = 0,
+					flist = [],
+					spinnerContainer = $( '<div class="wpv-spinner ajax-loader">' ).prependTo( '.js-wpv-layout-wizard-dialog-footer' ).show();
+					$( '.js-wpv-layout-wizard-layout-fields-feedback' ).show();
+					thiz
+						.prop( 'disabled', true )
+						.removeClass( 'button-primary' )
+						.addClass( 'button-secondary' );
+					
+					for( s in self.wizard_dialog_data.fields ) {
+						flist[ii] = self.wizard_dialog_data.fields[s];
+						ii++;
+						if ( ii % 6 == 0 ) {
+							vcount++;
+						}
+					}
+					if ( vcount == 0 ) {
+						return;
+					}
+					var selected_fields = [];
+					for ( i = 0; i < vcount; i+=1 ) {
+						var sel = '';
+						if ( typeof( self.wizard_dialog_data.real_fields) != 'undefined' ) {
+							selected_fields.push( self.wizard_dialog_data.real_fields[i] );
+						} else {
+							if ( ( flist[( i*6 ) + 1 ] ) === 'types-field' ) {
+								selected_fields.push( flist[( i*6 ) + 3] );
+							} else {
+								selected_fields.push( '[' + flist[( i*6 ) + 1] + ']' );
+							}
+						}
+					}
+					
+					var data = {
+						action: 'wpv_loop_wizard_load_saved_fields',
+						wpnonce : wpv_layout_wizard_strings.wpnonce,
+						selected_fields: selected_fields,
+						view_id: self.view_id
+					};
+					$.ajax({
+						type: "POST",
+						dataType: "json",
+						url: ajaxurl,
+						data: data,
+						async: false,
+						success: function( response ) {
+							if ( response.success ) {
+								self.saved_fields_html = response.data.html;
+								$( response.data.html ).appendTo( '.js-wpv-layout-wizard-layout-fields' );
+							}
+						},
+						complete: function() {
+							spinnerContainer.remove();
+							$( '.js-wpv-layout-wizard-layout-fields-feedback' ).hide();
+							thiz
+								.prop( 'disabled', false )
+								.addClass( 'button-primary' )
+								.removeClass( 'button-secondary' );
+						}
+					});
+				
+				}
+				
+				$.each( $('.js-wpv-dialog-layout-wizard select.js-wpv-select2' ),function() {
+					if ( ! $( this ).hasClass( 'select2-offscreen' ) ) {
+						$( this ).select2();
+					}
+				});
+				$( '.js-wpv-layout-wizard-layout-fields' )
+					.addClass( 'js-wpv-layout-wizard-layout-fields-loaded' )
+					.sortable({
+						handle: ".js-layout-wizard-move-field",
+						axis: 'y',
+						containment: ".js-wpv-layout-wizard-layout-fields",
+						helper: 'clone',
+						tolerance: "pointer"
+					});
+			}
+        } else if ( index === 1 ) {
+			self.saved_fields_html = null;
             var fields = [],
-			spinnerContainer = $( '<div class="spinner ajax-loader">' ).insertAfter( thiz ).show();
-			$.each( $( 'select[name="layout-wizard-style"]' ), function( index ) {
+			spinnerContainer = $( '<div class="wpv-spinner ajax-loader">' ).prependTo( '.js-wpv-layout-wizard-dialog-footer' ).show();			
+			$.each( $( 'select.js-wpv-layout-wizard-item' ), function( index ) {
 				value = $(this).val();
 				headname = $('[value="'+value+'"]').data('headename');
 				rowtitle = $('[value="'+value+'"]').data('rowtitle');
@@ -864,18 +967,45 @@ WPViews.LayoutWizard = function( $ ) {
 	
 	// Close select2 when clicking outside the dropdowns
 	$( document ).on( 'mousedown','.js-wpv-dialog-layout-wizard, #cboxOverlay',function( e ) {
-		if ( $( e.target ).parents( '.js-select2' ).length === 0 ) {
-			$( 'select.js-select2' ).each( function() {
+		if ( $( e.target ).parents( '.js-wpv-select2' ).length === 0 ) {
+			$( 'select.js-wpv-select2' ).each( function() {
 				$( this ).select2( 'close' );
 			});
 		}
 	});
 	
 	// Close select2 when opening a new one
-	$( document ).on( 'select2-opening', '.js-select2', function( e ) {
-		$( 'select.js-select2' ).each( function() {
+	$( document ).on( 'select2-opening', '.js-wpv-select2', function( e ) {
+		$( 'select.js-wpv-select2' ).each( function() {
 			$( this ).select2( 'close' );
 		});
+	});
+	
+	// @todo review if this is used anywhere outside Views, and kill it with fire!
+    $( document ).on( 'cbox_closed', function() {
+         $( '.js-wpv-select2' ).select2( 'destroy' );
+         $( document ).off( 'keypress.colorbox' ); // unbind the keypress event
+    });
+	
+	// Shortcodes GUI management
+	
+	$( document ).on( 'click', '.js-wpv-loop-wizard-shortcode-ui', function() {
+		var thiz = $( this );
+		self.doing_shortcode_gui = true;
+		self.doing_shortcode_gui_for = thiz.closest( '.js-wpv-loop-wizard-item-container' ).prop( 'id' );
+		self.doing_shortcode_gui_for_selected = thiz.closest( '.js-wpv-loop-wizard-item-container' ).find( 'select.js-wpv-layout-wizard-item' ).find( ':selected' );
+	});
+	
+	$( document ).on( 'js_event_wpv_shortcode_inserted', function( event, shortcode, content, attrs, shortcode_complete ) {
+		if ( self.doing_shortcode_gui = true ) {
+			$( '#' + self.doing_shortcode_gui_for )
+				.find( 'select.js-wpv-layout-wizard-item' )
+					.find( ':selected' )
+						.val( Base64.encode( shortcode_complete ) );
+			self.doing_shortcode_gui = false;
+			self.doing_shortcode_gui_for = null;
+			self.doing_shortcode_gui_for_selected = null;
+		}
 	});
 	
 	// ---------------------------------
@@ -884,7 +1014,11 @@ WPViews.LayoutWizard = function( $ ) {
 	
 	self.init = function() {
 		self.fetch_initial_settings();
-		if ( $('#js-loop-content-template').val() !== '' ) {
+		if ( 
+			$('#js-loop-content-template').val() !== '' 
+			&& $('#js-loop-content-template').val() !== '0' // Sometimes this can be zero
+		) {
+			self.use_loop_template = true;
 			self.use_loop_template_id = $( '#js-loop-content-template' ).val();
 			self.use_loop_template_title = $( '#js-loop-content-template-name' ).val();
 			$( '.js-wpv-ct-listing-' + self.use_loop_template_id + ' .js-wpv-ct-remove-from-view' ).prop( 'disabled', true );
@@ -914,7 +1048,7 @@ jQuery( document ).ready( function( $ ) {
 			WPViews.layout_wizard.wizard_dialog_fields[$i++] = jQuery(this).find(':selected').val();
 		});
 
-		jQuery.each(jQuery('.js-wpv-dialog-layout-wizard select.js-select2'),function(){
+		jQuery.each(jQuery('.js-wpv-dialog-layout-wizard select.js-wpv-select2'),function(){
 				jQuery(this).select2('destroy');
 		});
 		
@@ -923,7 +1057,17 @@ jQuery( document ).ready( function( $ ) {
 
 
 		WPViews.layout_wizard.wizard_dialog_item_parent = jQuery(this).parent();
+		
+		// Collect dialog data to be restored
 		WPViews.layout_wizard.wizard_dialog_style = jQuery('input[name="layout-wizard-style"]:checked').val();
+		WPViews.layout_wizard.wizard_dialog_table_cols = jQuery( 'select.js-wpv-layout-wizard-table-cols[name="table_cols"]' ).val();
+		WPViews.layout_wizard.wizard_dialog_include_field_names = jQuery('input[name="include_field_names"]').prop( 'checked' );
+		WPViews.layout_wizard.wizard_dialog_bootstrap_row_class = jQuery( 'input[name="bootstrap_grid_row_class"]' ).prop( 'checked' );
+		WPViews.layout_wizard.wizard_dialog_bootstrap_grid_cols = jQuery( 'select.js-wpv-layout-wizard-bootstrap-grid-cols[name="bootstrap_grid_cols"]' ).val();
+		WPViews.layout_wizard.wizard_dialog_bootstrap_grid_container = jQuery( 'input[name="bootstrap_grid_container"]' ).prop( 'checked' );
+		WPViews.layout_wizard.wizard_dialog_bootstrap_grid_individual_yes = jQuery( '#bootstrap_grid_individual_yes' ).prop( 'checked' );
+		WPViews.layout_wizard.wizard_dialog_bootstrap_grid_individual_no = jQuery( '#bootstrap_grid_individual_no' ).prop( 'checked' );
+		WPViews.layout_wizard.wizard_dialog_use_content_template = jQuery( 'input#js-wpv-use-view-loop-ct' ).prop( 'checked' );
 
 		var current = Base64.decode(WPViews.layout_wizard.wizard_dialog_item.val());
 		var metatype = current.search(/types.*?field=/g) == -1 ? 'usermeta' : 'postmeta';
@@ -952,8 +1096,17 @@ function wpv_restore_wizard_popup(shortcode) {
             select.val(Base64.encode(shortcode));
 
             jQuery('input[name=layout-wizard-style][value='+WPViews.layout_wizard.wizard_dialog_style+']').click();
-
-            jQuery.each(jQuery('.js-wpv-dialog-layout-wizard select.js-select2'),function(){
+			jQuery( 'select.js-wpv-layout-wizard-table-cols[name="table_cols"]' ).val( WPViews.layout_wizard.wizard_dialog_table_cols );
+			jQuery('input[name="include_field_names"]').prop( 'checked', WPViews.layout_wizard.wizard_dialog_include_field_names );
+			jQuery( 'input[name="bootstrap_grid_row_class"]' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_bootstrap_row_class );
+			jQuery( 'select.js-wpv-layout-wizard-bootstrap-grid-cols[name="bootstrap_grid_cols"]' ).val( WPViews.layout_wizard.wizard_dialog_bootstrap_grid_cols );
+			jQuery( 'input[name="bootstrap_grid_container"]' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_bootstrap_grid_container );
+			jQuery( '#bootstrap_grid_individual_yes' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_bootstrap_grid_individual_yes );
+			jQuery( '#bootstrap_grid_individual_no' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_bootstrap_grid_individual_no );
+			jQuery( 'input#js-wpv-use-view-loop-ct' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_use_content_template );
+			
+			
+			jQuery.each(jQuery('.js-wpv-dialog-layout-wizard select.js-wpv-select2'),function(){
                     jQuery(this).select2();
             });
 
@@ -976,8 +1129,16 @@ function wpv_cancel_wizard_popup() {
             });
 
             jQuery('input[name=layout-wizard-style][value='+WPViews.layout_wizard.wizard_dialog_style+']').click();
+			jQuery( 'select.js-wpv-layout-wizard-table-cols[name="table_cols"]' ).val( WPViews.layout_wizard.wizard_dialog_table_cols );
+			jQuery('input[name="include_field_names"]').prop( 'checked', WPViews.layout_wizard.wizard_dialog_include_field_names );
+			jQuery( 'input[name="bootstrap_grid_row_class"]' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_bootstrap_row_class );
+			jQuery( 'select.js-wpv-layout-wizard-bootstrap-grid-cols[name="bootstrap_grid_cols"]' ).val( WPViews.layout_wizard.wizard_dialog_bootstrap_grid_cols );
+			jQuery( 'input[name="bootstrap_grid_container"]' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_bootstrap_grid_container );
+			jQuery( '#bootstrap_grid_individual_yes' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_bootstrap_grid_individual_yes );
+			jQuery( '#bootstrap_grid_individual_no' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_bootstrap_grid_individual_no );
+			jQuery( 'input#js-wpv-use-view-loop-ct' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_use_content_template );
 
-            jQuery.each(jQuery('.js-wpv-dialog-layout-wizard select.js-select2'),function(){
+            jQuery.each(jQuery('.js-wpv-dialog-layout-wizard select.js-wpv-select2'),function(){
                     jQuery(this).select2();
             });
 

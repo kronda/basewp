@@ -27,19 +27,16 @@ class FLContentSliderModule extends FLBuilderModule {
 	{
 		// Background photo
 		if($slide->bg_layout == 'photo' && !empty($slide->bg_photo_src)) {
-
-			echo '<div class="fl-slide-bg-photo" style="background-image: url(' . $slide->bg_photo_src . ');">';
-
-			if(!empty($slide->link) && $slide->cta_type == 'none') {
-				echo '<a href="' . $slide->link . '" target="' . $slide->link_target. '"></a>';
-			}
-
-			echo '</div>';
+			echo '<div class="fl-slide-bg-photo" style="background-image: url(' . $slide->bg_photo_src . ');"></div>';
 		}
-
 		// Background video
 		elseif($slide->bg_layout == 'video' && !empty($slide->bg_video)) {
 			echo '<div class="fl-slide-bg-video">' . $slide->bg_video . '</div>';
+		}
+		
+		// Background link
+		if(!empty($slide->link) && ($slide->bg_layout == 'photo' || $slide->bg_layout == 'color')) {
+			echo '<a class="fl-slide-bg-link" href="' . $slide->link . '" target="' . $slide->link_target. '"></a>';
 		}
 	}
 
@@ -48,23 +45,24 @@ class FLContentSliderModule extends FLBuilderModule {
 	 */
 	public function render_content($slide)
 	{
-		if($slide->content_layout != 'none' && $slide->bg_layout != 'video') {
-
-			echo '<div class="fl-slide-content-wrap">';
-			echo '<div class="fl-slide-content">';
-
-			if(!empty($slide->title)) {
-				echo '<' . $slide->title_tag . ' class="fl-slide-title">' . $slide->title . '</' . $slide->title_tag . '>';
-			}
-			if(!empty($slide->text)) {
-				echo '<div class="fl-slide-text">' . $slide->text . $this->render_link($slide) . '</div>';
-			}
-
-			$this->render_button($slide);
-
-			echo '</div>';
-			echo '</div>';
+		if($slide->content_layout == 'none' || $slide->bg_layout == 'video') {
+			return;
 		}
+		
+		echo '<div class="fl-slide-content-wrap">';
+		echo '<div class="fl-slide-content">';
+
+		if(!empty($slide->title)) {
+			echo '<' . $slide->title_tag . ' class="fl-slide-title">' . $slide->title . '</' . $slide->title_tag . '>';
+		}
+		if(!empty($slide->text)) {
+			echo '<div class="fl-slide-text">' . $slide->text . $this->render_link($slide) . '</div>';
+		}
+
+		$this->render_button($slide);
+
+		echo '</div>';
+		echo '</div>';
 	}
 
 	/**
@@ -72,11 +70,25 @@ class FLContentSliderModule extends FLBuilderModule {
 	 */
 	public function render_media($slide)
 	{
+		if($slide->content_layout == 'none' || $slide->bg_layout == 'video') {
+			return;
+		}
+		
 		// Photo
 		if($slide->content_layout == 'photo' && !empty($slide->fg_photo_src)) {
 			echo '<div class="fl-slide-photo-wrap">';
 			echo '<div class="fl-slide-photo">';
+			
+			if(!empty($slide->link)) {
+				echo '<a href="' . $slide->link . '" target="' . $slide->link_target. '">';
+			}
+			
 			echo '<img class="fl-slide-photo-img" src="' . $slide->fg_photo_src . '" />';
+			
+			if(!empty($slide->link)) {
+				echo '</a>';
+			}
+			
 			echo '</div>';
 			echo '</div>';
 		}
@@ -93,6 +105,10 @@ class FLContentSliderModule extends FLBuilderModule {
 	 */
 	public function render_mobile_media($slide)
 	{
+		if($slide->content_layout == 'none' || $slide->bg_layout == 'video') {
+			return;
+		}
+		
 		// Photo
 		if($slide->content_layout == 'photo') {
 
@@ -608,7 +624,7 @@ FLBuilder::register_settings_form('content_slider_slide', array(
 								),
 								'button'        => array(
 									'fields'        => array('cta_text', 'btn_icon', 'btn_icon_position'),
-									'sections'      => array('btn_colors', 'btn_structure')
+									'sections'      => array('btn_style', 'btn_colors', 'btn_structure')
 								)
 							)
 						),

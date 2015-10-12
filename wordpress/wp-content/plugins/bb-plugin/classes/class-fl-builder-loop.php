@@ -23,6 +23,7 @@ final class FLBuilderLoop {
 		$order			 = empty($settings->order) ? 'DESC' : $settings->order;
 		$users			 = empty($settings->users) ? '' : $settings->users;
 		$paged			 = is_front_page() ? get_query_var('page') : get_query_var('paged');
+		$fields			 = empty($settings->fields) ? '' : $settings->fields; 
 		
 		// Get the offset.
 		if ( ! isset( $settings->offset ) || ! is_int( ( int )$settings->offset ) ) {
@@ -52,7 +53,8 @@ final class FLBuilderLoop {
 			'ignore_sticky_posts'	=> true,
 			'offset'				=> $paged_offset,
 			'fl_original_offset'	=> $offset,
-			'fl_builder_loop'		=> true
+			'fl_builder_loop'		=> true,
+			'fields'				=> $fields
 		);
 		
 		// Build the taxonomy query.
@@ -194,5 +196,21 @@ final class FLBuilderLoop {
 		}
 		
 		return $data;
+	}
+
+	/**
+	 * Displays the date for the current post in the loop.
+	 *
+	 * @since 1.6.5
+	 * @param string $format The date format to use.
+	 * @return void
+	 */
+	static public function post_date( $format = 'default' )
+	{
+		if ( 'default' == $format ) {
+			$format = get_option( 'date_format' );
+		}
+		
+		the_time( $format );
 	}
 }

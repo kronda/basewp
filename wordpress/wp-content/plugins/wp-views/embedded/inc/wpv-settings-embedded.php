@@ -5,14 +5,71 @@
  * 
  * It implements both ArrayAccess and dynamic properties. ArrayAccess is 
  * deprecated.
+ *
+ * @link https://docs.google.com/a/icanlocalize.com/document/d/1PZBwYGJlggu1Zg8-D5zu6em2ytfimxnJ3lE1EjqqK9U/edit?usp=sharing
+ *
  * @since 1.8
  */
 class WPV_Settings_Embedded implements ArrayAccess, IteratorAggregate, Countable {
+
 
     /**
      * WP Option Name for Views
      */
     const option_name = 'wpv_options';
+
+    /* ************************************************************************* *\
+        Setting names
+    \* ************************************************************************* */
+
+
+    // Note: @since tags here define since when the option exist, not since when the constant is defined.
+
+    /**
+     * Setting with this prefix + post type slug ($post_type->name) holds an ID of Content Template that should be
+     * used for single posts of this type, or 0 if no CT is assigned. It doesn't have to be set for all post types.
+     *
+     * @since unknown
+     */
+    const SINGLE_POST_TYPES_CT_ASSIGNMENT_PREFIX = 'views_template_for_';
+
+
+    /**
+     * Setting with this prefix + post type slug ($post_type->name) holds an ID of Content Template that should be
+     * used for post archive for this post type, or 0 if no CT is assigned. It doesn't have to be set for all post types.
+     *
+     * @since unknown
+     */
+    const CPT_ARCHIVES_CT_ASSIGNMENT_PREFIX = 'views_template_archive_for_';
+
+
+    /**
+     * Setting with this prefix + taxonomy slug ($taxonomy->name) holds an ID of Content Template that should be
+     * used for archives of this taxonomy, or 0 if no CT is assigned. It doesn't have to be set for all taxonomies.
+     *
+     * @since unknown
+     */
+    const TAXONOMY_ARCHIVES_CT_ASSIGNMENT_PREFIX = 'views_template_loop_';
+
+
+    /**
+     * Bootstrap version that is expected to be used in a theme.
+     *
+     * Allowed values are:
+     * - '2': Bootstrap 2.0
+     * - '3': Bootstrap 3.0
+     * - '-1': Site is not using Bootstrap (@since 1.9)
+     * - '1' or missing value (or perhaps anything else, too): Bootstrap version not set
+     *
+     * @since unknown
+     */
+    const BOOTSTRAP_VERSION = 'wpv_bootstrap_version';
+
+
+
+    /* ************************************************************************* *\
+        Methods
+    \* ************************************************************************* */
 
     /**
      * Settings by default
@@ -35,15 +92,15 @@ class WPV_Settings_Embedded implements ArrayAccess, IteratorAggregate, Countable
         /**
          * wpv_                             ....    Views Plugin Settings
          * view_                            ....    View or WordPress Archive Settings
-         * views_template_for_              ....    Content Template Settings
-         * views_template_loop_             ....    
-         * views_template_archive_for_      ....    WordPress
+         * views_template_for_              ....    Content Template Settings for single posts
+         * views_template_loop_             ....    Content Template Settings for taxonomy archives
+         * views_template_archive_for_      ....    Content Template Settings for post types archives
          * wpml_                            ....    WPML-integration Settings
          */
         $this->default = array(
             'views_template_loop_blog' => '0',
             'wpml_fix_urls' => true,
-            'wpv_bootstrap_version' => 1,
+            WPV_Settings_Embedded::BOOTSTRAP_VERSION => 1,
             'wpv_custom_conditional_functions' => array(),
             'wpv_custom_inner_shortcodes' => array(),
             'wpv_debug_mode' => '',
@@ -51,6 +108,7 @@ class WPV_Settings_Embedded implements ArrayAccess, IteratorAggregate, Countable
             'wpv_map_plugin' => '',
             'wpv_show_edit_view_link' => 1,
             'wpv_show_hidden_fields' => '',
+			'wpv_saved_auto_detected_framework' => ''
         );
     }
 
@@ -98,7 +156,7 @@ class WPV_Settings_Embedded implements ArrayAccess, IteratorAggregate, Countable
     /**
      * PHP dynamic setter
      * @param mixed $name $this->name
-     * @return 
+     * @return mixed
      */
     public function __get( $name ) {
         return $this->get( $name );
@@ -106,7 +164,7 @@ class WPV_Settings_Embedded implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * PHP dynamic setter
-     * @param type $name
+     * @param string $name
      * @param type $value
      */
     public function __set( $name, $value ) {
@@ -115,7 +173,7 @@ class WPV_Settings_Embedded implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * PHP dynamic fields unset() method support
-     * @param type $name
+     * @param string $name
      */
     public function __unset( $name ) {
         if ( isset( $this->custom[$name] ) ) {
@@ -125,8 +183,8 @@ class WPV_Settings_Embedded implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * PHP dynamic support for isset($this->name) 
-     * @param type $name
-     * @return type
+     * @param string $name
+     * @return boolean
      */
     public function __isset( $name ) {
         return isset( $this->custom[$name] );
@@ -184,6 +242,8 @@ class WPV_Settings_Embedded implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * Persists settings in the database
+     *
+     * @todo Consider some optimalization - only update options that have changed.
      */
     public function save() {
         update_option( self::option_name, $this->custom );
@@ -222,6 +282,45 @@ class WPV_Settings_Embedded implements ArrayAccess, IteratorAggregate, Countable
         }
 
         return $template_settings;
+    }
+
+
+    /**
+     * Get Content Template ID assigned to a post type as a single post template.
+     *
+     * @param string $post_type Post type slug.
+     * @return int Content Template ID or zero if none is assigned.
+     * @since 1.9
+     */
+    function get_ct_assigned_to_single_post_type( $post_type ) {
+        $setting_name = WPV_Settings_Embedded::SINGLE_POST_TYPES_CT_ASSIGNMENT_PREFIX . $post_type;
+        return (int) $this->get( $setting_name );
+    }
+
+
+    /**
+     * Get Content Template ID assigned to a post type as a post archive template.
+     *
+     * @param string $post_type Post type slug.
+     * @return int Content Template ID or zero if none is assigned.
+     * @since 1.9
+     */
+    function get_ct_assigned_to_cpt_archive( $post_type ) {
+        $setting_name = WPV_Settings_Embedded::CPT_ARCHIVES_CT_ASSIGNMENT_PREFIX . $post_type;
+        return (int) $this->get( $setting_name );
+    }
+
+
+    /**
+     * Get Content Template ID assigned to a taxonomy as an archive template.
+     *
+     * @param string $taxonomy_slug Taxonomy slug.
+     * @return int Content Template ID or zero if none is assigned.
+     * @since 1.9
+     */
+    function get_ct_assigned_to_taxonomy_archive( $taxonomy_slug ) {
+        $setting_name = WPV_Settings_Embedded::TAXONOMY_ARCHIVES_CT_ASSIGNMENT_PREFIX . $taxonomy_slug;
+        return (int) $this->get( $setting_name );
     }
 
 }

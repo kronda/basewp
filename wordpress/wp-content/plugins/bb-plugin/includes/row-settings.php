@@ -228,8 +228,16 @@ FLBuilder::register_settings_form('row', array(
 					'fields'        => array(
 						'bg_video'      => array(
 							'type'          => 'video',
-							'label'         => __('Video', 'fl-builder'),
-							'help'          => __('An HTML5 video to use as the background of this row. Supported types are MP4, WebM and Ogg.', 'fl-builder'),
+							'label'         => __('Video (MP4)', 'fl-builder'),
+							'help'          => __('A video in the MP4 format to use as the background of this row. Most modern browsers support this format.', 'fl-builder'),
+							'preview'         => array(
+								'type'            => 'refresh'
+							)
+						),
+						'bg_video_webm' => array(
+							'type'          => 'video',
+							'label'         => __('Video (WebM)', 'fl-builder'),
+							'help'          => __('A video in the WebM format to use as the background of this row. This format is required to support browsers such as FireFox and Opera.', 'fl-builder'),
 							'preview'         => array(
 								'type'            => 'refresh'
 							)

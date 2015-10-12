@@ -1,11 +1,21 @@
 <?php
+/**
+* wpv-filter-parent-embedded.php
+*
+* @package Views
+*
+* @since unknown
+*/
 
 /**
- * Add a filter to add the query by post parent to the $query
- *
- */
+* wpv_filter_post_parent
+*
+* Apply the filter by post parent to the View query
+*
+* @since unknown
+*/
 
-add_filter('wpv_filter_query', 'wpv_filter_post_parent', 10, 2);
+add_filter( 'wpv_filter_query', 'wpv_filter_post_parent', 10, 2 );
 
 function wpv_filter_post_parent( $query, $view_settings ) {
     if ( isset( $view_settings['parent_mode'][0] ) ) {
@@ -130,21 +140,76 @@ function wpv_filter_post_parent( $query, $view_settings ) {
     return $query;
 }
 
-add_filter('wpv_filter_requires_current_page', 'wpv_filter_parent_requires_current_page', 10, 2);
-function wpv_filter_parent_requires_current_page($state, $view_settings) {
-	if ($state) {
-		return $state; // Already set
-	}
+/**
+* wpv_filter_parent_requires_current_page
+*
+* Check if the current filter by post parent needs info about the current page
+*
+* @since unknown
+*/
 
-    if (isset($view_settings['parent_mode'][0])) {
-        if ($view_settings['parent_mode'][0] == 'current_page') {
+add_filter( 'wpv_filter_requires_current_page', 'wpv_filter_parent_requires_current_page', 10, 2 );
+
+function wpv_filter_parent_requires_current_page( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+    if ( isset( $view_settings['parent_mode'][0] ) ) {
+        if ( $view_settings['parent_mode'][0] == 'current_page' ) {
             $state = true;
         }
     }
-    
     return $state;
 }
 
-    
+/**
+* wpv_filter_parent_requires_framework_values
+*
+* Check if the current filter by post parent needs info about the framework values
+*
+* @since 1.10
+*/
 
+add_filter( 'wpv_filter_requires_framework_values', 'wpv_filter_parent_requires_framework_values', 10, 2 );
 
+function wpv_filter_parent_requires_framework_values( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+    if ( isset( $view_settings['parent_mode'][0] ) ) {
+        if ( $view_settings['parent_mode'][0] == 'framework' ) {
+            $state = true;
+        }
+    }
+    return $state;
+}
+
+/**
+* wpv_filter_register_post_parent_filter_shortcode_attributes
+*
+* Register the filter by post IDs on the method to get View shortcode attributes
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_register_shortcode_attributes_for_posts', 'wpv_filter_register_post_parent_filter_shortcode_attributes', 10, 2 );
+
+function wpv_filter_register_post_parent_filter_shortcode_attributes( $attributes, $view_settings ) {
+	if (
+		isset( $view_settings['parent_mode'] ) 
+		&& isset( $view_settings['parent_mode'][0] ) 
+		&& $view_settings['parent_mode'][0] == 'shortcode_attribute' 
+	) {
+		$attributes[] = array (
+			'query_type'	=> $view_settings['query_type'][0],
+			'filter_type'	=> 'post_parent',
+			'filter_label'	=> __( 'Post parent', 'wpv-views' ),
+			'value'			=> 'post_parent',
+			'attribute'		=> $view_settings['parent_shortcode_attribute'],
+			'expected'		=> 'numberlist',
+			'placeholder'	=> '10',
+			'description'	=> __( 'Please type a post ID to get its native children', 'wpv-views' )
+		);
+	}
+	return $attributes;
+}

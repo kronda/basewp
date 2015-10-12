@@ -32,10 +32,19 @@
                                 <td>
                                     <select name="api_connection" id="api-connection-type" autocomplete="off">
                                         <option value=""><?php echo __("Connection...", "thrive-cb") ?></option>
-                                        <?php foreach ($available_apis as $key => $api) : if (array_key_exists($key, $connected_apis)) continue ?>
-                                            <option
-                                                value="<?php echo $key ?>"<?php if ($current_key == $key) echo ' selected="selected"' ?>><?php echo $api->getTitle() ?></option>
-                                        <?php endforeach ?>
+                                        <?php foreach ($api_types as $k => $type): $empty = true; ?>
+                                            <optgroup label="<?php echo $type; ?>">
+                                                <?php foreach ($available_apis as $key => $api): if (array_key_exists($key, $connected_apis) || $api->getType() != $k) continue; ?>
+                                                    <option value="<?php echo $key; ?>"<?php if ($current_key == $key) echo ' selected="selected"'; ?>>
+                                                        <?php $empty = false; ?>
+                                                        <?php echo $api->getTitle(); ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                                <?php if ($empty): ?>
+                                                    <option disabled><?php echo __("Empty", "thrive-cb") ?></option>
+                                                <?php endif; ?>
+                                            </optgroup>
+                                        <?php endforeach; ?>
                                     </select>
                                 </td>
                             </tr>

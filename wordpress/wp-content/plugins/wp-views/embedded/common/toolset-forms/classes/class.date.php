@@ -235,9 +235,11 @@ class WPToolset_Field_Date extends FieldFactory
                  * show button if array is empty or timestamp in array is
                  * empty
                  */
-                empty($time_value) || 
-                        (isset($time_value['timestamp']) && 
-                        empty($time_value['timestamp']))? 'style="display:none" ':''
+                (
+                    empty($time_value)
+                    || !isset($time_value['timestamp'])
+                    || (isset($time_value['timestamp']) && empty($time_value['timestamp']))
+                    )? 'style="display:none" ':''
             ),
         );
         return $form;

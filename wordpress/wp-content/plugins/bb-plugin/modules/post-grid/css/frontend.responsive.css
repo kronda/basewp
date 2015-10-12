@@ -9,6 +9,6 @@
 	float: none;
 	width: 100% !important;
 }
-.fl-post-feed-image-beside .fl-post-feed-content {
+.fl-post-feed-image-beside.fl-post-feed-has-image .fl-post-feed-content {
 	margin-left: 0;
 }

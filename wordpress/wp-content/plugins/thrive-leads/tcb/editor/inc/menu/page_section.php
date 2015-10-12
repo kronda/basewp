@@ -26,6 +26,10 @@
                 <div class="tve_sub_btn" style="width: 715px;">
                     <div class="tve_sub active_sub_menu" style="width: 100%">
                         <ul class="tve_clearfix">
+                            <li class="tve_ed_btn tve_btn_text tve_left tve_section_color_change clearfix tve_click" data-ctrl="controls.click.change_pattern" data-pattern="2" data-plugin="tve_page_section">
+                                <span class="tve_section_colour tve_left tve_icm tve-ic-upload" style="margin: 0"></span>
+                                <span class="tve_left"><?php echo __("Load...", "thrive-cb") ?></span>
+                            </li>
                             <?php foreach ($page_section_patterns as $i => $_image) : ?>
                                 <?php $_uri = $template_uri . '/images/patterns/' . $_image . '.png' ?>
                                 <li class="tve_ed_btn tve_btn_text tve_left tve_section_color_change clearfix tve_click" data-ctrl="controls.click.change_pattern" data-pattern="1" data-plugin="tve_page_section">

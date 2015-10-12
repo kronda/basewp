@@ -420,7 +420,7 @@ return array(
             'css' => '20_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '21_set' => array(
@@ -480,7 +480,7 @@ return array(
             'css' => '28_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '29_set' => array(
@@ -520,7 +520,7 @@ return array(
             'css' => '33_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '34_set' => array(
@@ -536,7 +536,7 @@ return array(
             'css' => '35_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '36_set' => array(
@@ -597,9 +597,196 @@ return array(
             'css' => '43_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
+        '44_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 044',
+            'css' => '44_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '44_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 044',
+            'css' => '44_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '45_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 045',
+            'css' => '45_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '45_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 045',
+            'css' => '45_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '46_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 046',
+            'css' => '46_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            ),
+            TVE_LEADS_FIELD_GLOBALS => array(
+                'l_cimg' => TVE_LEADS_URL . 'editor-templates/_form_css/images/46_set_bg.png'
+            )
+        ),
+        '46_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 046',
+            'css' => '46_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            ),
+            TVE_LEADS_FIELD_GLOBALS => array(
+                'l_cimg' => TVE_LEADS_URL . 'editor-templates/_form_css/images/46_set_bg.png'
+            )
+        ),
+        '47_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 047',
+            'css' => '47_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Comfortaa:400,700,300'
+            )
+        ),
+        '47_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 047',
+            'css' => '47_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Comfortaa:400,700,300'
+            )
+        ),
+        '48_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 048',
+            'css' => '48_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '48_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 048',
+            'css' => '48_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '49_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 049',
+            'css' => '49_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Dosis:400,600,300',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '49_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 049',
+            'css' => '49_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Dosis:400,600,300',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '50_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 050',
+            'css' => '50_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Quicksand:400,700,300',
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            )
+        ),
+        '50_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 050',
+            'css' => '50_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Quicksand:400,700,300',
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            )
+        ),
+        '51_set_vms_step1' => array(
+	        'multi_step' => true,
+	        'name' => 'Lightbox Set 051',
+	        'css' => '51_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Cabin:400,500,700',
+		        '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+	        )
+        ),
+        '51_set_vms_step2' => array(
+	        'multi_step' => true,
+	        'name' => 'Lightbox Set 051',
+	        'css' => '51_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Cabin:400,500,700',
+		        '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+	        )
+        ),
+        '52_set_vms_step1' => array(
+	        'multi_step' => true,
+	        'name' => 'Lightbox Set 052',
+	        'css' => '52_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+	        ),
+            'icons' => array(
+                'set-52-icon'
+            )
+        ),
+        '52_set_vms_step2' => array(
+	        'multi_step' => true,
+	        'name' => 'Lightbox Set 052',
+	        'css' => '52_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+	        )
+        ),
+        '53_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 053',
+            'css' => '53_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            ),
+            TVE_LEADS_FIELD_GLOBALS => array(
+                'l_cpat' => TVE_LEADS_URL . 'editor-templates/_form_css/images/set_53_pattern.jpg'
+            )
+        ),
+        '53_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Lightbox Set 053',
+            'css' => '53_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            ),
+            TVE_LEADS_FIELD_GLOBALS => array(
+                'l_cpat' => TVE_LEADS_URL . 'editor-templates/_form_css/images/set_53_pattern.jpg'
+            )
+        )
     ),
     'widget' => array(
         'one_set' => array(
@@ -706,7 +893,7 @@ return array(
             'css' => '20_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '21_set' => array(
@@ -766,7 +953,7 @@ return array(
             'css' => '28_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '29_set' => array(
@@ -806,7 +993,7 @@ return array(
             'css' => '33_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '34_set' => array(
@@ -822,7 +1009,7 @@ return array(
             'css' => '35_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '36_set' => array(
@@ -883,7 +1070,7 @@ return array(
             'css' => '43_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
     ),
@@ -1030,7 +1217,7 @@ return array(
             'name' => 'Screen filler Set 015',
             'css' => 'fifteen_set.css',
             'fonts' => array(
-                '//fonts.googleapis.com/css?family=Roboto+Slab:300,400',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:300,400,700',
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700'
             ),
             'icons' => array(
@@ -1078,6 +1265,181 @@ return array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700,100',
             ),
         ),
+        '44_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 044',
+            'css' => '44_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '44_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 044',
+            'css' => '44_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '45_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 045',
+            'css' => '45_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '45_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 045',
+            'css' => '45_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '46_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 046',
+            'css' => '46_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '46_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 046',
+            'css' => '46_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '47_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 047',
+            'css' => '47_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Comfortaa:400,700,300'
+            )
+        ),
+        '47_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 047',
+            'css' => '47_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Comfortaa:400,700,300'
+            )
+        ),
+        '48_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 048',
+            'css' => '48_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '48_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 048',
+            'css' => '48_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '49_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 049',
+            'css' => '49_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Dosis:400,600,300',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '49_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 049',
+            'css' => '49_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Dosis:400,600,300',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '50_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 050',
+            'css' => '50_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Quicksand:400,700,300',
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            )
+        ),
+        '50_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 050',
+            'css' => '50_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Quicksand:400,700,300',
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            )
+        ),
+        '51_set_vms_step1' => array(
+	        'multi_step' => true,
+	        'name' => 'Screen filler Set 051',
+	        'css' => '51_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Cabin:400,500,700',
+		        '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+	        )
+        ),
+        '51_set_vms_step2' => array(
+	        'multi_step' => true,
+	        'name' => 'Screen filler Set 051',
+	        'css' => '51_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Cabin:400,500,700',
+		        '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+	        )
+        ),
+        '52_set_vms_step1' => array(
+	        'multi_step' => true,
+	        'name' => 'Screen filler Set 052',
+	        'css' => '52_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+	        ),
+            'icons' => array(
+                'set-52-icon'
+            )
+        ),
+        '52_set_vms_step2' => array(
+	        'multi_step' => true,
+	        'name' => 'Screen filler Set 052',
+	        'css' => '52_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+	        )
+        ),
+        '53_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 053',
+            'css' => '53_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '53_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Screen filler Set 053',
+            'css' => '53_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        )
     ),
     'slide_in' => array (
         'one_set_v1' => array(
@@ -1348,7 +1710,7 @@ return array(
             'css' => '20_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '21_set' => array(
@@ -1408,7 +1770,7 @@ return array(
             'css' => '28_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '29_set' => array(
@@ -1448,7 +1810,7 @@ return array(
             'css' => '33_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '34_set' => array(
@@ -1464,7 +1826,7 @@ return array(
             'css' => '35_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '36_set' => array(
@@ -1525,9 +1887,184 @@ return array(
             'css' => '43_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
+        '44_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 044',
+            'css' => '44_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '44_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 044',
+            'css' => '44_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '45_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 045',
+            'css' => '45_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '45_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 045',
+            'css' => '45_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '46_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 046',
+            'css' => '46_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '46_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 046',
+            'css' => '46_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '47_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 047',
+            'css' => '47_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Comfortaa:400,700,300'
+            )
+        ),
+        '47_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 047',
+            'css' => '47_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Comfortaa:400,700,300'
+            )
+        ),
+        '48_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 048',
+            'css' => '48_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '48_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 048',
+            'css' => '48_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '49_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 049',
+            'css' => '49_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Dosis:400,600,300',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '49_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 049',
+            'css' => '49_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Dosis:400,600,300',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '50_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 050',
+            'css' => '50_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Quicksand:400,700,300',
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            )
+        ),
+        '50_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 050',
+            'css' => '50_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Quicksand:400,700,300',
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            )
+        ),
+        '51_set_vms_step1' => array(
+	        'multi_step' => true,
+	        'name' => 'Post footer Set 051',
+	        'css' => '51_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Cabin:400,500,700',
+		        '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+	        )
+        ),
+        '51_set_vms_step2' => array(
+	        'multi_step' => true,
+	        'name' => 'Post footer Set 51',
+	        'css' => '51_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Cabin:400,500,700',
+		        '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+	        )
+        ),
+        '52_set_vms_step1' => array(
+	        'multi_step' => true,
+	        'name' => 'Post footer Set 052',
+	        'css' => '52_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+	        ),
+            'icons' => array(
+                'set-52-icon'
+            )
+        ),
+        '52_set_vms_step2' => array(
+	        'multi_step' => true,
+	        'name' => 'Post footer Set 052',
+	        'css' => '52_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+	        )
+        ),
+        '53_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 052',
+            'css' => '53_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '53_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Post footer Set 53',
+            'css' => '53_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        )
     ),
     'in_content' => array(
         'one_set' => array(
@@ -1611,7 +2148,7 @@ return array(
             'css' => '20_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '21_set' => array(
@@ -1671,7 +2208,7 @@ return array(
             'css' => '28_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '29_set' => array(
@@ -1711,7 +2248,7 @@ return array(
             'css' => '33_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '34_set' => array(
@@ -1727,7 +2264,7 @@ return array(
             'css' => '35_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '36_set' => array(
@@ -1788,7 +2325,7 @@ return array(
             'css' => '43_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
     ),
@@ -2066,7 +2603,7 @@ return array(
             'css' => '20_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '21_set' => array(
@@ -2126,7 +2663,7 @@ return array(
             'css' => '28_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '29_set' => array(
@@ -2166,7 +2703,7 @@ return array(
             'css' => '33_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '34_set' => array(
@@ -2182,7 +2719,7 @@ return array(
             'css' => '35_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
         ),
         '36_set' => array(
@@ -2243,8 +2780,183 @@ return array(
             'css' => '43_set.css',
             'fonts' => array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,500,700',
-                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300'
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
             ),
+        ),
+        '44_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 044',
+            'css' => '44_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '44_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 044',
+            'css' => '44_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '45_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 045',
+            'css' => '45_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '45_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 045',
+            'css' => '45_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '46_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 046',
+            'css' => '46_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '46_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 046',
+            'css' => '46_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '47_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 047',
+            'css' => '47_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Comfortaa:400,700,300'
+            )
+        ),
+        '47_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 047',
+            'css' => '47_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Comfortaa:400,700,300'
+            )
+        ),
+        '48_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 048',
+            'css' => '48_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '48_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 048',
+            'css' => '48_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:300,400,700',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '49_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 049',
+            'css' => '49_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Dosis:400,600,300',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '49_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 049',
+            'css' => '49_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Dosis:400,600,300',
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+            )
+        ),
+        '50_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 050',
+            'css' => '50_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Quicksand:400,700,300',
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            )
+        ),
+        '50_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 050',
+            'css' => '50_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Quicksand:400,700,300',
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            )
+        ),
+        '51_set_vms_step1' => array(
+	        'multi_step' => true,
+	        'name' => 'Shortcode Set 051',
+	        'css' => '51_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Cabin:400,500,700',
+		        '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+	        )
+        ),
+        '51_set_vms_step2' => array(
+	        'multi_step' => true,
+	        'name' => 'Shortcode Set 051',
+	        'css' => '51_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Cabin:400,500,700',
+		        '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700'
+	        )
+        ),
+        '52_set_vms_step1' => array(
+	        'multi_step' => true,
+	        'name' => 'Shortcode Set 052',
+	        'css' => '52_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+	        ),
+	        'icons' => array(
+		        'set-52-icon'
+	        )
+        ),
+        '52_set_vms_step2' => array(
+	        'multi_step' => true,
+	        'name' => 'Shortcode Set 052',
+	        'css' => '52_set.css',
+	        'fonts' => array(
+		        '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+	        )
+        ),
+        '53_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 053',
+            'css' => '53_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
+        ),
+        '53_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Shortcode Set 053',
+            'css' => '53_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+                '//fonts.googleapis.com/css?family=Lato:300,400,700'
+            )
         ),
     ),
     'multi_step' => array(
@@ -2313,6 +3025,136 @@ return array(
                     ),
                 )
             ),
+            '44_set' => array(
+                'name' => 'Shortcode multi-step set 044',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'shortcode|44_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'shortcode|44_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '45_set' => array(
+                'name' => 'Shortcode multi-step set 045',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'shortcode|45_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'shortcode|45_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '46_set' => array(
+                'name' => 'Shortcode multi-step set 046',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'shortcode|46_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'shortcode|46_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '47_set' => array(
+                'name' => 'Shortcode multi-step set 047',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'shortcode|47_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'shortcode|47_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '48_set' => array(
+                'name' => 'Shortcode multi-step set 048',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'shortcode|48_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'shortcode|48_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '49_set' => array(
+                'name' => 'Shortcode multi-step set 049',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'shortcode|49_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'shortcode|49_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '50_set' => array(
+                'name' => 'Shortcode multi-step set 050',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'shortcode|50_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'shortcode|50_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '51_set' => array(
+	            'name' => 'Shortcode multi-step set 051',
+	            'states' => array(
+		            1 => array(
+			            'tpl' => 'shortcode|51_set_vms_step1',
+			            'state' => 'default', // or already_subscribed
+		            ),
+		            2 => array(
+			            'tpl' => 'shortcode|51_set_vms_step2',
+			            'state' => 'default', // or already_subscribed
+		            ),
+	            )
+            ),
+            '52_set' => array(
+	            'name' => 'Shortcode multi-step set 052',
+	            'states' => array(
+		            1 => array(
+			            'tpl' => 'shortcode|52_set_vms_step1',
+			            'state' => 'default', // or already_subscribed
+		            ),
+		            2 => array(
+			            'tpl' => 'shortcode|52_set_vms_step2',
+			            'state' => 'default', // or already_subscribed
+		            ),
+	            )
+            ),
+            '53_set' => array(
+                'name' => 'Shortcode multi-step set 053',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'shortcode|53_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'shortcode|53_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
         ),
         'post_footer' => array(
             'nine_set' => array(
@@ -2375,6 +3217,136 @@ return array(
                     ),
                     4 => array(
                         'tpl' => 'post_footer|twelve_set_vms_step4',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '44_set' => array(
+                'name' => 'Post Footer multi-step set 044',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'post_footer|44_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'post_footer|44_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '45_set' => array(
+                'name' => 'Post Footer multi-step set 045',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'post_footer|45_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'post_footer|45_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '46_set' => array(
+                'name' => 'Post Footer multi-step set 046',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'post_footer|46_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'post_footer|46_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '47_set' => array(
+                'name' => 'Post Footer multi-step set 047',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'post_footer|47_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'post_footer|47_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '48_set' => array(
+                'name' => 'Post Footer multi-step set 048',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'post_footer|48_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'post_footer|48_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '49_set' => array(
+                'name' => 'Post Footer multi-step set 049',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'post_footer|49_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'post_footer|49_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '50_set' => array(
+                'name' => 'Post Footer multi-step set 050',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'post_footer|50_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'post_footer|50_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '51_set' => array(
+	            'name' => 'Post Footer multi-step set 051',
+	            'states' => array(
+		            1 => array(
+			            'tpl' => 'post_footer|51_set_vms_step1',
+			            'state' => 'default', // or already_subscribed
+		            ),
+		            2 => array(
+			            'tpl' => 'post_footer|51_set_vms_step2',
+			            'state' => 'default', // or already_subscribed
+		            ),
+	            )
+            ),
+            '52_set' => array(
+	            'name' => 'Post Footer multi-step set 052',
+	            'states' => array(
+		            1 => array(
+			            'tpl' => 'post_footer|52_set_vms_step1',
+			            'state' => 'default', // or already_subscribed
+		            ),
+		            2 => array(
+			            'tpl' => 'post_footer|52_set_vms_step2',
+			            'state' => 'default', // or already_subscribed
+		            ),
+	            )
+            ),
+            '53_set' => array(
+                'name' => 'Post Footer multi-step set 053',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'post_footer|53_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'post_footer|53_set_vms_step2',
                         'state' => 'default', // or already_subscribed
                     ),
                 )
@@ -2484,6 +3456,136 @@ return array(
                     ),
                 )
             ),
+            '44_set' => array(
+                'name' => 'Lightbox multi-step set 044',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'lightbox|44_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'lightbox|44_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '45_set' => array(
+                'name' => 'Lightbox multi-step set 045',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'lightbox|45_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'lightbox|45_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '46_set' => array(
+                'name' => 'Lightbox multi-step set 046',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'lightbox|46_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'lightbox|46_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '47_set' => array(
+                'name' => 'Lightbox multi-step set 047',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'lightbox|47_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'lightbox|47_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '48_set' => array(
+                'name' => 'Lightbox multi-step set 048',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'lightbox|48_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'lightbox|48_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '49_set' => array(
+                'name' => 'Lightbox multi-step set 049',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'lightbox|49_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'lightbox|49_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '50_set' => array(
+                'name' => 'Lightbox multi-step set 050',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'lightbox|50_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'lightbox|50_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '51_set' => array(
+	            'name' => 'Lightbox multi-step set 051',
+	            'states' => array(
+		            1 => array(
+			            'tpl' => 'lightbox|51_set_vms_step1',
+			            'state' => 'default', // or already_subscribed
+		            ),
+		            2 => array(
+			            'tpl' => 'lightbox|51_set_vms_step2',
+			            'state' => 'default', // or already_subscribed
+		            ),
+	            )
+            ),
+            '52_set' => array(
+	            'name' => 'Lightbox multi-step set 052',
+	            'states' => array(
+		            1 => array(
+			            'tpl' => 'lightbox|52_set_vms_step1',
+			            'state' => 'default', // or already_subscribed
+		            ),
+		            2 => array(
+			            'tpl' => 'lightbox|52_set_vms_step2',
+			            'state' => 'default', // or already_subscribed
+		            ),
+	            )
+            ),
+            '53_set' => array(
+                'name' => 'Lightbox multi-step set 053',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'lightbox|53_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'lightbox|53_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
         ),
         'screen_filler' => array(
             'thirteen_set' => array(
@@ -2546,6 +3648,136 @@ return array(
                     ),
                 )
             ),
+            '44_set' => array(
+                'name' => 'Screen Filler multi-step set 044',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'screen_filler|44_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'screen_filler|44_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '45_set' => array(
+                'name' => 'Screen Filler multi-step set 045',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'screen_filler|45_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'screen_filler|45_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '46_set' => array(
+                'name' => 'Screen Filler multi-step set 046',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'screen_filler|46_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'screen_filler|46_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '47_set' => array(
+                'name' => 'Screen Filler multi-step set 047',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'screen_filler|47_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'screen_filler|47_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '48_set' => array(
+                'name' => 'Screen Filler multi-step set 048',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'screen_filler|48_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'screen_filler|48_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '49_set' => array(
+                'name' => 'Screen Filler multi-step set 049',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'screen_filler|49_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'screen_filler|49_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '50_set' => array(
+                'name' => 'Screen Filler multi-step set 050',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'screen_filler|50_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'screen_filler|50_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            '51_set' => array(
+	            'name' => 'Screen Filler multi-step set 051',
+	            'states' => array(
+		            1 => array(
+			            'tpl' => 'screen_filler|51_set_vms_step1',
+			            'state' => 'default', // or already_subscribed
+		            ),
+		            2 => array(
+			            'tpl' => 'screen_filler|51_set_vms_step2',
+			            'state' => 'default', // or already_subscribed
+		            ),
+	            )
+            ),
+            '52_set' => array(
+	            'name' => 'Screen Filler multi-step set 052',
+	            'states' => array(
+		            1 => array(
+			            'tpl' => 'screen_filler|52_set_vms_step1',
+			            'state' => 'default', // or already_subscribed
+		            ),
+		            2 => array(
+			            'tpl' => 'screen_filler|52_set_vms_step2',
+			            'state' => 'default', // or already_subscribed
+		            ),
+	            )
+            ),
+            '53_set' => array(
+                'name' => 'Screen Filler multi-step set 053',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'screen_filler|53_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'screen_filler|53_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            )
         )
     )
 );

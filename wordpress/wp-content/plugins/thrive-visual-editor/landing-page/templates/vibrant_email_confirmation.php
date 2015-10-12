@@ -123,6 +123,6 @@
     </div>
 </div>
 <div class="tve_lp_footer tve_empty_dropzone tve_drop_constraint" data-forbid=".thrv_page_section,.sc_page_section">
-    <p class="tve_p_center" style="color: #333333;font-size: 17px;margin-top: 10px;">© 2014 Webinar Landing Page. All
+    <p class="tve_p_center" style="color: #333333;font-size: 17px;margin-top: 10px;">© {tcb_current_year} Webinar Landing Page. All
         rights Reserved | Disclaimer</p>
 </div>

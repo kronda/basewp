@@ -22,13 +22,25 @@
 		
 		<div class="fl-post-gallery-text-wrap">
 			<div class="fl-post-gallery-text">
+
+				<?php if( $settings->has_icon && $settings->icon_position == 'above' ) : ?>
+					<span class="fl-gallery-icon">
+						<i class="<?php echo $settings->icon; ?>"></i> 
+					</span>
+				<?php endif; ?>
 			
 				<h2 class="fl-post-gallery-title" itemprop="headline"><?php the_title(); ?></h2>
 			
 				<?php if ( $settings->show_date ) : ?>
 				<span class="fl-post-gallery-date" itemprop="datePublished" datetime="<?php echo the_time('Y-m-d'); ?>">
-					<?php the_time($settings->date_format); ?>
+					<?php FLBuilderLoop::post_date($settings->date_format); ?>
 				</span>
+				<?php endif; ?>
+
+				<?php if( $settings->has_icon && $settings->icon_position == 'below' ) : ?>
+					<span class="fl-gallery-icon">
+						<i class="<?php echo $settings->icon; ?>"></i> 
+					</span>
 				<?php endif; ?>
 				
 			</div>

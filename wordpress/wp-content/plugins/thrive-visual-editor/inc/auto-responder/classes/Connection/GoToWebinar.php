@@ -12,6 +12,15 @@ class Thrive_List_Connection_GoToWebinar extends Thrive_List_Connection_Abstract
 //    const APPLICATION_CONSUMER_KEY = 'Mtm8i2IdR2mOkAY3uVoW5f4TdGaBxpkY';
 
     /**
+     * Return the connection type
+     * @return String
+     */
+    public static function getType()
+    {
+        return 'webinar';
+    }
+
+    /**
      * check if the expires_at field is in the past
      * GoToWebinar auth access tokens expire after about one year
      *

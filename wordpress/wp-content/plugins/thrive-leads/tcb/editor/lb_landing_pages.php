@@ -1,8 +1,9 @@
 <?php
 
-$landing_pages = !empty($_POST['landing_pages']) ? $_POST['landing_pages'] : array();
+$landing_pages = tve_get_landing_page_templates();
 $tags = array();
 foreach ($landing_pages as $code => $_item) {
+    $landing_pages[$code]['thumbnail'] = TVE_LANDING_PAGE_TEMPLATE . '/thumbnails/' . $code . '.png';
     if (empty($_item['tags'])) {
         continue;
     }
@@ -42,6 +43,12 @@ foreach ($landing_pages as $code => $_item) {
                                 for="<?php echo $value ?>"> <?php echo $label ?></label>
                         </div>
                     <?php endforeach ?>
+                    <div class="tve_lightbox_input_holder">
+                        <input type="checkbox" class="tve_change tve_landing_page_tag" name="imported-template"
+                               id="imported-template"
+                               value="imported-template"/><label
+                            for="imported-template"> <?php echo __('Imported templates', 'thrive-cb'); ?></label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,7 +67,7 @@ foreach ($landing_pages as $code => $_item) {
                     <ul class="tve_clearfix">
                         <li class="tve_tS tve_click"><span class="tve_scTC1"><?php echo __("Default Landing Pages", "thrive-cb") ?></span></li>
                         <li id="tve_saved_landing_pages" class="tve_click"><span
-                                class="tve_scTC2"><?php echo __("Your saved Landing Pages", "thrive-cb") ?></span></li>
+                                class="tve_scTC2"><?php echo __("Custom Landing Pages", "thrive-cb") ?></span></li>
                     </ul>
                     <div class="tve_scTC tve_scTC1" style="display: block">
 

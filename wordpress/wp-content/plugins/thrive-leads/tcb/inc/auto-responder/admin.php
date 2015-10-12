@@ -65,6 +65,7 @@ function tve_api_connect()
 
     $connected_apis = Thrive_List_Manager::getAvailableAPIs(true);
     $available_apis = Thrive_List_Manager::getAvailableAPIs();
+    $api_types = Thrive_List_Manager::$API_TYPES;
 
     $current_key = !empty($_REQUEST['api']) ? $_REQUEST['api'] : '';
 
@@ -93,7 +94,7 @@ function tve_api_handle_save()
     $connection = Thrive_List_Manager::connectionInstance($_REQUEST['api']);
 
     if (!empty($_REQUEST['disconnect'])) {
-        $connection->disconnect()->success($connection->getTitle() . ' ' . __("is now disconnected", 'thrive-cb')) ;
+        $connection->disconnect()->success($connection->getTitle() . ' ' . __("is now disconnected", 'thrive-cb'));
         wp_redirect(admin_url('admin.php?page=tve_api_connect'));
         exit();
     } else {

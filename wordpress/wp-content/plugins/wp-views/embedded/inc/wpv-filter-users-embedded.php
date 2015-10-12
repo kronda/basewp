@@ -97,101 +97,9 @@ function get_users_query( $view_settings ) {
 }
 
 /**
-* wpv_include_exclude_users
-*
-* Filter hooked late in wpv_filter_user_query to fix the use of exclude and include at the same time
-*
-* @param $args array of arguments to be passed to WP_User_Query
-*
-* @return $args
-*
-* @since 1.5.1
-*/
-
-add_filter( 'wpv_filter_user_query', 'wpv_include_exclude_users', 99 );
-
-function wpv_include_exclude_users( $args ) {
-	if ( isset( $args['include'] ) && is_array( $args['include'] ) && isset( $args['exclude'] ) && is_array( $args['exclude'] ) ) {
-		$args_diff = array_diff( $args['include'], $args['exclude'] );
-		if ( empty( $args_diff ) ) {
-			$args_diff = array( '0' );
-		}
-		$args['include'] = $args_diff;
-	}
-	return $args;
-}
-
-/**
-* wpv_cache_complete_usermeta_for_types
-*
-* Caches all the usermeta for the users returned by a WP_User_Query performed by a View listing users
-*
-* @param $items an array of User objects
-*
-* @return $items
-*
-* @since 1.5.1
-*/
-
-add_filter( 'wpv_filter_user_post_query', 'wpv_cache_complete_usermeta_for_types' );
-
-function wpv_cache_complete_usermeta_for_types( $items ) {
-	global $wpdb;
-	
-	if ( empty( $items ) )
-		return $items;
-	
-	// Only add the Types usermeta cache if Types is active
-	if ( defined( 'WPCF_VERSION' ) ) {
-	
-		$user_ids = array();
-		$cache_group_ids = 'types_cache_user_ids';
-		$cache_group = 'types_cache';
-		
-		foreach ( $items as $user ) {
-			$cache_key_looped_post = md5( 'user::_is_cached' . $user->ID );
-			$cached_object = wp_cache_get( $cache_key_looped_post, $cache_group_ids );
-			if ( false === $cached_object ) {
-				$user_ids[] = $user->ID;
-				wp_cache_add( $cache_key_looped_post, $user->ID, $cache_group_ids );
-			}
-		}
-		if ( ! empty( $user_ids ) ) {
-			$id_list = implode( ',', $user_ids );
-			// We do not need to prepare this query as $id_list only contains numeric natural IDs
-			$all_usermeta = $wpdb->get_results( 
-				"SELECT * FROM {$wpdb->usermeta} 
-				WHERE user_id IN ({$id_list})", 
-				OBJECT 
-			);
-			if ( !empty( $all_usermeta ) ) {
-				$cache_key_keys = array();
-				foreach ( $all_usermeta as $metarow ) {
-					$mpid = intval($metarow->user_id);
-					$mkey = $metarow->meta_key;
-					$cache_key_keys[$mpid . $mkey][] = $metarow;
-				}
-				foreach ( $cache_key_keys as $single_meta_keys => $single_meta_values ) {
-					$cache_key_looped_new = md5( 'usermeta::_get_meta' . $single_meta_keys );
-					wp_cache_add( $cache_key_looped_new, $single_meta_values, $cache_group );// WordPress cache
-				}
-			}
-		}
-	}
-	
-	return $items;
-}
-
-/**
 * wpv_users_query_include_role
 *
-* Filter hooked before query and set Role from settings
-*
-* @param $args array of arguments to be passed to WP_User_Query
-* 
-* @param $view_settings
-*
-* @return $args
+* Apply the setting about user roles
 *
 * @since 1.6.2
 */
@@ -212,13 +120,7 @@ function wpv_users_query_include_role( $args, $view_settings ) {
 /**
 * wpv_users_query_include_current_user
 *
-* Filter hooked before query and exclude current logged user from query
-*
-* @param $args array of arguments to be passed to WP_User_Query
-* 
-* @param $view_settings
-*
-* @return $args
+* Apply setting about excluding current user
 *
 * @since 1.6.2
 */
@@ -227,113 +129,29 @@ add_filter( 'wpv_filter_user_query', 'wpv_users_query_include_current_user', 30,
 
 function wpv_users_query_include_current_user( $args, $view_settings ) {
 	global $current_user;
-	if ( isset( $view_settings['users-show-current'] ) && $view_settings['users-show-current'] == 1 ){
-		if ( !isset($args['exclude']) || !is_array($args['exclude']) ){
+	if ( 
+		isset( $view_settings['users-show-current'] ) 
+		&& $view_settings['users-show-current'] == 1 
+	) {
+		if ( 
+			! isset( $args['exclude'] ) 
+			|| ! is_array( $args['exclude'] ) 
+		) {
 			$args['exclude'] = array($current_user->ID);	
-		}	
-		elseif ( isset($args['exclude']) && !in_array($current_user->ID, $args['exclude']) ){
+		} elseif ( 
+			isset( $args['exclude'] ) 
+			&& ! in_array( $current_user->ID, $args['exclude'] ) 
+		) {
 			$args['exclude'] = 	array_merge( $args['exclude'], array($current_user->ID) );
 		}
 	}
 	return $args;
 }
 
-
-/**
-* wpv_users_query_add_sort
-*
-* Filter hooked before query and add sort options
-*
-* @param $args array of arguments to be passed to WP_User_Query
-* 
-* @param $view_settings
-*
-* @return $args
-*
-* @since 1.6.2
-*/
-
-add_filter( 'wpv_filter_user_query', 'wpv_users_query_add_sort', 40, 2 );
-
-function wpv_users_query_add_sort( $args, $view_settings ) {
-	global $WP_Views;	
-	if ( isset( $view_settings['users_orderby'] ) ) {
-        $args['orderby'] = $view_settings['users_orderby'];
-    }
-    if ( isset( $view_settings['users_order'] ) ) {
-        $args['order'] = $view_settings['users_order'];
-    }
-    // Users orderby and order based on URL params - for table sorting
-    if (
-		isset( $_GET['wpv_column_sort_id'] ) 
-		&& esc_attr( $_GET['wpv_column_sort_id'] ) != '' 
-		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
-	) {
-        $field = esc_attr( $_GET['wpv_column_sort_id'] );
-        if ( in_array( $field, array('user_email', 'user_login', 'display_name', 'user_url', 'user_registered') ) ) {
-			$args['orderby'] = $field;
-
-			if (
-				isset( $_GET['wpv_column_sort_dir'] ) 
-				&& esc_attr( $_GET['wpv_column_sort_dir'] ) != '' 
-				&& in_array( strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) ), array( 'ASC', 'DESC' ) )
-			) {
-				$args['order'] = strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) );
-			}
-        }
-    }
-	return $args;
-}
-
-/**
-* wpv_users_query_limit_and_offset
-*
-* Filter hooked before query and add sort options
-*
-* @param $args array of arguments to be passed to WP_User_Query
-* 
-* @param $view_settings
-*
-* @return $args
-*
-* @since 1.6.2
-*/
-
-add_filter( 'wpv_filter_user_query', 'wpv_users_query_limit_and_offset', 50, 3 );
-
-function wpv_users_query_limit_and_offset( $args, $view_settings, $view_id ) {
-	if ( $view_settings['users_limit'] !== '-1' && $view_settings['users_limit'] !== -1 ){
-        $args['number'] = $view_settings['users_limit'];
-    }
-    $args['offset'] = $view_settings['users_offset'];
-	
-	$override_values = wpv_override_view_limit_offset( $view_id );
-	if ( isset( $override_values['limit'] ) ) {
-		$args['number'] = intval( $override_values['limit'] );
-	}
-	if ( isset( $override_values['offset'] ) ) {
-		$args['offset'] = intval( $override_values['offset'] );
-	}
-	
-    if ( $args['offset'] > 0 ) {
-		if ( !isset( $args['number'] ) || ( isset( $args['number'] ) && $args['number'] < 1 ) ) {
-			$args['number'] = 2147483647;
-		}
-    }
-	return $args;
-}
-
-
 /**
 * wpv_users_query_user_filters
 *
-* Filter hooked before query and apply view filters
-*
-* @param $args array of arguments to be passed to WP_User_Query
-* 
-* @param $view_settings
-*
-* @return $args
+* Apply filter by specific users
 *
 * @since 1.6.2
 */
@@ -363,7 +181,7 @@ function wpv_users_query_user_filters( $args, $view_settings ) {
 					}
 				}
 				break;
-			case 'url':
+			case 'by_url':
 				if (
 					isset( $view_settings['users_url'] )
 					&& '' != $view_settings['users_url']
@@ -523,4 +341,156 @@ function wpv_users_query_user_filters( $args, $view_settings ) {
 	
 	return $args;
 }
-   
+
+/**
+* wpv_filter_register_specific_users_shortcode_attributes
+*
+* Register the filter by specific users on the method to get View shortcode attributes
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_register_shortcode_attributes_for_users', 'wpv_filter_register_specific_users_shortcode_attributes', 10, 2 );
+
+function wpv_filter_register_specific_users_shortcode_attributes( $attributes, $view_settings ) {
+	if (
+		isset( $view_settings['users_mode'] ) 
+		&& isset( $view_settings['users_mode'][0] ) 
+		&& $view_settings['users_mode'][0] == 'shortcode' 
+	) {
+		$action = __( 'include', 'wpv-views' );
+		if ( $view_settings['users_query_in'] == 'exclude' ) {
+			$action = __( 'exclude', 'wpv-views' );
+		}
+		$attributes[] = array(
+			'query_type'	=> $view_settings['query_type'][0],
+			'filter_type'	=> 'user_specific',
+			'filter_label'	=> __( 'Specific users', 'wpv-views' ),
+			'value'			=> $view_settings['users_shortcode_type'],
+			'attribute'		=> $view_settings['users_shortcode'],
+			'expected'		=> ( $view_settings['users_shortcode_type'] == 'id' ) ? 'numberlist' : 'string',
+			'placeholder'	=> ( $view_settings['users_shortcode_type'] == 'id' ) ? '2, 4, 7, 8' : 'admin, john, mary',
+			'description'	=> ( $view_settings['users_shortcode_type'] == 'id' ) 
+				? sprintf( __( 'Please type a comma separated list of user IDs to %s', 'wpv-views' ), $action ) 
+				: sprintf( __( 'Please type a comma separated list of usernames to %s', 'wpv-views' ), $action )
+		);
+	}
+	return $attributes;
+}
+
+/**
+* wpv_include_exclude_users
+*
+* Fix the WP_User_Query args when they contain both include and exclude parameters
+*
+* @since 1.5.1
+*/
+
+add_filter( 'wpv_filter_user_query', 'wpv_include_exclude_users', 99 );
+
+function wpv_include_exclude_users( $args ) {
+	if ( 
+		isset( $args['include'] ) 
+		&& is_array( $args['include'] ) 
+		&& isset( $args['exclude'] ) 
+		&& is_array( $args['exclude'] ) 
+	) {
+		$args_diff = array_diff( $args['include'], $args['exclude'] );
+		if ( empty( $args_diff ) ) {
+			$args_diff = array( '0' );
+		}
+		$args['include'] = $args_diff;
+	}
+	return $args;
+}
+
+/**
+* wpv_cache_complete_usermeta_for_types
+*
+* Caches all the usermeta for the users returned by a WP_User_Query performed by a View listing users
+*
+* @param $items an array of User objects
+*
+* @return $items
+*
+* @since 1.5.1
+*/
+
+add_filter( 'wpv_filter_user_post_query', 'wpv_cache_complete_usermeta_for_types' );
+
+function wpv_cache_complete_usermeta_for_types( $items ) {
+	global $wpdb;
+	
+	if ( empty( $items ) )
+		return $items;
+	
+	// Only add the Types usermeta cache if Types is active
+	if ( defined( 'WPCF_VERSION' ) ) {
+	
+		$user_ids = array();
+		$cache_group_ids = 'types_cache_user_ids';
+		$cache_group = 'types_cache';
+		
+		foreach ( $items as $user ) {
+			$cache_key_looped_post = md5( 'user::_is_cached' . $user->ID );
+			$cached_object = wp_cache_get( $cache_key_looped_post, $cache_group_ids );
+			if ( false === $cached_object ) {
+				$user_ids[] = $user->ID;
+				wp_cache_add( $cache_key_looped_post, $user->ID, $cache_group_ids );
+			}
+		}
+		if ( ! empty( $user_ids ) ) {
+			$id_list = implode( ',', $user_ids );
+			// We do not need to prepare this query as $id_list only contains numeric natural IDs
+			$all_usermeta = $wpdb->get_results( 
+				"SELECT * FROM {$wpdb->usermeta} 
+				WHERE user_id IN ({$id_list})", 
+				OBJECT 
+			);
+			if ( !empty( $all_usermeta ) ) {
+				$cache_key_keys = array();
+				foreach ( $all_usermeta as $metarow ) {
+					$mpid = intval($metarow->user_id);
+					$mkey = $metarow->meta_key;
+					$cache_key_keys[$mpid . $mkey][] = $metarow;
+				}
+				foreach ( $cache_key_keys as $single_meta_keys => $single_meta_values ) {
+					$cache_key_looped_new = md5( 'usermeta::_get_meta' . $single_meta_keys );
+					wp_cache_add( $cache_key_looped_new, $single_meta_values, $cache_group );// WordPress cache
+				}
+			}
+		}
+	}
+	
+	return $items;
+}
+
+/**
+* wpv_filter_user_requires_framework_values
+*
+* Whether the current View requires framework valus for the filter by specific users
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_requires_framework_values', 'wpv_filter_user_requires_framework_values', 10, 2 );
+
+function wpv_filter_user_requires_framework_values( $state, $view_settings ) {
+	if ( $state ) {
+		return $state; // Already set
+	}
+    if (
+		isset( $view_settings['users_mode'] ) 
+		&& isset( $view_settings['users_mode'][0] )
+		&& $view_settings['users_mode'][0] == 'framework'
+	) {
+        $state = true;
+    }
+	return $state;
+
+}

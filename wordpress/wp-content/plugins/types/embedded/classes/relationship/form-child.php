@@ -126,6 +126,16 @@ class WPCF_Relationship_Child_Form
             }
         }
         unset($post_types);
+        /**
+         * wp_enqueue_media allways
+         */
+        add_action('admin_enqueue_scripts', array($this, 'wp_enqueue_media'), PHP_INT_MAX);
+    }
+
+    public function wp_enqueue_media()
+    {
+        global $post;
+        wp_enqueue_media(array('post' => $post->ID));
     }
 
     function getParamsQuery() {

@@ -18,15 +18,16 @@
     <div id="tve_lg_icon_list" style="display: none">
         <table>
             <tfoot>
-                <tr>
-                    <td style="width: 10%;"><?php echo __("Choose an icon", "thrive-cb") ?></td>
-                    <td>
-                        <?php $icon_click = 'function:auto_responder.choose_icon';
-                        $icon_hide_header = true;
-                        include_once plugin_dir_path(dirname(dirname(dirname(dirname(__FILE__))))) . 'editor/lb_icon.php' ?>
-                    </td>
-                </tr>
+            <tr>
+                <td style="width: 10%;"><?php echo __("Choose an icon", "thrive-cb") ?></td>
+                <td>
+                    <?php $icon_click = 'function:auto_responder.choose_icon';
+                    $icon_hide_header = true;
+                    include_once plugin_dir_path(dirname(dirname(dirname(dirname(__FILE__))))) . 'editor/lb_icon.php' ?>
+                </td>
+            </tr>
             </tfoot>
         </table>
     </div>
+    <?php include dirname(__FILE__) . '/captcha-settings.php'; ?>
 </div>

@@ -4,6 +4,15 @@
 class Thrive_List_Connection_MailPoet extends Thrive_List_Connection_Abstract
 {
     /**
+     * Return the connection type
+     * @return String
+     */
+    public static function getType()
+    {
+        return 'autoresponder';
+    }
+
+    /**
      * @return string
      */
     public function getTitle()

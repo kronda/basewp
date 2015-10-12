@@ -71,7 +71,10 @@ function wpv_filter_post_id( $query, $view_settings ) {
 				) {
 					$id_shortcode = $view_settings['post_ids_shortcode'];	
 					$view_attrs = $WP_Views->get_view_shortcodes_attributes();
-					if ( isset( $view_attrs[$id_shortcode] ) ) {
+					if ( 
+						isset( $view_attrs[$id_shortcode] ) 
+						&& '' != $view_attrs[$id_shortcode]
+					) {
 						$ids_to_load = explode( ',', $view_attrs[$id_shortcode] );
 						if ( count( $ids_to_load ) > 0 ) {
 							foreach ( $ids_to_load as $id_candidate ) {
@@ -135,4 +138,59 @@ function wpv_filter_post_id( $query, $view_settings ) {
 		}	
     }
 	return $query;
+}
+
+/**
+* wpv_filter_id_requires_framework_values
+*
+* Whether the current View requires framework data for the filter by post ID
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_requires_framework_values', 'wpv_filter_id_requires_framework_values', 20, 2 );
+
+function wpv_filter_id_requires_framework_values( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+	if ( isset( $view_settings['id_mode'] ) && isset( $view_settings['id_mode'][0] ) && $view_settings['id_mode'][0] == 'framework' ) {
+		$state = true;
+	}
+	return $state;
+}
+
+/**
+* wpv_filter_register_post_id_filter_shortcode_attributes
+*
+* Register the filter by post IDs on the method to get View shortcode attributes
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_register_shortcode_attributes_for_posts', 'wpv_filter_register_post_id_filter_shortcode_attributes', 10, 2 );
+
+function wpv_filter_register_post_id_filter_shortcode_attributes( $attributes, $view_settings ) {
+	if (
+		isset( $view_settings['id_mode'] ) 
+		&& isset( $view_settings['id_mode'][0] ) 
+		&& $view_settings['id_mode'][0] == 'shortcode' 
+	) {
+		$attributes[] = array (
+			'query_type'	=> $view_settings['query_type'][0],
+			'filter_type'	=> 'post_id',
+			'filter_label'	=> __( 'Post ID', 'wpv-views' ),
+			'value'			=> 'post_id',
+			'attribute'		=> $view_settings['post_ids_shortcode'],
+			'expected'		=> 'numberlist',
+			'placeholder'	=> '10, 13, 21',
+			'description'	=> __( 'Please type a comma separated list of post IDs', 'wpv-views' )
+		);
+	}
+	return $attributes;
 }

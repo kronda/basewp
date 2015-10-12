@@ -225,7 +225,7 @@ $tzd = $sign . str_pad($hour, 2, '0', STR_PAD_LEFT) . ':' . str_pad($min % 60, 2
 <div class="tve_lp_footer tve_empty_dropzone tve_content_width">
     <div class="thrv_wrapper thrv_columns">
         <div class="tve_colm tve_twc">
-            <p class="tve_p_left" style="margin: 0; padding: 0; color: #898989; font-size: 14px;">&copy; 2015 ACME
+            <p class="tve_p_left" style="margin: 0; padding: 0; color: #898989; font-size: 14px;">&copy; {tcb_current_year} ACME
                 Inc.</p>
         </div>
         <div class="tve_colm tve_twc tve_lst">

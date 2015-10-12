@@ -19,8 +19,6 @@ function wpv_filter_get_posts( $id ) {
 	
 	$view_settings_defaults = array(
 		'post_type'         => 'any',
-		'orderby'           => 'post-date',
-		'order'             => 'DESC',
 		'paged'             => '1',
 		'posts_per_page'    =>  -1
 	);
@@ -40,12 +38,11 @@ function wpv_filter_get_posts( $id ) {
 		$paged = intval( esc_attr( $_GET['wpv_paged'] ) );
 	}
     $query = array(
-            'posts_per_page'    => $posts_per_page,
-            'paged'             => $paged,
-            'post_type'         => $post_type,
-            'order'             => $order,
-            'suppress_filters'  => false,
-			'ignore_sticky_posts' => true
+		'post_type'				=> $post_type,
+		'paged'					=> $paged,
+		'posts_per_page'		=> $posts_per_page,
+		'suppress_filters'		=> false,
+		'ignore_sticky_posts'	=> true
     );
 
     if (

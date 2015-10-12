@@ -19,7 +19,7 @@ WPViews.DateFilterGUI = function( $ ) {
 	
 	self.icon_edit = '<i class="icon-chevron-up"></i>&nbsp;&nbsp;';
 	self.icon_save = '<i class="icon-ok"></i>&nbsp;&nbsp;';
-	self.spinner = '<span class="spinner ajax-loader">';
+	self.spinner = '<span class="wpv-spinner ajax-loader">';
 	
 	self.post_row = '.js-wpv-filter-row-post-date';
 	self.post_options_container_selector = '.js-wpv-filter-row-post-date .js-wpv-filter-edit';
@@ -282,7 +282,7 @@ WPViews.DateFilterGUI = function( $ ) {
 	
 	$( document ).on( 'click', '.js-wpv-date-filter-add-condition', function() {
 		var thiz = $( this ),
-		spinnerContainer = $( '<div class="spinner ajax-loader">' ).insertAfter( thiz ).show(),
+		spinnerContainer = $( '<div class="wpv-spinner ajax-loader">' ).insertAfter( thiz ).show(),
 		data = {
 			action: 'wpv_filter_post_date_add_condition',
 			//id: self.view_id,
@@ -436,18 +436,10 @@ WPViews.DateFilterGUI = function( $ ) {
 		}
 	});
 	
-	// Delete all items - @tofo open dialog if needed
+	// Delete all items
 	
 	$( document ).on( 'click', '.js-wpv-filter-remove-post-date', function() {
-		//if ( $( self.post_row ).find( '.js-wpv-filter-taxonomy-multiple-element' ).length > 1 ) {
-		//	$.colorbox({
-		//		inline: true,
-		//		href:'.js-filter-taxonomy-delete-filter-row-dialog',
-		//		open: true
-		//	});
-		//} else {
 			self.remove_post_date_filter();
-		//}
 	});
 	
 	// Delete a single date condition

@@ -2,10 +2,6 @@
 /**
  * Types fields specific
  *
- * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/classes/class.types.php $
- * $LastChangedDate: 2015-02-25 11:07:34 +0000 (Wed, 25 Feb 2015) $
- * $LastChangedRevision: 31886 $
- * $LastChangedBy: marcin $
  *
  */
 
@@ -14,16 +10,17 @@
  *
  * @author Srdjan
  */
+if ( !class_exists('WPToolset_Types') ){   
 class WPToolset_Types
 {
 
     /**
      * Filters Types field to match data structure needed for shared code.
      *
-     * @global type $pagenow
      * @staticvar array $cache
-     * @param type $field array|string $field settings array (as stored in DB) or field ID
-     * @param type $post_id Post or user ID used for conditional
+     *
+     * @param array|string $field settings array (as stored in DB) or field ID
+     * @param int $post_id Post or user ID used for conditional
      * @return array
      */
     static function filterField($field, $post_id = null, $_post_wpcf = array())
@@ -84,6 +81,7 @@ class WPToolset_Types
             'validation' => self::filterValidation( $field ), // Validation settings
             'conditional' => self::filterConditional( $field, $post_id, $_post_wpcf ), // Conditional settings
             'placeholder' => isset($field['data']) && isset($field['data']['placeholder'])? $field['data']['placeholder']:null, // HTML5 placeholder
+            'user_default_value' => isset($field['data']) && isset($field['data']['user_default_value'])? $field['data']['user_default_value']:null, // HTML5 default_value
         );
 
         /* Specific field settings
@@ -497,9 +495,9 @@ class WPToolset_Types
     /**
      * Translates various strings connected to Types using WPML icl_t().
      *
-     * @param type $name
-     * @param type $string
-     * @param type $context
+     * @param string $name
+     * @param string $string
+     * @param string $context
      * @return string
      */
     public static function translate($name, $string, $context = 'plugin Types')
@@ -537,4 +535,5 @@ class WPToolset_Types
         }
         return strval( $array );
     }
+}
 }

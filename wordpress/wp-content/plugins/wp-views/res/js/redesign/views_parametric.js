@@ -14,19 +14,15 @@ WPV_parametric_local.message.fadeOutShort = 400;
 		}
 	};
 
-	jQuery(function(){
-		//this order is mandatory for dependencies
+	jQuery( function() {
+		// Init generic data for toolbar buttons
+		WPV_parametric_local.generic_button = new WPV_ParametricGenericButtonUtils();
+		// This order is mandatory for dependencies and button display
 		WPV_parametric_local.add_search = new WPV_ParametricSearchButton();
 		WPV_parametric_local.add_spinner = new WPV_ParametricSpinnerButton();
 		WPV_parametric_local.add_reset = new WPV_ParametricResetButton();
 		WPV_parametric_local.add_submit = new WPV_ParametricSubmitButton();
 		WPV_parametric_local.pwindow = new WPV_ParametricFilterWindow();
-		//this order reflects the button display in case of search and submit buttons
-		WPV_parametric_local.add_search.init();
-		WPV_parametric_local.add_spinner.init();
-		WPV_parametric_local.add_reset.init();
-		WPV_parametric_local.add_submit.init();
-		WPV_parametric_local.pwindow.init();
 	});
 
 })(jQuery);
@@ -35,14 +31,14 @@ WPV_parametric_local.message.fadeOutShort = 400;
 var WPV_ParametricFilterWindow = function() {
 
 	//some local vars
-	var self = this
-	, buttonAdd = jqp('.js-button_parametric_filter_create')
-	, buttonEdit = jqp('.js-button_parametric_filter_edit')
-	, proxy = new JsonStore()
-	, parametricViewModel
-	, dialog = null
-	, parser
-	, buttons_visible = false;
+	var self = this,
+	buttonAdd = jqp( '.js-button_parametric_filter_create' ),
+	buttonEdit = jqp( '.js-button_parametric_filter_edit' ),
+	proxy = new WPV_ParametricJsonStore(),
+	parametricViewModel,
+	dialog = null,
+	parser,
+	buttons_visible = false;
 
 	//statics
 	WPV_ParametricFilterWindow.has_error_displayed = false;
@@ -57,171 +53,293 @@ var WPV_ParametricFilterWindow = function() {
 	//public members
 	self.editor = icl_editor ? icl_editor : undefined;
 	self.text_area = jqp('#wpv_filter_meta_html_content');
+	self.dialog = null;
 
 	parser = new ShortCodeParser( self.text_area );
 
 	self.WIDTH = 300;
 	self.HEIGHT = 300;
 
-	self.short_tag_fields = ["field", "type", "url_param", "values", "display_values", "auto_fill_default", "auto_fill", "default_label", "title", "auto_fill_sort", "taxonomy_order", "taxonomy_orderby", "hide_empty", "ancestors", "force_zero", "format"];
+	self.short_tag_fields = [
+		"field", "values", "display_values", "auto_fill", "auto_fill_default", "auto_fill_sort", // fields filters
+		"title", // checkbox field filter
+		"default_label", "taxonomy_order", "taxonomy_orderby", "hide_empty", "format", // taxonomy is not included because it is not a variable field by itself??
+		"ancestors", "force_zero", // relationship filters
+		"type", "url_param"
+	];
 
 	self.is_edit = false;
 
 	self.short_code_editable = null;
 	self.fieldRawEditable = null;
 
-
-
-	self.init = function()
-	{
+	self.init = function() {
+		self.init_dialogs();
 		button_hide();
 		self.addButtons();
 		return this;
 	};
-
-
-	var button_hide_if_tax_view = function( to_hide, button, toolbar )
-	{
-		var select = jqp('input:radio.js-wpv-query-type')
-		, view_type = select.filter(':checked').val();
-
-		if( view_type == 'taxonomy' || view_type == 'users' )
-		{
-			jqp.each(to_hide, function( i, v ){
-				jqp.data( v, 'is_visible', true);
-				v.hide();
-
-			});
-		}
-		else if( view_type == 'posts' )
-		{
-			jqp.each(to_hide, function( i, v ){
-				jqp.data( v, 'is_visible', false);
-			});
-		}
-
-
-		select.on('change', function(event){
-
-			if( jqp('input:radio.js-wpv-query-type:checked').val() == 'taxonomy' || jqp('input:radio.js-wpv-query-type:checked').val() == 'users' )
-			{
-				jqp.each(to_hide, function( i, v ){
-					jqp.data( v, 'is_visible', true);
-					v.hide();
-				});
-			}
-			else if( jqp('input:radio.js-wpv-query-type:checked').val() == 'posts' )
-			{
-				jqp.each(to_hide, function( i, v ){
-					jqp.data( v, 'is_visible', false);
-					if( WPV_Parametric.view_purpose == 'full' || WPV_Parametric.view_purpose == 'parametric')
-					{
-						v.show();
+	
+	self.init_dialogs = function() {
+		var dialog_height = jqp( window ).height() - 100;
+		jqp( 'body' ).append( '<div id="js-parametric-form-dialog-external-container" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container"></div>' );
+		self.dialog = jqp( "#js-parametric-form-dialog-external-container" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: WPV_Parametric.dialog_title_create,
+			minWidth: 550,
+			maxHeight: dialog_height,
+			draggable: false,
+			resizable: false,
+			position: { my: "center top+50", at: "center top", of: window },
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				jqp( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				jqp( 'body' ).removeClass( 'modal-open' );
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: WPV_Parametric.cancel,
+					click: function() {
+						jqp( this ).dialog( "close" );
+						WPV_parametric_local.generic_button.codemirror_views.focus();
 					}
-					else if( buttons_visible )
-					{
-						v.show();
+				},
+				{
+					class: 'button-primary',
+					id: 'js_parametric_form_button',
+					text: WPV_Parametric.insert,
+					click: function() {
+						
 					}
-				});
+				}
+			],
+			close: function( event, ui ) {
+				
 			}
 		});
 	};
-
-	var button_hide = function()
-	{
+	
+	var button_hide = function() {
 		var add_hide = buttonAdd.parent(),
-		edit_hide = buttonEdit.parent()
-		, pag_hide = [
-		jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-v-icon'),
-		jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-cred-icon').parent().parent()
-		]
-		, slide_hide = [
-		add_hide,
-		edit_hide,
-		jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-v-icon'),
-		WPV_ParametricSearchButton.button.parent(),
-		WPV_ParametricSubmitButton.button.parent(),
-		WPV_ParametricResetButton.button.parent(),
-		WPV_ParametricSpinnerButton.button.parent(),
-		jqp('.js-wpv-filter-edit-toolbar  .js-code-editor-toolbar-button-cred-icon').parent().parent()
-		],
+		edit_hide = buttonEdit.parent(),
+		search_hide = WPV_ParametricSearchButton.button.parent(),
+		spinner_hide = WPV_ParametricSpinnerButton.button.parent(),
+		reset_hide = WPV_ParametricResetButton.button.parent(),
+		submit_hide = WPV_ParametricSubmitButton.button.parent(),
+		fields_and_views_hide = jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-v-icon'),
+		cred_hide = jqp('.js-wpv-filter-edit-toolbar .js-code-editor-toolbar-button-cred-icon').parent().parent(),
 		toolbar = jqp('.js-wpv-filter-extra-section .wpv-setting'),
+		pag_hide = [
+			fields_and_views_hide,
+			cred_hide
+		],
+		slide_hide = [
+			add_hide,
+			edit_hide,
+			fields_and_views_hide,
+			search_hide,
+			submit_hide,
+			reset_hide,
+			spinner_hide,
+			cred_hide
+		],
 		cats_hide = [
-		edit_hide,
-		add_hide,
-		WPV_ParametricSearchButton.button.parent(),
-		WPV_ParametricSubmitButton.button.parent(),
-		WPV_ParametricResetButton.button.parent(),
-		WPV_ParametricSpinnerButton.button.parent()
-		]
+			edit_hide,
+			add_hide,
+			search_hide,
+			submit_hide,
+			reset_hide,
+			spinner_hide
+		],
+		button = jqp('<button class="button-secondary js-toggle-settings-button-viz-link"></button>');
 
-		, button = jqp('<button class="button-secondary js-toggle-settings-button-viz-link"></button>')
-		, toolbar = jqp('.js-wpv-filter-extra-section .wpv-setting');
-
-		switch( WPV_Parametric.view_purpose )
-		{
+		switch( WPV_Parametric.view_purpose ) {
 			case 'full':
 			case 'parametric':
 			break;
 			case 'pagination':
-			jqp.each(pag_hide, function(i,v){
-				v.hide();
-			});
-			toogle_buttons_visibility( pag_hide, toolbar, true );
-			break;
+				jqp.each( pag_hide, function( i, v ) {
+					v.hide();
+				});
+				toogle_buttons_visibility( pag_hide, toolbar, true );
+				break;
 			case 'slider':
-			jqp.each(slide_hide, function(i,v){
-				v.hide();
-			});
-			toogle_buttons_visibility( slide_hide, toolbar, true );
+				jqp.each( slide_hide, function( i, v ) {
+					v.hide();
+				});
+				toogle_buttons_visibility( slide_hide, toolbar, true );
 			break;
 		}
-
 		button_hide_if_tax_view( cats_hide, button, toolbar );
 	};
 
-	var toogle_buttons_visibility = function( buttons, t, append )
-	{
-		var toolbar = t
-		, cont = jqp('<p class="more-controls-container" />')
-		, button = jqp('<button class="button-secondary js-toggle-settings-button-viz-link"></button>');
+	var button_hide_if_tax_view = function( to_hide, button, toolbar ) {
+		var select = jqp('input:radio.js-wpv-query-type'),
+		view_type = select.filter( ':checked' ).val();
+
+		if ( 
+			view_type == 'taxonomy' 
+			|| view_type == 'users' 
+		) {
+			jqp.each( to_hide, function( i, v ) {
+				jqp.data( v, 'is_visible', true );
+				v.hide();
+			});
+		} else if ( view_type == 'posts' ) {
+			jqp.each( to_hide, function( i, v ) {
+				jqp.data( v, 'is_visible', false );
+			});
+		}
+
+		select.on( 'change', function( event ) {
+			if ( 
+				jqp( 'input:radio.js-wpv-query-type:checked' ).val() == 'taxonomy' 
+				|| jqp( 'input:radio.js-wpv-query-type:checked' ).val() == 'users' 
+			) {
+				jqp.each( to_hide, function( i, v ) {
+					jqp.data( v, 'is_visible', true );
+					v.hide();
+				});
+			} else if( jqp( 'input:radio.js-wpv-query-type:checked' ).val() == 'posts' ) {
+				jqp.each( to_hide, function( i, v ) {
+					jqp.data( v, 'is_visible', false );
+					if ( 
+						WPV_Parametric.view_purpose == 'full' 
+						|| WPV_Parametric.view_purpose == 'parametric'
+					) {
+						v.show();
+					} else if( buttons_visible ) {
+						v.show();
+					}
+				});
+			}
+		});
+	};
+
+	var toogle_buttons_visibility = function( buttons, t, append ) {
+		var toolbar = t,
+		cont = jqp('<p class="more-controls-container" />'),
+		button = jqp('<button class="button-secondary js-toggle-settings-button-viz-link"></button>');
 
 		button.empty().append('<i class="icon-expand-alt"></i> More controls');
-
-		if( append )
-		{
+		if ( append ) {
 			cont.append(button);
 			toolbar.prepend(cont);
 		}
-
-
-		button.on('click', function(event){
-			jqp.each(buttons, function( i, v ){
-				if( !buttons_visible )
-				{
-					if( !jqp.data( v, 'is_visible') )
-					v.fadeIn('fast');
-				}
-				else if( buttons_visible )
-				{
-					if( !jqp.data( v, 'is_visible') )
-					v.hide();
+		button.on( 'click', function( event ) {
+			jqp.each( buttons, function( i, v ) {
+				if ( ! buttons_visible ) {
+					if ( ! jqp.data( v, 'is_visible') ) {
+						v.fadeIn('fast');
+					}
+				} else if ( buttons_visible ) {
+					if ( ! jqp.data( v, 'is_visible') ) {
+						v.hide();
+					}
 				}
 			});
-
-			if( buttons_visible )
-			{
+			if ( buttons_visible ) {
 				buttons_visible = false;
-				jqp(this).empty().append('<i class="icon-expand-alt"></i> More controls');
-			}
-			else if( !buttons_visible)
-			{
+				jqp( this ).empty().append('<i class="icon-expand-alt"></i> More controls');
+			} else if ( ! buttons_visible ) {
 				buttons_visible = true;
-				jqp(this).empty().append('<i class="icon-collapse-alt"></i> Less controls');
+				jqp( this ).empty().append('<i class="icon-collapse-alt"></i> Less controls');
+			}
+		});
+	};
+	
+	self.addButtons = function() {
+		WPV_parametric_local.message.container = jqp( ".js-wpv-filter-extra-section .wpv-setting .js-wpv-parametric-error-container" );
+		self.createFilterAction();
+		self.editFilterAction();
+	};
+	
+	self.createFilterAction = function() {
+		//on a click event to the button and make ajax call on click
+		buttonAdd.on( 'mouseup', function( e ) {
+			//build the data object to be sent to the server
+			if ( 
+				! self.move_cursor_if_no_content_within() 
+				&& ! self.editor.cursorWithin( self.text_area, 'wpv-filter-controls', '/wpv-filter-controls' ) 
+			) {
+				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				return false;
 			}
 
+			var sendData = {
+				action:'set_parametric_filter_create',
+				wpv_parametric_create_nonce: WPV_Parametric.wpv_parametric_create_nonce,
+				post_types:self.handleDataRequest().join( ',' )
+			};
+
+			if ( sendData.post_types ) {
+				proxy.loader.loadShow( jqp( this ).parent().parent() );
+				jqp( this ).prop( 'disabled', true );
+				proxy.ajaxCall( sendData, ajaxurl, 'post', ajaxCreateCallback, [ jqp( this ) ] );
+ 			} else {
+				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.select_post_types, true, 'error' );
+			}
+			return false;
 		});
-	}
+	};
+	
+	self.editFilterAction = function() {
+		buttonEdit.on( 'mouseup', function( e ) {
+			var obj = getShortCodes(), 
+			params = {};
+			/* See WP_Views_plugin::view_parametric_create() in inc/wpv-plugin.class.php and
+			 * Editor_addon_parametric::__construct() in inc/filters/editor-addon-parametric.class.php in order
+			 * to understand where this ajax call is handled. */
+			params.action = 'set_parametric_filter_edit';
+			params.edit_field = obj;
+			params.post_types = self.handleDataRequest().join( ',' );
+			params.wpv_parametric_create_nonce = WPV_Parametric.wpv_parametric_create_nonce;
+			// make the field 'wpcf-' if is a types field
+			// NOTE this is never executed, params.fields is not set at all... addressing this on PHP callback, where we can surely check whether it is a Types field
+			// Also, never trust wpcf- to be the prefix for all Types fields: what about fields under Types control?
+			if ( 
+				params.edit_field 
+				&& params.edit_field.field 
+				&& params.fields 
+				&& params.fields.is_types 
+			) {
+				params.edit_field.field = 'wpcf-'+params.edit_field.field
+			}
+			if ( 
+				params.edit_field 
+				&& params.edit_field.ancestors 
+			) {
+				params.edit_field.relationship = 'relationship';
+			}
+			if ( null != obj ) {
+				if ( params.post_types ) {
+					if (
+						params.edit_field.field
+						|| params.edit_field.taxonomy
+						|| params.edit_field.ancestors
+					) {
+						proxy.loader.loadShow( jqp( this ).parent().parent() );
+						jqp( this ).prop( 'disabled', true );
+						proxy.ajaxCall( params, ajaxurl, 'post', ajaxCreateCallback, [ jqp( this ) ] );
+					} else {
+						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.editing_manual_filter, true, 'error' );
+					}
+				} else {
+					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.select_post_types, true, 'error' );
+				}
+			} else {
+				//if(  WPV_Parametric.debug ) console.log("problems in getting the shortcode")
+			}
+			return false;
+		});
+	};
 
 	self.setModelDataToBeSent = function()
 	{
@@ -506,10 +624,8 @@ var WPV_ParametricFilterWindow = function() {
 
 	self.edit_the_field = function( nicename, code, area, current )
 	{
-		var content =
-		WPV_parametric_local.add_submit.get_text_area_content(),
+		var content = WPV_parametric_local.generic_button.get_text_area_content(),
 		rpl,
-
 		tag = parser.shortCodeGetTagName(),
 		cm,
 		short_code = code,
@@ -579,64 +695,64 @@ var WPV_ParametricFilterWindow = function() {
 		return null;
 	};
 
-	self.submitHandler = function(form, button)
-	{
-		button.on('mouseup', function(event){
-			var fields = self.setModelDataToBeSent(), sendData, shortcode;
 
-			if( parametricViewModel.userValuesVisible() && !self.check_user_values_on_submit() ) return false;
+	jqp( document ).on( 'mouseup', "#js_parametric_form_button", function( event ) {
+		var fields = self.setModelDataToBeSent(), sendData, shortcode,
+		form = jqp( '#js-parametric-form' ), 
+		button = jqp( "#js_parametric_form_button" );
+
+		if( parametricViewModel.userValuesVisible() && !self.check_user_values_on_submit() ) return false;
 
 
-			if( validateFieldsAgainstReservedWordAndCheckIfEmpty( fields ) ) return false;
+		if( validateFieldsAgainstReservedWordAndCheckIfEmpty( fields ) ) return false;
 
-			if( !WPV_ParametricFilterWindow.has_error_displayed && fields !== null )
+		if( !WPV_ParametricFilterWindow.has_error_displayed && fields !== null )
+		{
+			sendData = {
+				action:'get_parametric_filter_create',
+				wpv_parametric_submit_create_nonce : WPV_Parametric.wpv_parametric_submit_create_nonce,
+				fields:fields
+			};
+
+			if( self.is_edit )
 			{
-				sendData = {
-					action:'get_parametric_filter_create',
-					wpv_parametric_submit_create_nonce : WPV_Parametric.wpv_parametric_submit_create_nonce,
-					fields:fields
-				};
-
-				if( self.is_edit )
+				if( self.fieldRawEditable.kind == 'field' )
 				{
-					if( self.fieldRawEditable.kind == 'field' )
-					{
-						sendData.edit_field = {index:self.fieldRawEditable.index.valueOf(), field:self.fieldRawEditable.field};
-					}
-					else if( self.fieldRawEditable.kind == 'taxonomy' )
-					{
-						sendData.edit_field = {index:self.fieldRawEditable.index.valueOf(), taxonomy:self.fieldRawEditable.field};
-					}
-					else if( self.fieldRawEditable.kind == 'relationship' )
-					{
-						sendData.edit_field = {index:self.fieldRawEditable.index.valueOf(), relationship:self.fieldRawEditable.field};
-					}
-
+					sendData.edit_field = {index:self.fieldRawEditable.index.valueOf(), field:self.fieldRawEditable.field};
+				}
+				else if( self.fieldRawEditable.kind == 'taxonomy' )
+				{
+					sendData.edit_field = {index:self.fieldRawEditable.index.valueOf(), taxonomy:self.fieldRawEditable.field};
+				}
+				else if( self.fieldRawEditable.kind == 'relationship' )
+				{
+					sendData.edit_field = {index:self.fieldRawEditable.index.valueOf(), relationship:self.fieldRawEditable.field};
 				}
 
-				shortcode = self.insertShortCode( self.text_area, fields );
-
-				//if(  WPV_Parametric.debug ) console.log( "DATA TO BE SENT TO SAVE IN SETTINGS:::  ", sendData );
-				//	return;
-
-				if( !shortcode ) {
-					jqp('.js-wpv-parametric-dialog-toolset-messages').wpvToolsetMessage({
-						text:WPV_Parametric.something_bad,
-						type:'error',
-						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-						close:true
-					});
-
-					return false;
-				}
-
-				proxy.ajaxCall( sendData, ajaxurl, 'post', ajaxCreateInsertCallback, [] );
-
-				jqp.colorbox.close();
 			}
-			return false;
-		});
-	};
+
+			shortcode = self.insertShortCode( self.text_area, fields );
+
+			//if(  WPV_Parametric.debug ) console.log( "DATA TO BE SENT TO SAVE IN SETTINGS:::  ", sendData );
+			//	return;
+
+			if( !shortcode ) {
+				jqp('.js-wpv-parametric-dialog-toolset-messages').wpvToolsetMessage({
+					text:WPV_Parametric.something_bad,
+					type:'error',
+					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
+					close:true
+				});
+
+				return false;
+			}
+
+			proxy.ajaxCall( sendData, ajaxurl, 'post', ajaxCreateInsertCallback, [] );
+
+			self.dialog.dialog( 'close' );
+		}
+		return false;
+	});
 
 
 	/**
@@ -900,26 +1016,6 @@ var WPV_ParametricFilterWindow = function() {
 				jqp( '.js-wpv-missing-filter-container, .js-wpv-no-filters-container' ).hide();
 
 				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, args.Data.insert, false, 'success' );
-				/*
-				WPV_parametric_local.message.container.wpvToolsetMessage({
-					text:args.Data.insert,
-					type:'info',
-					onClose: function()
-					{
-						
-						if( !WPV_parametric_local.add_submit.has_submit( WPV_parametric_local.add_submit.get_text_area_content() ) )
-						{
-							WPV_parametric_local.add_submit.open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.no_submit_button
-								, stay:true
-								, close:true
-								, fadeOut:WPV_parametric_local.message.fadeOutLong
-							});
-						}
-						
-					}
-				});
-				*/
 
 				//tell filters section we created a new filter.
 				var params = {
@@ -947,34 +1043,13 @@ var WPV_ParametricFilterWindow = function() {
 
 				});
 
-			}
-			else if( args.Data.error )
-			{
+			} else if( args.Data.error ) {
 				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.db_insert_problem + args.Data.error, true, 'error' );
-				/*
-				WPV_parametric_local.message.container.wpvToolsetMessage({
-					text:WPV_Parametric.db_insert_problem + args.Data.error,
-					type:'error',
-					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-					close:true
-				});
-				*/
-
 				console.error( args.Data.error );
 			}
-		}
-		catch( e )
-		{
+		} catch( e ) {
 			console.error( e.message );
 			WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, e.message, true, 'error' );
-			/*
-			WPV_parametric_local.message.container.wpvToolsetMessage({
-				text:e.message,
-				type:'error',
-				stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-				close:true
-			});
-			*/
 		}
 	};
 
@@ -990,308 +1065,103 @@ var WPV_ParametricFilterWindow = function() {
 		return post_types;
 	};
 
-	self.addButtons = function()
-	{
-		WPV_parametric_local.message.container = jqp(".js-wpv-filter-extra-section .wpv-setting .js-wpv-parametric-error-container");
-
-		self.createFilterAction();
-		self.editFilterAction();
-	};
-
-
-	self.createFilterAction = function()
-	{
-		//on a click event to the button and make ajax call on click
-		buttonAdd.on('mouseup', function(e){
-			//build the data object to be sent to the server
-			if( !self.move_cursor_if_no_content_within( ) && !self.editor.cursorWithin(self.text_area, 'wpv-filter-controls', '/wpv-filter-controls') )
-			{
-				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
-				/*
-				WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
-					text:WPV_Parametric.place_cursor_inside_wpv_controls,
-					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-					close:true
-				});
-				*/
-				return false;
-			}
-
-			else
-			{
-				//if( null != WPV_ParametricFilterWindow.errorPlaceHolder ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
-			}
-
-			var sendData = {
-				action:'set_parametric_filter_create',
-				wpv_parametric_create_nonce : WPV_Parametric.wpv_parametric_create_nonce,
-				post_types:self.handleDataRequest().join(',')
-			};
-
-			if( sendData.post_types )
-			{
-				proxy.loader.loadShow( jqp(this).parent().parent() );
-				jqp(this).prop('disabled', true );
-				proxy.ajaxCall( sendData, ajaxurl, 'post', ajaxCreateCallback, [jqp(this)] );
-				//if( null != WPV_ParametricFilterWindow.errorPlaceHolder ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
-			}
-			else
-			{
-				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.select_post_types, true, 'error' );
-				/*
-				WPV_parametric_local.message.container.wpvToolsetMessage({
-					text:WPV_Parametric.select_post_types,
-					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-					close:true,
-					fadeOut:'fast'
-				});
-				*/
-
-			}
-
-			return false;
-		});
-	};
-
-	var getShortCodes = function()
-	{
-		try
-		{
+	var getShortCodes = function() {
+		try {
 			var short_code = parser.parse(self.text_area), ret;
-
-			if(  !short_code )
-			{
+			if ( ! short_code ) {
 				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
-				/*
-				WPV_parametric_local.message.container.wpvToolsetMessage({
-					text:WPV_Parametric.place_cursor_inside_valid_control_shortcodes,
-					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-					close:true
-				});
-				*/
 				return null;
 			}
 
 			var current_place = parser.shortCodeGetTagName();
 
-			if( current_place == 'wpv-control' )
-			{
+			if ( current_place == 'wpv-control' ) {
 				self.short_code_editable = parser.getShortCodeRawString();
-				if ( ~self.short_code_editable.indexOf(']') ) {//alert('wpv-control not valid');
+				if ( ~self.short_code_editable.indexOf(']') ) {
 					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
-					/*
-					WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
-						text: WPV_Parametric.place_cursor_inside_valid_control_shortcodes,
-						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-						close:true
-					});
-					*/
 					return null;
 				} else {
 					ret = parser.getShortCodeObject();
-					//if( WPV_ParametricFilterWindow.errorPlaceHolder != null ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
 					return ret;
 				}
-			}
-			else if ( current_place == 'wpv-control-set' )
-			{
+			} else if ( current_place == 'wpv-control-set' ) {
 				self.short_code_editable = parser.getShortCodeRawString();
-				if ( ~self.short_code_editable.indexOf(']') ) {//alert('wpv-control-set not valid');
+				if ( ~self.short_code_editable.indexOf(']') ) {
 					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
-					/*
-					WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
-						text: WPV_Parametric.place_cursor_inside_valid_control_shortcodes,
-						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-						close:true
-					});
-					*/
 					return null;
 				} else {
 					ret = parser.getShortCodeObject();
-					//if( WPV_ParametricFilterWindow.errorPlaceHolder != null ) WPV_ParametricFilterWindow.errorPlaceHolder.wpvMessageRemove();
 					return ret;
 				}
-			}
-			else if ( current_place == 'wpv-control-item' ) {//alert('in wpv-control-item');
+			} else if ( current_place == 'wpv-control-item' ) {
 				self.short_code_editable = parser.getShortCodeRawString();
-				if ( ~self.short_code_editable.indexOf(']') ) {//alert('wpv-control-item not valid');
+				if ( ~self.short_code_editable.indexOf(']') ) {
 					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
-					/*
-					WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
-						text: WPV_Parametric.place_cursor_inside_valid_control_shortcodes,
-						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-						close:true
-					});
-					*/
 				} else {
 					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_control_set, true, 'error' );
-					/*
-					WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
-						text: WPV_Parametric.place_cursor_inside_wpv_control_set,
-						stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-						close:true
-					});
-					*/
 				}
 				return null;
-			}
-			else
-			{
+			} else {
 				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
-				/*
-				WPV_ParametricFilterWindow.errorPlaceHolder = WPV_parametric_local.message.container.wpvToolsetMessage({
-					text: WPV_Parametric.place_cursor_inside_valid_control_shortcodes,
-					stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-					close:true
-				});
-				*/
 				return null;
 			}
 
-		}
-		catch(e)
-		{
+		} catch( e ) {
 			console.error( e.message )
 		}
 
 		return null;
 	};
-
-	self.editFilterAction = function()
-	{
-		buttonEdit.on('mouseup', function(e){
-			var obj = getShortCodes(), params = {};
-
-			/* See WP_Views_plugin::view_parametric_create() in inc/wpv-plugin.class.php and
-			 * Editor_addon_parametric::__construct() in inc/filters/editor-addon-parametric.class.php in order
-			 * to understand where this ajax call is handled. */
-			params.action = 'set_parametric_filter_edit';
-			params.edit_field = obj;
-			params.post_types = self.handleDataRequest().join(',');
-			params.wpv_parametric_create_nonce = WPV_Parametric.wpv_parametric_create_nonce;
-
-			// make the field 'wpcf-' if is a types field
-			// NOTE this is never executed, params.fields is not set at all... addressing this on PHP callback, where we can surely check whether it is a Types field
-			// Also, never trust wpcf- to be the prefix for all Types fields: what about fields under Types control?
-			if( params.edit_field && params.edit_field.field && params.fields && params.fields.is_types )
-			{
-				params.edit_field.field = 'wpcf-'+params.edit_field.field
-			}
-			if ( params.edit_field && params.edit_field.ancestors ) {
-				params.edit_field.relationship = 'relationship';
-			}
-
-			//if(  WPV_Parametric.debug ) console.log( "THE DATA FOR EDIT FIELD TO SEND TO SERVER::: ", params.edit_field );
-			//return;
-
-			if ( null != obj ) {
-				if ( params.post_types ) {
-					if (
-						params.edit_field.field
-						|| params.edit_field.taxonomy
-						|| params.edit_field.ancestors
-					) {
-						proxy.loader.loadShow( jqp(this).parent().parent() );
-						jqp(this).prop('disabled', true );
-						proxy.ajaxCall( params, ajaxurl, 'post', ajaxCreateCallback, [jqp(this)] );
-					} else {
-						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.editing_manual_filter, true, 'error' );
-						/*
-						WPV_parametric_local.message.container.wpvToolsetMessage({
-							text:WPV_Parametric.editing_manual_filter,
-							stay:true,
-							fadeOut:WPV_parametric_local.message.fadeOutLong,
-							close:true
-						});
-						*/
-					}
-				} else {
-					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.select_post_types, true, 'error' );
-					/*
-					WPV_parametric_local.message.container.wpvToolsetMessage({
-						text:WPV_Parametric.select_post_types,
-						type:'error',
-						stay:true,
-						fadeOut:WPV_parametric_local.message.fadeOutLong,
-						close:true
-					});
-					*/
-				}
-			} else {
-				//if(  WPV_Parametric.debug ) console.log("problems in getting the shortcode")
-			}
-			return false;
-		});
-	};
-
-	//this is your $(function(){}) for this dialog
-	var openDialogCallback = function( data, button )
-	{
+	
+	var openDialogCallback = function( data, button ) {
 		var params = {
 			action:'create_parametric_dialog',
 			wpv_parametric_create_dialog_nonce: WPV_Parametric.wpv_parametric_create_dialog_nonce
 		};
-		jqp.post(ajaxurl, params, function(response){
-			if( response )
-			dialog = jqp.colorbox({
-				html: response,
-				inline : false,
-				//	width:self.WIDTH,
-				//	height:self.HEIGHT,
-				onComplete: function() {
-					var cancelButton = jqp("#js_parametric_cancel");
-					var extra_query = '';
-
-					parametricViewModel = new WPV_ParametricViewModel();
-
-					ko.applyBindings( parametricViewModel );
-
-					self.populateFields( parametricViewModel, data );
-
-					if( data.edit_field ) {
-						//keep track of previous obj state
-						self.fieldRawEditable = jqp.extend({}, set_default_field( data.edit_field ), true );
-						self.fieldRawEditable.index = data.edit_field.index;
-						self.fieldRawEditable.can_force_zero = data.edit_field.can_force_zero;
-						self.is_edit = true;
-
-						extra_query = '&field=' + data.edit_field.field;
-
-						//if(  WPV_Parametric.debug ) console.log( "THE EDIT FIELD FROM SERVER::: ", data.edit_field, "\nTHE DEFAULT FIELD PROCESSED::: ", self.fieldRawEditable );
-						jqp("#parametric-box-title").text( WPV_Parametric.edit_filter_field );
-						jqp("#js_parametric_form_button").text(WPV_Parametric.update_input);
-					}
-					else
-					{
-						self.is_edit = false
-						jqp("#js_parametric_form_button").removeClass('button-primary').addClass('button-secondary');
-					}
-
-					self.submitHandler( jqp('#js-parametric-form'), jqp("#js_parametric_form_button") );
-					cancelButton.on('click', function(event){
-						jqp.colorbox.close();
-					});
-					toggle_fieldset_hidden_viz();
-
-				},
-				onCleanup:function()
-				{
-					//unbind knockout tpl
-					ko.cleanNode( jqp('#js-parametric-form-dialog-container')[0] );
-				},
-				//this is the place where you want to reset your values
-				onClosed:function()
-				{
-					//we make some cleaning
-					WPV_ParametricFilterWindow.has_error_displayed = false;
-					WPV_ParametricFilterWindow.errorPlaceHolder = null;
-					Advanced_visible.viz = false;
-					self.short_code_editable = null;
-					self.fieldRawEditable = null;
-					self.is_edit = false;
-					button.prop( 'disabled', false );
-				}
-			});
+		jqp.post( ajaxurl, params, function( response ) {
+			if ( response ) {
+				self.dialog
+					.html( response )
+					.dialog({
+						open: function( event, ui ) {
+							var extra_query = '';
+							parametricViewModel = new WPV_ParametricViewModel();
+							ko.applyBindings( parametricViewModel );
+							self.populateFields( parametricViewModel, data );
+							if ( data.edit_field ) {
+								self.is_edit = true;
+								//keep track of previous obj state
+								self.fieldRawEditable = jqp.extend({}, set_default_field( data.edit_field ), true );
+								self.fieldRawEditable.index = data.edit_field.index;
+								self.fieldRawEditable.can_force_zero = data.edit_field.can_force_zero;
+								
+								jqp( this ).dialog( "option", "title", WPV_Parametric.dialog_title_edit );
+								jqp( "#js_parametric_form_button span" ).text( WPV_Parametric.update_input );
+								extra_query = '&field=' + data.edit_field.field;								
+							} else {
+								self.is_edit = false
+								jqp( "#js_parametric_form_button" )
+									.removeClass( 'button-primary' )
+									.addClass( 'button-secondary' )
+									.prop( 'disabled', true );
+							}
+							toggle_fieldset_hidden_viz();
+						},
+						beforeClose: function( event, ui ) {
+							ko.cleanNode( jqp( '#js-parametric-form-dialog-container' )[0] );
+						},
+						close: function( event, ui ) {
+							WPV_ParametricFilterWindow.has_error_displayed = false;
+							WPV_ParametricFilterWindow.errorPlaceHolder = null;
+							Advanced_visible.viz = false;
+							self.short_code_editable = null;
+							self.fieldRawEditable = null;
+							self.is_edit = false;
+							button.prop( 'disabled', false );
+						}
+					})
+					.dialog('open');
+			}
 		})
 		.fail(function(jqXHR, textStatus, errorThrown){
 			if(  WPV_Parametric.debug ) console.log(jqXHR, textStatus, errorThrown)
@@ -1301,11 +1171,9 @@ var WPV_ParametricFilterWindow = function() {
 		});
 	};
 
-	var toggle_fieldset_hidden_viz = function()
-	{
-		jqp('#js-toggle-advanced-paramentric-form-fields').on('click', function(event)
-		{
-			Advanced_visible.toggle_slide_up_down_advanced( jqp(this) );
+	var toggle_fieldset_hidden_viz = function() {
+		jqp( '#js-toggle-advanced-paramentric-form-fields' ).on( 'click', function( event ) {
+			Advanced_visible.toggle_slide_up_down_advanced( jqp( this ) );
 		});
 	};
 
@@ -1316,14 +1184,6 @@ var WPV_ParametricFilterWindow = function() {
 		if( args.Data && args.Data.error )
 		{
 			WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, args.Data.error, true, 'error' );
-			/*
-			WPV_parametric_local.message.container.wpvToolsetMessage({
-				text:args.Data.error,
-				type: 'error',
-				stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-				close:true
-			});
-			*/
 			return false;
 		}
 
@@ -1338,14 +1198,6 @@ var WPV_ParametricFilterWindow = function() {
 		{
 			console.error(WPV_Parametric.ajax_error, e.message );
 			WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.data_loading_problem + e.message, true, 'error' );
-			/*
-			WPV_parametric_local.message.container.wpvToolsetMessage({
-				text:WPV_Parametric.data_loading_problem + e.message,
-				type: 'error'
-				,stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-				close:true
-			});
-			*/
 		}
 	};
 
@@ -1463,7 +1315,7 @@ var WPV_ParametricFilterWindow = function() {
 
 	//Populates the model with the edit field
 	var set_default_field = function( f )
-	{//a comment
+	{
 		var raw = null, prefix = '', values = {}, valuesValues = [], field = f, url_params, urls = [], check_group;
 		try
 		{
@@ -1661,15 +1513,11 @@ var WPV_ParametricFilterWindow = function() {
 	};
 
 	//geerically populates a given flat field in a given model
-	self.populateField = function( model, field, data )
-	{
-		try
-		{
+	self.populateField = function( model, field, data ) {
+		try {
 			model[field](data);
-		}
-		catch(e)
-		{
-			console.error(e.message, model, field, data);
+		} catch( e ) {
+			console.error( e.message, model, field, data );
 		}
 	};
 
@@ -1707,28 +1555,28 @@ var WPV_ParametricFilterWindow = function() {
 		}
 	};
 
-	self.move_cursor_if_no_content_within = function( area )
-	{
+	self.move_cursor_if_no_content_within = function( area ) {
 		var content = '', match, cm;
 		parser.parse( area || self.area );
 		content = parser.getContent();
 		match = content.match(/\[wpv-filter-controls\](W?)\[\/wpv-filter-controls\]/);
 
-		if( match != null && !match[1] )
-		{
-			try
-			{
+		if ( 
+			match != null 
+			&& !match[1] 
+		) {
+			try {
 				parser.cm.setCursor( parser.cm.posFromIndex( match.index + '[wpv-filter-controls]'.length ) );
 				return true;
-			}
-			catch( e )
-			{
+			} catch( e ) {
 				console.log( e.message );
 				return false;
 			}
 		}
 		return false;
 	};
+	
+	self.init();
 
 	return self;
 };
@@ -1843,7 +1691,7 @@ var WPV_ParametricViewModel = function() {
 	// TODO:remove json store
 	var self = this,
 		meta_data_root = jqp.extend( true, {}, WPV_TypesFieldsType.Data ),
-		store = new JsonStore();
+		store = new WPV_ParametricJsonStore();
 
 	self.is_populating = false;
 
@@ -2861,1783 +2709,1591 @@ var WPV_ParametricViewModel = function() {
 
 };
 
-			var WPV_TypesFieldsType =
-			{
-				"Data" : {
-					"relationship" : {
-						"textfield" :{
-							"type":["select", "multi-select", "checkboxes", "radios"],
-							"data_type" : ["CHAR"],
-							//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
-							"compare" : ["IN"]
-						},
-						"select" :{
-							"type":["select", "multi-select", "checkboxes", "radios"],
-							"data_type" : ["CHAR"],
-							//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
-							"compare" : ["IN"]
-						},
-						"multi-select" :{
-							"type":["multi-select", "select", "checkboxes", "radios"],
-							"data_type" : ["CHAR"],
-							//"compare" : ["IN", "NOT IN"]
-							"compare" : ["IN"]
-						},
-						"checkboxes" :{
-							"type":["checkboxes", "select", "multi-select", "radios"],
-							"data_type" : ["CHAR"],
-							//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
-							"compare" : ["IN"]
-						},
-						"radios" :{
-							"type":[ "radios", "select", "multi-select", "checkboxes"],
-							"data_type" : ["CHAR"],
-							//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
-							"compare" : ["IN"]
-						},
-					},
-					"taxonomy" : {
-						"textfield" :{
-							"type":["select", "multi-select", "checkboxes", "radios"],
-							"data_type" : ["CHAR"],
-							//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
-							"compare" : ["IN", "NOT IN", "AND"]
-						},
-						"select" :{
-							"type":["select", "multi-select", "checkboxes", "radios"],
-							"data_type" : ["CHAR"],
-							//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
-							"compare" : ["IN", "NOT IN", "AND"]
-						},
-						"multi-select" :{
-							"type":["multi-select", "select", "checkboxes", "radios"],
-							"data_type" : ["CHAR"],
-							//"compare" : ["IN", "NOT IN"]
-							"compare" : ["IN", "NOT IN", "AND"]
-						},
-						"checkboxes" :{
-							"type":["checkboxes", "select", "multi-select", "radios"],
-							"data_type" : ["CHAR"],
-							//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
-							"compare" : ["IN", "NOT IN","AND"]
-						},
-						"radios" :{
-							"type":[ "radios", "select", "multi-select", "checkboxes"],
-							"data_type" : ["CHAR"],
-							//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
-							"compare" : ["IN", "NOT IN", "AND"]
-						},
-					},
-					"field" : {
-						"textfield" :{
-							"type":["textfield", "select", "multi-select", "checkboxes", "checkbox", "radios", "date", "datepicker"],
-							"data_type" : ["CHAR", "NUMERIC", "DATE", "DATETIME", "TIME"],
-							"compare" : ["=", "!=", ">", ">=", "<", "<=", "LIKE", "NOT LIKE", "IN", "NOT IN", "BETWEEN", "NOT BETWEEN"]
-						},
-						"multi-select" :{
-							"type":["multi-select", "checkboxes", "select", "textfield", "checkbox", "radios"],
-							"data_type" : ["CHAR", "NUMERIC"],
-							"compare" : ["IN", "NOT IN"]
-						},
-						"textarea" :{
-							"type":["textfield", "select", "multi-select", "checkboxes", "checkbox", "radios"],
-							"data_type" : ["CHAR"],
-							"compare" : ["LIKE", "NOT LIKE"]
-						},
-						"date" :{
-							"type":["date", "datepicker", "textfield"],
-							"data_type" : ["NUMERIC"],
-							"compare" : ["=", "!=", ">", "<", "BETWEEN", "NOT BETWEEN" ]
-						},
-						"datepicker" :{
-							"type":["datepicker", "date", "textfield"],
-							"data_type" : ["NUMERIC"],
-							"compare" : ["=", "!=", ">", "<", "BETWEEN", "NOT BETWEEN" ]
-						},
-						"email" :{
-							"type":["textfield","select", "multi-select", "checkboxes", "checkbox", "radios"],
-							"data_type" : ["CHAR"],
-							"compare" : ["=", "!=", "LIKE", "NOT LIKE"]
-						},
-						"file" :{
-							"type":["textfield", "select", "radios"],
-							"data_type" : ["CHAR"],
-							"compare" : ["=", "!=", "LIKE", "NOT LIKE"]
-						},
-						"image" :{
-							"type":["textfield", "select", "radios"],
-							"data_type" : ["CHAR"],
-							"compare" : ["=", "LIKE", "!=", "NOT LIKE"]
-						},
-						"numeric" :{
-							"type":["textfield", "select", "multi-select", "checkboxes", "checkbox", "radios"],
-							"data_type" : ["NUMERIC", "DECIMAL", "SIGNED", "UNSIGNED"],
-							"compare" : ["=", "!=", ">", ">=", "<", "<=", "BETWEEN",  "NOT BETWEEN", "LIKE", "NOT LIKE"]
-						},
-						"phone" :{
-							"type":["textfield", "select",  "hidden"],
-							"data_type" : ["CHAR"],
-							"compare" : ["=", "!=", "LIKE", "NOT LIKE"]
-						},
-						"select" :{
-							"type":["select", "multi-select", "checkboxes", "radios", "textfield"],
-							"data_type" : ["CHAR", "BOOLEAN", "NUMERIC"],
-							"compare" : ["=", "!=", ">", ">=", "<", "<=", "LIKE", "NOT LIKE", "BETWEEN", "NOT BETWEEN"]
-						},
-						"skype" :{
-							"type":["textfield", "select", "radios"],
-							"data_type" : ["CHAR"],
-							"compare" : ["=", "!=", "LIKE", "NOT LIKE"]
-						},
-						"url" :{
-							"type":["textfield", "select", "radios"],
-							"data_type" : ["CHAR"],
-							"compare" : ["=", "!=", "LIKE", "NOT LIKE"]
-						},
-						"checkbox" :{
-							"type":["checkbox", "select", "textfield", "multi-select", "checkboxes", "radios"],
-							"data_type" : ["CHAR", "BOOLEAN", "NUMERIC"],
-							"compare" : ["=", "!=", ">", ">=", "<", "<=", "LIKE", "NOT LIKE"]
-						},
-						"checkboxes" :{
-							"type":["checkboxes", "multi-select", "radios", "select", "textfield", "checkbox"],
-							"data_type" : ["CHAR", "NUMERIC"],
-							"compare" : ["IN", "NOT IN", "=", "!=", ">", ">=", "<", "<="]
-						},
-						"radios" :{
-							"type":[ "radios", "select", "multi-select", "checkboxes", "textfield", "checkbox"],
-							"data_type" : ["CHAR", "NUMERIC"],
-							"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE", ">", ">=", "<", "<="]
-						},
-						"wysiwyg" :{
-							"type":["textfield", "select", "multi-select", "checkboxes", "radios", "checkbox"],
-							"data_type" : ["CHAR"],
-							"compare" : ["LIKE", "NOT LIKE"]
-						}
-					}
-				}
-			};
-
-			///////////////MODELS END ////////////
-
-			// A generic JSON store
-			var JsonStore = function()
-			{
-				var self = this;
-				//keep track if we're loading
-				self.loading = false;
-
-				self.loader = {
-					loader: jqp('<li><div class="ajax-loader spinner"><div></li>'),
-					loadShow: function( el )
-					{
-						self.loading = true;
-						self.loader.loader.appendTo( el ).show();
-					},
-					loadHide: function()
-					{
-						self.loader.loader.fadeOut(200, function(){
-							self.loading = false;
-							jqp(this).remove();
-						});
-					}
-				};
-
-				self.ajaxCall = function( data, url, method, callback, args, object )
-				{
-					var URI = url ? url : ajaxurl, obj = data, type = method ? method : 'post';
-
-					if( obj )
-					{
-						jqp.ajax({
-							type: type,
-							url: URI ,
-							data: obj,
-							dataType: 'json',
-
-							error: function(XMLHttpRequest, textStatus, errorThrown)
-							{
-								if( self.loading ) self.loader.loadHide();
-
-								WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, "Error: " + textStatus + " " + errorThrown, true, 'error' );
-								/*
-								WPV_parametric_local.message.container.wpvToolsetMessage({
-									text:"Error: " + textStatus +" "+ errorThrown,
-									type: 'error',
-									stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-									close:true
-								});
-								*/
-
-								console.error( "Error: ", textStatus, errorThrown );
-								return false;
-							},
-							beforeSend: function( XMLHttpRequest, Obj )
-							{
-								try
-								{
-									//always attach view_id when you send data
-									Obj.data += '&view_id='+WPV_Parametric.view_id
-
-									if (XMLHttpRequest && XMLHttpRequest.overrideMimeType)
-									{
-										XMLHttpRequest.overrideMimeType("application/j-son;charset=UTF-8");
-									}
-								}
-								catch( e)
-								{
-									//if(  WPV_Parametric.debug ) console.log(e.message);
-									return false;
-								}
-
-
-							},
-							success: function( data, textStatus, jqXHR )
-							{
-								if( data.Data && data.Data.error )
-								{
-									console.error( data.Data.error );
-									WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, data.Data.error, true, 'error' );
-									/*
-									WPV_parametric_local.message.container.wpvToolsetMessage({
-										text:data.Data.error,
-										type:'error',
-										stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-										close:true
-									});
-									*/
-
-								}
-								else if( data.Data && data.Data.message )
-								{
-									WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, data.Data.message, true, 'success' );
-									/*
-									WPV_parametric_local.message.container.wpvToolsetMessage({
-										text:data.Data.message,
-										type:'info',
-										stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-										close:true
-									});
-									*/
-
-								}
-								else if( data.Data && !data.Data.error)
-								{
-									//if(  WPV_Parametric.debug ) console.log("Data from server RAW in JSON STORE OBJ::: ", data)
-									if ( callback && typeof callback == 'function' )
-									{
-										args = [data, textStatus, args];
-										callback.apply( object ? object : self, args ? args : [] );
-									}
-									else
-									{
-										WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.ajax_callback_undefined, true, 'error' );
-										/*
-										WPV_parametric_local.message.container.wpvToolsetMessage({
-											text:WPV_Parametric.ajax_callback_undefined
-										});
-										*/
-									}
-
-								}
-
-							},
-							complete: function( data, textStatus )
-							{
-								if( self.loading ) self.loader.loadHide();
-
-							}
-						});
-					}
-				}
-			};
-
-			var ShortCodeParser = function( area ){
-
-				var self = this;
-
-				self.area = area;
-
-				self.editor = icl_editor ? icl_editor : undefined;
-
-				self.isCM = false;
-				self.isTiny = false;
-				self.isFlat = false;
-
-				self.NULL_CHAR = 0;
-				self.TAG_OPEN = 91;
-				self.TAG_CLOSE = 93;
-				self.SLASH = 47;
-
-				self.currentIndex = 0;
-				self.moveRight = true;
-				self.strLen = 0;
-
-				self.shortCodeObject = null;
-				self.shortcode = null;
-				self.shortCodeRaw = null;
-
-				self.cursor_was = 0;
-
-				self.area_content = '';
-
-				self.parse = function( txtarea )
-				{
-					var area = txtarea ? txtarea : self.area;
-					//each time we call this one we reset all vars
-					self.shortcode = null;
-					self.shortCodeObject = null;
-					self.shortCodeRaw = null;
-
-					self.currentIndex = 0;
-					self.moveRight = true;
-					self.strLen = 0;
-
-					self.cursor_was = 0;
-
-					self.area_content = '';
-
-					self.area = area; /*overrides constructor settings if you want to use methods Statically*/
-
-					if( area )
-					{
-						try
-						{
-							self.cm = self.editor.isCodeMirror( area );
-
-							self.tiny = self.editor.isTinyMce( area );
-						}
-						catch( e )
-						{
-							throw {
-								name:        "Missing Dependency",
-								message:     "Error detected. You are probably missing dependency with icl_editor object."
-							};
-						}
-
-
-						if( self.tiny )
-						{
-							self.isTiny = true;
-							self.manage_tiny();
-						}
-						else if( self.cm )
-						{
-							self.isCM = true;
-							self.shortcode = self.manage_cm();
-						}
-						else
-						{
-							self.isFlat = true;
-							self.manage_flat();
-						}
-					}
-					else
-					{
-						throw {
-							name:        "Missing Argument",
-							message:     "Error detected. You should pass a valid textarea DOM object to constructor or init methods."
-						};
-					}
-					return self.shortcode;
-				}
-
-			};
-
-			ShortCodeParser.prototype.manage_cm = function()
-			{
-				var cm = this.cm
-				, string = ''
-				, cursor
-				, text_before = ''
-				, text_after = ''
-				, index = 0
-				, content = ''
-				, strlen = 0;
-
-				cm.focus();
-
-				cursor = this.cmGetCursor();
-				this.cursor_was = cursor;
-				index = this.cmCursorIndex( cursor );
-				content = this.getCmAreaContent( cursor );
-
-				self.area_content  = content;
-
-				string = this.getStringShortCode( content, content.length,  index );
-
-				if( !string )
-				{
-					return null;
-				}
-
-				return string;
-			};
-
-			ShortCodeParser.prototype.getContent = function()
-			{
-				return self.content;
-			};
-
-			ShortCodeParser.prototype.getCursorWas = function()
-			{
-				return this.cursor_was;
-			};
-
-			ShortCodeParser.prototype.cmGetCursor = function()
-			{
-				var cm = this.cm;
-				return cm.getCursor(false);
-			};
-
-			ShortCodeParser.prototype.cmCursorIndex = function( cursor )
-			{
-				var cm = this.cm;
-				index = cm.indexFromPos(cursor);
-				return index;
-			};
-
-			ShortCodeParser.prototype.getCmAreaContent = function( cursor )
-			{
-				var cm = this.cm;
-				text_before = cm.getRange({line:0,ch:0}, cursor)
-				text_after = cm.getRange(cursor, {line:cm.lastLine(),ch:null})
-				content = text_before+text_after;
-				return content;
-			};
-
-			ShortCodeParser.prototype.manage_tiny = function()
-			{
-				////if(  WPV_Parametric.debug ) console.log('is a tinyMCE area ', this.tiny);
-			};
-
-			ShortCodeParser.prototype.manage_flat = function()
-			{
-				////if(  WPV_Parametric.debug ) console.log('is default area ', this.area);
-				////if(  WPV_Parametric.debug ) console.log( this.area.caret() );
-			};
-
-			ShortCodeParser.prototype.shortCodeGetTagName = function( )
-			{
-				var ret = '';
-
-				try
-				{
-					ret = this.shortcode.split(" ")[0];
-				}
-				catch( e )
-				{
-					//if(  WPV_Parametric.debug ) console.log( e.message );
-				}
-				return ret;
-			};
-			ShortCodeParser.prototype.getShortCodeObject = function()
-			{
-				var obj = null, self = this, tmp = '', prev = '';
-
-				try
-				{
-					obj = {};
-
-					tmp = self.shortCodeRaw;
-
-					tmp = tmp.replace(self.shortCodeGetTagName(), '');
-
-					jQuery.each(tmp.split('" '), function( i, v ){
-						try{
-							var prop = v.split("=");
-							jQuery.each( prop, function(index, value){
-							if( typeof prop[1] == 'undefined' /*&& ( prev == 'values' || prev == 'display_values' )*/ )
-							{
-								obj[prev] = value.replace(/"/g, '');
-							}
-							else
-							{
-								obj[prop[0].trim()] = prop[1].replace(/"/g, '');
-							}
-							prev = prop[0].trim();
-						});
-					}
-					catch( e )
-					{
-						if(  WPV_Parametric.debug ) console.log( "Catches error", e.message );
-						obj = null;
-					}
-
-				});
+var WPV_TypesFieldsType = {
+	"Data" : {
+		"relationship" : {
+			"textfield" :{
+				"type":["select", "multi-select", "checkboxes", "radios"],
+				"data_type" : ["CHAR"],
+				//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
+				"compare" : ["IN"]
+			},
+			"select" :{
+				"type":["select", "multi-select", "checkboxes", "radios"],
+				"data_type" : ["CHAR"],
+				//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
+				"compare" : ["IN"]
+			},
+			"multi-select" :{
+				"type":["multi-select", "select", "checkboxes", "radios"],
+				"data_type" : ["CHAR"],
+				//"compare" : ["IN", "NOT IN"]
+				"compare" : ["IN"]
+			},
+			"checkboxes" :{
+				"type":["checkboxes", "select", "multi-select", "radios"],
+				"data_type" : ["CHAR"],
+				//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
+				"compare" : ["IN"]
+			},
+			"radios" :{
+				"type":[ "radios", "select", "multi-select", "checkboxes"],
+				"data_type" : ["CHAR"],
+				//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
+				"compare" : ["IN"]
+			},
+		},
+		"taxonomy" : {
+			"textfield" :{
+				"type":["select", "multi-select", "checkboxes", "radios"],
+				"data_type" : ["CHAR"],
+				//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
+				"compare" : ["IN", "NOT IN", "AND"]
+			},
+			"select" :{
+				"type":["select", "multi-select", "checkboxes", "radios"],
+				"data_type" : ["CHAR"],
+				//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
+				"compare" : ["IN", "NOT IN", "AND"]
+			},
+			"multi-select" :{
+				"type":["multi-select", "select", "checkboxes", "radios"],
+				"data_type" : ["CHAR"],
+				//"compare" : ["IN", "NOT IN"]
+				"compare" : ["IN", "NOT IN", "AND"]
+			},
+			"checkboxes" :{
+				"type":["checkboxes", "select", "multi-select", "radios"],
+				"data_type" : ["CHAR"],
+				//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
+				"compare" : ["IN", "NOT IN","AND"]
+			},
+			"radios" :{
+				"type":[ "radios", "select", "multi-select", "checkboxes"],
+				"data_type" : ["CHAR"],
+				//	"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE"]
+				"compare" : ["IN", "NOT IN", "AND"]
+			},
+		},
+		"field" : {
+			"textfield" :{
+				"type":["textfield", "select", "multi-select", "checkboxes", "checkbox", "radios", "date", "datepicker"],
+				"data_type" : ["CHAR", "NUMERIC", "DATE", "DATETIME", "TIME"],
+				"compare" : ["=", "!=", ">", ">=", "<", "<=", "LIKE", "NOT LIKE", "IN", "NOT IN", "BETWEEN", "NOT BETWEEN"]
+			},
+			"multi-select" :{
+				"type":["multi-select", "checkboxes", "select", "textfield", "checkbox", "radios"],
+				"data_type" : ["CHAR", "NUMERIC"],
+				"compare" : ["IN", "NOT IN"]
+			},
+			"textarea" :{
+				"type":["textfield", "select", "multi-select", "checkboxes", "checkbox", "radios"],
+				"data_type" : ["CHAR"],
+				"compare" : ["LIKE", "NOT LIKE"]
+			},
+			"date" :{
+				"type":["date", "datepicker", "textfield"],
+				"data_type" : ["NUMERIC"],
+				"compare" : ["=", "!=", ">", "<", "BETWEEN", "NOT BETWEEN" ]
+			},
+			"datepicker" :{
+				"type":["datepicker", "date", "textfield"],
+				"data_type" : ["NUMERIC"],
+				"compare" : ["=", "!=", ">", "<", "BETWEEN", "NOT BETWEEN" ]
+			},
+			"email" :{
+				"type":["textfield","select", "multi-select", "checkboxes", "checkbox", "radios"],
+				"data_type" : ["CHAR"],
+				"compare" : ["=", "!=", "LIKE", "NOT LIKE"]
+			},
+			"file" :{
+				"type":["textfield", "select", "radios"],
+				"data_type" : ["CHAR"],
+				"compare" : ["=", "!=", "LIKE", "NOT LIKE"]
+			},
+			"image" :{
+				"type":["textfield", "select", "radios"],
+				"data_type" : ["CHAR"],
+				"compare" : ["=", "LIKE", "!=", "NOT LIKE"]
+			},
+			"numeric" :{
+				"type":["textfield", "select", "multi-select", "checkboxes", "checkbox", "radios"],
+				"data_type" : ["NUMERIC", "DECIMAL", "SIGNED", "UNSIGNED"],
+				"compare" : ["=", "!=", ">", ">=", "<", "<=", "BETWEEN",  "NOT BETWEEN", "LIKE", "NOT LIKE"]
+			},
+			"phone" :{
+				"type":["textfield", "select",  "hidden"],
+				"data_type" : ["CHAR"],
+				"compare" : ["=", "!=", "LIKE", "NOT LIKE"]
+			},
+			"select" :{
+				"type":["select", "multi-select", "checkboxes", "radios", "textfield"],
+				"data_type" : ["CHAR", "BOOLEAN", "NUMERIC"],
+				"compare" : ["=", "!=", ">", ">=", "<", "<=", "LIKE", "NOT LIKE", "BETWEEN", "NOT BETWEEN"]
+			},
+			"skype" :{
+				"type":["textfield", "select", "radios"],
+				"data_type" : ["CHAR"],
+				"compare" : ["=", "!=", "LIKE", "NOT LIKE"]
+			},
+			"url" :{
+				"type":["textfield", "select", "radios"],
+				"data_type" : ["CHAR"],
+				"compare" : ["=", "!=", "LIKE", "NOT LIKE"]
+			},
+			"checkbox" :{
+				"type":["checkbox", "select", "textfield", "multi-select", "checkboxes", "radios"],
+				"data_type" : ["CHAR", "BOOLEAN", "NUMERIC"],
+				"compare" : ["=", "!=", ">", ">=", "<", "<=", "LIKE", "NOT LIKE"]
+			},
+			"checkboxes" :{
+				"type":["checkboxes", "multi-select", "radios", "select", "textfield", "checkbox"],
+				"data_type" : ["CHAR", "NUMERIC"],
+				"compare" : ["IN", "NOT IN", "=", "!=", ">", ">=", "<", "<="]
+			},
+			"radios" :{
+				"type":[ "radios", "select", "multi-select", "checkboxes", "textfield", "checkbox"],
+				"data_type" : ["CHAR", "NUMERIC"],
+				"compare" : ["IN", "=", "NOT IN", "!=", "LIKE", "NOT LIKE", ">", ">=", "<", "<="]
+			},
+			"wysiwyg" :{
+				"type":["textfield", "select", "multi-select", "checkboxes", "radios", "checkbox"],
+				"data_type" : ["CHAR"],
+				"compare" : ["LIKE", "NOT LIKE"]
 			}
-			catch( e )
-			{
-				//if(  WPV_Parametric.debug ) console.log( e.message );
+		}
+	}
+};
+
+///////////////MODELS END ////////////
+
+/*
+* -------------------------------------
+* ShortCodeParser
+* -------------------------------------
+*/
+
+var ShortCodeParser = function( area ) {
+
+	var self = this;
+
+	self.area = area;
+	self.editor = icl_editor ? icl_editor : undefined;
+
+	self.isCM = false;
+	self.isTiny = false;
+	self.isFlat = false;
+
+	self.NULL_CHAR = 0;
+	self.TAG_OPEN = 91;
+	self.TAG_CLOSE = 93;
+	self.SLASH = 47;
+
+	self.currentIndex = 0;
+	self.moveRight = true;
+	self.strLen = 0;
+
+	self.shortCodeObject = null;
+	self.shortcode = null;
+	self.shortCodeRaw = null;
+
+	self.cursor_was = 0;
+
+	self.area_content = '';
+
+	self.parse = function( txtarea ) {
+		var area = txtarea ? txtarea : self.area;
+		//each time we call this one we reset all vars
+		self.shortcode = null;
+		self.shortCodeObject = null;
+		self.shortCodeRaw = null;
+
+		self.currentIndex = 0;
+		self.moveRight = true;
+		self.strLen = 0;
+
+		self.cursor_was = 0;
+
+		self.area_content = '';
+		self.area = area; /*overrides constructor settings if you want to use methods Statically*/
+
+		if ( area ) {
+			try {
+				self.cm = self.editor.isCodeMirror( area );
+				self.tiny = self.editor.isTinyMce( area );
+			} catch( e ) {
+				throw {
+					name:        "Missing Dependency",
+					message:     "Error detected. You are probably missing dependency with icl_editor object."
+				};
+			}
+
+			if ( self.tiny ) {
+				self.isTiny = true;
+				self.manage_tiny();
+			} else if ( self.cm ) {
+				self.isCM = true;
+				self.shortcode = self.manage_cm();
+			} else {
+				self.isFlat = true;
+				self.manage_flat();
+			}
+		} else {
+			throw {
+				name:        "Missing Argument",
+				message:     "Error detected. You should pass a valid textarea DOM object to constructor or init methods."
+			};
+		}
+		return self.shortcode;
+	}
+};
+
+ShortCodeParser.prototype.manage_cm = function() {
+	var cm = this.cm,
+	string = '',
+	cursor,
+	text_before = '',
+	text_after = '',
+	index = 0,
+	content = '',
+	strlen = 0;
+
+	cm.focus();
+
+	cursor = this.cmGetCursor();
+	this.cursor_was = cursor;
+	index = this.cmCursorIndex( cursor );
+	content = this.getCmAreaContent( cursor );
+
+	self.area_content = content;
+
+	string = this.getStringShortCode( content, content.length,  index );
+
+	if ( ! string ) {
+		return null;
+	}
+
+	return string;
+};
+
+ShortCodeParser.prototype.getContent = function() {
+	return self.content;
+};
+
+ShortCodeParser.prototype.getCursorWas = function() {
+	return this.cursor_was;
+};
+
+ShortCodeParser.prototype.cmGetCursor = function() {
+	var cm = this.cm;
+	return cm.getCursor(false);
+};
+
+ShortCodeParser.prototype.cmCursorIndex = function( cursor ) {
+	var cm = this.cm;
+	index = cm.indexFromPos(cursor);
+	return index;
+};
+
+ShortCodeParser.prototype.getCmAreaContent = function( cursor ) {
+	var cm = this.cm;
+	text_before = cm.getRange({line:0,ch:0}, cursor)
+	text_after = cm.getRange(cursor, {line:cm.lastLine(),ch:null})
+	content = text_before+text_after;
+	return content;
+};
+
+ShortCodeParser.prototype.manage_tiny = function() {
+	////if(  WPV_Parametric.debug ) console.log('is a tinyMCE area ', this.tiny);
+};
+
+ShortCodeParser.prototype.manage_flat = function() {
+	////if(  WPV_Parametric.debug ) console.log('is default area ', this.area);
+	////if(  WPV_Parametric.debug ) console.log( this.area.caret() );
+};
+
+ShortCodeParser.prototype.shortCodeGetTagName = function() {
+	var ret = '';
+
+	try {
+		ret = this.shortcode.split(" ")[0];
+	} catch( e ) {
+		//if(  WPV_Parametric.debug ) console.log( e.message );
+	}
+	return ret;
+};
+
+ShortCodeParser.prototype.getShortCodeObject = function() {
+	var obj = null, self = this, tmp = '', prev = '';
+
+	try {
+		obj = {};
+		tmp = self.shortCodeRaw;
+		tmp = tmp.replace( self.shortCodeGetTagName(), '' );
+
+		jQuery.each( tmp.split('" '), function( i, v ) {
+			try {
+				var prop = v.split("=");
+				jQuery.each( prop, function( index, value ) {
+					if ( typeof prop[1] == 'undefined' /*&& ( prev == 'values' || prev == 'display_values' )*/ ) {
+						obj[prev] = value.replace(/"/g, '');
+					} else {
+						obj[prop[0].trim()] = prop[1].replace(/"/g, '');
+					}
+					prev = prop[0].trim();
+				});
+			} catch( e ) {
+				if(  WPV_Parametric.debug ) console.log( "Catches error", e.message );
 				obj = null;
 			}
+		});
+	} catch( e ) {
+		//if(  WPV_Parametric.debug ) console.log( e.message );
+		obj = null;
+	}
+	//if(  WPV_Parametric.debug ) console.log("ShortCodeParser.prototype.getShortCodeObject:: ", obj);
+	return obj;
+};
 
-			//if(  WPV_Parametric.debug ) console.log("ShortCodeParser.prototype.getShortCodeObject:: ", obj);
-			return obj;
-		};
+ShortCodeParser.prototype.getShortCodeRawString = function() {
+	return this.shortCodeRaw;
+};
 
-		ShortCodeParser.prototype.getShortCodeRawString = function()
-		{
-			return this.shortCodeRaw;
-		};
+ShortCodeParser.prototype.getStringShortCode = function( str, len, start ) {
+	var charCodesArray, chr, prev_char, tmp = '';
+	this.strLen = len;
+	
+	if ( str.charAt(start) == '[' ) {
+		this.currentIndex = start-2;
+		this.moveRight = false;
+	} else {
+		this.currentIndex = start;
+	}
 
-		ShortCodeParser.prototype.getStringShortCode = function(str, len, start)
-		{
-			var charCodesArray, chr, prev_char, tmp = '';
+	charCodesArray = this.getTagLeft( str );
 
-			this.strLen = len;
-			if( str.charAt(start) == '[' )
-			{
-				this.currentIndex = start-2;
-				this.moveRight = false;
-			}
-			else
-			{
-				this.currentIndex = start;
-			}
+	tmp += charCodesArray.reverse( ).join('');
 
-			charCodesArray = this.getTagLeft( str );
+	if ( this.moveRight ) {
+		this.currentIndex = start + 1;
+		charCodesArray = this.getTagRight( str );
+		tmp += charCodesArray.join('');
+		//if( WPV_Parametric.debug ) console.log( "chr arr", charCodesArray, " chr str", tmp );
+	}
 
-			tmp += charCodesArray.reverse( ).join('');
+	this.shortCodeRaw = tmp;
 
-			if( this.moveRight )
-			{
-				this.currentIndex = start + 1;
+	tmp = tmp.replace(/"/g, '');
 
-				charCodesArray = this.getTagRight( str );
+	return ( ~tmp.indexOf( ']' ) ) ? tmp.split( ']' )[0].removeExtraWhiteSpaces() : tmp.removeExtraWhiteSpaces();
+};
 
-				tmp += charCodesArray.join('');
+ShortCodeParser.prototype.getPrevChar = function( str ) {
+	return ( this.currentIndex >= 0 && str.charCodeAt( this.currentIndex  ) != this.TAG_OPEN ) ? str.charCodeAt( this.currentIndex-- ) : this.NULL_CHAR;
+};
 
-				//if( WPV_Parametric.debug ) console.log( "chr arr", charCodesArray, " chr str", tmp );
-			}
+ShortCodeParser.prototype.getNextChar = function( str ) {
+	return ( this.currentIndex < this.strLen && str.charCodeAt( this.currentIndex  ) != this.TAG_CLOSE) ? str.charCodeAt( this.currentIndex++ ) : this.NULL_CHAR;
+};
 
-			this.shortCodeRaw = tmp;
+ShortCodeParser.prototype.goLeft = function( str ) {
+	return ( this.currentIndex >= 0 ) ? str.charCodeAt( this.currentIndex-- ) : this.NULL_CHAR;
+};
 
-			tmp = tmp.replace(/"/g, '');
+ShortCodeParser.prototype.getCloseLeft = function( str ) {
+	//
+};
 
-			return ( ~tmp.indexOf( ']' ) ) ? tmp.split( ']' )[0].removeExtraWhiteSpaces() : tmp.removeExtraWhiteSpaces();
-		};
+ShortCodeParser.prototype.getCloseTagIndex = function( str ) {
+	//
+};
 
-		ShortCodeParser.prototype.getPrevChar = function(str)
-		{
-			return ( this.currentIndex >= 0 && str.charCodeAt( this.currentIndex  ) != this.TAG_OPEN ) ? str.charCodeAt( this.currentIndex-- ) : this.NULL_CHAR;
-		};
-		ShortCodeParser.prototype.getNextChar = function(str)
-		{
-			return ( this.currentIndex < this.strLen && str.charCodeAt( this.currentIndex  ) != this.TAG_CLOSE) ? str.charCodeAt( this.currentIndex++ ) : this.NULL_CHAR;
-		};
+ShortCodeParser.prototype.cursorInside = function() {
+	var cursor = this.cmGetCursor(),
+	index = this.cmCursorIndex( cursor ),
+	content = this.getCmAreaContent( cursor ),
+	chr;
 
-		ShortCodeParser.prototype.goLeft = function( str )
-		{
-			return ( this.currentIndex >= 0 ) ? str.charCodeAt( this.currentIndex-- ) : this.NULL_CHAR;
-		};
+	this.currentIndex = index-1;
 
-		ShortCodeParser.prototype.getCloseLeft = function( str )
-		{
-			//
-		};
+	while ( chr = this.goLeft( content ) ) {
+		if ( chr == this.TAG_CLOSE ) {
+			return false;
+		}
+		if ( chr == this.TAG_OPEN ) {
+			return true;
+		}
+	}
+	return false;
+};
 
-		ShortCodeParser.prototype.getCloseTagIndex = function( str )
-		{
-			//
-		};
+ShortCodeParser.prototype.getTagLeft = function( str ) {
+	var chr, charCodesArray = [];
+	//get the left part of the string
+	while ( chr = this.getPrevChar(str) ) {
+		if ( chr == 47 ) {
+			this.currentIndex = this.currentIndex - 2;
+			charCodesArray = [];
+			this.moveRight = false;
+			continue;
+		}
+		charCodesArray.push( String.fromCharCode( chr ) );
+	}
+	return charCodesArray;
+};
 
-		ShortCodeParser.prototype.cursorInside = function(  )
-		{
-			var cursor = this.cmGetCursor(),
-			index = this.cmCursorIndex( cursor ),
-			content = this.getCmAreaContent( cursor ),
-			chr;
+ShortCodeParser.prototype.getTagRight = function( str ) {
+	var chr, charCodesArray = [];
+	//get the left part of the string
+	while ( chr = this.getNextChar( str ) ) {
+		charCodesArray.push( String.fromCharCode( chr ) );
+	}
+	return charCodesArray;
+};
 
-			this.currentIndex = index-1;
+ShortCodeParser.prototype.replace_tag_content = function( tag, short_code, nicename, content, editable, name ) {
+	var rpl = '';
 
-			while( chr = this.goLeft(content) )
-			{
-				if( chr == this.TAG_CLOSE )
+	try {
+		//console.log( "Tag ", tag, " \nnew", short_code, " \nnice ", nicename, " \ncont", content, "\old ", editable, "\nname", name );
+		rpl = content.replace( editable, tag+short_code );
+		rpl = rpl.replace( name, nicename );
+		this.cm.setSelection({ line:0, ch:0 }, { line:this.cm.lastLine(), ch:null } );
+		this.cm.replaceSelection( rpl );
+		this.cm.setSelection( this.getCursorWas() );
+	} catch( e ) {
+		//if(  WPV_Parametric.debug ) console.log( e.message );
+	}
+	return rpl;
+};
+
+ShortCodeParser.prototype.append_tag_content = function( editable, replace, content ) {
+	var append = '';
+
+	try {
+		append = content.replace( editable, editable+replace );
+		var control = content.indexOf(editable);
+		this.cm.setSelection({ line:0, ch:0 }, { line:this.cm.lastLine(), ch:null } );
+		this.cm.replaceSelection( append );
+		this.cm.setSelection( this.getCursorWas() );
+	} catch( e ) {
+		//if(  WPV_Parametric.debug ) console.log( e.message )
+	}
+	return append;
+};
+
+
+/*
+* -------------------------------------
+* Editor extra buttons
+* -------------------------------------
+*/
+
+// WPV_parametric_local.generic_button
+var WPV_ParametricGenericButtonUtils = function() {
+	
+	var self = this;
+	
+	self.textarea = jqp( "#wpv_filter_meta_html_content" );
+	self.toolbar = jqp('.js-wpv-filter-edit-toolbar');
+	self.editor = icl_editor ? icl_editor : undefined;
+	
+	self.codemirror_highlight_options = {
+		className: 'wpv-codemirror-highlight'
+	};
+	
+	self.get_text_area_content = function() {
+		var c = '';
+		c = self.codemirror_views.getValue();
+		return c;
+	};
+	
+	self.cursorInside = function( area, start, end ) {
+		try {
+			return self.editor.cursorWithin( self.textarea, 'wpv-filter-controls', '/wpv-filter-controls' );
+		} catch( e ) {
+			
+		}
+		return false;
+	};
+	
+	self.insert_shortcode_and_highlight = function( shortcode ) {
+		var current_cursor = self.codemirror_views.getCursor( true );
+		self.editor.InsertAtCursor( self.textarea, shortcode );
+		var end_cursor = self.codemirror_views.getCursor( true ),
+		marker = self.codemirror_views.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+		setTimeout( function() {
+			  marker.clear();
+		}, 3000);
+	};
+	
+	self.init = function() {
+		self.codemirror_views = self.editor.codemirrorGet( 'wpv_filter_meta_html_content' );
+		self.codemirror_views.on( 'change', function() {
+			WPV_parametric_local.add_search.handle_flags();
+			WPV_parametric_local.add_spinner.handle_flags();
+			WPV_parametric_local.add_reset.handle_flags();
+			WPV_parametric_local.add_submit.handle_flags();
+		});
+	};
+	
+	self.init();
+	
+	return this;
+};
+
+var WPV_ParametricSearchButton = function() {
+	var self = this,
+	button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-search-short-tag" />'),
+	icon = jqp('<i class="icon-search" />'),
+	title = WPV_Parametric.add_toolbar_search_button_title,
+	icon_complete = jqp('<i class="icon-bookmark flow-complete js-ps-button-complete" style="display:none" />'),
+	title_complete = WPV_Parametric.add_toolbar_search_button_title_complete,
+	icon_filter_missing = jqp('<i class="icon-bookmark flow-warning js-ps-button-filter-missing" style="display:none" />'),
+	title_filter_missing = WPV_Parametric.add_toolbar_search_button_title_missing,
+	title_filter_wrong = WPV_Parametric.add_toolbar_search_button_title_wrong,
+	label = jqp('<span class="button-label" />'),
+	list = jqp('<li class="js-editor-addon-button-wrapper" />'),
+	filter_box = jqp('#js-row-post_search');
+
+	self.search_where = 'full_content';
+	//static reference
+	WPV_ParametricSearchButton.button = button;
+
+	self.init = function() {
+		self.init_dialogs();
+		self.pwin = WPV_parametric_local.pwindow;
+		self.createButton();
+		self.handle_flags();
+		self.create_search();
+	};
+	
+	self.init_dialogs = function() {
+		var dialog_height = jqp( window ).height() - 100;
+		self.dialog_insert = jqp( "#js-wpv-parametric-search-dialogs .js-dialog-search-box-button" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: WPV_Parametric.add_search_shortcode_dialog_title,
+			minWidth: 550,
+			maxHeight: dialog_height,
+			draggable: false,
+			resizable: false,
+			position: { my: "center top+50", at: "center top", of: window },
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				jqp( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				jqp( 'body' ).removeClass( 'modal-open' );
+			},
+			buttons:[
 				{
-					return false;
-				}
-				if( chr == this.TAG_OPEN )
+					class: 'button-secondary',
+					text: WPV_Parametric.cancel,
+					click: function() {
+						jqp( this ).dialog( "close" );
+						WPV_parametric_local.generic_button.codemirror_views.focus();
+					}
+				},
 				{
-					return true;
+					class: 'button-primary js-parametric-add-search-box',
+					text: WPV_Parametric.insert,
+					click: function() {
+						var thiz = jqp( '.js-parametric-add-search-box' ),
+						data = {
+							style: jqp( '.js-wpv-search-box-style' ).val(),
+							class: jqp( '.js-wpv-search-box-class' ).val()
+						};
+						thiz
+							.addClass( 'button-secondary' )
+							.removeClass( 'button-primary' )
+							.prop( 'disabled', true );
+						var thiz_spinner = jqp( '<div class="wpv-spinner ajax-loader">' ).insertAfter( thiz ).show();
+						self.search_where = jqp( '.js-wpv-post-search-options-dialog:checked' ).val();
+						self.create_and_insert( jqp( this ), data, thiz_spinner );
+					}
 				}
+			]
+		});
+		
+		self.dialog_override = jqp( "#js-wpv-parametric-search-dialogs .js-dialog-search-override-button" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: WPV_Parametric.add_search_shortcode_dialog_title_override,
+			minWidth: 550,
+			maxHeight: dialog_height,
+			draggable: false,
+			resizable: false,
+			position: { my: "center top+50", at: "center top", of: window },
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				jqp( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				jqp( 'body' ).removeClass( 'modal-open' );
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: WPV_Parametric.cancel,
+					click: function() {
+						jqp( this ).dialog( "close" );
+						WPV_parametric_local.generic_button.codemirror_views.focus();
+					}
+				},
+				{
+					class: 'button-primary js-parametric-add-search-override',
+					text: WPV_Parametric.insert,
+					click: function() {
+						var thiz = jqp( '.js-parametric-add-search-override' ),
+						data = {
+							style: jqp( '.js-wpv-search-override-style' ).val(),
+							class: jqp( '.js-wpv-search-override-class' ).val()
+						};
+						thiz
+							.addClass( 'button-secondary' )
+							.removeClass( 'button-primary' )
+							.prop( 'disabled', true );
+						var thiz_spinner = jqp( '<div class="wpv-spinner ajax-loader">' ).insertAfter( thiz ).show();
+						self.search_where = jqp( '.js-wpv-post-search-override-dialog:checked' ).val();
+						self.create_and_insert( jqp( this ), data, thiz_spinner );
+					}
+				}
+			]
+		});
+	};
+	
+	self.createButton = function() {
+		label.text( WPV_Parametric.add_search_shortcode_button );
+		list.append( button );
+		button.append( icon, label, icon_complete, icon_filter_missing );
+		if ( WPV_parametric_local.generic_button.toolbar.find( 'button.js-button_parametric_filter_edit' ) ) {
+			WPV_parametric_local.generic_button.toolbar
+				.find( 'button.js-button_parametric_filter_edit' )
+					.closest( '.js-editor-addon-button-wrapper' )
+						.after( list );
+		} else{
+			WPV_parametric_local.generic_button.toolbar.append( list );
+		}
+		list.toolsetTooltip();
+	};
+	
+	self.handle_flags = function() {
+		button
+			.removeClass( 'wpv-button-flagged' )
+			.find( '.js-ps-button-complete, .js-ps-button-filter-missing' )
+				.hide();
+		if ( self.is_button_disabled() ) {
+			button
+				.addClass( 'disabled' )
+				.addClass( 'wpv-button-flagged' )
+				.find( '.js-ps-button-complete' )
+					.show();
+			list.data( 'tooltip-text', title_complete );
+		} else {
+			button
+				.removeClass( 'disabled' );
+			list.data( 'tooltip-text', title );
+			if ( self.has_search( WPV_parametric_local.generic_button.get_text_area_content() ) ) {
+				if ( ! self.has_filter() ) {
+					button
+						.addClass( 'wpv-button-flagged' )
+						.find( '.js-ps-button-filter-missing' )
+							.show();
+					list.data( 'tooltip-text', title_filter_missing );
+				} else if ( self.has_specific_filter() ) {
+					button
+						.addClass( 'wpv-button-flagged' )
+						.find( '.js-ps-button-filter-missing' )
+							.show();
+					list.data( 'tooltip-text', title_filter_wrong );
+				}
+			}
+		}
+	};
+	
+	self.create_search = function() {
+		button.on( 'click', function( event ) {
+			event.stopImmediatePropagation();
+			if ( button.hasClass( 'disabled' ) ) {
+				return false;
+			}
+			if ( self.has_search( WPV_parametric_local.generic_button.get_text_area_content() ) ) {
+				self.open_override_specific_dialog();
+			} else if ( ! WPV_parametric_local.generic_button.cursorInside() ) {
+				WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				return false;
+			} else if( self.has_filter() ) {
+				self.open_override_specific_dialog();
+			} else {
+				self.open_set_options_dialog();
 			}
 			return false;
-		};
+		});
+	};
 
-		ShortCodeParser.prototype.getTagLeft = function( str )
-		{
-			var chr, charCodesArray = [];
-			//get the left part of the string
-			while( chr = this.getPrevChar(str) )
-			{
-				if( chr == 47 )
-				{
-					this.currentIndex = this.currentIndex - 2;
-					charCodesArray = [];
-					this.moveRight = false;
-					continue;
+	self.is_button_disabled = function() {
+		return (
+			self.has_search( WPV_parametric_local.generic_button.get_text_area_content() ) 
+			&& self.has_filter() 
+			&& ! self.has_specific_filter()
+		);
+	};
+
+	self.has_filter = function() {
+		return ( jqp('.js-wpv-filter-post-search-options' ).length > 0 );
+	};
+
+	self.has_specific_filter = function() {
+		return ( jqp( '.js-wpv-filter-post-search-options input#wpv-search-mode-specific' ).prop( 'checked' ) );
+	};
+
+	self.has_search = function( area ) {
+		return ( 
+			area.search( /\[wpv-filter-search-box/ ) == -1 
+			&& area.search( /\url_param=\"wpv_post_search\"/ ) == -1 
+		) ? false : true ;
+	};
+	
+	self.open_set_options_dialog = function() {
+		self.dialog_insert.dialog( "open" );
+		jqp( '.js-parametric-add-search-box' )
+			.addClass( 'button-primary' )
+			.removeClass( 'button-secondary' )
+			.prop( 'disabled', false );
+		jqp( '.js-wpv-search-box-style, .js-wpv-search-box-class' ).val( '' );
+	};
+
+	self.open_override_specific_dialog = function() {
+		self.dialog_override.dialog( "open" );
+		jqp( '.js-wpv-search-filter-override-var' ).hide();
+		jqp( '.js-wpv-post-search-override-dialog' ).attr( 'checked', false );
+		jqp( '#search-override-full' ).attr( 'checked', true );
+		jqp( '.js-parametric-add-search-override' )
+			.addClass( 'button-primary' )
+			.removeClass( 'button-secondary' )
+			.prop( 'disabled', false );
+		jqp( '.js-wpv-search-override-style, .js-wpv-search-override-class' ).val( '' );
+		if ( self.has_filter() ) {
+			if ( self.has_specific_filter() ) {
+				jqp( '.js-wpv-search-filter-override-specific' ).show();
+			} else {
+				jqp( '.js-wpv-search-filter-override-valid' ).show();
+			}
+		} else{
+			jqp( '.js-wpv-search-filter-override-missing' ).show();
+		}
+	};
+
+	self.create_and_insert = function( dialog, data, spinner ) {
+		var ret = false;
+		if ( ! self.has_search( WPV_parametric_local.generic_button.get_text_area_content() ) ) {
+			self.create_filter( function() {
+				self.insert_search_shortcode( data );
+				jqp( '.js-wpv-missing-filter-container, .js-wpv-no-filters-container' ).hide();
+				spinner.remove();
+				dialog.dialog( "close" );
+			});
+			ret = true;
+		} else {
+			self.create_filter( function() {
+				jqp( '.js-wpv-missing-filter-container, .js-wpv-no-filters-container' ).hide();
+				spinner.remove();
+				dialog.dialog( "close" );
+			});
+			ret = true;
+		}
+		return ret;
+	};
+
+	self.create_filter = function( callback, args ) {
+		var params = {
+			action:'wpv_filter_post_search_update',
+			id: WPV_Parametric.view_id,
+			filter_options: 'filter_by_search=1&post_search_value=&search_mode%5B%5D=manual&post_search_content=' + self.search_where,
+			wpnonce:WPV_Parametric.wpv_view_filter_search_nonce
+		};
+		jqp.post( ajaxurl, params, function( response ) {
+			var prms = {
+				action: 'wpv_filter_update_filters_list',
+				id: WPV_Parametric.view_id,
+				query_type: jQuery('input:radio.js-wpv-query-type:checked').val(),
+				nonce: jQuery('.js-wpv-filter-update-filters-list-nonce').val()
+			};
+			jQuery.post( ajaxurl, prms, function( response ) {
+				if ( ( typeof( response ) !== 'undefined' ) ) {
+					decoded_response = jQuery.parseJSON( response );
+					if ( decoded_response.success === prms.id ) {
+						jQuery( '.js-filter-list' ).html( decoded_response.wpv_filter_update_filters_list );
+						if ( typeof callback == 'function' ) {
+							callback.apply( self, args ? args : [] )
+						}
+					}
+					jQuery( document ).trigger( 'js_event_wpv_query_filter_created', [ 'post_search' ] );
+				} else {
+					//if(  WPV_Parametric.debug ) console.log( WPV_Parametric.ajax_error, response );
 				}
-				charCodesArray.push( String.fromCharCode( chr ) );
-			}
-			return charCodesArray;
-		};
+			})
+			.fail(function(jqXHR, textStatus, errorThrown) {
+				//if(  WPV_Parametric.debug ) console.log( WPV_Parametric.error_generic, textStatus, errorThrown );
+			})
+			.always(function() {
+				self.handle_flags();
+			});
 
-		ShortCodeParser.prototype.getTagRight = function( str )
-		{
-			var chr, charCodesArray = [];
-			//get the left part of the string
-			while( chr = this.getNextChar( str ) )
-			{
-				charCodesArray.push( String.fromCharCode( chr ) );
-			}
-			return charCodesArray;
-		};
-		ShortCodeParser.prototype.replace_tag_content = function( tag, short_code, nicename, content, editable, name )
-		{
-			var rpl = '';
+		})
+		.fail(function(jqXHR, textStatus, errorThrown){
+			//if(  WPV_Parametric.debug ) console.log(jqXHR, textStatus, errorThrown)
+		})
+		.always(function(){
+			//
+		});
 
-			try
-			{
-				//console.log( "Tag ", tag, " \nnew", short_code, " \nnice ", nicename, " \ncont", content, "\old ", editable, "\nname", name );
-				rpl = content.replace( editable, tag+short_code );
+	};
 
-				rpl = rpl.replace( name, nicename );
+	self.insert_search_shortcode = function( data ) {
+		var shortcode = '[wpv-filter-search-box';
+		if ( data.class != '' ) {
+			shortcode += ' class="' + data.class + '"';
+		}
+		if ( data.style != '' ) {
+			shortcode += ' style="' + data.style + '"';
+		}
+		shortcode += ']';
+		WPV_parametric_local.generic_button.insert_shortcode_and_highlight( shortcode );
+	};
+	
+	self.init();
 
-				this.cm.setSelection({ line:0, ch:0 }, { line:this.cm.lastLine(), ch:null } );
+	return this;
 
-				this.cm.replaceSelection( rpl );
+};
 
-				this.cm.setSelection( this.getCursorWas() );
-			}
-			catch( e )
-			{
-				//if(  WPV_Parametric.debug ) console.log( e.message );
-			}
+var WPV_ParametricSpinnerButton = function() {
+	var self = this,
+	button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-spinner-short-tag" />'),
+	icon = jqp('<i class="icon-spinner" />'),
+	title = WPV_Parametric.add_toolbar_spinner_button_title,
+	icon_flag = jqp('<i class="icon-bookmark flow-complete js-ps-button-flag" style="display:none" />'),
+	title_complete = WPV_Parametric.add_toolbar_spinner_button_title_complete,
+	title_useless = WPV_Parametric.add_toolbar_spinner_button_title_useless,
+	label = jqp('<span class="button-label" />'),
+	list = jqp('<li class="js-editor-addon-button-wrapper" />');
+	
+	self.defaults = {
+		container: 'div',
+		class: '',
+		style: '',
+		spinner_position: 'before',
+		content_text: '',
+		spinner: ''
+	};
 
-			return rpl;
-		};
-
-		ShortCodeParser.prototype.append_tag_content = function( editable, replace, content )
-		{
-			var append = '';
-
-			try
-			{
-				append = content.replace( editable, editable+replace );
-
-				var control = content.indexOf(editable);
-
-				this.cm.setSelection({ line:0, ch:0 }, { line:this.cm.lastLine(), ch:null } );
-
-				this.cm.replaceSelection( append );
-
-				this.cm.setSelection( this.getCursorWas() );
-			}
-			catch(e)
-			{
-				//if(  WPV_Parametric.debug ) console.log( e.message )
-			}
-			return append;
-		};
-
-/*get set caret position http://stackoverflow.com/questions/1891444/how-can-i-get-cursor-position-in-a-textarea */
-jqp.fn.caret = function (begin, end)
-{
-	if (this.length == 0) return false;
-	if (typeof begin == 'number')
-	{
-		end = (typeof end == 'number') ? end : begin;
-		return this.each(function ()
-		{
-			if (this.setSelectionRange)
-			{
-				this.setSelectionRange(begin, end);
-				} else if (this.createTextRange)
+	//export button for external use
+	WPV_ParametricSpinnerButton.button = button;
+	
+	self.init = function() {
+		var dialog_height = jqp( window ).height() - 100;
+		self.dialog = jqp( "#js-wpv-parametric-search-dialogs .js-wpv-dialog-spinner-button" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: WPV_Parametric.add_spinner_shortcode_dialog_title,
+			minWidth: 550,
+			maxHeight: dialog_height,
+			draggable: false,
+			resizable: false,
+			position: { my: "center top+50", at: "center top", of: window },
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				jqp( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				jqp( 'body' ).removeClass( 'modal-open' );
+			},
+			buttons:[
 				{
-					var range = this.createTextRange();
-					range.collapse(true);
-					range.moveEnd('character', end);
-					range.moveStart('character', begin);
-					try { range.select(); } catch (ex) { }
+					class: 'button-secondary',
+					text: WPV_Parametric.cancel,
+					click: function() {
+						jqp( this ).dialog( "close" );
+						WPV_parametric_local.generic_button.codemirror_views.focus();
+					}
+				},
+				{
+					class: 'button-primary js-parametric-add-spinner-short-tag-label',
+					text: WPV_Parametric.insert,
+					click: function() {
+						var data_live = {
+							container: jqp('.js-wpv-dialog-spinner-button #spinner_shortcode_container_type').val(),
+							class: jqp('.js-wpv-dialog-spinner-button #spinner_shortcode_container_classname').val(),
+							style: jqp('.js-wpv-dialog-spinner-button #spinner_shortcode_container_style').val(),
+							spinner_position: jqp('.js-wpv-dialog-spinner-button #spinner_shortcode_spinner_position').val(),
+							content_text: jqp('.js-wpv-dialog-spinner-button #spinner_shortcode_content').val(),
+							spinner: jqp('.js-wpv-dialog-spinner-button .js-wpv-ps-spinner-image:checked').val()
+						},
+						data = jqp.extend( {}, self.defaults, data_live );
+						if ( self.insert_spinner_shortcode( data ) ) {
+							jqp( this ).dialog( "close" );
+							WPV_parametric_local.generic_button.codemirror_views.focus();
+						}
+					}
+				}
+			]
+		});
+		
+		self.pwin = WPV_parametric_local.pwindow;
+		self.createButton();
+		self.create_dialog();
+		self.handle_flags();
+	};
+
+	self.createButton = function() {
+		label.text( WPV_Parametric.add_spinner_shortcode_button );
+		list.append(button);
+		button.append(icon, label, icon_flag);
+		if ( WPV_parametric_local.generic_button.toolbar.find( 'button.js-parametric-add-search-short-tag' ) ) {
+			WPV_parametric_local.generic_button.toolbar
+				.find( 'button.js-parametric-add-search-short-tag' )
+					.closest( '.js-editor-addon-button-wrapper' )
+						.after( list );
+		} else {
+			WPV_parametric_local.generic_button.toolbar.append( list );
+		}
+		list.toolsetTooltip();
+	};
+
+	self.create_dialog = function() {
+		button.on('click', function( event ) {
+			event.stopImmediatePropagation();
+			if ( button.hasClass( 'disabled' ) ) {
+				return false;
+			}
+			if ( ! WPV_parametric_local.generic_button.cursorInside() ) {
+				WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				return false;
+			} else {
+				self.openDialog();
+			}
+		});
+	};
+
+	self.handle_flags = function() {
+		var update_mode = jqp( '.js-wpv-dps-ajax-results:checked' ).val(),
+		update_action = jqp( '.js-wpv-ajax-results-submit:checked' ).val(),
+		dependency_mode = jqp( '.js-wpv-dps-enable:checked' ).val();
+
+		if (
+			dependency_mode != 'disable'
+			|| ( 
+				update_mode != 'disable' 
+				|| ( 
+					update_mode == 'disable' 
+					&& update_action != 'reload' 
+				) 
+			)
+		) {
+			button.removeClass('disabled');
+			if( self.has_spinner( WPV_parametric_local.generic_button.get_text_area_content() ) ) {
+				button
+					.addClass( 'wpv-button-flagged' )
+					.find( '.js-ps-button-flag' )
+						.show();
+				list.data('tooltip-text', title_complete );
+			} else {
+				button
+					.removeClass( 'wpv-button-flagged' )
+					.find( '.js-ps-button-flag' )
+						.hide();
+				list.data('tooltip-text', title );
+			}
+		} else {
+			button
+				.addClass('disabled')
+				.removeClass( 'wpv-button-flagged' )
+				.find( '.js-ps-button-flag' )
+				.hide();
+			list.data('tooltip-text', title_useless );
+		}
+	};
+
+	self.has_spinner = function( area ) {
+		return ( area.search(/\[wpv-filter-spinner/) == -1 ) ? false : true ;
+	};
+
+	self.insert_spinner_shortcode = function( data ) {
+		var attributes = '',
+		content ='',
+		shortcode = '';
+		if ( data.class != '') {
+			attributes += ' class="' + data.class + '"';
+		}
+		if ( data.style != '') {
+			attributes += ' style="' + data.style + '"';
+		}
+		if ( data.spinner != '') {
+			attributes += ' spinner="' + data.spinner + '"'
+		}
+		if ( data.content_text != '' ) {
+			content = '[wpml-string context="wpv-views"]' + data.content_text + '[/wpml-string]';
+		}
+		shortcode = '[wpv-filter-spinner container="' + data.container + '" position="' + data.spinner_position + '"' + attributes + ']' + content + '[/wpv-filter-spinner]';
+		WPV_parametric_local.generic_button.insert_shortcode_and_highlight( shortcode );
+		return shortcode;
+	};
+
+	self.openDialog = function() {
+		if ( WPV_parametric_local.generic_button.cursorInside() ) {
+			self.dialog.dialog( 'open' );
+			jqp( '#spinner_shortcode_container_type', '.js-wpv-dialog-spinner-button' ).val( 'div' );
+			jqp( '#spinner_shortcode_container_classname, #spinner_shortcode_container_style, #spinner_shortcode_content', '.js-wpv-dialog-spinner-button' ).val( '' );
+			jqp( '#spinner_shortcode_spinner_position', '.js-wpv-dialog-spinner-button' ).val( 'before' );
+		} else {
+			WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_filter, true, 'error' );
+		}
+	};
+	
+	self.init();
+	
+	return this;
+};
+
+var WPV_ParametricResetButton = function() {
+	var self = this,
+	button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-reset-short-tag" />'),
+	icon = jqp('<i class="icon-eraser" />'),
+	title = WPV_Parametric.add_toolbar_reset_button_title,
+	icon_complete = jqp('<i class="icon-bookmark flow-complete js-ps-button-complete" style="display:none" />'),
+	title_complete = WPV_Parametric.add_toolbar_reset_button_title_complete,
+	title_incomplete = WPV_Parametric.add_toolbar_reset_button_title_incomplete,
+	label = jqp('<span class="button-label" />'),
+	list = jqp('<li class="js-editor-addon-button-wrapper" />');
+	
+	self.defaults = {
+		label: '',
+		class: '',
+		style: '',
+		tag: ''
+	};
+
+	//export button for external use
+	WPV_ParametricResetButton.button = button;
+
+	self.init = function() {
+		var dialog_height = jqp( window ).height() - 100;
+		self.dialog = jqp( "#js-wpv-parametric-search-dialogs .js-wpv-dialog-reset-button" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: WPV_Parametric.add_reset_shortcode_dialog_title,
+			minWidth: 550,
+			maxHeight: dialog_height,
+			draggable: false,
+			resizable: false,
+			position: { my: "center top+50", at: "center top", of: window },
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				jqp( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				jqp( 'body' ).removeClass( 'modal-open' );
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: WPV_Parametric.cancel,
+					click: function() {
+						jqp( this ).dialog( "close" );
+						WPV_parametric_local.generic_button.codemirror_views.focus();
+					}
+				},
+				{
+					class: 'button-primary js-parametric-add-reset-short-tag-label',
+					text: WPV_Parametric.insert,
+					click: function() {
+						if( jqp('.js-wpv-dialog-reset-button #reset_shortcode_label').val() != '') {
+							var data_live = {
+								label: jqp('.js-wpv-dialog-reset-button #reset_shortcode_label').val(),
+								class: jqp('.js-wpv-dialog-reset-button #reset_shortcode_button_classname').val(),
+								style: jqp('.js-wpv-dialog-reset-button #reset_shortcode_button_style').val(),
+								tag: jqp('.js-wpv-dialog-reset-button #reset_shortcode_button_tag').val()
+							},
+							data = jqp.extend( {}, self.defaults, data_live );
+							if ( self.insert_reset_shortcode( data ) ) {
+								button.prop('disabled',false);
+								jqp( this ).dialog( "close" );
+								WPV_parametric_local.generic_button.codemirror_views.focus();
+							}
+						} else {
+							jqp('.js-wpv-dialog-reset-button .js-errors-in-parametric-box').wpvToolsetMessage({
+								text:WPV_Parametric.consider_adding_label_to_button_shortcode
+							});
+						}
+					}
+				}
+			]
+		});
+		
+		self.pwin = WPV_parametric_local.pwindow;
+		self.createButton();
+		button.prop( 'disabled', false );
+		self.create_dialog();
+		self.handle_flags();
+	};
+	
+	self.createButton = function() {
+		label.text( WPV_Parametric.add_reset_shortcode_button );
+		list.append( button );
+		button.append( icon, label, icon_complete );
+		if ( WPV_parametric_local.generic_button.toolbar.find( 'button.js-parametric-add-spinner-short-tag' ) ) {
+			WPV_parametric_local.generic_button.toolbar
+				.find( 'button.js-parametric-add-spinner-short-tag' )
+					.closest( '.js-editor-addon-button-wrapper' )
+						.after( list );
+		} else {
+			WPV_parametric_local.generic_button.toolbar.append( list );
+		}
+		list.toolsetTooltip();
+	};
+	
+	self.create_dialog = function() {
+		button.on('click', function( event ) {
+			event.stopImmediatePropagation();
+			if ( ! WPV_parametric_local.generic_button.cursorInside() ) {
+				WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				return false;
+			} else {
+				self.openDialog();
+			}
+		});
+	};
+
+	self.handle_flags = function() {
+		if( self.has_reset( WPV_parametric_local.generic_button.get_text_area_content() ) ) {
+			button
+				.addClass( 'wpv-button-flagged' )
+				.find( '.js-ps-button-complete' )
+					.show();
+			list.data('tooltip-text',title_complete);
+		} else {
+			button
+				.removeClass( 'wpv-button-flagged' )
+				.find( '.js-ps-button-complete' )
+					.hide();
+			list.data('tooltip-text',title);
+		}
+	};
+
+	self.has_reset = function( area ) {
+		return ( area.search(/\[wpv-filter-reset/) == -1 ) ? false : true ;
+	};
+
+	self.insert_reset_shortcode = function( data ) {
+		var attributes = '',
+		shortcode = '';
+		if ( data.class != '' ) {
+			attributes += ' class="' + data.class + '"';
+		}
+		if ( data.style != '' ) {
+			attributes += ' style="' + data.style + '"';
+		}
+		if ( data.tag == 'button' ) {
+			attributes += ' type="button"';
+		} else {
+			attributes += ' type="input"';
+		}
+		shortcode = '[wpv-filter-reset reset_label="' + data.label + '"' + attributes + ']';
+		WPV_parametric_local.generic_button.insert_shortcode_and_highlight( shortcode );
+		return shortcode;
+	};
+
+	self.openDialog = function() {
+		if ( WPV_parametric_local.generic_button.cursorInside() ) {
+			self.dialog.dialog( 'open' );
+			jqp( '#reset_shortcode_button_classname, #reset_shortcode_button_style', '.js-wpv-dialog-reset-button' ).val( '' );
+			jqp( '#reset_shortcode_label', '.js-wpv-dialog-reset-button' ).val( WPV_Parametric.add_reset_shortcode_dialog_label_default );
+			jqp( '#reset_shortcode_button_tag', '.js-wpv-dialog-reset-button' ).val( 'input' );
+		} else {
+			WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+		}
+	};
+	
+	self.init();
+	
+	return this;
+};
+
+var WPV_ParametricSubmitButton = function() {
+	var self = this,
+	button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-submit-short-tag" />'),
+	icon = jqp('<i class="icon-chevron-right" />'),
+	title = WPV_Parametric.add_toolbar_submit_button_title,
+	icon_complete = jqp('<i class="icon-bookmark flow-complete js-ps-button-complete" style="display:none" />'),
+	title_complete = WPV_Parametric.add_toolbar_submit_button_title_complete,
+	icon_incomplete = jqp('<i class="icon-bookmark flow-warning js-ps-button-incomplete" style="display:none" />'),
+	title_incomplete = WPV_Parametric.add_toolbar_submit_button_title_incomplete,
+	icon_irrelevant = jqp('<i class="icon-bookmark flow-info js-ps-button-irrelevant" style="display:none" />'),
+	title_irrelevant = WPV_Parametric.add_toolbar_submit_button_title_irrelevant,
+	title_irrelevant_but_added = WPV_Parametric.add_toolbar_submit_button_title_irrelevant_added,
+	label = jqp('<span class="button-label" />'),
+	list = jqp('<li class="js-editor-addon-button-wrapper" />');
+	
+	self.defaults = {
+		label: '',
+		class: '',
+		style: '',
+		tag: ''
+	};
+
+	//export button for external use
+	WPV_ParametricSubmitButton.button = button;
+
+	self.init = function() {
+		var dialog_height = jqp( window ).height() - 100;
+		self.dialog = jqp( "#js-wpv-parametric-search-dialogs .js-wpv-dialog-submit-button" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: WPV_Parametric.add_submit_shortcode_dialog_title,
+			minWidth: 550,
+			maxHeight: dialog_height,
+			draggable: false,
+			resizable: false,
+			position: { my: "center top+50", at: "center top", of: window },
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				jqp( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				jqp( 'body' ).removeClass( 'modal-open' );
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: WPV_Parametric.cancel,
+					click: function() {
+						jqp( this ).dialog( "close" );
+						WPV_parametric_local.generic_button.codemirror_views.focus();
+					}
+				},
+				{
+					class: 'button-primary js-parametric-add-submit-short-tag-label',
+					text: WPV_Parametric.insert,
+					click: function() {
+						if ( jqp('.js-wpv-dialog-submit-button #submit_shortcode_label').val() != '') {
+							var data_live = {
+								label: jqp('.js-wpv-dialog-submit-button #submit_shortcode_label').val(),
+								class: jqp('.js-wpv-dialog-submit-button #submit_shortcode_button_classname').val(),
+								style: jqp('.js-wpv-dialog-submit-button #submit_shortcode_button_style').val(),
+								tag: jqp('.js-wpv-dialog-submit-button #submit_shortcode_button_tag').val()
+							},
+							data = jqp.extend( {}, self.defaults, data_live );
+							if ( self.insert_submit_shortcode( data ) ) {
+								jqp( this ).dialog( "close" );
+								WPV_parametric_local.generic_button.codemirror_views.focus();
+							}
+						} else {
+							jqp('.js-wpv-dialog-submit-button .js-errors-in-parametric-box').wpvToolsetMessage({
+								text:WPV_Parametric.consider_adding_label_to_button_shortcode
+							});
+						}
+					}
+				}
+			]
+		});
+		
+		self.pwin = WPV_parametric_local.pwindow;
+		self.createButton();
+		self.handle_flags();
+		self.create_dialog();
+	};
+	
+	self.createButton = function() {
+		label.text( WPV_Parametric.add_submit_shortcode_button );
+		list.append(button);
+		button.append(icon, label, icon_complete, icon_incomplete, icon_irrelevant);
+		if ( WPV_parametric_local.generic_button.toolbar.find( 'button.js-parametric-add-reset-short-tag' ) ) {
+			WPV_parametric_local.generic_button.toolbar
+				.find( 'button.js-parametric-add-reset-short-tag' )
+					.closest( '.js-editor-addon-button-wrapper' )
+						.after( list );
+		} else{
+			WPV_parametric_local.generic_button.toolbar.append(list);
+		}
+		list.toolsetTooltip();
+	};
+
+	self.handle_flags = function() {
+		var update_mode = jqp( '.js-wpv-dps-ajax-results:checked' ).val();
+		button.addClass( 'wpv-button-flagged' );
+		if ( update_mode == 'enable' ) {
+			button
+				.find( '.js-ps-button-irrelevant' )
+					.show();
+			button
+				.find( '.js-ps-button-incomplete, .js-ps-button-complete' )
+					.hide();
+			if( self.has_submit( WPV_parametric_local.generic_button.get_text_area_content() ) ) {
+				list.data('tooltip-text',title_irrelevant_but_added);
+			} else {
+				list.data('tooltip-text',title_irrelevant);
+			}
+		} else {
+			button
+				.find( '.js-ps-button-irrelevant, .js-ps-button-incomplete, .js-ps-button-complete' )
+					.hide();
+			if( self.has_submit( WPV_parametric_local.generic_button.get_text_area_content() ) ) {
+				button.find( '.js-ps-button-complete' ).show();
+				list.data('tooltip-text',title_complete);
+			} else {
+				button.find( '.js-ps-button-incomplete' ).show();
+				list.data('tooltip-text',title_incomplete);
+			}
+		}
+	};
+	
+	self.create_dialog = function() {
+		button.on( 'click', function( event ){
+			event.stopImmediatePropagation();
+			if ( button.hasClass( 'disabled' ) ) {
+				return false;
+			}
+			if ( ! WPV_parametric_local.generic_button.cursorInside() ) {
+				WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				return false;
+			}
+			self.openDialog();
+		});
+	};
+
+	self.has_submit = function( area ) {
+		return ( area.search(/\[wpv-filter-submit/) == -1 ) ? false : true ;
+	};
+
+	self.insert_submit_shortcode = function( data ) {
+		var attributes = '',
+		shortcode = '';
+		if ( data.class != '') {
+			attributes += ' class="' + data.class + '"';
+		}
+		if ( data.style != '') {
+			attributes += ' style="' + data.style + '"';
+		}
+		if ( data.tag == 'button' ) {
+			attributes += ' type="button"';
+		} else {
+			attributes += ' type="input"';
+		}
+		shortcode = '[wpv-filter-submit name="' + data.label + '"' + attributes + ']';
+		WPV_parametric_local.generic_button.insert_shortcode_and_highlight( shortcode );
+
+		return shortcode;
+	};
+
+	self.openDialog = function() {
+		if ( WPV_parametric_local.generic_button.cursorInside() ) {
+			self.dialog.dialog( 'open' );
+			jqp( '#submit_shortcode_button_classname, #submit_shortcode_button_style', '.js-wpv-dialog-submit-button' ).val( '' );
+			jqp( '#submit_shortcode_label', '.js-wpv-dialog-submit-button' ).val( WPV_Parametric.add_submit_shortcode_dialog_label_default );
+			jqp( '#submit_shortcode_button_tag', '.js-wpv-dialog-submit-button' ).val( 'input' );
+		} else {
+			WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+		}
+	};
+	
+	self.init();
+	
+	return this;
+};
+
+/*
+* -------------------------------------
+* Auxiliar methods
+* -------------------------------------
+*/
+
+// A generic JSON store
+var WPV_ParametricJsonStore = function() {
+	var self = this;
+	self.loading = false;
+
+	self.loader = {
+		loader: jqp( '<li><div class="wpv-spinner ajax-loader"><div></li>' ),
+		loadShow: function( el ) {
+			self.loading = true;
+			self.loader.loader.appendTo( el ).show();
+		},
+		loadHide: function() {
+			self.loader.loader.fadeOut(200, function(){
+				self.loading = false;
+				jqp(this).remove();
+			});
+		}
+	};
+
+	self.ajaxCall = function( data, url, method, callback, args, object ) {
+		var URI = url ? url : ajaxurl, 
+		obj = data, 
+		type = method ? method : 'post';
+
+		if ( obj ) {
+			jqp.ajax({
+				type: type,
+				url: URI ,
+				data: obj,
+				dataType: 'json',
+				error: function( XMLHttpRequest, textStatus, errorThrown ) {
+					if ( self.loading ) {
+						self.loader.loadHide();
+					}
+					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, "Error: " + textStatus + " " + errorThrown, true, 'error' );
+					console.error( "Error: ", textStatus, errorThrown );
+					return false;
+				},
+				beforeSend: function( XMLHttpRequest, Obj ) {
+					try {
+						//always attach view_id when you send data
+						Obj.data += '&view_id='+WPV_Parametric.view_id
+
+						if ( XMLHttpRequest && XMLHttpRequest.overrideMimeType ) {
+							XMLHttpRequest.overrideMimeType("application/j-son;charset=UTF-8");
+						}
+					} catch( e ) {
+						//if(  WPV_Parametric.debug ) console.log(e.message);
+						return false;
+					}
+				},
+				success: function( data, textStatus, jqXHR ) {
+					if ( 
+						data.Data 
+						&& data.Data.error 
+					) {
+						//console.error( data.Data.error );
+						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, data.Data.error, true, 'error' );
+					} else if ( 
+						data.Data 
+						&& data.Data.message 
+					) {
+						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, data.Data.message, true, 'success' );
+					} else if ( 
+						data.Data 
+						&& ! data.Data.error
+					) {
+						if ( 
+							callback 
+							&& typeof callback == 'function' 
+						) {
+							args = [data, textStatus, args];
+							callback.apply( object ? object : self, args ? args : [] );
+						} else {
+							WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.ajax_callback_undefined, true, 'error' );
+						}
+					}
+				},
+				complete: function( data, textStatus ) {
+					if ( self.loading ) {
+						self.loader.loadHide();
+					}
 				}
 			});
-			} else
-			{
-				if (this[0].setSelectionRange)
-				{
-					begin = this[0].selectionStart;
-					end = this[0].selectionEnd;
-					} else if (document.selection && document.selection.createRange)
-					{
-						var range = document.selection.createRange();
-						begin = 0 - range.duplicate().moveStart('character', -100000);
-						end = begin + range.text.length;
-					}
-					return { begin: begin, end: end };
-				}
-			};
-
-
-
-			var WPV_ParametricSearchButton = function()
-			{
-				var self = this
-				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-search-short-tag" />')
-				, icon = jqp('<i class="icon-search" />')
-				, title = WPV_Parametric.add_toolbar_search_button_title
-				, icon_complete = jqp('<i class="icon-bookmark flow-complete js-ps-button-complete" style="display:none" />')
-				, title_complete = WPV_Parametric.add_toolbar_search_button_title_complete
-				, icon_filter_missing = jqp('<i class="icon-bookmark flow-warning js-ps-button-filter-missing" style="display:none" />')
-				, title_filter_missing = WPV_Parametric.add_toolbar_search_button_title_missing
-				, title_filter_wrong = WPV_Parametric.add_toolbar_search_button_title_wrong
-				, label = jqp('<span class="button-label" />')
-				, toolbar = jqp('.js-wpv-filter-edit-toolbar')
-				, list = jqp('<li class="js-editor-addon-button-wrapper" />')
-				, filter_box = jqp('#js-row-post_search');
-
-				self.codemirror_highlight_options = {
-					className: 'wpv-codemirror-highlight'
-				};
-
-
-				self.WIDTH = 450;
-				self.search_where = 'full_content';
-				//static reference
-				WPV_ParametricSearchButton.button = button;
-				self.dialog = null;
-
-				self.createButton = function()
-				{
-					label.text( WPV_Parametric.add_search_shortcode_button );
-					list.append(button);
-					button.append(icon, label, icon_complete, icon_filter_missing);
-					if( toolbar.find('button.js-button_parametric_filter_edit') ){
-						toolbar.find('button.js-button_parametric_filter_edit').parent().after( list );
-					}
-					else{
-						toolbar.append(list);
-					}
-					list.toolsetTooltip();
-				};
-
-				self.init = function()
-				{
-					self.pwin = WPV_parametric_local.pwindow;
-
-					self.short_code_label_text = '';
-
-					self.codemirror_views = self.pwin.editor.codemirrorGet('wpv_filter_meta_html_content');
-
-					self.createButton();
-
-					self.area = jqp("#wpv_filter_meta_html_content");
-
-					self.handle_flags();
-
-					self.create_search();
-
-					self.codeMirrorChange();
-				};
-
-				self.is_button_disabled = function()
-				{
-					return self.has_search( self.get_text_area_content() ) && self.has_filter() && ( ! self.has_specific_filter() ) /*( filter_box.is('li') || jqp('.js-wpv-filter-search-summary').is('li') )*/;
-				};
-
-				self.has_filter = function()
-				{
-					return  ( jqp('input.js-wpv-post-search-mode').length > 0 );
-				};
-
-				self.has_specific_filter = function()
-				{
-					return  jqp('input#wpv-search-mode-specific').prop('checked');
-				};
-
-				self.codeMirrorChange = function()
-				{
-					self.codemirror_views.on('change', function(){
-
-						self.handle_flags();
-					});
-				};
-
-				self.handle_flags = function() {
-					button
-						.removeClass( 'wpv-button-flagged' )
-						.find( '.js-ps-button-complete, .js-ps-button-filter-missing' )
-							.hide();
-					if( self.is_button_disabled() )
-					{
-						button
-							.addClass( 'disabled' )
-							.addClass( 'wpv-button-flagged' )
-							.find( '.js-ps-button-complete' )
-								.show();
-						list.data( 'tooltip-text', title_complete );
-					}
-					else
-					{
-						button
-							.removeClass( 'disabled' );
-						list.data( 'tooltip-text', title );
-						if ( self.has_search( self.get_text_area_content() ) ) {
-							if ( ! self.has_filter() ) {
-								button
-									.addClass( 'wpv-button-flagged' )
-									.find( '.js-ps-button-filter-missing' )
-										.show();
-								list.data( 'tooltip-text', title_filter_missing );
-							} else if ( self.has_specific_filter() ) {
-								button
-									.addClass( 'wpv-button-flagged' )
-									.find( '.js-ps-button-filter-missing' )
-										.show();
-								list.data( 'tooltip-text', title_filter_wrong );
-							}
-						}
-					}
-				};
-
-				self.get_text_area_content = function()
-				{
-					var c = '';
-					c = self.codemirror_views.getValue();
-					return c;
-				};
-
-				self.has_search = function( area )
-				{
-					return ( ~area.search( /\[wpv-filter-search-box/ ) == 0 && ~area.search( /\url_param=\"wpv_post_search\"/ ) == 0 ) ? false : true ;
-				};
-
-				self.cursorInside = function( area, start, end )
-				{
-					try
-					{
-						return self.pwin.editor.cursorWithin(self.pwin.text_area, 'wpv-filter-controls', '/wpv-filter-controls');
-					}
-					catch( e )
-					{
-						//if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-					return false;
-				};
-
-				self.create_search = function()
-				{
-					button.on('click', function(event){
-						event.stopImmediatePropagation();
-						if ( button.hasClass( 'disabled' ) ) {
-							return false;
-						}
-						if ( self.has_search( self.get_text_area_content()  ) )
-						{
-							self.open_override_specific_dialog();
-						}
-						else if( !self.pwin.move_cursor_if_no_content_within( ) && !self.cursorInside() )
-						{
-							WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
-							/*
-							open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_controls,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
-							*/
-							return false;
-						}
-						else if( self.has_filter() )
-						{
-							self.open_override_specific_dialog();
-						}
-						else
-						{
-							self.open_set_options_dialog();
-						}
-						return false;
-					});
-				};
-
-				self.open_override_specific_dialog = function()
-				{
-					self.dialog = jqp.colorbox({
-						inline : true,
-						href:'#js-wpv-parametric-search-dialogs .js-search-override-dialog',
-						open: true,
-						width:self.WIDTH,
-						onComplete: function() {
-							jqp( '.js-wpv-search-filter-override-var' ).hide();
-							jqp( '.js-wpv-post-search-override-dialog' ).attr( 'checked', false );
-							jqp( '#search-override-full' ).attr( 'checked', true );
-							jqp( '.js-parametric-add-search-override' )
-								.addClass( 'button-primary' )
-								.removeClass( 'button-secondary' )
-								.prop( 'disabled', false );
-							if ( self.has_filter() )
-							{
-								if ( self.has_specific_filter() ) {
-									jqp( '.js-wpv-search-filter-override-specific' ).show();
-								} else {
-									jqp( '.js-wpv-search-filter-override-valid' ).show();
-								}
-							}
-							else{
-								jqp( '.js-wpv-search-filter-override-missing' ).show();
-							}
-						},
-						onClosed:function()
-						{
-							self.dialog = null;
-						}
-					});
-				};
-
-				jqp('.js-search-override-dialog .js-parametric-add-search-override').on( 'click', function( event ){
-					var thiz = jqp( this );
-					thiz
-						.addClass( 'button-secondary' )
-						.removeClass( 'button-primary' )
-						.prop( 'disabled', true );
-					jqp( '<div class="spinner ajax-loader">' ).insertAfter( thiz ).show();
-					self.search_where = jqp( '.js-wpv-post-search-override-dialog:checked' ).val();
-					return self.create_and_insert( self.close_dialog_callback );
-				});
-
-				self.open_set_options_dialog = function()
-				{
-					dialog = jqp.colorbox({
-						inline: true,
-						href:'#js-wpv-parametric-search-dialogs .js-search-box-dialog',
-						open: true,
-						width:self.WIDTH,
-						onComplete: function() {
-							jqp( '.js-parametric-add-search-box' )
-								.addClass( 'button-primary' )
-								.removeClass( 'button-secondary' )
-								.prop( 'disabled', false );
-						},
-						onClosed:function()
-						{
-							self.dialog = null;
-						}
-					});
-				};
-
-				jqp('.js-search-box-dialog .js-parametric-add-search-box').on( 'click', function( event ) {
-					var thiz = jqp( this );
-					thiz
-						.addClass( 'button-secondary' )
-						.removeClass( 'button-primary' )
-						.prop( 'disabled', true );
-					jqp( '<div class="spinner ajax-loader">' ).insertAfter( thiz ).show();
-					self.search_where = jqp( '.js-wpv-post-search-options-dialog:checked' ).val();
-					return self.create_and_insert( self.close_dialog_callback );
-				});
-
-				self.create_and_insert = function( callback, args )
-				{
-					var ret = false;
-
-					if( ! self.has_search( self.get_text_area_content() ) )
-					{
-						self.create_filter(function(){
-							self.insert_search_shortcode(self.area);
-							if( typeof callback == 'function' )
-							{
-								callback.apply( self, args ? args : [] )
-							}
-						});
-						ret = true;
-					}
-					else
-					{
-						self.create_filter(function(){
-							if( typeof callback == 'function' )
-							{
-								callback.apply( self, args ? args : [] )
-							}
-						});
-						ret = true;
-					}
-					return ret;
-				};
-
-				self.create_filter = function( callback, args )
-				{
-					var params = {
-						action:'wpv_filter_post_search_update',
-						id: WPV_Parametric.view_id,
-						filter_options: 'filter_by_search=1&post_search_value=&search_mode%5B%5D=manual&post_search_content=' + self.search_where,
-						wpnonce:WPV_Parametric.wpv_view_filter_search_nonce
-					};
-					jqp.post(ajaxurl, params, function( response ) {
-						var prms = {
-							action: 'wpv_filter_update_filters_list',
-							id: WPV_Parametric.view_id,
-							query_type: jQuery('input:radio.js-wpv-query-type:checked').val(),
-							nonce: jQuery('.js-wpv-filter-update-filters-list-nonce').val()
-						};
-						jQuery.post(ajaxurl, prms, function(response) {
-
-							if ( (typeof(response) !== 'undefined') ) {
-								decoded_response = jQuery.parseJSON(response);
-								if ( decoded_response.success === prms.id ) {
-									jQuery('.js-filter-list').html(decoded_response.wpv_filter_update_filters_list);
-									if( typeof callback == 'function' )
-									{
-										callback.apply( self, args ? args : [] )
-									}
-								}
-								jQuery( document ).trigger( 'js_event_wpv_query_filter_created', [ 'post_search' ] );
-							} else {
-								//if(  WPV_Parametric.debug ) console.log( WPV_Parametric.ajax_error, response );
-							}
-						})
-						.fail(function(jqXHR, textStatus, errorThrown) {
-							//if(  WPV_Parametric.debug ) console.log( WPV_Parametric.error_generic, textStatus, errorThrown );
-						})
-						.always(function() {
-							self.handle_flags();
-						});
-
-					})
-					.fail(function(jqXHR, textStatus, errorThrown){
-						//if(  WPV_Parametric.debug ) console.log(jqXHR, textStatus, errorThrown)
-					})
-					.always(function(){
-						//
-					});
-
-					if( null != self.dialog ) jqp.colorbox.close();
-				};
-
-				self.insert_search_shortcode = function( area )
-				{
-					var shortcode = '[wpv-filter-search-box]',
-					current_cursor = self.codemirror_views.getCursor( true );
-
-					self.pwin.editor.InsertAtCursor(area, shortcode);
-
-					var end_cursor = self.codemirror_views.getCursor( true ),
-					search_marker = self.codemirror_views.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
-					setTimeout( function() {
-						  search_marker.clear();
-					}, 3000);
-					self.handle_flags();
-
-					return shortcode;
-				};
-				
-				self.close_dialog_callback = function()
-				{
-					jqp( '.js-wpv-missing-filter-container, .js-wpv-no-filters-container' ).hide();
-					jqp( '.js-search-box-dialog, .js-search-override-dialog' ).find( '.spinner.ajax-loader' ).remove();
-					jqp.colorbox.close();
-				};
-
-				return this;
-
-			};
-
-			var WPV_ParametricSpinnerButton = function()
-			{
-				var self = this
-				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-spinner-short-tag" />')
-				, icon = jqp('<i class="icon-spinner" />')
-				, title = WPV_Parametric.add_toolbar_spinner_button_title
-				, icon_flag = jqp('<i class="icon-bookmark flow-complete js-ps-button-flag" style="display:none" />')
-				, title_complete = WPV_Parametric.add_toolbar_spinner_button_title_complete
-				, title_useless = WPV_Parametric.add_toolbar_spinner_button_title_useless
-				, label = jqp('<span class="button-label" />')
-				, toolbar = jqp('.js-wpv-filter-edit-toolbar')
-				, list = jqp('<li class="js-editor-addon-button-wrapper" />')
-				, dialog = null;
-
-				self.codemirror_highlight_options = {
-					className: 'wpv-codemirror-highlight'
-				};
-
-				self.container = 'div';
-				self.classname = '';
-				self.spinner_position = 'before';
-				self.content_text = '';
-				self.spinner = '';
-
-				self.reanabled = false;
-				//export button for external use
-				WPV_ParametricSpinnerButton.button = button;
-
-				self.createButton = function()
-				{
-					label.text( WPV_Parametric.add_spinner_shortcode_button );
-					list.append(button);
-					button.append(icon, label, icon_flag);
-					if( toolbar.find('button.js-parametric-add-search-short-tag') ){
-						toolbar.find('button.js-parametric-add-search-short-tag').parent().after( list );
-					}
-					else{
-						toolbar.append(list);
-					}
-					list.toolsetTooltip();
-				};
-
-				self.init = function()
-				{
-					self.pwin = WPV_parametric_local.pwindow;
-
-					self.short_code_container_text = '';
-
-					self.codemirror_views = self.pwin.editor.codemirrorGet('wpv_filter_meta_html_content');
-
-					self.createButton();
-
-					self.area = jqp("#wpv_filter_meta_html_content");
-
-					self.create_dialog();
-
-					self.handle_flags()
-
-					self.codemirror_views.on('change', function(){
-						self.handle_flags();
-					});
-				};
-
-				self.handle_flags = function()
-				{
-					var update_mode = jqp( '.js-wpv-dps-ajax-results:checked' ).val(),
-					update_action = jqp( '.js-wpv-ajax-results-submit:checked' ).val(),
-					dependency_mode = jqp( '.js-wpv-dps-enable:checked' ).val();
-
-					if (
-						( update_mode != 'disable' || ( update_mode == 'disable' && update_action != 'reload' ) )
-						|| dependency_mode != 'disable'
-					) {
-						button.removeClass('disabled');
-						if( self.has_spinner( self.get_text_area_content() ) ) {
-							button
-								.addClass( 'wpv-button-flagged' )
-								.find( '.js-ps-button-flag' )
-									.show();
-							list.data('tooltip-text', title_complete );
-						} else {
-							button
-								.removeClass( 'wpv-button-flagged' )
-								.find( '.js-ps-button-flag' )
-									.hide();
-							list.data('tooltip-text', title );
-						}
-					} else {
-						button
-							.addClass('disabled')
-							.removeClass( 'wpv-button-flagged' )
-							.find( '.js-ps-button-flag' )
-							.hide();
-						list.data('tooltip-text', title_useless );
-					}
-				};
-
-				self.get_text_area_content = function()
-				{
-					var c = '';
-					c = self.codemirror_views.getValue();
-					return c;
-				};
-
-				self.has_spinner = function( area )
-				{
-					return ~area.search(/\[wpv-filter-spinner/) == 0 ? false : true ;
-				};
-
-				self.create_dialog = function(label)
-				{
-					button.on('click', function(event){
-						event.stopImmediatePropagation();
-						if ( button.hasClass( 'disabled' ) ) {
-							return false;
-						}
-						dialog = null;
-						if( !self.cursorInside() )
-						{
-							WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
-							/*
-							open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_controls,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
-							*/
-							return false;
-						} else {
-							self.openDialog();
-						}
-					});
-				};
-
-				self.insert_spinner_shortcode = function( area, container, classname, position, content_text, spinner )
-				{
-					var classtext = '',
-					spinnertext = '';
-					if ( classname != '') {
-						classtext = ' class="' + classname + '"'
-					}
-					if ( spinner != '') {
-						spinnertext = ' spinner="' + spinner + '"'
-					}
-					if ( content_text != '' ) {
-						content_text = '[wpml-string context="wpv-views"]' + content_text + '[/wpml-string]';
-					}
-					var shortcode = '[wpv-filter-spinner container="'+container+'" position="' +position + '"' + classtext + spinnertext + ']' + content_text + '[/wpv-filter-spinner]',
-					current_cursor = self.codemirror_views.getCursor( true );
-
-					self.pwin.editor.InsertAtCursor(area, shortcode);
-
-					var end_cursor = self.codemirror_views.getCursor( true ),
-					spinner_marker = self.codemirror_views.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
-					setTimeout( function() {
-						  spinner_marker.clear();
-					}, 3000);
-
-					return shortcode;
-				};
-
-				self.cursorInside = function( area, start, end )
-				{
-					try
-					{
-						return self.pwin.editor.cursorWithin(self.pwin.text_area, 'wpv-filter-start', 'wpv-filter-end');
-					}
-					catch( e )
-					{
-						if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-					return false;
-				};
-
-				jqp('.js-spinner-button-dialog .js-parametric-add-spinner-short-tag-label').on('click', function( event ){
-					self.container = jqp('.js-spinner-button-dialog #spinner_shortcode_container_type').val();
-					self.classname = jqp('.js-spinner-button-dialog #spinner_shortcode_container_classname').val();
-					self.spinner_position = jqp('.js-spinner-button-dialog #spinner_shortcode_spinner_position').val();
-					self.content_text = jqp('.js-spinner-button-dialog #spinner_shortcode_content').val();
-					self.spinner = jqp('.js-spinner-button-dialog .js-wpv-ps-spinner-image:checked').val();
-					if( self.insert_spinner_shortcode(self.area, self.container, self.classname, self.spinner_position, self.content_text, self.spinner) )
-					{
-					//	button.prop('disabled','disabled');
-						jqp.colorbox.close();
-					}
-				});
-
-				self.openDialog = function()
-				{
-
-					if ( self.cursorInside() ) {
-						dialog = jqp.colorbox({
-							inline: true,
-							href:'.js-spinner-button-dialog',
-							open: true,
-							onComplete: function() {
-								jqp('.js-spinner-button-dialog #spinner_shortcode_container_type').val('div');
-								jqp('.js-spinner-button-dialog #spinner_shortcode_container_classname').val('');
-								jqp('.js-spinner-button-dialog #spinner_shortcode_spinner_position').val('before');
-								jqp('.js-spinner-button-dialog #spinner_shortcode_content').val('');
-								jqp('.js-spinner-button-dialog .js-wpv-ps-spinner-image:checked').prop( 'checked', false );
-								jqp('.js-spinner-button-dialog .js-wpv-ps-spinner-image:first').prop( 'checked', true );
-							}
-						});
-					} else {
-						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_filter, true, 'error' );
-						/*
-						open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_filter,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
-						*/
-					}
-				};
-				return this;
-			};
-
-			var WPV_ParametricResetButton = function()
-			{
-				var self = this
-				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-reset-short-tag" />')
-				, icon = jqp('<i class="icon-eraser" />')
-				, title = WPV_Parametric.add_toolbar_reset_button_title
-				, icon_complete = jqp('<i class="icon-bookmark flow-complete js-ps-button-complete" style="display:none" />')
-				, title_complete = WPV_Parametric.add_toolbar_reset_button_title_complete
-				, title_incomplete = WPV_Parametric.add_toolbar_reset_button_title_incomplete
-				, label = jqp('<span class="button-label" />')
-				, toolbar = jqp('.js-wpv-filter-edit-toolbar')
-				, list = jqp('<li class="js-editor-addon-button-wrapper" />')
-				, dialog = null;
-
-				self.codemirror_highlight_options = {
-					className: 'wpv-codemirror-highlight'
-				};
-
-				self.reanabled = false;
-				//export button for external use
-				WPV_ParametricResetButton.button = button;
-
-				self.createButton = function()
-				{
-					label.text( WPV_Parametric.add_reset_shortcode_button );
-					list.append(button);
-					button.append(icon, label, icon_complete);
-					if( toolbar.find('button.js-parametric-add-spinner-short-tag') ){
-						toolbar.find('button.js-parametric-add-spinner-short-tag').parent().after( list );
-					}
-					else{
-						toolbar.append(list);
-					}
-					list.toolsetTooltip();
-				};
-
-				self.init = function()
-				{
-					self.pwin = WPV_parametric_local.pwindow;
-
-					self.short_code_label_text = '';
-
-					self.codemirror_views = self.pwin.editor.codemirrorGet('wpv_filter_meta_html_content');
-
-					self.createButton();
-
-					self.area = jqp("#wpv_filter_meta_html_content");
-
-					button.prop('disabled',false);
-					self.create_dialog();
-
-					self.handle_flags();
-
-					self.codemirror_views.on('change', function(){
-						//self.create_dialog();
-
-						self.handle_flags();
-					});
-				};
-
-				self.handle_flags = function()
-				{
-					if( self.has_reset( self.get_text_area_content() ) )
-					{
-						button
-							.addClass( 'wpv-button-flagged' )
-							.find( '.js-ps-button-complete' )
-								.show();
-						list.data('tooltip-text',title_complete);
-					}
-					else
-					{
-						button
-							.removeClass( 'wpv-button-flagged' )
-							.find( '.js-ps-button-complete' )
-								.hide();
-						list.data('tooltip-text',title);
-					}
-				};
-
-				self.get_text_area_content = function()
-				{
-					var c = '';
-					c = self.codemirror_views.getValue();
-					return c;
-				};
-
-				self.has_reset = function( area )
-				{
-					return ~area.search(/\[wpv-filter-reset/) == 0 ? false : true ;
-				};
-
-				self.create_dialog = function(label)
-				{
-					button.on('click', function(event){
-						event.stopImmediatePropagation();
-						dialog = null;
-						if( !self.cursorInside() )
-						{
-							WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
-							/*
-							open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_controls,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
-							*/
-							return false;
-						} else {
-							self.openDialog();
-						}
-					});
-				};
-
-				self.insert_reset_shortcode = function( area, label, classname, tag )
-				{
-					var classtext = '',
-					tagtext = '';
-					if( classname != '') {
-						classtext = ' class="' + classname + '"'
-					}
-					if ( tag == 'button' ) {
-						tagtext = ' type="button"';
-					} else {
-						tagtext = ' type="input"';
-					}
-					var shortcode = '[wpv-filter-reset reset_label="'+label+'"' + classtext + tagtext +']',
-					current_cursor = self.codemirror_views.getCursor( true );
-
-					self.pwin.editor.InsertAtCursor(area, shortcode);
-
-					var end_cursor = self.codemirror_views.getCursor( true ),
-					reset_marker = self.codemirror_views.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
-					setTimeout( function() {
-						  reset_marker.clear();
-					}, 3000);
-
-					return shortcode;
-				};
-
-				self.cursorInside = function( area, start, end )
-				{
-					try
-					{
-						return self.pwin.editor.cursorWithin(self.pwin.text_area, 'wpv-filter-controls', '/wpv-filter-controls');
-					}
-					catch( e )
-					{
-						if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-					return false;
-				};
-
-				jqp('.js-reset-button-dialog .js-parametric-add-reset-short-tag-label').on('click', function(event){
-					if( jqp('.js-reset-button-dialog #reset_shortcode_label').val() != '')
-					{
-						self.short_code_label_text = jqp('.js-reset-button-dialog #reset_shortcode_label').val();
-						self.short_code_classname_text = jqp('.js-reset-button-dialog #reset_shortcode_button_classname').val();
-						self.short_code_tag_text = jqp('.js-reset-button-dialog #reset_shortcode_button_tag').val();
-						if( self.insert_reset_shortcode(self.area, self.short_code_label_text, self.short_code_classname_text, self.short_code_tag_text) )
-						{
-							button.prop('disabled',false);
-							jqp.colorbox.close();
-						}
-					}
-					else
-					{
-						jqp('.js-reset-button-dialog .js-errors-in-parametric-box').wpvToolsetMessage({
-							text:WPV_Parametric.consider_adding_label_to_button_shortcode
-						});
-					}
-				});
-
-				self.openDialog = function()
-				{
-
-					if ( self.cursorInside() ) {
-						dialog = jqp.colorbox({
-							inline: true,
-							href:'.js-reset-button-dialog',
-							open: true,
-							onComplete: function() {
-								jqp('.js-reset-button-dialog #reset_shortcode_label').val(WPV_Parametric.add_reset_shortcode_button_label);
-								jqp('.js-reset-button-dialog #reset_shortcode_button_classname').val('');
-								jqp('.js-reset-button-dialog #reset_shortcode_button_tag').val('input');
-							}
-						});
-					} else {
-						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
-						/*
-						open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_controls,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
-						*/
-					}
-				};
-				return this;
-			};
-
-			var WPV_ParametricSubmitButton = function()
-			{
-				var self = this
-				, button = jqp('<button class="button-secondary js-code-editor-toolbar-button js-parametric-add-submit-short-tag" />')
-				, icon = jqp('<i class="icon-chevron-right" />')
-				, title = WPV_Parametric.add_toolbar_submit_button_title
-				, icon_complete = jqp('<i class="icon-bookmark flow-complete js-ps-button-complete" style="display:none" />')
-				, title_complete = WPV_Parametric.add_toolbar_submit_button_title_complete
-				, icon_incomplete = jqp('<i class="icon-bookmark flow-warning js-ps-button-incomplete" style="display:none" />')
-				, title_incomplete = WPV_Parametric.add_toolbar_submit_button_title_incomplete
-				, icon_irrelevant = jqp('<i class="icon-bookmark flow-info js-ps-button-irrelevant" style="display:none" />')
-				, title_irrelevant = WPV_Parametric.add_toolbar_submit_button_title_irrelevant
-				, title_irrelevant_but_added = WPV_Parametric.add_toolbar_submit_button_title_irrelevant_added
-				, label = jqp('<span class="button-label" />')
-				, toolbar = jqp('.js-wpv-filter-edit-toolbar')
-				, list = jqp('<li class="js-editor-addon-button-wrapper" />')
-				, dialog = null;
-
-				self.codemirror_highlight_options = {
-					className: 'wpv-codemirror-highlight'
-				};
-
-				self.reanabled = false;
-				//export button for external use
-				WPV_ParametricSubmitButton.button = button;
-
-				self.createButton = function()
-				{
-					label.text( WPV_Parametric.add_submit_shortcode_button );
-					list.append(button);
-					button.append(icon, label, icon_complete, icon_incomplete, icon_irrelevant);
-					if( toolbar.find('button.js-parametric-add-reset-short-tag') ){
-						toolbar.find('button.js-parametric-add-reset-short-tag').parent().after( list );
-					}
-					else{
-						toolbar.append(list);
-					}
-					list.toolsetTooltip();
-				};
-
-				self.init = function()
-				{
-					self.pwin = WPV_parametric_local.pwindow;
-
-					self.short_code_label_text = '';
-
-					self.codemirror_views = self.pwin.editor.codemirrorGet('wpv_filter_meta_html_content');
-
-					self.createButton();
-
-					self.area = jqp("#wpv_filter_meta_html_content");
-
-					self.handle_flags();
-
-					self.create_dialog();
-
-					self.codemirror_views.on('change', function(){
-						self.handle_flags();
-					});
-				};
-
-				self.handle_flags = function()
-				{
-					var update_mode = jqp( '.js-wpv-dps-ajax-results:checked' ).val();
-					button.addClass( 'wpv-button-flagged' );
-					if ( update_mode == 'enable' ) {
-						button
-							.addClass('disabled')
-							.find( '.js-ps-button-irrelevant' )
-								.show();
-						button
-							.find( '.js-ps-button-incomplete, .js-ps-button-complete' )
-								.hide();
-						if( self.has_submit( self.get_text_area_content() ) ) {
-							list.data('tooltip-text',title_irrelevant_but_added);
-						} else {
-							list.data('tooltip-text',title_irrelevant);
-						}
-					} else {
-						button
-							.removeClass('disabled')
-							.find( '.js-ps-button-irrelevant, .js-ps-button-incomplete, .js-ps-button-complete' )
-								.hide();
-						if( self.has_submit( self.get_text_area_content() ) ) {
-							button.find( '.js-ps-button-complete' ).show();
-							list.data('tooltip-text',title_complete);
-						} else {
-							button.find( '.js-ps-button-incomplete' ).show();
-							list.data('tooltip-text',title_incomplete);
-						}
-					}
-				}
-
-				self.get_text_area_content = function()
-				{
-					var c = '';
-					c = self.codemirror_views.getValue();
-					return c;
-				};
-
-				self.has_submit = function( area )
-				{
-					return ~area.search(/\[wpv-filter-submit/) == 0 ? false : true ;
-				};
-
-				self.create_dialog = function(label)
-				{
-					button.on('click', function(event){
-						event.stopImmediatePropagation();
-						if ( button.hasClass( 'disabled' ) ) {
-							return false;
-						}
-						if( !!self.pwin.move_cursor_if_no_content_within( ) && !self.cursorInside() )
-						{
-							WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
-							/*
-							open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_controls,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
-							*/
-							return false;
-						}
-						dialog = null;
-						self.openDialog();
-					});
-				};
-
-				self.insert_submit_shortcode = function( area, label, classname, tag )
-				{
-					var classtext = '',
-					tagtext = '';
-					if( classname != '') {
-						classtext = ' class="' + classname + '"'
-					}
-					
-					if ( tag == 'button' ) {
-						tagtext = ' type="button"';
-					} else {
-						tagtext = ' type="input"';
-					}
-					
-					var shortcode = '[wpv-filter-submit name="'+label+'"' + classtext + tagtext + ']',
-					current_cursor = self.codemirror_views.getCursor( true );
-
-					self.pwin.editor.InsertAtCursor(area, shortcode);
-
-					var end_cursor = self.codemirror_views.getCursor( true ),
-					reset_marker = self.codemirror_views.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
-					setTimeout( function() {
-						  reset_marker.clear();
-					}, 3000);
-
-					return shortcode;
-				};
-
-				self.cursorInside = function( area, start, end )
-				{
-					try
-					{
-						return self.pwin.editor.cursorWithin(self.pwin.text_area, 'wpv-filter-controls', '/wpv-filter-controls');
-					}
-					catch( e )
-					{
-						if(  WPV_Parametric.debug ) console.log( e.message );
-					}
-					return false;
-				};
-
-				jqp('.js-submit-button-dialog .js-parametric-add-submit-short-tag-label').on('click', function(event){
-					if( jqp('.js-submit-button-dialog #submit_shortcode_label').val() != '')
-					{
-						self.short_code_label_text = jqp('.js-submit-button-dialog #submit_shortcode_label').val();
-						self.short_code_classname_text = jqp('.js-submit-button-dialog #submit_shortcode_button_classname').val();
-						self.short_code_tag_text = jqp('.js-submit-button-dialog #submit_shortcode_button_tag').val();
-						if( self.insert_submit_shortcode(self.area, self.short_code_label_text, self.short_code_classname_text, self.short_code_tag_text) )
-						{
-							jqp.colorbox.close();
-						}
-					}
-					else
-					{
-						jqp('.js-submit-button-dialog .js-errors-in-parametric-box').wpvToolsetMessage({
-							text:WPV_Parametric.consider_adding_label_to_button_shortcode
-						});
-					}
-				});
-
-				self.openDialog = function()
-				{
-
-					if ( self.cursorInside() ) {
-						dialog = jqp.colorbox({
-							inline: true,
-							href:'.js-submit-button-dialog',
-							open: true,
-							onComplete: function() {
-								jqp('.js-submit-button-dialog #submit_shortcode_label').val(WPV_Parametric.add_submit_shortcode_button_label);
-								jqp('.js-submit-button-dialog #submit_shortcode_button_classname').val('');
-								jqp('.js-submit-button-dialog #submit_shortcode_button_tag').val('input');
-							}
-						});
-					} else {
-						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
-						/*
-						open_message = WPV_parametric_local.message.container.wpvToolsetMessage({
-								text:WPV_Parametric.place_cursor_inside_wpv_controls,
-								stay:true, fadeOut:WPV_parametric_local.message.fadeOutLong,
-								close:true
-							});
-						*/
-					}
-				};
-				return this;
-			};
-
-			//fallback to Array.indexOf() for IE
-			if (!Array.prototype.indexOf) {
-				Array.prototype.indexOf = function(obj, start) {
-					for ( var i = (start || 0), j = this.length; i < j; i++) {
-						if (this[i] === obj) {
-							return i;
-						}
-					}
-
-					return -1;
-				};
+		}
+	}
+};
+
+/*get set caret position http://stackoverflow.com/questions/1891444/how-can-i-get-cursor-position-in-a-textarea */
+jqp.fn.caret = function ( begin, end ) {
+	if ( this.length == 0 ) {
+		return false;
+	}
+	if ( typeof begin == 'number' ) {
+		end = (typeof end == 'number') ? end : begin;
+		return this.each(function () {
+			if (this.setSelectionRange) {
+				this.setSelectionRange(begin, end);
+			} else if (this.createTextRange) {
+				var range = this.createTextRange();
+				range.collapse(true);
+				range.moveEnd('character', end);
+				range.moveStart('character', begin);
+				try { range.select(); } catch (ex) { }
 			}
+		});
+	} else {
+		if ( this[0].setSelectionRange ) {
+			begin = this[0].selectionStart;
+			end = this[0].selectionEnd;
+		} else if ( document.selection && document.selection.createRange ) {
+			var range = document.selection.createRange();
+			begin = 0 - range.duplicate().moveStart('character', -100000);
+			end = begin + range.text.length;
+		}
+		return { begin: begin, end: end };
+	}
+};
 
-			if( !String.prototype.removeExtraWhiteSpaces )
-			{
-				String.prototype.removeExtraWhiteSpaces = function()
-				{
-					return this.replace(/^(\s*)|(\s*)$/g, '').replace(/\s+/g, ' ');
-				};
+//fallback to Array.indexOf() for IE
+if ( ! Array.prototype.indexOf ) {
+	Array.prototype.indexOf = function( obj, start ) {
+		for ( var i = (start || 0), j = this.length; i < j; i++) {
+			if ( this[i] === obj ) {
+				return i;
 			}
+		}
+		return -1;
+	};
+}
 
-			// if we forget a //// console.log somewhere IE will not bother
-			if( !console )
-			{
-				var console = {
-					log:function(args){
-						//alert(args);
-					},
-					error:function( args )
-					{
-						//alert(args);
-					}
-				};
-			}
+if ( ! String.prototype.removeExtraWhiteSpaces ) {
+	String.prototype.removeExtraWhiteSpaces = function() {
+		return this.replace(/^(\s*)|(\s*)$/g, '').replace(/\s+/g, ' ');
+	};
+}
 
-			if(!String.prototype.trim) {
-				String.prototype.trim = function () {
-					return this.replace(/^\s+|\s+$/g,'');
-				};
-			}
+// if we forget a //// console.log somewhere IE will not bother
+if ( ! console ) {
+	var console = {
+		log: function( args ) {
+			//alert(args);
+		},
+		error: function( args ) {
+			//alert(args);
+		}
+	};
+}
 
-			(function($) {
+if ( ! String.prototype.trim ) {
+	String.prototype.trim = function () {
+		return this.replace(/^\s+|\s+$/g,'');
+	};
+}
 
-				$.ucfirst = function(str) {
+(function( $ ) {
 
-					var text = str;
-
-
-					var parts = text.split(' '),
-					len = parts.length,
-					i, words = [];
-					for (i = 0; i < len; i++) {
-						var part = parts[i];
-						var first = part[0].toUpperCase();
-						var rest = part.substring(1, part.length);
-						var word = first + rest;
-						words.push(word);
-
-					}
-
-					return words.join(' ');
-				};
-
-				})(jQuery);
+	$.ucfirst = function(str) {
+		var text = str,
+		parts = text.split(' '),
+		len = parts.length,
+		i, 
+		words = [];
+		for ( i = 0; i < len; i++ ) {
+			var part = parts[i];
+			var first = part[0].toUpperCase();
+			var rest = part.substring( 1, part.length );
+			var word = first + rest;
+			words.push( word );
+		}
+		return words.join(' ');
+	};
+})(jQuery);

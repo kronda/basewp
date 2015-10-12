@@ -57,7 +57,7 @@
 				button.data( 'original-text', buttonText );
 				button.addClass( 'fl-form-button-disabled' );
 				
-				$.post( wpAjaxUrl, {
+				$.post( FLBuilderLayoutConfig.paths.wpAjaxUrl, {
 					action  : 'fl_builder_subscribe_form_submit',
 					name    : name.val(),
 					email   : email.val(),

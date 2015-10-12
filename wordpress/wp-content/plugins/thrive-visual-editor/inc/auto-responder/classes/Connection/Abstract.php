@@ -235,6 +235,14 @@ abstract class Thrive_List_Connection_Abstract
         );
     }
 
+    /**
+     * Return the connection type
+     * @return String
+     */
+    public static function getType()
+    {
+        return 'autoresponder';
+    }
 
     /**
      * @return string the API connection title

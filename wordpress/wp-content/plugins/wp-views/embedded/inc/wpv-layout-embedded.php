@@ -10,22 +10,40 @@
 add_shortcode('wpv-heading', 'wpv_header_shortcode');
 function wpv_header_shortcode($atts, $value){
     extract(
-        shortcode_atts( array('name' => ''), $atts )
+        shortcode_atts( array(
+            'name' => '',
+            'style' => '',
+            'class' => ''
+            ), $atts )
     );
 
     if (isset($atts['name']) && strpos($atts['name'], 'types-field-')) {
         $atts['name'] = strtolower($atts['name']);
     }
     
+    if ( ! empty( $style ) ) {
+        $style = ' style="'. esc_attr( $style ).'"';
+    }
+    if ( ! empty( $class) ) {
+        $class = ' ' . esc_attr( $class );
+    }
+        
     global $WP_Views;
     $view_settings = $WP_Views->get_view_settings();
     
     //'wpv_column_sort_id'
     $order_class = 'wpv-header-no-sort';
     
-    if ($view_settings['view-query-mode'] == 'normal' && $atts['name'] != 'post-body' && $atts['name'] != 'wpv-post-taxonomy' && !empty( $atts['name'] ) 
-	// remove table column sorting for certain fields un Views listing users
-	&& ( $view_settings['query_type'][0] != 'users' || in_array( $atts['name'],array('user_email', 'user_login', 'display_name', 'user_url', 'user_registered') ) )
+    if (
+		$view_settings['view-query-mode'] == 'normal' 
+		&& !empty( $atts['name'] ) 
+		&& $atts['name'] != 'post-body' 
+		&& $atts['name'] != 'wpv-post-taxonomy' 
+		// remove table column sorting for certain fields un Views listing users
+		&& ( 
+			$view_settings['query_type'][0] != 'users' 
+			|| in_array( $atts['name'], array( 'user_email', 'user_login', 'display_name', 'user_url', 'user_registered' ) ) 
+		)
     ) {
 	
 	$head_name = $atts['name'];
@@ -60,7 +78,7 @@ function wpv_header_shortcode($atts, $value){
         } else {
             $dir = "asc";
         }
-        $link = '<a href="#" class="' . $order_class . ' js-wpv-column-header-click" data-viewnumber="' . $WP_Views->get_view_count() . '" data-name="' . $atts['name'] . '" data-direction="' . $dir . '">' . wpv_do_shortcode( $value ) . '<span class="wpv-sorting-indicator"></span></a>';
+        $link = '<a href="#" class="' . $order_class . ' js-wpv-column-header-click'. $class .'"'. $style .' data-viewnumber="' . $WP_Views->get_view_count() . '" data-name="' . $atts['name'] . '" data-direction="' . $dir . '">' . wpv_do_shortcode( $value ) . '<span class="wpv-sorting-indicator"></span></a>';
         return $link;
     } else {
         return wpv_do_shortcode( $value );
@@ -78,7 +96,7 @@ function wpv_layout_start_shortcode($atts){
     $speed = '';
     if (($view_settings['pagination'][0] == 'enable' && $view_settings['ajax_pagination'][0] == 'enable') || $view_settings['pagination']['mode'] == 'rollover') {
         $class[] = 'wpv-pagination';
-        $class[] = 'js-wpv-pagination-responsive';
+        $class[] = 'js-wpv-layout-responsive';
         if (!isset($view_settings['pagination']['preload_images'])) {
             $view_settings['pagination']['preload_images'] = false;
         }

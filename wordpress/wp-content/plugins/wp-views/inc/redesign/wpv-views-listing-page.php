@@ -32,7 +32,7 @@ function wpv_admin_menu_views_listing_page() {
 				<?php
 					_e( 'Views', 'wpv-views' );
 					
-					printf( ' <a href="#" class="add-new-h2 js-wpv-views-add-new-top">%s</a>', __( 'Add new View', 'wpv-views' ) );
+					printf( ' <a href="#" class="add-new-h2 page-title-action js-wpv-views-add-new-top">%s</a>', __( 'Add new View', 'wpv-views' ) );
 
 					// TODO maybe have this nonce as a data attribute for all buttons opening the popup
 					wp_nonce_field('wp_nonce_create_view_wrapper', 'wp_nonce_create_view_wrapper');
@@ -171,9 +171,9 @@ function wpv_admin_view_listing_table( $views_pre_query_data, $current_post_stat
 				$is_current = ( ( 'publish' == $current_post_status ) && !isset( $_GET["s"] ) );
 				printf(
 						'<li><a href="%s" %s >%s</a> (%s) | </li>',
-						add_query_arg(
+						esc_url( add_query_arg(
 								array( 'page' => 'views', 'status' => 'publish' ),
-								admin_url('admin.php') ),
+								admin_url('admin.php') ) ),
 						$is_current ? ' class="current" ' : '',
 						__( 'Published', 'wpv-views' ),
 						$views_pre_query_data['published_count'] );
@@ -182,9 +182,9 @@ function wpv_admin_view_listing_table( $views_pre_query_data, $current_post_stat
 				$is_current = ( ( 'trash' == $current_post_status ) && !isset( $_GET["s"] ) );
 				printf(
 						'<li><a href="%s" %s >%s</a> (%s)</li>',
-						add_query_arg(
+						esc_url( add_query_arg(
 								array( 'page' => 'views', 'status' => 'trash' ),
-								admin_url('admin.php') ),
+								admin_url('admin.php') ) ),
 						$is_current ? ' class="current" ' : '',
 						__( 'Trash', 'wpv-views' ),
 						$views_pre_query_data['trashed_count'] );
@@ -349,13 +349,14 @@ function wpv_admin_view_listing_table( $views_pre_query_data, $current_post_stat
 								<span class="row-title">
 								<?php
 									if ( 'trash' == $current_post_status ) {
-										echo $post->post_title;
+										echo esc_html( $post->post_title );
 									} else {
 										printf( '<a href="%s">%s</a>',
-												add_query_arg(
-														array( 'page' => 'views-editor', 'view_id' => $post->ID ),
-														admin_url( 'admin.php' ) ),
-												$post->post_title );
+											esc_url( add_query_arg(
+													array( 'page' => 'views-editor', 'view_id' => $post->ID ),
+													admin_url( 'admin.php' ) ) ),
+											esc_html( $post->post_title ) 
+										);
 									}
 								?>
 								</span>
@@ -377,9 +378,9 @@ function wpv_admin_view_listing_table( $views_pre_query_data, $current_post_stat
 									if ( 'publish' == $current_post_status ) {
 										$row_actions['edit'] = sprintf(
 												'<a href="%s">%s</a>',
-												add_query_arg(
+												esc_url( add_query_arg(
 													array( 'page' => 'views-editor', 'view_id' => $post->ID ),
-													admin_url( 'admin.php' ) ),
+													admin_url( 'admin.php' ) ) ),
 												__( 'Edit', 'wpv-views' ) );
 										$row_actions['duplicate js-views-actions-duplicate'] = sprintf( '<a href="#">%s</a>', __( 'Duplicate', 'wpv-views' ) );
 										$row_actions['trash js-views-actions-trash'] = sprintf( '<a href="#">%s</a>', __( 'Move to trash', 'wpv-views' ) );
@@ -390,7 +391,7 @@ function wpv_admin_view_listing_table( $views_pre_query_data, $current_post_stat
 
 									echo wpv_admin_table_row_actions( $row_actions,	array(
 											"data-view-id" => $post->ID,
-											"data-view-title" => $post->post_title,
+											"data-view-title" => esc_html( $post->post_title ),
 											"data-viewactionnonce" => $view_action_nonce ) );
 								?>
 							</td>
@@ -506,7 +507,7 @@ function wpv_admin_menu_views_listing_row($post_id) {
 	<tr id="wpv_view_list_row_<?php echo $post->ID; ?>" class="js-wpv-view-list-row">
 		<td class="post-title page-title column-title">
 			<span class="row-title">
-				<a href="admin.php?page=views-editor&amp;view_id=<?php echo $post->ID; ?>"><?php echo $post->post_title; ?></a>
+				<a href="admin.php?page=views-editor&amp;view_id=<?php echo esc_attr( $post->ID ); ?>"><?php echo esc_html( $post->post_title ); ?></a>
 			</span>
 			<?php if (isset($view_description) && '' != $view_description): ?>
 				<p class="desc">

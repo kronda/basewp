@@ -5,7 +5,7 @@ Tags: CMS, custom field, custom fields, custom post type, custom post types, fie
 License: GPLv2
 Requires at least: 3.4
 Tested up to: 4.3
-Stable tag: 1.8.5
+Stable tag: 1.8.6.2
 
 The complete and reliable plugin for managing custom post types, custom taxonomies and custom fields.
 
@@ -154,6 +154,25 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 9. Children post list
 
 == Changelog ==
+
+= 1.8.6.2 =
+
+* Release date: 2015-09-29
+* Fixed a problem with "Feature Image".
+
+= 1.8.6.1 =
+
+* Release date: 2015-09-28
+* Fixed a problem with get_plugins() function is some Installer actions.
+
+= 1.8.6 =
+
+* Release date: 2015-09-28
+* Replace parameter "numberposts" with "posts_per_page" in post relationships query.
+* Fixed a meta post data before use and if is too complex just do not handle this in Types.
+* Fixed a problem with selecting file in child tabele when is no WYSIWYG or other file field on edit screen.
+* When we get User Group we added information about affected roles.
+* Fixed a problem with playlist.
 
 = 1.8.5 =
 

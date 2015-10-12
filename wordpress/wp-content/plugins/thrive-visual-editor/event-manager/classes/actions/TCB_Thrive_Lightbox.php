@@ -228,10 +228,17 @@ if (!class_exists('TCB_Thrive_Lightbox')) {
                 tve_enqueue_icon_pack();
             }
 
+            tve_enqueue_extra_resources($lightbox_id);
+
             /* check for the lightbox style and include it */
             tve_enqueue_style_family($lightbox_id);
 
             tve_enqueue_custom_fonts($lightbox_id, true);
+
+            /* output any css needed for the extra (imported) fonts */
+            if (function_exists('tve_output_extra_custom_fonts_css')) {
+                tve_output_extra_custom_fonts_css($lightbox_id);
+            }
 
             $lightbox_content = get_post_meta($lightbox_id, 'tve_updated_post', true);
             tve_parse_events($lightbox_content);

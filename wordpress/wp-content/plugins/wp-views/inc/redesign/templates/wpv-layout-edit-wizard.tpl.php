@@ -43,10 +43,7 @@
                             <i class="icon-th-large"></i>
                             <?php _e('Bootstrap grid','wpv-views'); ?>
                         </label>
-						<p class="tip js-wpv-bootstrap-disabled">
-							<?php _e( 'You need to set the Bootstrap version used in your theme.', 'wpv-views' ); ?>
-							<?php echo sprintf( __("<a href='%s' target='_blank'>Go to the Settings page &raquo;</a>", 'wpv-views'), admin_url( 'admin.php?page=views-settings') ); ?>
-						</p>
+						<p class="tip js-wpv-bootstrap-message"></p>
                     </li>
                     <li>
                         <input type="radio" name="layout-wizard-style" id="layout-wizard-style-grid" class="js-wpv-layout-wizard-style" value="table" />
@@ -61,6 +58,10 @@
                             <i class="icon-table"></i>
                             <?php _e('Table','wpv-views'); ?>
                         </label>
+						<p class="tip js-wpv-layout-wizard-layout-style-options-table_of_fields js-layout-wizard-include-fields-names hidden">
+							<input id="include_field_names" type="checkbox" name="include_field_names" />
+							<label for="include_field_names"><?php _e('Make the table sortable by columns','wpv-views'); ?></label>
+						</p>
                     </li>
                     <li>
                         <input type="radio" name="layout-wizard-style" id="layout-wizard-style-ul" class="js-wpv-layout-wizard-style" value="un_ordered_list" />
@@ -103,6 +104,12 @@
                         <p class="js-layout-wizard-bootstrap-grid-num-columns">
 	                        <?php _e('Number of columns','wpv-views'); ?>:
 	                        <select class="js-wpv-layout-wizard-bootstrap-grid-cols" name="bootstrap_grid_cols">
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="6">6</option>
+								<option value="12">12</option>
 	                        </select>
                         </p>
                         <p class="js-layout-wizard-bootstrap-grid-container">
@@ -126,18 +133,11 @@
 							<?php _e('Number of columns','wpv-views'); ?>:
 							<select class="js-wpv-layout-wizard-table-cols" name="table_cols">
 								<?php
-									for($i = 2; $i < 13; $i++) {
-                                    echo '<option value="'.$i.'">'.$i.'</option>';
+									for ( $i = 2; $i < 13; $i++ ) {
+										echo '<option value="' . $i . '">' . $i . '</option>';
 									}
 								?>
 							</select>
-						</p>
-					</div>
-					<div class="js-wpv-layout-wizard-layout-style-options-table_of_fields js-layout-wizard-include-fields-names hidden">
-						<h4><?php _e('Table options','wpv-views'); ?></h4>
-						<p>
-							<input id="include_field_names" type="checkbox" name="include_field_names" />
-							<?php _e('Include field names in table headings','wpv-views'); ?>
 						</p>
 					</div>
                 </div>
@@ -149,9 +149,9 @@
 
             <div class="wpv-dialog-content-tab js-layout-wizard-tab" id="js-layout-wizard-fields">
                 <h2><?php _e('Select the fields to include in the loop','wpv-views'); ?></h2>
-                <ul class="wpv-layout-wizard-layout-fields js-wpv-layout-wizard-layout-fields">
+                <div class="wpv-layout-wizard-layout-fields js-wpv-layout-wizard-layout-fields">
 
-                </ul>
+                </div>
 				
 				<p style="text-align: right;padding-right:5px;">
 					<button class="button button-secondary js-layout-wizard-add-field">
@@ -172,7 +172,8 @@
 
     </div>
 
-    <div class="wpv-dialog-footer">
+    <div class="wpv-dialog-footer js-wpv-layout-wizard-dialog-footer">
+		<span class="wpv-layout-wizard-layout-fields-feedback js-wpv-layout-wizard-layout-fields-feedback" style="display:none;line-height:26px;color:#757575;margin-right:20px;"><?php _e( 'Loading existing fields', 'wpv-views' ); ?></span>
         <button class="button js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
         <button class="button js-dialog-prev"><?php _e('Previous','wpv-views') ?></button>
         <button class="button button-primary js-insert-layout" data-nonce="<?php echo wp_create_nonce( 'wpv_view_layout_extra_nonce' ); ?>" disabled><?php _e('Next','wpv-views') ?></button>

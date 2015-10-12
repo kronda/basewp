@@ -92,11 +92,11 @@
                         </li>
                         <li class="img_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="img_style_lifted_style1">
                             <div class="img_style_image"></div>
-                            <div><?php echo sprintf(__("Lifted Style %s"), "1") ?></div>
+                            <div><?php echo sprintf(__("Lifted Style %s", 'thrive-cb'), "1") ?></div>
                         </li>
                         <li class="img_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="img_style_lifted_style2">
                             <div class="img_style_image"></div>
-                            <div><?php echo sprintf(__("Lifted Style %s"), "2") ?></div>
+                            <div><?php echo sprintf(__("Lifted Style %s", 'thrive-cb'), "2") ?></div>
                         </li>
                         <li class="img_style tve_ed_btn tve_btn_text tve_left clearfix tve_click" id="img_style_polaroid">
                             <div class="img_style_image"></div>

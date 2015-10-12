@@ -10,6 +10,15 @@ class Thrive_List_Connection_KlickTipp extends Thrive_List_Connection_Abstract
 {
 
     /**
+     * Return the connection type
+     * @return String
+     */
+    public static function getType()
+    {
+        return 'autoresponder';
+    }
+
+    /**
      * @return string the API connection title
      */
     public function getTitle()
@@ -54,6 +63,12 @@ class Thrive_List_Connection_KlickTipp extends Thrive_List_Connection_Abstract
         try {
             $api->login();
 
+            $result = $this->testConnection();
+
+            if ($result !== true) {
+                return $this->error(sprintf(__('Could not connect to Klick Tipp using the provided data: %s', 'thrive-cb'), $this->_error));
+            }
+
             /**
              * finally, save the connection details
              */
@@ -72,7 +87,7 @@ class Thrive_List_Connection_KlickTipp extends Thrive_List_Connection_Abstract
      */
     public function testConnection()
     {
-        // this is not applicable here, we use login to test the connection
+        return is_array($this->_getLists());
     }
 
     /**

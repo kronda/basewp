@@ -83,39 +83,8 @@ function add_view_layout_template( $view_settings, $view_layout_settings, $view_
 	</div>
 	
 	<!-- @todo: move this to the view-editor-section-hidden action -->
-	<div id="js-wpv-inline-content-templates-dialogs" class="popup-window-container">
-	
-		<!-- Colorbox dialogs -->
-		
-		<?php
-		$dismissed_classname = '';
-		if ( isset( $dismissed_dialogs['remove-content-template-from-view'] ) ) {
-			$dismissed_classname = ' js-wpv-dialog-dismissed';
-		}
-		?>
-		
-		<div class="wpv-dialog js-wpv-dialog-remove-content-template-from-view<?php echo $dismissed_classname; ?>">
-            <div class="wpv-dialog-header">
-                <h2><?php _e('Remove the Content Template from the view','wpv-views') ?></h2>
-                <i class="icon-remove js-dialog-close"></i>
-            </div>
-            <div class="wpv-dialog-content">
-                <p>
-                    <?php _e("This will remove the link between your view and the Content Template.  The Content Template will not be deleted.") ?>
-                </p>
-				<p>
-					<label for="wpv-dettach-inline-content-template-dismiss">
-						<input type="checkbox" id="wpv-dettach-inline-content-template-dismiss" class="js-wpv-dettach-inline-content-template-dismiss" />
-						<?php _e("Don't show this message again",'wpv-views') ?>
-					</label>
-            	</p>
-            </div>
-            <div class="wpv-dialog-footer">
-                <button class="button js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
-                <button class="button button-primary js-wpv-remove-template-from-view"><?php _e('Remove','wpv-views') ?></button>
-            </div>
-		</div>
-		
+	<div id="js-wpv-inline-content-templates-dialogs" class="popup-window-container">		
+
 		<!-- Pointers -->
 		
 		<?php
@@ -148,6 +117,7 @@ delete_post_meta( $view_id, '_wpv_first_time_load' );
 }
 
 function wpv_list_view_ct_item( $template, $ct_id, $view_id, $opened = false ) {
+	do_action('views_ct_inline_editor');
     ?>
     <li id="wpv-ct-listing-<?php echo esc_attr( $ct_id ); ?>" class="js-wpv-ct-listing js-wpv-ct-listing-show js-wpv-ct-listing-<?php echo esc_attr( $ct_id ); ?> layout-html-editor" data-id="<?php echo esc_attr( $ct_id ); ?>" data-viewid="<?php echo esc_attr( $view_id ); ?>">
         <span class="wpv-inline-content-template-title" style="display:block;">
@@ -161,7 +131,7 @@ function wpv_list_view_ct_item( $template, $ct_id, $view_id, $opened = false ) {
 			</span>
 		</span>
         <div class="js-wpv-ct-inline-edit wpv-ct-inline-edit wpv-ct-inline-edit js-wpv-inline-editor-container-<?php echo esc_attr( $ct_id ); ?> <?php if ( ! $opened ) { echo 'hidden'; } ?>" data-template-id="<?php echo esc_attr( $ct_id ); ?>">
-			<?php if ( $opened ) { ?>
+		<?php if ( $opened ) { ?>
 			<div class="code-editor-toolbar js-code-editor-toolbar">
 			   <ul class="js-wpv-v-icon js-wpv-v-icon-<?php echo esc_attr( $ct_id ); ?>">
 					<?php
@@ -176,34 +146,119 @@ function wpv_list_view_ct_item( $template, $ct_id, $view_id, $opened = false ) {
 					</li>
 			   </ul>
 			</div>
-			<textarea name="name" rows="10" class="js-wpv-ct-inline-editor-textarea" id="wpv-ct-inline-editor-<?php echo esc_attr( $ct_id ); ?>" data-id="<?php echo esc_attr( $ct_id ); ?>"><?php echo esc_textarea( $template->post_content ); ?></textarea>
+			<textarea name="name" rows="10" class="js-wpv-ct-inline-editor-textarea" autocomplete="off" id="wpv-ct-inline-editor-<?php echo esc_attr( $ct_id ); ?>" data-id="<?php echo esc_attr( $ct_id ); ?>"><?php echo esc_textarea( $template->post_content ); ?></textarea>
+			<?php 
+			$extra_css = get_post_meta( $ct_id, '_wpv_view_template_extra_css', true );
+			$extra_js = get_post_meta( $ct_id, '_wpv_view_template_extra_js', true );
+			?>
+			<div class="wpv-editor-metadata-toggle js-wpv-editor-metadata-toggle js-wpv-ct-assets-inline-editor-toggle" data-id="<?php echo esc_attr( $ct_id ); ?>" data-target="js-wpv-ct-assets-inline-css-editor-<?php echo esc_attr( $ct_id ); ?>" data-type="css">
+				<span class="wpv-toggle-toggler-icon js-wpv-toggle-toggler-icon">
+					<i class="icon-caret-down icon-large"></i>
+				</span>
+				<i class="icon-pushpin js-wpv-textarea-full" style="<?php echo ( empty( $extra_css ) ) ? 'display:none;' : ''; ?>"></i>
+				<strong><?php _e( 'CSS editor', 'wpv-views' ); ?></strong>
+			</div>
+			<div id="wpv-ct-assets-inline-editor-<?php echo esc_attr( $ct_id ); ?>" class="wpv-ct-assets-inline-editor hidden js-wpv-ct-assets-inline-css-editor-<?php echo esc_attr( $ct_id ); ?>" data-id="<?php echo esc_attr( $ct_id ); ?>">
+				<textarea name="name" class="js-wpv-ct-assets-inline-editor-textarea" autocomplete="off" id="wpv-ct-assets-inline-css-editor-<?php echo esc_attr( $ct_id ); ?>" data-id="<?php echo esc_attr( $ct_id ); ?>"><?php echo esc_textarea( $extra_css ); ?></textarea>
+			</div>
+			
+			<div class="wpv-editor-metadata-toggle js-wpv-editor-metadata-toggle js-wpv-ct-assets-inline-editor-toggle" data-id="<?php echo esc_attr( $ct_id ); ?>" data-target="js-wpv-ct-assets-inline-js-editor-<?php echo esc_attr( $ct_id ); ?>" data-type="js">
+				<span class="wpv-toggle-toggler-icon js-wpv-toggle-toggler-icon">
+					<i class="icon-caret-down icon-large"></i>
+				</span>
+				<i class="icon-pushpin js-wpv-textarea-full" style="<?php echo ( empty( $extra_js ) ) ? 'display:none;' : ''; ?>"></i>
+				<strong><?php _e( 'JS editor', 'wpv-views' ); ?></strong>
+			</div>
+			<div id="wpv-ct-assets-inline-editor-<?php echo esc_attr( $ct_id ); ?>" class="wpv-ct-assets-inline-editor hidden js-wpv-ct-assets-inline-js-editor-<?php echo esc_attr( $ct_id ); ?>" data-id="<?php echo esc_attr( $ct_id ); ?>">
+				<textarea name="name" class="js-wpv-ct-assets-inline-editor-textarea" autocomplete="off" id="wpv-ct-assets-inline-js-editor-<?php echo esc_attr( $ct_id ); ?>" data-id="<?php echo esc_attr( $ct_id ); ?>"><?php echo esc_textarea( $extra_js ); ?></textarea>
+			</div>
 			<?php
 			wpv_formatting_help_inline_content_template( $template );
 			?>
-			<?php } ?>
+		<?php } ?>
 		</div>
 		<?php 
 		if ( $opened ) {
 		?>
 		<script type="text/javascript">
-			jQuery(document).ready(function($) {
+			jQuery( document ).ready(function($) {
 				if ( typeof window["wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>"] === "undefined" ) {
+					
+					// Content editor
 					window["wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>"] = icl_editor.codemirror('wpv-ct-inline-editor-<?php echo esc_js( $ct_id ); ?>', true);
 					window["wpv_ct_inline_editor_val_<?php echo esc_js( $ct_id ); ?>"] = window["wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>"].getValue();
-					
 					var wpv_inline_editor_qt = quicktags( { id: 'wpv-ct-inline-editor-<?php echo esc_js( $ct_id ); ?>', buttons: 'strong,em,link,block,del,ins,img,ul,ol,li,code,close' } );
 					WPV_Toolset.CodeMirror_instance['wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>'] = window["wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>"];
 					WPV_Toolset.add_qt_editor_buttons( wpv_inline_editor_qt, WPV_Toolset.CodeMirror_instance['wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>'] );
 					
+					// Extra assets editors
+					window["wpv_ct_assets_inline_css_editor_" + <?php echo esc_js( $ct_id ); ?>] = icl_editor.codemirror( 'wpv-ct-assets-inline-css-editor-' + <?php echo esc_js( $ct_id ); ?>, true, 'css' );
+					window["wpv_ct_assets_inline_css_editor_" + <?php echo esc_js( $ct_id ); ?>].setSize( "100%", 250 );
+					window["wpv_ct_assets_inline_css_editor_val_" + <?php echo esc_js( $ct_id ); ?>] = window["wpv_ct_assets_inline_css_editor_" + <?php echo esc_js( $ct_id ); ?>].getValue();
+					WPV_Toolset.CodeMirror_instance['wpv_ct_assets_inline_css_editor_' + <?php echo esc_js( $ct_id ); ?>] = window["wpv_ct_assets_inline_css_editor_" + <?php echo esc_js( $ct_id ); ?>];
+					window["wpv_ct_assets_inline_js_editor_" + <?php echo esc_js( $ct_id ); ?>] = icl_editor.codemirror( 'wpv-ct-assets-inline-js-editor-' + <?php echo esc_js( $ct_id ); ?>, true, 'javascript' );
+					window["wpv_ct_assets_inline_js_editor_" + <?php echo esc_js( $ct_id ); ?>].setSize( "100%", 250 );
+					window["wpv_ct_assets_inline_js_editor_val_" + <?php echo esc_js( $ct_id ); ?>] = window["wpv_ct_assets_inline_js_editor_" + <?php echo esc_js( $ct_id ); ?>].getValue();
+					WPV_Toolset.CodeMirror_instance['wpv_ct_assets_inline_js_editor_val_' + <?php echo esc_js( $ct_id ); ?>] = window["wpv_ct_assets_inline_js_editor_val_" + <?php echo esc_js( $ct_id ); ?>];
+					
 					window["wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>"].on('change', function() {
-						if( window["wpv_ct_inline_editor_val_<?php echo esc_js( $ct_id ); ?>"] !=  window["wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>"].getValue()){
+						if ( 
+							window["wpv_ct_inline_editor_val_<?php echo esc_js( $ct_id ); ?>"] !=  window["wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>"].getValue()
+							|| window["wpv_ct_assets_inline_css_editor_val_" + <?php echo esc_js( $ct_id ); ?>] !=  window["wpv_ct_assets_inline_css_editor_" + <?php echo esc_js( $ct_id ); ?>].getValue() 
+							|| window["wpv_ct_assets_inline_js_editor_val_" + <?php echo esc_js( $ct_id ); ?>] !=  window["wpv_ct_assets_inline_js_editor_" + <?php echo esc_js( $ct_id ); ?>].getValue() 
+						) {
 							$('.js-wpv-ct-update-inline-<?php echo esc_js( $ct_id ); ?>')
 								.removeClass('button-secondary')
 								.addClass('button-primary js-wpv-section-unsaved')
 								.prop( 'disabled', false );
 							setConfirmUnload( true );
+						} else {
+							$('.js-wpv-ct-update-inline-<?php echo esc_js( $ct_id ); ?>')
+								.removeClass('button-primary js-wpv-section-unsaved')
+								.addClass('button-secondary')
+								.prop( 'disabled', true );
+							$('.js-wpv-ct-update-inline-<?php echo esc_js( $ct_id ); ?>').parent().find('.toolset-alert-error').remove();
+							if ($('.js-wpv-section-unsaved').length < 1) {
+								setConfirmUnload(false);
+							}
 						}
-						else{
+					});
+					
+					window["wpv_ct_assets_inline_css_editor_<?php echo esc_js( $ct_id ); ?>"].on('change', function() {
+						if ( 
+							window["wpv_ct_inline_editor_val_<?php echo esc_js( $ct_id ); ?>"] !=  window["wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>"].getValue()
+							|| window["wpv_ct_assets_inline_css_editor_val_" + <?php echo esc_js( $ct_id ); ?>] !=  window["wpv_ct_assets_inline_css_editor_" + <?php echo esc_js( $ct_id ); ?>].getValue() 
+							|| window["wpv_ct_assets_inline_js_editor_val_" + <?php echo esc_js( $ct_id ); ?>] !=  window["wpv_ct_assets_inline_js_editor_" + <?php echo esc_js( $ct_id ); ?>].getValue() 
+						) {
+							$('.js-wpv-ct-update-inline-<?php echo esc_js( $ct_id ); ?>')
+								.removeClass('button-secondary')
+								.addClass('button-primary js-wpv-section-unsaved')
+								.prop( 'disabled', false );
+							setConfirmUnload( true );
+						} else {
+							$('.js-wpv-ct-update-inline-<?php echo esc_js( $ct_id ); ?>')
+								.removeClass('button-primary js-wpv-section-unsaved')
+								.addClass('button-secondary')
+								.prop( 'disabled', true );
+							$('.js-wpv-ct-update-inline-<?php echo esc_js( $ct_id ); ?>').parent().find('.toolset-alert-error').remove();
+							if ($('.js-wpv-section-unsaved').length < 1) {
+								setConfirmUnload(false);
+							}
+						}
+					});
+					
+					window["wpv_ct_assets_inline_js_editor_<?php echo esc_js( $ct_id ); ?>"].on('change', function() {
+						if ( 
+							window["wpv_ct_inline_editor_val_<?php echo esc_js( $ct_id ); ?>"] !=  window["wpv_ct_inline_editor_<?php echo esc_js( $ct_id ); ?>"].getValue()
+							|| window["wpv_ct_assets_inline_css_editor_val_" + <?php echo esc_js( $ct_id ); ?>] !=  window["wpv_ct_assets_inline_css_editor_" + <?php echo esc_js( $ct_id ); ?>].getValue() 
+							|| window["wpv_ct_assets_inline_js_editor_val_" + <?php echo esc_js( $ct_id ); ?>] !=  window["wpv_ct_assets_inline_js_editor_" + <?php echo esc_js( $ct_id ); ?>].getValue() 
+						) {
+							$('.js-wpv-ct-update-inline-<?php echo esc_js( $ct_id ); ?>')
+								.removeClass('button-secondary')
+								.addClass('button-primary js-wpv-section-unsaved')
+								.prop( 'disabled', false );
+							setConfirmUnload( true );
+						} else {
 							$('.js-wpv-ct-update-inline-<?php echo esc_js( $ct_id ); ?>')
 								.removeClass('button-primary js-wpv-section-unsaved')
 								.addClass('button-secondary')
@@ -238,25 +293,38 @@ function wpv_list_view_ct_item( $template, $ct_id, $view_id, $opened = false ) {
 add_action( 'wp_ajax_wpv_assign_ct_to_view', 'wpv_assign_ct_to_view_callback' );
 
 function wpv_assign_ct_to_view_callback() {
-    if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if (
-		! isset( $_POST["wpnonce"] )
-		|| (
-			! wp_verify_nonce( $_POST["wpnonce"], 'wpv_inline_content_template' ) 
-			&& ! wp_verify_nonce( $_POST["wpnonce"], 'wpv-ct-inline-edit' )
-		)	// Keep this for backwards compat and also for Layouts
-	) {
-		die( "Undefined Nonce" );
+	if ( ! current_user_can( 'manage_options' ) ) {
+		$data = array(
+			'type' => 'capability',
+			'message' => __( 'You do not have permissions for that.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
 	if ( 
-		! isset( $_POST['view_id'] ) 
+		! isset( $_POST["wpnonce"] )
+		|| (
+			! wp_verify_nonce( $_POST["wpnonce"], 'wpv_inline_content_template' )
+			&& ! wp_verify_nonce( $_POST["wpnonce"], 'wpv-ct-inline-edit' )			
+		)
+	) {
+		$data = array(
+			'type' => 'nonce',
+			'message' => __( 'Your security credentials have expired. Please reload the page to get new ones.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+	}
+	if (
+		! isset( $_POST["view_id"] )
 		|| ! is_numeric( $_POST["view_id"] )
 		|| intval( $_POST['view_id'] ) < 1 
 	) {
-		die( "Untrusted data" );
+		$data = array(
+			'type' => 'id',
+			'message' => __( 'Wrong or missing ID.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
+
 	global $wpdb;
 	$view_id = $_POST['view_id'];
 	$layout_settings = get_post_meta( $view_id, '_wpv_layout_settings', true);
@@ -264,118 +332,105 @@ function wpv_assign_ct_to_view_callback() {
 	if ( isset( $layout_settings['included_ct_ids'] ) && $layout_settings['included_ct_ids'] != '' ) {
 		$assigned_templates = explode( ',', $layout_settings['included_ct_ids'] );
 	}
+	ob_start();
 	?>
-	<div class="wpv-dialog js-wpv-dialog-add-new-content-template">
-		<div class="wpv-dialog-header">
-			<h2><?php _e('Assign a Content Template to this View','wpv-views') ?></h2>
-			<i class="icon-remove js-dialog-close"></i>
-		</div>
-		<div class="wpv-dialog-content">
-			<p>
-				<?php
-				_e( 'Use Content Templates as chunks of content that will be repeated in each element of the View loop.', 'wpv-views' );
-				?>
-			</p>
+	<div class="wpv-dialog">
+		<p>
 			<?php
-			$not_in = '';
-			$view_loop_template_key = '_view_loop_template';
-			$not_in_array = $wpdb->get_col( 
-				$wpdb->prepare( 
-					"SELECT meta_value FROM {$wpdb->postmeta} 
-					WHERE meta_key = %s 
-					ORDER BY post_id",
-					$view_loop_template_key
-				)
-			); 
-			$query_args = array(
-				'post_type' => 'view-template',
-				'orderby' => 'title', 
-				'order' => 'ASC',
-				'posts_per_page' => '-1'
-			);
-			if ( count( $assigned_templates ) > 0 ) {
+			_e( 'Use Content Templates as chunks of content that will be repeated in each element of the View loop.', 'wpv-views' );
 			?>
-				<h4><?php _e( 'This View has some Content Templates already assigned', 'wpv-views' ); ?></h4>
-				<div style="margin-left:20px;">
-					<input type="radio" name="wpv-ct-type" value="already" class="js-wpv-inline-template-type" id="js-wpv-ct-type-existing-asigned">
-					<label for="js-wpv-ct-type-existing-asigned"><?php _e( 'Insert a Content Template already assigned into the View', 'wpv-views' ) ?></label>
-					<div class="js-wpv-assign-ct-already" style="margin-left:20px;">
-						<select class="js-wpv-inline-template-assigned-select" id="js-wpv-ct-add-id-assigned">
-							<option value="0"><?php _e( 'Select a Content Template','wpv-views' ) ?>&hellip;</option>
-							<?php
-							foreach ( $assigned_templates as $assigned_temp ) {
-							 if ( is_numeric( $assigned_temp ) ) {
-								// This is cached so it is OK to load the whole post
-								$template_post = get_post( $assigned_temp );
-								if ( 
-									is_object( $template_post ) 
-									&& $template_post->post_status  == 'publish'
-									&& $template_post->post_type  == 'view-template'
-								) {
-									$not_in_array[] =  $template_post->ID;
-									echo '<option value="' . esc_attr( $template_post->ID ) . '">' . $template_post->post_title . '</option>';
-								}
-							 }
+		</p>
+		<?php
+		$not_in = '';
+		$not_in_array = wpv_get_loop_content_template_ids();
+		$query_args = array(
+			'post_type' => 'view-template',
+			'orderby' => 'title', 
+			'order' => 'ASC',
+			'posts_per_page' => '-1'
+		);
+		if ( count( $assigned_templates ) > 0 ) {
+		?>
+			<h4><?php _e( 'This View has some Content Templates already assigned', 'wpv-views' ); ?></h4>
+			<div style="margin-left:20px;">
+				<input type="radio" name="wpv-ct-type" value="already" class="js-wpv-inline-template-type" id="js-wpv-ct-type-existing-asigned">
+				<label for="js-wpv-ct-type-existing-asigned"><?php _e( 'Insert a Content Template already assigned into the View', 'wpv-views' ) ?></label>
+				<div class="js-wpv-assign-ct-already" style="margin-left:20px;">
+					<select class="js-wpv-inline-template-assigned-select" id="js-wpv-ct-add-id-assigned">
+						<option value="0"><?php _e( 'Select a Content Template','wpv-views' ) ?>&hellip;</option>
+						<?php
+						foreach ( $assigned_templates as $assigned_temp ) {
+						 if ( is_numeric( $assigned_temp ) ) {
+							// This is cached so it is OK to load the whole post
+							$template_post = get_post( $assigned_temp );
+							if ( 
+								is_object( $template_post ) 
+								&& $template_post->post_status  == 'publish'
+								&& $template_post->post_type  == 'view-template'
+							) {
+								$not_in_array[] =  $template_post->ID;
+								echo '<option value="' . esc_attr( $template_post->ID ) . '">' . $template_post->post_title . '</option>';
 							}
-							?>
-						</select>
-					</div>
+						 }
+						}
+						?>
+					</select>
 				</div>
-				<h4><?php _e( 'Assign other Content Template to the View', 'wpv-views' ); ?></h4>
-			<?php
-			} else {
-			?>
-				<h4><?php _e( 'Assign a Content Template to the View', 'wpv-views' ); ?></h4>
-			<?php
-			}
-			// @todo transform this in a suggest text input
-			// limit the query to just one, as we are OK with just that
-			// also, it should return just IDs for performance
-			if ( ! empty( $not_in_array ) ) {
-				$not_in = implode( ',', $not_in_array );
-				$query_args['exclude'] = $not_in;
-			}
-			$query = get_posts( $query_args );
-			if ( count( $query ) > 0 ) {
-			?>
-				<div style="margin:0 0 10px 20px;">
-					<input type="radio" name="wpv-ct-type" class="js-wpv-inline-template-type" value="existing" id="js-wpv-ct-type-existing">
-					<label for="js-wpv-ct-type-existing"><?php _e( 'Assign an existing Content template to this View','wpv-views' ) ?></label>
-					<div class="js-wpv-assign-ct-existing" style="margin-left:20px;">
-						<select class="js-wpv-inline-template-existing-select" id="js-wpv-ct-add-id">
-							<option value="0"><?php _e( 'Select a Content Template','wpv-views' ) ?>&hellip;</option>
-							<?php
-							foreach( $query as $temp_post ) {
-                                echo '<option value="' . esc_attr( $temp_post->ID ) .'">' . $temp_post->post_title .'</option>';
-							}
-							?>
-						</select>
-					</div>
-				</div>
-			<?php
-			}
-			?>
+			</div>
+			<h4><?php _e( 'Assign other Content Template to the View', 'wpv-views' ); ?></h4>
+		<?php
+		} else {
+		?>
+			<h4><?php _e( 'Assign a Content Template to the View', 'wpv-views' ); ?></h4>
+		<?php
+		}
+		// @todo transform this in a suggest text input
+		// limit the query to just one, as we are OK with just that
+		// also, it should return just IDs for performance
+		if ( ! empty( $not_in_array ) ) {
+			$not_in = implode( ',', $not_in_array );
+			$query_args['exclude'] = $not_in;
+		}
+		$query = get_posts( $query_args );
+		if ( count( $query ) > 0 ) {
+		?>
 			<div style="margin:0 0 10px 20px;">
-				<input type="radio" name="wpv-ct-type" class="js-wpv-inline-template-type" value="new" id="js-wpv-ct-type-new">
-				<label for="js-wpv-ct-type-new"><?php _e('Create a new Content Template and assign it to this View','wpv-views') ?></label>
-				<div style="margin-left:20px;" class="js-wpv-assign-ct-new">
-					<input type="text" class="js-wpv-inline-template-new-name" id="js-wpv-ct-type-new-name" placeholder="<?php echo esc_attr( __( 'Type a name', 'wpv-views' ) ); ?>">
-					<div class="js-wpv-add-new-ct-name-error-container"></div>
+				<input type="radio" name="wpv-ct-type" class="js-wpv-inline-template-type" value="existing" id="js-wpv-ct-type-existing">
+				<label for="js-wpv-ct-type-existing"><?php _e( 'Assign an existing Content template to this View','wpv-views' ) ?></label>
+				<div class="js-wpv-assign-ct-existing" style="margin-left:20px;">
+					<select class="js-wpv-inline-template-existing-select" id="js-wpv-ct-add-id">
+						<option value="0"><?php _e( 'Select a Content Template','wpv-views' ) ?>&hellip;</option>
+						<?php
+						foreach( $query as $temp_post ) {
+							echo '<option value="' . esc_attr( $temp_post->ID ) .'">' . $temp_post->post_title .'</option>';
+						}
+						?>
+					</select>
 				</div>
 			</div>
-			<div class="js-wpv-inline-template-insert" id="js-wpv-add-to-editor-line" style="margin:10px 0 10px 20px;">
-				<hr />
-				<input type="checkbox" class="js-wpv-add-to-editor-check" name="wpv-ct-add-to-editor" id="js-wpv-ct-add-to-editor-btn" checked="checked">
-				<label for="js-wpv-ct-add-to-editor-btn"><?php _e('Insert the Content Template shortcode to editor','wpv-views') ?></label>
+		<?php
+		}
+		?>
+		<div style="margin:0 0 10px 20px;">
+			<input type="radio" name="wpv-ct-type" class="js-wpv-inline-template-type" value="new" id="js-wpv-ct-type-new">
+			<label for="js-wpv-ct-type-new"><?php _e('Create a new Content Template and assign it to this View','wpv-views') ?></label>
+			<div style="margin-left:20px;" class="js-wpv-assign-ct-new">
+				<input type="text" class="js-wpv-inline-template-new-name" id="js-wpv-ct-type-new-name" placeholder="<?php echo esc_attr( __( 'Type a name', 'wpv-views' ) ); ?>">
+				<div class="js-wpv-add-new-ct-name-error-container"></div>
 			</div>
 		</div>
-		<div class="wpv-dialog-footer">
-			<button class="button button-secondary js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
-			<button class="button button-primary js-wpv-assign-inline-content-template"><?php _e('Assign Content Template','wpv-views') ?></button>
+		<div class="js-wpv-inline-template-insert" id="js-wpv-add-to-editor-line" style="margin:10px 0 10px 20px;">
+			<hr />
+			<input type="checkbox" class="js-wpv-add-to-editor-check" name="wpv-ct-add-to-editor" id="js-wpv-ct-add-to-editor-btn" checked="checked">
+			<label for="js-wpv-ct-add-to-editor-btn"><?php _e('Insert the Content Template shortcode to editor','wpv-views') ?></label>
 		</div>
 	</div>
 	<?php
-    die();
+	$response = ob_get_clean();
+	$data = array(
+		'dialog_content' => $response
+	);
+	wp_send_json_success( $data );
 }
 
 // Create a new or assign an existing Content template as an inline Template for a View or WPA
@@ -495,6 +550,16 @@ function wpv_ct_loader_inline_callback() {
 		&& $template->post_type == 'view-template'
 	) {
         $ct_id = $template->ID;
+		
+		$loaded_from = '';
+		if ( isset( $_POST['include_instructions'] ) ) {
+			if ( $_POST['include_instructions'] == 'inline_content_template' ) {
+				$loaded_from = 'inline_content_template';
+			}
+			if ( $_POST['include_instructions'] == 'layouts_content_cell' ) {
+				$loaded_from = 'layouts_content_cell';
+			}
+		}
     ?>
        	<div class="code-editor-toolbar js-code-editor-toolbar">
 	       <ul class="js-wpv-v-icon js-wpv-v-icon-<?php echo esc_attr( $ct_id ); ?>">
@@ -510,15 +575,41 @@ function wpv_ct_loader_inline_callback() {
 				</li>
 	       </ul>
       	</div>
-		<textarea name="name" rows="10" class="js-wpv-ct-inline-editor-textarea" data-id="<?php echo esc_attr( $ct_id ); ?>" id="wpv-ct-inline-editor-<?php echo esc_attr( $ct_id ); ?>"><?php echo esc_textarea( $template->post_content ); ?></textarea>
+		<textarea name="name" rows="10" class="js-wpv-ct-inline-editor-textarea" autocomplete="off" data-id="<?php echo esc_attr( $ct_id ); ?>" id="wpv-ct-inline-editor-<?php echo esc_attr( $ct_id ); ?>"><?php echo esc_textarea( $template->post_content ); ?></textarea>
+		<?php if ( $loaded_from == 'inline_content_template' ) { ?>
+		<?php 
+		$extra_css = get_post_meta( $ct_id, '_wpv_view_template_extra_css', true );
+		$extra_js = get_post_meta( $ct_id, '_wpv_view_template_extra_js', true );
+		?>
+		<div class="wpv-editor-metadata-toggle js-wpv-editor-metadata-toggle js-wpv-ct-assets-inline-editor-toggle" data-id="<?php echo esc_attr( $ct_id ); ?>" data-target="js-wpv-ct-assets-inline-css-editor-<?php echo esc_attr( $ct_id ); ?>" data-type="css">
+			<span class="wpv-toggle-toggler-icon js-wpv-toggle-toggler-icon">
+				<i class="icon-caret-down icon-large"></i>
+			</span>
+			<i class="icon-pushpin js-wpv-textarea-full" style="<?php echo ( empty( $extra_css ) ) ? 'display:none;' : ''; ?>"></i>
+			<strong><?php _e( 'CSS editor', 'wpv-views' ); ?></strong>
+		</div>
+		<div id="wpv-ct-assets-inline-editor-<?php echo esc_attr( $ct_id ); ?>" class="wpv-ct-assets-inline-editor hidden js-wpv-ct-assets-inline-css-editor-<?php echo esc_attr( $ct_id ); ?>" data-id="<?php echo esc_attr( $ct_id ); ?>">
+			<textarea name="name" class="js-wpv-ct-assets-inline-editor-textarea" autocomplete="off" id="wpv-ct-assets-inline-css-editor-<?php echo esc_attr( $ct_id ); ?>" data-id="<?php echo esc_attr( $ct_id ); ?>"><?php echo esc_textarea( $extra_css ); ?></textarea>
+		</div>
+		<div class="wpv-editor-metadata-toggle js-wpv-editor-metadata-toggle js-wpv-ct-assets-inline-editor-toggle" data-id="<?php echo esc_attr( $ct_id ); ?>" data-target="js-wpv-ct-assets-inline-js-editor-<?php echo esc_attr( $ct_id ); ?>" data-type="js">
+			<span class="wpv-toggle-toggler-icon js-wpv-toggle-toggler-icon">
+				<i class="icon-caret-down icon-large"></i>
+			</span>
+			<i class="icon-pushpin js-wpv-textarea-full" style="<?php echo ( empty( $extra_js ) ) ? 'display:none;' : ''; ?>"></i>
+			<strong><?php _e( 'JS editor', 'wpv-views' ); ?></strong>
+		</div>
+		<div id="wpv-ct-assets-inline-editor-<?php echo esc_attr( $ct_id ); ?>" class="wpv-ct-assets-inline-editor hidden js-wpv-ct-assets-inline-js-editor-<?php echo esc_attr( $ct_id ); ?>" data-id="<?php echo esc_attr( $ct_id ); ?>">
+			<textarea name="name" class="js-wpv-ct-assets-inline-editor-textarea" autocomplete="off" id="wpv-ct-assets-inline-js-editor-<?php echo esc_attr( $ct_id ); ?>" data-id="<?php echo esc_attr( $ct_id ); ?>"><?php echo esc_textarea( $extra_js ); ?></textarea>
+		</div>
+		<?php } ?>
 		<?php
-		if ( isset( $_POST['include_instructions'] ) ) {
-			if ( $_POST['include_instructions'] == 'inline_content_template' ) {
+		switch ( $loaded_from ) {
+			case 'inline_content_template':
 				wpv_formatting_help_inline_content_template( $template );
-			}
-			if ( $_POST['include_instructions'] == 'layouts_content_cell' ) {
+				break;
+			case 'layouts_content_cell':
 				wpv_formatting_help_layouts_content_template_cell( $template );
-			}
+				break;
 		}
 		?>
     <?php
@@ -576,7 +667,13 @@ function wpv_ct_update_inline_callback() {
 	if ( isset( $_POST['ct_title'] ) ) {
 		$my_post['post_title'] = $_POST['ct_title'];
 	}
-    $result = wp_update_post( $my_post );
+	$result = wp_update_post( $my_post );
+	
+	$extra_css = isset( $_POST['ct_css_value'] ) ? $_POST['ct_css_value'] : '';
+	update_post_meta( $_POST['ct_id'], '_wpv_view_template_extra_css', $extra_css );
+	$extra_js = isset( $_POST['ct_js_value'] ) ? $_POST['ct_js_value'] : '';
+    update_post_meta( $_POST['ct_id'], '_wpv_view_template_extra_js', $extra_js );
+	
 	do_action( 'wpv_action_wpv_save_item', $_POST['ct_id'] );
 	$data = array(
 		'id' => $_POST["ct_id"],
@@ -652,7 +749,7 @@ function wpv_remove_content_template_from_view_callback() {
 		wpv_dismiss_dialog( 'remove-content-template-from-view' );
 	}
 	$data = array(
-		'id' => $_POST["id"],
+		'id' => $_POST["view_id"],
 		'message' => __( 'Inline Content Template removed', 'wpv-views' )
 	);
 	wp_send_json_success( $data );

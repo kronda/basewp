@@ -16,5 +16,5 @@
     </div>
 <?php else : ?>
     <?php $show_textarea = true;
-    include dirname(__FILE__) . '/autoresponder-code-fields.php' ?>
-<?php endif ?>
+    include dirname(__FILE__) . '/autoresponder-code-fields.php'; ?>
+<?php endif; ?>

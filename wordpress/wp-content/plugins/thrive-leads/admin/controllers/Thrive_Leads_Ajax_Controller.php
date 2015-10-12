@@ -136,7 +136,7 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
     }
 
     /**
-     * 2 Step Lightbox API for CRUD
+     * 2 Step Lightbox API for CRUD (new name: ThriveBox)
      *
      * @return mixed based on the handled HTTP operation
      */
@@ -161,7 +161,7 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
                     'completed_tests' => true,
                 ));
                 if (!$two_step_lightbox) {
-                    $this->error('2 Step Lightbox not found');
+                    $this->error('ThriveBox not found');
                 }
                 $test = tve_leads_get_form_active_test($two_step_lightbox->ID, array(
                     'test_type' => TVE_LEADS_TWO_STEP_LIGHTBOX_TEST_TYPE,
@@ -760,7 +760,7 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
         global $tvedb;
 
         /**
-         * for Groups, Form Types, Shortcodes, and 2 step lightboxes
+         * for Groups, Form Types, Shortcodes, and 2 step lightboxes (new name: ThriveBox)
          */
         delete_post_meta_by_key('tve_leads_impressions');
         delete_post_meta_by_key('tve_leads_conversions');

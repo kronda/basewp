@@ -45,7 +45,43 @@ function views_redesign_html() {
 			wpv_die_toolset_alert_error( __( 'You attempted to edit a View that doesn&#8217;t exist. Perhaps it was deleted?', 'wpv-views' ) );
 		} else {
 			$view_settings = get_post_meta( $_GET['view_id'], '_wpv_settings', true );
+			
+			/**
+			* wpv_view_settings
+			*
+			* Internal filter to set some View settings that will overwrite the ones existing in the _wpv_settings postmeta
+			* Only used to set default values that need to be there on the returned array, but may not be there for legacy reasons
+			* Use wpv_filter_override_view_settings to override View settings - like on the Theme Frameworks integration
+			*
+			* @param $view_settings (array) Unserialized array of the _wpv_settings postmeta
+			* @param $view_id (integer) The View ID
+			*
+			* @return $view_settings (array) The View settings
+			*
+			* @since unknown
+			*/
+			
+			$view_settings = apply_filters( 'wpv_view_settings', $view_settings, $view_id );
+			
 			$view_layout_settings = get_post_meta( $_GET['view_id'], '_wpv_layout_settings', true );
+			
+			/**
+			* wpv_view_layout_settings
+			*
+			* Internal filter to set some View layout settings that will overwrite the ones existing in the _wpv_layout_settings postmeta
+			* Only used to set default values that need to be there on the returned array,, but may not be there for legacy reasons
+			* Use wpv_filter_override_view_layout_settings to override View layout settings
+			*
+			* @param $view_layout_settings (array) Unserialized array of the _wpv_layout_settings postmeta
+			* @param $view_id (integer) The View ID
+			*
+			* @return $view_layout_settings (array) The View layout settings
+			*
+			* @since 1.8.0
+			*/
+			
+			$view_layout_settings = apply_filters( 'wpv_view_layout_settings', $view_layout_settings, $view_id );
+			
 			if (
 				isset( $view_settings['view-query-mode'] ) 
 				&& ( 'normal' ==  $view_settings['view-query-mode'] )
@@ -67,11 +103,8 @@ function views_redesign_html() {
 	* Screen Options tab
 	*/
 	?>
-	<div id="screen-meta-dup" class="metabox-prefs js-screen-meta-dup hidden">
-		<div id="screen-options-wrap" aria-label="<?php echo esc_attr( __('Screen Options Tab') ); ?>" class="wpv-screen-options js-wpv-show-hide-container" 
-			data-dpsneedsfilter="<?php echo esc_attr( __('The parametric search settings section has unsaved changes, so you can not hide it', 'wpv-views') ); ?>" 
-			data-pagneedsfilter="<?php echo esc_attr( __('Pagination requires the Filter HTML section to be visible.', 'wpv-views') ); ?>" 
-			data-unclickable="<?php echo esc_attr( __('This section has unsaved changes, so you can not hide it', 'wpv-views') ); ?>">
+	<div id="js-screen-meta-dup" class="metabox-prefs js-screen-meta-dup hidden">
+		<div id="js-screen-options-wrap-dup">
 			<h5><?php _e('Show on screen', 'wpv-views');?></h5>
 			<p>
 				<small><?php echo __('Note that those Screen Options are set per View.', 'wpv-views');?></small>
@@ -235,11 +268,6 @@ function views_redesign_html() {
 				<input type="hidden" data-nonce="<?php echo wp_create_nonce( 'wpv_view_show_hide_nonce' ); ?>" class="js-wpv-show-hide-update" autocomplete="off" />
 			</p>
 			<div class="js-wpv-toolset-messages"></div>
-		</div>
-	</div>
-	<div id="screen-meta-links-dup" class="js-screen-meta-links-dup">
-		<div id="screen-options-link-wrap" class="hide-if-no-js screen-meta-toggle">
-			<a id="show-settings-link" class="show-settings" aria-expanded="false" aria-controls="screen-options-wrap" href="#screen-options-wrap"><?php _e('Screen Options'); ?></a>
 		</div>
 	</div>
 	<?php

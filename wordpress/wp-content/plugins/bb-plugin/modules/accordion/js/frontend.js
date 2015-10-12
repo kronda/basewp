@@ -4,6 +4,7 @@
 		
 		init: function()
 		{
+			$( '.fl-accordion-button' ).off( 'click' );
 			$( '.fl-accordion-button' ).click( FLAccordion._buttonClick );
 		},
 		

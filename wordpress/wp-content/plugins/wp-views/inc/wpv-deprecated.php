@@ -8,33 +8,6 @@
 * @since 1.6.2
 */
 
-function wpv_layout_taxonomy_V( $menu ) { // NOT DEPRECATED at all: used to generate the V icon popup for taxonomy Views. This goes to functions-core.php
-    // remove post items and add taxonomy items.
-    global $wpv_shortcodes, $sitepress;
-    $basic = __( 'Basic', 'wpv-views' );
-    $menu = array($basic => array());
-    $taxonomy = array(
-		'wpv-taxonomy-title',
-		'wpv-taxonomy-link',
-		'wpv-taxonomy-url',
-		'wpv-taxonomy-slug',
-		'wpv-taxonomy-id',
-		'wpv-taxonomy-description',
-		'wpv-taxonomy-post-count'
-	);
-    foreach ( $taxonomy as $key ) {
-        $menu[$basic][$wpv_shortcodes[$key][1]] = array( $wpv_shortcodes[$key][1], $wpv_shortcodes[$key][0], $basic, '' );
-    }
-    // Add the translatable string shortcodes
-	// TODO we do it differently for users... might be worth it to unify!
-    if ( isset( $sitepress ) && function_exists( 'wpml_string_shortcode' ) ) {
-		$translatable_string_title = __( 'Translatable string', 'wpv-views' );
-		$nonce = wp_create_nonce('wpv_editor_callback');
-		$menu[$basic][$translatable_string_title] = array( $translatable_string_title, 'wpml-string', $basic, 'WPViews.shortcodes_gui.wpv_insert_translatable_string_popup(\'' . $nonce . '\')' );
-    }
-    return $menu;
-}
-
 /*************
 * Layout functions
 **************/
@@ -177,102 +150,7 @@ function wpv_layout_meta_html_admin($post, $view_layout_settings) { // DEPRECATE
         </div>
     <?php
 }
-/*
-* DEPRECATED*
-* Commented out in 1.7
-function view_layout_box($post){ // DEPRECATED
-    ?>
-    <div id="wpv_view_layout_controls" style="position: relative">
-        <span id="wpv_view_layout_controls_over" class="wpv_view_overlay" style="display:none">
-            <p><strong><?php echo __('The view layout settings will be copied from the original', 'wpv-views'); ?></strong></p>
-        </span>
-    <?php
-    
-    $view_layout_settings = (array)get_post_meta($post->ID, '_wpv_layout_settings', true);
-    view_layout_style($post, $view_layout_settings);
-    view_layout_fields($post, $view_layout_settings);
-    view_layout_additional_js($post, $view_layout_settings);
-    wpv_layout_meta_html_admin($post, $view_layout_settings);
-    ?>
-    </div>
-    <?php
-}
-*/
-/**
-* DEPRECATED
-*
-* Commented out in 1.7
-function view_layout_style($post, $view_layout_settings) { // DEPRECATED
-    if (!isset($view_layout_settings['include_field_names'])) {
-        $view_layout_settings['include_field_names'] = true;
-    }
-    if (!isset($view_layout_settings['style'])) {
-        $view_layout_settings['style'] = 'table';
-    }
-    if (!isset($view_layout_settings['table_cols'])) {
-        $view_layout_settings['table_cols'] = 2;
-    }
-    ?>
-        <fieldset>
-            <p>
-            <strong><?php _e('Layout style:', 'wpv-views') ?></strong>
-            <select name="_wpv_layout_settings[style]">
-                <?php $selected = $view_layout_settings['style']=='unformated' ? ' selected="selected"' : ''; ?>
-                <option value="unformatted"<?php echo $selected ?>><?php _e('Unformatted', 'wpv-views'); ?></option>
-                <?php $selected = $view_layout_settings['style']=='table' ? ' selected="selected"' : ''; ?>
-                <option value="table"<?php echo $selected ?>><?php _e('Grid', 'wpv-views'); ?></option>
-                <?php $selected = $view_layout_settings['style']=='table_of_fields' ? ' selected="selected"' : ''; ?>
-                <option value="table_of_fields"<?php echo $selected ?>><?php _e('Table', 'wpv-views'); ?></option>
-                <?php $selected = $view_layout_settings['style']=='ordered_list' ? ' selected="selected"' : ''; ?>
-                <option value="ordered_list"<?php echo $selected ?>><?php _e('Ordered list', 'wpv-views'); ?></option>
-                <?php $selected = $view_layout_settings['style']=='un_ordered_list' ? ' selected="selected"' : ''; ?>
-                <option value="un_ordered_list"<?php echo $selected ?>><?php _e('Unordered list', 'wpv-views'); ?></option>
-            </select>
-            <?php echo '<a class="wpv-help-link" href="http://wp-types.com/documentation/user-guides/view-layouts-101/" target="_blank">' . __('Learn about different layouts', 'wpv-views') . ' &raquo;</a>';?>
-            </p>
-            
-            <?php // TABLE LAYOUT // ?>
-            
-            <div id="_wpv_layout_table_style"<?php if($view_layout_settings['style']!='table'):?> style="display:none;"<?php endif; ?>>
-                <p><?php _e('Layout the items using a HTML table', 'wpv-views')?></p>
-                <strong><?php _e('Number of columns:', 'wpv-views')?></strong>
-                <select name="_wpv_layout_settings[table_cols]">
-                    <?php
-                        for($i = 2; $i < 11; $i++) {
-                            $selected = $view_layout_settings['table_cols']==(string)$i ? ' selected="selected"' : '';
-                            echo '<option value="' . $i . '"' . $selected . '>'. $i . '</option>';
-                        }
-                    ?>
-                </select>
-            </div>
 
-            <?php // TABLE OF FIELDS LAYOUT // ?>
-            
-            <div id="_wpv_layout_table_of_fields_style"<?php if($view_layout_settings['style']!='table_of_fields'):?> style="display:none;"<?php endif; ?>>
-                <p><?php _e('Create a table of items with a column for each field', 'wpv-views')?></p>
-                <?php $checked = $view_layout_settings['include_field_names'] ? ' checked="checked"' : '';?>
-                <label><input id="_wpv_layout_include_field_names" type="checkbox" name="_wpv_layout_settings[include_field_names]"<?php echo $checked; ?> />&nbsp;<?php _e('Include field names in table headings', 'wpv-views'); ?></label>
-                
-            </div>
-
-            <?php // ORDERED LIST // ?>
-            
-            <div id="_wpv_layout_order_list_style"<?php if($view_layout_settings['style']!='ordered_list'):?> style="display:none;"<?php endif; ?>>
-                <p><?php _e('Items are added to an ordered list', 'wpv-views')?></p>
-            </div>
-
-            <?php // UNORDERED LIST // ?>
-            
-            <div id="_wpv_layout_un_order_list_style"<?php if($view_layout_settings['style']!='un_ordered_list'):?> style="display:none;"<?php endif; ?>>
-                <p><?php _e('Items are added to an unordered list', 'wpv-views')?></p>
-            </div>
-
-            <?php // END OF LAYOUT STYLES // ?>
-
-        </fieldset>        
-    <?php
-}
-*/
 class View_layout_field { // NOT SURE IF DEPRECATED
     protected $type;
     protected $prefix;
@@ -342,18 +220,6 @@ class View_layout_field { // NOT SURE IF DEPRECATED
         <td width="120px"><input class="wpv_field_prefix" id="wpv_field_prefix_<?php echo $index; ?>" type="text" value="<?php echo htmlspecialchars($this->prefix); ?>" name="_wpv_layout_settings[fields][prefix_<?php echo $index; ?>]" /></td>
         <td width="120px">
             <span id="wpv_field_name_<?php echo $index; ?>"><?php echo $title; ?></span>
-            <?php
-                if ($view_template) {
-                    $view_template_select_box = $WPV_templates->get_view_template_select_box($index, $view_template);
-                    $view_template_select_box = '<div id="views_template_body_' . $index . '" style="display:none;""><i> - ' . __('Using Content Template:' , 'wpv-views') . '</i>' . $view_template_select_box . '</div>';
-                    echo $view_template_select_box;
-                }
-                if ($view) {
-                    $view_select_box = $WP_Views->get_add_field_view_select_box($index, $view, $view_type);
-                    $view_select_box = '<div id="' . $view_type . '_view_select_' . $index . '" style="display:none;"">' . $view_select_box . '</div>';
-                    echo $view_select_box;
-                }
-            ?>
             <input id="wpv_field_name_hidden_<?php echo $index; ?>" type="hidden" value="<?php echo $name; ?>" name="_wpv_layout_settings[fields][name_<?php echo $index; ?>]" />
             <input id="wpv_types_field_name_hidden_<?php echo $index; ?>" type="hidden" value="<?php echo $this->types_field_name; ?>" name="_wpv_layout_settings[fields][types_field_name_<?php echo $index; ?>]" />
             <input id="wpv_types_field_data_hidden_<?php echo $index; ?>" type="hidden" value="<?php echo esc_js($this->types_field_data); ?>" name="_wpv_layout_settings[fields][types_field_data_<?php echo $index; ?>]" />
@@ -434,21 +300,9 @@ function view_layout_fields($post, $view_layout_settings) {
             break;
         }
     }
-    // Add a select control so that we can chose the Content template for the body.
-    $view_template_select_box = $WPV_templates->get_view_template_select_box('', '');
-    $view_template_select_box = '<div id="views_template_body" style="display:none;"><i> - ' . __('Using Content template:' , 'wpv-views') . '</i>' . $view_template_select_box . '</div>';
-    // Add a select control so that we can chose the Taxonomy View.
-    $taxonomy_view_select_box = $WP_Views->get_add_field_view_select_box('', '', 'taxonomy');
-    $taxonomy_view_select_box = '<div id="taxonomy_view_select" style="display:none;"">' . $taxonomy_view_select_box . '</div>';
-    // Add a select control so that we can chose the Post View.
-    $post_view_select_box = $WP_Views->get_add_field_view_select_box('', '', 'post');
-    $post_view_select_box = '<div id="post_view_select" style="display:none;"">' . $post_view_select_box . '</div>';
     ?>
     <div id="view_layout_fields" class="view_layout_fields">
         <p id="view_layout_fields_to_include"><strong><?php echo __('Fields to include:', 'wpv-views'); ?></strong></p>
-        <?php echo $view_template_select_box; ?>
-        <?php echo $taxonomy_view_select_box; ?>
-        <?php echo $post_view_select_box; ?>
         <p id="view_layout_add_field_message_1"><?php echo __("Click on <strong>Add field</strong> to insert additional fields. Drag them to reorder, or delete fields that you don't need.", 'wpv-views'); ?></p>
         <p id="view_layout_add_field_message_2" style="display:none"><?php echo __("Click on <strong>Add field</strong> to insert fields to this View.", 'wpv-views'); ?></p>
         
@@ -508,7 +362,6 @@ function view_layout_fields($post, $view_layout_settings) {
         <?php
         global $link_layout_number;
         $link_layout_number = 0;
-        add_short_codes_to_js(array('taxonomy', 'taxonomy-view', 'post-view'), null, 'short_code_taxonomy_menu_callback');
         ?>
         </tr>
         </table>
@@ -524,7 +377,7 @@ function view_layout_fields($post, $view_layout_settings) {
 		}
         var wpv_shortcodes = new Array();
         <?php
-            $current_index = add_short_codes_to_js(array('post', 'taxonomy', 'taxonomy-view', 'post-view'), null, 'short_code_variable_callback');
+            $current_index = 0;
         ?>
         wpv_shortcodes[<?php echo $current_index++; ?>] = new Array('Taxonomy View', '<?php echo WPV_TAXONOMY_VIEW; ?>');
         wpv_shortcodes[<?php echo $current_index++; ?>] = new Array('Post View', '<?php echo WPV_POST_VIEW; ?>');
@@ -722,33 +575,6 @@ function wpv_filter_controls_save($view_settings) { // MAYBE DEPRECATED
 /***********************
 * Filters general functions
 *******************************/
-
-function wpv_ajax_get_type_filter_summary() { // DEPRECATED check where it is used
-    if (wp_verify_nonce($_POST['wpv_type_filter_nonce'], 'wpv_type_filter_nonce')) {
-        wpv_get_type_filter_summary($_POST['_wpv_settings']);
-    }    
-    die;
-}
-
-function wpv_get_type_filter_summary($view_settings) {
-    switch($view_settings['query_type'][0]) {
-        case 'posts':
-            wpv_get_post_filter_summary($view_settings);
-            wpv_filter_order_by_admin_summary($view_settings);
-            wpv_filter_limit_admin_summary($view_settings);
-            break;
-        case 'taxonomy':
-            wpv_get_taxonomy_filter_summary($view_settings);
-            wpv_filter_taxonomy_order_by_admin_summary($view_settings);
-            wpv_filter_limit_admin_summary($view_settings, 'taxonomy');
-            break;
-    }
-    ?>
-    <br />
-    <input class="button-secondary" type="button" value="<?php echo __('Edit', 'wpv-views'); ?>" name="<?php echo __('Edit', 'wpv-views'); ?>" onclick="wpv_show_type_edit()"/>
-    <?php
-}
-
 // I think that DEPRECATED: there is no wpv_view_settings_save action anymore
 add_filter('wpv_view_settings_save', 'wpv_post_types_defaults_save', 10, 1);
 function wpv_post_types_defaults_save($view_settings) {// TODO this only fires when wpv_view_settings_save which I'm not sure is fired at all
@@ -756,49 +582,6 @@ function wpv_post_types_defaults_save($view_settings) {// TODO this only fires w
     $defaults = array('post_type_dont_include_current_page' => 0);
     $view_settings = wpv_parse_args_recursive($view_settings, $defaults);
     return $view_settings;
-}
-
-// DEPRECATED
-// Only used in wpv_get_type_filter_summary
-
-function wpv_get_post_filter_summary($view_settings) {// TODO deprecated as this is only used on another hightly deprecated function
-    $view_settings = wpv_post_default_settings($view_settings);
-    $selected = $view_settings['post_type'];
-    $post_types = get_post_types(array('public'=>true), 'objects');
-    $post_type_names = get_post_types(array('public'=>true));
-	$selected_post_types = sizeof($selected);
-	switch ($selected_post_types) {
-		case 0:
-			_e('All post types', 'wpv-views');
-			break;
-		case 1:
-            if (isset($post_types[$selected[0]])) {
-                $name = $post_types[$selected[0]]->labels->name;
-            } else {
-                $name = $selected[0];
-            }
-            echo sprintf(__('%s', 'wpv-views'), $name);
-			break;
-		default:
-			for($i = 0; $i < $selected_post_types - 1; $i++) {
-                if (isset($post_types[$selected[$i]])) {
-                    $name = $post_types[$selected[$i]]->labels->name;
-                } else {
-                    $name = $selected[$i];
-                }
-                if ($i > 0) {
-                    echo ', ';
-                }
-                echo $name;
-			}
-            if (isset($post_types[$selected[$i]])) {
-                $name = $post_types[$selected[$i]]->labels->name;
-            } else {
-                $name = $selected[$i];
-            }
-			echo ', '.$name;
-			break;
-	}
 }
 
 // I think that DEPRECATED: there is no wpv_view_settings_save action anymore TODO
@@ -812,89 +595,6 @@ function wpv_taxonomy_defaults_save($view_settings) {
     }
     $view_settings = wpv_parse_args_recursive($view_settings, $defaults);
     return $view_settings;
-}
-
-// DEPRECATED TODO
-// Only used in wpv_get_type_filter_summary
-
-function wpv_get_taxonomy_filter_summary($view_settings) {
-    $view_settings = wpv_taxonomy_default_settings($view_settings);
-    $selected = $view_settings['taxonomy_type'];
-	$taxonomies = get_taxonomies('', 'objects');
-	if (isset($taxonomies[$selected[0]])) {
-		$name = $taxonomies[$selected[0]]->labels->name;
-	} else {
-		$name = $selected[0];
-	}
-    echo sprintf(__('This View selects Taxonomy of type %s', 'wpv-views'), $name);
-}
-
-// DEPRECATED
-// Only used in wpv_get_type_filter_summary
-
-function wpv_filter_order_by_admin_summary($view_settings) {
-    $view_settings = wpv_order_by_default_settings($view_settings);
-    switch($view_settings['orderby']) {
-        case 'post_date':
-            $order_by = __('post date', 'wpv-views');
-            break;
-
-        case 'post_title':
-            $order_by = __('post title', 'wpv-views');
-            break;
-
-        case 'ID':
-            $order_by = __('post ID', 'wpv-views');
-            break;
-
-        case 'menu_order':
-            $order_by = __('menu order', 'wpv-views');
-            break;
-
-        case 'rand':
-            $order_by = __('random order', 'wpv-views');
-            break;
-
-        default:
-            $order_by = str_replace('field-', '', $view_settings['orderby']);
-            $order_by = sprintf(__('Field - %s', 'wpv-views'), $order_by);
-            break;
-
-    }
-    $order = __('descending', 'wpv-views');
-    if ($view_settings['order'] == 'ASC') {
-        $order = __('ascending', 'wpv-views');
-    }
-    echo sprintf(__(' ordered by %s, %s', 'wpv-views'), $order_by, $order);
-
-}
-
-// DEPRECATED
-// This global is not needed anymore
-$taxonomy_order_by = array(
-    'id' => 'ID',
-    'count' => 'Count',
-    'name' => 'Name',
-    'slug' => 'Slug',
-    'term_group' => 'Term_group',
-    'none' => 'None'
-);
-
-// DEPRECATED only used on wpv_get_type_filter_summary
-// TO DELETE
-
-function wpv_filter_taxonomy_order_by_admin_summary($view_settings) {
-    $view_settings = wpv_taxonomy_order_by_default_settings($view_settings);
-
-    global $taxonomy_order_by;
-    $order_by = $taxonomy_order_by[$view_settings['taxonomy_orderby']];
-
-    $order = __('descending', 'wpv-views');
-    if ($view_settings['taxonomy_order'] == 'ASC') {
-        $order = __('ascending', 'wpv-views');
-    }
-    echo sprintf(__(', ordered by %s, %s', 'wpv-views'), $order_by, $order);
-
 }
 
 /**********************
@@ -992,133 +692,29 @@ function wpv_pagination_spinner_media_upload_tabs_filter($tabs) { // DEPRECATED
     return $tabs;
 }
 
-
-/*********************
-* Filter metaHTML
-*********************/
-
-/*************************
-* Limit and offset
-**************************/
-
 /*
- * Limit and offset filter.
- */
- 
- // DEPRECATED
-// Only used in wpv_get_type_filter_summary
-
-function wpv_filter_limit_admin_summary($view_settings, $query_type = 'post') {
-    $view_settings = wpv_limit_default_settings($view_settings);
-    $output = '';
-    if ($query_type != 'taxonomy') {
-        if (intval($view_settings['limit']) != -1) {
-            if (intval($view_settings['limit']) == 1) {
-                $output .= __(', limit to 1 item', 'wpv-views');
-            } else {
-                $output .= sprintf(__(', limit to %d items', 'wpv-views'),
-                        intval($view_settings['limit']));
-            }
-        }
-        if (intval($view_settings['offset']) != 0) {
-            if (intval($view_settings['limit']) == 1) {
-                $output .= __(', skip first item', 'wpv-views');
-            } else {
-                $output .= sprintf(__(', skip %d items', 'wpv-views'),
-                        intval($view_settings['offset']));
-            }
-        }
-    } else {
-        if (intval($view_settings['taxonomy_limit']) != -1) {
-            if (intval($view_settings['taxonomy_limit']) == 1) {
-                $output .= __(', limit to 1 item', 'wpv-views');
-            } else {
-                $output .= sprintf(__(', limit to %d items', 'wpv-views'),
-                        intval($view_settings['taxonomy_limit']));
-            }
-        }
-        if (intval($view_settings['taxonomy_offset']) != 0) {
-            if (intval($view_settings['taxonomy_limit']) == 1) {
-                $output .= __(', skip first item', 'wpv-views');
-            } else {
-                $output .= sprintf(__(', skip %d items', 'wpv-views'),
-                        intval($view_settings['taxonomy_offset']));
-            }
-        }
-    }
-    echo $output;
-}
-
-/*
-*-------------------------------------------------
+* ---------------------
+* TEMPORARY FUNCTIONS
+* ---------------------
 */
 
 /**
-* Media popup functions and filters.
+* _wpv_deprecated_remove_admin_bar_toolset
 *
-* Commented out in 1.7 for testing
+* Workaround to remove the Toolset Admin Bar Menu until we can be sure that the class containing it applies the new toolset_filter_toolset_admin_bar_menu_disable filter
 *
-
-if ( isset( $_GET['wpv-media-insert'] ) || isset( $_GET['wpv-media-edit'] ) ) { // Button "Add Media" 
-	// Remove unwanted tabs
-	add_filter('media_upload_tabs', 'wpv_media_upload_tabs_filter');
-	// Remove "Insert into post" button and add button-secondary class to Delete link
-	add_action( 'admin_head-media-upload-popup', 'wpv_media_popup_changes' );
-}
-if ( isset( $_GET['wpv-media-insert'] ) || isset( $_GET['wpv-media-edit'] ) ) { // Button "Add Media" DEPRECATED for sure
-	// Remove unwanted tabs
-	add_filter('media_upload_tabs', 'wpv_media_upload_tabs_filter');
-	// Remove "Insert into post" button and add button-secondary class to Delete link
-	add_action( 'admin_head-media-upload-popup', 'wpv_media_popup_changes' );
-}
-
-function wpv_media_popup_changes() { ?>
-<script type="text/javascript">
-        jQuery(document).ready(function(){
-		var idview = window.parent.jQuery('#post_ID').val();
-		jQuery('.savesend input').hide();
-		jQuery('tr.align').hide();
-		jQuery('tr.image-size').hide();
-		jQuery('tr.url').hide();
-		jQuery('.savesend a').addClass('button-secondary').css('color', '#333333');
-		jQuery('.media-upload-form').append('<p><a class="wpv-save-media button button-primary">Save all changes</a></p>');
-		jQuery('.savesend input.save').click(function(){
-			wpv_view_media_manager(idview);
-		});
-		jQuery('.wpv-save-media').click(function(){
-			wpv_view_media_manager(idview);
-		});
-        });
-        function wpv_view_media_manager(idview) {
-		window.parent.jQuery('.media-list').hide();
-		var data = '&action=wpv_view_media_manager';
-		data += '&_wpnonce=<?php echo wp_create_nonce('wpv_media_manager_callback'); ?>';
-                data += '&view_id=' + idview;
-		jQuery.post(ajaxurl, data, function(response) {
-			if (response != '') {
-				window.parent.jQuery('.wpv_table_attachments').html(response);
-				window.parent.jQuery('.media-list').show();
-			}
-			self.parent.tb_remove();
-		});
-        
-	}
-</script>
-<style type="text/css">
-<?php if ( isset( $_GET['wpv-media-insert'] ) ) { // Button "Edit media items"
-	?> 
-	tr.submit { display: none; }
-<?php } ?>
-	#gallery-settings, .ml-submit {display:none !important;}
-	</style>
-<?php
-}
-function wpv_media_upload_tabs_filter($tabs) {
-	unset($tabs['type_url']);
-	unset( $tabs['library'] );
-	if ( isset( $_GET['wpv-media-edit'] ) ) { // Button "Edit media items"
-		unset( $tabs['type'] );
-	}
-	return $tabs;
-}
+* Added in Views 1.10 and common 1.7
+*
+* @toremove on a couple of join releases
 */
+
+add_action( 'init', '_wpv_deprecated_remove_admin_bar_toolset' );
+
+function _wpv_deprecated_remove_admin_bar_toolset() {
+	global $toolset_admin_bar_menu;
+	$toolset_options = get_option( 'toolset_options', array() );
+	$toolset_admin_bar_menu_remove = ( isset( $toolset_options['show_admin_bar_shortcut'] ) && $toolset_options['show_admin_bar_shortcut'] == 'off' ) ? true : false;
+	if ( $toolset_admin_bar_menu_remove ) {
+		remove_action( 'admin_bar_menu', array( $toolset_admin_bar_menu, 'admin_bar_menu' ), 99 );
+	}
+}

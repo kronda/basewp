@@ -1,15 +1,17 @@
 <?php
-
-/*
-* General file for all AJAX calls
-* All AJAX calls used in the backend must be set here
-*/
-
-/*
-* Views & WPA edit sceen
-*/
-
 /**
+ * General file for all AJAX calls
+ *
+ * All AJAX calls used in the backend must be set here.
+ */
+
+
+
+/* ************************************************************************* *\
+        Views & WPA edit sceen
+\* ************************************************************************* */
+
+/*
  * Screen options save callback function.
  *
  * @todo There may be some deprecated options, e.g. the option for layout-extra in sections-show-hide. These should be
@@ -19,35 +21,21 @@
  *
  * @since unknown
  */
- 
+
+
 /**
-* wpv_save_screen_options_callback
-*
-* Save Views and WPA screen options
-*
-* @since unknown
-*/
+ * wpv_save_screen_options_callback
+ *
+ * Save Views and WPA screen options.
+ *
+ * @since unknown
+ */
  
 add_action('wp_ajax_wpv_save_screen_options', 'wpv_save_screen_options_callback');
 
 function wpv_save_screen_options_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		$data = array(
-			'type' => 'capability',
-			'message' => __( 'You do not have permissions for that.', 'wpv-views' )
-		);
-		wp_send_json_error( $data );
-	}
-	if ( 
-		! isset( $_POST["wpnonce"] )
-		|| ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_show_hide_nonce' ) 
-	) {
-		$data = array(
-			'type' => 'nonce',
-			'message' => __( 'Your security credentials have expired. Please reload the page to get new ones.', 'wpv-views' )
-		);
-		wp_send_json_error( $data );
-	}
+	wpv_ajax_authenticate( 'wpv_view_show_hide_nonce', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+	
 	if (
 		! isset( $_POST["id"] )
 		|| ! is_numeric( $_POST["id"] )
@@ -88,151 +76,63 @@ function wpv_save_screen_options_callback() {
 	wp_send_json_success( $data );
 }
 
+
+add_action( 'wp_ajax_wpv_update_title_description', 'wpv_update_title_description_callback' );
+
 /**
-* wpv_update_title_description_callback
-*
-* Save Views and WPA title and description section
-*
-* @since unknown
-*
-* @todo review that filter_input_array thing...
-*/
-
-add_action('wp_ajax_wpv_update_title_description', 'wpv_update_title_description_callback');
-
+ * Save Views and WPA title and description section.
+ *
+ * Expects following $_POST variables:
+ * - wpnonce
+ * - id
+ * - title
+ * - slug
+ * - description
+ * - is_title_escaped
+ *
+ * @since unknown
+ */
 function wpv_update_title_description_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		$data = array(
-			'type' => 'capability',
-			'message' => __( 'You do not have permissions for that.', 'wpv-views' )
-		);
-		wp_send_json_error( $data );
+
+    wpv_ajax_authenticate( 'wpv_view_title_description_nonce', array( 'type_of_death' => 'data' ) );
+
+    $view_id = intval( wpv_getpost( 'id', 0 ) );
+
+    // This is full Views, so we will allways get WPV_View, WPV_WordPress_Archive or null.
+    $view = WPV_View_Base::get_instance( $view_id );
+
+    // Fail if the View/WPA doesn't exist.
+    if ( null == $view ) {
+		wp_send_json_error( array(
+            'type' => 'id',
+            'message' => __( 'Wrong or missing ID.', 'wpv-views' )
+        ) );
 	}
-	if ( 
-		! isset( $_POST["wpnonce"] )
-		|| ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_title_description_nonce' ) 
-	) {
-		$data = array(
-			'type' => 'nonce',
-			'message' => __( 'Your security credentials have expired. Please reload the page to get new ones.', 'wpv-views' )
-		);
-		wp_send_json_error( $data );
-	}
-	if (
-		! isset( $_POST["id"] )
-		|| ! is_numeric( $_POST["id"] )
-		|| intval( $_POST['id'] ) < 1 
-	) {
-		$data = array(
-			'type' => 'id',
-			'message' => __( 'Wrong or missing ID.', 'wpv-views' )
-		);
-		wp_send_json_error( $data );
-	}
-	global $wpdb;
-	$view_data = $wpdb->get_row(
-		$wpdb->prepare(
-			"SELECT * FROM {$wpdb->posts} 
-			WHERE ID = %s 
-			LIMIT 1",
-			$_POST["id"]
-		)
-	);
-	if ( is_null( $view_data ) ) {
-		$data = array(
-			'type' => 'id',
-			'message' => __( 'Wrong or missing ID.', 'wpv-views' )
-		);
-		wp_send_json_error( $data );
-	}
-	$view_title = $view_data->post_title;
-	$view_slug = $view_data->post_name;
-	if ( 
-		! isset( $_POST["title"] ) 
-		|| empty( $_POST["title"] ) 
-	) {
-		$data = array(
-			'type' => 'empty_title',
-			'message' => __( 'You can not leave the title empty.', 'wpv-views' )
-		);
-		wp_send_json_error( $data );
-	}
-	if ( 
-		! isset( $_POST["slug"] ) 
-		|| empty( $_POST["slug"] ) 
-	) {
-		$data = array(
-			'type' => 'empty_slug',
-			'message' => __( 'You can not leave the slug empty.', 'wpv-views' )
-		);
-		wp_send_json_error( $data );
-	}
-	if ( $_POST["slug"] != sanitize_title( $_POST['slug'] ) ) {
-		$data = array(
-			'type' => 'wrong_slug',
-			'message' => __( 'The slug can only contain lowercase letters, numbers or dashes.', 'wpv-views' )
-		);
-		wp_send_json_error( $data );
-	}
-	$existence_check = $wpdb->get_var( 
-		$wpdb->prepare( 
-			"SELECT ID FROM {$wpdb->posts} 
-			WHERE ( post_title IN ( %s, %s ) OR post_name IN ( %s, %s ) ) 
-			AND post_type = 'view' 
-			AND ID != %d 
-			LIMIT 1",
-			$_POST["title"],
-			$_POST["slug"],
-			$_POST["title"],
-			$_POST["slug"],
-			$_POST["id"]
-		)
-	);
-	if ( ! empty( $existence_check ) ) {
-		$data = array(
-			'type' => 'already_exists',
-			'message' => __( 'Another item with that name already exists. Please use another name.', 'wpv-views' )
-		);
-		wp_send_json_error( $data );
-	}
-	$value = filter_input_array( 
-		INPUT_POST, 
-		array(
-			'description' => array(
-				'filter' => FILTER_SANITIZE_STRING, 
-				'flags' => !FILTER_FLAG_STRIP_LOW
-			)
-		)
-	);
-	$view_desc = get_post_meta( $_POST["id"], '_wpv_description', true );
-	$view_changed = false;
-	if (
-		! isset( $view_desc ) 
-		|| $value['description'] != $view_desc
-	) {
-		$view_desc = $value['description'];
-		update_post_meta( $_POST["id"], '_wpv_description', $view_desc );
-		$view_changed = true;
-	}
-	if (
-		$_POST["title"] != $view_title 
-		|| $_POST["slug"] != $view_slug
-	) {
-		$view = array();
-		$view['ID'] = $_POST["id"];
-		$view['post_title'] = $_POST["title"];
-		$view['post_name'] = $_POST["slug"];
-		wp_update_post( $view );
-		$view_changed = true;
-	}
-	if ( $view_changed ) {
-		do_action( 'wpv_action_wpv_save_item', $_POST["id"] );
-	}
-	$data = array(
-		'id' => $_POST["id"],
-		'message' => __( 'Title and Description saved', 'wpv-views' )
-	);
-	wp_send_json_success( $data );
+
+    // Try to update all three properties at once.
+    $transaction_result = $view->update_transaction( array(
+        'title' => wpv_getpost( 'title' ),
+        'slug' => wpv_getpost( 'slug' ),
+        'description' => wpv_getpost( 'description' )
+    ) );
+
+    // On failure, return the first available error message (there should be only one anyway).
+    if( !$transaction_result['success'] ) {
+        $error_message = wpv_getarr( $transaction_result, 'first_error_message', __( 'An unexpected error happened.', 'wpv-views' ) );
+        wp_send_json_error( array( 'type' => 'update', 'message' => $error_message ) );
+    }
+
+    // Success.
+
+    // Use special success message if title was changed by escaping in JS.
+    $is_title_escaped = intval( wpv_getpost( 'is_title_escaped', 0 ) );
+    if( $is_title_escaped ) {
+        $success_message = __( 'We escaped the title before saving.', 'wpv-views' );
+    } else {
+        $success_message = __( 'Title and Description saved', 'wpv-views' );
+    }
+
+	wp_send_json_success( array( 'id' => $view_id, 'message' => $success_message ) );
 }
 
 /*
@@ -261,12 +161,8 @@ function wpv_update_title_description_callback() {
 add_action( 'wp_ajax_wpv_create_view', 'wpv_create_view_callback' );
 
 function wpv_create_view_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wp_nonce_create_view' ) ) {
-		die( "Security check" );
-	}
+	wpv_ajax_authenticate( 'wp_nonce_create_view', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+	
 	if ( 
 		! isset( $_POST["title"] ) 
 		|| $_POST["title"] == '' 
@@ -298,45 +194,55 @@ function wpv_create_view_callback() {
     $result = array();
 
     if ( isset( $response['success'] ) ) {
-		echo $response['success'];
+		$data = array(
+			'new_view_id' => $response['success']
+		);
+		wp_send_json_success( $data );
     } else if ( isset( $response['error'] ) ) {
-		$result['error'] = 'error';
-		$result['error_message'] = $response['error'];
-		echo json_encode( $result );
+		$data = array(
+			'message' => $response['error']
+		);
+		wp_send_json_error( $data );
     } else {
-		$result['error'] = 'error';
-		$result['error_message'] = __('The View could not be created', 'wpv-views');
-		echo json_encode( $result );
+		$data = array(
+			'message' => __('The View could not be created', 'wpv-views')
+		);
+		wp_send_json_error( $data );
     }
-
-	die();
 }
 
-// View Scan usage callback action
+/**
+ * View Scan usage callback action.
+ *
+ * Expects following POST arguments:
+ * - wpnonce: A valid work_views_listing nonce.
+ * - id: ID of the View.
+ *
+ * Prints JSON-encoded array of items on success. Each item has a 'post_title' and 'link'.
+ * Otherwise prints an error message (not a valid JSON).
+ *
+ * @todo change the nonce
+ *
+ * @since unknown
+ */
+add_action( 'wp_ajax_wpv_scan_view_usage', 'wpv_scan_view_usage_callback' );
 
-add_action( 'wp_ajax_wpv_scan_view', 'wpv_scan_view_callback' );
+function wpv_scan_view_usage_callback() {
+	wpv_ajax_authenticate( 'work_views_listing', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
 
-function wpv_scan_view_callback() {
-    if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
+    $post_id = wpv_getpost( 'id', 0 );
+	if ( 0 == $post_id 	) {
+		$data = array(
+			'message' => __( 'Wrong data', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'work_views_listing') ) {
-		die( "Security check" ); // @todo change this nonce
-	}
-	if (
-		! isset( $_POST["id"] )
-		|| ! is_numeric( $_POST["id"] )
-		|| intval( $_POST['id'] ) < 1 
-	) {
-		die( "Untrusted data" );
-	}
+
 	global $wpdb, $sitepress;
 	
 	$values_to_prepare = array();
-	
 	$trans_join = '';
     $trans_where = '';
-
     if ( 
 		isset( $sitepress ) 
 		&& function_exists( 'icl_object_id' )
@@ -347,7 +253,7 @@ function wpv_scan_view_callback() {
 		$values_to_prepare[] = $current_lang_code;
     }
 	
-    $view = get_post( $_POST["id"] );
+    $view = get_post( $post_id );
 	$needle = '[wpv-view name="' . $view->post_title . '"';
 	$needle = '%' . wpv_esc_like( $needle ) . '%';
 	$needle_name = '[wpv-view name="' . $view->post_name . '"';
@@ -382,118 +288,201 @@ function wpv_scan_view_callback() {
 		),
 		OBJECT 
 	);
-
-   if ( ! empty( $res ) ) {
-        $items = array();
+    
+	$items = array();
+	if ( ! empty( $res ) ) {
         foreach ( $res as $row ) {
-            $item = array();
             $type = get_post_type_object( $row->post_type );
             $type = $type->labels->singular_name;
-            $item['post_title'] = "<strong>" . $type . "</strong>: ". $row->post_title;
-            if ( $row->post_type=='view' ) {
+
+            if ( $row->post_type == 'view' ) {
                 $edit_link = get_admin_url() . "admin.php?page=views-editor&view_id=" . $row->ID;
+            } else if( WPV_Content_Template_Embedded::POST_TYPE == $row->post_type ) {
+                $edit_link = wpv_ct_editor_url( $row->ID );
             } else {
                 $edit_link = get_admin_url() . "post.php?post=" . $row->ID . "&action=edit";
 			}
-            $item['link'] = $edit_link;
-            $items[] = $item;
+			
+			$items[] = array(
+				'id'	=> $row->ID,
+				'link'	=> $edit_link,
+				'title'	=> "<strong>" . $type . "</strong>: " . $row->post_title
+			);
         }
-        echo json_encode($items);
     }
-    die();
+	$data = array(
+		'used_on' => $items
+	);
+	wp_send_json_success( $data );
 }
 
-// View duplicate callback function
 
-add_action('wp_ajax_wpv_duplicate_this_view', 'wpv_duplicate_this_view_callback');
 
+add_action( 'wp_ajax_wpv_duplicate_this_view', 'wpv_duplicate_this_view_callback' );
+
+/**
+ * View duplicate callback function.
+ *
+ * Expects following POST arguments:
+ * - wpnonce: A valid wpv_duplicate_view_nonce.
+ * - id: View ID.
+ * - name: Name of the new View.
+ *
+ * Refer to WPV_View::duplicate() for more information about the duplication itself.
+ *
+ * @since unknown
+ */
 function wpv_duplicate_this_view_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if (
-		! isset( $_POST["wpnonce"] ) 
-		|| ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_duplicate_view_nonce' ) 
-	) {
-		die( "Security check" );
-	}
-	if (
-		! isset( $_POST["id"] )
-		|| ! is_numeric( $_POST["id"] )
-		|| intval( $_POST['id'] ) < 1 
-		|| ! isset( $_POST['name'] )
-	) {
-		die( "Untrusted data" );
-	}
-	global $wpdb;
-	$existing = $wpdb->get_var(
-		$wpdb->prepare(
-			"SELECT ID FROM {$wpdb->posts} 
-			WHERE ( post_title = %s OR post_name = %s ) 
-			AND post_type = 'view' 
-			LIMIT 1",
-			$_POST["name"],
-			$_POST["name"]
-		)
-	);
-	if ( $existing ) {
-		echo 'error';
-		die;
-	}
-	// Sanitize new View title
-	$new_post_title = sanitize_text_field( $_POST["name"] );
-	// Clone existing View post
-	$old_post_id = $_POST["id"];
-	$original_post = get_post( $old_post_id, ARRAY_A );
-	$original_post['post_title'] = $new_post_title;
-	unset( $original_post['ID'] );
-	unset( $original_post['post_name'] );
-	unset( $original_post['post_date'] );
-	unset( $original_post['post_date_gmt'] );
-	$new_post_id = wp_insert_post( $original_post );
-	// Clone existing View postmeta
-	$original_postmeta_keys = array(
-		'_wpv_settings', '_wpv_layout_settings', '_wpv_description'
-	);
-	$original_postmeta_values = array();
-	foreach ( $original_postmeta_keys as $original_postmeta_k ) {
-		$original_postmeta_values[$original_postmeta_k] = get_post_meta( $old_post_id, $original_postmeta_k, true );
-	}
-	$has_loop_template = get_post_meta( $old_post_id, '_view_loop_template', true );
-	if ( ! empty( $has_loop_template ) ) {
-		// This View has a loop Template! We need to clone it and adjust the layout settings
-		$clone_args = array(
-			'title' => sprintf( __( 'Loop item in %s', 'wpv-views' ), $new_post_title ),
-			'force' => true
+	wpv_ajax_authenticate( 'wpv_duplicate_view_nonce', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+	
+    $post_id = (int) wpv_getpost( 'id', 0 );
+    $post_name= sanitize_text_field( wpv_getpost( 'name', '' ) );
+	if ( ( 0 == $post_id ) || empty( $post_name ) ) {
+		$data = array(
+			'message' => __('Wrong data', 'wpv-views')
 		);
-		$clone = wpv_clone_content_template( $has_loop_template, $clone_args );
-		if ( isset ( $clone['success'] ) ) {
-			update_post_meta( $new_post_id, '_view_loop_template', $clone['success'] );
-			update_post_meta( $clone['success'], '_view_loop_id', $new_post_id );
-			if ( isset( $original_postmeta_values['_wpv_layout_settings']['included_ct_ids'] ) ) {
-				$inline_templates = explode( ',', $original_postmeta_values['_wpv_layout_settings']['included_ct_ids'] );
-				foreach ( $inline_templates as $it_key => $inline_template_id ) {
-					if ( $inline_template_id == $has_loop_template ) {
-						$inline_templates[$it_key] = $clone['success'];
+		wp_send_json_error( $data );
+	}
+
+    if ( WPV_View_Base::is_name_used( $post_name ) ) {
+        $data = array(
+			'message' => __( 'A View with that name already exists. Please use another name', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+	}
+
+    // Get the original View.
+    $original_view = WPV_View::get_instance( $post_id );
+    if( null == $original_view ) {
+		$data = array(
+			'message' => __('Wrong data', 'wpv-views')
+		);
+		wp_send_json_error( $data );
+    }
+    
+    $duplicate_view_id = $original_view->duplicate( $post_name );
+    if ( $duplicate_view_id ) {
+        // original post id (shouldn't we rather return new id?)
+        wp_send_json_success();
+    } else {
+        $data = array(
+			'message' => __( 'Unexpected error', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+    }
+
+}
+
+/**
+ * Render a popup to confirm bulk Views trashing or deleting.
+ *
+ * This is called by deleteViewsConfirmation() in views_listing_page.js. The Popup is identified by class
+ * "js-bulk-delete-views-dialog". It also contains a table with Views to be deleted and buttons to scan for their usage.
+ *
+ * Delete button (js-bulk-remove-view-permanent) contains data attributes "view-ids" with comma-separated list of
+ * View IDs and "nonce" with a wpv_bulk_remove_view_permanent_nonce.
+ *
+ * Following POST variables are expected:
+ * - wpnonce: A valid wpv_view_listing_actions_nonce.
+ * - ids: An array of View IDs to be trashed/deleted
+ * - view_action: Action to perform: 'delete' or 'trash'.
+ *
+ * @since 1.7
+ */ 
+add_action( 'wp_ajax_wpv_view_bulk_trashdel_render_popup', 'wpv_view_bulk_trashdel_render_popup_callback' );
+
+function wpv_view_bulk_trashdel_render_popup_callback() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		$data = array(
+			'type' => 'capability',
+			'message' => __( 'You do not have permissions for that.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+	}
+	if ( 
+		! isset( $_POST["wpnonce"] )
+		|| ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_listing_actions_nonce' ) 
+	) {
+		$data = array(
+			'type' => 'nonce',
+			'message' => __( 'Your security credentials have expired. Please reload the page to get new ones.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+	}
+
+	$post_ids = wpv_getpost( 'ids', array() );
+	if ( is_string( $_POST['ids'] ) ) {
+		$post_ids = array( $_POST['ids'] );
+	}
+	// We only get IDs and titles
+	global $wpdb;
+	$post_ids = array_map( 'esc_attr', $post_ids );
+	$post_ids = array_map( 'trim', $post_ids );
+	// is_numeric does sanitization
+	$post_ids = array_filter( $post_ids, 'is_numeric' );
+	$post_ids = array_map( 'intval', $post_ids );
+	if( ! empty( $post_ids ) ) {
+		$post_id_list = implode( ',', $post_ids );
+		$views = $wpdb->get_results(
+			"SELECT ID as id, post_title 
+			FROM {$wpdb->posts} 
+			WHERE post_type = 'view' 
+			AND id IN ( $post_id_list )" 
+		);
+	} else {
+		$views = array(); // This should never happen.
+	}
+	$view_count = count( $views );
+	// Different values based on the action we're confirming (they're all here).
+	$view_action = wpv_getpost( 'view_action', 'delete', array( 'delete', 'trash' ) );
+	$action_word = ( 'delete' == $view_action ) ? __( 'delete', 'wpv-views' ) : __( 'trash', 'wpv-views' );
+	ob_start();
+	?>
+		<div class="wpv-dialog wpv-shortcode-gui-content-wrapper">
+			<h3>
+				<?php
+					printf(
+							_n(
+								'Are you sure you want to %s this View?',
+								'Are you sure you want %s these Views?',
+								$view_count,
+								'wpv-views' ),
+							$action_word );
+				?>
+			</h3>
+			<p>
+				<?php
+					echo _n(
+							'Please use the Scan button first to be sure that it is not used anywhere.',
+							'Please use Scan buttons first to be sure that they are not used anywhere.',
+							$view_count,
+							'wpv-views' );
+				?>
+			</p>
+			<table class="wpv-view-table" style="width: 100%;">
+				<?php
+					foreach( $views as $view ) {
+						?>
+						<tr>
+							<td><strong><?php echo esc_html( $view->post_title ); ?></strong></td>
+							<td class="wpv-admin-listing-col-scan">
+								<button class="button js-scan-button" data-view-id="<?php echo esc_attr( $view->id ); ?>">
+									<?php _e( 'Scan', 'wp-views' ); ?>
+								</button>
+								<span class="js-nothing-message hidden"><?php _e( 'Nothing found', 'wpv-views' ); ?></span>
+							</td>
+						</tr>
+						<?php
 					}
-				}
-				$original_postmeta_values['_wpv_layout_settings']['included_ct_ids'] = implode( ',', $inline_templates );
-			}
-			if ( isset( $original_postmeta_values['_wpv_layout_settings']['layout_meta_html'] ) ) {
-				$original_loop_template_title = get_the_title( $has_loop_template );
-				$original_postmeta_values['_wpv_layout_settings']['layout_meta_html'] = str_replace(
-					'view_template="' . $original_loop_template_title . '"',
-					'view_template="' . $clone['title'] . '"',
-					$original_postmeta_values['_wpv_layout_settings']['layout_meta_html']
-				);
-			}
-		}
-	}
-	foreach ( $original_postmeta_keys as $original_postmeta_k ) {
-		update_post_meta( $new_post_id, $original_postmeta_k, $original_postmeta_values[$original_postmeta_k] );
-	}
-	echo $_POST["id"];
-	die();
+				?>
+			</table>
+		</div>
+	<?php
+	$result = ob_get_clean();
+	$data = array(
+		'dialog_content' => $result
+	);
+	wp_send_json_success( $data );
 }
 
 /* ************************************************************************** *\
@@ -503,163 +492,80 @@ function wpv_duplicate_this_view_callback() {
 
 // Add up, down or first WP Archive - popup structure
 
-add_action('wp_ajax_wpv_create_wp_archive_button', 'wpv_create_wp_archive_button_callback');
+add_action('wp_ajax_wpv_create_wp_archive_popup', 'wpv_create_wp_archive_popup_callback');
 
-function wpv_create_wp_archive_button_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce($_POST["wpnonce"], 'work_views_listing') ) {
-		die( "Security check" );
-	}
+function wpv_create_wp_archive_popup_callback() {
+	wpv_ajax_authenticate( 'work_views_listing', array( 'parameter_source' => 'get', 'type_of_death' => 'data' ) );
 	global $WPV_view_archive_loop;
-	echo $WPV_view_archive_loop->_create_view_archive_popup();
-	die();
+	ob_start();
+	$WPV_view_archive_loop->_create_view_archive_popup();
+	$response = ob_get_clean();
+	$data = array(
+		'dialog_content' => $response
+	);
+	wp_send_json_success( $data );
 }
-
 
 // Change usage for WP Archive in name arrange - popup structure
 
-add_action('wp_ajax_wpv_archive_change_usage_popup', 'wpv_archive_change_usage_popup_callback');
+add_action('wp_ajax_wpv_change_wp_archive_usage_popup', 'wpv_change_wp_archive_usage_popup_callback');
 
-function wpv_archive_change_usage_popup_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-    if ( ! wp_verify_nonce($_POST["wpnonce"], 'work_views_listing') ) {
-		die( "Security check" );
-	}
+function wpv_change_wp_archive_usage_popup_callback() {
+	wpv_ajax_authenticate( 'work_views_listing', array( 'parameter_source' => 'get', 'type_of_death' => 'data' ) );
 	if (
-		! isset( $_POST["id"] )
-		|| ! is_numeric( $_POST["id"] )
-		|| intval( $_POST['id'] ) < 1 
+		! isset( $_GET["id"] )
+		|| ! is_numeric( $_GET["id"] )
+		|| intval( $_GET['id'] ) < 1 
 	) {
-		die( "Untrusted data" );
+		$data = array(
+			'message' => __( 'Untrusted data', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
 	global $WPV_view_archive_loop;
-	$id = $_POST["id"];
-	echo $WPV_view_archive_loop->_create_view_archive_popup( $id );
-	die();
+	$id = intval( $_GET["id"] );
+	ob_start();
+	$WPV_view_archive_loop->_create_view_archive_popup( $id );
+	$response = ob_get_clean();
+	$data = array(
+		'dialog_content' => $response
+	);
+	wp_send_json_success( $data );
 }
 
 // Change usage for Archive in name arrange callback function
 
-add_action('wp_ajax_wpv_archive_change_usage', 'wpv_archive_change_usage_callback');
+add_action('wp_ajax_wpv_wp_archive_change_usage', 'wpv_wp_archive_change_usage_callback');
 
-function wpv_archive_change_usage_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'work_views_listing' ) ) {
-		die( "Security check" );
-	}
+function wpv_wp_archive_change_usage_callback() {
+	wpv_ajax_authenticate( 'work_views_listing', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+	
 	if ( ! isset( $_POST["form"] ) ) {
-		die( "Untrusted data" );
+		$data = array(
+			'message' => __( 'Untrusted data', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
     global $WPV_view_archive_loop;
     parse_str( $_POST['form'], $form_data );
 	$archive_id = $form_data["wpv-archive-view-id"];
 	$WPV_view_archive_loop->update_view_archive_settings( $archive_id, $form_data );
 	do_action( 'wpv_action_wpv_save_item', $archive_id );
-	echo 'ok';
-	die();
-}
-
-// Create WP Archive in usage arrange - popup structure
-
-add_action('wp_ajax_wpv_create_usage_archive_view_popup', 'wpv_create_usage_archive_view_popup_callback');
-
-function wpv_create_usage_archive_view_popup_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_wp_archive_arrange_usage' ) ) {
-		die( "Security check" );
-	}
-    global $WPV_view_archive_loop, $WPV_settings;
-    $loops = $WPV_view_archive_loop->_get_post_type_loops();
-        ?>
-        <div class="wpv-dialog wpv-dialog-change js-wpv-dialog-change">
-			<div class="wpv-dialog-header">
-				<h2><?php _e('Name of WordPress Archive for','wpv-views'); ?> <strong><?php echo $_POST['for_whom']; ?></strong></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
-		<form id="wpv-add-wp-archive-for-loop-form">
-            <div class="wpv-dialog-content">
-				<div class="hidden">
-				<?php
-				foreach( $loops as $loop => $loop_name ) {
-					foreach ( $WPV_settings as $opt_id => $opt_name ) {
-						if ( 'view_' . $loop == $opt_id && $opt_name !== 0 ) {
-							unset( $loops[$loop] );
-							break;
-						}
-					}
-				}
-				if ( ! empty( $loops ) ) {
-					foreach( $loops as $loop => $loop_name ) { ?>
-						<input type="checkbox" <?php checked( $loop_name, $_POST['for_whom'] ); ?> name="wpv-view-loop-<?php echo esc_attr( $loop ); ?>" />
-					<?php }
-				}
-                $taxonomies = get_taxonomies( '', 'objects' );
-                $exclude_tax_slugs = array();
-				$exclude_tax_slugs = apply_filters( 'wpv_admin_exclude_tax_slugs', $exclude_tax_slugs );
-				foreach ( $taxonomies as $category_slug => $category ) {
-				   if ( in_array( $category_slug, $exclude_tax_slugs ) ) {
-						unset( $taxonomies[$category_slug] );
-						continue;
-					};
-					foreach ( $WPV_settings as $opt_id => $opt_name ) {
-						if ( 'view_taxonomy_loop_' . $category_slug == $opt_id && $opt_name !== 0 ) {
-							unset( $taxonomies[$category_slug] );
-							break;
-						};
-					};
-				};
-                if ( ! empty( $taxonomies ) ) {
-                    foreach ( $taxonomies as $category_slug => $category ) {
-                        $name = $category->name;
-                        ?>
-                        <input type="checkbox" <?php checked( $category->labels->name, $_POST['for_whom'] ); ?> name="wpv-view-taxonomy-loop-<?php echo esc_attr( $name ); ?>" />
-						<?php 
-					}
-				} ?>
-				</div>
-				<p>
-					<input type="text" value="" class="js-wpv-new-archive-name wpv-new-archive-name" placeholder="<?php echo esc_attr( __('WordPress Archive name','wpv-views') ) ?>" name="wpv-new-archive-name">
-				</p>
-				<div class="js-wp-archive-create-error"></div>
-			</div>
-		</form>
-			<div class="wpv-dialog-footer">
-				<button class="button-secondary js-dialog-close" type="button" name="wpv-archive-view-cancel"><?php _e('Cancel', 'wpv-views'); ?></button>
-				<button class="button-secondary js-wpv-add-wp-archive-for-loop" disabled="disabled" name="wpv-archive-view-ok" data-error="<?php echo esc_attr( __('A WordPress Archive with that name already exists. Please use another name.', 'wpv-views') ); ?>" data-url="<?php echo admin_url( 'admin.php?page=view-archives-editor&amp;view_id='); ?>">
-					<?php _e('Add new WordPress Archive', 'wpv-views'); ?>
-				</button>
-			</div>
-	</div>
-    <?php die();
+	wp_send_json_success();
 }
 
 // Add up, down or first WP Archive callback function
 // Uses the same callback as in the usage arrange mode
 
-add_action('wp_ajax_wpv_create_archive_view', 'wp_ajax_wpv_create_usage_archive_view_callback');
+add_action('wp_ajax_wpv_wp_archive_create_new', 'wp_ajax_wpv_wp_archive_create_new_callback');
 
-// Create WP Archive in usage arrange callback function
-// @todo we need to use the API to create this, or at least *create* that API if needed
-
-add_action('wp_ajax_wpv_create_usage_archive_view', 'wp_ajax_wpv_create_usage_archive_view_callback');
-
-function wp_ajax_wpv_create_usage_archive_view_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'work_views_listing' ) ) {
-		die( "Security check" );
-	}
+function wp_ajax_wpv_wp_archive_create_new_callback() {
+	wpv_ajax_authenticate( 'work_views_listing', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
 	if ( ! isset( $_POST["form"] ) ) {
-		die( "Untrusted data" );
+		$data = array(
+			'message' => __( 'Untrusted data', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
 	global $wpdb, $WPV_view_archive_loop;
 	parse_str( $_POST['form'], $form_data );
@@ -675,8 +581,10 @@ function wp_ajax_wpv_create_usage_archive_view_callback() {
 		)
 	);
 	if ( $existing ) {
-		echo 'error';
-		die();
+		$data = array(
+			'message' => __( 'Untrusted data', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
 	$new_archive = array(
 		'post_title'    => $form_data["wpv-new-archive-name"],
@@ -693,148 +601,174 @@ function wp_ajax_wpv_create_usage_archive_view_callback() {
 	update_post_meta( $post_id, '_wpv_settings', $archive_defaults );
 	update_post_meta( $post_id, '_wpv_layout_settings', $archive_layout_defaults );
 	$WPV_view_archive_loop->update_view_archive_settings( $post_id, $form_data );
-	echo $post_id;
-	die();
+	$data = array(
+		'id' => $post_id
+	);
+	wp_send_json_success( $data );
+}
+
+// Create WP Archive in usage arrange callback function
+// @todo we need to use the API to create this, or at least *create* that API if needed
+
+add_action( 'wp_ajax_wpv_create_wpa_for_archive_loop', 'wp_ajax_wpv_create_wpa_for_archive_loop_callback' );
+
+function wp_ajax_wpv_create_wpa_for_archive_loop_callback() {
+	wpv_ajax_authenticate( 'work_views_listing', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+	
+	global $wpdb, $WPV_view_archive_loop;
+	$existing = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT ID FROM {$wpdb->posts} 
+			WHERE ( post_title = %s OR post_name = %s ) 
+			AND post_type = 'view' 
+			LIMIT 1",
+			$_POST["title"],
+			$_POST["title"]
+		)
+	);
+	if ( $existing ) {
+		$data = array(
+			'message'	=> __( 'A WordPress Archive with that name already exists. Please use another name.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+	}
+	$new_archive = array(
+		'post_title'    => sanitize_text_field( $_POST["title"] ),
+		'post_type'     => 'view',
+		'post_content'  => "[wpv-layout-meta-html]",
+		'post_status'   => 'publish',
+		'post_author'   => get_current_user_id(),
+		'comment_status' => 'closed'
+	);
+	$post_id = wp_insert_post( $new_archive );
+	$archive_defaults = wpv_wordpress_archives_defaults( 'view_settings' );
+	$archive_layout_defaults = wpv_wordpress_archives_defaults( 'view_layout_settings' );
+	update_post_meta( $post_id, '_wpv_settings', $archive_defaults );
+	update_post_meta( $post_id, '_wpv_layout_settings', $archive_layout_defaults );
+	
+	$form_data = array(
+		sanitize_text_field( $_POST['loop'] ) => $post_id
+	);
+	$WPV_view_archive_loop->update_view_archive_settings( $post_id, $form_data );
+	$data = array(
+		'id' => $post_id
+	);
+	wp_send_json_success( $data );
 }
 
 
 /**
  * Render a popup to change WordPress Archive usage.
  *
- * Used in WordPress Archive listing, arranged by usage. When user accepts the change, a click event on
- * '.js-update-archive-for-loop' is raised.
+ * Used in WordPress Archive listing, arranged by usage.
  *
- * Expects following POST arguments:
+ * Expects following GET arguments:
  * - wpnonce: A valid wpv_wp_archive_arrange_usage nonce.
  * - id: Slug of the loop whose WPA should be changed.
  *
  * @since unknown.
  */ 
-add_action('wp_ajax_wpv_show_views_for_loop', 'wpv_show_views_for_loop_callback');
+add_action('wp_ajax_wpv_change_wpa_for_archive_loop_popup', 'wpv_change_wpa_for_archive_loop_popup_callback');
 
-function wpv_show_views_for_loop_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_wp_archive_arrange_usage' ) ) {
-		die( "Security check" );
-	}
-	if (
-		! isset( $_POST["id"] )
-		|| ! is_numeric( $_POST["id"] )
-		|| intval( $_POST['id'] ) < 1 
-	) {
-		die( "Untrusted data" );
+function wpv_change_wpa_for_archive_loop_popup_callback() {
+	wpv_ajax_authenticate( 'wpv_wp_archive_arrange_usage', array( 'parameter_source' => 'get', 'type_of_death' => 'data' ) );
+	
+	if ( ! isset( $_GET["id"] ) ) {
+		$data = array(
+			'message'	=> __( 'Untrusted data', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
 	global $WPV_view_archive_loop, $WPV_settings;
 	// Slug of the loop.
-	$loop_key = $_POST["id"];
+	$loop_key = sanitize_text_field( $_GET["id"] );
     $loops = $WPV_view_archive_loop->_get_post_type_loops();
-
+	/* We will slightly misuse this function, but it gives us exactly what we need:
+	 * a list of published WPAs. */
+	$views_pre_query_data = wpv_prepare_view_listing_query(
+		array( 'archive', 'layouts-loop' ),
+		'publish',
+		array( 'posts.post_title' => 'post_title' ), // also give us post title
+		true, // return rows from the table
+		array( "posts.post_status = 'publish'" ) 
+	); // limit mysql query only to published posts
+	$views = $views_pre_query_data['rows'];
+	// ID of currently assigned view or 0.
+	$currently_assigned_view_id = isset( $WPV_settings[ $loop_key ] ) ? $WPV_settings[ $loop_key ] : 0; 
+	ob_start();
 	?>
-        <div class="wpv-dialog wpv-dialog-change js-wpv-dialog-change">
-            <form id="wpv-archive-view-form-for-loop">
-                <div class="wpv-dialog-header">
-                    <h2><?php _e( 'Select WordPress Archive For Loop', 'wpv-views' ); ?></h2>
-                    <i class="icon-remove js-dialog-close"></i>
-                </div>
-                <div class="wpv-dialog-content">
-					<h3><?php _e( 'Archive views', 'wpv-views' ); ?></h3>
-                    <?php wp_nonce_field( 'wpv_view_edit_nonce', 'wpv_view_edit_nonce' ); ?>
-                    <input type="hidden" value="<?php echo esc_attr( $loop_key ); ?>" name="wpv-archive-loop-key" />
-
-                    <?php
-						/* We will slightly misuse this function, but it gives us exactly what we need:
-						 * a list of published WPAs. */
-						$views_pre_query_data = wpv_prepare_view_listing_query(
-								array( 'archive', 'layouts-loop' ),
-								'publish',
-								array( 'posts.post_title' => 'post_title' ), // also give us post title
-								true, // return rows from the table
-								array( "posts.post_status = 'publish'" ) ); // limit mysql query only to published posts
-						$views = $views_pre_query_data['rows'];
-
-                        // ID of currently assigned view or 0.
-                        $currently_assigned_view_id = isset( $WPV_settings[ $loop_key ] ) ? $WPV_settings[ $loop_key ] : 0;                            
+	<div class="wpv-dialog wpv-shortcode-gui-content-wrapper js-wpv-dialog-change">
+		<h3><?php _e( 'Select a WordPress Archive', 'wpv-views' ); ?></h3>
+		<?php wp_nonce_field( 'wpv_view_edit_nonce', 'wpv_view_edit_nonce' ); ?>
+		<input type="hidden" value="<?php echo esc_attr( $loop_key ); ?>" id="js-wpv-change-wpa-for-archive-loop-key" name="wpv-archive-loop-key" />
+		<ul id="js-wpv-change-wpa-for-archive-loop-list" class="wpv-mightlong-list">
+			<li>
+				<label>
+					<input type="radio" name="wpv-view-loop-archive" value="0" <?php checked( 0 == $currently_assigned_view_id ); ?> />
+					<?php _e( 'Don\'t use a WordPress Archive for this loop', 'wpv-views' ); ?>
+				</label>
+			</li>
+			<?php
+				foreach ( $views as $view ) {
 					?>
-					<ul>
-						<li>
-							<label>
-								<input type="radio" name="wpv-view-loop-archive" value="0" <?php checked( 0 == $currently_assigned_view_id ); ?> />
-								<?php _e( 'Don\'t use a WordPress Archive for this loop', 'wpv-views' ); ?>
-							</label>
-						</li>
-						<?php
-							foreach ( $views as $view ) {
-								?>
-								<li>
-									<label>
-										<input type="radio" <?php checked( $view->id == $currently_assigned_view_id ); ?>
-												name="wpv-view-loop-archive" value="<?php echo esc_attr( $view->id ); ?>" />
-										<?php echo $view->post_title; ?>
-									</label>
-								</li>
-								<?php
-							}
-						?>
-					</ul>
-                </div>
-                <div class="wpv-dialog-footer">
-                    <button class="button-secondary js-dialog-close" type="button" name="wpv-archive-view-cancel"><?php _e( 'Cancel', 'wpv-views' ); ?></button>
-                    <button class="button-primary js-update-archive-for-loop" type="button" name="wpv-archive-view-ok">
-                        <?php _e( 'Accept', 'wpv-views' ); ?>
-                    </button>
-                </div>
-            </form>
-        </div>
+					<li>
+						<label>
+							<input type="radio" <?php checked( $view->id == $currently_assigned_view_id ); ?>
+									name="wpv-view-loop-archive" value="<?php echo esc_attr( $view->id ); ?>" />
+							<?php echo $view->post_title; ?>
+						</label>
+					</li>
+					<?php
+				}
+			?>
+		</ul>
+	</div>
 	<?php
-	
-    die();
+	$response = ob_get_clean();
+	$data = array(
+		'dialog_content' => $response
+	);
+	wp_send_json_success( $data );
 }
 
 // Change WP Archive usage in usage arrange callback function
 
-add_action('wp_ajax_wpv_update_archive_for_view', 'wpv_update_archive_for_view_callback');
+add_action('wp_ajax_wpv_change_wpa_for_archive_loop', 'wpv_change_wpa_for_archive_loop_callback');
 
-function wpv_update_archive_for_view_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_wp_archive_arrange_usage' ) ) {
-		die( "Security check" );
-	}
+function wpv_change_wpa_for_archive_loop_callback() {
+	wpv_ajax_authenticate( 'wpv_wp_archive_arrange_usage', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+	
 	global $WPV_settings;
-	$WPV_settings[$_POST["loop"]] = $_POST["selected"];
-	do_action( 'wpv_action_wpv_save_item', $_POST["selected"] );
+	$loop = sanitize_text_field( $_POST["loop"] );
+	$selected = sanitize_text_field( $_POST["selected"] );
+	$WPV_settings[$loop] = $selected;
+	do_action( 'wpv_action_wpv_save_item', $selected );
 	foreach ( $WPV_settings as $key => $value ) {
         if ( $value == 0 ) {
             unset( $WPV_settings[$key] );
         }
     }
 	$WPV_settings->save();
-	echo 'ok';
-	die();
+	wp_send_json_success();
 }
 
-// Delete Views and WPA permanently callback function
+// Delete one WPA permanently callback function
 // @note it also deletes the loop Template if needed
-// TODO add different nonces for Views and for WPA
 
-add_action('wp_ajax_wpv_delete_view_permanent', 'wpv_delete_view_permanent_callback');
+add_action('wp_ajax_wpv_delete_wpa_permanent', 'wpv_delete_wpa_permanent_callback');
 
-function wpv_delete_view_permanent_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_remove_view_permanent_nonce' ) ) {
-			die( "Security check" );
-	}
+function wpv_delete_wpa_permanent_callback() {
+	wpv_ajax_authenticate( 'wpv_remove_view_permanent_nonce', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+
 	if (
 		! isset( $_POST["id"] )
 		|| ! is_numeric( $_POST["id"] )
 		|| intval( $_POST['id'] ) < 1 
 	) {
-		die( "Untrusted data" );
+		$data = array(
+			'message' => __( 'Wrong data.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
 	$loop_content_template = get_post_meta( $_POST["id"], '_view_loop_template', true );
 	wp_delete_post( $_POST["id"] );
@@ -845,8 +779,7 @@ function wpv_delete_view_permanent_callback() {
     global $WPV_settings;	
 	$WPV_settings->refresh_view_settings_data();
     $WPV_settings->save();
-	echo $_POST["id"];
-	die();
+	wp_send_json_success();
 }
 
 // Change status of View and WPA callback function TODO use a more generic function name
@@ -954,185 +887,6 @@ function wpv_view_bulk_change_status_callback() {
 
 
 /**
- * Render a colorbox popup to confirm bulk Views trashing or deleting.
- *
- * This is called by deleteViewsConfirmation() in views_listing_page.js. The Popup is identified by class
- * "js-bulk-delete-views-dialog". It also contains a table with Views to be deleted and buttons to scan for their usage.
- *
- * Delete button (js-bulk-remove-view-permanent) contains data attributes "view-ids" with comma-separated list of
- * View IDs and "nonce" with a wpv_bulk_remove_view_permanent_nonce.
- *
- * Following POST variables are expected:
- * - wpnonce: A valid wpv_view_listing_actions_nonce.
- * - ids: An array of View IDs to be trashed/deleted
- * - view_action: Action to perform: 'delete' or 'trash'.
- *
- * @since 1.7
- */ 
-add_action( 'wp_ajax_wpv_view_bulk_trashdel_render_popup', 'wpv_view_bulk_trashdel_render_popup_callback' );
-
-function wpv_view_bulk_trashdel_render_popup_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	$nonce = wpv_getpost( 'wpnonce' );
-	if ( !wp_verify_nonce( $nonce, 'wpv_view_listing_actions_nonce' ) ) {
-		die( "Security check" );
-	}
-	$post_ids = wpv_getpost( 'ids', array() );
-	if ( is_string( $_POST['ids'] ) ) {
-		$post_ids = array( $_POST['ids'] );
-	}
-	// We only get IDs and titles
-	global $wpdb;
-	$post_ids = array_map( 'esc_attr', $post_ids );
-	$post_ids = array_map( 'trim', $post_ids );
-	// is_numeric does sanitization
-	$post_ids = array_filter( $post_ids, 'is_numeric' );
-	$post_ids = array_map( 'intval', $post_ids );
-	if( ! empty( $post_ids ) ) {
-		$post_id_list = implode( ',', $post_ids );
-		$views = $wpdb->get_results(
-			"SELECT ID as id, post_title 
-			FROM {$wpdb->posts} 
-			WHERE post_type = 'view' 
-			AND id IN ( $post_id_list )" 
-		);
-	} else {
-		$views = array(); // This should never happen.
-	}
-	$view_count = count( $views );
-	// Different values based on the action we're confirming (they're all here).
-	$view_action = wpv_getpost( 'view_action', 'delete', array( 'delete', 'trash' ) );
-	$dialog_header = ( 'delete' == $view_action ) ? __( 'Delete Views', 'wpv-views' ) : __( 'Trash Views', 'wpv-views' );
-	$action_word = ( 'delete' == $view_action ) ? __( 'delete', 'wpv-views' ) : __( 'trash', 'wpv-views' );
-	$button_label =
-			( 'delete' == $view_action )
-			? _n( 'Delete', 'Delete all', $view_count, 'wpv-views' )
-			: _n( 'Trash', 'Trash all', $view_count, 'wpv-views' );
-	$button_class = ( 'delete' == $view_action ) ? 'js-bulk-remove-view-permanent' : 'js-bulk-confirm-view-trash';
-	$nonce = ( 'delete' == $view_action ) ? wp_create_nonce( 'wpv_bulk_remove_view_permanent_nonce' ) : wp_create_nonce( 'wpv_view_listing_actions_nonce' );
-	
-	?>
-		<div class="wpv-dialog">
-			<div class="wpv-dialog-header">
-				<h2><?php echo $dialog_header; ?></h2>
-			</div>
-			<div class="wpv-dialog-content">
-				<p>
-					<?php
-						printf(
-								_n(
-									'Are you sure you want to %s this View?',
-									'Are you sure you want %s these Views?',
-									$view_count,
-									'wpv-views' ),
-								$action_word );
-					?>
-				</p>
-				<p>
-					<?php
-						echo _n(
-								'Please use the Scan button first to be sure that it is not used anywhere.',
-								'Please use Scan buttons first to be sure that they are not used anywhere.',
-								$view_count,
-								'wpv-views' );
-					?>
-				</p>
-				<table class="wpv-view-table" style="width: 100%;">
-					<?php
-						foreach( $views as $view ) {
-							?>
-							<tr>
-								<td><strong><?php echo $view->post_title; ?></strong></td>
-								<td class="wpv-admin-listing-col-scan">
-									<button class="button js-scan-button" data-view-id="<?php echo esc_attr( $view->id ); ?>">
-										<?php _e( 'Scan', 'wp-views' ); ?>
-									</button>
-									<span class="js-nothing-message hidden"><?php _e( 'Nothing found', 'wpv-views' ); ?></span>
-								</td>
-							</tr>
-							<?php
-						}
-					?>
-				</table>
-			</div>
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close">
-					<?php _e( 'Cancel','wpv-views' ); ?>
-				</button>
-				<button class="button button-primary <?php echo esc_attr( $button_class ); ?>"
-						data-nonce="<?php echo esc_attr( $nonce ); ?>"
-						data-view-ids="<?php echo urlencode( implode( ',', $post_ids ) ); ?>">
-					<?php
-						echo $button_label;
-					?>
-				</button>
-			</div>
-		</div>
-	<?php
-
-	die();
-}
-
-
-
-/**
- * Render a colorbox popup to confirm bulk WordPress Archives deleting.
- *
- * This is called by deleteArchivesConfirmation() in views_wordpress_archive_listing_page.js. The Popup is identified by class
- * "js-bulk-delete-archives-dialog".
- *
- * Delete button (js-bulk-remove-archives-permanent) contains data attributes "archive-ids" with comma-separated list of
- * WPA IDs and "nonce" with a wpv_bulk_remove_view_permanent_nonce.
- *
- * @since 1.7
- */ 
-add_action( 'wp_ajax_wpv_archive_bulk_delete_render_popup', 'wpv_archive_bulk_delete_render_popup_callback' );
-
-function wpv_archive_bulk_delete_render_popup_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( !wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_listing_actions_nonce' ) ) {
-		die( "Security check" );
-	}
-	if( ! isset( $_POST['ids'] ) ) {
-		$post_ids = array();
-	} else if ( is_string( $_POST['ids'] ) ) {
-		$post_ids = array( $_POST['ids'] );
-	} else {
-		$post_ids = $_POST['ids'];
-	}
-	$post_ids = array_map( 'esc_attr', $post_ids );
-	$post_ids = array_map( 'trim', $post_ids );
-	// is_numeric does sanitization
-	$post_ids = array_filter( $post_ids, 'is_numeric' );
-	$post_ids = array_map( 'intval', $post_ids );
-	?>
-		<div class="wpv-dialog js-bulk-delete-archives-dialog">
-			<div class="wpv-dialog-header">
-				<h2><?php _e( 'Delete Archives', 'wpv-views' ) ?></h2>
-			</div>
-			<div class="wpv-dialog-content">
-				<p><?php _e( 'Are you sure you want to delete selected Archives? ','wpv-views' ); ?></p>
-			</div>
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close"><?php _e( 'Cancel','wpv-views' ); ?></button>
-				<button class="button button-primary js-bulk-remove-archives-permanent"
-						data-nonce="<?php echo wp_create_nonce( 'wpv_bulk_remove_view_permanent_nonce' ); ?>"
-						data-archive-ids="<?php echo urlencode( implode( ',', $post_ids ) ); ?>">
-					<?php _e( 'Delete all','wpv-views' ); ?>
-				</button>
-			</div>
-		</div> <!-- .js-bulk-delete-archives-dialog -->
-	<?php
-	die();
-}
-
-
-
-/**
  * Permanently delete multiple Views or WordPress Archives. Callback function.
  *
  * Needs a wpv_bulk_remove_view_permanent_nonce to be present.
@@ -1169,8 +923,9 @@ function wpv_bulk_delete_views_permanent_callback() {
 	if ( count( $post_ids ) > 0 ) {
 		$remove_loop_templates = " AND post_id IN (" . implode( "," , $post_ids ) . ") ";
 		$remove_loop_templates_ids = $wpdb->get_col( 
-			"SELECT meta_value FROM {$wpdb->postmeta} 
+			"SELECT DISTINCT meta_value FROM {$wpdb->postmeta} 
 			WHERE meta_key = '_view_loop_template' 
+			AND meta_value != '0' 
 			{$remove_loop_templates}" 
 		);
 		foreach ( $remove_loop_templates_ids as $remove_template ) {
@@ -1196,7 +951,7 @@ function wpv_bulk_delete_views_permanent_callback() {
  * For given WPA IDs output those who are used in archive loops. If there are any, also
  * generate HTML for the colorbox popup - confirmation to trash them.
  *
- * Following POST parameters are expected:
+ * Following GET parameters are expected:
  * - wpnonce: Valid wpv_view_listing_actions_nonce.
  * - ids: An array of WPA IDs that should be checked.
  *
@@ -1211,24 +966,21 @@ function wpv_bulk_delete_views_permanent_callback() {
 add_action( 'wp_ajax_wpv_archive_check_usage', 'wpv_archive_check_usage_callback' );
 
 function wpv_archive_check_usage_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_listing_actions_nonce' ) ) {
-		die( "Security check" );
-	}
-	if( ! isset( $_POST['ids'] ) ) {
+	wpv_ajax_authenticate( 'wpv_view_listing_actions_nonce', array( 'parameter_source' => 'get', 'type_of_death' => 'data' ) );
+	
+	if( ! isset( $_GET['ids'] ) ) {
 		$post_ids = array();
-	} else if( is_string( $_POST['ids'] ) ) {
-		$post_ids = array( $_POST['ids'] );
+	} else if( is_string( $_GET['ids'] ) ) {
+		$post_ids = array( $_GET['ids'] );
 	} else {
-		$post_ids = $_POST['ids'];
+		$post_ids = $_GET['ids'];
 	}
 	$post_ids = array_map( 'esc_attr', $post_ids );
 	$post_ids = array_map( 'trim', $post_ids );
 	// is_numeric does sanitization
 	$post_ids = array_filter( $post_ids, 'is_numeric' );
 	$post_ids = array_map( 'intval', $post_ids );
+	$nonce = wp_create_nonce( 'wpv_view_listing_actions_nonce' );
 	global $WPV_settings, $WPV_view_archive_loop;
 	$loops = $WPV_view_archive_loop->_get_post_type_loops();
 	$taxonomies = get_taxonomies( '', 'objects' );
@@ -1281,133 +1033,140 @@ function wpv_archive_check_usage_callback() {
 		$used_archive_count = count( $archive_ids_in_use );
 		ob_start();
 		?>
-		<div class="wpv-dialog js-bulk-trash-archives-dialog">
-			<div class="wpv-dialog-header">
-				<h2><?php _e( 'Trash WordPress Archives', 'wpv-views' ) ?></h2>
-			</div>
-			<div class="wpv-dialog-content">
-				<p>
-					<?php
-						echo _n(
-								'Are you sure you want to trash this WordPress Archive?',
-								'Are you sure you want to trash these WordPress Archives?',
-								$used_archive_count,
-								'wpv-views' );
-					?>
-				</p>
-				<p>
-					<?php
-						echo _n(
-								'It is assigned to one or more archive or taxonomy loops.',
-								'Some of them are assigned to archive or taxonomy loops.',
-								$used_archive_count,
-								'wpv-views' );
-						echo '<br />';
-						echo _n(
-								'Trashing it will also unassign it.',
-								'Trashing them will also unassign them.',
-								$used_archive_count,
-								'wpv-views' );
-					?>
-				</p>
-				<ul style="list-style-type: disc; padding-left: 40px;">
-					<?php
-						foreach( $used_archives as $archive ) {
-							?>
-								<li><strong><?php echo $archive->post_title; ?></strong></li>
-							<?php
-						}
-					?>
-				</ul>
-			</div>
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close">
-					<?php _e( 'Cancel', 'wpv-views' ); ?>
-				</button>
-				<button class="button button-primary js-bulk-trash-archives-confirm"
-						data-nonce="<?php echo esc_attr( $nonce ); ?>"
-						data-archive-ids="<?php echo urlencode( implode( ',', $post_ids ) ); ?>">
-					<?php
-						echo _n(
-								'Trash',
-								'Trash all',
-								$used_archive_count,
-								'wpv-views' );
-					?>
-				</button>
-			</div>
+		<div class="wpv-dialog wpv-shortcode-gui-content-wrapper js-bulk-trash-archives-dialog">
+			<h3>
+				<?php
+					echo _n(
+							'Are you sure you want to trash this WordPress Archive?',
+							'Are you sure you want to trash these WordPress Archives?',
+							$used_archive_count,
+							'wpv-views' );
+				?>
+			</h3>
+			<p>
+				<?php
+					echo _n(
+							'It is assigned to one or more archive or taxonomy loops.',
+							'Some of them are assigned to archive or taxonomy loops.',
+							$used_archive_count,
+							'wpv-views' )
+						. WPV_MESSAGE_SPACE_CHAR
+						. _n(
+							'Trashing it will also unassign it.',
+							'Trashing them will also unassign them.',
+							$used_archive_count,
+							'wpv-views' );
+				?>
+			</p>
+			<ul style="list-style-type: disc; padding-left: 40px;">
+				<?php
+					foreach( $used_archives as $archive ) {
+						?>
+							<li><strong><?php echo $archive->post_title; ?></strong></li>
+						<?php
+					}
+				?>
+			</ul>
 		</div> <!-- .js-bulk-trash-archives-dialog -->
 		<?php
-		$colorbox_html = ob_get_contents();
+		$dialog_content = ob_get_contents();
 		ob_end_clean();
 	} else {
-		$colorbox_html = '';
+		$dialog_content = '';
 	}
-	$response = array(
-			'used_wpa_ids' => $archive_ids_in_use,
-			'colorbox_html' => $colorbox_html );
-
-	echo json_encode( $response );
-	die();
+	$data = array(
+		'dialog_content'	=> $dialog_content,
+		'used_wpa_ids'		=> $archive_ids_in_use
+	);
+	wp_send_json_success( $data );
 }
 
 
-/* ********************************************************************************\
- * Content Templates
-\* ********************************************************************************/
+/* ************************************************************************* *\
+        Content Templates
+\* ************************************************************************* */
+
+
+add_action( 'wp_ajax_wpv_apply_ct_to_cpt_posts_popup', 'wpv_apply_ct_to_cpt_posts_popup_callback');
+
 
 /**
-* wpv_ct_update_posts_callback
-*
-* Callback function for the AJAX action wp_ajax_wpv_ct_update_posts used to count dissident posts that are not using the Template assigned to its type
-* This is called on the Content Templates listing screen for single usage and on the Template edit screen
-*
-* Added by Gen TODO check this nonce
-*
-* @since 1.3.0
-*
-* @uses wpv_count_dissident_posts_from_template
-*/
+ * Callback function for the AJAX action wp_ajax_wpv_ct_update_posts used to count dissident posts that are not using
+ * the Template assigned to its type. This is called on the Content Templates listing screen for single usage
+ * and on the Template edit screen.
+ *
+ * @since 1.3.0
+ */
+function wpv_apply_ct_to_cpt_posts_popup_callback() {
+	wpv_ajax_authenticate( 'work_view_template', array( 'parameter_source' => 'get', 'type_of_death' => 'data' ) );
 
-add_action('wp_ajax_wpv_ct_update_posts', 'wpv_ct_update_posts_callback');
-
-function wpv_ct_update_posts_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
     if ( 
-		! isset( $_GET["wpnonce"] ) 
-		|| ! wp_verify_nonce( $_GET["wpnonce"], 'work_view_template' ) 
+		isset ( $_GET['type'] ) 
+		&& isset( $_GET['id'] ) 
 	) {
-		die( "Undefined Nonce" );
-	}
-    global $WPV_settings;
-    if ( isset ( $_GET['type'] ) && isset( $_GET['tid'] ) ) {
-        $type = $_GET['type'];
-        $tid = $WPV_settings['views_template_for_' . $type];
+        $type = sanitize_text_field( $_GET['type'] );
+        $id = intval( $_GET['id'] );
     } else {
-      die();
+		$data = array(
+			'message' => __( 'Wrong data.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
     }
-    wpv_count_dissident_posts_from_template( $tid, $type );
-	die();
+	
+	try {
+        $ct = new WPV_Content_Template_Embedded( $id );
+    } catch( Exception $e ) {
+        // well, we were not handling non-existent CTs before and I am not sure how to do that now...
+        $data = array(
+			'message' => __( 'Wrong data.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+    }
+	
+    $dissident_post_count = $ct->get_dissident_posts( $type, 'count' );
+    if ( $dissident_post_count > 0 ) {
+        $ptype = get_post_type_object( $type );
+
+        if ( $dissident_post_count > 1 ){
+            $type_label = $ptype->labels->name;
+            $message = '<p>' . sprintf( __( '<strong>%d %s</strong> use a different Content Template.', 'wpv-views' ), $dissident_post_count , $type_label ) . '</p>';
+        } else {
+            $type_label = $ptype->labels->singular_name;
+            $message = '<p>' . sprintf( __( '<strong>%d %s</strong> uses a different Content Template.', 'wpv-views' ), $dissident_post_count, $type_label ) . '</p>';
+        }
+		$message .= '<p>' 
+			. __( 'Maybe you have manually set a different one on them.', 'wpv-views' ) 
+			. WPV_MESSAGE_SPACE_CHAR
+			. sprintf(
+					__( 'Click <em>Update</em> to force this Content Template into all single %s', 'wpv-views' ),
+					$type_label
+				)
+			. '</p>';
+		$data = array(
+			'dialog_content' => '<div class="wpv-dialog wpv-shortcode-gui-content-wrapper">' . $message . '</div>'
+		);
+		wp_send_json_success( $data );
+        ?>
+    <?php
+    } else {
+		$data = array(
+			'message' => __( 'Wrong data.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+	}
 }
 
 // Unlink a Content Template for orphaned single posts types when there is no general Template associated with that type
 
-add_action('wp_ajax_wpv_single_unlink_template', 'wpv_single_unlink_template_callback');
+add_action('wp_ajax_wpv_clear_cpt_from_ct', 'wpv_clear_cpt_from_ct_callback');
 
-function wpv_single_unlink_template_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( 
-		! isset( $_POST["wpnonce"] ) 
-		|| ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_single_unlink_template_nonce') 
-	) {
-		die( "Undefined Nonce" );
-	}
+function wpv_clear_cpt_from_ct_callback() {
+	wpv_ajax_authenticate( 'wpv_clear_cpt_from_ct_nonce', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
 	if ( ! isset( $_POST['slug'] ) ) {
-		echo __( 'Slug not set in the AJAX call', 'wpv-wiews' );
+		$data = array(
+			'message' => __( 'Slug not set in the AJAX call.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	} else {
 		global $wpdb;
 		$type = $_POST['slug'];
@@ -1424,9 +1183,8 @@ function wpv_single_unlink_template_callback() {
 			update_post_meta( $post, '_views_template', 0 );
 			}
 		}
-		echo 'ok';
+		wp_send_json_success();
 	}
-	die();
 }
 
 /*
@@ -1434,312 +1192,110 @@ function wpv_single_unlink_template_callback() {
  * Added by Gen TODO check this nonce
  */
 
-add_action('wp_ajax_wpv_ct_create_new', 'wpv_ct_create_new_callback');
+add_action('wp_ajax_wpv_ct_create_new_render_popup', 'wpv_ct_create_new_render_popup_callback');
 
-function wpv_ct_create_new_callback(){
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( 
-		! isset( $_GET["wpnonce"] ) 
-		|| ! wp_verify_nonce( $_GET["wpnonce"], 'work_view_template') 
-	) {
-		die( "Undefined Nonce" );
-	}
-   global $WPV_settings;
-   $post_types_array = wpv_get_pt_tax_array();
-   $ct_title = $ct_selected = '';
-   if ( isset($_GET['ct_title']) ){
-       $ct_title = $_GET['ct_title'];
-   }
-   if ( isset($_GET['ct_selected']) ){
-       $ct_selected = $_GET['ct_selected'];
-   }
-	$asterisk = '<span style="color:red">*</span>';
-	$asterisk_explanation = __( '<span style="color:red">*</span> A different Content Template is already assigned to this item', 'wpv-views' );
-   ?>
-    <div class="wpv-dialog js-wpv-dialog-add-new-content-template wpv-dialog-add-new-content-template">
-	        <div class="wpv-dialog-header">
-	            <h2><?php _e('Add new Content Template','wpv-views'); ?></h2>
-	            <i class="icon-remove js-dialog-close"></i>
-	        </div>
-	        <div class="wpv-dialog-content">
-	            <p><strong><?php _e('What content will this template be for?','wpv-views') ?></strong></p>
+/**
+ * Render HTML for the Add new Content Template dialog.
+ *
+ * @since unknown
+ */
+function wpv_ct_create_new_render_popup_callback(){
 
-                <p>
-					<input id="wpv-content-template-no-use" type="checkbox" class="js-dont-assign" <?php checked( $ct_selected, '' ); ?> name="wpv-new-content-template-post-type[]" value="0" />
-                	<label for="wpv-content-template-no-use"><?php _e("Don't assign to any post type",'wpv-views') ?></label>
-                </p>
+    wpv_ajax_authenticate( 'work_view_template', array( 'parameter_source' => 'get', 'type_of_death' => 'data' ) );
 
-				<div>
-					<p>
-						<span class="js-wpv-content-template-open wpv-content-template-open" title="<?php echo esc_attr( __( "Click to toggle", 'wpv-views' ) ); ?>">
-							<?php echo __( 'Single pages', 'wpv-views' ); ?>:
-							<i class="icon-caret-down"></i>
-						</span>
-					</p>
-					<?php
-					$single_posts = $post_types_array['single_post'];//key is views_template_for_
-					$open_section = false;
-					$show_asterisk_explanation = false;
-					ob_start();
-					if ( count( $single_posts ) > 0 ) {
-						?>
-						<ul>
-						<?php
-						foreach ( $single_posts as $s_post ) {// $s_post is an array with each element being (name, label)
-							$type = $s_post[0];
-							$label = $s_post[1];
-							$type_current = $type_used = false;
-							if ( isset( $WPV_settings['views_template_for_' . $type] ) && $WPV_settings['views_template_for_' . $type] != 0 ) {
-								$type_used = true;
-								$show_asterisk_explanation = true;
-							}
-							if ( 'views_template_for_' . $type == $ct_selected ) {
-								$type_current = true;
-								$type_used = false;
-								$open_section = true;
-							}
-							?>
-							<li>
-								<input id="<?php echo 'views_template_for_' . esc_attr( $type ); ?>" type="checkbox" name="wpv-new-content-template-post-type[]"<?php echo $type_current ? ' checked="checked"' : '';?> data-title="<?php echo esc_attr( $label ); ?>" value="<?php echo 'views_template_for_' . esc_attr( $type ); ?>" />
-								<label for="<?php echo 'views_template_for_' . esc_attr( $type ); ?>"><?php echo $label; echo $type_used ? $asterisk : ''; ?></label>
-							</li>
-						<?php
-						}
-						?>
-						</ul>
-						<?php if ( $show_asterisk_explanation ) { ?>
-						<span class="wpv-asterisk-explanation">
-							<?php echo $asterisk_explanation; ?>
-						</span>
-						<?php } ?>
-						<?php
-					} else {
-						_e( 'There are no single post types to assign Content Templates to', 'wpv-views' );
-					}
-					$s_content = ob_get_clean();
-					?>
-					<div class="js-wpv-content-template-dropdown-list wpv-content-template-dropdown-list<?php echo $open_section ? '' : ' hidden'; ?>">
-						<?php echo $s_content; ?>
-					</div>
-					<p>
-						<span class="js-wpv-content-template-open wpv-content-template-open" title="<?php echo esc_attr( __( "Click to toggle", 'wpv-views' ) ); ?>">
-							<?php echo __( 'Post type archives', 'wpv-views' ); ?>:
-							<i class="icon-caret-down"></i>
-						</span>
-					</p>
-					<?php
-					$archive_posts = $post_types_array['archive_post'];//key is views_template_archive_for_
-					$open_section = false;
-					$show_asterisk_explanation = false;
-					ob_start();
-					if ( count( $archive_posts ) > 0 ) {
-						?>
-						<ul>
-						<?php
-						foreach ( $archive_posts as $s_post ) {// $s_post is an array with each element being (name, label)
-							$type = $s_post[0];
-							$label = $s_post[1];
-							$type_current = $type_used = false;
-							if ( isset( $WPV_settings['views_template_archive_for_' . $type] ) && $WPV_settings['views_template_archive_for_' . $type] != 0 ) {
-								$type_used = true;
-								$show_asterisk_explanation = true;
-							}
-							if ( 'views_template_archive_for_' . $type == $ct_selected ) {
-								$type_current = true;
-								$type_used = false;
-								$open_section = true;
-							}
-							?>
-							<li>
-								<input id="<?php echo 'views_template_archive_for_' . esc_attr( $type ); ?>" type="checkbox" name="wpv-new-content-template-post-type[]"<?php echo $type_current ? ' checked="checked"' : ''; ?> data-title="<?php echo esc_attr( $label ); ?>" value="<?php echo 'views_template_archive_for_' . esc_attr( $type ); ?>" />
-								<label for="<?php echo 'views_template_archive_for_' . esc_attr( $type ); ?>"><?php echo $label; echo $type_used ? $asterisk : ''; ?></label>
-							</li>
-							<?php
-						}
-						?>
-						</ul>
-						<?php if ( $show_asterisk_explanation ) { ?>
-						<span class="wpv-asterisk-explanation">
-							<?php echo $asterisk_explanation; ?>
-						</span>
-						<?php } ?>
-						<?php
-					} else {
-						_e( 'There are no post type archives to assign Content Templates to', 'wpv-views' );
-					}
-					$pta_content = ob_get_clean();
-					?>
-					<div class="js-wpv-content-template-dropdown-list wpv-content-template-dropdown-list<?php echo $open_section ? '' : ' hidden'; ?>">
-						<?php echo $pta_content; ?>
-					</div>
-					<p>
-						<span class="js-wpv-content-template-open wpv-content-template-open" title="<?php echo esc_attr( __( "Click to toggle", 'wpv-views' ) ); ?>">
-							<?php echo __( 'Taxonomy archives', 'wpv-views' ); ?>:
-							<i class="icon-caret-down"></i>
-						</span>
-					</p>
-					<?php
-					$archive_taxes = $post_types_array['taxonomy_post'];//key is views_template_loop_
-					$open_section = false;
-					$show_asterisk_explanation = false;
-					ob_start();
-					if ( count( $archive_taxes ) > 0 ) {
-						?>
-						<ul>
-						<?php
-						foreach ( $archive_taxes as $s_post ) {// $s_post is an array with each element being (name, label)
-							$type = $s_post[0];
-							$label = $s_post[1];
-							$type_current = $type_used = false;
-							if ( isset( $WPV_settings['views_template_loop_' . $type] ) && $WPV_settings['views_template_loop_' . $type] != 0 ) {
-								$type_used = true;
-								$show_asterisk_explanation = true;
-							}
-							if ( 'views_template_loop_' . $type == $ct_selected ) {
-								$type_current = true;
-								$type_used = false;
-								$open_section = true;
-							}
-							?>
-							<li>
-								<input id="<?php echo 'views_template_loop_' . esc_attr( $type ); ?>" type="checkbox" name="wpv-new-content-template-post-type[]"<?php echo $type_current? ' checked="checked"' : '';?> data-title="<?php echo esc_attr( $label ); ?>" value="<?php echo 'views_template_loop_' . esc_attr( $type ); ?>" />
-								<label for="<?php echo 'views_template_loop_' . esc_attr( $type ); ?>"><?php echo $label; echo $type_used ? $asterisk : ''; ?></label>
-							</li>
-							<?php
-						}
-						?>
-						</ul>
-						<?php if ( $show_asterisk_explanation ) { ?>
-						<span class="wpv-asterisk-explanation">
-							<?php echo $asterisk_explanation; ?>
-						</span>
-						<?php } ?>
-						<?php
-					} else {
-						_e( 'There are no taxonomy archives to assign Content Templates to', 'wpv-views' );
-					}
-					$tax_content = ob_get_clean();
-					?>
-					<div class="js-wpv-content-template-dropdown-list wpv-content-template-dropdown-list<?php echo $open_section ? '' : ' hidden'; ?>">
-						<?php echo $tax_content; ?>
-					</div>
-				</div>
-                <p>
-                	<strong><?php _e('Name this Content Template','wpv-views') ?></strong>
-                </p>
-	            <p>
-	                <input type="text" value="<?php echo esc_attr( $ct_title ); ?>" class="js-wpv-new-content-template-name wpv-new-content-template-name" placeholder="<?php echo esc_attr( __('Content template name','wpv-views') ) ?>" name="wpv-new-content-template-name">
-	            </p>
-                <div class="js-wpv-error-container"></div>
-	        </div> <!-- .wpv-dialog-content -->
-	        <div class="wpv-dialog-footer">
-	            <button class="button js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
-	            <button class="button button-primary js-wpv-create-new-template"><?php _e('Create a template','wpv-views') ?></button>
-	        </div>
+    $ct_title = wpv_getget( 'ct_title', '' );
+    $ct_id_selected = intval( wpv_getget( 'ct_selected', 0 ) );
+    $ct_selected = WPV_Content_Template::get_instance( $ct_id_selected );
+	
+	ob_start();
+	?>
+    <div class="wpv-dialog wpv-shortcode-gui-content-wrapper js-wpv-dialog-add-new-content-template wpv-dialog-add-new-content-template">
+		<label for="wpv-new-content-template-name">
+			<strong><?php _e('Name this Content Template','wpv-views') ?></strong>
+		</label>
+		<input type="text" value="<?php echo esc_attr( $ct_title ); ?>" id="wpv-new-content-template-name" class="js-wpv-new-content-template-name wpv-new-content-template-name" placeholder="<?php echo esc_attr( __('Content Template name','wpv-views') ) ?>" name="wpv-new-content-template-name">
+		<h3><?php _e('What content will this template be for?','wpv-views') ?></h3>
+		<p>
+			<?php
+			_e( 'A Content Template can replace the content of the post with whatever you put into it, including Views shortcodes. ', 'wpv-views' );
+			?>
+		</p>
+		<p>
+			<input id="wpv-content-template-no-use" type="checkbox" class="js-dont-assign" <?php checked( $ct_id_selected, 0 ); ?> name="wpv-new-content-template-post-type[]" value="0" />
+			<label for="wpv-content-template-no-use"><?php _e("Don't assign to any post type",'wpv-views') ?></label>
+		</p>
 
+		<div>
+			<?php
+				wpv_render_ct_assignment_sections( $ct_selected );
+			?>
+		</div>
+		<div class="js-wpv-error-container"></div>
     </div> <!-- wpv-dialog -->
     <?php
-     die();
+	$response = ob_get_clean();
+	$data = array(
+		'dialog_content' => $response
+	);
+	wp_send_json_success( $data );
 }
 
-/*
- * Save new CT callback function
- * Added by Gen TODO check this nonce
+/**
+ * Save new CT callback function.
+ *
+ * Used only on CT listing page now.
+ *
+ * Added by Gen
+ * TODO check this nonce
+ *
+ * @since unknown
  */
-
 add_action('wp_ajax_wpv_ct_create_new_save', 'wpv_ct_create_new_save_callback');
 
-function wpv_ct_create_new_save_callback(){
+function wpv_ct_create_new_save_callback()
+{
     if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( 
-		! isset( $_POST["wpnonce"] ) 
-		|| ! wp_verify_nonce( $_POST["wpnonce"], 'work_view_template' ) 
-	) {
-		die( "Undefined Nonce" );
-	}
-	$title = '';
-	if ( isset( $_POST['title'] ) ) {
-	   $title = sanitize_text_field( $_POST['title'] );
-	}
-	if ( empty( $title ) ) {
-		print json_encode( array( 'error', __( 'You can not create a Content Template with an empty name.', 'wpv-views' ) ) );
-		die();
-	}
-	if ( ! isset( $_POST['type'] ) ) {
-		$_POST['type'] = array( 0 );
-	}
-	$type = $_POST['type'];
-	$create_template = wpv_create_content_template( $title, '', false, '' );
-	if ( isset( $create_template['error'] ) ) {
-		print json_encode( array( 'error', __( 'A Content Template with that name already exists. Please use another name.', 'wpv-views' ) ) );
-		die();
-	}
-	if ( isset( $create_template['success'] ) ) {
-		if ( $type[0] != '0' ) {
+        die( "Untrusted user" );
+    }
+    if (
+        ! isset( $_POST["wpnonce"] )
+        || ! wp_verify_nonce( $_POST["wpnonce"], 'work_view_template' )
+    ) {
+        die( "Undefined Nonce" );
+    }
+    $title = '';
+    if ( isset( $_POST['title'] ) ) {
+        $title = sanitize_text_field( $_POST['title'] );
+    }
+    if ( empty( $title ) ) {
+        print json_encode( array( 'error', __( 'You can not create a Content Template with an empty name.', 'wpv-views' ) ) );
+        die();
+    }
+    if ( ! isset( $_POST['type'] ) ) {
+        $_POST['type'] = array( 0 );
+    }
+    $type = $_POST['type'];
+    $create_template = wpv_create_content_template( $title, '', false, '' );
+    if ( isset( $create_template['error'] ) ) {
+        print json_encode( array( 'error', __( 'A Content Template with that name already exists. Please use another name.', 'wpv-views' ) ) );
+        die();
+    }
+    if ( isset( $create_template['success'] ) ) {
+        if ( $type[0] != '0' ) {
             global $WPV_settings;
-			foreach ( $type as $type_to_save ) {
-				$type_to_save = sanitize_text_field( $type_to_save );
-				$WPV_settings[ $type_to_save ] = $create_template['success'];
-			}
-			$WPV_settings->save();
-		}
-		print json_encode( array( $create_template['success'] ) );
-	} else {
-		print json_encode( array( 'error', __( 'An unexpected error happened.', 'wpv-views' ) ) );
-	}
-   die();
+            foreach ( $type as $type_to_save ) {
+                $type_to_save = sanitize_text_field( $type_to_save );
+                $WPV_settings[ $type_to_save ] = $create_template['success'];
+            }
+            $WPV_settings->save();
+        }
+        print json_encode( array( $create_template['success'] ) );
+    } else {
+        print json_encode( array( 'error', __( 'An unexpected error happened.', 'wpv-views' ) ) );
+    }
+    die();
 }
 
-// Check if another CT with the same name already exists
-// This is used in the CT edit screen, on submit
-// @todo check nonce
-
-add_action('wp_ajax_wpv_ct_check_name_exists', 'wpv_ct_check_name_exists_callback');
-
-function wpv_ct_check_name_exists_callback() {
-    if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( 
-		! isset( $_POST["wpnonce"] ) 
-		|| ! wp_verify_nonce( $_POST["wpnonce"], 'set_view_template' ) 
-	) {
-		die( "Undefined Nonce." );
-	}
-    global $wpdb;
-	if ( 
-		isset( $_POST['title'] ) 
-		&& ! empty( $_POST['title'] ) 
-	) {
-		$title = $_POST['title'];
-	} else {
-		echo 'wpv_error_ct_title_empty';
-		die();
-	}
-	$id = $_POST['id'];
-	$postid = $wpdb->get_var(
-		$wpdb->prepare(
-			"SELECT ID FROM {$wpdb->posts} 
-			WHERE ( post_title = %s OR post_name = %s ) 
-			AND post_type = 'view-template' 
-			AND ID != %d 
-			LIMIT 1",
-			$title,
-			$title,
-			$id 
-		) 
-	);
-	if ( ! empty( $postid ) ) {
-	   echo 'wpv_error_ct_title_in_use';
-	   die();
-	}
-	echo 'wpv_success';
-	die();
-}
 
 
 /**
@@ -1786,246 +1342,333 @@ add_action('wp_ajax_wpv_duplicate_ct', 'wpv_duplicate_ct_callback');
 
 function wpv_duplicate_ct_callback() {
 	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
+		$data = array(
+			'type' => 'capability',
+			'message' => __( 'You do not have permissions for that.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
-    if (
+	if ( 
 		! isset( $_POST["wpnonce"] )
-		|| ! wp_verify_nonce( $_POST["wpnonce"], 'work_view_template' ) 
+		|| ! wp_verify_nonce( $_POST["wpnonce"], 'work_view_template' )
 	) {
-		die( "Undefined Nonce" );
+		$data = array(
+			'type' => 'nonce',
+			'message' => __( 'Your security credentials have expired. Please reload the page to get new ones.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
+	
 	$title = '';
 	if ( isset( $_POST['title'] ) ) {
 	   $title = sanitize_text_field( $_POST['title'] );
 	}
 	if ( empty( $title ) ) {
-		print json_encode( array( 'error', __( 'You can not create a Content Template with an empty name.', 'wpv-views' ) ) );
-		die();
+		$data = array(
+			'type' => 'title',
+			'message' => __( 'You can not create a Content Template with an empty name.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
-	$old_post_id = $_POST["id"];
-	$clone_args = array(
-		'title' => $title,
-		'force' => false
-	);
-	$create_template = wpv_clone_content_template( $old_post_id, $clone_args );
-	if ( isset( $create_template['error'] ) ) {
-		print json_encode( array( 'error', __( 'A Content Template with that name already exists. Please use another name.', 'wpv-views' ) ) );
-	} else if ( isset( $create_template['success'] ) ) {
-		print json_encode( array('ok') );
-	} else {
-		print json_encode( array( 'error', __( 'An unexpected error happened.', 'wpv-views' ) ) );
-	}
-    die();
+
+    // Load the original CT.
+    $original_ct_id = $_POST["id"];
+    try {
+        $original_ct = new WPV_Content_Template( $original_ct_id );
+    } catch( Exception $e ) {
+		$data = array(
+			'type' => 'error',
+			'message' => __( 'An unexpected error happened.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+    }
+
+    // Check for uniqueness of the new title.
+    if( WPV_Content_Template_Embedded::is_name_used( $title ) ) {
+		$data = array(
+			'type' => 'title',
+			'message' => __( 'A Content Template with that name already exists. Please use another name.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+    }
+
+    // Clone and report the result.
+    $cloned_ct = $original_ct->clone_this( $title, false );
+
+    if ( null == $cloned_ct ) {
+		$data = array(
+			'type' => 'error',
+			'message' => __( 'An unexpected error happened.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+    } else {
+        wp_send_json_success();
+    }
 }
 
 // Change CT usage - popup structure TODO review this nonces
 
-add_action('wp_ajax_ct_change_types', 'ct_change_types_callback');
+add_action('wp_ajax_wpv_change_ct_usage_popup', 'wpv_change_ct_usage_popup');
 
-function ct_change_types_callback(){
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-   if ( 
-	! isset( $_GET["wpnonce"] ) 
-	|| ! wp_verify_nonce($_GET["wpnonce"], 'work_view_template') 
-	) {
-		die( "Undefined nonce" );
-	}
-   global $WPV_settings;
-   $post_types_array = wpv_get_pt_tax_array();
-   $id = $_GET['id'];
-   $asterisk = '<span style="color:red;">*</span>';
-   $asterisk_explanation = __( '<span style="color:red">*</span> A different Content Template is already assigned to this item', 'wpv-views' );
-	?>
-    <div class="wpv-dialog js-wpv-dialog-add-new-content-template wpv-dialog-add-new-content-template">
-        <form method="" id="wpv-add-new-content-template-form">
-        <div class="wpv-dialog-header">
-            <h2><?php _e('Change Types','wpv-views') ?></h2>
-            <i class="icon-remove js-dialog-close"></i>
-        </div>
-        <div class="wpv-dialog-content">
-            <p><?php _e('What content will this template be for?','wpv-views') ?></p>
-            <div>
-                <p>
-					<span class="js-wpv-content-template-open wpv-content-template-open" title="<?php echo esc_attr( __( "Click to toggle", 'wpv-views' ) ); ?>">
-						<?php echo __( 'Single pages', 'wpv-views' ); ?>:
-						<i class="icon-caret-down"></i>
-					</span>
-				</p>
-                <?php
-                $single_posts = $post_types_array['single_post'];//key is views_template_for_
-                $open_section = false;
-                $show_asterisk_explanation = false;
-                ob_start();
-                if ( count( $single_posts ) > 0 ) {
-					?>
-					<ul>
-					<?php
-					foreach ( $single_posts as $s_post ) {// $s_post is an array with each element being (name, label)
-						$type = $s_post[0];
-						$label = $s_post[1];
-						$type_current = $type_used = false;
-						if ( isset( $WPV_settings['views_template_for_' . $type] ) && $WPV_settings['views_template_for_' . $type] != 0 ) {
-							$type_used = true;
-							$show_asterisk_explanation = true;
-						}
-						if ( isset( $WPV_settings['views_template_for_' . $type] ) && $WPV_settings['views_template_for_' . $type] == $id ) {
-							$type_current = true;
-							$type_used = false;
-							$open_section = true;
-						}
-						?>
-						<li>
-							<input id="<?php echo 'views_template_for_' . esc_attr( $type ); ?>" type="checkbox" name="wpv-new-content-template-post-type[]"<?php echo $type_current? ' checked="checked"' : '';?> data-title="<?php echo esc_attr( $label ); ?>" value="<?php echo 'views_template_for_' . esc_attr( $type ); ?>" />
-							<label for="<?php echo 'views_template_for_' . esc_attr( $type ); ?>"><?php echo $label; echo $type_used ? $asterisk : ''; ?></label>
-						</li>
-					<?php
-					}
-					?>
-					</ul>
-					<?php if ( $show_asterisk_explanation ) { ?>
-					<span class="wpv-asterisk-explanation">
-						<?php echo $asterisk_explanation; ?>
-					</span>
-					<?php } ?>
-					<?php
-                } else {
-					_e( 'There are no single post types to assign Content Templates to', 'wpv-views' );
-                }
-                $s_content = ob_get_clean();
-                ?>
-                <div class="js-wpv-content-template-dropdown-list wpv-content-template-dropdown-list<?php echo $open_section ? '' : ' hidden'; ?>">
-					<?php echo $s_content; ?>
-                </div>
-                <p>
-					<span class="js-wpv-content-template-open wpv-content-template-open" title="<?php echo esc_attr( __( "Click to toggle", 'wpv-views' ) ); ?>">
-						<?php echo __( 'Post type archives', 'wpv-views' ); ?>:
-						<i class="icon-caret-down"></i>
-					</span>
-				</p>
-                <?php
-                $archive_posts = $post_types_array['archive_post'];//key is views_template_archive_for_
-                $open_section = false;
-                $show_asterisk_explanation = false;
-                ob_start();
-                if ( count( $archive_posts ) > 0 ) {
-					?>
-					<ul>
-					<?php
-					foreach ( $archive_posts as $s_post ) {// $s_post is an array with each element being (name, label)
-						$type = $s_post[0];
-						$label = $s_post[1];
-						$type_current = $type_used = false;
-						if ( isset( $WPV_settings['views_template_archive_for_' . $type] ) && $WPV_settings['views_template_archive_for_' . $type] != 0 ) {
-							$type_used = true;
-							$show_asterisk_explanation = true;
-						}
-						if ( isset( $WPV_settings['views_template_archive_for_' . $type] ) && $WPV_settings['views_template_archive_for_' . $type] == $id ) {
-							$type_current = true;
-							$type_used = false;
-							$open_section = true;
-						}
-						?>
-						<li>
-							<input id="<?php echo 'views_template_archive_for_' . esc_attr( $type ); ?>" type="checkbox" name="wpv-new-content-template-post-type[]"<?php echo $type_current ? ' checked="checked"' : ''; ?> data-title="<?php echo esc_attr( $label ); ?>" value="<?php echo 'views_template_archive_for_' . esc_attr( $type ); ?>" />
-                            <label for="<?php echo 'views_template_archive_for_' . esc_attr( $type ); ?>"><?php echo $label; echo $type_used ? $asterisk : ''; ?></label>
-                        </li>
-						<?php
-					}
-					?>
-					</ul>
-					<?php if ( $show_asterisk_explanation ) { ?>
-					<span class="wpv-asterisk-explanation">
-						<?php echo $asterisk_explanation; ?>
-					</span>
-					<?php } ?>
-					<?php
-                } else {
-					_e( 'There are no post type archives to assign Content Templates to', 'wpv-views' );
-                }
-                $pta_content = ob_get_clean();
-                ?>
-				<div class="js-wpv-content-template-dropdown-list wpv-content-template-dropdown-list<?php echo $open_section ? '' : ' hidden'; ?>">
-					<?php echo $pta_content; ?>
-				</div>
-				<p>
-					<span class="js-wpv-content-template-open wpv-content-template-open" title="<?php echo esc_attr( __( "Click to toggle", 'wpv-views' ) ); ?>">
-						<?php echo __( 'Taxonomy archives', 'wpv-views' ); ?>:
-						<i class="icon-caret-down"></i>
-					</span>
-				</p>
-                <?php
-                $archive_taxes = $post_types_array['taxonomy_post'];//key is views_template_loop_
-                $open_section = false;
-                $show_asterisk_explanation = false;
-                ob_start();
-                if ( count( $archive_taxes ) > 0 ) {
-					?>
-					<ul>
-					<?php
-					foreach ( $archive_taxes as $s_post ) {// $s_post is an array with each element being (name, label)
-						$type = $s_post[0];
-						$label = $s_post[1];
-						$type_current = $type_used = false;
-						if ( isset( $WPV_settings['views_template_loop_' . $type] ) && $WPV_settings['views_template_loop_' . $type] != 0 ) {
-							$type_used = true;
-							$show_asterisk_explanation = true;
-						}
-						if ( isset( $WPV_settings['views_template_loop_' . $type] ) && $WPV_settings['views_template_loop_' . $type] == $id ) {
-							$type_current = true;
-							$type_used = false;
-							$open_section = true;
-						}
-						?>
-						<li>
-							<input id="<?php echo 'views_template_loop_' . esc_attr( $type ); ?>" type="checkbox" name="wpv-new-content-template-post-type[]"<?php echo $type_current? ' checked="checked"' : '';?> data-title="<?php echo esc_attr( $label ); ?>" value="<?php echo 'views_template_loop_' . esc_attr( $type ); ?>" />
-                            <label for="<?php echo 'views_template_loop_' . esc_attr( $type ); ?>"><?php echo $label; echo $type_used ? $asterisk : ''; ?></label>
-                        </li>
-                        <?php
-					}
-					?>
-					</ul>
-					<?php if ( $show_asterisk_explanation ) { ?>
-					<span class="wpv-asterisk-explanation">
-						<?php echo $asterisk_explanation; ?>
-					</span>
-					<?php } ?>
-					<?php
-				} else {
-					_e( 'There are no taxonomy archives to assign Content Templates to', 'wpv-views' );
-				}
-				$tax_content = ob_get_clean();
-				?>
-				<div class="js-wpv-content-template-dropdown-list wpv-content-template-dropdown-list<?php echo $open_section ? '' : ' hidden'; ?>">
-					<?php echo $tax_content; ?>
-				</div>
-            </div>
-        </div>
-        <div class="wpv-dialog-footer">
-            <button class="button js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
-            <button class="button button-primary js-ct-change-type-process" data-id="<?php echo esc_attr( $id ); ?>"><?php _e('Change','wpv-views') ?></button>
-        </div>
+/**
+ * Render HTML for the dialog to change CT assignment.
+ *
+ * Expects following GET parameters:
+ * - wpnonce: A valid work_view_template nonce.
+ * - id: Valid ID of a Content Template
+ *
+ * @since unknown
+ */
+function wpv_change_ct_usage_popup() {
+
+    wpv_ajax_authenticate( 'work_view_template', array( 'parameter_source' => 'get', 'type_of_death' => 'data' ) );
+
+    $id = intval( wpv_getget( 'id', 0 ) );
+    $ct = WPV_Content_Template::get_instance( $id );
+    if( null == $ct ) {
+		$data = array(
+			'type' => 'error',
+			'message' => __( 'Invalid CT ID.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
+    }
+	ob_start();
+    ?>
+    <div class="wpv-dialog wpv-shortcode-gui-content-wrapper js-wpv-dialog-add-new-content-template wpv-dialog-add-new-content-template">
+        <h3><?php _e('What content will this template be for?','wpv-views') ?></h3>
+		<form method="" id="wpv-add-new-content-template-form">
+             <?php wpv_render_ct_assignment_sections( $ct ); ?>
         </form>
-		</div>
+	</div>
     <?php
-     die();
+	$response = ob_get_clean();
+	$data = array(
+		'dialog_content' => $response
+	);
+	wp_send_json_success( $data );
 }
 
-//Change CT usage callback function TODO check this nonce
 
-add_action('wp_ajax_ct_change_types_process', 'ct_change_types_process_callback');
+/**
+ * Render part of the dialog for assigning CT to different loops/post types.
+ *
+ * This will render the "toggle" section headers and section content with checkboxes. If a CT is provided,
+ * checkbox value and section toggle states will be adjusted to it's current settings.
+ *
+ * This code is being used in "Add new Content Template" and "Change template usage" dialogs.
+ *
+ * @param WPV_Content_Template|null $ct Existing CT for default values or null.
+ *
+ * @since 1.10
+ */
+function wpv_render_ct_assignment_sections( $ct = null ) {
 
-function ct_change_types_process_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-    if ( 
-		! isset( $_POST["wpnonce"] ) 
-		|| !wp_verify_nonce( $_POST["wpnonce"], 'work_view_template' ) 
-	) {
-        die( "Undefined Nonce" );
+    global $WPV_view_archive_loop;
+    $single_post_type_loops = $WPV_view_archive_loop->get_archive_loops( 'post_type', false, true, true );
+    $post_type_loops = $WPV_view_archive_loop->get_archive_loops( 'post_type', false, true );
+    $taxonomy_archive_loops = $WPV_view_archive_loop->get_archive_loops( 'taxonomy', false, true );
+
+    $asterisk = '<span style="color:red;">*</span>';
+    $asterisk_explanation = __( '<span style="color:red">*</span> A different Content Template is already assigned to this item', 'wpv-views' );
+
+    $has_ct = ( null != $ct );
+
+    //
+    // Section for single post type assignment
+    //
+
+    ?>
+    <p>
+        <span class="js-wpv-content-template-open wpv-content-template-open" title="<?php echo esc_attr( __( "Click to toggle", 'wpv-views' ) ); ?>">
+            <?php echo __( 'Single pages', 'wpv-views' ); ?>:
+            <i class="icon-caret-down"></i>
+        </span>
+    </p>
+    <?php
+
+    $open_section = false;
+    $show_asterisk_explanation = false;
+
+    // The output buffer is used because first we need to determine the value of $open_section
+    // and then we can render the content.
+    ob_start();
+
+    if ( count( $single_post_type_loops ) > 0 ) {
+        echo '<ul>';
+        foreach ( $single_post_type_loops as $post_type_loop ) {
+            $post_type = $post_type_loop['post_type_name'];
+            $setting_name = 'views_template_for_' . esc_attr( $post_type );
+            $assigned_ct_id = $post_type_loop['single_ct'];
+            $type_current = $type_used = false;
+
+            if ( $assigned_ct_id != 0 ) {
+                $type_used = true;
+                $show_asterisk_explanation = true;
+            }
+            if ( $has_ct && $ct->id == $assigned_ct_id ) {
+                $type_current = true;
+                $type_used = false;
+                $open_section = true;
+            }
+
+            printf(
+                '<li>
+                    <input id="%s" type="checkbox" name="wpv-new-content-template-post-type[]" %s data-title="%s" value="%s" />
+                    <label for="%s">%s%s</label>
+                </li>',
+                $setting_name, checked( $type_current, true, false ), esc_attr( $post_type_loop['display_name'] ),  $setting_name,
+                $setting_name, $post_type_loop['display_name'], ( $type_used ? $asterisk : '' )
+            );
+
+        }
+
+        echo '</ul>';
+
+        if ( $show_asterisk_explanation ) {
+            printf( '<span class="wpv-asterisk-explanation">%s</span>', $asterisk_explanation );
+        }
+
+    } else {
+        _e( 'There are no single post types to assign Content Templates to', 'wpv-views' );
     }
+
+    $s_content = ob_get_clean();
+
+    ?>
+    <div class="js-wpv-content-template-dropdown-list wpv-content-template-dropdown-list<?php echo $open_section ? '' : ' hidden'; ?>">
+        <?php echo $s_content; ?>
+    </div>
+    <p>
+        <span class="js-wpv-content-template-open wpv-content-template-open" title="<?php echo esc_attr( __( "Click to toggle", 'wpv-views' ) ); ?>">
+            <?php echo __( 'Post type archives', 'wpv-views' ); ?>:
+            <i class="icon-caret-down"></i>
+        </span>
+    </p>
+    <?php
+
+    //
+    // Section for post type loops
+    //
+
+    $open_section = false;
+    $show_asterisk_explanation = false;
+    ob_start();
+
+    if ( count( $post_type_loops ) > 0 ) {
+
+        echo '<ul>';
+        foreach ( $post_type_loops as $post_type_loop ) {
+            $post_type = $post_type_loop['post_type_name'];
+            $setting_name = 'views_template_archive_for_' . esc_attr( $post_type );
+            $assigned_ct_id = $post_type_loop['ct'];
+            $type_current = $type_used = false;
+            if ( $assigned_ct_id != 0 ) {
+                $type_used = true;
+                $show_asterisk_explanation = true;
+            }
+            if ( $has_ct && $ct->id == $assigned_ct_id ) {
+                $type_current = true;
+                $type_used = false;
+                $open_section = true;
+            }
+
+            printf(
+                '<li>
+                    <input id="%s" type="checkbox" name="wpv-new-content-template-post-type[]" %s data-title="%s" value="%s" />
+                    <label for="%s">%s%s</label>
+                </li>',
+                $setting_name, checked( $type_current, true, false ), esc_attr( $post_type_loop['display_name'] ), $setting_name,
+                $setting_name, $post_type_loop['display_name'], ( $type_used ? $asterisk : '' )
+            );
+
+        }
+
+        echo '</ul>';
+
+        if ( $show_asterisk_explanation ) {
+            printf( '<span class="wpv-asterisk-explanation">%s</span>', $asterisk_explanation );
+        }
+
+    } else {
+        _e( 'There are no post type archives to assign Content Templates to', 'wpv-views' );
+    }
+
+    $pta_content = ob_get_clean();
+
+    ?>
+    <div class="js-wpv-content-template-dropdown-list wpv-content-template-dropdown-list<?php echo $open_section ? '' : ' hidden'; ?>">
+        <?php echo $pta_content; ?>
+    </div>
+    <p>
+        <span class="js-wpv-content-template-open wpv-content-template-open" title="<?php echo esc_attr( __( "Click to toggle", 'wpv-views' ) ); ?>">
+            <?php echo __( 'Taxonomy archives', 'wpv-views' ); ?>:
+            <i class="icon-caret-down"></i>
+        </span>
+    </p>
+    <?php
+
+    //
+    // Section for taxonomy archive loops
+    //
+
+    $open_section = false;
+    $show_asterisk_explanation = false;
+    ob_start();
+    if ( count( $taxonomy_archive_loops ) > 0 ) {
+        echo '<ul>';
+
+        foreach ( $taxonomy_archive_loops as $taxonomy_archive_loop ) {
+
+            $type = $taxonomy_archive_loop['slug'];
+            $label = $taxonomy_archive_loop['display_name'];
+            $setting_name = 'views_template_loop_' . $type;
+            $assigned_ct_id = $taxonomy_archive_loop['ct'];
+            $type_current = $type_used = false;
+
+            if ( 0 != $assigned_ct_id ) {
+                $type_used = true;
+                $show_asterisk_explanation = true;
+            }
+            if ( $has_ct && $ct->id == $assigned_ct_id ) {
+                $type_current = true;
+                $type_used = false;
+                $open_section = true;
+            }
+
+            printf(
+                '<li>
+                    <input id="%s" type="checkbox" name="wpv-new-content-template-post-type[]" %s data-title="%s" value="%s" />
+                    <label for="%s">%s%s</label>
+                </li>',
+                $setting_name, checked( $type_current, true, false ), esc_attr( $label ), $setting_name,
+                $setting_name, $label, ( $type_used ? $asterisk : '' )
+            );
+
+        }
+
+        echo '</ul>';
+
+        if ( $show_asterisk_explanation ) {
+            printf( '<span class="wpv-asterisk-explanation">%s</span>', $asterisk_explanation );
+        }
+
+    } else {
+        _e( 'There are no taxonomy archives to assign Content Templates to', 'wpv-views' );
+    }
+
+    $tax_content = ob_get_clean();
+
+    ?>
+    <div class="js-wpv-content-template-dropdown-list wpv-content-template-dropdown-list<?php echo $open_section ? '' : ' hidden'; ?>">
+        <?php echo $tax_content; ?>
+    </div>
+    <?php
+}
+
+add_action('wp_ajax_wpv_change_ct_usage', 'wpv_change_ct_usage_callback');
+
+function wpv_change_ct_usage_callback() {
+	wpv_ajax_authenticate( 'work_view_template', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
 
     global $WPV_settings;
     $id = $_POST["view_template_id"];
@@ -2047,137 +1690,110 @@ function ct_change_types_process_callback() {
     
     $WPV_settings->save();
 	do_action( 'wpv_action_wpv_save_item', $id );
-    echo 'ok';
-
-    die();
+    wp_send_json_success();
 }
 
 // Change CT action - popup structure 
-// @todo check nonce, check header texts
-// @todo check why we have $_GET instead of $_POST here
 
-add_action('wp_ajax_ct_change_types_pt', 'ct_change_types_pt_callback');
+add_action('wp_ajax_wpv_change_ct_assigned_to_something_dialog', 'wpv_change_ct_assigned_to_something_dialog_callback');
 
-function ct_change_types_pt_callback(){
-    if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
+function wpv_change_ct_assigned_to_something_dialog_callback(){
+    wpv_ajax_authenticate( 'work_view_template', array( 'parameter_source' => 'get', 'type_of_death' => 'data' ) );
+	
+    global $wpdb, $WPV_settings;
+	$values_to_prepare = array();
+	$exclude_loop_templates = '';
+	$exclude_loop_templates_ids = wpv_get_loop_content_template_ids();
+	if ( count( $exclude_loop_templates_ids ) > 0 ) {
+		$exclude_loop_templates_ids_sanitized = array_map( 'esc_attr', $exclude_loop_templates_ids );
+		$exclude_loop_templates_ids_sanitized = array_map( 'trim', $exclude_loop_templates_ids_sanitized );
+		// is_numeric + intval does sanitization
+		$exclude_loop_templates_ids_sanitized = array_filter( $exclude_loop_templates_ids_sanitized, 'is_numeric' );
+		$exclude_loop_templates_ids_sanitized = array_map( 'intval', $exclude_loop_templates_ids_sanitized );
+		if ( count( $exclude_loop_templates_ids_sanitized ) > 0 ) {
+			$exclude_loop_templates = " AND p.ID NOT IN ('" . implode( "','" , $exclude_loop_templates_ids_sanitized ) . "') ";
+		}
 	}
-	if ( 
-		! isset( $_GET["wpnonce"] ) 
-		|| ! wp_verify_nonce( $_GET["wpnonce"], 'work_view_template' ) 
-	) {
-		die( "Undefined Nonce" );
-	}
-    global $WPV_settings;
-    $query = new WP_Query('post_type=view-template&posts_per_page=-1');
-    $sort = $_GET['sort'];
-    $post_type = $_GET['pt'];
-    $no_type = __('Don’t use any Content Template for this Post Type','wpv-views');
-    $head_text = __('Change Post Type','wpv-views');
-    if ( isset($_GET['msg']) && $_GET['msg'] == '2'){
-        $no_type = __('Don’t use any Content Template for this Taxonomy','wpv-views');
-        $head_text = __('Change Taxonomy','wpv-views');
-    }
+	$values_to_prepare[] = 'view-template';
+	$view_tempates_available = $wpdb->get_results(
+		$wpdb->prepare(
+			"SELECT p.ID, p.post_title 
+			FROM {$wpdb->posts} p
+			WHERE p.post_status = 'publish' 
+			AND p.post_type = %s 
+			{$exclude_loop_templates}
+			ORDER BY p.post_title",
+			$values_to_prepare
+		)
+	);
+	
+    $post_type = sanitize_text_field( $_GET['pt'] );
+	$selected = ( isset( $WPV_settings[$post_type] ) ) ? $WPV_settings[$post_type] : 0;
+	ob_start();
     ?>
-    <div class="wpv-dialog js-wpv-dialog-add-new-content-template wpv-dialog-add-new-content-template">
-        <form method="" id="wpv-add-new-content-template-form">
-        <div class="wpv-dialog-header">
-            <h2><?php echo $head_text ?></h2>
-            <i class="icon-remove js-dialog-close"></i>
-        </div>
-        <div class="wpv-dialog-content">
-            <div><?php // echo '<pre>';print_r($query);echo '</pre>'; ?>
-                <ul>
-                <li><label>
-                    <input type="radio" name="wpv-new-post-type-content-template" value="0" />
-                     <?php echo $no_type; ?>
-                     </label>
-                </li>
-                <?php
-                while ($query->have_posts()) :
-
-                    $query->the_post();
-                    $id = get_the_id();
-                    $current = '';
-                    if ( isset( $WPV_settings[$post_type] ) && $id == $WPV_settings[$post_type] ) {
-                        $current = ' checked="checked"';
-                    }
-                   ?>
-                     <li>
-                            <label>
-                                <input type="radio" name="wpv-new-post-type-content-template" <?php echo $current;?> value="<?php echo esc_attr( $id );?>" />
-                                <?php the_title();?>
-                            </label>
-                     </li>
-                    <?php
-
-                endwhile; ?>
-                    </ul>
-           </div>
-
-        </div>
-        <div class="wpv-dialog-footer">
-            <button class="button js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
-            <button class="button button-primary js-ct-change-types-pt-process" data-pt="<?php echo esc_attr( $post_type ); ?>" data-sort="<?php echo esc_attr( $sort ); ?>"><?php _e('Change','wpv-views') ?></button>
-        </div>
-        </div>
+    <div class="wpv-dialog wpv-shortcode-gui-content-wrapper js-wpv-dialog-add-new-content-template wpv-dialog-add-new-content-template">
+		<h3><?php _e( 'Select one of the following Content Templates.', 'wpv-views' ); ?></h3>
+		<ul class="wpv-mightlong-list">
+			<li>
+				<input type="radio" id="wpv-content-template-name-0" class="js-wpv-content-template-name" name="wpv-content-template-name" <?php checked( 0, $selected ); ?> value="0" />
+				<label for="wpv-content-template-name-0"><?php _e( 'Don’t use any Content Template', 'wpv-views' ); ?></label>
+			</li>
+			<?php
+			if ( count( $view_tempates_available ) > 0 ) {
+				foreach ( $view_tempates_available as $row ) {
+					?>
+						<li>
+							<input type="radio" id="wpv-content-template-name-<?php echo esc_attr( $row->ID );?>" class="js-wpv-content-template-name" name="wpv-content-template-name" <?php checked( $row->ID, $selected ); ?> value="<?php echo esc_attr( $row->ID );?>" />
+							<label for="wpv-content-template-name-<?php echo esc_attr( $row->ID );?>"><?php echo $row->post_title; ?></label>
+						</li>
+					<?php
+				}
+			}
+			?>
+		</ul>
+    </div>
     <?php
-    die();
+	$response = ob_get_clean();
+	$data = array(
+		'dialog_content' => $response
+	);
+	wp_send_json_success( $data );
 }
 
 // Change CT action callback function TODO check nonces
 
-add_action('wp_ajax_ct_change_types_pt_process', 'ct_change_types_pt_process_callback');
+add_action('wp_ajax_wpv_change_ct_assigned_to_something', 'wpv_change_ct_assigned_to_something_callback');
 
-function ct_change_types_pt_process_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-    if ( 
-		! isset( $_POST["wpnonce"] ) 
-		|| ! wp_verify_nonce( $_POST["wpnonce"], 'work_view_template' ) 
-	) {
-        die( "Undefined Nonce" );
-    }
+function wpv_change_ct_assigned_to_something_callback() {
+	wpv_ajax_authenticate( 'work_view_template', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
     
     global $WPV_settings;
-    $pt = $_POST["pt"];
-    $sort = $_POST['sort'];
-    
+    $pt = sanitize_text_field( $_POST["pt"] );    
     if ( isset( $_POST['value'] ) ) {
-        $value = $_POST['value'];
+        $value = intval( $_POST['value'] );
 		do_action( 'wpv_action_wpv_save_item', $value );
     } else {
         $value = 0;
     }
     $WPV_settings[$pt] = $value;
     $WPV_settings->save();
-    
-    $out = wpv_admin_menu_content_template_listing_by_type_row( $sort );
-    echo $out;
-
-    die();
+	
+    wp_send_json_success();
 }
 
 // Response when updating all posts to use a given CT - popup structure TODO localize!!!! and check nonce
 // TODO seems that this is called in a colorbox callback, but BUT is executes the delete... TODO review this all
 
-add_action('wp_ajax_set_view_template_listing', 'set_view_template_listing_callback');
+add_action('wp_ajax_wpv_apply_ct_to_cpt_posts', 'wpv_apply_ct_to_cpt_posts_callback');
 
-function set_view_template_listing_callback() {
-    if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( 
-		! isset( $_POST["wpnonce"] ) 
-		|| ! wp_verify_nonce( $_POST["wpnonce"], 'work_view_template' ) 
-	) {
-		die( "Undefined Nonce" );
-	}
-    $view_template_id = $_POST['view_template_id'];
-    $type = $_POST['type'];
-    wpv_update_dissident_posts_from_template( $view_template_id, $type);
-    die();
+function wpv_apply_ct_to_cpt_posts_callback() {
+	wpv_ajax_authenticate( 'work_view_template', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+   
+    $id = intval( $_POST['id'] );
+    $type = sanitize_text_field( $_POST['type'] );
+    wpv_update_dissident_posts_from_template( $id, $type, false );
+	
+    wp_send_json_success();
 }
 
 add_action('wp_ajax_wpv_content_template_move_to_trash', 'wpv_content_template_move_to_trash_callback');
@@ -2187,23 +1803,22 @@ add_action('wp_ajax_wpv_content_template_move_to_trash', 'wpv_content_template_m
  * Prints a JSON array. If CT is not in use, it is trashed and first element of the array is "move" and second one
  * contains ID of the CT. Otherwise first element is "show" and second contains HTML for the colorbox dialog that should
  * be shown.
+ *
+ * @deprecated Not used in Views since 1.10. Use wpv_bulk_content_templates_move_to_trash instead.
  */
 function wpv_content_template_move_to_trash_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_listing_actions_nonce' ) ) {
-		die( "Security check" );
-	}
+	wpv_ajax_authenticate( 'wpv_view_listing_actions_nonce', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
 
 	if ( isset( $_POST['id'] ) ) {
-		$ct_id = $_POST['id'];
+		$ct_id = intval( $_POST['id'] );
 	} else {
-		echo 'Error: no content template ID';
-		die();
+		$data = array(
+			'type' => 'error',
+			'message' => __( 'Invalid CT ID.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
 	global $wpdb;
-
 	$posts_count = $wpdb->get_var( 
 		$wpdb->prepare( 
 			"SELECT count(posts.ID) FROM {$wpdb->posts} as posts,{$wpdb->postmeta} as postmeta 
@@ -2214,18 +1829,20 @@ function wpv_content_template_move_to_trash_callback() {
 		) 
 	);
 	if ( $posts_count == 0 ) {
-		if ( !isset( $_POST['newstatus'] ) ) $_POST['newstatus'] = 'publish';
+
 		$my_post = array(
-			'ID'           => $ct_id,
+			'ID'          => $ct_id,
 			'post_status' => 'trash'
 		);
 		// TODO $return is never used; should it be?
 		$return = wp_update_post( $my_post );
 		do_action( 'wpv_action_wpv_save_item', $ct_id );
-
 		wpv_replace_views_template_options( $ct_id, 0 );
 		
-		$out = array( 'move', $ct_id );
+		$data = array(
+			'action' => 'reload'
+		);
+		wp_send_json_success( $data );
 	} else {
 		$template_list = $wpdb->get_results( 
 			$wpdb->prepare( 
@@ -2238,18 +1855,11 @@ function wpv_content_template_move_to_trash_callback() {
 		);
 		ob_start();
 		?>
-		<div class="wpv-dialog js-wpv-dialog-add-new-content-template wpv-dialog-add-new-content-template">
-        <form method="" id="wpv-add-new-content-template-form">
-        <div class="wpv-dialog-header">
-            <h2><?php _e( 'Content template in use', 'wpv-views' )?></h2>
-            <i class="icon-remove js-dialog-close"></i>
-        </div>
-        <div class="wpv-dialog-content wpv-dialog-trash-ct">
-            <div>
-            	<p>
-            		<?php echo sprintf( _n('1 item', '%s items', $posts_count, 'wpv-views'), $posts_count ) . __( ' use this content template. What do you want to do?', 'wpv-views' ); ?>
-            	</p>
-                <ul>
+		<div class="wpv-dialog wpv-shortcode-gui-content-wrapper">
+			<p>
+				<?php echo sprintf( _n('1 item', '%s items', $posts_count, 'wpv-views'), $posts_count ) . __( ' use this content template. What do you want to do?', 'wpv-views' ); ?>
+			</p>
+			<ul>
                 <?php if ( count($template_list) > 0 ){?>
                 <li><label>
                     <input type="radio" name="wpv-content-template-replace-to" class="js-wpv-existing-posts-ct-replace-to js-wpv-existing-posts-ct-replace-to-selected-ct" value="0" id="wpv-content-template-replace-to" />
@@ -2270,26 +1880,16 @@ function wpv_content_template_move_to_trash_callback() {
                     <?php _e( 'Don\'t use any content template for these items', 'wpv-views' )?>
                     </label>
                 </li>
-                    </ul>
-           </div>
-
-        </div>
-        <div class="wpv-dialog-footer">
-            <button class="button js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
-            <button class="button button-primary js-ct-replace-usage" data-ct_id="<?php echo esc_attr( $ct_id ); ?>"><?php _e('Change','wpv-views') ?></button>
-        </div>
+             </ul>
         </div>
         <?php
-        $popup_content = ob_get_contents();
-		ob_end_clean();
-		$out = array('show', $popup_content);
+        $response = ob_get_clean();		
+		$data = array(
+			'action'			=> 'dialog',
+			'dialog_content'	=> $response
+		);
+		wp_send_json_success( $data );
 	}
-
-
-
-	wp_reset_postdata();
-	echo json_encode( $out );
-    die();
 }
 
 
@@ -2304,6 +1904,7 @@ function wpv_content_template_move_to_trash_callback() {
  * Expected POST parameters:
  * - ids: A non-empty array of content template IDs.
  * - wpnonce: A valid wpv_view_listing_actions_nonce.
+ * @todo use dedicated nonce containing user and CT id; note that this is used also on CT edit page
  *
  * Response is an JSON object containing following properties:
  * - all_ids: Array of all content templates that were/should be trashed.
@@ -2315,16 +1916,15 @@ function wpv_content_template_move_to_trash_callback() {
 add_action( 'wp_ajax_wpv_bulk_content_templates_move_to_trash', 'wpv_bulk_content_templates_move_to_trash_callback' );
 
 function wpv_bulk_content_templates_move_to_trash_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_listing_actions_nonce' ) ) {
-		die( "Security check" );
-	}
+	wpv_ajax_authenticate( 'wpv_view_listing_actions_nonce', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
 
 	if ( ! isset( $_POST['ids'] ) ) {
 		// We don't allow empty input
-		die( "Error: No Content Templates given." );
+		$data = array(
+			'type' => 'error',
+			'message' => __( 'Invalid CT ID.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	} else if ( is_string( $_POST['ids'] ) ) {
 		$ct_ids = array( $_POST['ids'] );
 	} else {
@@ -2338,7 +1938,9 @@ function wpv_bulk_content_templates_move_to_trash_callback() {
 	$ct_ids = array_map( 'intval', $ct_ids );
 
 	$result = array(
-			'all_ids' => $ct_ids );
+        'all_ids' => $ct_ids,
+        'success' => true
+    );
 
 	// Determine which templates are currently in use.
 	global $wpdb;
@@ -2372,9 +1974,8 @@ function wpv_bulk_content_templates_move_to_trash_callback() {
 		}
 	}
 
-	if( empty( $used_templates ) ) {
+	if ( empty( $used_templates ) ) {
 		// No template is used, we can trash them all.
-		$result['action'] = 'trashed';
 
 		global $WPV_settings;
 
@@ -2393,9 +1994,11 @@ function wpv_bulk_content_templates_move_to_trash_callback() {
 
         $WPV_settings->save();
 		
+		$data['action'] = 'reload';
+		wp_send_json_success( $data );
+		
 	} else {
-		// One or more templates are in use, we need to show a confirmation.
-		$result['action'] = 'confirm';
+        // One or more templates are in use, we need to show a confirmation.
 
 		// Get list of templates that can be used as a replacement for the trashed ones.
 		$templates_to_trash = implode( ',', $ct_ids );
@@ -2411,128 +2014,109 @@ function wpv_bulk_content_templates_move_to_trash_callback() {
 		ob_start();
 
 		?>
-		<div class="wpv-dialog js-wpv-dialog-bulk-replace-content-template wpv-dialog-bulk-replace-content-template">
-			<div class="wpv-dialog-header">
-				<h2><?php _e( 'Content templates in use', 'wpv-views' )?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
-			<div class="wpv-dialog-content wpv-dialog-bulk-trash-cts">
-				<p><?php _e( 'These content templates are in use. What do you want to do?', 'wpv-views' ); ?></p>
-				<?php
+		<div class="wpv-dialog wpv-shortcode-gui-content-wrapper js-wpv-dialog-bulk-replace-content-template wpv-dialog-bulk-replace-content-template">
+			<p><?php _e( 'These content templates are in use. What do you want to do?', 'wpv-views' ); ?></p>
+			<?php
+			// Show a div with options for each used template.
+			foreach( $used_templates as $template_id => $template_info ) {
+				$template_title = $template_info['title'];
+				$template_usage_count = $template_info['usage_count'];
 
-					// Show a div with options for each used template.
-					foreach( $used_templates as $template_id => $template_info ) {
-						$template_title = $template_info['title'];
-						$template_usage_count = $template_info['usage_count'];
-
-						?>
-						<div>
-							<?php
-								printf(
-										'<p><strong>%s</strong> (%s %s)</p>',
-										$template_title,
-										__( 'used by', 'wpv-view' ),
-										sprintf( _n( '1 item', '%s items', $template_usage_count, 'wpv-views' ), $template_usage_count ) );
-							?>
-							<ul>
-								<?php
-									/* Show an option to replace this template with another one, if there are some left.
-									 * Radio buttons are grouped by name: "wpv-content-template-replace-{$template_id}-to".
-									 * Select field for replacement template is identified as "wpv-ct-list-for-replace-{$template_id}"
-									 *
-									 * Submit button contains attributes 'data-ct-ids' with all Content Template IDs that should be trashed
-									 * and 'data-replace-ids' with those that should be replaced. */ 
-									if( !empty( $template_list ) ) {
-										?>
-										<li>
-											<label>
-												<?php
-													printf(
-															'<input type="radio" name="wpv-content-template-replace-%d-to"
-																class="js-wpv-bulk-existing-posts-ct-replace-to js-wpv-bulk-existing-posts-ct-replace-to-selected-ct"
-																value="different_template" id="wpv-content-template-replace-to" />',
-															$template_id );
-													_e( 'Choose a different content template for them: ', 'wpv-views' );
-												?>
-											</label>
-											<?php
-												printf( '<select class="js-wpv-bulk-ct-list-for-replace" id="wpv-ct-list-for-replace-%d" data-template-id="%d">', esc_attr( $template_id ), esc_attr( $template_id ) );
-												printf( '<option value="">%s</option>', __( 'Select Content Template', 'wpv-views' ) );
-												foreach( $template_list as $temp_post ) {
-													printf( '<option value="%s">%s</option>', $temp_post->ID, $temp_post->post_title );
-												}
-												printf( '</select>' );
-											?>
-										</li>
-										<?php
-									}
+				?>
+				<div>
+					<?php
+						printf(
+								'<p><strong>%s</strong> (%s %s)</p>',
+								$template_title,
+								__( 'used by', 'wpv-view' ),
+								sprintf( _n( '1 item', '%s items', $template_usage_count, 'wpv-views' ), $template_usage_count ) );
+					?>
+					<ul>
+						<?php
+							/* Show an option to replace this template with another one, if there are some left.
+							 * Radio buttons are grouped by name: "wpv-content-template-replace-{$template_id}-to".
+							 * Select field for replacement template is identified as "wpv-ct-list-for-replace-{$template_id}"
+							 *
+							 * Submit button contains attributes 'data-ct-ids' with all Content Template IDs that should be trashed
+							 * and 'data-replace-ids' with those that should be replaced. */ 
+							if( !empty( $template_list ) ) {
 								?>
 								<li>
 									<label>
 										<?php
-											printf( '<input type="radio" name="wpv-content-template-replace-%d-to"
-														class="js-wpv-bulk-existing-posts-ct-replace-to" value="no_template" />',
+											printf(
+													'<input type="radio" name="wpv-content-template-replace-%d-to"
+														class="js-wpv-bulk-existing-posts-ct-replace-to js-wpv-bulk-existing-posts-ct-replace-to-selected-ct"
+														value="different_template" id="wpv-content-template-replace-to" />',
 													$template_id );
-											_e( 'Don\'t use any content template for these items', 'wpv-views' );
+											_e( 'Choose a different content template for them: ', 'wpv-views' );
 										?>
 									</label>
+									<?php
+										printf( '<select class="js-wpv-bulk-ct-list-for-replace" id="wpv-ct-list-for-replace-%d" data-template-id="%d">', esc_attr( $template_id ), esc_attr( $template_id ) );
+										printf( '<option value="">%s</option>', __( 'Select Content Template', 'wpv-views' ) );
+										foreach( $template_list as $temp_post ) {
+											printf( '<option value="%s">%s</option>', $temp_post->ID, $temp_post->post_title );
+										}
+										printf( '</select>' );
+									?>
 								</li>
-							</ul>
-						</div>
-						<?php
-					}
-				?>
-			</div>
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close"><?php _e( 'Cancel', 'wpv-views' ); ?></button>
+								<?php
+							}
+						?>
+						<li>
+							<label>
+								<?php
+									printf( '<input type="radio" name="wpv-content-template-replace-%d-to"
+												class="js-wpv-bulk-existing-posts-ct-replace-to" value="no_template" />',
+											$template_id );
+									_e( 'Don\'t use any content template for these items', 'wpv-views' );
+								?>
+							</label>
+						</li>
+					</ul>
+				</div>
 				<?php
-					// Submit button with IDs of all templates to trash and templates that are being used somewhere.
-					printf(
-							'<button class="button button-primary js-ct-bulk-replace-usage"
-								data-ct-ids="%s" data-replace-ids="%s" data-nonce="%s">%s</button>',
-							urlencode( implode( ',', $ct_ids ) ),
-							urlencode( implode( ',', array_keys( $used_templates ) ) ),
-							$nonce,
-							__( 'Change', 'wpv-views' ) );
-				?>
-			</div>
+				printf(
+					'<input type="hidden" class="js-ct-bulk-replace-usage-data" data-ct-ids="%s" data-replace-ids="%s" />',
+					urlencode( implode( ',', $ct_ids ) ),
+					urlencode( implode( ',', array_keys( $used_templates ) ) )
+				);
+			}
+			?>
 		</div>
 		<?php
 
-		$result['popup_content'] = ob_get_contents();
-		ob_end_clean();
+		$dialog_content = ob_get_clean();;
+		
+		$data['action'] = 'dialog';
+		$data['dialog_content'] = $dialog_content;
+		wp_send_json_success( $data );
 	}
-
-	echo json_encode( $result );
-    die();
+	
 }
 
 
 
 
 // Change CT usage before move to trash
-add_action('wp_ajax_wpv_ct_move_with_replace', 'wpv_ct_move_with_replace_callback');
+add_action('wp_ajax_wpv_ct_trash_with_replace', 'wpv_ct_trash_with_replace_callback');
 
-function wpv_ct_move_with_replace_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"] , 'wpv_view_listing_actions_nonce' ) ) {
-		die( "Security check" );
-	}
-	global $wpdb;
+function wpv_ct_trash_with_replace_callback() {
+	wpv_ajax_authenticate( 'wpv_view_listing_actions_nonce', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+	
 	if ( isset( $_POST['id'] ) ) {
-		$ct_id = $_POST['id'];
-	}else{
-		echo 'Error: no content template ID';
-		die();
+		$ct_id = intval( $_POST['id'] );
+	} else {
+		$data = array(
+			'type' => 'error',
+			'message' => __( 'Invalid CT ID.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
-	if ( $_POST['replace_to'] == 0){
-		$replace = $replace_option = $_POST['replace_ct'];
-	}else{
-		$replace = 0;
-		$replace_option = 0;
-	}
+	
+	global $wpdb;
+	$replace = ( $_POST['replace_to'] == 0 ) ? intval( $_POST['replace_ct'] ) : 0;
 	$wpdb->query( 
 		$wpdb->prepare( 
 			"UPDATE {$wpdb->postmeta} 
@@ -2544,7 +2128,7 @@ function wpv_ct_move_with_replace_callback() {
 		) 
 	);
 
-	wpv_replace_views_template_options( $ct_id, $replace_option );
+	wpv_replace_views_template_options( $ct_id, $replace );
 
 	$my_post = array(
 		'ID'           => $ct_id,
@@ -2552,8 +2136,8 @@ function wpv_ct_move_with_replace_callback() {
 	);
 	wp_update_post( $my_post );
 	do_action( 'wpv_action_wpv_save_item', $ct_id );
-	print $ct_id;
-    die();
+	
+	wp_send_json_success();
 }
 
 
@@ -2578,40 +2162,52 @@ function wpv_ct_move_with_replace_callback() {
 add_action( 'wp_ajax_wpv_ct_bulk_trash_with_replace', 'wpv_ct_bulk_trash_with_replace_callback' );
 
 function wpv_ct_bulk_trash_with_replace_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_listing_actions_nonce' ) ) {
-		die( "Security check" );
-	}
-	global $wpdb;
+	wpv_ajax_authenticate( 'wpv_view_listing_actions_nonce', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+	
 	if ( ! isset( $_POST['ids'] ) ) {
 		// Don't allow empty input
-		die( "Error: no content template IDs given." );
+		$data = array(
+			'type' => 'error',
+			'message' => __( 'Invalid CT ID.', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	} else if ( is_string( $_POST['ids'] ) ) {
 		$ct_ids = array( $_POST['ids'] );
 	} else {
 		$ct_ids = $_POST['ids'];
 	}
+	
+	$ct_ids = array_map( 'esc_attr', $ct_ids );
+	$ct_ids = array_map( 'trim', $ct_ids );
+	// is_numeric does sanitization
+	$ct_ids = array_filter( $ct_ids, 'is_numeric' );
+	$ct_ids = array_map( 'intval', $ct_ids );
 
-	if( isset( $_POST['replacements'] ) && isset( $_POST['toreplace'] )
-		&& is_array( $_POST['replacements'] ) && is_array( $_POST['toreplace'] ) ){
+	if ( 
+		isset( $_POST['replacements'] ) 
+		&& isset( $_POST['toreplace'] )
+		&& is_array( $_POST['replacements'] ) 
+		&& is_array( $_POST['toreplace'] ) 
+	) {
 		/* This will hold template IDs as keys and IDs of their replacements as values. Value 0 indicates
 		 * 'don't use any content template'. */
 		$replacements = array();
 
 		$replacement_count = count( $_POST['replacements'] );
-		for( $i = 0; $i < $replacement_count; ++$i ) {
+		for ( $i = 0; $i < $replacement_count; ++$i ) {
 			$replacements[ $_POST['toreplace'][ $i ] ] = $_POST['replacements'][ $i ];
 		}
 	} else {
-		die( "Error: invalid input (replacements)." );
+		$data = array(
+			'type' => 'error',
+			'message' => __( 'Invalid data', 'wpv-views' )
+		);
+		wp_send_json_error( $data );
 	}
-
-	global $WPV_settings;
+	
+	global $wpdb, $WPV_settings;
 
 	// Replace content templates as requested
-	global $wpdb;
 	foreach( $replacements as $original_template_id => $replacement_template_id ) {
 		$changed_rows = $wpdb->query( 
 			$wpdb->prepare(
@@ -2641,9 +2237,7 @@ function wpv_ct_bulk_trash_with_replace_callback() {
 
 	$WPV_settings->save();
 	
-	// Success.
-	echo '1';
-    die();
+	wp_send_json_success();
 }
 
 
@@ -2655,7 +2249,7 @@ function wpv_ct_bulk_trash_with_replace_callback() {
  * Outputs a JSON representation of an array where keys are CT IDs and values are post counts.
  * This array also allways contains an element "0" with the sum of all post counts.
  *
- * Expected POST parameters:
+ * Expected GET parameters:
  * - wpnonce: A valid wpv_view_listing_actions_nonce.
  * - ids: An array of CT IDs
  *
@@ -2664,12 +2258,7 @@ function wpv_ct_bulk_trash_with_replace_callback() {
 add_action( 'wp_ajax_wpv_ct_bulk_count_usage', 'wpv_ct_bulk_count_usage_callback' );
 
 function wpv_ct_bulk_count_usage_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_listing_actions_nonce' ) ) {
-		die( "Security check" );
-	}
+	wpv_ajax_authenticate( 'wpv_view_listing_actions_nonce', array( 'parameter_source' => 'get', 'type_of_death' => 'data' ) );
 
 	if( !isset( $_POST['ids'] ) ) {
 		$ct_ids = array();
@@ -2680,12 +2269,14 @@ function wpv_ct_bulk_count_usage_callback() {
 	}
 
 	global $wpdb;
+	$data = array();
 
 	$usage_results = array();
 	$total_usage = 0;
 	
 	foreach( $ct_ids as $ct_id ) {
-		$assigned_count = $wpdb->get_var( $wpdb->prepare(
+		$assigned_count = $wpdb->get_var( 
+			$wpdb->prepare(
 				"SELECT COUNT(post_id)
 				FROM {$wpdb->postmeta} JOIN {$wpdb->posts} p
 				WHERE meta_key='_views_template'
@@ -2696,14 +2287,18 @@ function wpv_ct_bulk_count_usage_callback() {
 				$ct_id 
 			) 
 		);
-		$usage_results[ $ct_id ] = $assigned_count;
+		$usage_results[] = array(
+			'id'	=> $ct_id,
+			'count'	=> $assigned_count
+		);
 		$total_usage += $assigned_count;
 	}
 
-	$usage_results[0] = $total_usage;
+	$data['total_usage'] = $total_usage;
+	$data['usage_results'] = $usage_results;
+	
+	wp_send_json_success( $data );
 
-	echo json_encode( $usage_results );
-	die();
 }
 
 
@@ -2723,12 +2318,7 @@ function wpv_ct_bulk_count_usage_callback() {
 add_action( 'wp_ajax_wpv_ct_bulk_delete', 'wpv_ct_bulk_delete_callback' );
 
 function wpv_ct_bulk_delete_callback() {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		die( "Untrusted user" );
-	}
-	if ( ! wp_verify_nonce( $_POST["wpnonce"], 'wpv_view_listing_actions_nonce' ) ) {
-		die( "Security check" );
-	}
+	wpv_ajax_authenticate( 'wpv_view_listing_actions_nonce', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
 
 	if( !isset( $_POST['ids'] ) ) {
 		$ct_ids = array();
@@ -2747,20 +2337,75 @@ function wpv_ct_bulk_delete_callback() {
 	
 	$WPV_settings->save();
 
-	echo '1';
-    die();
+	wp_send_json_success();
 }
 
-/**
-* wpv_dismiss_pointer_callback
-*
-* Dismiss pointers created with Views, when needed
-*
-* @since 1.7
-*
-* @todo this needs a nonce, the earlier the better
-*/
 
+
+add_action( 'wp_ajax_wpv_ct_bind_posts', 'wpv_ct_bind_posts_callback' );
+
+/**
+ * Bind specific posts to a Content Template.
+ *
+ * Following POST parameters are expected:
+ * - id: Content Template ID
+ * - wpnonce: A valid wpv_ct_{$id}_bind_posts_by_{$user_id} nonce.
+ * - posts_to_bind: An array of post IDs that should be bound.
+ *
+ * Returns a default WP json response (error/success), possibly with a debug message
+ * on error.
+ *
+ * @since 1.9
+ */
+function wpv_ct_bind_posts_callback() {
+    // Authentication and validation
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( 'Untrusted user' );
+    }
+    $ct_id = (int) wpv_getpost( 'id' );
+    $uid = get_current_user_id();
+
+    $nonce_name = "wpv_ct_{$ct_id}_bind_posts_by_{$uid}";
+    if ( ! wp_verify_nonce( wpv_getpost( 'wpnonce' ), $nonce_name ) ) {
+        wp_send_json_error( "Security check ($nonce_name)" );
+    }
+
+    $ct = WPV_Content_Template::get_instance( $ct_id );
+    if( null == $ct ) {
+        wp_send_json_error( 'Invalid Content Template' );
+    }
+
+    $posts_to_bind = wpv_getpost( 'posts_to_bind' );
+    if( !is_array( $posts_to_bind ) ) {
+        wp_send_json_error( 'Invalid arguments (' . print_r( $posts_to_bind, true ) . ')' );
+    }
+
+    // Post binding
+    $updated = $ct->bind_posts( $posts_to_bind );
+
+    if( false === $updated ) {
+        wp_send_json_error( 'bind_posts failed' );
+    }
+
+    wp_send_json_success( array( 'updated' => $updated ) );
+}
+
+
+
+/* ************************************************************************* *\
+        Miscellaneous
+\* ************************************************************************* */
+
+
+/**
+ * wpv_dismiss_pointer_callback
+ *
+ * Dismiss pointers created with Views, when needed
+ *
+ * @since 1.7
+ *
+ * @todo this needs a nonce, the earlier the better
+ */
 add_action( 'wp_ajax_wpv_dismiss_pointer', 'wpv_dismiss_pointer_callback' );
 
 function wpv_dismiss_pointer_callback() {
@@ -2776,4 +2421,88 @@ function wpv_dismiss_pointer_callback() {
 	wpv_dismiss_pointer( $pointer );
 	echo 'wpv_success';
 	die();
+}
+
+
+
+/* ************************************************************************* *\
+        Helper functions
+\* ************************************************************************* */
+
+
+/**
+ * Perform basic authentication check.
+ *
+ * Check user capability and nonce. Dies with an error message (wp_json_error() by default) if the authentization
+ * is not successful.
+ *
+ * @param string $nonce_name Name of the nonce that should be verified.
+ * @param array $args Arguments (
+ *     @type string $nonce_parameter Name of the parameter containing nonce value.
+ *         Optional, defaults to "wpnonce".
+ *     @type string $parameter_source Determines where the function should look for the nonce parameter.
+ *         Allowed values are 'get' and 'post'. Optional, defaults to 'post'.
+ *     @type string $capability_needed Capability that user has to have in order to pass the check.
+ *         Optional, default is "manage_options".
+ *     @type string $type_of_death How to indicate failure:
+ *         - 'die': The error message will be echoed as a simple string. Default behaviour.
+ *         - 'false': Do not die, just return false.
+ *         - 'message': Call wp_json_error() and pass message as data.
+ *         - 'data': Call wp_json_error with array( 'type' => 'capability'|'nonce', 'message' => $error_message )
+ *         Optional, default is 'die'.
+ *     )
+ *
+ * @return bool|void
+ *
+ * @since 1.9
+ */
+function wpv_ajax_authenticate( $nonce_name, $args = array() )
+{
+    // Read arguments
+    $type_of_death = wpv_getarr( $args, 'type_of_death', 'die', array( 'die', 'false', 'message', 'data' ) );
+    $nonce_parameter = wpv_getarr( $args, 'nonce_parameter', 'wpnonce' );
+    $capability_needed = wpv_getarr( $args, 'capability_needed', 'manage_options' );
+    $parameter_source_name = wpv_getarr( $args, 'parameter_source', 'post', array( 'get', 'post' ) );
+    $parameter_source = ( $parameter_source_name == 'get' ) ? $_GET : $_POST;
+
+    $is_error = false;
+    $error_message = null;
+    $error_type = null;
+
+    // Check permissions
+    if ( ! current_user_can( $capability_needed ) ) {
+        $error_message = __( 'You do not have permissions for that.', 'wpv-views' );
+        $error_type = 'capability';
+        $is_error = true;
+    }
+
+    // Check nonce
+    if ( !$is_error && !wp_verify_nonce( wpv_getarr( $parameter_source, $nonce_parameter, '' ), $nonce_name ) ) {
+        $error_message = __( 'Your security credentials have expired. Please reload the page to get new ones.', 'wpv-views' );
+        $error_type = 'nonce';
+        $is_error = true;
+    }
+
+    if( $is_error ) {
+        switch( $type_of_death ) {
+
+            case 'message':
+                wp_send_json_error( $error_message );
+                break;
+
+            case 'data':
+                wp_send_json_error( array( 'type' => $error_type, 'message' => $error_message ) );
+                break;
+
+            case 'false':
+                return false;
+
+            case 'die':
+            default:
+                die( $error_message );
+                break;
+        }
+    }
+
+    return true;
 }

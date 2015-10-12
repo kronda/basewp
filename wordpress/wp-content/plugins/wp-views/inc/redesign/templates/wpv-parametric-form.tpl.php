@@ -1,20 +1,6 @@
 <div class="wpv-dialog wpv-dialog-parametric-filter" id="js-parametric-form-dialog-container">
 
-	<div class="wpv-dialog-header">
-		<h2 id="parametric-box-title"><?php _e('Insert a filter field', 'wpv-views');?></h2>
-		<i class="icon-remove js-dialog-close"></i>
-	</div>
-
-	<?php /* <div class="wpv-dialog-sidebar filter-preview">
-		<p><?php _e('Preview', 'wpv-views');?></p>
-		<p class="toolset-alert toolset-alert-info" id="js_wpv_prm_preview" data-bind="html:setPreview">
-
-			<?php _e('Select what to filter to see the preview here', 'wpv-views');?>
-		</p>
-
-	</div> */ ?>
-
-	<div id="js-parametric-form-container-inner" class="wpv-dialog-content">
+	<div id="js-parametric-form-container-inner" class="wpv-dialog-inner">
 
 		<form id="js-parametric-form" >
 
@@ -253,9 +239,4 @@
 
 	</div> <!-- .wpv-dialog-content -->
 
-    <div class="wpv-dialog-footer wp-core-ui">
-        <button class="button js-dialog-close" id="js_parametric_cancel"><?php _e('Cancel', 'wpv-views');?></button>
-        <button class="button button-primary" id="js_parametric_form_button" disabled><?php _e('Insert input', 'wpv-views');?></button>
-    </div>
-
-</div>  <!-- .wpv-dialog -->
+</div>

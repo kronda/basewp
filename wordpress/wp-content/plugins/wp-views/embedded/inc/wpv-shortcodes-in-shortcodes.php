@@ -12,18 +12,18 @@ function wpv_resolve_internal_shortcodes($content) {
 	return $content;
 }
 
-// adding filter with priority before do_shortcode and other WP standard filters
-add_filter('the_content', 'wpv_resolve_internal_shortcodes', 9);
-
 /**
  * Parse shortcodes in the page content
  * @param string page content to be evaluated for internal shortcodes
  */
 function wpv_parse_content_shortcodes($content) {
 	global $WPV_settings;
+    
+    $views_shortcodes_regex = wpv_inner_shortcodes_list_regex();
+    
 	$inner_expressions = array();
-	$inner_expressions[] = "/\\[types.*?\\].*?\\[\\/types\\]/i";
-	$inner_expressions[] = "/\\[(wpv-post-|wpv-taxonomy-|types|wpv-current-user|wpv-user|wpv-attribute).*?\\]/i";
+	$inner_expressions[] = "/\\[types.*?\\].*?\\[\\/types\\]/i";    
+	$inner_expressions[] = "/\\[(". $views_shortcodes_regex .").*?\\]/i";
 	// support for custom inner shortcodes via settings page
 	// since 1.4
 	$custom_inner_shortcodes = array();
@@ -58,8 +58,10 @@ function wpv_parse_content_shortcodes($content) {
 				if($inner_counts > 0) {
 					foreach($inner_matches[0] as &$inner_match) {
 						// execute shortcode content and replace
-						$replacement = do_shortcode($inner_match);
-						$resolved_match = $replacement;
+						$resolved_match = wpv_preprocess_shortcodes_in_html_elements($inner_match);
+						$filter_state = new WPV_WP_filter_state( 'the_content' );
+						$resolved_match = do_shortcode( $resolved_match );
+						$filter_state->restore();
 						$content = str_replace($inner_match, $resolved_match, $content);
 						$match = str_replace($inner_match, $resolved_match, $match);
 					}
@@ -101,9 +103,6 @@ function _find_outer_brackets($content, &$matches) {
 	return $count;
 }
 
-// register filter for the wpv_do_shortcode Views rendering
-add_filter('wpv-pre-do-shortcode', 'wpv_parse_content_shortcodes');
-
 
 // Special handling to get shortcodes rendered in widgets.
 function wpv_resolve_internal_shortcodes_for_widgets($content) {
@@ -112,4 +111,4 @@ function wpv_resolve_internal_shortcodes_for_widgets($content) {
 	return do_shortcode($content);
 }
 
-add_filter('widget_text', 'wpv_resolve_internal_shortcodes_for_widgets', 9, 1); 
+add_filter('widget_text', 'wpv_resolve_internal_shortcodes_for_widgets', 9, 1);

@@ -57,6 +57,7 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 connections_str: lead_generation.api_config_str,
                 thank_you_url: lead_generation.api_form_data.thank_you_url,
                 submit_option: lead_generation.api_form_data.submit_option,
+                use_captcha: lead_generation.use_captcha,
                 api_fields: lead_generation.api_form_data.elements || null,
                 api_fields_order: lead_generation.api_form_data.element_order || null
             }).done(function (response) {
@@ -69,6 +70,7 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 } else if (_type == 'api' && response.elements) {
                     lead_generation.setApiData(response);
                 }
+                lead_generation.set_captcha_data();
                 $lb.find('.tve_lightbox_buttons').hide();
 
                 TVE_Editor_Page.overlay(true);
@@ -119,6 +121,18 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 name: '_submit_option',
                 value: lead_generation.api_form_data.submit_option || ''
             };
+            lead_generation.api_form_data.elements._use_captcha = {
+                type: 'hidden',
+                name: '_use_captcha',
+                value: lead_generation.use_captcha || ''
+            };
+            for (var option in lead_generation.captcha_options) {
+                lead_generation.api_form_data.elements[option] = {
+                    type: 'hidden',
+                    name: '_' + option,
+                    value: lead_generation.captcha_options[option]
+                };
+            }
             $.each(lead_generation.api_form_data.extra, function (n, item) {
                 /**
                  * append any extra individual settings for each autoresponder
@@ -204,6 +218,27 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 show_lightbox();
                 TVE_Editor_Page.overlay(true);
             });
+        },
+        /**
+         * @param $input
+         */
+        use_captcha_changed: function ($input) {
+            lead_generation.use_captcha = $input.is(':checked') ? 1 : 0;
+            var captcha_options = $input.parents('.tve_lead_captcha_settings').find('.tve_captcha_options');
+            if (lead_generation.use_captcha) {
+                captcha_options.show();
+            } else {
+                captcha_options.hide();
+            }
+        },
+        /**
+         * @param $select
+         */
+        captcha_option_changed: function ($select) {
+            var option = $select.attr('data-option');
+            if ($select.find('option:selected').length) {
+                lead_generation.captcha_options[option] = $select.find('option:selected').val();
+            }
         },
         /**
          * actions related to API connections
@@ -347,6 +382,12 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 api_config: {},
                 connection_type: '',
                 api_form_data: {},
+                use_captcha: 0,
+                captcha_options: {
+                    captcha_theme: 'light',
+                    captcha_type: 'image',
+                    captcha_size: 'normal'
+                },
 
                 init: function () {
                     if ($element.data('tve-version') !== '1') {
@@ -360,7 +401,11 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
 
                     if (this.connection_type == 'api') {
                         this.readApiElements();
+                    } else if (this.connection_type == 'custom-html') {
+                        this.use_captcha = $element.find('.tve-captcha-container').length > 0 ? 1 : 0;
                     }
+
+                    this.readCaptchaOptions();
 
                     return this;
                 },
@@ -500,7 +545,27 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                     });
                     return this;
                 },
+                /**
+                 * Set data when the lightbox is loaded
+                 * @param data
+                 */
+                set_captcha_data: function () {
 
+                    var _use_captcha = $lb.find('input[name="tve_api_use_captcha"]');
+                    _use_captcha.prop('checked', lead_generation.use_captcha == 1);
+                    _use_captcha.trigger('change');
+
+                    for (var option in this.captcha_options) {
+                        $lb.find('select.tve_' + option).val(this.captcha_options[option]);
+                    }
+                },
+                readCaptchaOptions: function () {
+                    for (var option in this.captcha_options) {
+                        if ($element.find('input#_' + option).length) {
+                            this.captcha_options[option] = $element.find('input#_' + option).val();
+                        }
+                    }
+                },
                 config: function (what, value) {
                     if (typeof what === 'undefined' | what.length === 0) {
                         throw "Invalid option";
@@ -819,6 +884,17 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 renderHiddenInput: function (element) {
                     return '<input id="' + element.name + '" type="hidden" name="' + element.name + '"' + (element.className ? ' class="' + element.className + '"' : '') + ' value="' + element.value + '">';
                 },
+                renderCaptcha: function (key) {
+                    var rand = Math.floor((Math.random() * 1000) + 1);
+                    return '<div class="tve-captcha-container tve_lg_input_container ' +
+                        'tve-captcha-' + this.captcha_options.captcha_theme + ' tve-captcha-' + this.captcha_options.captcha_size + '" ' +
+                        'id="tve_captcha-' + rand + '" ' +
+                        'data-site-key="' + key + '" ' +
+                        'data-theme="' + this.captcha_options.captcha_theme + '" ' +
+                        'data-type="' + this.captcha_options.captcha_type + '" ' +
+                        'data-size="' + this.captcha_options.captcha_size + '">' +
+                        '</div>';
+                },
                 /**
                  * generate the form and insert it in the editor page
                  * @returns {model}
@@ -885,6 +961,10 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                         appendElement(encoded_name);
                     });
 
+                    if (this.use_captcha == 1) {
+                        $inputsContainer.append(this.renderCaptcha(form_data.captcha_site_key));
+                    }
+
                     $form.append(form_data.hidden_inputs);
                     $form.append(form_data.not_visible_inputs);
 
@@ -946,6 +1026,10 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
 
                     var totalInputs = $element.find('.tve_lg_input,.tve_lg_radio,.tve_lg_checkbox,.tve_lg_textarea').length;
 
+                    if (this.use_captcha == 1) {
+                        totalInputs += 1;
+                    }
+
                     if (totalInputs === 1 || totalInputs === 3) {
                         $element.find('.tve_lg_input_container').addClass('tve_lg_2');
                     } else if (totalInputs >= 2) {
@@ -959,6 +1043,7 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 readApiElements: function () {
                     this.api_form_data.thank_you_url = $element.find('input#_back_url').val() || '';
                     this.api_form_data.submit_option = $element.find('input#_submit_option').val() || 'reload';
+                    this.use_captcha = $element.find('input#_use_captcha').val() || 0;
                     this.api_config_str = $element.find('#__tcb_lg_fc').val();
                     this.api_form_data.element_order = [];
                     var self = this;
@@ -1034,7 +1119,7 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                         axis: 'y',
                         helper: function (e, tr) {
                             var $new = tr.clone().empty();
-                            tr.find('td').each (function () {
+                            tr.find('td').each(function () {
                                 var $this = $(this);
                                 $new.append($this.clone().css('width', $this.width() + 'px').css('height', $this.height() + 'px'));
                             });

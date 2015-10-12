@@ -134,6 +134,7 @@ FLCustomizer::add_panel('fl-settings', array(
 
 		/* Favicons Section */
 		'fl-favicons' => array(
+			'disable' => function_exists( 'has_site_icon' ),
 			'title'   => _x( 'Favicons', 'Customizer section title.', 'fl-automator' ),
 			'options' => array(
 

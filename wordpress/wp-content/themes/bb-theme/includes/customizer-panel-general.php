@@ -17,7 +17,7 @@ FLCustomizer::add_panel('fl-general', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Layout Width', 'fl-automator'),
+						'label'         => __('Width', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'boxed'             => __('Boxed', 'fl-automator'),
@@ -185,7 +185,7 @@ FLCustomizer::add_panel('fl-general', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Accent Color', 'fl-automator'),
+						'label'     => __('Color', 'fl-automator'),
 						'description'   => __('The accent color will be used to color elements such as links and buttons as well as various elements in your theme.', 'fl-automator')
 					)
 				),
@@ -197,7 +197,7 @@ FLCustomizer::add_panel('fl-general', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Accent Hover Color', 'fl-automator')
+						'label'     => __('Hover Color', 'fl-automator')
 					)
 				)
 			)
@@ -216,7 +216,7 @@ FLCustomizer::add_panel('fl-general', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Heading Color', 'fl-automator')
+						'label'     => __('Color', 'fl-automator')
 					)
 				),
 
@@ -228,7 +228,7 @@ FLCustomizer::add_panel('fl-general', array(
 					),
 					'control'   => array(
 						'class'     => 'FLCustomizerControl',
-						'label'     => __('Heading Font Family', 'fl-automator'),
+						'label'     => __('Font Family', 'fl-automator'),
 						'type'      => 'font',
 						'connect'   => 'fl-heading-font-weight'
 					)
@@ -241,7 +241,7 @@ FLCustomizer::add_panel('fl-general', array(
 					),
 					'control'   => array(
 						'class'     => 'FLCustomizerControl',
-						'label'     => __('Heading Font Weight', 'fl-automator'),
+						'label'     => __('Font Weight', 'fl-automator'),
 						'type'      => 'font-weight',
 						'connect'   => 'fl-heading-font-family'
 					)
@@ -255,7 +255,7 @@ FLCustomizer::add_panel('fl-general', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Heading Font Format', 'fl-automator'),
+						'label'     => __('Font Format', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'none'       => __('Regular', 'fl-automator'),
@@ -372,7 +372,7 @@ FLCustomizer::add_panel('fl-general', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Text Color', 'fl-automator')
+						'label'     => __('Color', 'fl-automator')
 					)
 				),
 
@@ -383,7 +383,7 @@ FLCustomizer::add_panel('fl-general', array(
 					),
 					'control'   => array(
 						'class'     => 'FLCustomizerControl',
-						'label'     => __('Text Font Family', 'fl-automator'),
+						'label'     => __('Font Family', 'fl-automator'),
 						'type'      => 'font'
 					)
 				),
@@ -396,7 +396,7 @@ FLCustomizer::add_panel('fl-general', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Text Font Size (px)', 'fl-automator'),
+						'label'     => __('Font Size (px)', 'fl-automator'),
 						'type'      => 'text'
 					)
 				)

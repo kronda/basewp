@@ -1,5 +1,8 @@
 <?php
 
+require_once( dirname( __FILE__ ) . "/classes/wpv-wp-filter-state.class.php" );
+require_once( dirname( __FILE__ ) . "/classes/wpv-render-filters.class.php" );
+
 /**
  * Array of shortcodes that will be offered in the Views dialog popup.
  *
@@ -14,25 +17,28 @@ global $wpv_shortcodes;
 
 $wpv_shortcodes = array();
 
-$wpv_shortcodes['wpv-post-id'] = array('wpv-post-id', __('ID', 'wpv-views'), 'wpv_shortcode_wpv_post_id');
-$wpv_shortcodes['wpv-post-slug'] = array('wpv-post-slug', __('Slug', 'wpv-views'), 'wpv_shortcode_wpv_post_slug');
-$wpv_shortcodes['wpv-post-title'] = array('wpv-post-title', __('Title', 'wpv-views'), 'wpv_shortcode_wpv_post_title');
-$wpv_shortcodes['wpv-post-link'] = array('wpv-post-link', __('Title with a link', 'wpv-views'), 'wpv_shortcode_wpv_post_link');
-$wpv_shortcodes['wpv-post-body'] = array('wpv-post-body', __('Body', 'wpv-views'), 'wpv_shortcode_wpv_post_body');
-$wpv_shortcodes['wpv-post-excerpt'] = array('wpv-post-excerpt', __('Excerpt', 'wpv-views'), 'wpv_shortcode_wpv_post_excerpt');
-$wpv_shortcodes['wpv-post-author'] = array('wpv-post-author', __('Author', 'wpv-views'), 'wpv_shortcode_wpv_post_author');
-$wpv_shortcodes['wpv-post-date'] = array('wpv-post-date', __('Date', 'wpv-views'), 'wpv_shortcode_wpv_post_date');
-$wpv_shortcodes['wpv-post-url'] = array('wpv-post-url', __('URL', 'wpv-views'), 'wpv_shortcode_wpv_post_url');
-$wpv_shortcodes['wpv-post-featured-image'] = array('wpv-post-featured-image', __('Featured image', 'wpv-views'), 'wpv_shortcode_wpv_post_featured_image');
-$wpv_shortcodes['wpv-post-comments-number'] = array('wpv-post-comments-number', __('Comments number', 'wpv-views'), 'wpv_shortcode_wpv_comments_number');
-$wpv_shortcodes['wpv-post-edit-link'] = array('wpv-post-edit-link', __('Edit Link', 'wpv-views'), 'wpv_shortcode_wpv_post_edit_link');
+$wpv_shortcodes['wpv-post-title'] = array('wpv-post-title', __('Post title', 'wpv-views'), 'wpv_shortcode_wpv_post_title');
+$wpv_shortcodes['wpv-post-link'] = array('wpv-post-link', __('Post title with a link', 'wpv-views'), 'wpv_shortcode_wpv_post_link');
+$wpv_shortcodes['wpv-post-url'] = array('wpv-post-url', __('Post URL', 'wpv-views'), 'wpv_shortcode_wpv_post_url');
+$wpv_shortcodes['wpv-post-body'] = array('wpv-post-body', __('Post body', 'wpv-views'), 'wpv_shortcode_wpv_post_body');
+$wpv_shortcodes['wpv-post-excerpt'] = array('wpv-post-excerpt', __('Post excerpt', 'wpv-views'), 'wpv_shortcode_wpv_post_excerpt');
+$wpv_shortcodes['wpv-post-date'] = array('wpv-post-date', __('Post date', 'wpv-views'), 'wpv_shortcode_wpv_post_date');
+$wpv_shortcodes['wpv-post-author'] = array('wpv-post-author', __('Post author', 'wpv-views'), 'wpv_shortcode_wpv_post_author');
+$wpv_shortcodes['wpv-post-featured-image'] = array('wpv-post-featured-image', __('Post featured image', 'wpv-views'), 'wpv_shortcode_wpv_post_featured_image');
+$wpv_shortcodes['wpv-post-id'] = array('wpv-post-id', __('Post ID', 'wpv-views'), 'wpv_shortcode_wpv_post_id');
+$wpv_shortcodes['wpv-post-slug'] = array('wpv-post-slug', __('Post slug', 'wpv-views'), 'wpv_shortcode_wpv_post_slug');
 $wpv_shortcodes['wpv-post-type'] = array('wpv-post-type', __('Post type', 'wpv-views'), 'wpv_shortcode_wpv_post_type');
 $wpv_shortcodes['wpv-post-format'] = array('wpv-post-format', __('Post format', 'wpv-views'), 'wpv_shortcode_wpv_post_format');
 $wpv_shortcodes['wpv-post-status'] = array('wpv-post-status', __('Post status', 'wpv-views'), 'wpv_shortcode_wpv_post_status');
+$wpv_shortcodes['wpv-post-comments-number'] = array('wpv-post-comments-number', __('Post comments number', 'wpv-views'), 'wpv_shortcode_wpv_comments_number');
 $wpv_shortcodes['wpv-post-class'] = array('wpv-post-class', __('Post class', 'wpv-views'), 'wpv_shortcode_wpv_post_class');
+$wpv_shortcodes['wpv-post-edit-link'] = array('wpv-post-edit-link', __('Post edit link', 'wpv-views'), 'wpv_shortcode_wpv_post_edit_link');
+
+
 
 // NOTE:  Put all "post" shortcodes before 'wpv-post-field' so they appear in the right order in various popups.
-$wpv_shortcodes['wpv-post-field'] = array('wpv-post-field', __('Field', 'wpv-views'), 'wpv_shortcode_wpv_post_field');
+$wpv_shortcodes['wpv-post-field'] = array('wpv-post-field', __('Post field', 'wpv-views'), 'wpv_shortcode_wpv_post_field');
+$wpv_shortcodes['wpv-for-each'] = array('wpv-for-each', __('Post field iterator', 'wpv-views'), 'wpv_for_each_shortcode');
 
 
 $wpv_shortcodes['wpv-comment-title'] = array('wpv-comment-title', __('Comment title', 'wpv-views'), 'wpv_shortcode_wpv_comment_title');
@@ -52,15 +58,15 @@ $wpv_shortcodes['wpv-taxonomy-archive'] = array('wpv-taxonomy-archive', __('Taxo
 
 // $wpv_shortcodes['wpv-control'] = array('wpv-control', __('Filter control', 'wpv-views'), 'wpv_shortcode_wpv_control');
 
-$wpv_shortcodes['wpv-bloginfo'] = array('wpv-bloginfo', __('Bloginfo value', 'wpv-views'), 'wpv_bloginfo');
+$wpv_shortcodes['wpv-bloginfo'] = array('wpv-bloginfo', __('Site information', 'wpv-views'), 'wpv_bloginfo');
 $wpv_shortcodes['wpv-search-term'] = array('wpv-search-term', __('Search term', 'wpv-views'), 'wpv_search_term');
 $wpv_shortcodes['wpv-archive-title'] = array('wpv-archive-title', __('Archive title', 'wpv-views'), 'wpv_archive_title');
-$wpv_shortcodes['wpv-archive-link'] = array('wpv-archive-link', __('Archive link', 'wpv-views'), 'wpv_archive_link');
+$wpv_shortcodes['wpv-archive-link'] = array('wpv-archive-link', __('Post archive link', 'wpv-views'), 'wpv_archive_link');
 
 //User shortcodes
 $wpv_shortcodes['wpv-current-user'] = array('wpv-current-user', __('Current user info', 'wpv-views'), 'wpv_current_user');
 $wpv_shortcodes['wpv-user'] = array('wpv-user', __('Show user data', 'wpv-views'), 'wpv_user');
-$wpv_shortcodes['wpv-login-form'] = array('wpv-login-form', __('Login Form', 'wpv-views'), 'wpv_shortcode_wpv_login_form');
+$wpv_shortcodes['wpv-login-form'] = array('wpv-login-form', __('Login form', 'wpv-views'), 'wpv_shortcode_wpv_login_form');
 
 if (defined('WPV_WOOCOMERCE_VIEWS_SHORTCODE')) {
 	$wpv_shortcodes['wpv-wooaddcart'] = array('wpv-wooaddcart', __('Add to cart button', 'wpv-views'), 'wpv-wooaddcart');
@@ -162,6 +168,68 @@ function wpv_bloginfo($attr){
 }
 
 /**
+* wpv_shortcodes_register_wpv_bloginfo_data
+*
+* Register the wpv-bloginfo shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_bloginfo_data' );
+
+function wpv_shortcodes_register_wpv_bloginfo_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-bloginfo'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_bloginfo_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_bloginfo_data() {
+    $data = array(
+        'name' => __( 'Site information', 'wpv-views' ),
+        'label' => __( 'Site information', 'wpv-views' ),
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'show' => array(
+                        'label' => __( 'Show this information', 'wpv-views'),
+                        'type' => 'select',
+                        'options' => array(
+                            'name' => __( 'Site name', 'wpv-views' ),
+							'description' => __( 'Site description', 'wpv-views' ),
+							'admin_email' => __( 'Administration email', 'wpv-views' ),
+							'url' => __( 'Site address (URL)', 'wpv-views' ),
+							'wpurl' => __( 'WordPress address (URL)', 'wpv-views' ),
+							'stylesheet_directory' => __( 'Stylesheet directory URL of the active theme', 'wpv-views' ),
+                            'stylesheet_url' => __( 'Primary CSS file URL of the active theme', 'wpv-views' ),
+							'template_directory' => __( 'URL of the active theme\'s directory', 'wpv-views' ),
+							'template_url' => __( 'URL of the active theme\'s directory', 'wpv-views' ),
+							'atom_url' => __( 'Atom feed URL', 'wpv-views' ),
+							'rss2_url' => __( 'RSS 2.0 feed URL', 'wpv-views' ),
+                            'rss_url' => __( 'RSS 0.92 feed URL', 'wpv-views' ),
+							'pingback_url' => __( 'Pingback XML-RPC file URL', 'wpv-views' ),
+							'rdf_url' => __( 'RDF/RSS 1.0 feed URL', 'wpv-views' ),
+							'comments_atom_url' => __( 'Comments Atom feed URL ', 'wpv-views' ),
+							'comments_rss2_url' => __( 'Comments RSS 2.0 feed URL', 'wpv-views' ),
+                            'charset' => __( 'Encoding for pages and feeds', 'wpv-views' ),
+							'html_type' => __( 'Content-Type of WordPress HTML pages', 'wpv-views' ),
+							'language' => __( 'Language', 'wpv-views' ),
+							'text_direction' => __( 'Text direction', 'wpv-views' ),
+							'version' => __( 'WordPress version', 'wpv-views' )
+                        ),
+                        'default' => 'name',
+						'documentation' => '<a href="http://codex.wordpress.org/Function_Reference/bloginfo" target="_blank">' . __( 'WordPress bloginfo function', 'wpv-views' ) . '</a>'
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
+}
+
+/**
  * Views-Shortcode: wpv-search-term
  *
  * Description: Display search term value
@@ -198,6 +266,51 @@ function wpv_search_term( $attr ) {
 }
 
 /**
+* wpv_shortcodes_register_wpv_search_term_data
+*
+* Register the wpv-search-term shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_search_term_data' );
+
+function wpv_shortcodes_register_wpv_search_term_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-search-term'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_search_term_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_search_term_data() {
+	$data = array(
+        'name' => __( 'Search term', 'wpv-views' ),
+        'label' => __( 'Search term', 'wpv-views' ),
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'param' => array(
+                        'label' => __( 'URL parameter', 'wpv-views'),
+                        'type' => 'text',
+						'description' => __( 'Watch this URL parameter. Defaults to "s", which is the natural search parameter.', 'wpv-views' ),
+						'default' => 's'
+                    ),
+					'separator' => array(
+                        'label' => __( 'Separator when multiple', 'wpv-views'),
+                        'type' => 'text',
+						'default' => ', ',
+						'description' => __( 'When there are more than one values on that URL parameter, display this separator between them.', 'wpv-views' )
+                    ),
+                ),
+            ),
+        ),
+    );
+	return $data;
+}
+
+/**
  * Views-Shortcode: wpv-archive-title
  *
  * Description: Display archive title for current type of archive.
@@ -207,22 +320,22 @@ function wpv_search_term( $attr ) {
  * Example usage:
  * At title of the archive. [wpv-archive-title]
  *
- * Link: 
+ * Link:
  *
  * Note: Inspired partly by https://developer.wordpress.org/reference/functions/the_archive_title/
  *
  */
 function wpv_archive_title( $attr ) {
     $out = '';
-    
+
     if ( function_exists( 'get_the_archive_title' ) /* WP 4.1+ */ ) {
         $out = get_the_archive_title();
     } else {
         $out = wpv_get_the_archive_title();
     }
-    
+
     apply_filters( 'wpv_shortcode_debug', 'wpv-archive-title', json_encode( $attr ), '', '', $out );
-    
+
     return $out;
 }
 
@@ -251,13 +364,66 @@ function wpv_archive_link($attr){
 		$out  = get_post_type_archive_link($name);
 	}
 	if($out==''){
-		global $post;
+		global $post;// @todo check if instaceof Post
 		if(isset($post->post_type) and $post->post_type!=''){
-			$out  = get_post_type_archive_link($post->post_type);
+			$out = get_post_type_archive_link($post->post_type);
 		}
 	}
 	apply_filters('wpv_shortcode_debug','wpv-archive-link', json_encode($attr), '', '', $out);
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_archive_link_data
+*
+* Register the wpv-archive-link shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_archive_link_data' );
+
+function wpv_shortcodes_register_wpv_archive_link_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-archive-link'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_archive_link_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_archive_link_data() {
+	$options = array(
+		'' => __( 'Current post', 'wpv-views' )
+	);
+	$post_types_with_archive = get_post_types(
+		array(
+			'public' => true,
+			'has_archive' => true
+		),
+		'objects'
+	);
+    foreach ( $post_types_with_archive as $post_type_slug => $post_type_data ) {
+        $options[$post_type_slug] = $post_type_data->labels->singular_name;
+    }
+    $data = array(
+        'name' => __( 'Link to WordPress archive page', 'wpv-views' ),
+        'label' => __( 'Link to WordPress archive page', 'wpv-views' ),
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'name' => array(
+                        'label' => __( 'Post type archive', 'wpv-views'),
+                        'type' => 'select',
+                        'options' => $options,
+						'default' => '',
+						'description' => __( 'Display the link to the selected post type archive page', 'wpv-views' )
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
 }
 
 /**
@@ -292,7 +458,7 @@ function wpv_current_user($attr){
 	);
 	$out = '';
 
-	if($current_user->ID>0){
+	if ( $current_user->ID > 0 ) {
 		switch ($info) {
 			case 'login':
 				$out = $current_user->user_login;
@@ -337,6 +503,55 @@ function wpv_current_user($attr){
 }
 
 /**
+* wpv_shortcodes_register_wpv_current_user_data
+*
+* Register the wpv-current-user shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_current_user_data' );
+
+function wpv_shortcodes_register_wpv_current_user_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-current-user'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_current_user_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_current_user_data() {
+    $data = array(
+        'name' => __( 'Current user information', 'wpv-views' ),
+        'label' => __( 'Current user information', 'wpv-views' ),
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'info' => array(
+                        'label' => __( 'Information', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'display_name' => __('Display name', 'wpv-views'),
+                            'email' => __('Email', 'wpv-views'),
+                            'firstname' => __('First name', 'wpv-views'),
+							'lastname' => __('Last name', 'wpv-views'),
+                            'id' => __('User ID', 'wpv-views'),
+                            'logged_in' => __('Logged in', 'wpv-views'),
+                            'role' => __('User role', 'wpv-views'),
+                        ),
+                        'default' => 'display_name',
+						'description' => __( 'Display the selected information for the current user', 'wpv-views' ),
+						'documentation' => '<a href="http://codex.wordpress.org/Function_Reference/get_userdata" target="_blank">' . __( 'WordPress get_userdata function', 'wpv-views' ) . '</a>'
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
+}
+
+/**
  * Views-Shortcode: wpv-login-form
  *
  * Description: Display WordPress login form.
@@ -362,10 +577,10 @@ function wpv_shortcode_wpv_login_form( $atts ) {
         /* Do not display anything if a user is already logged in */
         return '';
     }
-    
+
     // WordPress gets the current URL this way
     $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-    
+
     extract( shortcode_atts(
                     array(
         'redirect_url' => $current_url,
@@ -387,6 +602,64 @@ function wpv_shortcode_wpv_login_form( $atts ) {
 }
 
 /**
+* wpv_shortcodes_register_wpv_login_form_data
+*
+* Register the wpv-login-form shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_login_form_data' );
+
+function wpv_shortcodes_register_wpv_login_form_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-login-form'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_login_form_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_login_form_data()  {
+    $data = array(
+        'name' => __( 'Login Form', 'wpv-views' ),
+        'label' => __( 'Login Form', 'wpv-views' ),
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'redirect_url' => array(
+                        'label' => __( 'Redirect target URL', 'wpv-views'),
+                        'type' => 'url',
+						'description' => __( 'URL to redirect users after login in. Defaults to the current URL.', 'wpv-views' ),
+                    ),
+                    'allow_remember' => array(
+                        'label' => __( 'Remember me checkbox', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'true' => __('Show', 'wpv-views'),
+                            'false' => __('Hide', 'wpv-views'),
+                        ),
+                        'default' => 'false',
+						'description' => __( 'Show or hide the checkbox for remembering the user.', 'wpv-views' )
+                    ),
+                    'remember_default' => array(
+                        'label' => __( 'Remember me checkbox default state', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'true' => __('Checked', 'wpv-views'),
+                            'false' => __('Unchecked', 'wpv-views'),
+                        ),
+                        'default' => 'false',
+						'description' => __( 'Check the checkbox for remembering the user in case it is shown.', 'wpv-views' )
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
+}
+
+/**
  * Views-Shortcode: wpv-user
  *
  * Description: Display information for user from the user.
@@ -405,33 +678,62 @@ function wpv_shortcode_wpv_login_form( $atts ) {
  *
  */
 
-function wpv_user($attr){
+function wpv_user( $attr ) {
 
 	extract(
-		shortcode_atts( array(
-		'field' => 'display_name',
-		'id' => ''
-		), $attr )
+		shortcode_atts( 
+			array(
+			'field' => 'display_name',
+			'id' => ''
+			), 
+			$attr 
+		)
 	);
 	//Get data for specified ID
-	if ( isset( $id ) && !empty( $id ) ) {
-		$data = new WP_User( $id );
-		$user_id = $id;
-		if ( isset( $data->data ) ){
-			$data = $data->data;
-			$meta = get_user_meta( $id );
+	if ( 
+		isset( $id ) 
+		&& ! empty( $id )
+	) {
+		if ( is_numeric( $id ) ) {
+			$data = get_user_by( 'id', $id );
+			if ( $data ) {
+				$user_id = $id;
+				if ( isset( $data->data ) ) {
+					$data = $data->data;
+					$meta = get_user_meta( $id );
+				} else {
+					return;
+				}
+			} else {
+				return;
+			}
 		} else {
 			return;
 		}
 	} else {
 		global $WP_Views;
-		if ( isset( $WP_Views->users_data['term']->ID ) && !empty( $WP_Views->users_data['term']->ID ) ) {
+		if ( 
+			isset( $WP_Views->users_data['term']->ID ) 
+			&& ! empty( $WP_Views->users_data['term']->ID ) 
+		) {
 			$user_id = $WP_Views->users_data['term']->ID;
+			$data = $WP_Views->users_data['term']->data;
+			$meta = $WP_Views->users_data['term']->meta;
 		} else {
-			return;
+			global $current_user;
+			if ( $current_user->ID > 0 ) {
+				$user_id = $current_user->ID;
+				$data = new WP_User( $user_id );
+				if ( isset( $data->data ) ) {
+					$data = $data->data;
+					$meta = get_user_meta( $user_id );
+				} else {
+					return;
+				}
+			} else {
+				return;
+			}
 		}
-		$data = $WP_Views->users_data['term']->data;
-		$meta = $WP_Views->users_data['term']->meta;
 	}
 	$out = '';
 	switch ( $field ) {
@@ -482,14 +784,37 @@ function wpv_user($attr){
 		default:
 			if ( isset( $meta[$field] ) ) {
 				$out = $meta[$field][0];
-			} else { // if seeking for a non-existing field, return an empty $out
-			//	$default_field = 'display_name';
-			//	$out = $data->$default_field;
 			}
 			break;
 	}
-	apply_filters('wpv_shortcode_debug','wpv-user', json_encode($attr), '', 'Data received from $WP_Views object', $out);
+	apply_filters( 'wpv_shortcode_debug','wpv-user', json_encode( $attr ), '', 'Data received from $WP_Views object', $out );
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_user_data
+*
+* Register the wpv-user shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_user_data' );
+
+function wpv_shortcodes_register_wpv_user_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-user'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_user_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_user_data() {
+    $data = array(
+        'name'				=> __( 'User data', 'wpv-views' ),
+        'label'				=> __( 'User data', 'wpv-views' ),
+        'user-selection'	=> true
+    );
+    return $data;
 }
 
 /**
@@ -527,6 +852,33 @@ function wpv_shortcode_wpv_post_id($atts){
 }
 
 /**
+* wpv_shortcodes_register_wpv_post_id_data
+*
+* Register the wpv-post-id shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_id_data' );
+
+function wpv_shortcodes_register_wpv_post_id_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-id'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_id_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_id_data() {
+    $data = array(
+        'name' => __( 'Post ID', 'wpv-views' ),
+        'label' => __( 'Post ID', 'wpv-views' ),
+        'post-selection' => true,
+    );
+    return $data;
+}
+
+/**
  * Views-Shortcode: wpv-post-slug
  *
  * Description: Display the current post's slug
@@ -558,6 +910,32 @@ function wpv_shortcode_wpv_post_slug($atts){
 	}
 	apply_filters('wpv_shortcode_debug','wpv-post-slug', json_encode($atts), '', 'Data received from cache', $out);
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_post_slug_data
+*
+* Register the wpv-post-slug shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_slug_data' );
+
+function wpv_shortcodes_register_wpv_post_slug_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-slug'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_slug_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_slug_data() {
+    $data = array(
+        'name' => __( 'Post slug', 'wpv-views' ),
+        'label' => __( 'Post slug', 'wpv-views' ),
+        'post-selection' => true,
+    );
+    return $data;
 }
 
 /**
@@ -608,6 +986,50 @@ function wpv_shortcode_wpv_post_title($atts){
 	return $out;
 }
 
+/**
+* wpv_shortcodes_register_wpv_post_title_data
+*
+* Register the wpv-post-title shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_title_data' );
+
+function wpv_shortcodes_register_wpv_post_title_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-title'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_title_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_title_data() {
+    $data = array(
+        'name' => __( 'Post title', 'wpv-views' ),
+        'label' => __( 'Post title', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'output' => array(
+                        'label' => __( 'Output format', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'raw' => __('As stored in the database', 'wpv-views'),
+                            'sanitize' => __('Sanitize', 'wpv-views'),
+                        ),
+                        'default' => 'raw',
+						'description' => __('Output the post title as is or sanitize it to use as an HTML attribute.','wpv-views'),
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
+}
+
 
 /**
  * Views-Shortcode: wpv-post-link
@@ -630,7 +1052,10 @@ function wpv_shortcode_wpv_post_link($atts){
 	$post_id_atts = new WPV_wpcf_switch_post_from_attr_id($atts);
 
 	extract(
-		shortcode_atts( array(), $atts )
+		shortcode_atts( array(
+            'style' => '',
+            'class' => ''
+            ), $atts )
 	);
 
 	$out = '';
@@ -647,7 +1072,14 @@ function wpv_shortcode_wpv_post_link($atts){
 
 		$post_link = wpv_get_post_permalink( $post_id );
 
-		$out .= '<a href="' . $post_link . '">';
+        if ( ! empty( $style ) ) {
+            $style = ' style="'. esc_attr( $style ) .'"';
+        }
+        if ( ! empty( $class ) ) {
+            $class = ' class="' . esc_attr( $class ) .'"';
+        }
+
+		$out .= '<a href="' . $post_link . '"'. $class . $style .'>';
 		$out .= apply_filters('the_title', $post->post_title);
 		$out .= '</a>';
 		apply_filters('wpv_shortcode_debug','wpv-post-link', json_encode($atts), '', 'Filter the_title applied', $out);
@@ -656,6 +1088,52 @@ function wpv_shortcode_wpv_post_link($atts){
 
 
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_post_link_data
+*
+* Register the wpv-post-link shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_link_data' );
+
+function wpv_shortcodes_register_wpv_post_link_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-link'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_link_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_link_data() {
+    $data = array(
+        'name' => __( 'Post link', 'wpv-views' ),
+        'label' => __( 'Post link', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+					'class' => array(
+                        'label' => __( 'Class', 'wpv-views'),
+                        'type' => 'text',
+                        'description' => __( 'Space-separated list of classnames that will be added to the anchor HTML tag.', 'wpv-views' ),
+                        'placeholder' => 'class1 class2',
+                    ),
+					'style' => array(
+                        'label' => __( 'Style', 'wpv-views'),
+                        'type' => 'text',
+						'description' => __( 'Inline styles that will be added to the anchor HTML tag.', 'wpv-views' ),
+                        'placeholder' => 'border: 1px solid red; font-size: 2em;',
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
 }
 
 
@@ -690,7 +1168,7 @@ function wpv_get_post_permalink( $post_id ) {
 		case 'draft':
 		case 'pending':
 			// append preview=true argument to permalink
-			$post_link = add_query_arg( array( 'preview' => 'true' ), $post_link );
+			$post_link = esc_url( add_query_arg( array( 'preview' => 'true' ), $post_link ) );
 			break;
 
 		default: // also when get_post_status fails and returns false, which should never happen
@@ -733,16 +1211,16 @@ function wpv_shortcode_wpv_post_body($atts){
 	$out = '';
 	global $post;
 
-	if ( 
-		! is_object( $post ) 
-		|| empty( $post ) 
+	if (
+		! is_object( $post )
+		|| empty( $post )
 	) {
 		return $out;
 	}
-	
+
 	if ( post_password_required( $post ) ) {
 		$post_protected_password_form = get_the_password_form( $post );
-		
+
 		/**
 		* Filter wpv_filter_post_protected_body
 		*
@@ -754,10 +1232,10 @@ function wpv_shortcode_wpv_post_body($atts){
 		*
 		* @since 1.7.0
 		*/
-		
+
 		return apply_filters( 'wpv_filter_post_protected_body', $post_protected_password_form, $post, $atts );
 	}
-	
+
 	global $WPV_templates, $WPVDebug;
 
 	static $stop_infinite_loop_keys;
@@ -862,7 +1340,9 @@ function wpv_shortcode_wpv_post_body($atts){
 			$out .= apply_filters( 'wpv_filter_wpv_the_content_suppressed', $post->post_content );
 
 		} else {
+			$filter_state = new WPV_WP_filter_state( 'the_content' );
 			$out .= apply_filters('the_content', $post->post_content);
+			$filter_state->restore( );
 		}
 
 			unset($stop_infinite_loop_keys[$key]);
@@ -896,6 +1376,148 @@ function wpv_shortcode_wpv_post_body($atts){
 
 	apply_filters('wpv_shortcode_debug','wpv-post-body', json_encode($atts), '', 'Output shown in the Nested elements section');
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_post_body_data
+*
+* Register the wpv-post-body shortcode in the GUI API.
+*
+* @since 1.9
+*/
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_body_data' );
+
+function wpv_shortcodes_register_wpv_post_body_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-body'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_body_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_body_data() {
+	global $wpdb;
+	global $wpdb, $sitepress;
+	$values_to_prepare = array();
+	$wpml_join = $wpml_where = "";
+	if (
+		isset( $sitepress ) 
+		&& function_exists( 'icl_object_id' )
+	) {
+		$content_templates_translatable = $sitepress->is_translated_post_type( 'view-template' );
+		if ( $content_templates_translatable ) {
+			$wpml_current_language = $sitepress->get_current_language();
+			$wpml_join = " JOIN {$wpdb->prefix}icl_translations t ";
+			$wpml_where = " AND p.ID = t.element_id AND t.language_code = %s ";
+			$values_to_prepare[] = $wpml_current_language;
+		}
+	}
+	
+	$exclude_loop_templates = '';
+	$exclude_loop_templates_ids = wpv_get_loop_content_template_ids();
+	// Be sure not to include the current CT when editing one
+	if ( isset( $_REQUEST['wpv_suggest_wpv_post_body_view_template_exclude'] ) ) {
+		$exclude_loop_templates_ids[] = $_REQUEST['wpv_suggest_wpv_post_body_view_template_exclude'];
+	}
+	if (
+		isset( $_GET['page'] )
+		&& 'ct-editor' == $_GET['page'] 
+		&& isset( $_GET['ct_id'] )
+	) {
+		$exclude_loop_templates_ids[] = $_GET['ct_id'];
+	}
+	if ( count( $exclude_loop_templates_ids ) > 0 ) {
+		$exclude_loop_templates_ids_sanitized = array_map( 'esc_attr', $exclude_loop_templates_ids );
+		$exclude_loop_templates_ids_sanitized = array_map( 'trim', $exclude_loop_templates_ids_sanitized );
+		// is_numeric + intval does sanitization
+		$exclude_loop_templates_ids_sanitized = array_filter( $exclude_loop_templates_ids_sanitized, 'is_numeric' );
+		$exclude_loop_templates_ids_sanitized = array_map( 'intval', $exclude_loop_templates_ids_sanitized );
+		if ( count( $exclude_loop_templates_ids_sanitized ) > 0 ) {
+			$exclude_loop_templates = " AND p.ID NOT IN ('" . implode( "','" , $exclude_loop_templates_ids_sanitized ) . "') ";
+		}
+	}
+	$values_to_prepare[] = 'view-template';
+	$view_tempates_available = $wpdb->get_results(
+		$wpdb->prepare(
+			"SELECT p.ID, p.post_name, p.post_title 
+			FROM {$wpdb->posts} p {$wpml_join} 
+			WHERE p.post_status = 'publish' 
+			{$wpml_where} 
+			AND p.post_type = %s 
+			{$exclude_loop_templates}
+			ORDER BY p.post_title 
+			LIMIT 16",
+			$values_to_prepare
+		)
+	);
+	if ( count( $view_tempates_available ) > 15 ) {
+		$custom_combo_settings = array(
+			'label' => __('Display using a Content Template:', 'wpv-views'),
+			'type' => 'suggest',
+			'action' => 'wpv_suggest_wpv_post_body_view_template',
+			'required' => true,
+			'placeholder' => __( 'Start typing', 'wpv-views' ),
+		);
+	} else {
+		$options = array(
+			'' => __( 'Select one Content Template', 'wpv-views' )
+		);
+		foreach ( $view_tempates_available as $row ) {
+			$options[esc_js($row->post_title)] = esc_html( $row->post_title );
+		}
+		$custom_combo_settings = array(
+			'label' => __('Display using a Content Template:', 'wpv-views'),
+			'type' => 'select',
+			'options' => $options,
+			'default' => '',
+			'required' => true,
+		);
+	}
+    $data = array(
+        'name' => __( 'Post body', 'wpv-views' ),
+        'label' => __( 'Post body', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'view_template' => array(
+                        'label' => __( 'Content Template to apply', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'None' => __('No Content Template (default display for the content)', 'wpv-views'),
+                            'custom-combo' => $custom_combo_settings,
+                        ),
+                        'description' => __( 'Select a Content Template to display its content, referred to the current post.', 'wpv-views' ),
+                        'default_force' => 'None',
+                    ),
+                    'suppress_filters' => array(
+                        'label' => __( 'Suppress third-party filters ', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'true' => __('Yes', 'wpv-views'),
+                            'false' => __('No', 'wpv-views'),
+                        ),
+                        'default' => 'false',
+						'description' => __( 'Avoid applying third-party filter into the output.', 'wpv-views' )
+                    ),
+					/*
+                    'output' => array(
+                        'label' => __( 'Output', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'normal' => __('normal', 'wpv-views'),
+                            'raw' => __('raw', 'wpv-views'),
+                            'inherit' => __('inherit', 'wpv-views'),
+                        ),
+                        'default' => 'normal',
+                    ),
+					*/
+                ),
+            ),
+        ),
+    );
+    return $data;
 }
 
 /**
@@ -933,9 +1555,9 @@ function wpv_shortcode_wpv_post_excerpt($atts){
 	$out = $debug = '';
 
 	global $post;
-	
+
 	if ( post_password_required( $post ) ) {
-		
+
 		/**
 		* Filter wpv_filter_post_protected_excerpt
 		*
@@ -947,10 +1569,10 @@ function wpv_shortcode_wpv_post_excerpt($atts){
 		*
 		* @since 1.7.0
 		*/
-		
+
 		return apply_filters( 'wpv_filter_post_protected_excerpt', __( 'There is no excerpt because this is a protected post.', 'wpv-views' ), $post, $atts );
 	}
-	
+
 	global $WPV_templates;
 
 	if(!empty($post) && $post->post_type != 'view' && $post->post_type != 'view-template'){
@@ -980,12 +1602,6 @@ function wpv_shortcode_wpv_post_excerpt($atts){
 			$excerpt_more = $more;
 		}
 
-
-	/*	if($display_real_excerpt) {
-			$excerpt_length = strlen($excerpt); // don't cut manually inserted excerpts
-			$excerpt_more = '';
-		}
-		*/
 		/**
 		* Filter wpv_filter_post_excerpt
 		*
@@ -1011,7 +1627,7 @@ function wpv_shortcode_wpv_post_excerpt($atts){
 
 		$wpautop_was_removed = $WPV_templates->is_wpautop_removed();
 		if (
-			$wpautop_was_removed 
+			$wpautop_was_removed
 			&& $format == 'autop'
 		) {
 			$WPV_templates->restore_wpautop('');
@@ -1032,6 +1648,63 @@ function wpv_shortcode_wpv_post_excerpt($atts){
 	}
 	apply_filters('wpv_shortcode_debug','wpv-post-excerpt', json_encode($atts), '', 'Filter the_excerpt applied.' . $debug, $out);
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_post_excerpt_data
+*
+* Register the wpv-post-excerpt shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_excerpt_data' );
+
+function wpv_shortcodes_register_wpv_post_excerpt_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-excerpt'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_excerpt_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_excerpt_data() {
+    $data = array(
+        'name' => __( 'Post excerpt', 'wpv-views' ),
+        'label' => __( 'Post excerpt', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'length' => array(
+                        'label' => __( 'Excerpt length', 'wpv-views'),
+                        'type' => 'number',
+                        'default' => '',
+                        'description' => __('This will shorten the excerpt to a specific length. Leave blank for default.', 'wpv-views'),
+                        'placeholder' => __('Enter the excerpt length.', 'wpv-views'),
+                    ),
+                    'count' => array(
+                        'label' => __( 'Count length by', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'char' => __('Characters', 'wpv-views'),
+                            'word' => __('Words', 'wpv-views'),
+                        ),
+                        'default' => 'char',
+						'description' => __('You can create an excerpt based on the number of words or characters.', 'wpv-views'),
+                    ),
+                    'more' => array(
+                        'label' => __( 'Ellipsis text', 'wpv-views'),
+                        'type' => 'text',
+						'description' => __('This will be added after the excerpt, as an invitation to keep reading.', 'wpv-views'),
+                        'placeholder' => __('Read more...', 'wpv-views'),
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
 }
 
 
@@ -1062,14 +1735,20 @@ function wpv_shortcode_wpv_post_author($atts) {
 	$post_id_atts = new WPV_wpcf_switch_post_from_attr_id($atts);
 
 	extract(
-		shortcode_atts( array('format' => 'name', 'meta' => 'nickname'), $atts )
+		shortcode_atts(
+			array(
+				'format' => 'name',
+				'meta' => 'nickname'
+			),
+			$atts
+		)
 	);
 
 	global $authordata; // TODO check if this global is needed here; when switching posts its useless
 
-	$author_url = esc_url( get_author_posts_url( get_the_author_meta( 'ID' )));
+	$author_url = esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) );
 
-	switch ($format) {
+	switch ( $format ) {
 		case 'link':
 			$out = '<a href="' . $author_url . '">' . get_the_author() . '</a>';
 			break;
@@ -1079,7 +1758,7 @@ function wpv_shortcode_wpv_post_author($atts) {
 			break;
 
 		case 'meta':
-			$out = get_the_author_meta($meta);
+			$out = get_the_author_meta( $meta );
 			break;
 
 		default:
@@ -1089,6 +1768,86 @@ function wpv_shortcode_wpv_post_author($atts) {
 	}
 	apply_filters('wpv_shortcode_debug','wpv-post-author', json_encode($atts), '', 'Data received from cache', $out);
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_post_author_data
+*
+* Register the wpv-post-author shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_author_data' );
+
+function wpv_shortcodes_register_wpv_post_author_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-author'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_author_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_author_data() {
+    $data = array(
+        'name' => __( 'Post author', 'wpv-views' ),
+        'label' => __( 'Post author', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'format' => array(
+                        'label' => __( 'Author information', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'name' => __('Author name', 'wpv-views'),
+                            'link' => __('Author archive link', 'wpv-views'),
+                            'url' => __('Author archive URL', 'wpv-views'),
+                            'meta' => __('Author metadata', 'wpv-views'),
+                        ),
+                        'default' => 'name',
+						'description' => __( 'Display this information about the current post author.', 'wpv-views' )
+                    ),
+                    'meta' => array(
+                        'label' => __( 'Author metadata', 'wpv-views'),
+                        'type' => 'select',
+						'default_force' => 'nickname',
+                        'options' => array(
+							'display_name' => __('Author display name', 'wpv-views'),
+							'first_name' => __('Author first name', 'wpv-views'),
+                            'last_name' => __('Author last name', 'wpv-views'),
+							'nickname' => __('Author nickname', 'wpv-views'),
+							'user_nicename' => __('Author nicename', 'wpv-views'),
+							'description' => __('Author description', 'wpv-views'),
+                            'user_login' => __('Author login', 'wpv-views'),
+                            'user_pass' => __('Author password', 'wpv-views'),
+							'ID' => __('Author ID', 'wpv-views'),
+                            'user_email' => __('Author email', 'wpv-views'),
+                            'user_url' => __('Author URL', 'wpv-views'),
+                            'user_registered' => __('Author registered date', 'wpv-views'),
+                            'user_activation_key' => __('Author activation key', 'wpv-views'),
+                            'user_status' => __('Author status', 'wpv-views'),
+                            'jabber' => __('Author jabber', 'wpv-views'),
+                            'aim' => __('Author aim', 'wpv-views'),
+                            'yim' => __('Author yim', 'wpv-views'),
+                            'user_level' => __('Author level', 'wpv-views'),
+                            'user_firstname' => __('firstname', 'wpv-views'),
+                            'user_lastname' => __('lastname', 'wpv-views'),
+                            'rich_editing' => __('rich editing', 'wpv-views'),
+                            'comment_shortcuts' => __('comment shortcuts', 'wpv-views'),
+                            'admin_color' => __('admin_color', 'wpv-views'),
+                            'plugins_per_page' => __('plugin per page', 'wpv-views'),
+                            'plugins_last_view' => __('plugins last view', 'wpv-views'),
+
+                        ),
+						'description' => __( 'Display this metadata if that option was selected on the previous section', 'wpv-views' )
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
 }
 
 
@@ -1122,6 +1881,58 @@ function wpv_shortcode_wpv_post_date($atts) {
 	$out = apply_filters('the_time', get_the_time( $format ));
 	apply_filters('wpv_shortcode_debug','wpv-post-date', json_encode($atts), '', 'Data received from cache, filter the_time applied', $out);
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_post_date_data
+*
+* Register the wpv-post-date shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_date_data' );
+
+function wpv_shortcodes_register_wpv_post_date_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-date'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_date_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_date_data() {
+    $default_format = get_option( 'date_format' );
+    $data = array(
+        'name' => __( 'Post date', 'wpv-views' ),
+        'label' => __( 'Post date', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'format' => array(
+                        'label' => __( 'Date format', 'wpv-views'),
+                        'type' => 'radio',
+                        'default' => $default_format,
+                        'documentation' => '<a href="http://codex.wordpress.org/Formatting_Date_and_Time" target="_blank">' . __( 'WordPress Formatting Date and Time', 'wpv-views' ) . '</a>',
+                        'options' => array(
+                            $default_format => $default_format . ' - ' . date_i18n( $default_format ),
+                            'F j, Y g:i a' => 'F j, Y g:i a - ' . date_i18n( 'F j, Y g:i a' ),
+                            'F j, Y' => 'F j, Y - ' . date_i18n( 'F j, Y' ),
+                            'd/m/y' => 'd/m/y - ' . date_i18n( 'd/m/y' ),
+                            'custom-combo' => array(
+                                'label' => __('Custom', 'wpv-views' ),
+                                'type' => 'text',
+                                'placeholder' => 'l, F j, Y',
+                            )
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
 }
 
 
@@ -1169,6 +1980,32 @@ function wpv_shortcode_wpv_post_url($atts) {
 	apply_filters('wpv_shortcode_debug','wpv-post-url', json_encode($atts), '', 'Data received from cache', $out);
 
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_post_url_data
+*
+* Register the wpv-post-url shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_url_data' );
+
+function wpv_shortcodes_register_wpv_post_url_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-url'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_url_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_url_data() {
+    $data = array(
+        'name' => __( 'Post URL', 'wpv-views' ),
+        'label' => __( 'Post URL', 'wpv-views' ),
+        'post-selection' => true,
+    );
+    return $data;
 }
 
 /**
@@ -1234,6 +2071,50 @@ function wpv_shortcode_wpv_post_type($atts){
 }
 
 /**
+* wpv_shortcodes_register_wpv_post_type_data
+*
+* Register the wpv-post-type shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_type_data' );
+
+function wpv_shortcodes_register_wpv_post_type_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-type'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_type_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_type_data() {
+    $data = array(
+        'name' => __( 'Post type', 'wpv-views' ),
+        'label' => __( 'Post type', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'show' => array(
+                        'label' => __( 'Post type information', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'slug' => __('Post type slug', 'wpv-views'),
+                            'single' => __('Post type singular name', 'wpv-views'),
+                            'plural' => __('Post type plural name', 'wpv-views'),
+                        ),
+                        'default' => 'slug',
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
+}
+
+/**
  * Views-Shortcode: wpv-post-status
  *
  * Description: Display the current post status
@@ -1264,6 +2145,32 @@ function wpv_shortcode_wpv_post_type($atts){
 	}
 	apply_filters('wpv_shortcode_debug','wpv-post-status', json_encode($atts), '', 'Data received from cache', $out);
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_post_status_data
+*
+* Register the wpv-post-status shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_status_data' );
+
+function wpv_shortcodes_register_wpv_post_status_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-status'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_status_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_status_data() {
+    $data = array(
+        'name' => __( 'Post status', 'wpv-views' ),
+        'label' => __( 'Post status', 'wpv-views' ),
+        'post-selection' => true,
+    );
+    return $data;
 }
 
 /**
@@ -1302,9 +2209,48 @@ function wpv_shortcode_wpv_post_type($atts){
 }
 
 /**
+* wpv_shortcodes_register_wpv_post_class_data
+*
+* Register the wpv-post-class shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_class_data' );
+
+function wpv_shortcodes_register_wpv_post_class_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-class'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_class_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_class_data() {
+    $data = array(
+        'name' => __( 'Post class', 'wpv-views' ),
+        'label' => __( 'Post class', 'wpv-views' ),
+		'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'add' => array(
+                        'label' => __( 'Extra classnames', 'wpv-views'),
+                        'type' => 'text',
+                        'description' => __('Space-separated list of classnames to be added to the WordPress generated ones.', 'wpv-views'),
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
+}
+
+/**
  * Views-Shortcode: wpv-post-format
  *
- * Description: Display the post format (standard|aside|chat|gallery|link|image|quote|status|video|audio|). 
+ * Description: Display the post format (standard|aside|chat|gallery|link|image|quote|status|video|audio|).
  * If post type doesn't support post formats, returns empty string.
  *
  * Parameters:
@@ -1319,7 +2265,7 @@ function wpv_shortcode_wpv_post_type($atts){
  *
  * Note:
  * This function returns "standard" instead of <tt>false</tt> as <a href="http://codex.wordpress.org/Function_Reference/get_post_format">get_post_format</a> page recommends.
- * 
+ *
  */
 function wpv_shortcode_wpv_post_format( $atts ) {
     $post_id_atts = new WPV_wpcf_switch_post_from_attr_id( $atts );
@@ -1345,12 +2291,41 @@ function wpv_shortcode_wpv_post_format( $atts ) {
 }
 
 /**
+* wpv_shortcodes_register_wpv_post_format_data
+*
+* Register the wpv-post-format shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_format_data' );
+
+function wpv_shortcodes_register_wpv_post_format_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-format'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_format_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_format_data() {
+    $data = array(
+        'name' => __( 'Post format', 'wpv-views' ),
+        'label' => __( 'Post format', 'wpv-views' ),
+		'post-selection' => true,
+    );
+    return $data;
+}
+
+/**
  * Views-Shortcode: wpv-post-featured-image
  *
  * Description: Display the featured image of the current post
  *
  * Parameters:
- * 'size' => Image size - thumbnail, medium, large or full - defaults to thumbnail
+ * 'size' => thumbnail|medium|large|full|#custom# - defaults to thumbnail
+ * 'output' => img|url|alt|id|author|date|description|title|caption - what to display - if empty, will display the IMG tag for legacy, so defaults to img de facto
+ *
+ * Legacy prameters:
  * 'raw' => Show url (true) or HTML tag (false) - default to false (HTML tag)
  * 'data' => Show additional image info
  *		  id - attachment ID
@@ -1372,63 +2347,47 @@ function wpv_shortcode_wpv_post_format( $atts ) {
  *
  */
 
-function wpv_shortcode_wpv_post_featured_image($atts) {
+function wpv_shortcode_wpv_post_featured_image( $atts ) {
 	global $WPVDebug;
-	$post_id_atts = new WPV_wpcf_switch_post_from_attr_id($atts);
-
+	$post_id_atts = new WPV_wpcf_switch_post_from_attr_id( $atts );
 	extract(
 		shortcode_atts( array(
 			'size'  => 'thumbnail',
-			'raw'   => 'false',
+			'output' => '',
+			'raw'   => 'false',// DEPRECATED
+			'data'  => '',// DEPRECATED
 			'attr'  => '',
-			'data'  => ''
+			'class' => ''
 		), $atts )
 	);
-
 	$out = '';
-	$info = array('id'=>'ID','author'=>'post_author','date'=>'post_date','description'=>'post_content','title'=>'post_title'
-	,'caption'=>'post_excerpt','original'=>'guid');
-	if( $raw === 'true'  || !empty($data) ) {
-		if ( empty($data) ){
-			$data = 'url';
-		}
-		$file_info = '';
-		$post_thumbnail_id = get_post_thumbnail_id( get_the_ID() );
-		if ( !empty( $post_thumbnail_id ) ) {
-			switch ( $data ) {
-				case 'url':
-					if ( $size == 'full' ) {
-						$new_info = get_post( $post_thumbnail_id );
-						if( isset( $new_info->guid ) ) {
-							$file_info = $new_info->guid;
-						}
-					} else {
-						$out_array = wp_get_attachment_image_src($post_thumbnail_id, $size );
-						$file_info = $out_array[0];
-					}
-					break;
-				case 'id':
-				case 'author':
-				case 'date':
-				case 'description':
-				case 'title':
-				case 'caption':
-				case 'original':
-					$new_info = get_post( $post_thumbnail_id );
-					$new_value = $info[$data];
-					if( isset( $new_info->$new_value ) ) {
-						$file_info = $new_info->$new_value;
-					}
-					break;
-				case 'alt':
-					$file_info = get_post_meta($post_thumbnail_id , '_wp_attachment_image_alt', true);
-					break;
+	$info = array(
+		'id' => 'ID',
+		'author' => 'post_author',
+		'date' => 'post_date',
+		'description' => 'post_content',
+		'title' => 'post_title',
+		'caption' => 'post_excerpt',
+		'original' => 'guid'
+	);
+	// LEGACY - backwards compatibility
+	if ( empty( $output ) ) {
+		if ( 
+			$raw === 'true'  
+			|| ! empty( $data ) 
+		) {
+			if ( empty( $data ) ) {
+				$output = 'url';
+			} else {
+				$output = $data;
 			}
-			$out = apply_filters('wpv-post-featured-image', $file_info);
+		} else {
+			$output = 'img';
 		}
-	} else {
-		// Sanitize and escape elements in the query-like string $attr with a HACK
-		if ( !empty( $attr ) ) {
+	}
+	// END LEGACY - backwards compatibility
+	if ( 'img' == $output ) {
+		if ( ! empty( $attr ) ) {
 			// first, escape and strip tags
 			$attr = esc_attr( strip_tags( $attr ) );
 			// now, hack the ampersands on legitimate query-like attributes
@@ -1454,8 +2413,46 @@ function wpv_shortcode_wpv_post_featured_image($atts) {
 		} else {
 			$attr_array = array();
 		}
+		if ( ! empty( $class ) ) {
+			$attr_array['class'] = 'attachment-' . esc_attr( $size ) . '  ' . esc_attr( $class );
+		}
 		$out = get_the_post_thumbnail( null, $size, $attr_array );
-		$out = apply_filters('wpv-post-featured-image', $out);
+		$out = apply_filters( 'wpv-post-featured-image', $out );
+	} else {
+		$post_thumbnail_id = get_post_thumbnail_id( get_the_ID() );
+		if ( !empty( $post_thumbnail_id ) ) {
+			switch ( $output ) {
+				case 'id':
+				case 'author':
+				case 'date':
+				case 'description':
+				case 'title':
+				case 'caption':
+				case 'original':
+					$new_info = get_post( $post_thumbnail_id );
+					$new_value = $info[$output];
+					if( isset( $new_info->$new_value ) ) {
+						$file_info = $new_info->$new_value;
+					}
+					break;
+				case 'alt':
+					$file_info = get_post_meta( $post_thumbnail_id , '_wp_attachment_image_alt', true );
+					break;
+				case 'url':
+				default:
+					if ( $size == 'full' ) {
+						$new_info = get_post( $post_thumbnail_id );
+						if( isset( $new_info->guid ) ) {
+							$file_info = $new_info->guid;
+						}
+					} else {
+						$out_array = wp_get_attachment_image_src($post_thumbnail_id, $size );
+						$file_info = $out_array[0];
+					}
+					break;
+			}
+			$out = apply_filters( 'wpv-post-featured-image', $file_info );
+		}
 	}
 
 	apply_filters('wpv_shortcode_debug','wpv-post-featured-image', json_encode($atts), '', 'Filter wpv-post-featured-image applied', $out);
@@ -1464,12 +2461,163 @@ function wpv_shortcode_wpv_post_featured_image($atts) {
 }
 
 /**
+* wpv_shortcodes_register_wpv_post_featured_image_data
+*
+* Register the wpv-post-featured-image shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_featured_image_data' );
+
+function wpv_shortcodes_register_wpv_post_featured_image_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-featured-image'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_featured_image_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_featured_image_data() {
+	$options = array(
+		'full' => __('Original image', 'wpv-view')
+	);
+	$template = '%s - (%dx%d)';
+	$defined_sizes = array(
+		'thumbnail' => __('Thumbnail', 'wpv-view'),
+		'medium' => __('Medium', 'wpv-view'),
+		'large' => __('Large', 'wpv-view')
+	);
+    foreach ( $defined_sizes as $ds_key => $ds_label ) {
+        $options[$ds_key] = sprintf(
+            $template,
+            $ds_label,
+            get_option(sprintf('%s_size_w', $ds_key)),
+            get_option(sprintf('%s_size_h', $ds_key))
+        );
+    }
+    global $_wp_additional_image_sizes;
+    if ( ! empty( $_wp_additional_image_sizes) ) {
+		foreach ( $_wp_additional_image_sizes as $key => $value ) {
+			if ( 'post-thumbnail' == $key ) {
+				continue;
+			}
+			$options[$key] = sprintf(
+				$template,
+				$key,
+				$value['width'],
+				$value['height']
+			);
+		}
+	}
+    $data = array(
+        'name' => __( 'Post featured image', 'wpv-views' ),
+        'label' => __( 'Post featured image', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+					'size' => array(
+                        'label' => __('Featured image size', 'wpv-views'),
+                        'type' => 'select',
+                        'options' => $options,
+                        'default' => 'thumbnail',
+                    ),
+					'output' => array(
+                        'label' => __('What to display', 'wpv-views'),
+                        'type' => 'select',
+                        'options' => array(
+							'img' => __( 'Image HTML tag', 'wpv-views' ),
+							'url' => __('URL of the image', 'wpv-view'),
+							'title' => __('Title of the image', 'wpv-view'),
+							'caption' => __('Caption of the mage', 'wpv-view'),
+							'description' => __('Description of the image', 'wpv-view'),
+                            'alt' => __('ALT text for the image', 'wpv-view'),
+                            'author' => __('Author of the image', 'wpv-view'),
+                            'date' => __('Date of the image', 'wpv-view'),
+                            'id' => __('ID of the image', 'wpv-view'),
+                        ),
+                        'default' => 'img',
+                    ),
+					'class' => array(
+                        'label' => __( 'Class', 'wpv-views'),
+                        'type' => 'text',
+                        'description' => __( 'Space-separated list of classnames that will be added to the image HTML tag.', 'wpv-views' ),
+                        'placeholder' => 'class1 class2',
+                    ),
+					/*
+                    'attr' => array(
+                        'type' => 'text',
+                        'description' => __('Expects a query-string-like value : attr=”title=a&alt=b&classname=c” will add those attributes to the img HTML tag', 'wpv-views'),
+                        'label' => __('Attributes', 'wpv-views'),
+                    ),
+					*/
+                ),
+            ),
+        ),
+    );
+    return $data;
+}
+
+/** This filter is documented in embedded/inc/wpv-shortcodes-gui.php */
+// add_filter('wpv_filter_wpv_shortcodes_gui_api_wpv-post-featured-image-size_options', 'wpv_post_featured_image_size_options', 10, 2);
+
+/**
+ * Add post featured-image options to shortcode
+ *
+ * Add post featured-image shortcode options to shortcode attribute.
+ *
+ * @since 1.9.0
+ *
+ * @param array $options 
+ *
+ */
+function wpv_post_featured_image_size_options($options, $type = 'text')
+{
+    $mask = '%s - (%dx%d)';
+    if ( 'radio' == $type ) {
+        $mask = '%s <small>(%dx%d)</small>';
+    }
+    /**
+     * first add size to label
+     */
+    foreach ( array('thumbnail', 'medium', 'large') as $key ) {
+        $options[$key] = sprintf(
+            $mask,
+            $options[$key],
+            get_option(sprintf('%s_size_w', $key)),
+            get_option(sprintf('%s_size_h', $key))
+        );
+    }
+    global $_wp_additional_image_sizes;
+    if ( empty( $_wp_additional_image_sizes) ) {
+        return $options;
+    }
+    foreach ( $_wp_additional_image_sizes as $key => $value ) {
+        if ( 'post-thumbnail' == $key ) {
+            continue;
+        }
+        $options[$key] = sprintf(
+            $mask,
+            preg_replace('/[_-]+/', ' ', $key),
+            $value['width'],
+            $value['height']
+        );
+    }
+    return $options;
+}
+
+/**
 * Views-Shortcode: wpv-post-edit-link
 *
 * Description: Display an edit link for the current post
 *
 * Parameters:
-* label: Optional. What to show in the edit link. ie: 'Edit Video'
+* label: Optional. What to show in the edit link. ie: 'Edit Video' DEPRECATED
+* text: Optional
+* style: Optional
+* class: Optional
 *
 * Example usage:
 * [wpv-post-edit-link]
@@ -1479,26 +2627,101 @@ function wpv_shortcode_wpv_post_featured_image($atts) {
 * Note:
 *
 */
-function wpv_shortcode_wpv_post_edit_link($atts){
-	$post_id_atts = new WPV_wpcf_switch_post_from_attr_id($atts);
+function wpv_shortcode_wpv_post_edit_link( $atts ){
+	$post_id_atts = new WPV_wpcf_switch_post_from_attr_id( $atts );
 
 	extract(
-		shortcode_atts( array(), $atts )
+		shortcode_atts( 
+			array(
+				'style' => '',
+				'class' => '',
+				'text' => ''
+            ),
+			$atts 
+		)
 	);
 
 	$out = '';
 	global $post;
 
-	if(!empty($post) && current_user_can('edit_posts')){
-		$out .= '<a href="' . get_edit_post_link( $post->ID ) . '" class="post-edit-link">';
-		$out .= (isset($atts['label']))? __('Edit ', 'wpv-views') .$atts['label'] : __('Edit This', 'wpv-views');
+	if ( 
+		! empty( $post ) 
+		&& current_user_can( 'edit_posts' ) 
+	) {
+        if ( ! empty( $style ) ) {
+            $style = ' style="'. esc_attr( $style ) .'"';
+        }
+        if ( ! empty( $class ) ) {
+            $class = ' ' . esc_attr( $class );
+        }
+		$anchor_text = '';
+		if ( isset( $atts['label'] ) ) {
+			$anchor_text = sprintf( __( 'Edit %s', 'wpv-views' ), $atts['label'] );
+		} else {
+			if ( empty( $text ) ) {
+				$anchor_text = __('Edit This', 'wpv-views');
+			} else {
+				$anchor_text = $text;
+			}
+		}
+		$out .= '<a href="' . get_edit_post_link( $post->ID ) . '" class="post-edit-link'. $class .'"'. $style .'>';
+		$out .= $anchor_text;
 		$out .= '</a>';
 	}
 	apply_filters('wpv_shortcode_debug','wpv-post-edit-link', json_encode($atts), '', 'Data received from cache', $out);
 	return $out;
 }
 
+/**
+* wpv_shortcodes_register_wpv_post_edit_link_data
+*
+* Register the wpv-post-edit-link shortcode in the GUI API.
+*
+* @since 1.9
+*/
 
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_edit_link_data' );
+
+function wpv_shortcodes_register_wpv_post_edit_link_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-edit-link'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_edit_link_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_edit_link_data() {
+    $data = array(
+        'name' => __( 'Post edit link', 'wpv-views' ),
+        'label' => __( 'Post edit link', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'text' => array(
+                        'label' => __( 'Edit link text', 'wpv-views'),
+                        'type' => 'text',
+                        'description' => __('Set the text for the link. Defaults to "Edit This".', 'wpv-views'),
+                    ),
+					'class' => array(
+                        'label' => __( 'Class', 'wpv-views'),
+                        'type' => 'text',
+                        'description' => __( 'Space-separated list of classnames that will be added to the anchor HTML tag.', 'wpv-views' ),
+                        'placeholder' => 'class1 class2',
+                    ),
+					'style' => array(
+                        'label' => __( 'Style', 'wpv-views'),
+                        'type' => 'text',
+						'description' => __( 'Inline styles that will be added to the anchor HTML tag.', 'wpv-views' ),
+                        'placeholder' => 'border: 1px solid red; font-size: 2em;',
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
+}
 
 
 /**
@@ -1526,9 +2749,14 @@ function wpv_shortcode_wpv_post_field($atts) {
 	$post_id_atts = new WPV_wpcf_switch_post_from_attr_id($atts);
 
 	extract(
-		shortcode_atts( array('index' => '',
-							  'name' => '',
-							  'separator' => ', '), $atts )
+		shortcode_atts(
+			array(
+				'index' => '',
+				'name' => '',
+				'separator' => ', '
+			),
+			$atts
+		)
 	);
 
 	$out = '';
@@ -1542,9 +2770,6 @@ function wpv_shortcode_wpv_post_field($atts) {
 		$filters .= 'Filter wpv-post-field-meta-' . $name .' applied. ';
 		if ($meta) {
 
-			// Allow wpv-for-each shortcode to set the index
-			$index = apply_filters('wpv-for-each-index', $index);
-			$filters .= 'Filter wpv-for-each-index applied, ';
 			if ($index !== '') {
 				$index = intval($index);
 				$filters .= 'displaying index ' . $index . '. ';
@@ -1569,6 +2794,58 @@ function wpv_shortcode_wpv_post_field($atts) {
 }
 
 /**
+* wpv_shortcodes_register_wpv_post_field_data
+*
+* Register the wpv-post-field shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_field_data' );
+
+function wpv_shortcodes_register_wpv_post_field_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-field'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_field_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_field_data() {
+    $data = array(
+        'name' => __( 'Post field', 'wpv-views' ),
+        'label' => __( 'Post field', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'name' => array(
+                        'label' => __('Custom field', 'wpv-views'),
+                        'type' => 'suggest',
+						'action' => 'wpv_suggest_wpv_post_field_name',
+                        'description' => __('The name of the custom field to display', 'wpv-views'),
+                        'required' => true,
+                    ),
+                    'index' => array(
+                        'label' => __( 'Index', 'wpv-views'),
+                        'type' => 'number',
+                        'description' => __('The index to use if the custom field has multiple values. If an index is not set then all values will be output.', 'wpv-views'),
+                    ),
+                    'separator' => array(
+                        'type' => 'text',
+                        'label' => __('Separator', 'wpv-views'),
+                        'description' => __('The separator between multiple values.','wpv-views'),
+                        'default' => ', ',
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
+}
+
+/**
  * Views-Shortcode: wpv-post-comments-number
  *
  * Description: Displays the number of comments for the current post
@@ -1587,16 +2864,9 @@ function wpv_shortcode_wpv_post_field($atts) {
  *
  */
 
-$wpv_comments_defaults = array('none' => __('No Comments', 'wpv-views'),
-							  'one' => __('1 Comment', 'wpv-views'),
-							  'more' => __('% Comments', 'wpv-views'));
-
-
 function wpv_shortcode_wpv_comments_number($atts) {
 	$post_id_atts = new WPV_wpcf_switch_post_from_attr_id($atts);
-	global $WPVDebug;
-
-	global $wpv_comments_defaults, $post;
+	global $WPVDebug, $post;
 
 	if ( function_exists('icl_t') )
 	{
@@ -1618,8 +2888,15 @@ function wpv_shortcode_wpv_comments_number($atts) {
 	}
 
 	extract(
-		shortcode_atts( $wpv_comments_defaults, $atts )
-		);
+		shortcode_atts(
+			array(
+				'none' => __('No Comments', 'wpv-views'),
+				'one' => __('1 Comment', 'wpv-views'),
+				'more' => __('% Comments', 'wpv-views')
+			),
+			$atts
+		)
+	);
 
 	ob_start();
 
@@ -1630,6 +2907,56 @@ function wpv_shortcode_wpv_comments_number($atts) {
 	$out = ob_get_clean();
 	apply_filters('wpv_shortcode_debug','wpv-post-comments-number', json_encode($atts), $WPVDebug->get_mysql_last(), 'Data received from cache', $out);
 	return $out;
+}
+
+/**
+* wpv_shortcodes_register_wpv_post_comments_number_data
+*
+* Register the wpv-post-comments-number shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_comments_number_data' );
+
+function wpv_shortcodes_register_wpv_post_comments_number_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-comments-number'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_comments_number_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_comments_number_data() {
+    $data = array(
+        'name' => __( 'Post comments number', 'wpv-views' ),
+        'label' => __( 'Post comments number', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'none' => array(
+                        'label' => __( 'Text to display when there are no comments', 'wpv-views'),
+                        'type' => 'text',
+                        'default' => __('No Comments', 'wpv-view'),
+                    ),
+                    'one' => array(
+                        'label' => __( 'Text to display when there is one comment', 'wpv-views'),
+                        'type' => 'text',
+                        'default' => __('1 Comment', 'wpv-view'),
+                    ),
+                    'more' => array(
+                        'label' => __( 'Text to display when there is more than one comment', 'wpv-views'),
+                        'type' => 'text',
+                        'default' => __('% Comments', 'wpv-view'),
+						'description' => __( '%s - the number of comments', 'wpv-views' )
+                    ),
+                ),
+            ),
+        ),
+    );
+    return $data;
 }
 
 function wpv_shortcode_wpv_comment_title($atts){
@@ -1932,230 +3259,255 @@ function wpv_shortcode_wpv_taxonomy_archive($atts){
 	return $out;
 }
 
-
-
-//@todo - add function for the other shortcodes
-
-
-/*
-
-  Add the short codes to javascript so they can be added to the
-  post visual editor toolbar.
-
-  $types contains the type of items to add to the toolbar
-  'post' add all wpv-post shortcodes
-  'view' add available views
-
+/**
+*
+* Add the short codes to javascript so they can be added to the post visual editor toolbar.
+*
+* $types contains the type of items to add to the toolbar
+*
+* 	'post' means all wpv-post shortcodes but wpv-post-field in the Basic section.
+*	'post-fields-grouped' means non-Types custom fields in the Post field section.
+*	'post-extended' means wpv-post-field and wpv-for-each shortcodes in the Basic section.
+* 
+* 	@important To be used only on native post edit screens:
+*		'types-post' means Types custom fields and usermeta fields in their own groups.
+*		'types-post-usermeta' means Types usermeta in their own groups.
+* 	@important Note that for generic Types items, you can use the wpcf_filter_force_include_types_fields_on_views_dialog filter.
+*
+* 	'user' means all wpv-user shortcodes with a UserID selector
+* 
+* 	'body-view-templates' means a CT section listing all available CT.
+*
+* 	'view' means all available Views. DEPRECATED, use the other ones.
+* 	'user-view' means Views listing users.
+* 	'taxonomy-view' means Views listing terms.
+* 	'post-view' means Views listing posts.
+*
+* 	'archives' means all WPAs - where is this being used? Nowhere!!
+*
+* 	'wpml' means some WPML-related shortcodes.
 */
 
-function add_short_codes_to_js($types, $editor, $call_back = null){
+function add_short_codes_to_js( $types, $editor ) {
 
 	global $wpv_shortcodes, $wpdb, $WP_Views, $sitepress;
-
-	$cf_keys = $WP_Views->get_meta_keys();
-
-	// Find the field sub menus so we can group sub strings.
-	$sub_fields = array();
-	$last_field = '';
-	foreach ($cf_keys as $field) {
-		$parts = explode('_', str_replace('-', '_', $field));
-		$start = $parts[0];
-		if ($start == '') {
-			// starts with an underscore.
-			if (isset($parts[1])) {
-				$start = $parts[1];
-			}
-		}
-
-		if ($start == $last_field) {
-			// found a duplicate
-
-			if ($parts[0] == '') {
-				$start = '_' . $start;
-			}
-			if (!in_array($start, $sub_fields)) {
-				$sub_fields[] = $start;
-			}
-		} else {
-			$last_field = $start;
-		}
-
-	}
+	$views_shortcodes_with_api_obj = apply_filters('wpv_filter_wpv_shortcodes_gui_data', array());
+	$views_shortcodes_with_api = array_keys( $views_shortcodes_with_api_obj );
 
 	$index = 0;
 	$nonce = wp_create_nonce('wpv_editor_callback');
-	foreach($wpv_shortcodes as $shortcode) {
+	foreach( $wpv_shortcodes as $shortcode ) {
 
-		if (in_array('post', $types) && strpos($shortcode[0], 'wpv-post-') === 0 && function_exists($shortcode[2])) {
+		if ( in_array( $shortcode[0], $views_shortcodes_with_api ) ) {
+			$shortcode[3] = "WPViews.shortcodes_gui.wpv_insert_popup('" . $shortcode[0] . "', '" . $shortcode[1] . "', {}, '" . $nonce . "', this )";
+		}
 
-			if ($shortcode[0] == 'wpv-post-field') {
-
-				// we need to output the custom fields to a sub menu.
-
-				foreach ($cf_keys as $cf_key) {
-
-					if ($WP_Views->can_include_type($cf_key)) {
-						// add to the javascript array (text, function, sub-menu)
-						$function_name = 'wpv_field_' . $index;
-						$menu = $shortcode[1];
-						$parts = explode('_', str_replace('-', '_', $cf_key));
-						$start = $parts[0];
-						if ($start == '') {
-							// starts with an underscore.
-							if (isset($parts[1])) {
-								$start = '_' . $parts[1];
-							}
-						}
-						if (in_array($start, $sub_fields)) {
-							$menu .= '-!-' . $start;
-						}
-
-						if ($call_back) {
-							call_user_func($call_back, $index, $cf_key, $function_name, $menu, $shortcode[0]);
-						} else {
-							$name = ' name="' . $cf_key . '"';
-							$editor->add_insert_shortcode_menu($cf_key, $shortcode[0] . $name, $menu);
-							}
-						$index += 1;
-					}
-				}
-
+		if (
+			in_array( 'post', $types ) // Add the wpv-post shortcodes plus non-Types custom fields
+			&& strpos( $shortcode[0], 'wpv-post-' ) === 0
+			&& $shortcode[0] != 'wpv-post-field'
+			&& function_exists( $shortcode[2] )
+		) {
+			// All wpv-post-*** shortcodes but wpv-post-field
+			if ( isset( $shortcode[3] ) ) {
+				$editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0], __('Basic', 'wpv-views'), $shortcode[3]);
 			} else {
-				if ($call_back) {
-					call_user_func($call_back, $index, $shortcode[1], $shortcode[1], "", $shortcode[0]);
-				} else {
-
-					if ($shortcode[0] == 'wpv-post-body') {
-						$editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0] . ' view_template="None"', __('Basic', 'wpv-views'));
-					} elseif ($shortcode[0] == 'wpv-post-comments-number') {
-						global $wpv_comments_defaults;
-						$editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0] . ' none="' . $wpv_comments_defaults['none'] . '" one="' . $wpv_comments_defaults['one'] . '" more="' . $wpv_comments_defaults['more'] . '"', __('Basic', 'wpv-views'));
-					} else {
-						// JS callback
-						if (isset($shortcode[3])) {
-							$editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0], __('Basic', 'wpv-views'), $shortcode[3]);
-						} else {
-							$editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0], __('Basic', 'wpv-views'));
-						}
-					}
-				}
+				$editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0], __('Basic', 'wpv-views'));
+			}
+			$index += 1;
+		}
+	}
+		
+	if ( in_array( 'post-fields-placeholder', $types ) ) {
+		$menu = __( 'Post field', 'wpv-views' );
+		$editor->add_insert_shortcode_menu(
+			'<i class="icon-plus-sign"></i> ' . __( 'Load non-Types custom fields', 'wpv-views' ),
+			'',
+			$menu,
+			"WPViews.shortcodes_gui.load_post_field_section_on_demand( event, this )"
+		);
+		$index += 1;
+	}
+	
+	if ( in_array( 'post-fields-grouped', $types ) ) {
+		$cf_keys = $WP_Views->get_meta_keys();
+		foreach ( $cf_keys as $cf_key ) {
+			if ( ! wpv_is_types_custom_field( $cf_key ) ) {
+				// add to the javascript array (text, function, sub-menu)
+				$function_name = 'wpv_field_' . $index;
+				$menu = __( 'Post field', 'wpv-views' );
+				$editor->add_insert_shortcode_menu(
+					$cf_key,
+					'wpv-post-field name="' . $cf_key . '"',
+					$menu
+				);
 				$index += 1;
 			}
-
 		}
-
-		if($call_back == 'add-basics') {
-			if (isset($shortcode[3])) {
-					  $editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0], __('Basic', 'wpv-views'), $shortcode[3]);
-				 } else {
-					 switch ($shortcode[0]) {
-						 case 'wpv-archive-link':
-							$editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0].' name=""', __('Basic', 'wpv-views'));
-							 break;
-						 case 'wpv-bloginfo':
-							$editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0].' show="name"', __('Basic', 'wpv-views'));
-							 break;
-						 case 'wpv-current-user':
-							$editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0].' info="login"', __('Basic', 'wpv-views'));
-							 break;
-						 case 'wpv-user':
-						 case 'wpv-login-form':
-						 case 'wpv-taxonomy-archive':
-						 case 'wpv-comment-title':
-						 case 'wpv-comment-body':
-						 case 'wpv-comment-author':
-						 case 'wpv-comment-date':
-						 case 'wpv-taxonomy-title':
-						 case 'wpv-taxonomy-link':
-						 case 'wpv-taxonomy-url':
-						 case 'wpv-taxonomy-slug':
-						 case 'wpv-taxonomy-id':
-						 case 'wpv-taxonomy-description':
-						 case 'wpv-taxonomy-post-count':
-							break;
-						 default:
-							 $editor->add_insert_shortcode_menu($shortcode[1], $shortcode[0], __('Basic', 'wpv-views'));
-							 break;
-					 }
-				 }
-		}
-
-
-		if (in_array('taxonomy', $types) && strpos($shortcode[0], 'wpv-taxonomy-') === 0 && function_exists($shortcode[2])) {
-			if ($call_back) {
-				call_user_func($call_back, $index, $shortcode[1], $shortcode[1], "", $shortcode[0]);
-			}
-			$index += 1;
-		}
-
 	}
 
-	// Content templates.
-	if (in_array('body-view-templates-posts', $types)) {
-		// we need to add the available views.
-		$view_template_available = $wpdb->get_results(
-			"SELECT ID, post_name, post_title FROM {$wpdb->posts} 
-			WHERE post_type = 'view-template' 
-			AND post_status in ('publish')"
+	if ( in_array( 'post-extended', $types ) ) {
+		// Add the wpv-post-field just in case
+		$editor->add_insert_shortcode_menu(
+			__('Post field', 'wpv-views'),
+			'wpv-post-field',
+			__('Basic', 'wpv-views'),
+			"WPViews.shortcodes_gui.wpv_insert_popup('wpv-post-field', '" . __( 'Post field', 'wpv-views' ) . "', {}, '" . $nonce . "', this )"
 		);
-		foreach($view_template_available as $view_template) {
-			$editor->add_insert_shortcode_menu($view_template->post_title, 'wpv-post-body view_template="' . $view_template->post_name . '"', __('Content template', 'wpv-views'));
+		$index += 1;
+		// Add the wpv-for-each iterator
+		$editor->add_insert_shortcode_menu(
+			__('Post field iterator', 'wpv-views'),
+			'wpv-for-each',
+			__('Basic', 'wpv-views'),
+			"WPViews.shortcodes_gui.wpv_insert_popup('wpv-for-each', '" . __( 'Post field iterator', 'wpv-views' ) . "', {}, '" . $nonce . "', this )"
+		);
+		$index += 1;
+	}
+	
+	/*
+	* Note that the following two actions only have callbacks from Types on post.php and post-new.php
+	* On Views and WPA edit screens, postmeta and usermeta items are added automatically by Types without needing to call them
+	*/
+	if ( in_array( 'types-post', $types ) ) {
+		do_action( 'wpv_action_wpv_add_types_postmeta_to_editor', $editor );
+	}
+	if ( in_array( 'types-post-usermeta', $types ) ) {
+		do_action( 'wpv_action_wpv_add_types_post_usermeta_to_editor', $editor );
+	}
+	
+	if ( in_array( 'user', $types ) ) {
+		$user_shortcodes = array(
+			'ID'			=> array(
+				'label'	=> __('User ID', 'wpv-views'),
+				'code'	=> 'wpv-user field="ID"'
+			),
+			'user_email'		=> array(
+				'label'	=> __('User Email', 'wpv-views'),
+				'code'	=> 'wpv-user field="user_email"'
+			),
+			'user_login'		=> array(
+				'label'	=> __('User Login', 'wpv-views'),
+				'code'	=> 'wpv-user field="user_login"'
+			),
+			'user_firstname'	=> array(
+				'label'	=> __('First Name', 'wpv-views'),
+				'code'	=> 'wpv-user field="user_firstname"'
+			),
+			'user_lastname'		=> array(
+				'label'	=> __('Last Name', 'wpv-views'),
+				'code'	=> 'wpv-user field="user_lastname"'
+			),
+			'nickname'			=> array(
+				'label'	=> __('Nickname', 'wpv-views'),
+				'code'	=> 'wpv-user field="nickname"'
+			),
+			'display_name'		=> array(
+				'label'	=> __('Display Name', 'wpv-views'),
+				'code'	=> 'wpv-user field="display_name"'
+			),
+			'description'		=> array(
+				'label'	=> __('Description', 'wpv-views'),
+				'code'	=> 'wpv-user field="description"'
+			),
+			'yim'				=> array(
+				'label'	=> __('Yahoo IM', 'wpv-views'),
+				'code'	=> 'wpv-user field="yim"'
+			),
+			'jabber'			=> array(
+				'label'	=> __('Jabber', 'wpv-views'),
+				'code'	=> 'wpv-user field="jabber"'
+			),
+			'aim'				=> array(
+				'label'	=> __('AIM', 'wpv-views'),
+				'code'	=> 'wpv-user field="aim"'
+			),
+			'user_url'			=> array(
+				'label'	=> __('User URL', 'wpv-views'),
+				'code'	=> 'wpv-user field="user_url"'
+			),
+			'user_registered'	=> array(
+				'label'	=> __('Registration Date', 'wpv-views'),
+				'code'	=> 'wpv-user field="user_registered"'
+			),
+			'user_status'		=> array(
+				'label'	=> __('User Status', 'wpv-views'),
+				'code'	=> 'wpv-user field="user_status"'
+			),
+			'spam'				=> array(
+				'label'	=> __('User Spam Status', 'wpv-views'),
+				'code'	=> 'wpv-user field="spam"'
+			),
+		);
+		foreach ( $user_shortcodes as $u_shortcode_slug => $u_shortcode_data ) {
+			$editor->add_insert_shortcode_menu(
+				$u_shortcode_data['label'],
+				$u_shortcode_data['code'],
+				__( 'User basic data', 'wpv-views' ),
+				"WPViews.shortcodes_gui.wpv_insert_popup('wpv-user', '" . esc_js( $u_shortcode_data['label'] ) . "', {field:{value:'" . $u_shortcode_slug . "',label:'". esc_js( $u_shortcode_data['label'] ) . "'}}, '" . $nonce . "', this )"
+			);
 			$index += 1;
 		}
 	}
 
-	// first we output the Content templates.
-	if (in_array('body-view-templates', $types)) {
-		global $pagenow, $typenow;
-		if ( "view-template" != $typenow || !in_array( $pagenow, array( 'post-new.php' ) ) ) {
+	// Content Templates
+	if ( in_array( 'body-view-templates', $types ) ) {
+		$ct_objects = get_transient( 'wpv_transient_ct_published' );
+		if ( $ct_objects === false ) {
+			global $pagenow;
 			$values_to_prepare = array();
 			$values_to_prepare[] = 'view-template';
-			$exclude = '';
-			if ( in_array( $pagenow, array( 'post.php' ) ) && isset( $_GET["post"] ) ) {
-				$this_template = (int) $_GET["post"];
-				$exclude = " AND ID != %d ";
-				$values_to_prepare[] = $this_template;
+			$values_to_exclude = array();
+			$values_to_exclude_string = '';
+			if (
+				in_array( $pagenow, array( 'post.php' ) )
+				&& isset( $_GET["post"] )
+				&& is_numeric( $_GET["post"] )
+			) {
+				$values_to_exclude[] = (int) $_GET["post"];
+			}
+			if ( 
+				isset( $_GET["page"] ) 
+				&& 'ct-editor' == $_GET["page"]
+				&& isset( $_GET["ct_id"] )
+				&& is_numeric( $_GET["ct_id"] )
+			) {
+				$values_to_exclude[] = (int) $_GET["ct_id"];
+			}
+			$exclude_loop_templates_ids = wpv_get_loop_content_template_ids();
+			if ( count( $exclude_loop_templates_ids ) > 0 ) {
+				$exclude_loop_templates_ids_sanitized = array_map( 'esc_attr', $exclude_loop_templates_ids );
+				$exclude_loop_templates_ids_sanitized = array_map( 'trim', $exclude_loop_templates_ids_sanitized );
+				// is_numeric + intval does sanitization
+				$exclude_loop_templates_ids_sanitized = array_filter( $exclude_loop_templates_ids_sanitized, 'is_numeric' );
+				$exclude_loop_templates_ids_sanitized = array_map( 'intval', $exclude_loop_templates_ids_sanitized );
+				if ( count( $exclude_loop_templates_ids_sanitized ) > 0 ) {
+					$values_to_exclude = array_merge( $values_to_exclude, $exclude_loop_templates_ids_sanitized );
+				}
+			}
+			if ( count( $values_to_exclude ) > 0 ) {
+				$values_to_exclude_string = " AND ID NOT IN ('" . implode( "','" , $values_to_exclude ) . "') ";
 			}
 			$view_template_available = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT ID, post_name, post_title FROM {$wpdb->posts} 
-					WHERE post_type = %s 
-					AND post_status in ('publish') 
-					{$exclude}",
+					"SELECT ID, post_title FROM {$wpdb->posts}
+					WHERE post_type = %s
+					AND post_status in ('publish')
+					{$values_to_exclude_string}",
 					$values_to_prepare
 				)
 			);
-			foreach($view_template_available as $view_template) {
-			if ($call_back) {
-				call_user_func($call_back, $index, $view_template->post_name, '', __('Content template', 'wpv-views'), 'wpv-post-body view_template="' . $view_template->post_name . '"');
-			} else {
-				$editor->add_insert_shortcode_menu($view_template->post_title, 'wpv-post-body view_template="' . $view_template->post_name . '"', __('Content template', 'wpv-views'));
-			}
-
-			$index += 1;
+			set_transient( 'wpv_transient_ct_published', $view_template_available, WEEK_IN_SECONDS );
+		} else {
+			$view_template_available = $ct_objects;
+		}
+		if ( is_array( $view_template_available ) ) {
+			foreach ( $view_template_available as $view_template ) {
+				$editor->add_insert_shortcode_menu( esc_html( $view_template->post_title ), 'wpv-post-body view_template="' . esc_html( $view_template->post_title ) . '"', __('Content Template', 'wpv-views'));
+				$index += 1;
 			}
 		}
 	}
-
-	// If WPML is enabled and String translation is active, add a Translatable string shortcode to the Basic submenu
-
-	if ( isset( $sitepress ) && function_exists( 'wpml_string_shortcode' ) ) {
-	$editor->add_insert_shortcode_menu(__('Translatable string', 'wpv-views'),
-													'wpml-string',
-													__('Basic', 'wpv-views'),
-													'WPViews.shortcodes_gui.wpv_insert_translatable_string_popup(\'' . $nonce . '\')'
-	);
-
-				$index += 1;
-	}
-
-	$editor->add_insert_shortcode_menu(
-		__('Search term', 'wpv-views'),
-		'wpv-search-term',
-		__('Basic', 'wpv-views'),
-		'WPViews.shortcodes_gui.wpv_insert_search_term_popup(\'' . $nonce . '\')'
-	);
-	$index += 1;
 
 	if (
 		in_array( 'view', $types )
@@ -2164,123 +3516,195 @@ function add_short_codes_to_js($types, $editor, $call_back = null){
 		|| in_array( 'taxonomy-view', $types )
 		|| in_array( 'post-view', $types )
 	) {
-		$view_available = $wpdb->get_results( 
-			"SELECT ID, post_title FROM {$wpdb->posts} 
-			WHERE post_type='view' 
-			AND post_status in ('publish')" 
+		$views_objects = get_transient( 'wpv_transient_view_published' );
+		$views_objects_transient_to_update = array(
+			'archive' => array(),
+			'posts' => array(),
+			'taxonomy' => array(),
+			'users' => array()
 		);
-		foreach ( $view_available as $view ) {
-			if ( $WP_Views->is_archive_view( $view->ID ) ) {
-				// Archive Views - add only if in_array( 'archives', $types )
-				if ( in_array( 'archives', $types ) ) {
-                    $editor->add_insert_shortcode_menu( $view->post_title, 'wpv-view name="' . $view->post_title . '"', __( 'Archive', 'wpv-views' ) );
-                    $index += 1;
-				}
-			} else {
-				if ( in_array( 'view', $types ) ) {
-					// Add all Views, but add differently for parametric search ones
-					if ( $WP_Views->does_view_have_form_controls( $view->ID ) ) {
-						global $pagenow;
-						$current_id = 0;
-						if ( in_array( $pagenow, array( 'post.php' ) ) && isset( $_GET["post"] ) ) {
-							$current_id = (int) $_GET["post"];
-						} else if ( in_array( $pagenow, array( 'post-new.php' ) ) ) {
-							global $post;
-							$current_id = $post->ID;
-						}
-						$editor->add_insert_shortcode_menu($view->post_title,
-														'wpv-form-view name="' . $view->post_title . '"',
-														__( 'View', 'wpv-views' ),
-														'WPViews.shortcodes_gui.wpv_insert_view_form_popup(\'' . $view->ID . '\', \'' . $nonce . '\', \'' . $current_id . '\')');
-					} else {
-						$editor->add_insert_shortcode_menu( $view->post_title, 'wpv-view name="' . $view->post_title . '"', __( 'View', 'wpv-views' ) );
+		global $pagenow;
+		$current_id = 0;
+		if ( in_array( $pagenow, array( 'post.php' ) ) && isset( $_GET["post"] ) ) {
+			$current_id = (int) $_GET["post"];
+		} else if ( in_array( $pagenow, array( 'post-new.php' ) ) ) {
+			global $post;
+			$current_id = $post->ID;
+		}
+		if ( $views_objects === false ) {
+			$view_available = $wpdb->get_results(
+				"SELECT ID, post_title FROM {$wpdb->posts}
+				WHERE post_type='view'
+				AND post_status in ('publish')"
+			);
+			foreach ( $view_available as $view ) {
+				if ( $WP_Views->is_archive_view( $view->ID ) ) {
+					// Archive Views - add only if in_array( 'archives', $types )
+					if ( in_array( 'archives', $types ) ) {
+						$editor->add_insert_shortcode_menu( esc_html( $view->post_title ), 'wpv-view name="' . esc_html( $view->post_title ) . '"', __( 'Archive', 'wpv-views' ) );
+						$index += 1;
 					}
+					$views_objects_transient_to_update['archive'][] = $view;
+				} else {
+					$view_settings = get_post_meta( $view->ID, '_wpv_settings', true );
+					$view_type = 'posts';
+					if ( isset( $view_settings['query_type'][0] ) ) {
+						$view_type = $view_settings['query_type'][0];
+					}
+					if ( 
+						in_array( 'user-view', $types ) 
+						&& $view_type == 'users'
+					) {
+						// Add Views listing users
+						$editor->add_insert_shortcode_menu(
+							esc_html( $view->post_title ),
+							'wpv-view name="' . esc_html( $view->post_title ) . '"',
+							__( 'User View', 'wpv-views' ),
+							'WPViews.shortcodes_gui.wpv_insert_view_shortcode_dialog(\'' . $view->ID . '\', \'' . esc_js( $view->post_title ) . '\', \'' . $current_id . '\', \'' . $nonce . '\')'
+						);
+						$index += 1;
+					}
+					if ( 
+						in_array( 'taxonomy-view', $types ) 
+						&& $view_type == 'taxonomy'
+					) {
+						// Add Views listing taxonomies
+						$editor->add_insert_shortcode_menu(
+							esc_html( $view->post_title ),
+							'wpv-view name="' . esc_html( $view->post_title ) . '"',
+							__( 'Taxonomy View', 'wpv-views' ),
+							'WPViews.shortcodes_gui.wpv_insert_view_shortcode_dialog(\'' . $view->ID . '\', \'' . esc_js( $view->post_title ) . '\', \'' . $current_id . '\', \'' . $nonce . '\')'
+						);
+						$index += 1;
+					}
+					if ( 
+						in_array( 'post-view', $types ) 
+						&& $view_type == 'posts'
+					) {
+						// Add Views listing posts
+						$editor->add_insert_shortcode_menu(
+							esc_html( $view->post_title ),
+							'wpv-view name="' . esc_html( $view->post_title ) . '"',
+							__( 'Post View', 'wpv-views' ),
+							'WPViews.shortcodes_gui.wpv_insert_view_shortcode_dialog(\'' . $view->ID . '\', \'' . esc_js( $view->post_title ) . '\', \'' . $current_id . '\', \'' . $nonce . '\')'
+						);
+					}
+					$views_objects_transient_to_update[$view_type][] = $view;
+				}
+			}
+			set_transient( 'wpv_transient_view_published', $views_objects_transient_to_update, WEEK_IN_SECONDS );
+		} else {
+			if ( 
+				in_array( 'archives', $types ) 
+				&& isset( $views_objects['archive'] )
+				&& is_array( $views_objects['archive'] )
+			) {
+				foreach ( $views_objects['archive'] as $view ) {
+					$editor->add_insert_shortcode_menu( esc_html( $view->post_title ), 'wpv-view name="' . esc_html( $view->post_title ) . '"', __( 'Archive', 'wpv-views' ) );
 					$index += 1;
 				}
-				$view_settings = get_post_meta( $view->ID, '_wpv_settings', true );
-				$view_type = 'posts';
-				if ( isset( $view_settings['query_type'][0] ) ) {
-					$view_type = $view_settings['query_type'][0];
+			}
+			if ( 
+				in_array( 'post-view', $types ) 
+				&& isset( $views_objects['posts'] )
+				&& is_array( $views_objects['posts'] )
+			) {
+				foreach ( $views_objects['posts'] as $view ) {
+					$editor->add_insert_shortcode_menu(
+						esc_html( $view->post_title ),
+						'wpv-view name="' . esc_html( $view->post_title ) . '"',
+						__( 'Post View', 'wpv-views' ),
+						'WPViews.shortcodes_gui.wpv_insert_view_shortcode_dialog(\'' . $view->ID . '\', \'' . esc_js( $view->post_title ) . '\', \'' . $current_id . '\', \'' . $nonce . '\')'
+					);
+
 				}
-				if ( in_array( 'user-view', $types ) ) {
-					// Add Views listing users
-					if ( $view_type == 'users' ) {
-						$editor->add_insert_shortcode_menu( $view->post_title, 'wpv-view name="' . $view->post_title . '"', __( 'User View', 'wpv-views' ) );
-						if ( $call_back ) {
-							call_user_func( $call_back, $index, $view->post_title, '', __( 'User View', 'wpv-views' ), 'wpv-view name="' . $view->post_title . '"' );
-						}
-						$index += 1;
-					}
+			}
+			if ( 
+				in_array( 'taxonomy-view', $types ) 
+				&& isset( $views_objects['taxonomy'] )
+				&& is_array( $views_objects['taxonomy'] )
+			) {
+				foreach ( $views_objects['taxonomy'] as $view ) {
+					$editor->add_insert_shortcode_menu(
+						esc_html( $view->post_title ),
+						'wpv-view name="' . esc_html( $view->post_title ) . '"',
+						__( 'Taxonomy View', 'wpv-views' ),
+						'WPViews.shortcodes_gui.wpv_insert_view_shortcode_dialog(\'' . $view->ID . '\', \'' . esc_js( $view->post_title ) . '\', \'' . $current_id . '\', \'' . $nonce . '\')'
+					);
+					$index += 1;
 				}
-				if ( in_array( 'taxonomy-view', $types ) ) {
-					// Add Views listing taxonomies
-					if ( $view_type == 'taxonomy' ) {
-						$editor->add_insert_shortcode_menu( $view->post_title, 'wpv-view name="' . $view->post_title . '"', __( 'Taxonomy View', 'wpv-views' ) );
-						if ( $call_back ) {
-							call_user_func( $call_back, $index, $view->post_title, '', __( 'Taxonomy View', 'wpv-views' ), 'wpv-view name="' . $view->post_title . '"' );
-						}
-						$index += 1;
-					}
-				}
-				if ( in_array( 'post-view', $types ) ) {
-					// Add Views listing posts
-					if ( $view_type == 'posts' ) {
-						$editor->add_insert_shortcode_menu( $view->post_title, 'wpv-view name="' . $view->post_title . '"', __( 'Post View', 'wpv-views' ) );
-						if ( $call_back ) {
-							call_user_func( $call_back, $index, $view->post_title, '', __( 'Post View', 'wpv-views' ), 'wpv-view name="' . $view->post_title . '"' );
-						}
-						$index += 1;
-					}
+			}
+			if ( 
+				in_array( 'user-view', $types ) 
+				&& isset( $views_objects['users'] )
+				&& is_array( $views_objects['users'] )
+			) {
+				foreach ( $views_objects['users'] as $view ) {
+					$editor->add_insert_shortcode_menu(
+						esc_html( $view->post_title ),
+						'wpv-view name="' . esc_html( $view->post_title ) . '"',
+						__( 'User View', 'wpv-views' ),
+						'WPViews.shortcodes_gui.wpv_insert_view_shortcode_dialog(\'' . $view->ID . '\', \'' . esc_js( $view->post_title ) . '\', \'' . $current_id . '\', \'' . $nonce . '\')'
+					);
+					$index += 1;
 				}
 			}
 		}
-        
-        // wpv-login-form
-        $editor->add_insert_shortcode_menu( $wpv_shortcodes['wpv-login-form'][1], $wpv_shortcodes['wpv-login-form'][0], __( 'Basic', 'wpv-views' ) );
-        $index += 1;
     }
-    
-    // FIXME: What is the best menu group for this shortcode? Is it limited to some contexts?
-    // Archive Title
-    $editor->add_insert_shortcode_menu( $wpv_shortcodes['wpv-archive-title'][1], $wpv_shortcodes['wpv-archive-title'][0], __( 'Basic', 'wpv-views' ) );
-    $index += 1;
-    
-	if (in_array('wpml', $types)) {
+
+	// @todo move this to the WPML file with dependency-free hooks
+	if ( in_array( 'wpml', $types ) ) {
 		global $sitepress;
-
-		if (isset($sitepress)) {
-
-			$editor->add_insert_shortcode_menu('WPML lang switcher', 'wpml-lang-switcher', 'WPML');
+		if ( isset( $sitepress ) ) {
+			$editor->add_insert_shortcode_menu(
+				__( 'WPML lang switcher', 'wpv-views' ),
+				'wpml-lang-switcher',
+				'WPML'
+			);
 			$index += 1;
-
 			global $icl_language_switcher;
-			if (isset($icl_language_switcher)) {
-
-				$editor->add_insert_shortcode_menu('WPML lang footer', 'wpml-lang-footer', 'WPML');
+			if ( isset( $icl_language_switcher ) ) {
+				$editor->add_insert_shortcode_menu(
+					__( 'WPML lang footer', 'wpv-views' ),
+					'wpml-lang-footer',
+					'WPML'
+				);
 				$index += 1;
-
 			}
-
 			global $iclCMSNavigation;
-			if (isset($iclCMSNavigation)) {
-
+			if ( isset( $iclCMSNavigation ) ) {
 				//$editor->add_insert_shortcode_menu('WPML breadcrumbs', 'wpml-breadcrumbs', 'WPML');
 				//$index += 1;
-
-				$editor->add_insert_shortcode_menu('WPML sidebar', 'wpml-sidebar', 'WPML');
+				$editor->add_insert_shortcode_menu(
+					__( 'WPML sidebar', 'wpv-views' ),
+					'wpml-sidebar',
+					'WPML'
+				);
 				$index += 1;
-
 			}
 		}
-
-		if (defined('WPSEO_VERSION')) {
-
-			$editor->add_insert_shortcode_menu('Yoast SEO breadcrumbs', 'yoast-breadcrumbs', 'Yoast SEO');
-			$index += 1;
-		}
-
 	}
 
+	if ( defined( 'WPSEO_VERSION' ) ) {
+		$editor->add_insert_shortcode_menu(
+			__( 'Yoast SEO breadcrumbs', 'wpv-views' ),
+			'yoast-breadcrumbs',
+			'Yoast SEO'
+		);
+		$index += 1;
+	}
+	
+	if ( in_array( 'loop-wizard-for-posts', $types ) ) {
+		do_action( 'wpv_action_wpv_add_field_on_loop_wizard_for_posts', $editor, $nonce );
+	}
+	
+	if ( in_array( 'loop-wizard-for-taxonomy', $types ) ) {
+		do_action( 'wpv_action_wpv_add_field_on_loop_wizard_for_taxonomy', $editor, $nonce );
+	}
+	
+	if ( in_array( 'loop-wizard-for-users', $types ) ) {
+		do_action( 'wpv_action_wpv_add_field_on_loop_wizard_for_users', $editor, $nonce );
+	}
 
     return $index;
 }
@@ -2298,8 +3722,11 @@ function wpv_post_taxonomies_shortcode() {
  * Parameters:
  * 'type' => The name of the taxonomy to be displayed
  * 'separator' => Separator to use when there are multiple taxonomy terms for the post. The default is a comma.
- * 'format' => 'link', 'text' or 'url'. Defaults to 'link'
- * 'show' => 'name', 'description', 'slug' or 'count'. Defaults to 'name'
+ * 'format' => 'link'|'url'|'name'|'description'|'slug'|'count'. Defaults to 'link'
+ *     DEPRECATED 'text' defaults to show="name"
+ * 'show' => 'name'|'description'|'slug'|'count'. Defaults to 'name'
+ *     USED ONLY when format="link" to set the anchor
+ *     DEPRECATED when used in combination with format="text"
  * 'order' => 'asc', 'desc'. Defaults to 'asc'
  *
  * Example usage:
@@ -2316,70 +3743,97 @@ function wpv_post_taxonomies_shortcode_render($atts) {
 	$post_id_atts = new WPV_wpcf_switch_post_from_attr_id($atts);
 
 	extract(
-		shortcode_atts( array('format' => 'link',
-							  'show' => 'name',
-							  'order' => 'asc'),
-					   $atts )
+		shortcode_atts(
+			array(
+				'separator' => ', ',
+				'format' => 'link',
+				'show' => 'name',
+				'order' => 'asc'
+			),
+			$atts
+		)
 	);
 
-	global $wplogger;
-
 	$out = '';
-	if (empty($atts['type'])) {
+	if ( empty( $atts['type'] ) ) {
 		return $out;
 	}
-	$types = explode(',', @strval($atts['type']));
-	if (empty($types)) {
+	$types = explode( ',', $atts['type'] );
+	if ( empty( $types ) ) {
 		return $out;
+	} else {
+		$types = array_map( 'trim', $types );
+		$types = array_map( 'sanitize_text_field', $types );
 	}
-
 	global $post;
-	$separator = !empty($atts['separator']) ? @strval($atts['separator']) : ', ';
 	$out_terms = array();
-	foreach ($types as $taxonomy_slug) {
-		$terms = get_the_terms($post->ID, $taxonomy_slug);
-		if ( $terms && !is_wp_error( $terms )) {
-			foreach ($terms as $term) {
-				$text = $term->name;
-				switch ($show) {
-					case 'description':
-						if ($term->description != '') {
-							$text = $term->description;
+	foreach ( $types as $taxonomy_slug ) {
+		$terms = get_the_terms( $post->ID, $taxonomy_slug );
+		if ( 
+			$terms 
+			&& ! is_wp_error( $terms )
+		) {
+			foreach ( $terms as $term ) {
+				switch ( $format ) {
+					case 'text':// DEPRECATED at 1.9, keep for backwards compatibility
+						$text = $term->name;
+						switch ( $show ) {
+							case 'description':
+								$text = $term->description;
+								break;
+							case 'count':
+								$text = $term->count;
+								break;
+							case 'slug':
+								$text = $term->slug;
+								break;
 						}
+						$out_terms[$term->name] = $text;
 						break;
-
+					case 'name':
+						$out_terms[$term->name] = $term->name;
+						break;
+					case 'description':
+						$out_terms[$term->name] = $term->description;
+						break;
 					case 'count':
-						$text = $term->count;
+						$out_terms[$term->name] = $term->count;
 						break;
-
 					case 'slug':
-						$text = $term->slug;
+						$out_terms[$term->name] = $term->slug;;
 						break;
-				}
-
-				$term_link = get_term_link($term, $taxonomy_slug);
-				if (is_wp_error($term_link)) {
-					$wplogger->log('Term invalid - term_slug = ' . $term->slug . ' - taxonomy_slug = ' . $taxonomy_slug, WPLOG_DEBUG);
-				}
-
-				if ($format == 'text') {
-					$out_terms[$term->name] = $text;
-				} else if ($format == 'url') {
-					$out_terms[$term->name] = $term_link;
-				} else {
-					$out_terms[$term->name] = '<a href="' . $term_link . '">' . $text . '</a>';
+					case 'url':
+						$term_link = get_term_link( $term, $taxonomy_slug );
+						$out_terms[$term->name] = $term_link;
+						break;
+					default:
+						$term_link = get_term_link( $term, $taxonomy_slug );
+						$text = $term->name;
+						switch ( $show ) {
+							case 'description':
+								$text = $term->description;
+								break;
+							case 'count':
+								$text = $term->count;
+								break;
+							case 'slug':
+								$text = $term->slug;
+								break;
+						}
+						$out_terms[$term->name] = '<a href="' . $term_link . '">' . $text . '</a>';
+						break;
 				}
 			}
 		}
 	}
-	if (!empty($out_terms)) {
-		if ($order == 'asc') {
-			ksort($out_terms);
-		} elseif ($order == 'desc') {
-			ksort($out_terms);
-			$out_terms = array_reverse($out_terms);
+	if ( ! empty( $out_terms ) ) {
+		if ( $order == 'asc' ) {
+			ksort( $out_terms );
+		} elseif ( $order == 'desc' ) {
+			ksort( $out_terms );
+			$out_terms = array_reverse( $out_terms );
 		}
-		$out = implode($separator, $out_terms);
+		$out = implode( $separator, $out_terms );
 	}
 	apply_filters('wpv_shortcode_debug','wpv-post-taxonomy', json_encode($atts), '', 'Data received from cache.', $out);
 	return $out;
@@ -2390,6 +3844,7 @@ function wpv_post_taxonomies_editor_addon_menus_wpv_views_filter($items) {
 	$exclude_tax_slugs = array();
 	$exclude_tax_slugs = apply_filters( 'wpv_admin_exclude_tax_slugs', $exclude_tax_slugs );
 	$add = array();
+	$nonce = wp_create_nonce('wpv_editor_callback');
 	foreach ($taxonomies as $taxonomy_slug => $taxonomy) {
 		if ( in_array($taxonomy_slug, $exclude_tax_slugs ) ) {
 			continue;
@@ -2397,13 +3852,92 @@ function wpv_post_taxonomies_editor_addon_menus_wpv_views_filter($items) {
 		if ( !$taxonomy->show_ui ) {
 			continue; // Only show taxonomies with show_ui set to TRUE
 		}
-		$add[__('Taxonomy', 'wpv-views')][$taxonomy->label] = array($taxonomy->label, 'wpv-post-taxonomy type="' . $taxonomy_slug . '" separator=", " format="link" show="name" order="asc"', __('Category', 'wpv-views'), '');
+		$add[__('Taxonomy', 'wpv-views')][$taxonomy->label] = array(
+			$taxonomy->label,
+			'wpv-post-taxonomy type="' . $taxonomy_slug . '" separator=", " format="link" show="name" order="asc"',
+			__('Category', 'wpv-views'),
+			"WPViews.shortcodes_gui.wpv_insert_popup('wpv-post-taxonomy', '" . $taxonomy->label . "', {type:{value:'" . $taxonomy_slug . "',label:'". esc_js( $taxonomy->label ) . "'}}, '" . $nonce . "', this )"
+		);
 	}
 
 	$part_one = array_slice($items, 0, 1);
 	$part_two = array_slice($items, 1);
 	$items = $part_one + $add + $part_two;
 	return $items;
+}
+
+/**
+* wpv_shortcodes_register_wpv_post_taxonomy_data
+*
+* Register the wpv-post-taxonomy shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_post_taxonomy_data' );
+
+function wpv_shortcodes_register_wpv_post_taxonomy_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-post-taxonomy'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_post_taxonomy_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_post_taxonomy_data() {
+    $data = array(
+        'name' => __( 'Post taxonomy', 'wpv-views' ),
+        'label' => __( 'Post taxonomy', 'wpv-views' ),
+        'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'format' => array(
+                        'label' => __( 'Display format', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(//'link'|'url'|'name'|'description'|'slug'|'count'
+                            'link' => __('Link to term archive page', 'wpv-views'),
+                            'url' => __('URL of term archive page', 'wpv-views'),
+							'name' => __( 'Term name', 'wpv-views' ),
+							'description' => __( 'Term description', 'wpv-views' ),
+							'slug' => __( 'Term slug', 'wpv-views' ),
+							'count' => __( 'Term post count', 'wpv-views' ),
+                            //'text' => __('Term related text', 'wpv-views'),
+                        ),
+                        'default' => 'link',
+                    ),
+					'show' => array(
+                        'label' => __( 'Anchor text when linking to the term archive page ', 'wpv-views'),
+                        'type' => 'select',
+                        'options' => array(
+                            'name' => __('Term name', 'wpv-views'),
+                            'description' => __('Term description', 'wpv-views'),
+                            'slug' => __('Term slug', 'wpv-views'),
+                            'count' => __('Number of terms', 'wpv-views' ),
+                        ),
+                        'default' => 'name',
+                    ),
+                    'separator' => array(
+                        'label' => __( 'Separator between terms', 'wpv-views'),
+                        'type' => 'text',
+                        'default' => ', ',
+                    ),
+                    'order' => array(
+                        'label' => __( 'Order ', 'wpv-views'),
+                        'type' => 'radio',
+                        'options' => array(
+                            'asc' => __('Ascending', 'wpv-views'),
+                            'desc' => __('Descending', 'wpv-views'),
+                        ),
+                        'default' => 'asc',
+                    ),
+                ),
+            ),
+        ),
+    );
+
+    return $data;
 }
 
 function wpv_do_shortcode($content) {
@@ -2462,11 +3996,18 @@ function wpv_filter_shortcode_types($atts){
 add_shortcode('wpv-filter-search-box', 'wpv_filter_search_box');
 function wpv_filter_search_box($atts){
 	extract(
-		shortcode_atts( array(), $atts )
+		shortcode_atts( array(
+            'style' => '',
+            'class' => ''
+            ), $atts )
 	);
 
 	global $WP_Views;
 	$view_settings = $WP_Views->get_view_settings();
+
+    if ( ! empty( $style ) ) {
+        $style = ' style="'. esc_attr( $style ) .'"';
+    }
 
 	if ($view_settings['query_type'][0] == 'posts') {
 		if ($view_settings && isset($view_settings['post_search_value']) && isset($view_settings['search_mode']) && $view_settings['search_mode'] == 'specific') {
@@ -2477,8 +4018,10 @@ function wpv_filter_search_box($atts){
 		if (isset($_GET['wpv_post_search'])) {
 			$value = 'value="' . stripslashes( urldecode( sanitize_text_field( $_GET['wpv_post_search'] ) ) ) . '"';
 		}
-
-		return '<input type="text" name="wpv_post_search" ' . $value . ' class="js-wpv-filter-trigger-delayed" />';
+        if ( ! empty( $class ) ) {
+            $class = ' ' . esc_attr( $class ) . '"';
+        }
+		return '<input type="text" name="wpv_post_search" ' . $value . ' class="js-wpv-filter-trigger-delayed'.  $class .'"'. $style .' />';
 	}
 
 	if ($view_settings['query_type'][0] == 'taxonomy') {
@@ -2490,14 +4033,12 @@ function wpv_filter_search_box($atts){
 		if (isset($_GET['wpv_taxonomy_search'])) {
 			$value = 'value="' . stripslashes( urldecode( sanitize_text_field( $_GET['wpv_taxonomy_search'] ) ) )  . '"';
 		}
-
-		return '<input type="text" name="wpv_taxonomy_search" ' . $value . '/>';
+        if ( ! empty( $class ) ) {
+            $class = ' class="' . esc_attr( $class ) . '"';
+        }
+		return '<input type="text" name="wpv_taxonomy_search" ' . $value . ''.  $class . $style .'/>';
 	}
 }
-
-
-/** Global for storing the current wpv-for-each index. */
-$wpv_for_each_index = array();
 
 
 /**
@@ -2517,7 +4058,7 @@ $wpv_for_each_index = array();
  * Note:
  * <a href="#wpv-if">wpv-if</a> shortcode won't work inside a wpv-for-each shortcode
  */
-add_shortcode( 'wpv-for-each', 'wpv_for_each_shortcode' );
+
 function wpv_for_each_shortcode( $atts, $value ) {
 	extract(
 		shortcode_atts(
@@ -2529,6 +4070,11 @@ function wpv_for_each_shortcode( $atts, $value ) {
 			$atts
 		)
 	);
+	
+	if ( strpos( $value, 'wpv-b64-' ) === 0) {
+		$value = substr( $value, 7 );
+		$value = base64_decode( $value );
+	}
 
 	if ( $field == '' ) {
 		return wpv_do_shortcode( $value );
@@ -2536,7 +4082,7 @@ function wpv_for_each_shortcode( $atts, $value ) {
 
 	$out = '';
 
-	global $post, $wpv_for_each_index;
+	global $post;
 
 	if ( !empty( $post ) ) {
 		$meta = get_post_meta( $post->ID, $field );
@@ -2567,18 +4113,31 @@ function wpv_for_each_shortcode( $atts, $value ) {
 		if ( $end > count( $meta ) ) {
 			$end = count( $meta );
 		}
-
-		// iterate through the items and set the for-each index
-		$wpv_for_each_index[] = 0;
+		
+		$inner_loopers = "/\\[(wpv-post-field|types).*?\\]/i";
+		$counts = preg_match_all($inner_loopers, $value, $matches);
+		$value_arr = array();
 		for ( $i = $start; $i < $end; $i++ ) {
+			// Set indexes in the wpv-post-field shortcode
+			if ( $counts > 0 ) {
+				$new_value = $value;
+				foreach( $matches[0] as $index => $match ) {
+					// execute shortcode content and replace
+					$shortcode = $matches[ 1 ][ $index ];
+					$apply_index = wpv_should_apply_index_for_each_field( $shortcode, $match, $field );
+					
+					if ( $apply_index) {
+						$resolved_match = str_replace( '[' . $shortcode . ' ', '[' . $shortcode . ' index="' . $i . '" ', $match );
+						$new_value = str_replace( $match, $resolved_match, $new_value );
+					}
+				}
+				$value_arr[] = $new_value;
 
-			// set the for-each index and output
-			$wpv_for_each_index[count( $wpv_for_each_index ) - 1] = $i;
-
-			$out .= wpv_do_shortcode( $value );
+			} else {
+				$value_arr[] = $value;
+			}
 		}
-
-		array_pop( $wpv_for_each_index );
+		$out .= implode( '', $value_arr );
 
 	}
 	apply_filters( 'wpv_shortcode_debug', 'wpv-for-each', json_encode( $atts ), '', 'Data received from cache.', $out );
@@ -2586,16 +4145,73 @@ function wpv_for_each_shortcode( $atts, $value ) {
 
 }
 
-// set the for-each index
-add_filter('wpv-for-each-index', 'wpv_for_each_index');
-function wpv_for_each_index($index) {
-	global $wpv_for_each_index;
-
-	if (count($wpv_for_each_index) > 0) {
-		return end($wpv_for_each_index);
+function wpv_should_apply_index_for_each_field( $shortcode_type, $shortcode, $field ) {
+	$apply_index = false;
+	
+	if ( strpos( $shortcode, " index=" ) === false ) {
+		$apply_index = true;
 	}
+	
+	return $apply_index;
+	
+}
 
-	return $index;
+/**
+* wpv_shortcodes_register_wpv_for_each_data
+*
+* Register the wpv-for-each shortcode in the GUI API.
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_for_each_data' );
+
+function wpv_shortcodes_register_wpv_for_each_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-for-each'] = array(
+		'callback' => 'wpv_shortcodes_get_wpv_for_each_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_for_each_data() {
+    $data = array(
+        'name' => __( 'Post field iterator', 'wpv-views' ),
+        'label' => __( 'Post field iterator', 'wpv-views' ),
+        //'post-selection' => true,
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'field' => array(
+                        'label' => __( 'Custom field', 'wpv-views'),
+                        'type' => 'suggest',
+						'action' => 'wpv_suggest_wpv_post_field_name',
+                        'description' => __('The name of the custom field to display', 'wpv-views'),
+                        'required' => true,
+                    ),
+					'start' => array(
+						'label' => __( 'Index to start', 'wpv-views'),
+						'type' => 'number',
+						'default' => '1',
+						'description' => __('Start the iteration on this index. Defaults to 1.', 'wpv-views'),
+					),
+					'end' => array(
+						'label' => __( 'Index to end', 'wpv-views'),
+						'type' => 'number',
+						'default' => '',
+						'description' => __('End the iteration on this index. No value means all the way until the last index.', 'wpv-views'),
+					),
+                ),
+				'content' => array(
+					'hidden' => true,
+					'label' => __( 'Content of each iteration', 'wpv-views' ),
+					'description' => __( 'This will be displayed on each iteration. The usual content is <code>[wpv-post-field name="field-name"]</code> where field-name is the custom field selected above.', 'wpv-views' )
+				)
+            ),
+        ),
+    );
+    return $data;
 }
 
 

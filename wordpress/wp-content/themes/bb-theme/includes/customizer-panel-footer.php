@@ -41,7 +41,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Footer Widgets Background Color', 'fl-automator')
+						'label'     => __('Background Color', 'fl-automator')
 					)
 				),
 				
@@ -52,7 +52,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Footer Widgets Background Gradient', 'fl-automator'),
+						'label'         => __('Background Gradient', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'0'             => _x( 'Disabled', 'Used for multiple Customizer options values. Use generalized form of the word when translating.', 'fl-automator' ),
@@ -68,7 +68,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Image_Control',
-						'label'     => __('Footer Widgets Background Image', 'fl-automator')
+						'label'     => __('Background Image', 'fl-automator')
 					)
 				),
 
@@ -80,7 +80,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Footer Widgets Background Repeat', 'fl-automator'),
+						'label'     => __('Background Repeat', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'no-repeat'  => __('None', 'fl-automator'),
@@ -99,7 +99,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Footer Widgets Background Position', 'fl-automator'),
+						'label'     => __('Background Position', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'left top'      => __( 'Left Top', 'fl-automator' ),
@@ -123,7 +123,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Footer Widgets Background Attachment', 'fl-automator'),
+						'label'     => __('Background Attachment', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'scroll'    => __('Scroll', 'fl-automator'),
@@ -140,7 +140,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Footer Widgets Background Scale', 'fl-automator'),
+						'label'     => __('Background Scale', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'auto'      => __('None', 'fl-automator'),
@@ -157,7 +157,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Footer Widgets Text Color', 'fl-automator')
+						'label'     => __('Text Color', 'fl-automator')
 					)
 				),
 				
@@ -168,7 +168,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Footer Widgets Link Color', 'fl-automator')
+						'label'     => __('Link Color', 'fl-automator')
 					)
 				),
 				
@@ -179,7 +179,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Footer Widgets Hover Color', 'fl-automator')
+						'label'     => __('Hover Color', 'fl-automator')
 					)
 				)
 			)
@@ -197,7 +197,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Footer Layout', 'fl-automator'),
+						'label'         => __('Layout', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'none'          => __('None', 'fl-automator'),
@@ -222,7 +222,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'   => 'WP_Customize_Control',
-						'label'   => sprintf( _x( 'Footer Column %d Layout', '%d stands for column order number.', 'fl-automator' ), 1 ),
+						'label'   => sprintf( _x( 'Column %d Layout', '%d stands for column order number.', 'fl-automator' ), 1 ),
 						'type'    => 'select',
 						'choices' => array(
 							'text'        => __('Text', 'fl-automator'),
@@ -241,7 +241,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class' => 'WP_Customize_Control',
-						'label' => sprintf( _x( 'Footer Column %d Text', '%d stands for column order number.', 'fl-automator' ), 1 ),
+						'label' => sprintf( _x( 'Column %d Text', '%d stands for column order number.', 'fl-automator' ), 1 ),
 						'type'  => 'textarea'
 					)
 				),
@@ -261,7 +261,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'   => 'WP_Customize_Control',
-						'label'   => sprintf( _x( 'Footer Column %d Layout', '%d stands for column order number.', 'fl-automator' ), 2 ),
+						'label'   => sprintf( _x( 'Column %d Layout', '%d stands for column order number.', 'fl-automator' ), 2 ),
 						'type'    => 'select',
 						'choices' => array(
 							'text'        => __('Text', 'fl-automator'),
@@ -280,7 +280,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class' => 'WP_Customize_Control',
-						'label' => sprintf( _x( 'Footer Column %d Text', '%d stands for column order number.', 'fl-automator' ), 2 ),
+						'label' => sprintf( _x( 'Column %d Text', '%d stands for column order number.', 'fl-automator' ), 2 ),
 						'type'  => 'textarea'
 					)
 				)
@@ -299,7 +299,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Footer Background Color', 'fl-automator')
+						'label'     => __('Background Color', 'fl-automator')
 					)
 				),
 				
@@ -310,7 +310,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Footer Background Gradient', 'fl-automator'),
+						'label'         => __('Background Gradient', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'0'             => _x( 'Disabled', 'Used for multiple Customizer options values. Use generalized form of the word when translating.', 'fl-automator' ),
@@ -326,7 +326,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Image_Control',
-						'label'     => __('Footer Background Image', 'fl-automator')
+						'label'     => __('Background Image', 'fl-automator')
 					)
 				),
 
@@ -338,7 +338,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Footer Background Repeat', 'fl-automator'),
+						'label'     => __('Background Repeat', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'no-repeat'  => __('None', 'fl-automator'),
@@ -357,7 +357,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Footer Background Position', 'fl-automator'),
+						'label'     => __('Background Position', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'left top'      => __( 'Left Top', 'fl-automator' ),
@@ -381,7 +381,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Footer Background Attachment', 'fl-automator'),
+						'label'     => __('Background Attachment', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'scroll'    => __('Scroll', 'fl-automator'),
@@ -398,7 +398,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Footer Background Scale', 'fl-automator'),
+						'label'     => __('Background Scale', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'auto'      => __('None', 'fl-automator'),
@@ -415,7 +415,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Footer Text Color', 'fl-automator')
+						'label'     => __('Text Color', 'fl-automator')
 					)
 				),
 				
@@ -426,7 +426,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Footer Link Color', 'fl-automator')
+						'label'     => __('Link Color', 'fl-automator')
 					)
 				),
 				
@@ -437,7 +437,7 @@ FLCustomizer::add_panel('fl-footer', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Color_Control',
-						'label'     => __('Footer Hover Color', 'fl-automator')
+						'label'     => __('Hover Color', 'fl-automator')
 					)
 				)
 			)

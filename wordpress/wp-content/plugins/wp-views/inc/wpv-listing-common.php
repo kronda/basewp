@@ -187,7 +187,7 @@ function wpv_admin_table_row_actions( $actions, $custom_attributes = array(), $a
  *
  * This function also looks for a list of affected IDs (as comma-separated values in an URL parameter) and
  * if $has_undo is true, the filter wpv_maybe_show_listing_message_undo is applied to obtain an Undo link for
- * this action.
+ * this action. Since 1.10 an array is also accepted and invalid values are ignored.
  *
  * The message will appear below the h2 tag.
  *
@@ -206,7 +206,16 @@ function wpv_maybe_show_listing_message( $message_name, $text_singular, $text_pl
 		// Number of affected posts
 		$message_value = $_GET[ $message_name ];
 		// IDs of affected posts (if set)
-		$affected_ids = isset( $_GET[ $affected_id_arg ] ) ? explode( ',', $_GET[ $affected_id_arg ] ) : array( );
+		$affected_ids = wpv_getget( $affected_id_arg, array() );
+        if( is_numeric( $affected_ids ) ) {
+            $affected_ids = array( $affected_ids );
+        } else if( is_string( $affected_ids ) ) {
+            $affected_ids = explode( ',', $affected_ids );
+        } else if( !is_array( $affected_ids ) ) {
+            // unexpected value
+            $affected_ids = array();
+        }
+
 
 		if( $has_undo ) {
 
@@ -507,7 +516,7 @@ function wpv_prepare_view_listing_query( $view_query_mode, $listed_post_status,
 function wpv_admin_view_listing_message_undo( $undo_link, $message_name, $affected_ids ) {
 	if( ( 'trashed' == $message_name ) && !empty( $affected_ids ) ) {
 		$undo_link = sprintf( '<a href="%s"	class="js-wpv-untrash" data-ids="%s" data-nonce="%s">%s</a>',
-				add_query_arg( array( 'page' => 'views', 'untrashed' => count( $affected_ids ) ), admin_url( 'admin.php' ) ),
+				esc_url( add_query_arg( array( 'page' => 'views', 'untrashed' => count( $affected_ids ) ), admin_url( 'admin.php' ) ) ),
 				urlencode( implode( ',', $affected_ids ) ),
 				wp_create_nonce( 'wpv_view_listing_actions_nonce' ),
 				__( 'Undo', 'wpv-views' ) );
@@ -530,17 +539,11 @@ function wpv_render_ct_listing_dialog_templates_arrangeby_usage() {
 	<div class="popup-window-container"> <!-- placeholder for static colorbox popups -->
 
 		<!-- popup: unlink Template -->
-		<div class="wpv-dialog js-single-unlink-template-dialog">
-			<div class="wpv-dialog-header">
-				<h2><?php echo sprintf( __('Clear single %s','wpv-views'), '<strong class="js-single-unlink-label"></strong>'); ?></h2>
-			</div>
-			<div class="wpv-dialog-content">
+		<div id="js-wpv-clear-all-cpt-from-ct" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-wpv-shortcode-gui-dialog-container js-single-unlink-template-dialog">
+			<div class="wpv-dialog wpv-shortcode-gui-content-wrapper">
+				<h3><?php echo sprintf( __('Clear single %s','wpv-views'), '<strong class="js-single-unlink-label"></strong>'); ?></h3>
 				<p><?php echo sprintf( __('There is no general Content Template asigned to single %s, but %s individual %s have a Content Template asigned to them.','wpv-views'), '<strong class="js-single-unlink-label"></strong>', '<strong class="js-single-unlink-number"></strong>', '<strong class="js-single-unlink-label"></strong>'); ?></p>
 				<p><?php echo __('Would you like to clear them?','wpv-views'); ?></p>
-			</div>
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button button-primary js-single-unlink-template-ok" data-slug="" data-nonce="<?php echo wp_create_nonce( 'wpv_single_unlink_template_nonce' ); ?>"><?php _e('Clear','wpv-views') ?></button>
 			</div>
 		</div>
 
@@ -556,14 +559,8 @@ function wpv_render_ct_listing_dialog_templates_arrangeby_name() {
 	?>
 	<div class="popup-window-container">
 
-		<div class="wpv-dialog js-bulk-remove-content-templates-dialog">
-			<div class="wpv-dialog-header">
-				<h2>
-					<span class="js-plural"><?php _e( 'Delete Content Templates', 'wpv-views' ); ?></span>
-					<span class="js-singular"><?php _e( 'Delete Content Template', 'wpv-views' ); ?></span>
-				</h2>
-			</div>
-			<div class="wpv-dialog-content">
+		<div id="js-bulk-remove-content-templates-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-bulk-remove-content-templates-dialog">
+			<div class="wpv-dialog">
 				<p class="js-ct-single-postcount-message-usage">
 					<span class="js-plural">
 						<?php
@@ -597,10 +594,6 @@ function wpv_render_ct_listing_dialog_templates_arrangeby_name() {
 					</span>
 				</p>
 			</div>
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close"><?php _e( 'Cancel','wpv-views' ); ?></button>
-				<button class="button button-primary js-bulk-remove-templates-permanent"><?php _e( 'Delete', 'wpv-views' ); ?></button>
-			</div>
 		</div>
 
 		<?php
@@ -608,6 +601,52 @@ function wpv_render_ct_listing_dialog_templates_arrangeby_name() {
 		?>
 
 	</div>
+	<?php
+}
+
+
+function wpv_render_wpa_listing_dialog_templates_arrangeby_name() {
+	?>
+	<div class="popup-window-container"> <!-- placeholder for static colorbox popups -->
+	
+		<div id="js-wpv-delete-wpa-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container">
+			<div class="wpv-dialog">
+				<p><?php _e( 'Are you sure want delete this WordPress Archive?', 'wpv-views' ); ?></p>
+			</div>
+		</div>
+		
+		<div id="js-wpv-bulk-delete-wpa-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container">
+			<div class="wpv-dialog">
+				<p><?php _e( 'Are you sure you want to delete the selected WordPress Archives?', 'wpv-views' ); ?></p>
+			</div>
+		</div>
+	
+	</div> <!-- .popup-window-container" -->
+	<?php
+}
+
+
+function wpv_render_wpa_listing_dialog_templates_arrangeby_usage() {
+	?>
+	
+	<div class="popup-window-container"> <!-- placeholder for static colorbox popups -->
+		<div id="js-wpv-create-wpa-for-archive-loop-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container">
+			<div class="wpv-dialog wpv-shortcode-gui-content-wrapper js-wpv-create-wpa-for-archive-loop">
+				<p>
+					<label for="wpv-create-wpa-for-archive-loop-title"><?php 
+					echo sprintf(
+							__( 'Name the new WordPress Archive for %s', 'wpv-views' ),
+							'<strong class="js-wpv-create-wpa-for-archive-loop-hint"></strong>'
+						); 
+					?></label>
+					<input type="text" id="wpv-create-wpa-for-archive-loop-title" value="" class="large-text js-wpv-create-wpa-for-archive-loop-title" placeholder="<?php echo esc_attr( __('WordPress Archive name','wpv-views') ) ?>" />
+				</p>
+				<div class="js-wpv-error-container"></div>
+			</div>
+		</div>
+	
+	</div> <!-- .popup-window-container" -->
+	
 	<?php
 }
 
@@ -620,80 +659,62 @@ function wpv_render_view_listing_dialog_templates() {
 	<div class="popup-window-container"> <!-- placeholder for static colorbox popups -->
 
 		<!-- popup: create View -->
-		<div class="wpv-dialog create-view-form-dialog js-create-view-form-dialog">
-			<?php
-				wp_nonce_field('wp_nonce_create_view', 'wp_nonce_create_view');
-				printf(
-						'<input class="js-view-new-redirect" name="view_creation_redirect" type="hidden" value="%s" />',
-						// Careful, it is expected that this value really ends with "view_id=". View ID gets appended to it in JS.
-						admin_url( 'admin.php?page=views-editor&amp;view_id=') );
-			?>
-			<div class="wpv-dialog-header">
-				<h2><?php _e('Add a new View','wpv-views') ?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
-			<div class="wpv-dialog-content no-scrollbar">
-				<p>
-					<?php _e('A View loads content from the database and displays with your HTML.', 'wpv-views'); ?>
-				</p>
-				<p>
-					<strong><?php _e(' What kind of display do you want to create?','wpv-views'); ?></strong>
+		<div id="js-wpv-create-view-form-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container wpv-create-view-form-dialog js-create-view-form-dialog">
+			<div class="wpv-dialog wpv-shortcode-gui-content-wrapper no-scrollbar">
+				<?php
+					wp_nonce_field('wp_nonce_create_view', 'wp_nonce_create_view');
+					printf(
+							'<input class="js-view-new-redirect" name="view_creation_redirect" type="hidden" value="%s" />',
+							// Careful, it is expected that this value really ends with "view_id=". View ID gets appended to it in JS.
+							admin_url( 'admin.php?page=views-editor&amp;view_id=') );
+				?>
+				<label for="view_new_name"><strong><?php _e( 'Name this View', 'wpv-views' ); ?></strong></label>
+				<input type="text" name="view_new_name" id="view_new_name" class="js-new-post_title large-text"
+						placeholder="<?php echo esc_attr( __('Enter title here', 'wpv-views') ); ?>" />
+				<h3><?php _e( 'What kind of display do you want to create?', 'wpv-views' ); ?></h3>
+				<p style="margin-top:0;">
+					<?php _e('A View loads content from the database and displays it with your HTML.', 'wpv-views'); ?>
 				</p>
 				<ul>
 					<li>
 						<p>
 							<input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_all" value="all" />
 							<label for="view_purpose_all"><?php _e('Display all results','wpv-views'); ?></label>
-							<span class="helper-text"><?php _e('The View will output all the results returned from the query section.', 'wpv-views'); ?></span>
+							<span class="wpv-helper-text"><?php _e('The View will output all the results returned from the query section.', 'wpv-views'); ?></span>
 						</p>
 					</li>
 					<li>
 						<p>
 							<input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_pagination" value="pagination" />
 							<label for="view_purpose_pagination"><?php _e('Display the results with pagination','wpv-views'); ?></label>
-							<span class="helper-text"><?php _e('The View will display the query results in pages.', 'wpv-views'); ?></span>
+							<span class="wpv-helper-text"><?php _e('The View will display the query results in pages.', 'wpv-views'); ?></span>
 						</p>
 					</li>
 					<li>
 						<p>
 							<input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_slider" value="slider" />
 							<label for="view_purpose_slider"><?php _e('Display the results as a slider','wpv-views'); ?></label>
-							<span class="helper-text"><?php _e('The View will display the query results as slides.', 'wpv-views'); ?></span>
+							<span class="wpv-helper-text"><?php _e('The View will display the query results as slides.', 'wpv-views'); ?></span>
 						</p>
 					</li>
 					<li>
 						<p>
 							<input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_parametric" value="parametric" />
 							<label for="view_purpose_parametric"><?php _e('Display the results as a parametric search','wpv-views'); ?></label>
-							<span class="helper-text"><?php _e('Visitors will be able to search through your content using different search criteria.', 'wpv-views'); ?></span>
+							<span class="wpv-helper-text"><?php _e('Visitors will be able to search through your content using different search criteria.', 'wpv-views'); ?></span>
 						</p>
 					</li>
 					<li>
 						<p>
 							<input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_full" value="full" />
 							<label for="view_purpose_full"><?php _e('Full custom display mode','wpv-views'); ?></label>
-							<span class="helper-text"><?php _e('See all the View controls open and set up things manually..', 'wpv-views'); ?></span>
+							<span class="wpv-helper-text"><?php _e('See all the View controls open and set up things manually..', 'wpv-views'); ?></span>
 						</p>
 					</li>
 				</ul>
-
-				<p>
-					<strong><label for="view_new_name"><?php _e('Name this View','wpv-views'); ?></label></strong>
-				</p>
-				<p>
-					<input type="text" name="view_new_name" id="view_new_name" class="js-new-post_title"
-							placeholder="<?php echo htmlentities( __('Enter title here', 'wpv-views'), ENT_QUOTES ); ?>"
-							data-highlight="<?php echo htmlentities( __('Now give this View a name', 'wpv-views'), ENT_QUOTES ); ?>" />
-				</p>
 				<div class="js-wpv-error-container"></div>
 			</div>
-
-			<div class="wpv-dialog-footer">
-				<?php wp_nonce_field('wp_nonce_create_view', 'wp_nonce_create_view'); ?>
-				<button class="button js-dialog-close"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button button-primary js-create-new-view"><?php _e('Create View','wpv-views') ?></button>
-			</div>
-		</div> <!-- .create-view-form-dialog -->
+		</div> <!-- js-wpv-create-view-form-dialog -->
 
 		<?php
 			wpv_render_duplicate_dialog( 'view' );
@@ -713,14 +734,10 @@ function wpv_render_duplicate_dialog( $type ) {
 		case 'ct':
 			$type_label = __( 'Content Template', 'wpv-views' );
 			$dialog_selector = 'js-wpv-duplicate-ct-dialog';
-			$button_selector = 'js-wpv-duplicate-ct';
-			$nonce = '';
 			break;
 		case 'view':
 			$type_label = __( 'View', 'wpv-views' );
-			$nonce = wp_create_nonce( 'wpv_duplicate_view_nonce' );
-			$dialog_selector = 'js-duplicate-view-dialog';
-			$button_selector = 'js-duplicate-view';
+			$dialog_selector = 'js-wpv-duplicate-view-dialog';
 			break;
 		case 'wpa':
 			return;
@@ -737,11 +754,9 @@ function wpv_render_duplicate_dialog( $type ) {
 			ENT_QUOTES );
 	
 	?>
-	<div class="wpv-dialog <?php echo $dialog_selector; ?>">
-		<div class="wpv-dialog-header">
-			<h2><?php printf( __( 'Duplicate %s', 'wpv-views' ), '<span class="js-duplicate-origin-title"></span>' ); ?></h2>
-		</div>
-		<div class="wpv-dialog-content">
+	<div id="<?php echo $dialog_selector; ?>" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container <?php echo $dialog_selector; ?>">
+		<div class="wpv-dialog wpv-shortcode-gui-content-wrapper">
+			<h3><?php printf( __( 'Duplicate <em>%s</em>', 'wpv-views' ), '<span class="js-duplicate-origin-title"></span>' ); ?></h3>
 			<p>
 				<label for="duplicated_name">
 					<?php
@@ -753,17 +768,7 @@ function wpv_render_duplicate_dialog( $type ) {
 				<input type="text" value="" class="widefat js-wpv-duplicated-title"
 						placeholder="<?php _e('Enter name here','wpv-views') ?>" name="duplicated_name">
 			</p>
-			<div class="js-wpv-duplicate-error-container"></div>
-		</div>
-		<div class="wpv-dialog-footer">
-			<button class="button js-dialog-close">
-				<?php _e( 'Cancel', 'wpv-views' ); ?>
-			</button>
-			<button class="button button-secondary <?php echo $button_selector; ?>" disabled="disabled"
-					data-nonce="<?php echo $nonce; ?>"
-					data-error="<?php echo $already_exists_message; ?>" >
-				<?php _e( 'Duplicate', 'wpv-views' ); ?>
-			</button>
+			<div class="js-wpv-duplicate-error-container js-wpv-error-container"></div>
 		</div>
 	</div>
 	<?php

@@ -10,7 +10,7 @@
 		  subject	  = $('.fl-node-<?php echo $id; ?> .fl-subject input'),
 		  message	  = $('.fl-node-<?php echo $id; ?> .fl-message textarea'),
 		  mailto	  = $('.fl-node-<?php echo $id; ?> .fl-mailto input'),
-		  ajaxurl	  = wpAjaxUrl,
+		  ajaxurl	  = FLBuilderLayoutConfig.paths.wpAjaxUrl,
 		  email_regex = /\S+@\S+\.\S+/,
 		  isValid	  = true;
 

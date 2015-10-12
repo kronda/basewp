@@ -19,7 +19,7 @@ WPViews.CustomFieldFilterGUI = function( $ ) {
 	
 	self.icon_edit = '<i class="icon-chevron-up"></i>&nbsp;&nbsp;';
 	self.icon_save = '<i class="icon-ok"></i>&nbsp;&nbsp;';
-	self.spinner = '<span class="spinner ajax-loader">';
+	self.spinner = '<span class="wpv-spinner ajax-loader">';
 	
 	self.post_row = '.js-wpv-filter-row-custom-field';
 	self.post_options_container_selector = '.js-wpv-filter-row-custom-field .js-wpv-filter-edit';
@@ -361,6 +361,7 @@ WPViews.CustomFieldFilterGUI = function( $ ) {
 	// Watch changes
 	
 	$( document ).on( 'change keyup input cut paste', self.post_options_container_selector + ' input, ' + self.post_options_container_selector + ' select', function() {
+		self.resolve_custom_field_value();
 		self.manage_filter_changes();
 	});
 	
@@ -409,7 +410,7 @@ WPViews.CustomFieldFilterGUI = function( $ ) {
 		li_item = thiz.parents( self.post_row ),
 		field = thiz.data('field'),
 		nonce = thiz.data('nonce'),
-		spinnerContainer = $('<div class="spinner ajax-loader">').insertBefore( thiz ).hide(),
+		spinnerContainer = $('<div class="wpv-spinner ajax-loader">').insertBefore( thiz ).hide(),
 		error_container = row.find( '.js-wpv-filter-toolset-messages' ),
 		data = {
 			action: 'wpv_filter_custom_field_delete',
@@ -446,26 +447,16 @@ WPViews.CustomFieldFilterGUI = function( $ ) {
 	
 	$( document ).on('click', '.js-filter-custom-field .js-wpv-filter-remove-custom-field', function(e) {
 		if ( $( self.post_row ).find( '.js-wpv-filter-custom-field-multiple-element' ).length > 1 ) {
-			$.colorbox({
-				inline: true,
-				href:'.js-filter-custom-field-delete-filter-row-dialog',
-				open: true
+			var dialog_height = $(window).height() - 100;
+			self.filter_dialog.dialog('open').dialog({
+				maxHeight: dialog_height,
+				draggable: false,
+				resizable: false,
+				position: { my: "center top+50", at: "center top", of: window }
 			});
 		} else {
 			self.remove_custom_field_filters();
 		}
-	});
-	
-	$( document ).on( 'click', '.js-filter-custom-field-edit-filter-row', function() {
-		$.colorbox.close();
-		WPViews.query_filters.open_filter_row( $( self.post_row ) );
-	})
-
-	$( document ).on( 'click', '.js-filters-custom-field-delete-filter-row', function() {
-		var spinnerContainer = $( self.spinner ).insertBefore( $( this ) ).show();
-		self.remove_custom_field_filters();
-		spinnerContainer.remove();
-		$.colorbox.close();
 	});
 	
 	// Created, saved and deleted
@@ -508,10 +499,63 @@ WPViews.CustomFieldFilterGUI = function( $ ) {
 		WPViews.query_filters.filters_exist();
 	});
 	
+	/**
+	* init_dialogs
+	*
+	* Initialize the dialogs
+	*
+	* @since 1.10
+	*/
+	
+	self.init_dialogs = function() {
+		self.filter_dialog = $( "#js-wpv-filter-custom-field-delete-filter-row-dialog" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: wpv_custom_field_filter_texts.dialog_title,
+			minWidth: 600,
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				$( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				$( 'body' ).removeClass( 'modal-open' );
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: wpv_custom_field_filter_texts.cancel,
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				{
+					class: 'button-secondary',
+					text: wpv_custom_field_filter_texts.edit_filters,
+					click: function() {
+						$( this ).dialog( "close" );
+						WPViews.query_filters.open_filter_row( $( self.post_row ) );
+					}
+				},
+				{
+					class: 'button-primary js-wpv-filters-taxonomy-delete-filter-row',
+					text: wpv_custom_field_filter_texts.delete_filters,
+					click: function() {
+						self.remove_custom_field_filters();
+						$( this ).dialog( "close" );
+					}
+				}
+			]
+		});
+	};
+	
 	self.init = function() {
 		self.custom_field_initialize_compare();
 		//self.custom_field_initialize_compare_mode();
 		self.custom_field_initialize_relationship();
+		self.init_dialogs();
 	};
 	
 	self.init();

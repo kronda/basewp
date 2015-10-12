@@ -121,7 +121,7 @@ $tzd = $sign . str_pad($hour, 2, '0', STR_PAD_LEFT) . ':' . str_pad($min % 60, 2
         <div class="out">
             <div class="in darkSec">
                 <div class="cck tve_clearfix">
-                    <p class="float-left tve_p_left" style="margin: 0; padding: 0; color: #555555;">Copyright 2014 by ACME Inc.</p>
+                    <p class="float-left tve_p_left" style="margin: 0; padding: 0; color: #555555;">Copyright {tcb_current_year} by ACME Inc.</p>
 
                     <p class="float-right tve_p_right" style="margin: 0; padding: 0; color: #555555;">
                         <a href="#">Disclaimer</a>

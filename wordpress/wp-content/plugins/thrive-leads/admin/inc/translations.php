@@ -11,7 +11,7 @@ return array(
     //
     'AddNewForm' => __('Add New Form', 'thrive-leads'),
     'AddShortcode' => __('Add New Lead Shortcode', 'thrive-leads'),
-    'AddTwoStepLightbox' => __('Add New Lead 2 Step Lightbox', 'thrive-leads'),
+    'AddTwoStepLightbox' => __('Add New ThriveBox', 'thrive-leads'),
     'AddGroup' => __('Add New Lead Group', 'thrive-leads'),
     'ReAddForm' => __('Re-add Form', 'thrive-leads'),
     'ArchiveForm' => __('Archive Form', 'thrive-leads'),
@@ -45,7 +45,7 @@ return array(
     'SetWinnerTwoStepLightboxMessage' => __('You have successfully selected a winner. It is now being show as the default form. All non-winning forms have been added to the "Archived Forms" section at the bottom.', 'thrive-leads'),
     'GroupNameRequired' => 'Lead Group Name cannot be empty',
     'ShortcodeNameRequired' => 'Lead Shortcode Name cannot be empty',
-    'TwoStepLightboxNameRequired' => '2 Step Lightbox Name cannot be empty',
+    'TwoStepLightboxNameRequired' => 'ThriveBox Name cannot be empty',
     'MissingFormContent' => 'Some of the forms do not have any content. Please edit all the form designs marked below before starting a test.',
     'NoTestCompleted' => 'No tests have been completed',
     'DbOptimized' => 'Thrive Leads database tables have been optimized',

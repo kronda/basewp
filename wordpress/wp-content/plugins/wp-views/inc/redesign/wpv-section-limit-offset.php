@@ -35,7 +35,7 @@ function wpv_show_hide_limit_offset( $sections ) {
 add_action( 'view-editor-section-query', 'add_view_limit_offset', 40, 2 );
 
 function add_view_limit_offset( $view_settings, $view_id ) {
-	$view_settings = wpv_limit_default_settings( $view_settings );
+	$view_settings = wpv_limit_offset_default_settings( $view_settings );
 	$limit_options = array();
 	$offset_options = array();
 	for ( $index = 1; $index < 51; $index++ ) {

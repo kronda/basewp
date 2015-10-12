@@ -1,3 +1,12 @@
+= 1.6.5 =
+* Added configuration file for composer
+* Updated how free plugins are shown on the plugins list (commercial tab)
+* API calls for manipulating translation service preferences
+* Support for hosting custom Installer packages on wpml.org
+* Fixed a warning that was showing when using the OTGS_DISABLE_AUTO_UPDATES constant before any product data was downloaded
+* Changed the frequency with which product updates are checked automatically (24 hours)
+* Improved reporting for version numbers
+
 = 1.6.4 =
 * Enabled the OTGS_DISABLE_AUTO_UPDATES constant for theme update checks
 * Fixed a bug that was causing Register links to show for all installed plugins

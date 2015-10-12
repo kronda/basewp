@@ -2,6 +2,8 @@
  * Codemirror configuration.
  */
 
+var WPViews = WPViews || {};
+
 /*
  * 
  * Define mode.
@@ -224,4 +226,64 @@ CodeMirror.defineMode("myshortcodes", function(config, parserConfig) {
         };
     })();
     return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "text/html"), shortcodesOverlay);
+});
+
+WPViews.ViewCodeMirrorUtils = function( $ ) {
+	
+	var self = this;
+	
+	// ---------------------------------
+	// CodeMirror panels
+	// ---------------------------------
+	
+	self.codemirror_panel = function( instance, content, keep, type ) {
+		
+		var filter_editor_panel = document.createElement( "div" ),
+		filter_editor_panel_content,
+		filter_editor_panel_close,
+		filter_editor_panel_close_feedback,
+		filter_editor_panel_instance;
+		
+		filter_editor_panel.className = "wpv-codemirror-panel";
+		filter_editor_panel.className += " wpv-codemirror-panel-" + type;
+		
+		filter_editor_panel_content = filter_editor_panel.appendChild( document.createElement( "span" ) );
+		filter_editor_panel_content.textContent = content;
+		
+		if ( keep == 'dismissable' ) {
+			filter_editor_panel_close = filter_editor_panel.appendChild( document.createElement( "i" ) );
+			filter_editor_panel_close.className = "icon-remove-sign js-wpv-codemirror-panel-close";
+		} else if ( keep == 'permanent' ) {
+			
+		} else if ( keep == 'temporal' ) {
+			filter_editor_panel_close_feedback = filter_editor_panel.appendChild(document.createElement("div"));
+			filter_editor_panel_close_feedback.className = "wpv-codemirror-panel-close-feedback";
+		}
+		
+		filter_editor_panel_instance = instance.addPanel( filter_editor_panel );
+		
+		if ( keep == 'dismissable' ) {
+			CodeMirror.on(filter_editor_panel_close, "click", function() { filter_editor_panel_instance.clear(); });
+		} else if ( keep == 'temporal' ) {
+			setTimeout( function() {
+				filter_editor_panel_instance.clear();
+			}, 3000);
+		}
+		
+	};
+	
+	// ---------------------------------
+	// Init
+	// ---------------------------------
+	
+	self.init = function() {
+		
+	};
+	
+	self.init();
+
+};
+
+jQuery( document ).ready( function( $ ) {
+    WPViews.view_codemirror_utils = new WPViews.ViewCodeMirrorUtils( $ );
 });

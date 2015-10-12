@@ -37,6 +37,7 @@ define('WPV_FILTER_BY_USERS_LINK', 'http://wp-types.com/documentation/user-guide
 
 define('WPV_FILTER_BY_USER_FIELDS_LINK', 'http://wp-types.com/documentation/user-guides/filtering-views-by-custom-fields/?utm_source=viewsplugin&utm_campaign=views&utm_medium=edit-view-users-fields-filter&utm_term=Learn about filtering by user fields');
 
+define('WPV_FILTER_BY_POST_DATE_LINK', 'http://wp-types.com/documentation/user-guides/filtering-views-query-by-date/?utm_source=viewsplugin&utm_campaign=views&utm_medium=edit-view-post-date-filter&utm_term=Learn about filtering by Post Date');
 
 // Views layout constants
 

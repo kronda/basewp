@@ -155,7 +155,7 @@ function tve_api_delete_log()
             'status' => 'error',
             'message' => sprintf(__("An error occurred: %s", "thrive-cb"), $wpdb->last_error)
         )));
-    } else if($delete_result === 0) {
+    } else if ($delete_result === 0) {
         exit(json_encode(array(
             'status' => 'error',
             'message' => sprintf(__("The log with ID: %s could not be found !", "thrive-cb"), $log_id)
@@ -213,7 +213,7 @@ function tve_api_form_retry()
 
     $response = tve_api_add_subscriber($connection_name, $list_id, $data, false);
 
-    if($response !== true) {
+    if ($response !== true) {
         exit(json_encode(array(
             'status' => 'error',
             'message' => $response
@@ -246,6 +246,26 @@ function tve_api_form_retry()
 function tve_api_form_submit()
 {
     $data = $_POST;
+
+    if (isset($data['_use_captcha']) && $data['_use_captcha'] == '1') {
+        $CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify';
+        $captcha_api = Thrive_List_Manager::credentials('recaptcha');
+
+        $_capthca_params = array(
+            'response' => $data['g-recaptcha-response'],
+            'secret' => empty($captcha_api['secret_key']) ? '' : $captcha_api['secret_key'],
+            'remoteip' => $_SERVER['REMOTE_ADDR']
+        );
+
+        $request = thrive_api_remote_post($CAPTCHA_URL, array('body' => $_capthca_params));
+        $response = json_decode(wp_remote_retrieve_body($request));
+        if (empty($response) || $response->success === false) {
+            exit(json_encode(array(
+                'error' => __('Please prove us that you are not a robot!!!', 'thrive-cb'),
+            )));
+        }
+    }
+
 
     if (empty($data['email'])) {
         exit(json_encode(array(

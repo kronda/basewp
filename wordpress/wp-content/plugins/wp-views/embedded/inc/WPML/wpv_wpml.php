@@ -1,39 +1,33 @@
 <?php
 
-/**
-* WPML Translation Management integration
-*/
+/* ************************************************************************* *\
+        WPML Translation Management integration
+\* ************************************************************************* */
+
 
 /**
-* wpv_wpml_icl_current_language
-*
-* Auxiliar function to override the current language
-*
-* @param $lang string the current language
-*
-* @return $sitepress->get_default_language()
-*
-* @since unknown
-*/
-
-function wpv_wpml_icl_current_language($lang) { // TODO check why is this needed: it just returns the default language when looking for the current language...
+ * Auxiliar function to override the current language
+ *
+ * @param $lang string the current language
+ * @return bool $sitepress->get_default_language()
+ *
+ * @since unknown
+ */
+function wpv_wpml_icl_current_language( $lang ) { // TODO check why is this needed: it just returns the default language when looking for the current language...
     global $sitepress;
 
     return $sitepress->get_default_language();
 }
 
-/**
-* wpml_content_fix_links_to_translated_content
-*
-* Converts links in a string to the corresponding ones in the current language
-*
-* @param $body string to check against
-*
-* @return $body
-*
-* @since unknown
-*/
 
+/**
+ * Converts links in a string to the corresponding ones in the current language
+ *
+ * @param $body string to check against
+ * @return bool|mixed|string $body
+ *
+ * @since unknown
+ */
 function wpml_content_fix_links_to_translated_content($body){
     global $WPV_settings, $wpdb, $sitepress, $sitepress_settings, $wp_taxonomies;
 
@@ -261,18 +255,15 @@ function wpml_content_fix_links_to_translated_content($body){
     return $body;
 }
 
-/**
-* wpml_content_get_link_paths
-*
-* Parse links from a given string
-*
-* @param $body string to be parsed
-*
-* @return $links array() of parsed links
-*
-* @since unknown
-*/
 
+/**
+ * Parse links from a given string
+ *
+ * @param $body string to be parsed
+ * @return array $links array of parsed links
+ *
+ * @since unknown
+ */
 function wpml_content_get_link_paths($body) {
 
     $regexp_links = array(
@@ -292,17 +283,16 @@ function wpml_content_get_link_paths($body) {
     return $links;
 }
 
-/**
-* wpv_wpml_settings
-*
-* Filter hooked into icl_tm_menu_mcsetup. Add View settings to the Translation Management setup screen
-*
-* @note displays different HTML for different WPML versions
-*
-* @since unknown
-*/
 
-add_action('icl_tm_menu_mcsetup', 'wpv_wpml_settings');
+add_action( 'icl_tm_menu_mcsetup', 'wpv_wpml_settings' );
+
+/**
+ * Filter hooked into icl_tm_menu_mcsetup. Add View settings to the Translation Management setup screen.
+ *
+ * @note displays different HTML for different WPML versions
+ *
+ * @since unknown
+ */
 function wpv_wpml_settings() {
     global $WPV_settings;
 
@@ -310,75 +300,70 @@ function wpv_wpml_settings() {
     
     if(defined('ICL_SITEPRESS_VERSION')) {
 
-	if ( version_compare( ICL_SITEPRESS_VERSION, '3.0' )  < 0 ) {
+        if ( version_compare( ICL_SITEPRESS_VERSION, '3.0' )  < 0 ) {
+
+            /*
+            *    This section should be display conditionally, only for WPML < 3.0
+            */
+            ?>
+            <table class="widefat">
+                <thead>
+                    <tr>
+                        <th><?php _e('Views', 'wpv-views'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: none;">
+                            <p>
+                                <label>
+                                    <input id="wpv_wpml_fix_urls" type="checkbox" value="1" <?php checked( $WPV_settings->wpml_fix_urls ); ?> />
+                                    <?php _e('Convert URLs to point to translated content in Views and Content Templates', 'wpv-views'); ?>
+                                </label>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input class="button-primary" type="button" value="<?php _e('Save', 'wpv-views'); ?>" onclick="wpv_wpml_save_view_settings(); return false;" />
+                            <span id="icl_ajx_response_views_wpml" class="icl_ajx_response"><?php _e('Settings Saved', 'wpv-views'); ?></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        <?php
     
-    ?>
+        } else {
 
+            /*
+            * This section should be display conditionally, only for WPML >= 3.0
+            */
 
-    <?php
-    /*
-    *    This section should be display conditionally, only for WPML < 3.0
-    */
-    ?>
-    <table class="widefat">
-        <thead>
-            <tr>
-                <th><?php _e('Views', 'wpv-views'); ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="border: none;">
+            ?>
+
+            <div class="wpml-section">
+                <div class="wpml-section-header">
+                    <h3>
+                        <?php _e('Views', 'wpv-views'); ?></th>
+                    </h3>
+                </div>
+                <div class="wpml-section-content">
                     <p>
                         <label>
                             <input id="wpv_wpml_fix_urls" type="checkbox" value="1" <?php checked( $WPV_settings->wpml_fix_urls ); ?> />
                             <?php _e('Convert URLs to point to translated content in Views and Content Templates', 'wpv-views'); ?>
                         </label>
                     </p>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input class="button-primary" type="button" value="<?php _e('Save', 'wpv-views'); ?>" onclick="wpv_wpml_save_view_settings(); return false;" />
-                    <span id="icl_ajx_response_views_wpml" class="icl_ajx_response"><?php _e('Settings Saved', 'wpv-views'); ?></span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                    <p class="buttons-wrap">
+                        <span id="icl_ajx_response_views_wpml" class="icl_ajx_response"><?php _e('Settings Saved', 'wpv-views'); ?></span>
+                        <input class="button-primary" type="button" value="<?php _e('Save', 'wpv-views'); ?>" onclick="wpv_wpml_save_view_settings(); return false;" />
+                    </p>
+                </div>
+            </div>
 
-    <?php
-    
-    } else {
-    
-    /*
-	* This section should be display conditionally, only for WPML >= 3.0
-    */
-    
-    ?>
+            <?php
 
-    <div class="wpml-section">
-        <div class="wpml-section-header">
-            <h3>
-                <?php _e('Views', 'wpv-views'); ?></th>
-            </h3>
-        </div>
-        <div class="wpml-section-content">
-            <p>
-                <label>
-                    <input id="wpv_wpml_fix_urls" type="checkbox" value="1" <?php checked( $WPV_settings->wpml_fix_urls ); ?> />
-                    <?php _e('Convert URLs to point to translated content in Views and Content Templates', 'wpv-views'); ?>
-                </label>
-            </p>
-            <p class="buttons-wrap">
-                <span id="icl_ajx_response_views_wpml" class="icl_ajx_response"><?php _e('Settings Saved', 'wpv-views'); ?></span>
-                <input class="button-primary" type="button" value="<?php _e('Save', 'wpv-views'); ?>" onclick="wpv_wpml_save_view_settings(); return false;" />
-            </p>
-        </div>
-    </div>
-    
-    <?php
-    
-	}
+        }
     }
     ?>
 
@@ -403,7 +388,10 @@ function wpv_wpml_settings() {
     <?php
 }
 
+
+
 add_action('wp_ajax_wpv_wpml_save_settings', 'wpv_wpml_save_settings');
+
 function wpv_wpml_save_settings() {
 	if (wp_verify_nonce($_POST['wpv_nonce'], 'wpv_wpml_save_settings_nonce')) {
         global $WPV_settings;
@@ -414,27 +402,28 @@ function wpv_wpml_save_settings() {
     die();
 }
 
-/**
-* WPML String Translation integration
-*/
+
+/* ************************************************************************* *\
+        WPML String Translation integration
+\* ************************************************************************* */
+
+
+add_filter( 'wpv_custom_inner_shortcodes', 'wpv_wpml_string_in_custom_inner_shortcodes' );
 
 /**
-* wpv_wpml_string_in_custom_inner_shortcodes
-*
-* Filter hooked into wpv_custom_inner_shortcodes. Add the [wpml-string] shortcode to the allowed inner shortcodes, but only if the [wpml-string] shortcode itself exists
-*
-* @param $custom_inner_shortcodes array() of allowed custom inner shortcodes
-*
-* @return $custom_inner_shortcodes
-*
-* @since 1.4.0
-*/
-
-add_filter('wpv_custom_inner_shortcodes', 'wpv_wpml_string_in_custom_inner_shortcodes');
-
-function wpv_wpml_string_in_custom_inner_shortcodes($custom_inner_shortcodes) {
+ * Filter hooked into wpv_custom_inner_shortcodes. Add the [wpml-string] shortcode to the allowed inner shortcodes, but only if the [wpml-string] shortcode itself exists
+ *
+ * @param $custom_inner_shortcodes array() of allowed custom inner shortcodes
+ *
+ * @return $custom_inner_shortcodes
+ *
+ * @since 1.4.0
+ */
+function wpv_wpml_string_in_custom_inner_shortcodes( $custom_inner_shortcodes ) {
 	if ( function_exists( 'wpml_string_shortcode' ) ) {
-		if ( !is_array( $custom_inner_shortcodes ) ) $custom_inner_shortcodes = array();
+		if ( ! is_array( $custom_inner_shortcodes ) ) {
+			$custom_inner_shortcodes = array();
+		}
 		$custom_inner_shortcodes[] = 'wpml-string';
 		$custom_inner_shortcodes = array_unique( $custom_inner_shortcodes );
 	}
@@ -442,16 +431,13 @@ function wpv_wpml_string_in_custom_inner_shortcodes($custom_inner_shortcodes) {
 }
 
 /**
-* wpv_add_controls_labels_to_translation
-*
-* Utility function to translate strings used in wpv-control shortcodes
-*
-* @param $content the content of the Filter HTML textarea to parse
-* @param $view_id the current View ID to build the content from
-*
-* @since 1.3.0
-*/
-
+ * Utility function to translate strings used in wpv-control shortcodes.
+ *
+ * @param string $content The content of the Filter HTML textarea to parse
+ * @param int $view_id The current View ID to build the content from
+ *
+ * @since 1.3.0
+ */
 function wpv_add_controls_labels_to_translation( $content, $view_id ) {
 	if( function_exists('icl_register_string') ) {
 		/*
@@ -600,17 +586,15 @@ function wpv_add_controls_labels_to_translation( $content, $view_id ) {
 }
 
 /**
-* wpv_parse_wpml_shortcode
-*
-* Parses wpml-string shortcodes in a given string, handling slashes coming from escaped quotes
-*
-* @param $content the string to parse shortcodes from
-*
-* @return $output array( N => array( 'context'=> $context, 'content'=> $content, 'name'=> $name ) )
-*
-* @since 1.5.0
-*/
-
+ * wpv_parse_wpml_shortcode
+ *
+ * Parses wpml-string shortcodes in a given string, handling slashes coming from escaped quotes
+ *
+ * @param $content the string to parse shortcodes from
+ * @return array $output array( N => array( 'context'=> $context, 'content'=> $content, 'name'=> $name ) )
+ *
+ * @since 1.5.0
+ */
 function wpv_parse_wpml_shortcode( $content ) {
 	$output = array();
 	$content = stripslashes( $content );
@@ -624,18 +608,18 @@ function wpv_parse_wpml_shortcode( $content ) {
 	return $output;
 }
 
-/**
-* wpv_register_wpml_strings
-*
-* Registers strings wrapped into wpml-string shortcodes for translation using WPML, handling slashes coming from escaped quotes
-*
-* @param $content the string to parse shortcodes from
-*
-* @since 1.5.0
-*/
 
+/**
+ * wpv_register_wpml_strings
+ *
+ * Registers strings wrapped into wpml-string shortcodes for translation using WPML, handling slashes coming from escaped quotes
+ *
+ * @param string $content The string to parse shortcodes from.
+ *
+ * @since 1.5.0
+ */
 function wpv_register_wpml_strings( $content ) {
-	if( function_exists('icl_register_string') ) {
+	if ( function_exists('icl_register_string') ) {
 		$registrars = array();
 		$registrars = wpv_parse_wpml_shortcode( $content );
 		if ( count( $registrars ) > 0 ) {
@@ -646,6 +630,7 @@ function wpv_register_wpml_strings( $content ) {
 	}
 }
 
+
 /**
 * wpv_register_wpml_strings_on_activation
 *
@@ -655,7 +640,7 @@ function wpv_register_wpml_strings( $content ) {
 * @since 1.6.2 change of the hook to init as the user capabilities are not reliable before that (and they are used in get_posts())
 */
 
-add_action('init', 'wpv_register_wpml_strings_on_activation', 99);
+add_action( 'init', 'wpv_register_wpml_strings_on_activation', 99 );
 
 function wpv_register_wpml_strings_on_activation() {
 	if (
@@ -740,28 +725,27 @@ function wpv_register_wpml_section( $sections ) {
 	return $sections;
 }
 
-/**
-* wpv_wpml_string_translation_shortcodes_instructions
-*
-* Registers the content of the WPML section in several formatting instructions boxes
-*
-* @param $return (array|false) What to return, generally an array for the section that you want to give content to
-*     'classname' => (string) A specific classname for this section, useful when some kind of show/hide functionality is needed
-*     'title' => (string) The title of the section
-*     'content' => (string) The main text of the section
-*     'table' => (array) Table of ( Element, Description) arrays to showcase shortcodes, markup or related things
-*         array(
-*             'element' => (string) The element to describe. You can use some classes to add styling like in the CodeMirror instances: .wpv-code-shortcode, .wpv-code-html, .wpv-code-attr or .wpv-code-val
-*             'description' => (string) The element description
-*         )
-*     'content_extra' => (string) Extra text to be displayed after the table
-* @param $section (string) The name of the section
-*
-* @return $return (array|false)
-*
-* @since 1.7
-*/
 
+/**
+ * wpv_wpml_string_translation_shortcodes_instructions
+ *
+ * Registers the content of the WPML section in several formatting instructions boxes
+ *
+ * @param $return (array|false) What to return, generally an array for the section that you want to give content to
+ *     'classname' => (string) A specific classname for this section, useful when some kind of show/hide functionality is needed
+ *     'title' => (string) The title of the section
+ *     'content' => (string) The main text of the section
+ *     'table' => (array) Table of ( Element, Description) arrays to showcase shortcodes, markup or related things
+ *         array(
+ *             'element' => (string) The element to describe. You can use some classes to add styling like in the CodeMirror instances: .wpv-code-shortcode, .wpv-code-html, .wpv-code-attr or .wpv-code-val
+ *             'description' => (string) The element description
+ *         )
+ *     'content_extra' => (string) Extra text to be displayed after the table
+ * @param $section (string) The name of the section
+ * @return array $return (array|false)
+ *
+ * @since 1.7
+ */
 function wpv_wpml_string_translation_shortcodes_instructions( $return, $section ) {
 	if ( $section == 'string_translation' ) {
 		$return = array(
@@ -780,4 +764,379 @@ function wpv_wpml_string_translation_shortcodes_instructions( $return, $section 
 		);
 	}
 	return $return;
+}
+
+/**
+* Register the wpml-string shortcode into the shortcodes GUI API
+*
+* @since 1.9
+*/
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpml_string_data' );
+
+function wpv_shortcodes_register_wpml_string_data( $views_shortcodes ) {
+	$views_shortcodes['wpml-string'] = array(
+		'callback' => 'wpv_shortcodes_get_wpml_string_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpml_string_data() {
+	if ( ! function_exists('icl_register_string') ) {
+		return array();
+	}
+	global $wpdb;
+	$results = $wpdb->get_results( 
+		$wpdb->prepare( 
+            "SELECT DISTINCT context 
+            FROM {$wpdb->prefix}icl_strings
+            ORDER BY %s ASC 
+			LIMIT %d", 
+			'context',
+			16
+		) 
+	);
+	if ( count( $results ) > 15 ) {
+		$context_attr_settings = array(
+			'label' => __( 'WPML Context', 'wpv-views'),
+			'type' => 'suggest',
+			'action' => 'wpv_suggest_wpml_contexts',
+			'default' => '',
+			'required' => true,
+			'placeholder' => __( 'Start typing', 'wpv-views' ),
+		);
+	} else {
+		$options = array(
+			'' => __( 'Select one WPML context', 'wpv-views' )
+		);
+		foreach ( $results as $row ) {
+			$options[$row->context] = $row->context;
+		}
+		$context_attr_settings = array(
+			'label' => __( 'WPML Context', 'wpv-views'),
+			'type' => 'select',
+			'options' => $options,
+			'default' => '',
+			'required' => true,
+		);
+	}
+	
+    $data = array(
+        'name' => __( 'Translatable string', 'wpv-views' ),
+        'label' => __( 'Translatable string', 'wpv-views' ),
+        'attributes' => array(
+            'display-options' => array(
+                'label' => __('Display options', 'wpv-views'),
+                'header' => __('Display options', 'wpv-views'),
+                'fields' => array(
+                    'context' => $context_attr_settings,
+                ),
+				'content' => array(
+					'label' => __( 'String to translate', 'wpv-views' )
+				)
+            ),
+        ),
+    );
+    return $data;
+}
+
+/**
+* wpv_suggest_wpml_contexts
+*
+* Suggest for WPML string shortcode context, from a suggest callback
+*
+* @since 1.4
+*/
+
+add_action('wp_ajax_wpv_suggest_wpml_contexts', 'wpv_suggest_wpml_contexts');
+add_action('wp_ajax_nopriv_wpv_suggest_wpml_contexts', 'wpv_suggest_wpml_contexts');
+
+function wpv_suggest_wpml_contexts() {
+	global $wpdb;
+	$context_q = '%' . wpv_esc_like( $_REQUEST['q'] ) . '%';
+	$results = $wpdb->get_results( 
+		$wpdb->prepare( 
+            "SELECT DISTINCT context 
+            FROM {$wpdb->prefix}icl_strings
+            WHERE context LIKE %s
+            ORDER BY context ASC", 
+			$context_q 
+		) 
+	);
+	foreach ( $results as $row ) {
+		echo $row->context . "\n";
+	}
+	die();
+}
+
+/**
+* wpv_force_shortcodes_gui_wpml_string
+*
+* Enforce the wpml-string shortcode on the Basic section of the Fields and Views dialog
+* Even when displaying data for Views listing taxonomy terms or users
+*
+* @since 1.10
+*/
+
+add_filter( 'editor_addon_menus_wpv-views', 'wpv_force_shortcodes_gui_wpml_string', 90 );
+
+function wpv_force_shortcodes_gui_wpml_string( $menu = array() ) {
+	global $sitepress;
+	$basic = __( 'Basic', 'wpv-views' );
+	if (
+		isset( $menu[$basic] )
+		&& isset( $sitepress )
+		&& function_exists( 'wpml_string_shortcode' )
+	) {
+		$nonce = wp_create_nonce( 'wpv_editor_callback' );
+		$wpml_string_title = __( 'Translatable string', 'wpv-views' );
+		$menu[$basic][$wpml_string_title] = array( 
+			$wpml_string_title,
+			'wpml-string',
+			$basic,
+			"WPViews.shortcodes_gui.wpv_insert_popup('wpml-string', '" . $wpml_string_title . "', {}, '" . $nonce . "', this )"
+		);
+	}
+	return $menu;
+}
+
+/**
+* wpv_disable_wpml_admin_lang_switcher
+*
+* Disable the WPML admin bar language switcher on Views, CT and WPA related pages
+*
+* @since 1.9
+*/
+
+add_filter('wpml_show_admin_language_switcher', 'wpv_disable_wpml_admin_lang_switcher');
+
+function wpv_disable_wpml_admin_lang_switcher( $state ) {
+	global $pagenow;
+	$disable_in_views_pages = array(
+		'views', 'views-editor', 'embedded-views', 'views-embedded', 
+		'view-templates', 'ct-editor', 'embedded-views-templates', 'view-templates-embedded', 
+		'view-archives', 'view-archives-editor', 'embedded-views-archives', 'view-archives-embedded', 
+		'views-settings', 'views-import-export', 'views-debug-information', 'views-update-help'
+	);
+	if ( 
+		$pagenow == 'admin.php' 
+		&& isset( $_GET['page'] ) 
+		&& in_array( $_GET['page'], $disable_in_views_pages )
+	) {
+		$state = false;
+	}
+	return $state;
+}
+
+
+/**
+ * Singleton encapsulating (new) WPML-related functionality.
+ *
+ * @since 1.10
+ */
+class WPV_WPML_Integration_Embedded {
+
+    /**
+     * The instance.
+     *
+     * @var WPV_WPML_Integration_Embedded
+     * @since 1.10
+     */
+    protected static $instance = null;
+
+
+    /**
+     * Get the instance of the singleton (and create it if it doesn't exist yet).
+     *
+     * @return WPV_WPML_Integration_Embedded
+     * @since 1.10
+     */
+    public static function get_instance() {
+        if( null == self::$instance ) {
+            self::$instance = new WPV_WPML_Integration_Embedded();
+        }
+        return self::$instance;
+    }
+
+
+    /**
+     * Initialize the singleton.
+     *
+     * Should be called during init action.
+     *
+     * @since 1.10
+     */
+    public static function init() {
+        self::get_instance();
+    }
+
+
+    /**
+     * @var bool Holds information about the state of WPML TM activation.
+     * @since 1.10
+     */
+    protected $_is_wpml_tm_loaded = false;
+
+
+    /**
+     * Singleton instantiation.
+     *
+     * Should happen before plugins_loaded action. Register further action hooks.
+     *
+     * @since 1.10
+     */
+    protected function __construct() {
+        add_action( 'admin_init', array( $this, 'admin_init' ) );
+
+        // this will be run during plugins_loaded
+        add_action( 'wpml_tm_loaded', array( $this, 'wpml_tm_loaded' ) );
+    }
+
+
+    /**
+     * WPML integration actions on admin_init.
+     *
+     * @since 1.10
+     */
+    public function admin_init() {
+        $this->hook_filters_for_links();
+    }
+
+
+    /**
+     * wpml_tm_loaded action hook.
+     *
+     * @since 1.10
+     */
+    public function wpml_tm_loaded() {
+        $this->_is_wpml_tm_loaded = true;
+    }
+
+
+    /**
+     * Determine whether WPML Translation Management is active and fully loaded.
+     *
+     * @return bool
+     * @since 1.10
+     */
+    public function is_wpml_tm_loaded() {
+        return $this->_is_wpml_tm_loaded;
+    }
+
+
+    /**
+     * Hook into WPML filters and modify links to edit or view Content Templates in
+     * WPML Translation Management.
+     *
+     * @since 1.10
+     */
+    protected function hook_filters_for_links() {
+        add_filter( 'wpml_document_edit_item_link', array( $this, 'wpml_get_document_edit_link_ct' ), 10, 5 );
+        add_filter( 'wpml_document_view_item_link', array( $this, 'wpml_get_document_view_link_ct' ), 10, 5 );
+        add_filter( 'wpml_document_edit_item_url', array( $this, 'wpml_document_edit_item_url_ct' ), 10, 3 );
+    }
+
+
+    /**
+     * Modify Edit link on Translation Dashboard of WPML Translation Management
+     *
+     * For Content Templates in default language, return the link to CT read-only page. For
+     * CTs in different languages, don't show any link.
+     *
+     * @param string $post_edit_link The HTML code of the link.
+     * @param string $label Link label to be displayed.
+     * @param object $current_document
+     * @param string $element_type 'post' for posts.
+     * @param string $content_type If $element_type is 'post', this will contain a post type.
+     *
+     * @return string Link HTML.
+     *
+     * @since 1.10
+     */
+    public function wpml_get_document_edit_link_ct( $post_edit_link, $label, $current_document, $element_type, $content_type ) {
+
+        if( 'post' == $element_type && WPV_Content_Template_Embedded::POST_TYPE == $content_type ) {
+            $ct_id = $current_document->ID;
+
+            // we know WPML is active, nothing else should call this filter
+            global $sitepress;
+
+            if( $sitepress->get_default_language() != $current_document->language_code ) {
+                // We don't allow editing CTs in nondefault languages in our editor.
+                // todo add link to translation editor instead
+                $post_edit_link = '';
+            } else {
+                $link = apply_filters( 'icl_post_link', array(), WPV_Content_Template_Embedded::POST_TYPE, $ct_id, 'edit' );
+                $is_disabled = wpv_getarr( $link, 'is_disabled', false );
+                $url = wpv_getarr( $link, 'url' );
+
+                if( $is_disabled ) {
+                    $post_edit_link = '';
+                } else if( !empty( $url ) ) {
+                    $post_edit_link = sprintf( '<a href="%s" target="_blank">%s</a>', $url, $label );
+                }
+            }
+        }
+        return $post_edit_link;
+    }
+
+
+    /**
+     * Modify View link on Translation Dashboard of WPML Translation Management
+     *
+     * Content Templates have no clear "View" option, so we're disabling the link for them.
+     *
+     * @param string $post_view_link Current view link
+     * @param string $label Link label to be displayed
+     * @param object $current_document
+     * @param string $element_type 'post' for posts.
+     * @param string $content_type If $element_type is 'post', this will contain a post type.
+     *
+     * @return string Link HTML
+     *
+     * @since 1.10
+     */
+    public function wpml_get_document_view_link_ct( $post_view_link,
+        /** @noinspection PhpUnusedParameterInspection */ $label,
+        /** @noinspection PhpUnusedParameterInspection */ $current_document,
+                                                 $element_type, $content_type ) {
+        if( 'post' == $element_type && WPV_Content_Template_Embedded::POST_TYPE == $content_type ) {
+            // For a Content Template, there is nothing to view directly
+            // todo link to some example content, if any exists
+            $post_view_link = '';
+        }
+        return $post_view_link;
+    }
+
+
+    /**
+     * Modify edit URLs for Content Templates on Translation Queue in WPML Translation Management.
+     *
+     * For CT, return URL to CT edit page.
+     *
+     * @param string $edit_url Current edit URL
+     * @param string $content_type For posts, this will be post_{$post_type}.
+     * @param int $element_id Post ID if the element is a post.
+     *
+     * @return string Edit URL.
+     *
+     * @since 1.10
+     */
+    public function wpml_document_edit_item_url_ct( $edit_url, $content_type, $element_id ) {
+        if ( 'post_' . WPV_Content_Template_Embedded::POST_TYPE == $content_type ) {
+            if ( $element_id ) {
+                $link = apply_filters( 'icl_post_link', array(), WPV_Content_Template_Embedded::POST_TYPE, $element_id, 'edit' );
+                $url = wpv_getarr( $link, 'url' );
+                $is_disabled = wpv_getarr( $link, 'is_disabled', false );
+                if( $is_disabled ) {
+                    $edit_url = ''; // todo check if this works well
+                } else if( !empty( $url ) ) {
+                    $edit_url = $url;
+                }
+            }
+        }
+        
+        return $edit_url;
+    }
+
 }

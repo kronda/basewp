@@ -3,7 +3,7 @@
 /*
 Plugin Name: Thrive Leads
 Plugin URI: https://thrivethemes.com
-Version: 1.46
+Version: 1.51
 Author: <a href="https://thrivethemes.com">Thrive Themes</a>
 Description: The ultimate lead capture solution for Wordpress
 Text Domain: thrive-leads
@@ -19,14 +19,14 @@ $MyUpdateChecker = new PluginUpdateChecker(
 
 define('TVE_LEADS_TEST_DATA', false);
 
-define('TVE_LEADS_VERSION', '1.46');
+define('TVE_LEADS_VERSION', '1.51');
 
 define('TVE_LEADS_DB_VERSION', '1.15');
 
 /**
  * Required version of TCB
  */
-define('TVE_REQUIRED_TCB_VERSION', '1.101.7');
+define('TVE_REQUIRED_TCB_VERSION', '1.101.11');
 
 /* the base URL for the plugin */
 define('TVE_LEADS_URL', str_replace(array(

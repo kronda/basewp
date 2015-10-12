@@ -86,9 +86,9 @@ class WPV_CT_List_Table_Embedded extends WPV_List_Table_Embedded {
 
         $title = sprintf(
             '<span class="row-title"><a href="%s">%s</a></span>',
-            add_query_arg(
+            esc_url( add_query_arg(
                 array( 'page' => 'view-templates-embedded', 'view_id' => $item->id ),
-                admin_url( 'admin.php' ) ),
+                admin_url( 'admin.php' ) ) ),
             $item->title );
 
         return $title . $description;
@@ -108,7 +108,7 @@ class WPV_CT_List_Table_Embedded extends WPV_List_Table_Embedded {
             // This CT is used as a template for Loop Output in a View or WPA.
 
             // Get a View or WPA object. We'll be using only methods from their base, so it doesn't matter which one is it.
-            $owner_view = WPV_View_Base::create( $item->loop_output_id );
+            $owner_view = WPV_View_Base::get_instance( $item->loop_output_id );
 
             if( $owner_view == null ) {
                 // Something is wrong - most probably the owner doesn't exist.
@@ -117,13 +117,20 @@ class WPV_CT_List_Table_Embedded extends WPV_List_Table_Embedded {
 
             // Display the appropriate message.
             if( $owner_view->is_published ) {
+				$edit_page = 'views-embedded';
+				if ( WPV_View_Base::is_archive_view( $owner_view->id ) ) {
+					$edit_page = 'view-archives-embedded';
+				}
                 return sprintf(
                     '<span>%s</span>',
                     sprintf( __( 'This Content Template is used as the loop block for the %s <a href="%s" target="_blank">%s</a>', 'wpv-views' ),
                         $owner_view->query_mode_display_name,
-                        add_query_arg(
-                            array( 'page' => 'views-embedded', 'view_id' => $owner_view->id ),
-                            admin_url( 'admin.php' ) ),
+                        esc_url( add_query_arg(
+                            array( 
+								'page' => $edit_page, 
+								'view_id' => $owner_view->id 
+							),
+                            admin_url( 'admin.php' ) ) ),
                         $owner_view->title ) );
             } else {
                 return sprintf(

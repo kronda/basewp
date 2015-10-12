@@ -66,7 +66,7 @@ if (!class_exists('Thrive_Leads_Two_Step_Action')) {
          */
         public function getName()
         {
-            return __('Open Thrive Leads 2 Step Lightbox', 'thrive-leads');
+            return __('Open Thrive Leads ThriveBox', 'thrive-leads');
         }
 
         /**
@@ -119,7 +119,7 @@ if (!class_exists('Thrive_Leads_Two_Step_Action')) {
             return sprintf(
                 '<br><a href="%s" target="_blank" class="tve_link_no_warning">%2$s</a>',
                 admin_url('admin.php?page=thrive_leads_dashboard') . '#2step-lightbox/' . $this->config['l_id'],
-                __('Edit 2 Step Lightbox', 'thrive-leads')
+                __('Edit ThriveBox', 'thrive-leads')
             );
         }
 

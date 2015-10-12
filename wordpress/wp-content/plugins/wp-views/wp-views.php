@@ -5,12 +5,11 @@ Plugin URI: http://wp-types.com/?utm_source=viewsplugin&utm_campaign=views&utm_m
 Description: When you need to create lists of items, Views is the solution. Views will query the content from the database, iterate through it and let you display it with flair. You can also enable pagination, search, filtering and sorting by site visitors.
 Author: OnTheGoSystems
 Author URI: http://www.onthegosystems.com
-Version: 1.8
+Version: 1.10.1
 */
 
-if(defined('WPV_VERSION')) return;
+if ( defined( 'WPV_VERSION' ) ) return;
 
-define('WPV_VERSION', '1.8');
 define('WPV_PATH', dirname(__FILE__));
 define('WPV_PATH_EMBEDDED', dirname(__FILE__) . '/embedded');
 define('WPV_FOLDER', basename(WPV_PATH));
@@ -36,10 +35,19 @@ require WPV_PATH_EMBEDDED . '/inc/wpv-settings-embedded.php';
 require WPV_PATH . '/inc/wpv-settings.php';
 $WPV_settings = new WPV_Settings;
 
+// Helper classes
+require_once WPV_PATH . '/inc/classes/wpv-exception-with-message.class.php';
 
-// WPV_View
-require_once WPV_PATH_EMBEDDED . '/inc/wpv-view.class.php';
+// WPV_View and other Toolset object wrappers
+require_once WPV_PATH_EMBEDDED . '/inc/classes/wpv-post-object-wrapper.class.php';
+require_once WPV_PATH_EMBEDDED . '/inc/classes/wpv-view-base.class.php';
+require_once WPV_PATH_EMBEDDED . '/inc/classes/wpv-view-embedded.class.php';
+require_once WPV_PATH_EMBEDDED . '/inc/classes/wpv-wordpress-archive-embedded.class.php';
+require_once WPV_PATH_EMBEDDED . '/inc/classes/wpv-content-template-embedded.class.php';
 
+require_once WPV_PATH . '/inc/classes/wpv-view.class.php';
+require_once WPV_PATH . '/inc/classes/wpv-wordpress-archive.class.php';
+require_once WPV_PATH . '/inc/classes/wpv-content-template.class.php';
 
 // Module Manager integration
 require WPV_PATH_EMBEDDED . '/inc/wpv-module-manager.php';
@@ -69,6 +77,12 @@ $wpv_wp_pointer = new WPV_wp_pointer('views');
 require WPV_PATH_EMBEDDED . '/inc/wpv-shortcodes.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-shortcodes-in-shortcodes.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-shortcodes-gui.php';
+
+//Views Conditional group
+require WPV_PATH_EMBEDDED . '/inc/wpv-conditional.php';
+
+require WPV_PATH_EMBEDDED . '/inc/wpv-formatting-embedded.php';
+
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-meta-html-embedded.php';
 
 require WPV_PATH_EMBEDDED . '/inc/wpv-widgets.php';
@@ -125,7 +139,11 @@ require_once( WPV_PATH . '/inc/redesign/wpv-views-listing-page.php');
 require_once( WPV_PATH . '/inc/wpv-add-edit.php');
 
 //Including file with redesign for content templates listing
-require_once( WPV_PATH . '/inc/redesign/wpv-content-templates-listing-page.php'); 
+require_once( WPV_PATH . '/inc/redesign/wpv-content-templates-listing-page.php');
+
+// Including file with Content template edit page
+require_once( WPV_PATH . '/inc/ct-editor/ct-editor.php');
+
 
 //Including file with redesign for archive views
 require_once( WPV_PATH . '/inc/redesign/wpv-archive-listing-page.php');
@@ -139,10 +157,11 @@ require WPV_PATH_EMBEDDED . '/inc/wpv-condition.php';
 
 require WPV_PATH_EMBEDDED . '/common/WPML/wpml-string-shortcode.php';
 require WPV_PATH_EMBEDDED . '/inc/WPML/wpv_wpml.php';
+require WPV_PATH . '/inc/wpv-wpml.php';
 
 $WP_Views = new WP_Views_plugin;
 
-require WPV_PATH . '/inc/views-templates/functions-templates.php';
+require WPV_PATH_EMBEDDED . '/inc/views-templates/functions-templates.php';
 require WPV_PATH . '/inc/views-templates/wpv-template-plugin.class.php';
 $WPV_templates = new WPV_template_plugin();
 
@@ -159,7 +178,22 @@ register_deactivation_hook(__FILE__, 'wpv_views_plugin_deactivate');
 
 add_action('admin_init', 'wpv_views_plugin_redirect');
 
-add_filter('plugin_action_links', 'wpv_views_plugin_action_links', 10, 2);
+add_filter( 'plugin_action_links', 'wpv_views_plugin_action_links', 10, 2 );
+add_filter( 'plugin_row_meta', 'wpv_views_plugin_plugin_row_meta', 10, 4 );
+
+include_once WPV_PATH_EMBEDDED . '/common/classes/class-toolset-admin-bar-menu.php';
+
+define( 'WPV_VERSION', '1.10.1' );
+
+/**
+* toolset_is_views_available
+*
+* Filter to check whether Views is installed
+*
+* @since 1.9
+*/
+
+add_filter( 'toolset_is_views_available', '__return_true' );
 
 //for inline documentation plugin support
 

@@ -148,12 +148,11 @@
 		 */
 		_enablePageNavDropDowns: function()
 		{
-			var win      = $(window),
-				nav      = $('.fl-page-nav .fl-page-nav-collapse'),
+			var nav      = $('.fl-page-nav .fl-page-nav-collapse'),
 				navItems = nav.find('ul li'),
 				subMenus = navItems.find('ul.sub-menu');
 			
-			if(win.width() < 768) {
+			if( $( '.fl-page-nav .navbar-toggle' ).is( ':visible' ) ) {
 				navItems.off('mouseenter mouseleave');
 				nav.find('> ul > li').has('ul.sub-menu').find('> a').on('click', FLTheme._navItemClickMobile);
 			}
@@ -371,7 +370,7 @@
 			if ( '' != retinaSrc ) {
 			
 				tmpImage.onload = function() {
-					image.height( tmpImage.height );
+					image.css( 'max-height', tmpImage.height );
 					image.width( tmpImage.width );
 					image.attr( 'src', retinaSrc );
 				};

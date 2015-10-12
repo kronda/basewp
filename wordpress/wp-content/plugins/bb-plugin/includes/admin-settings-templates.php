@@ -1,7 +1,7 @@
 <?php
 
 $enabled_templates = FLBuilderModel::get_enabled_templates();
-$template_admin_ui = FLBuilderModel::is_user_templates_admin_enabled() ? 1 : 0;
+$template_admin_ui = FLBuilderModel::user_templates_admin_enabled() ? 1 : 0;
 
 ?>
 <div id="fl-templates-form" class="fl-settings-form">

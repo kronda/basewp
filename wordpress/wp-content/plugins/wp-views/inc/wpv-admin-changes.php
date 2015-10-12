@@ -1,9 +1,10 @@
 <?php
 
 /**
- *
  * Helper function returning the layout label by slug
- * @param label $wpv_layout_settings
+ *
+ * @param string $wpv_layout_settings
+ * @return string
  */
 function wpv_get_layout_label_by_slug($wpv_layout_settings) { // DEPRECATED test because Victor can be using something from here
 	$style = isset($wpv_layout_settings['style']) ? $wpv_layout_settings['style'] : 'unformatted';
@@ -126,28 +127,6 @@ function wpv_create_summary_for_listing($post_id) { // TODO check if e want to u
 	$summary .= $filter_summary;
 
 	return $summary;
-}
-
-function wpv_get_view_template_fields_list($post_id) { // DEPRECATED Victor could be using something from here
-	$view_template_fields = get_post_meta($post_id, '_wpv_view_template_fields', true);
-	if(empty($view_template_fields)) {
-		wpv_view_template_update_field_values($post_id);
-		$view_template_fields = get_post_meta($post_id, '_wpv_view_template_fields', true);
-	}
-
-	$view_template_fields = unserialize($view_template_fields);
-
-	$fields_list = '<div class="view_template_fields_box">';
-	if(is_array($view_template_fields)) {
-		foreach($view_template_fields as $field) {
-			$fields_list .=  $field . '<br />';
-		}
-	}
-
-	$fields_list .= '</div>';
-
-	return $fields_list;
-
 }
 
 // highlight the proper top level menu - needed when embedding WordPress custom post types edit pages in custom menus

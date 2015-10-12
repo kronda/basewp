@@ -7,7 +7,7 @@ if ( defined( 'WPV_VERSION' ) ) {
 
 // EMBEDDED VERSION
 
-define('WPV_VERSION', '1.8');
+define( 'WPV_VERSION', '1.10.1' );
 
 /*
  * Note: This modification was not authorized, but might be in the future. I'll dare to just leave it here. --Jan
@@ -82,6 +82,12 @@ require_once WPV_PATH_EMBEDDED . '/common/wp-pointer.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-shortcodes.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-shortcodes-in-shortcodes.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-shortcodes-gui.php';
+
+//Views Conditional group
+require WPV_PATH_EMBEDDED . '/inc/wpv-conditional.php';
+
+require WPV_PATH_EMBEDDED . '/inc/wpv-formatting-embedded.php';
+
 require WPV_PATH_EMBEDDED . '/inc/wpv-layout-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-meta-html-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-filter-embedded.php';
@@ -137,8 +143,12 @@ require_once WPV_PATH_EMBEDDED . '/inc/wpv-settings-embedded.php';
 global $WPV_settings;
 $WPV_settings = new WPV_Settings_Embedded;
 
-// WPV_View
-require_once WPV_PATH_EMBEDDED . '/inc/wpv-view.class.php';
+// Views object wrappers
+require_once WPV_PATH_EMBEDDED . '/inc/classes/wpv-post-object-wrapper.class.php';
+require_once WPV_PATH_EMBEDDED . '/inc/classes/wpv-view-base.class.php';
+require_once WPV_PATH_EMBEDDED . '/inc/classes/wpv-view-embedded.class.php';
+require_once WPV_PATH_EMBEDDED . '/inc/classes/wpv-wordpress-archive-embedded.class.php';
+require_once WPV_PATH_EMBEDDED . '/inc/classes/wpv-content-template-embedded.class.php';
 
 require WPV_PATH_EMBEDDED . '/inc/wpv-summary-embedded.php';
 require WPV_PATH_EMBEDDED . '/inc/wpv-readonly-embedded.php';
@@ -153,6 +163,16 @@ if (!is_admin()) {
 		wp_enqueue_script('jquery');
 	}
 }
+
+/**
+* toolset_is_views_embedded_available
+*
+* Filter to check whether Views Embedded is installed
+*
+* @since 1.9
+*/
+
+add_filter( 'toolset_is_views_embedded_available', '__return_true' );
 
 
 /* ************************************************************************* *\

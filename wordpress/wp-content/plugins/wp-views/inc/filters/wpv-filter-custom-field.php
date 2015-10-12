@@ -38,6 +38,14 @@ class WPV_Custom_Field_Filter {
 		add_action( 'wp_ajax_wpv_filter_custom_field_delete', array( 'WPV_Custom_Field_Filter', 'wpv_filter_custom_field_delete_callback' ) );
 		add_filter( 'wpv-view-get-summary', array( 'WPV_Custom_Field_Filter', 'wpv_custom_field_summary_filter' ), 7, 3 );
 		// Register scripts
+		wp_register_script( 'views-filter-custom-field-js', ( WPV_URL . "/res/js/redesign/views_filter_custom_field.js" ), array( 'views-filters-js'), WPV_VERSION, true );
+		$filter_texts = array(
+			'dialog_title'		=> __( 'Delete custom field filters', 'wpv-views' ),
+			'cancel'			=> __( 'Cancel', 'wpv-views' ),
+			'edit_filters'		=> __( 'Edit the custom field filters', 'wpv-views' ),
+			'delete_filters'	=> __( 'Delete all custom field filters', 'wpv-views' )
+		);
+		wp_localize_script( 'views-filter-custom-field-js', 'wpv_custom_field_filter_texts', $filter_texts );
 		add_action( 'admin_enqueue_scripts', array( 'WPV_Custom_Field_Filter','admin_enqueue_scripts' ), 20 );
 	}
 	
@@ -50,7 +58,6 @@ class WPV_Custom_Field_Filter {
 	*/
 	
 	static function admin_enqueue_scripts( $hook ) {
-		wp_register_script( 'views-filter-custom-field-js', ( WPV_URL . "/res/js/redesign/views_filter_custom_field.js" ), array( 'views-filters-js'), WPV_VERSION, true );
 		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
 			wp_enqueue_script( 'views-filter-custom-field-js' );
 		}
@@ -503,8 +510,10 @@ class WPV_Custom_Field_Filter {
 			) {
 				if ( is_array( $filter_data ) ) {
 					$filter_data = array_map( 'sanitize_text_field', $filter_data );
+					$filter_data = array_map( array( 'WPV_Custom_Field_Filter', 'fix_lower_saving' ), $filter_data );
 				} else {
 					$filter_data = sanitize_text_field( $filter_data );
+					$filter_data = WPV_Custom_Field_Filter::fix_lower_saving( $filter_data );
 				}
 				$change = true;
 				$view_array[$filter_key] = $filter_data;
@@ -616,25 +625,38 @@ class WPV_Custom_Field_Filter {
 		$summary .= $result;
 		return $summary;
 	}
+	
+	/**
+	* fix_lower_saving
+	*
+	* Fix saving of "lower than" and "lower or equal to" comparisons, which get HTML-encoded when passed through sanitize_text_field
+	*
+	* @param $data string
+	*
+	* @return string
+	*
+	* @since 1.8.10
+	*/
+	
+	static function fix_lower_saving( $data ) {
+		if (
+			'&lt;' == $data 
+			|| '&lt;=' == $data
+		) {
+			$data = str_replace( '&lt;', '<', $data );
+		}
+		return $data;
+	}
     
 }
 
 function wpv_custom_fields_get_url_params( $view_settings ) {
-	global $WP_Views;
 	$pattern = '/URL_PARAM\(([^(]*?)\)/siU';
-	$meta_keys = array();
 	$results = array();
 	foreach ( array_keys( $view_settings ) as $key ) {
 		if ( strpos( $key, 'custom-field-' ) === 0 && strpos( $key, '_compare' ) === strlen( $key ) - strlen( '_compare' ) ) {
-			if ( empty( $meta_keys ) ) {
-				$meta_keys = $WP_Views->get_meta_keys();
-			}
 			$name = substr( $key, 0, strlen( $key ) - strlen( '_compare' ) );
 			$name = substr( $name, strlen( 'custom-field-' ) );
-			$meta_name = $name;
-			if ( ! in_array( $meta_name, $meta_keys ) ) {
-				$meta_name = str_replace( '_', ' ', $meta_name );
-			}
 			$value = $view_settings['custom-field-' . $name . '_value'];
 			if ( preg_match_all( $pattern, $value, $matches, PREG_SET_ORDER ) )  {
 				foreach ( $matches as $match ) {

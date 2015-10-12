@@ -77,7 +77,7 @@
                                             <option value="-1" disabled>(empty)</option>
                                         <?php endif; ?>
                                     </optgroup>
-                                    <optgroup label="<?php echo __('2 Step Lightboxes', 'thrive-leads'); ?>">
+                                    <optgroup label="<?php echo __('ThriveBoxes', 'thrive-leads'); ?>">
                                         <?php if (!empty($reporting_data['two_step_lightbox'])): ?>
                                             <?php foreach ($reporting_data['two_step_lightbox'] as $tsl) : ?>
                                                 <option

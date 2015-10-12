@@ -341,7 +341,7 @@ FLBuilder::register_module('FLCalloutModule', array(
 						'label'         => __('Crop', 'fl-builder'),
 						'default'       => '',
 						'options'       => array(
-							''              => _x( 'None', 'Crop', 'fl-builder' ),
+							''              => _x( 'None', 'Photo Crop.', 'fl-builder' ),
 							'landscape'     => __('Landscape', 'fl-builder'),
 							'panorama'      => __('Panorama', 'fl-builder'),
 							'portrait'      => __('Portrait', 'fl-builder'),
@@ -486,7 +486,7 @@ FLBuilder::register_module('FLCalloutModule', array(
 							),
 							'button'        => array(
 								'fields'        => array('cta_text', 'btn_icon', 'btn_icon_position'),
-								'sections'      => array('btn_colors', 'btn_structure')
+								'sections'      => array('btn_style', 'btn_colors', 'btn_structure')
 							)
 						)
 					),

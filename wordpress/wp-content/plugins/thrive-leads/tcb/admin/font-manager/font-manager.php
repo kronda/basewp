@@ -24,6 +24,7 @@ function thrive_font_manager_delete()
     if ($delete_key != -1) {
         unset($old_options[$delete_key]);
     }
+    $old_options = array_values($old_options);
     update_option('thrive_font_manager_options', json_encode($old_options));
     die;
 }

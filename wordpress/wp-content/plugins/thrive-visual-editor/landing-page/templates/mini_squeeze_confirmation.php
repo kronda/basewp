@@ -86,7 +86,7 @@
         <div class="out">
             <div class="in darkSec">
                 <div class="cck tve_clearfix">
-                    <p class="tve_p_center" style="margin: 0; padding: 0; color: #999999; font-size: 16px; font-weight: 300;;">&copy; 2014 by ACME Inc. <a href="#">Disclaimer</a></p>
+                    <p class="tve_p_center" style="margin: 0; padding: 0; color: #999999; font-size: 16px; font-weight: 300;;">&copy; {tcb_current_year} by ACME Inc. <a href="#">Disclaimer</a></p>
                 </div>
             </div>
         </div>

@@ -27,7 +27,7 @@
 
 <div class="tve_lp_footer tve_empty_dropzone tve_drop_constraint">
     <p class="tve_p_center" style="margin: 100px 0px 0px; padding: 0px; color: #ffffff; font-size: 16px;">
-        <font color="#ffffff">© 2014 by ACME Inc. - </font><a href="#"><span class="underline_text"><font
+        <font color="#ffffff">© {tcb_current_year} by ACME Inc. - </font><a href="#"><span class="underline_text"><font
                     color="#ffffff">Disclaimer</font></span></a>
     </p>
 </div>

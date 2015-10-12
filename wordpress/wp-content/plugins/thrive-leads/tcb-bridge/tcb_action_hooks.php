@@ -155,7 +155,7 @@ add_action('tcb_custom_menus_html', 'tve_leads_custom_elements_menu', 10, 3);
 add_action('tcb_custom_top_buttons', 'tve_leads_add_template_button', 10, 3);
 
 /**
- * filter for adding extra event actions - first thing we add -> open 2 step lightbox
+ * filter for adding extra event actions - first thing we add -> open 2 step lightbox (new name: ThriveBox)
  */
 add_filter('tcb_event_actions', 'tve_leads_get_event_actions', 10, 3);
 
@@ -839,14 +839,16 @@ function tve_leads_get_custom_font_links($custom_font_classes = array())
     $post_fonts = array();
     foreach (array_unique($custom_font_classes) as $cls) {
         foreach ($all_fonts as $font) {
-            if ($font->font_class == $cls) {
+            if (Thrive_Font_Import_Manager::isImportedFont($font->font_name)) {
+                $post_fonts[] = Thrive_Font_Import_Manager::getCssFile();
+            } else if ($font->font_class == $cls && !tve_is_safe_font($font)) {
                 $post_fonts[] = tve_custom_font_get_link($font);
                 break;
             }
         }
     }
 
-    return $post_fonts;
+    return array_unique($post_fonts);
 }
 
 /**

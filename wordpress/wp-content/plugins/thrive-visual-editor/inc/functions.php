@@ -82,6 +82,7 @@ function tve_global_options_init()
      */
     require_once dirname(dirname(__FILE__)) . '/database/Manager.php';
     Thrive_TCB_Database_Manager::check();
+
 }
 
 /**
@@ -309,6 +310,9 @@ function tve_load_font_css()
 //    if (tve_check_if_thrive_theme()) {
 //        return;
 //    }
+
+    do_action('tcb_extra_fonts_css');
+
     $all_fonts = tve_get_all_custom_fonts();
     if (empty($all_fonts)) {
         return;
@@ -319,7 +323,7 @@ function tve_load_font_css()
     $css = array();
     foreach ($all_fonts as $font) {
         $css[$font->font_class] = array(
-            "font-family: {$font->font_name} !important;",
+            "font-family: " . tve_prepare_font_family($font->font_name) . " !important;",
         );
         $fontWeight = preg_replace('/[^0-9]/', "", $font->font_style);
         $fontStyle = preg_replace('/[0-9]/', "", $font->font_style);
@@ -352,6 +356,75 @@ function tve_load_font_css()
     }
 
     echo '</style>';
+
+}
+
+/**
+ * output the css for the $fonts array
+ *
+ * @param array $fonts
+ */
+function tve_output_custom_font_css($fonts)
+{
+    echo '<style type="text/css">';
+
+    /** @var array $css prepare and array of css classes what will have as value an array of css rules */
+    $css = array();
+    foreach ($fonts as $font) {
+        $font = (object) $font;
+        $css[$font->font_class] = array(
+            "font-family: " . (strpos($font->font_name, ",") === false ? "'" . $font->font_name . "'" : $font->font_name) . " !important;",
+        );
+
+        $fontWeight = preg_replace('/[^0-9]/', "", $font->font_style);
+        $fontStyle = preg_replace('/[0-9]/', "", $font->font_style);
+        if (!empty($font->font_color)) {
+            $css[$font->font_class][] = "color: {$font->font_color} !important;";
+        }
+        if (!empty($fontWeight)) {
+            $css[$font->font_class][] = "font-weight: {$fontWeight} !important;";
+        }
+        if (!empty($fontStyle)) {
+            $css[$font->font_class][] = "font-style: {$fontStyle};";
+        }
+        if (!empty($font->font_bold)) {
+            $css["{$font->font_class}.bold_text,.{$font->font_class} .bold_text,.{$font->font_class} b,.{$font->font_class} strong"] = array(
+                "font-weight: {$font->font_bold} !important;"
+            );
+        }
+    }
+
+    /**
+     * Loop through font classes and display their css properties
+     * @var string $font_class
+     * @var array $rules
+     */
+    foreach ($css as $font_class => $rules) {
+        /** add font css rules to the page */
+        echo ".{$font_class}{" . implode("", $rules) . "}";
+        /** set the font css rules for inputs also */
+        echo ".{$font_class} input, .{$font_class} select, .{$font_class} textarea, .{$font_class} button {" . implode("", $rules) . "}";
+    }
+
+    echo '</style>';
+}
+
+/**
+ * Prepare font family name to be added to css rule
+ *
+ * @param $font_family
+ */
+function tve_prepare_font_family($font_family)
+{
+    $chunks = explode(",", $font_family);
+    $length = count($chunks);
+    $font = "";
+    foreach ($chunks as $key => $value) {
+        $font .= "'" . trim($value) . "'";
+        $font .= ($key + 1) < $length ? ", " : "";
+    }
+
+    return $font;
 }
 
 /**
@@ -449,9 +522,12 @@ function tve_save_post()
         }
 
         /* global options for a post that are not included in the editor */
-        update_post_meta($_POST['post_id'], "tve_globals{$key}", empty($_POST['tve_globals']) ? array() : array_filter($_POST['tve_globals']));
+        $tve_globals = empty($_POST['tve_globals']) ? array() : array_filter($_POST['tve_globals']);
+        $tve_globals['font_cls'] = empty($_POST['custom_font_classes']) ? array() : $_POST['custom_font_classes'];
+        update_post_meta($_POST['post_id'], "tve_globals{$key}", $tve_globals);
         /* custom fonts used for this post */
-        tve_update_post_custom_fonts($_POST['post_id'], empty($_POST['custom_font_classes']) ? array() : $_POST['custom_font_classes']);
+        tve_update_post_custom_fonts($_POST['post_id'], $tve_globals['font_cls']);
+
         if ($landing_page_template) {
             update_post_meta($_POST['post_id'], 'tve_landing_page', $_POST['tve_landing_page']);
             /* global Scripts for landing pages */
@@ -654,6 +730,8 @@ function tve_editor_content($content)
         tve_enqueue_icon_pack();
     }
 
+    tve_enqueue_extra_resources($post_id);
+
     /**
      * fix for LG errors being included in the page
      */
@@ -664,6 +742,36 @@ function tve_editor_content($content)
     }
 
     return $wrap['start'] . $tve_saved_content . $wrap['end'] . $content . $tinymce_editor . $page_loader;
+}
+
+/**
+ * check if there are any extra icon packs needed on the current page / post
+ *
+ * @param $post_id
+ */
+function tve_enqueue_extra_resources($post_id)
+{
+    $globals = tve_get_post_meta($post_id, 'tve_globals');
+
+    if (!empty($globals['used_icon_packs']) && !empty($globals['extra_icons'])) {
+        $used_icons_font_family = $globals['used_icon_packs'];
+
+        foreach ($globals['extra_icons'] as $icon_pack) {
+            if (!in_array($icon_pack['font-family'], $used_icons_font_family)) {
+                continue;
+            }
+            wp_enqueue_style(md5($icon_pack['css']), $icon_pack['css']);
+        }
+    }
+
+    /* any of the extra imported fonts - only in case of imported landing pages */
+    if (!empty($globals['extra_fonts'])) {
+        foreach ($globals['extra_fonts'] as $font) {
+            if (empty($font['ignore'])) {
+                wp_enqueue_style(md5($font['font_url']), $font['font_url']);
+            }
+        }
+    }
 }
 
 /**
@@ -1512,7 +1620,8 @@ function tve_enqueue_editor_scripts()
 
                 // custom fonts from Font Manager
                 $all_fonts = tve_get_all_custom_fonts();
-                tve_enqueue_fonts($all_fonts);
+                $all_fonts_enqueue = apply_filters('tve_filter_custom_fonts_for_enqueue_in_editor', $all_fonts);
+                tve_enqueue_fonts($all_fonts_enqueue);
 
                 $tve_post_globals = tve_get_post_meta(get_the_ID(), 'tve_globals', true);
                 if (empty($tve_post_globals) || (isset($tve_post_globals[0]) && empty($tve_post_globals[0]))) {
@@ -1642,6 +1751,10 @@ function tve_enqueue_editor_scripts()
                         'PleaseSetCorrectAppID' => __('Please set a correct App ID and validate it using the "Validate App ID" button', 'thrive-cb'),
                         'TweetContainsTooManyCharacters' => __('The tweet contains too many characters. Please shorten your message', 'thrive-cb'),
                         'UsernameRequired' => __('Username is required', 'thrive-cb'),
+                        'ExportFileNameRequired' => __('Template name is required', 'thrive-cb'),
+                        'UnknownError' => __('An unknown error has occured. Response was: ', 'thrive-cb'),
+                        'LPImportConfirm' => __('Importing a landing page will overwrite the current contents of this page. Are you sure you want to continue ?', 'thrive-cb'),
+                        'InvalidImageSelected' => __('Invalid file selected. Please select an image.', 'thrive-cb'),
                     )
                 );
                 $tve_path_params['extra_body_class'] .= ($tve_cp_config['position'] == 'left' ? ' tve_cpanelFlip' : '');
@@ -2228,11 +2341,13 @@ function tve_do_wp_shortcodes($content, $is_editor_page = false)
         $content = str_replace(array(
             '{tcb_post_url}',
             '{tcb_post_title}',
-            '{tcb_post_image}'
+            '{tcb_post_image}',
+            '{tcb_current_year}'
         ), array(
             get_permalink($post_id), // TODO: I think get_the_permalink is slow, we need to cache this somehow
             get_the_title($post_id),
-            !empty($featured_image) && !empty($featured_image[0]) ? $featured_image[0] : ''
+            !empty($featured_image) && !empty($featured_image[0]) ? $featured_image[0] : '',
+            date('Y')
         ), $content);
     }
 
@@ -2483,20 +2598,22 @@ function tve_landing_pages_load()
     $html = '';
 
     $input = '<input type="hidden" class="lp_code" value="user-saved-template-%s"/>';
-    $img = '<img src="' . TVE_LANDING_PAGE_TEMPLATE . '/thumbnails/%s" width="178" height="150"/>';
+    $img = '<img src="%s" width="178" height="150"/>';
     $caption = '<span class="tve_cell_caption_holder"><span class="tve_cell_caption">%s</span></span><span class="tve_cell_check tve_icm tve-ic-checkmark"></span>';
 
-    $item = '<span class="tve_grid_cell tve_landing_page_template tve_click" title="Choose %s">%s</span>';
+    $item = '<span class="tve_grid_cell tve_landing_page_template tve_click%s" title="Choose %s">%s</span>';
 
     foreach ($templates as $index => $template) {
         if (!empty($_POST['template']) && $_POST['template'] != $template['template']) {
             continue;
         }
 
+        $thumb = empty($template['thumbnail']) ? (TVE_LANDING_PAGE_TEMPLATE . '/thumbnails/' . $template['template'] . '.png') : $template['thumbnail'];
+
         $_content = sprintf($input, $index) .
-            sprintf($img, $template['template'] . '.png') .
+            sprintf($img, $thumb) .
             sprintf($caption, $template['name'] . ' (' . strftime('%d.%m.%y', strtotime($template['date'])) . ')');
-        $html .= sprintf($item, $template['name'], $_content);
+        $html .= sprintf($item, (isset($template['tags']) ? ' ' . $template['tags'] : ' simple-content'), $template['name'], $_content);
     }
     echo $html ? $html : '<p>No saved Templates found</p>';
     exit();
@@ -2631,6 +2748,10 @@ function tve_custom_font_get_link($font)
         $font = (object)$font;
     }
 
+    if (Thrive_Font_Import_Manager::isImportedFont($font)) {
+        return Thrive_Font_Import_Manager::getCssFile();
+    }
+
     return "//fonts.googleapis.com/css?family=" . str_replace(" ", "+", $font->font_name) . ($font->font_style ? ":" . $font->font_style : "") . ($font->font_bold ? "," . $font->font_bold : "") . ($font->font_italic ? $font->font_italic : "") . ($font->font_character_set ? "&subset=" . $font->font_character_set : "");
 }
 
@@ -2664,12 +2785,16 @@ function tve_update_post_custom_fonts($post_id, $custom_font_classes)
     $post_fonts = array();
     foreach (array_unique($custom_font_classes) as $cls) {
         foreach ($all_fonts as $font) {
-            if ($font->font_class == $cls) {
+            if (Thrive_Font_Import_Manager::isImportedFont($font->font_name)) {
+                $post_fonts[] = Thrive_Font_Import_Manager::getCssFile();
+            } else if ($font->font_class == $cls && !tve_is_safe_font($font)) {
                 $post_fonts[] = tve_custom_font_get_link($font);
                 break;
             }
         }
     }
+
+    $post_fonts = array_unique($post_fonts);
 
     tve_update_post_meta($post_id, 'thrive_tcb_post_fonts', $post_fonts);
 }
@@ -2695,8 +2820,13 @@ function tve_get_post_custom_fonts($post_id, $include_thrive_fonts = false)
     $all_fonts = tve_get_all_custom_fonts();
     $all_fonts_links = array();
     foreach ($all_fonts as $f) {
-        $all_fonts_links [] = tve_custom_font_get_link($f);
+        if (Thrive_Font_Import_Manager::isImportedFont($f->font_name)) {
+            $all_fonts_links[] = Thrive_Font_Import_Manager::getCssFile();
+        } else if (!tve_is_safe_font($f)) {
+            $all_fonts_links [] = tve_custom_font_get_link($f);
+        }
     }
+
     if (empty($all_fonts)) {
         // all fonts have been deleted - delete the saved fonts too for this post
         tve_update_post_meta($post_id, 'thrive_tcb_post_fonts', array());
@@ -2709,7 +2839,7 @@ function tve_get_post_custom_fonts($post_id, $include_thrive_fonts = false)
     }
 
     $theme_post_fonts = get_post_meta($post_id, 'thrive_post_fonts', true);
-    $theme_post_fonts = empty($theme_post_fonts) ? array() : json_decode($theme_post_fonts);
+    $theme_post_fonts = empty($theme_post_fonts) ? array() : json_decode($theme_post_fonts, true);
 
     $post_fonts = empty($post_fonts) || !is_array($post_fonts) ? array() : $post_fonts;
 
@@ -2814,8 +2944,18 @@ function tve_enqueue_fonts($font_array)
         return array();
     }
     $return = array();
+    /** @var $font object|array|string */
     foreach ($font_array as $font) {
-        $href = is_array($font) || is_object($font) ? tve_custom_font_get_link($font) : $font;
+        if (is_string($font)) {
+            $href = $font;
+        } else if (is_array($font) || is_object($font)) {
+            $font_name = is_array($font) ? $font['font_name'] : $font->font_name;
+            if (Thrive_Font_Import_Manager::isImportedFont($font_name)) {
+                $href = Thrive_Font_Import_Manager::getCssFile();
+            } else {
+                $href = tve_custom_font_get_link($font);
+            }
+        }
         $font_key = 'tcf_' . md5($href);
         $return[$font_key] = $href;
         wp_enqueue_style($font_key, $href);
@@ -2902,12 +3042,18 @@ function tve_render_widget_menu($attributes)
     $trigger_color = !empty($attributes['trigger_attr']) ? sprintf(" data-tve-custom-colour='%s'", $attributes['trigger_attr']) : '';
     $link_custom_color = !empty($attributes['link_attr']) ? $attributes['link_attr'] : '';
     $top_link_custom_color = !empty($attributes['top_link_attr']) ? $attributes['top_link_attr'] : '';
+    $font_family = !empty($attributes['font_family']) ? $attributes['font_family'] : '';
 
     if (!empty($link_custom_color) || !empty($top_link_custom_color)) {
         /* ugly ugly solution */
         $GLOBALS['tve_menu_link_custom_color'] = $link_custom_color;
         $GLOBALS['tve_menu_top_link_custom_color'] = $top_link_custom_color;
         add_filter('nav_menu_link_attributes', 'tve_menu_custom_color', 10, 3);
+    }
+
+    if (!empty($font_family)) {
+        $GLOBALS['tve_menu_top_link_custom_font_family'] = $font_family;
+        add_filter('nav_menu_link_attributes', 'tve_menu_custom_font_family', 10, 3);
     }
 
     if (!empty($attributes['font_class'])) {
@@ -2925,9 +3071,11 @@ function tve_render_widget_menu($attributes)
         )) . '</div>';
 
     /* clear out the global variable */
-    unset($GLOBALS['tve_menu_link_custom_color'], $GLOBALS['tve_menu_top_link_custom_color'], $GLOBALS['tve_menu_font_class']);
+    unset($GLOBALS['tve_menu_link_custom_color'], $GLOBALS['tve_menu_top_link_custom_color'], $GLOBALS['tve_menu_font_class'], $GLOBALS['tve_menu_top_link_custom_font_family']);
     remove_filter('nav_menu_link_attributes', 'tve_menu_custom_color');
+    remove_filter('nav_menu_link_attributes', 'tve_menu_custom_font_family');
     remove_filter('nav_menu_css_class', 'tve_widget_menu_li_classes');
+
     return $menu_html;
 }
 
@@ -2967,6 +3115,20 @@ function tve_menu_custom_color($attrs, $menu_item)
     return $attrs;
 }
 
+function tve_menu_custom_font_family($attrs, $menu_item)
+{
+    $font_family = $GLOBALS['tve_menu_top_link_custom_font_family'];
+    $style = 'font-family: ' . $font_family . ';';
+
+    if(isset($attrs['style']) && !empty($attrs['style'])) {
+        $style = trim(";", $attrs['style']) . ";" . $style;
+    }
+
+    $attrs['style'] = $style;
+
+    return $attrs;
+}
+
 /**
  * custom call of an action hook - this will forward the call to the WP do_action function
  * it will inject parameters read from $_GET based on the filter that others might use
@@ -2998,7 +3160,7 @@ function tve_categories_list()
 {
     $taxonomies = array('category');
 
-    if(taxonomy_exists('apprentice')) {
+    if (taxonomy_exists('apprentice')) {
         $taxonomies[] = 'apprentice';
     }
 
@@ -3018,9 +3180,17 @@ function tve_categories_list()
 
 function tve_tags_list()
 {
+    $taxonomies = array(
+        'post_tag'
+    );
+
+    if (taxonomy_exists('apprentice')) {
+        $taxonomies[] = 'apprentice-tag';
+    }
+
     check_ajax_referer("tve-le-verify-sender-track129", "security");
     $search_term = isset($_POST['term']) ? $_POST['term'] : '';
-    $terms = get_terms('post_tag', array('search' => $search_term));
+    $terms = get_terms($taxonomies, array('search' => $search_term));
     $response = array();
     foreach ($terms as $item) {
         $term = array();
@@ -3299,6 +3469,9 @@ function tve_get_used_meta_keys()
         'tve_user_custom_css',
         'tve_page_events',
         'tve_globals',
+        'tve_global_scripts',
+        'thrive_icon_pack',
+        'thrive_tcb_post_fonts',
         'tve_has_masonry',
         'tve_updated_post',
     );
@@ -3478,4 +3651,147 @@ function tve_find_quick_link_contents()
     }
     include dirname(__FILE__) . '/views/quick-links-table.php';
     exit;
+}
+
+if (!function_exists('tve_font_manager_get_safe_fonts')) {
+    /**
+     * This function is also defined in Thrive Themes
+     *
+     * @return array
+     */
+    function tve_font_manager_get_safe_fonts()
+    {
+        return $safe_fonts = array(
+            array(
+                'family' => 'Georgia, serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Palatino Linotype, Book Antiqua, Palatino, serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Times New Roman, Times, serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Arial, Helvetica, sans-serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Arial Black, Gadget, sans-serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Comic Sans MS, cursive, sans-serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Impact, Charcoal, sans-serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Lucida Sans Unicode, Lucida Grande, sans-serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Tahoma, Geneva, sans-serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Trebuchet MS, Helvetica, sans-serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Verdana, Geneva, sans-serif',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Courier New, Courier, monospace',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+            array(
+                'family' => 'Lucida Console, Monaco, monospace',
+                'variants' => array('regular', 'italic', '600'),
+                'subsets' => array('latin'),
+            ),
+        );
+    }
+}
+
+/**
+ * Check the Object font sent as param if it's web sef font
+ *
+ * @param $font array|StdClass
+ * @return bool
+ */
+function tve_is_safe_font($font)
+{
+    foreach (tve_font_manager_get_safe_fonts() as $safe_font) {
+        if ((is_object($font) && $safe_font['family'] === $font->font_name)
+            || (is_array($font) && $safe_font['family'] === $font['font_name'])
+        ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Remove the web safe fonts from the list cos we don't want them to import them from google
+ * They already exists loaded in browser from user's computer
+ *
+ * @param $fonts_saved
+ * @return mixed
+ */
+function tve_filter_custom_fonts_for_enqueue_in_editor($fonts_saved)
+{
+    $safe_fonts = tve_font_manager_get_safe_fonts();
+    foreach ($safe_fonts as $safe) {
+        foreach ($fonts_saved as $key => $font) {
+            if (is_object($font) && $safe['family'] === $font->font_name) {
+                unset($fonts_saved[$key]);
+            } else if (is_array($font) && $safe['family'] === $font['font_name']) {
+                unset($fonts_saved[$key]);
+            }
+        }
+    }
+
+    return $fonts_saved;
+}
+
+/**
+ * Require once the Font Import Manager
+ */
+function tve_require_font_import_manager()
+{
+    if (!tve_check_if_thrive_theme() || !class_exists('Thrive_Font_Import_Manager')) {
+        require_once dirname(dirname(__FILE__)) . '/admin/font-import-manager/classes/Thrive_Font_Import_Manager.php';
+    }
+}
+
+/**
+ * includes a message in the media uploader window about the allowed file types
+ */
+function tve_media_restrict_filetypes()
+{
+    $file_types = array(
+        'zip', 'jpg', 'gif', 'png', 'pdf'
+    );
+    foreach ($file_types as $file_type) {
+        echo '<p class="tve-media-message tve-media-allowed-' . $file_type . '" style="display: none"><strong>' . sprintf(__('Only %s files are accepted'), '.' . $file_type) . '</strong></p>';
+    }
 }

@@ -85,8 +85,8 @@ function tve_leads_get_default_form_types($include_extra = false)
         );
 
         $main['two_step_lightbox'] = array(
-            'post_title' => __('2 Step Lightbox', 'thrive-leads'),
-            'tve_form_type' => '2 Step Lightbox',
+            'post_title' => __('ThriveBox', 'thrive-leads'),
+            'tve_form_type' => 'two_step_lightbox',
             'edit_selector' => '.tve_p_lb_control', // selector for the element settings in editing mode
             'wp_hook' => ''
         );
@@ -1659,9 +1659,15 @@ function tve_get_current_screen_for_reporting_table($screen_type, $screen_id)
  */
 function tve_leads_force_subscribed_state()
 {
+    global $tve_lead_group;
+    if (empty($tve_lead_group)) {
+        return false;
+    }
+    $group_cookie_name = 'tl_inbound_link_params_' . $tve_lead_group->ID;
+
     $show_already_subscribed = false;
-    if (isset($_COOKIE['tl_use_inbound_link_params'])) {
-        $inbound_link_params = unserialize(stripslashes($_COOKIE['tl_inbound_link_params']));
+    if (isset($_COOKIE[$group_cookie_name])) {
+        $inbound_link_params = unserialize(stripslashes($_COOKIE[$group_cookie_name]));
         $show_already_subscribed = !empty($inbound_link_params['tl_form_type']);
     }
 

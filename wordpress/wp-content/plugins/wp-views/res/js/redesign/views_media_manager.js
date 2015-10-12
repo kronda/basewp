@@ -48,17 +48,6 @@ jQuery(document).ready(function($){
 		$('li.selected').removeClass('selected').find('a.check').trigger('click');
 		media_button_insert.addClass('button-secondary').removeClass('button-primary');
 		media_frame.find('.media-menu').html('');
-		media_button_insert.live("attributeChanged", function(event, args, val ){
-			
-			if( args == 'disabled' && val == true )
-			{
-				$(event.target).addClass('button-secondary').removeClass('button-primary');
-			}
-			else if( args == 'disabled' && val == false )
-			{
-				$(event.target).removeClass('button-secondary').addClass('button-primary');
-			}
-		});
 		$('.clear-selection').on('click', function() {
 			media_button_insert.parent().find('.js-wpv-media-type-not-insertable').remove();
 			media_button_insert.addClass('button-secondary').removeClass('button-primary').show();
@@ -242,13 +231,13 @@ jQuery(document).ready(function($){
 		}
 	});
 
-// Now that everything has been set, let's open up the frame.
-wpv_media_frame.open();
+	// Now that everything has been set, let's open up the frame.
+	wpv_media_frame.open();
 	});
 });
 
 jQuery(document).on("DOMNodeInserted", function(){
 	// Lock uploads to "Uploaded to this post"
-	jQuery('select.attachment-filters [value="uploaded"]').attr( 'selected', true ).parent().trigger('change');
+	jQuery('select.attachment-filters [value="uploaded"]').prop( 'selected', true ).parent().trigger('change');
 	jQuery('.attachments-browser .media-toolbar-secondary .attachment-filters').addClass('hidden');
 });

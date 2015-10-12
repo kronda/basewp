@@ -52,8 +52,7 @@
 <div class="tve_lp_footer tve_empty_dropzone tve_content_width">
     <div class="thrv_wrapper thrv_columns">
         <div class="tve_colm tve_twc">
-            <p class="tve_p_left" style="margin: 0; padding: 0; color: #898989; font-size: 14px">Copyright &copy;
-                2014</p>
+            <p class="tve_p_left" style="margin: 0; padding: 0; color: #898989; font-size: 14px">Copyright &copy; {tcb_current_year}</p>
         </div>
         <div class="tve_colm tve_twc tve_lst">
             <p class="tve_p_right" style="margin: 0; padding: 0; color: #898989; font-size: 14px">

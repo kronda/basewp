@@ -168,6 +168,36 @@ class Thrive_Api_Drip
     }
 
     /**
+     * Posts an event specified by the user.
+     *
+     * @param array $params
+     * @throws Exception
+     * @return bool
+     */
+    public function record_event($params)
+    {
+        if (empty($params['account_id'])) {
+            throw new Exception("Account ID not specified");
+        }
+
+        if (empty($params['action'])) {
+            throw new Exception("Action was not specified");
+        }
+
+        $account_id = $params['account_id'];
+        unset($params['account_id']); // clear it from the params
+
+        $api_action = "$account_id/events";
+        $url = $this->api_end_point . $api_action;
+
+        // The API wants the params to be JSON encoded
+        $req_params = array('events' => array($params));
+        $res = $this->make_request($url, $req_params, self::POST);
+
+        return empty($res) ? false : $res;
+    }
+
+    /**
      * @param $url
      * @param array $params
      * @param int $req_method

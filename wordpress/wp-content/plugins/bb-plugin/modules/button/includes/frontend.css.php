@@ -1,4 +1,22 @@
 <?php
+	
+// Background Color
+if ( ! empty( $settings->bg_color ) && empty( $settings->bg_hover_color ) ) {
+	$settings->bg_hover_color = $settings->bg_color;
+}
+
+// Old Background Gradient Setting
+if ( isset( $settings->three_d ) && $settings->three_d ) {
+	$settings->style = 'gradient';
+}
+
+// Background Gradient
+if ( ! empty( $settings->bg_color ) ) {
+	$bg_grad_start = FLBuilderColor::adjust_brightness( $settings->bg_color, 30, 'lighten' );
+}
+if ( ! empty( $settings->bg_hover_color ) ) {
+	$bg_hover_grad_start = FLBuilderColor::adjust_brightness( $settings->bg_hover_color, 30, 'lighten' );
+}
 
 // Border Size
 if ( 'transparent' == $settings->style ) {
@@ -14,19 +32,6 @@ if ( ! empty( $settings->bg_color ) ) {
 }
 if ( ! empty( $settings->bg_hover_color ) ) {
 	$border_hover_color = FLBuilderColor::adjust_brightness( $settings->bg_hover_color, 12, 'darken' );
-}
-
-// Old Background Gradient Setting
-if ( isset( $settings->three_d ) && $settings->three_d ) {
-	$settings->style = 'gradient';
-}
-
-// Background Gradient
-if ( ! empty( $settings->bg_color ) ) {
-	$bg_grad_start = FLBuilderColor::adjust_brightness( $settings->bg_color, 30, 'lighten' );
-}
-if ( ! empty( $settings->bg_hover_color ) ) {
-	$bg_hover_grad_start = FLBuilderColor::adjust_brightness( $settings->bg_hover_color, 30, 'lighten' );
 }
 
 ?>

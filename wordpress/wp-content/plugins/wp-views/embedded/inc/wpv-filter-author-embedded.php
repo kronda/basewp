@@ -101,11 +101,15 @@ function wpv_filter_post_author( $query, $view_settings ) {
 					$author_shortcode = $view_settings['author_shortcode'];
 					$author_shortcode_type = $view_settings['author_shortcode_type'];
 					$view_attrs = $WP_Views->get_view_shortcodes_attributes();
-					if ( isset( $view_attrs[$author_shortcode] ) ) {
+					if ( 
+						isset( $view_attrs[$author_shortcode] ) 
+						&& '' != $view_attrs[$author_shortcode]
+					) {
 						$author_candidates = explode( ',', $view_attrs[$author_shortcode] );
 						switch ( $author_shortcode_type ) {
 							case 'id':
 								foreach ( $author_candidates as $id_candid ) {
+									$id_candid = trim( strip_tags( $id_candid ) );
 									if ( is_numeric( $id_candid ) ) {
 										$show_author_array[] = $id_candid;
 									}
@@ -215,4 +219,109 @@ function wpv_filter_author_requires_current_page( $state, $view_settings ) {
 		$state = true;
 	}
 	return $state;
+}
+
+/**
+* wpv_filter_author_requires_current_user
+*
+* Whether the current View requires the current user data for the filter by author
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_requires_current_user', 'wpv_filter_author_requires_current_user', 20, 2 );
+
+function wpv_filter_author_requires_current_user( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+	if ( isset( $view_settings['author_mode'] ) && isset( $view_settings['author_mode'][0] ) && $view_settings['author_mode'][0] == 'current_user' ) {
+		$state = true;
+	}
+	return $state;
+}
+
+/**
+* wpv_filter_author_requires_framework_values
+*
+* Whether the current View requires framework data for the filter by author
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_requires_framework_values', 'wpv_filter_author_requires_framework_values', 20, 2 );
+
+function wpv_filter_author_requires_framework_values( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+	if ( isset( $view_settings['author_mode'] ) && isset( $view_settings['author_mode'][0] ) && $view_settings['author_mode'][0] == 'framework' ) {
+		$state = true;
+	}
+	return $state;
+}
+
+/**
+* wpv_filter_author_requires_parent_user
+*
+* Whether the current View is nested and requires the user set by the parent View for the filter by author
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.9.0
+*/
+
+add_filter( 'wpv_filter_requires_parent_user', 'wpv_filter_author_requires_parent_user', 20, 2 );
+
+function wpv_filter_author_requires_parent_user( $state, $view_settings ) {
+	if ( $state ) {
+		return $state; // Already set
+	}
+	if ( isset( $view_settings['author_mode'] ) && isset( $view_settings['author_mode'][0] ) && $view_settings['author_mode'][0] == 'parent_view' ) {
+		$state = true;
+	}
+	return $state;
+}
+
+/**
+* wpv_filter_register_post_author_shortcode_attributes
+*
+* Register the filter by post author on the method to get View shortcode attributes
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_register_shortcode_attributes_for_posts', 'wpv_filter_register_post_author_shortcode_attributes', 10, 2 );
+
+function wpv_filter_register_post_author_shortcode_attributes( $attributes, $view_settings ) {
+	if (
+		isset( $view_settings['author_mode'] ) 
+		&& isset( $view_settings['author_mode'][0] ) 
+		&& $view_settings['author_mode'][0] == 'shortcode' 
+	) {
+		$attributes[] = array(
+			'query_type'	=> $view_settings['query_type'][0],
+			'filter_type'	=> 'post_author',
+			'filter_label'	=> __( 'Post author', 'wpv-views' ),
+			'value'			=> $view_settings['author_shortcode_type'],
+			'attribute'		=> $view_settings['author_shortcode'],
+			'expected'		=> ( $view_settings['author_shortcode_type'] == 'id' ) ? 'numberlist' : 'string',
+			'placeholder'	=> ( $view_settings['author_shortcode_type'] == 'id' ) ? '1, 2' : 'admin, john',
+			'description'	=> ( $view_settings['author_shortcode_type'] == 'id' ) ? __( 'Please type a comma separated list of author IDs', 'wpv-views' ) : __( 'Please type a comma separated list of author usernames', 'wpv-views' )
+		);
+	}
+	return $attributes;
 }

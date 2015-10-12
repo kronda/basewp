@@ -69,9 +69,21 @@ function wpcf_cd_post_groups_filter( $groups, $post, $context ) {
                 $cond_values = array();
             }
             $_cond_values = array();
+
+
             foreach ( $cond_values as $k => $v ) {
                 $v = maybe_unserialize( $v[0] );
-                $_cond_values[$k . $suffix] = is_array( $v ) ? strval( array_shift( $v ) ) : $v;
+                /**
+                 * if data is too complex - skip it
+                 */
+                if ( is_array( $v) ) {
+                    $v = array_shift($v);
+                    if ( is_array($v) ) {
+                        continue;
+                    }
+                    $v = strval( $v);
+                }
+                $_cond_values[$k . $suffix] = $v;
             }
             unset( $cond_values );
             $cond = array();

@@ -13,6 +13,15 @@ class Thrive_List_Connection_AWeber extends Thrive_List_Connection_Abstract
     const CONSUMER_SECRET = 'V9bzMop78pXTlPEAo30hxZF7dXYE6T6Ww2LAH95m';
 
     /**
+     * Return the connection type
+     * @return String
+     */
+    public static function getType()
+    {
+        return 'autoresponder';
+    }
+
+    /**
      * get the authorization URL for the AWeber Application
      * @return string
      */

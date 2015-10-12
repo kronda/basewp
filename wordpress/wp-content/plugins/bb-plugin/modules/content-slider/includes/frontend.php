@@ -1,37 +1,48 @@
 <div class="fl-content-slider">
-	<?php 
-	
-	for($i = 0; $i < count($settings->slides); $i++) : 
-	
-		if(!is_object($settings->slides[$i])) {
-			continue;
-		}
-		else {
-			$slide = $settings->slides[$i]; 
-		}
-	?>
-	<div class="fl-slide fl-slide-<?php echo $i; ?> fl-slide-text-<?php echo $slide->text_position; ?>">
+	<div class="fl-content-slider-wrapper">
 		<?php 
 		
-		// Mobile photo or video
-		$module->render_mobile_media($slide);
+		for($i = 0; $i < count($settings->slides); $i++) : 
 		
-		// Background photo or video
-		$module->render_background($slide);
-		
+			if(!is_object($settings->slides[$i])) {
+				continue;
+			}
+			else {
+				$slide = $settings->slides[$i]; 
+			}
 		?>
-		<div class="fl-slide-foreground clearfix">
+		<div class="fl-slide fl-slide-<?php echo $i; ?> fl-slide-text-<?php echo $slide->text_position; ?>">
 			<?php 
 			
-			// Content
-			$module->render_content($slide);
+			// Mobile photo or video
+			$module->render_mobile_media($slide);
 			
-			// Foreground photo or video
-			$module->render_media($slide);
+			// Background photo or video
+			$module->render_background($slide);
 			
 			?>
+			<div class="fl-slide-foreground clearfix">
+				<?php 
+				
+				// Content
+				$module->render_content($slide);
+				
+				// Foreground photo or video
+				$module->render_media($slide);
+				
+				?>
+			</div>
 		</div>
-		<div class="fl-clear"></div>
-	</div>
 	<?php endfor; ?>
+	</div>
+		<?php
+
+		// Render the navigation.
+		if( $settings->arrows && count( $settings->slides ) > 0 ) : ?>
+			<div class="fl-content-slider-navigation">
+				<a class="slider-prev" href="#"><div class="fl-content-slider-svg-container"><?php include FL_BUILDER_DIR .'img/svg/arrow-left.svg'; ?></div></a>
+				<a class="slider-next" href="#"><div class="fl-content-slider-svg-container"><?php include FL_BUILDER_DIR .'img/svg/arrow-right.svg'; ?></div></a>
+			</div>
+		<?php endif; ?>
+		<div class="fl-clear"></div>
 </div>

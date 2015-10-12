@@ -65,7 +65,7 @@
             <div class="in darkSec">
                 <div class="cck clearfix">
                     <p class="tve_p_center" style="margin: 0; padding: 0; color: #999999; font-size: 16px">
-                        &copy; 2014 by ACME Inc. | <a href="#"><span class="underline_text">Disclaimer</span></a>
+                        &copy; {tcb_current_year} by ACME Inc. | <a href="#"><span class="underline_text">Disclaimer</span></a>
                     </p>
                 </div>
             </div>

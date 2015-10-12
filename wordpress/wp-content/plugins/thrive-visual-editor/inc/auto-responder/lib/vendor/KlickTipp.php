@@ -46,7 +46,7 @@ class Thrive_Api_KlickTipp
         if (empty($response->error) && is_array($response->data)) {
             return $response->data;
         } else {
-            $message = 'Subscription process index failed: ' . $response->data;
+            $message = 'Could not retrieve lists: ' . $response->data;
             throw new Thrive_Api_KlickTipp_Exception($message);
         }
     }

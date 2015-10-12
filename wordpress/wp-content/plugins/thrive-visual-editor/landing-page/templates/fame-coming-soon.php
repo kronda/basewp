@@ -96,7 +96,7 @@ $tzd = $sign . str_pad($hour, 2, '0', STR_PAD_LEFT) . ':' . str_pad($min % 60, 2
 </div>
 
 <div class="tve_lp_footer tve_empty_dropzone tve_drop_constraint">
-    <p class="tve_p_center" style="color: #fff;">&copy; 2014 Landing Page. All rights Reserved. <a href="http://thrivethemes.com" target="_blank">
+    <p class="tve_p_center" style="color: #fff;">&copy; {tcb_current_year} Landing Page. All rights Reserved. <a href="http://thrivethemes.com" target="_blank">
             <font color="#fff">
                 <span class="underline_text">Disclaimer</span>
             </font>

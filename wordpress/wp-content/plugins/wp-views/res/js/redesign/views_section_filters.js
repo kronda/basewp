@@ -10,14 +10,13 @@ WPViews.QueryFilters = function( $ ) {
 	self.icon_edit = '<i class="icon-chevron-up"></i>&nbsp;&nbsp;';
 	self.icon_save = '<i class="icon-ok"></i>&nbsp;&nbsp;';
 	
+	self.dialog = null;
+	
 	self.add_filter_button = $( '.js-wpv-filter-add-filter' );
 	self.filters_list = $( '.js-filter-list' );
 	self.filters_count = self.filters_list.find( '.js-filter-row' ).length;
 	self.no_filters = $( '.js-no-filters' );
-	
-	self.add_filter_select_selector = '.js-filter-add-select';
-	self.insert_filter_selector = '.js-filters-insert-filter';
-	
+		
 	self.selector_delete_simple_filter = '.js-filter-row-simple .js-filter-remove';
 	self.selector_delete_multiple_filter_one = '';
 	self.selector_delete_multiple_filter_all = '';
@@ -36,12 +35,65 @@ WPViews.QueryFilters = function( $ ) {
 	self.numeric_natural_pattern = /^[0-9]+$/;
 	
 	// ---------------------------------
+	// Dialogs
+	// ---------------------------------
+	
+	self.init_dialogs = function() {
+		var dialog_height = $( window ).height() - 100;
+		self.dialog = $( "#js-wpv-filter-add-filter-form-dialog" ).dialog({
+			autoOpen: false,
+			modal: true,
+			title: wpv_filters_strings.add_filter_dialog_title,
+			minWidth: 550,
+			maxHeight: dialog_height,
+			draggable: false,
+			resizable: false,
+			position: { my: "center top+50", at: "center top", of: window },
+			show: { 
+				effect: "blind", 
+				duration: 800 
+			},
+			open: function( event, ui ) {
+				$( 'body' ).addClass( 'modal-open' );
+			},
+			close: function( event, ui ) {
+				$( 'body' ).removeClass( 'modal-open' );
+			},
+			buttons:[
+				{
+					class: 'button-secondary',
+					text: wpv_filters_strings.add_filter_dialog_cancel,
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				},
+				{
+					class: 'button-primary js-filters-insert-filter',
+					text: wpv_filters_strings.add_filter_dialog_insert,
+					click: function() {
+
+					}
+				}
+			],
+			open: function() {
+				self.manage_filter_insert_button( false );
+				var group = $( ".js-filter-add-select" ).find( "optgroup" );
+				$.each( group, function( i, v ) {
+					if ( $( v ).children().length === 0 ) {
+						$( this ).remove();
+					}
+				});
+			}
+		});
+	};
+	
+	// ---------------------------------
 	// Functions
 	// ---------------------------------
 	
 	self.update_filters_select = function( nonce, openpopup ) {
 		var data = {
-			action: 'wpv_filters_upate_filters_select',
+			action: 'wpv_filters_update_filters_select',
 			id: self.view_id,
 			wpnonce: nonce,
 		};
@@ -64,19 +116,7 @@ WPViews.QueryFilters = function( $ ) {
 	};
 	
 	self.open_filters_popup = function() {
-		$.colorbox({
-			inline: true,
-			href:'.js-filter-add-filter-form-dialog',
-			open: true,
-			onComplete: function() {
-				var group = $(".js-filter-add-select").find("optgroup");
-				$.each( group, function( i, v ) {
-					if ( $( v ).children().length === 0 ) {
-						$( this ).remove();
-					}
-				});
-			}
-		});
+		self.dialog.dialog( 'open' );
 	};
 	
 	self.filters_exist = function() {
@@ -192,37 +232,37 @@ WPViews.QueryFilters = function( $ ) {
 			}
 		} else if ( type == 'year' ) {
 			if ( self.year_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_year_ilegal;;
+				message = wpv_filters_strings.param_year_ilegal;
 				input_valid = false;
 			}
 		} else if ( type == 'month' ) {
 			if ( self.month_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_month_ilegal;;
+				message = wpv_filters_strings.param_month_ilegal;
 				input_valid = false;
 			}
 		} else if ( type == 'week' ) {
 			if ( self.week_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_week_ilegal;;
+				message = wpv_filters_strings.param_week_ilegal;
 				input_valid = false;
 			}
 		} else if ( type == 'day' ) {
 			if ( self.day_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_day_ilegal;;
+				message = wpv_filters_strings.param_day_ilegal;
 				input_valid = false;
 			}
 		} else if ( type == 'hour' ) {
 			if ( self.hour_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_hour_ilegal;;
+				message = wpv_filters_strings.param_hour_ilegal;
 				input_valid = false;
 			}
 		} else if ( type == 'minute' ) {
 			if ( self.minute_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_minute_ilegal;;
+				message = wpv_filters_strings.param_minute_ilegal;
 				input_valid = false;
 			}
 		} else if ( type == 'second' ) {
 			if ( self.second_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_second_ilegal;;
+				message = wpv_filters_strings.param_second_ilegal;
 				input_valid = false;
 			}
 		} else if ( type == 'dayofyear' ) {
@@ -232,7 +272,7 @@ WPViews.QueryFilters = function( $ ) {
 			}
 		} else if ( type == 'dayofweek' ) {
 			if ( self.dayofweek_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_dayofweek_ilegal;;
+				message = wpv_filters_strings.param_dayofweek_ilegal;
 				input_valid = false;
 			}
 		} else if ( type == 'numeric_natural' ) {
@@ -271,17 +311,17 @@ WPViews.QueryFilters = function( $ ) {
 	};
 	
 	self.reset_filter_select = function() {
-		$( self.add_filter_select_selector ).val( '-1' );
+		$( '.js-filter-add-select' ).val( '-1' );
 	};
 	
 	self.manage_filter_insert_button = function( state ) {
 		if ( state ) {
-			$( self.insert_filter_selector )
+			$( '.js-filters-insert-filter' )
 				.addClass( 'button-primary' )
 				.removeClass( 'button-secondary' )
 				.prop( 'disabled', false );
 		} else {
-			$( self.insert_filter_selector )
+			$( '.js-filters-insert-filter' )
 				.addClass( 'button-secondary' )
 				.removeClass( 'button-primary' )
 				.prop( 'disabled', true );
@@ -298,7 +338,7 @@ WPViews.QueryFilters = function( $ ) {
 		self.reset_filter_select();
 	});
 	
-	$( document ).on( 'change', self.add_filter_select_selector, function() {
+	$( document ).on( 'change', '.js-filter-add-select', function() {
 		self.manage_filter_insert_button( $( this ).val() != '-1' );
 	});
 	
@@ -317,11 +357,11 @@ WPViews.QueryFilters = function( $ ) {
 		var thiz = $( this ),
 		filter_type = $( '.js-filter-add-select' ).val(),
 		nonce = thiz.data( 'nonce' ),
-		spinnerContainer = $( '<div class="spinner ajax-loader">' ).insertBefore( thiz ).show(),
+		spinnerContainer = $( '<div class="wpv-spinner ajax-loader">' ).insertBefore( thiz ).show(),
 		data = {
 			action: 'wpv_filters_add_filter_row',
 			id: self.view_id,
-			wpnonce: nonce,
+			wpnonce: wpv_filters_strings.add_filter_nonce,
 			filter_type: filter_type
 		};
 		thiz
@@ -380,7 +420,7 @@ WPViews.QueryFilters = function( $ ) {
 		})
 		.always( function() {
 			spinnerContainer.remove();
-			$.colorbox.close();
+			self.dialog.dialog( 'close' );
 			self.reset_filter_select();
 			$( document ).trigger( 'js_event_wpv_query_filter_created', [ filter_type ] );
 			if ( filter_type == 'post_search' ) {
@@ -407,7 +447,7 @@ WPViews.QueryFilters = function( $ ) {
 		filter = row.attr( 'id' ).substring( 7 ),
 		nonce = thiz.data( 'nonce' ),
 		action = 'wpv_filter_' + filter + '_delete',
-		spinnerContainer = $( '<div class="spinner ajax-loader">' ).insertBefore( thiz ).show(),
+		spinnerContainer = $( '<div class="wpv-spinner ajax-loader">' ).insertBefore( thiz ).show(),
 		error_container = row.find( '.js-wpv-filter-toolset-messages' );
 		data = {
 			action: action,
@@ -456,7 +496,7 @@ WPViews.QueryFilters = function( $ ) {
 	
 	self.init = function() {
 		self.filters_exist();
-		self.manage_filter_insert_button( false );
+		self.init_dialogs();
 	};
 	
 	self.init();
@@ -521,7 +561,7 @@ WPViews.ParametricSearchSectionGUI = function( $ ) {
 	$( document ).on( 'click', '.js-make-intersection-filters', function( e ) {
 		e.preventDefault();
 		var thiz = $( this ),
-		spinnerContainer = $( '<div class="spinner ajax-loader">' ).insertBefore( thiz ).show(),
+		spinnerContainer = $( '<div class="wpv-spinner ajax-loader">' ).insertBefore( thiz ).show(),
 		data = {
 			action: 'wpv_filter_make_intersection_filters',
 			id: $( '.js-post_ID' ).val(),
@@ -575,11 +615,11 @@ WPViews.ParametricSearchSectionGUI = function( $ ) {
 		}
 	}
 
-	self.init = function(){ // public method
+	self.init = function() {
 		
 	};
 	
-	self.init(); // call the init method
+	self.init();
 
 };
 
@@ -590,7 +630,7 @@ jQuery( document ).ready( function( $ ) {
 jQuery( document ).on( 'click', '.js-wpv-filter-missing-delete', function(e) {
 	e.preventDefault();
 	var thiz = jQuery( this ),
-	spinnerContainer = jQuery('<div class="spinner ajax-loader">').insertBefore( thiz ).show(),
+	spinnerContainer = jQuery('<div class="wpv-spinner ajax-loader">').insertBefore( thiz ).show(),
 	missing_cf = [],
 	missing_tax = [],
 	missing_rel = [],

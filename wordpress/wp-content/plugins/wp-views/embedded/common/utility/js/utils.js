@@ -1,3 +1,9 @@
+/**
+ * @author: riccardo
+ * @version: 1.2
+ * @revision: 04/06/2015 00:35
+ */
+
 if( typeof WPV_Toolset == 'undefined' )
 {
 	var WPV_Toolset = {};
@@ -8,6 +14,47 @@ if( typeof WPV_Toolset == 'undefined' )
 if( typeof WPV_Toolset.Utils == 'undefined' ) WPV_Toolset.Utils = {};
 
 WPV_Toolset.Utils.eventDispatcher = _.extend({}, Backbone.Events);
+
+WPV_Toolset.Utils.restoreEventPropagation = function( event ){
+    if( jQuery.browser.mozilla ){
+        return event;
+    }
+    if( event.isImmediatePropagationStopped() === false && event.isPropagationStopped() === false ){
+        return event;
+    }
+
+    if( typeof event.originalEvent === undefined ){
+        return event;
+    }
+
+    var refEvent = event.originalEvent;
+
+    try{
+        refEvent.cancelBubble = false;
+        refEvent.defaultPrevented = false;
+        refEvent.returnValue = true;
+        refEvent.timeStamp = ( new Date() ).getTime();
+    } catch( e ){
+    //    console.log(e.message );
+        return event;
+    }
+
+
+    if (event.target.dispatchEvent) {
+
+        try{
+            event.target.dispatchEvent(refEvent);
+        } catch( e ){
+
+            return;
+        }
+    } else if (event.target.fireEvent) {
+
+        event.target.fireEvent(refEvent);
+    }
+
+    return refEvent;
+};
 
 WPV_Toolset.Utils.do_ajax_post = function( params, callback_object )
 {
@@ -59,6 +106,8 @@ WPV_Toolset.Utils.do_ajax_post = function( params, callback_object )
 			onClose: false,
 			onOpen: false,
 			onDestroy:false,
+			dontShowAgain:null,
+            dontShowAgainText:'',
 			args:[],
 			referTo: null,
 			offestX: -20,
@@ -145,6 +194,17 @@ WPV_Toolset.Utils.do_ajax_post = function( params, callback_object )
 				self.box.html( self.prms.text );
 			}
 
+            if( self.prms.dontShowAgain && typeof  self.prms.dontShowAgain === 'function' && self.prms.dontShowAgainText !== '' ){
+                self.$dontContainer = $('<span class="dont-wrap"></span>')
+                self.$dont_show = $('<input type="checkbox" class="toolset-alert-not-again js-icon-not-again">');
+                self.$dont_label = $('<label class="toolset-alert-not-again-label" for="toolset-alert-not-again"></label>');
+                self.$dont_label.text(self.prms.dontShowAgainText);
+                self.$dontContainer.append( self.$dont_show, self.$dont_label );
+                self.box.append( self.$dontContainer );
+
+                self.prms.dontShowAgain.call(self.$dont_show, self);
+            }
+
 			if( self.prms.close ){
 				self.remove = $('<i class="toolset-alert-close icon-remove-sign js-icon-remove-sign"></i>');
 				self.box.append( self.remove );
@@ -152,6 +212,7 @@ WPV_Toolset.Utils.do_ajax_post = function( params, callback_object )
 					self.wpvMessageRemove();
 				});
 			}
+
 
 
 			//if( is_open ) self.wpvMessageRemove();
@@ -288,6 +349,102 @@ WPV_Toolset.Utils.do_ajax_post = function( params, callback_object )
 		});
 	};
 })( jQuery, window, document );
+
+jQuery( function( $ ) {
+	$.each( $( '.js-show-toolset-message:not(.js-show-toolset-message-inited)' ), function() {
+        $( this )
+			.addClass( 'js-show-toolset-message-inited' )
+            .show()
+            .wpvToolsetHelp();
+    });
+});
+
+if ( typeof jQuery.fn.wpvToolsetHelp === 'undefined' ) {
+
+	/* Help messages */
+	(function($){
+
+		$.fn.wpvToolsetHelp = function( options ) {
+
+			var thiz = this;
+
+			var $container = this;
+			var prms = $.extend( {
+				content : ( thiz.contents().length !== 0 ) ? thiz.contents() : "Enter a customized text to be displayed",
+				tutorialButtonText : ( typeof(thiz.data('tutorial-button-text' )) !== 'undefined' ) ? thiz.data('tutorial-button-text') : null,
+				tutorialButtonURL : ( typeof(thiz.data('tutorial-button-url' )) !== 'undefined' ) ? thiz.data('tutorial-button-url') : null,
+				linkText : ( typeof(thiz.data('link-text')) !== 'undefined' ) ? thiz.data('link-text') : null,
+				linkURL : ( typeof(thiz.data('link-url')) !== 'undefined' ) ? thiz.data('link-url') : null,
+				footer : ( typeof(thiz.data('footer')) !== 'undefined' ) ? thiz.data('footer') : false,
+				classname : ( typeof(thiz.data('classname')) !== 'undefined' ) ? thiz.data('classname') : '',
+				close: ( typeof(thiz.data('close')) !== 'undefined' ) ? thiz.data('close') : true,
+				hidden: ( typeof(thiz.data('hidden')) !== 'undefined' ) ? thiz.data('hidden') : false,
+				onClose: false,
+				args:[]
+			}, options );
+
+			if ( $.type(prms.content) === 'string' ) {
+				prms.content = $('<p>' + prms.content + '</p>');
+			}
+
+			var $box = $('<div class="toolset-help ' + prms.classname + '"><div class="toolset-help-content"></div><div class="toolset-help-sidebar"></div></div>');
+
+		var $footer = $('<div class="toolset-help-footer"><button class="js-toolset-help-close js-toolset-help-close-forever button-secondary">'+ wpv_help_box_texts.wpv_dont_show_it_again +'</button><button class="js-toolset-help-close js-toolset-help-close-once button-primary">'+ wpv_help_box_texts.wpv_close +'</button></div>');
+
+			if (prms.footer === true) {
+				$footer.appendTo($box);
+			}
+
+			prms.content.appendTo($box.find('.toolset-help-content'));
+
+			this.wpvHelpRemove = function() {
+				if( $box )
+				$box.fadeOut('fast', function(){
+				//    $(this).remove();
+					if ( prms.onClose && typeof prms.onClose === 'function' ) {
+						prms.onClose.apply( $container, prms.args );
+					}
+				});
+				return this;
+			};
+
+			if ( (prms.tutorialButtonText && prms.tutorialButtonURL) || (prms.linkText && prms.linkURL) ) {
+				var $toolbar = $('<p class="toolset-help-content-toolbar"></p>');
+				$toolbar.appendTo($box.find('.toolset-help-content'));
+				if (prms.tutorialButtonText && prms.tutorialButtonURL) {
+					$('<a href="' + prms.tutorialButtonURL + '" class="btn">' + prms.tutorialButtonText + '</a>').appendTo($toolbar);
+				}
+				if (prms.linkText && prms.linkURL) {
+					$('<a href="' + prms.linkURL + '">' + prms.linkText + '</a>').appendTo($toolbar);
+				}
+			}
+
+			if (prms.close === true) {
+				$('<i class="icon-remove js-toolset-help-close js-toolset-help-close-main"></i>').appendTo($box);
+			}
+
+			// bind close event to all close buttons
+			var $closeButtons = $box.find('.js-toolset-help-close');
+			if ( $closeButtons.length !== 0 ) {
+				$closeButtons.on('click',function(){
+					$container.wpvHelpRemove();
+				});
+			}
+
+			$box.appendTo($container).hide();
+			if ($container.hasClass('js-show-toolset-message')) {
+				$box.unwrap();
+			}
+			if (prms.hidden === false) {
+				$box.fadeIn('fast');
+			}
+
+			return this;
+		};
+
+	})(jQuery);
+
+}
 
 (function ($) {
 	$.fn.insertAtIndex = function(index,selector){
@@ -514,10 +671,10 @@ WPV_Toolset.Utils.Loader = function()
 
         if( typeof after === 'undefined' )
         {
-            self.loader.prependTo( self.el ).show();
+            self.loader.prependTo( self.el ).css('visibility', 'visible').show();
         }
         else{
-            self.loader.insertAfter( self.el ).show();
+            self.loader.insertAfter( self.el ).css('visibility', 'visible').show();
         }
 
         return self.loader;
@@ -686,7 +843,7 @@ WPV_Toolset.Utils.editor_utf8_decode = function (utftext) {
     return string;
 };
 
-// convert unicode character to its corrsponding numeric entity
+// convert unicode character to its corresponding numeric entity
 WPV_Toolset.Utils.fixedCharCodeAt = function  (str, idx) {
     // ex. fixedCharCodeAt ('\uD800\uDC00', 0); // 65536
     // ex. fixedCharCodeAt ('\uD800\uDC00', 1); // 65536
@@ -765,10 +922,14 @@ String.prototype.regexEscape = function regexEscape() {
         init: function () {
             var self = this;
             this.$element.on('mouseenter', function(event) {
+                event.stopImmediatePropagation();
                 self.show(event);
+                jQuery(event.target).trigger('tooltip_show', event);
             });
             this.$element.on('mouseleave', function(event) {
+                event.stopImmediatePropagation();
                 self.hide(event);
+                jQuery(event.target).trigger('tooltip_hide', event);
             });
         },
         show: function (event) {
@@ -944,3 +1105,116 @@ String.prototype.regexEscape = function regexEscape() {
     };
 
 }(jQuery, window, document))
+;
+
+/*
+
+ http://bigwilliam.com/jquery-fire-event-after-window-resize-is-completed/
+
+ // Usage
+ $(window).resize(function() {
+ var output = $('.output');
+ $(output).text('RESIZING...');
+ // Wait for it...
+ waitForFinalEvent(function() {
+ $(output).text('EVENT FIRED!');
+ //...
+ }, 500, "some unique string");
+ });
+
+ */
+var waitForFinalEvent = ( function () {
+    var timers = {};
+    return function ( callback, ms, uniqueId ) {
+        if ( ! uniqueId ) {
+            uniqueId = "Don't call this twice without a uniqueId";
+        }
+        if ( timers[uniqueId] ) {
+            clearTimeout( timers[uniqueId] );
+        }
+        
+        timers[uniqueId] = setTimeout( callback, ms );
+    };
+} )();
+
+
+WPV_Toolset.Utils._strip_scripts = function (data) {
+
+    if( !data ) return '';
+
+    data = data.replace(/&lt;/g, "|-lt-|");
+    data = data.replace(/&gt;/g, "|-gt-|");
+    data = data.replace(/&(\w+);/g, "&amp;$1;"); // Preserve entities (rafael.v)
+    if( data.indexOf('srcset') === -1 ){
+        var div = document.createElement('div');
+        div.innerHTML = data;
+        jQuery(div).find('script').remove();
+        var out = div.innerHTML;
+    } else {
+        var out = data.replace(/<script[^>]*>([\\S\\s]*?)<\/script>/img, "");
+    }
+
+    out = out.replace(/&lt;/g, "<");
+    out = out.replace(/&gt;/g, ">");
+    out = out.replace(/&amp;(\w+);/g, "&$1;"); // Preserve entities (rafael.v)
+    out = out.replace(/\|-lt-\|/g, '&lt;');
+    out = out.replace(/\|-gt-\|/g, '&gt;');
+    return out;
+};
+
+if (!String.prototype.trim) {
+    (function() {
+        // Make sure we trim BOM and NBSP
+        var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+        String.prototype.trim = function() {
+            return this.replace(rtrim, '');
+        };
+    })();
+}
+
+
+/**
+ * Strip known tags and escape the rest of the string.
+ *
+ * Warning! Since underscore.js 1.2.2 the _.escape() method got dumber and
+ * now it double-escapes HTML entities (read: https://github.com/jashkenas/underscore/issues/350).
+ * If you want to avoid double-escaping, you can do it by:
+ *
+ *     WPV_Toolset.Utils._strip_tags_and_preserve_text(_.unescape(text))
+ *
+ * Note: Although the "_" prefix suggests this function is private, it's also used elsewhere.
+ *
+ * @param {string} text
+ * @returns {string}
+ * @since unknown
+ */
+WPV_Toolset.Utils._strip_tags_and_preserve_text = function( text ){
+     var rex = /<\/?(a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont|bdi|bdo|bgsound|big|blink|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup|data|datalist|dd|del|details|dfn|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frame|frameset|h1|h2|h3|h4|h5|h6|head|header|hgroup|hr|html|i|iframe|img|input|ins|isindex|kbd|keygen|label|legend|li|link|listing|main|map|mark|marquee|menu|menuitem|meta|meter|nav|nobr|noframes|noscript|object|ol|optgroup|option|output|p|param|plaintext|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|source|spacer|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video|wbr|xmp)\b[^<>]*>/ig
+     return _.escape( text.replace(rex , "") ).trim();
+};
+
+
+/**
+ * Setup the behaviour of browser when user tries to leave the page.
+ *
+ * When user tries to leave the page, check if confirmation is needed, and if so, displays a confirmation message and
+ * runs custom action.
+ *
+ * @param {function} checkIfConfirmationNeededCallback Should return true if confirmation should be shown (e.g. unsaved data).
+ * @param {function} onBeforeUnloadCallback Will be called before showing the confirmation.
+ * @param {string} confirmationMessage Confirmation message that should be shown by the browser.
+ */
+WPV_Toolset.Utils.setConfirmUnload = function(checkIfConfirmationNeededCallback, onBeforeUnloadCallback, confirmationMessage) {
+	window.onbeforeunload = function(e) {
+		if(checkIfConfirmationNeededCallback()) {
+
+			onBeforeUnloadCallback();
+
+			// For IE and Firefox prior to version 4
+			if (e) {
+				e.returnValue = confirmationMessage;
+			}
+			return confirmationMessage;
+		}
+	};
+};

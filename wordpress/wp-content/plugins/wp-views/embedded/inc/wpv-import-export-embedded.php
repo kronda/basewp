@@ -52,6 +52,9 @@ class WPV_Export_Import_Embedded {
 		$this->import_messages = array();
 		
 		add_action( 'wp_loaded', array( $this, 'import_on_form_submit' ) );
+		if ( is_admin() ) {
+            add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+        }
 		add_action( 'admin_notices', array( $this, 'import_notices_errors' ) );
 		add_action( 'admin_notices', array( $this, 'import_notices_messages' ) );
 		
@@ -475,6 +478,20 @@ class WPV_Export_Import_Embedded {
 				$this->legacy_set_updated_timestamp();
 			}
 		}
+	}
+	
+	/**
+	* admin_enqueue_scripts
+	*
+	* Enqueue assets on the import/export page
+	*
+	* @since 1.10
+	*/
+	
+	function admin_enqueue_scripts( $hook ) {
+		if ( $hook == 'views_page_views-import-export' ) {
+            wp_enqueue_style( 'views-admin-css' );
+        }
 	}
 	
 	/**
@@ -1487,6 +1504,8 @@ class WPV_Export_Import_Embedded {
 							
 							$meta[$extra_meta_key] = apply_filters( 'wpv_filter_adjust_view_extra_fields_for_import', $meta[$extra_meta_key], $view, $extra_meta_key, $idflag );
 							update_post_meta( $idflag, $extra_meta_key, $meta[$extra_meta_key] );
+						} else {
+							delete_post_meta( $idflag, $extra_meta_key );
 						}
 					}
 					// @todo review why or when this action is being used
@@ -2340,6 +2359,7 @@ function wpv_convert_url( $url, $site_url, $upload_url ) {
 * _wpv_adjust_view_extra_postmeta_keys_for_export_import
 * 
 * Set the basic postmeta keys that need to be exported and imported on a View, beyond the settings and layout settings
+* Note that those will be deleted if missing on the imported item
 *
 * @param (array) $meta_keys
 *
@@ -2831,7 +2851,7 @@ add_filter( 'wpv_filter_adjust_view_extra_fields_for_export', '_wpv_adjust_view_
 function _wpv_adjust_view_loop_template_for_export( $value, $view_post_array, $meta_key ) {
 	if (
 		$meta_key == '_view_loop_template'
-		&& $value != ''
+		&& ! empty( $value )
 	) {
 		global $wpdb;
 		$loop_template_title = $wpdb->get_var( 
@@ -3326,7 +3346,7 @@ add_filter( 'wpv_filter_adjust_view_extra_fields_for_import', '_wpv_adjust_view_
 function _wpv_adjust_view_loop_template_for_import( $value, $view_post_array, $meta_key, $new_view_id ) {
 	if (
 		$meta_key == '_view_loop_template'
-		&& $value != ''
+		&& ! empty( $value )
 	) {
 		global $wpdb;
 		$loop_template_id = $wpdb->get_var( 

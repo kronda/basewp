@@ -123,7 +123,7 @@ jQuery(function($) {
 	 */
 	showSpinner = function(selector) {
 		selector = ( typeof selector === 'undefined' ) ? '.subsubsub' : selector;
-		$(selector).append('<div class="spinner ajax-loader"></div>');
+		$(selector).append('<div class="wpv-spinner ajax-loader"></div>');
 	}
 
 
@@ -133,7 +133,7 @@ jQuery(function($) {
 	 * @since 1.7
 	 */ 
 	showSpinnerAfter = function(what) {
-		$('<div class="spinner ajax-loader">').insertAfter( what ).show();
+		$('<div class="wpv-spinner ajax-loader">').insertAfter( what ).show();
 	}
 
 
@@ -143,7 +143,7 @@ jQuery(function($) {
 	 * @since 1.7
 	 */ 
 	showSpinnerBefore = function(what) {
-		$('<div class="spinner ajax-loader">').insertBefore( what ).show();
+		$('<div class="wpv-spinner ajax-loader">').insertBefore( what ).show();
 	}
 
 
@@ -153,7 +153,7 @@ jQuery(function($) {
 	 * @since 1.7
 	 */
 	hideSpinner = function() {
-		$('.spinner.ajax-loader').hide();
+		$('.wpv-spinner.ajax-loader').hide();
 	}
 
 

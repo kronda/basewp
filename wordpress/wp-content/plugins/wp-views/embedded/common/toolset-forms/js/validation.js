@@ -7,10 +7,6 @@
  *
  * @see class WPToolset_Validation
  *
- * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/js/validation.js $
- * $LastChangedDate: 2015-03-31 16:10:47 +0000 (Tue, 31 Mar 2015) $
- * $LastChangedRevision: 32741 $
- * $LastChangedBy: francesco $
  *
  */
 //var wptValidationData = {};
@@ -71,6 +67,18 @@ var wptValidation = (function($) {
 //                            return this.getLength(value, element) > 0;
 //                        }
 
+                        //Fixing YT cred-104
+                        element = jQuery(element).siblings( 'input[type="hidden"]' );                                                
+                        if (element[0] &&
+                                !jQuery(element[0]).prop("disabled") &&
+                                (jQuery(element[0]).attr('data-wpt-type')=='file' || 
+                                jQuery(element[0]).attr('data-wpt-type')=='video' ||
+                                jQuery(element[0]).attr('data-wpt-type')=='image' 
+                                )) {
+                            var val = jQuery(element[0]).val();
+                            return val && $.trim(val).length > 0;
+                        }
+                    
                         if (jQuery(element).hasClass("hasDatepicker")) {
                             return false;
                         }

@@ -89,6 +89,9 @@ final class FLTheme {
 
 		// RSS feed links support
 		add_theme_support('automatic-feed-links');
+		
+		// Title tag support
+		add_theme_support('title-tag');
 
 		// Post thumbnail support
 		add_theme_support('post-thumbnails');
@@ -202,44 +205,52 @@ final class FLTheme {
 	 * Renders the text for the <title> tag.
 	 *
 	 * @since 1.0
+	 * @since 1.3.1.3 Only render if the core title tag isn't supported.
 	 * @return void
 	 */
 	static public function title()
 	{
-		$sep            = apply_filters('fl_title_separator', ' | ');
-		$title          = wp_title($sep, false, 'right');
-		$name           = get_bloginfo('name');
-		$description    = get_bloginfo('description');
-
-		if(empty($title) && empty($description)) {
-			$title = $name;
+		if ( ! function_exists( '_wp_render_title_tag' ) ) {
+		
+			$sep            = apply_filters('fl_title_separator', ' | ');
+			$title          = wp_title($sep, false, 'right');
+			$name           = get_bloginfo('name');
+			$description    = get_bloginfo('description');
+	
+			if(empty($title) && empty($description)) {
+				$title = $name;
+			}
+			else if(empty($title)) {
+				$title = $name . ' | ' . $description;
+			}
+			else if(!empty($name) && !stristr($title, $name)) {
+				$title = !stristr($title, $sep) ? $title . $sep . $name : $title . $name;
+			}
+			
+			echo '<title>' . apply_filters('fl_title', $title) . '</title>';
 		}
-		else if(empty($title)) {
-			$title = $name . ' | ' . $description;
-		}
-		else if(!empty($name) && !stristr($title, $name)) {
-			$title = !stristr($title, $sep) ? $title . $sep . $name : $title . $name;
-		}
-
-		echo apply_filters('fl_title', $title);
 	}
 
 	/**
 	 * Renders the favicon tags.
 	 *
 	 * @since 1.0
+	 * @since 1.3.1.3 Only show the deprecated favicon if we don't have a core Site Icon saved.
 	 * @return void
 	 */
 	static public function favicon()
 	{
-		$favicon    = self::get_setting('fl-favicon');
-		$apple      = self::get_setting('fl-apple-touch-icon');
-
-		if ( ! empty( $favicon ) ) {
-			echo '<link rel="shortcut icon" href="'. $favicon .'" />' . "\n";
-		}
-		if ( ! empty( $apple ) ) {
-			echo '<link rel="apple-touch-icon" href="'. $apple .'" />' . "\n";
+		if ( false === get_option( 'site_icon', false ) ) {
+			
+			$favicon    = self::get_setting('fl-favicon');
+			$apple      = self::get_setting('fl-apple-touch-icon');
+	
+			if ( ! empty( $favicon ) ) {
+				echo '<link rel="shortcut icon" href="'. $favicon .'" />' . "\n";
+			}
+			if ( ! empty( $apple ) ) {
+				echo '<link rel="apple-touch-icon" href="'. $apple .'" />' . "\n";
+			}
 		}
 	}
 

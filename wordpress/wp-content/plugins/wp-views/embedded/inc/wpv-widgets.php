@@ -19,14 +19,18 @@
 */
 
 class WPV_Widget extends WP_Widget {
-    
-    function WPV_Widget() {
-        $widget_ops = array(
+	
+	public function __construct( $id_base = 'wp_views', $name = 'WP Views', $widget_options = array(), $control_options = array() ) {
+		$this->id_base = 'wp_views';
+		$this->name = __( 'WP Views', 'wpv-views' );
+		$this->option_name = 'widget_' . $this->id_base;
+		$this->widget_options = array(
 			'classname' => 'widget_wp_views',
 			'description' => __( 'Displays a View', 'wpv-views')
 		);
-        $this->WP_Widget( 'wp_views', __( 'WP Views', 'wpv-views' ), $widget_ops );
-    }
+		$this->control_options = wp_parse_args( $control_options, array('id_base' => $this->id_base) );
+		parent::__construct( $this->id_base, $this->name, $this->widget_options, $this->control_options );
+	}
     
     function widget( $args, $instance ) {
         global $WP_Views;
@@ -47,7 +51,10 @@ class WPV_Widget extends WP_Widget {
 			$out = $WP_Views->render_view_ex( $instance['view'], $instance['view'] );
 			$out = wpv_do_shortcode( $out );
 			$post_type_object = get_post_type_object( 'view' );
-			if ( current_user_can( $post_type_object->cap->edit_post, $instance['view'] ) ) {
+			if ( 
+				! $WP_Views->is_embedded() 
+				&& current_user_can( $post_type_object->cap->edit_post, $instance['view'] ) 
+			) {
 				$out .= widget_view_link( $instance['view']);
 			}
 			echo $out;
@@ -127,14 +134,18 @@ class WPV_Widget extends WP_Widget {
 */
 
 class WPV_Widget_filter extends WP_Widget {
-    
-    function WPV_Widget_filter() {
-        $widget_ops = array(
+	
+	public function __construct( $id_base = 'wp_views_filter', $name = 'WP Views Filter', $widget_options = array(), $control_options = array() ) {
+		$this->id_base = 'wp_views_filter';
+		$this->name = __( 'WP Views Filter', 'wpv-views' );
+		$this->option_name = 'widget_' . $this->id_base;
+		$this->widget_options = array(
 			'classname' => 'widget_wp_views_filter',
 			'description' => __( 'Displays the filter section of a View.', 'wpv-views' ) 
 		);
-        $this->WP_Widget( 'wp_views_filter', __( 'WP Views Filter', 'wpv-views' ), $widget_ops );
-    }
+		$this->control_options = wp_parse_args( $control_options, array('id_base' => $this->id_base) );
+		parent::__construct( $this->id_base, $this->name, $this->widget_options, $this->control_options );
+	}
     
     function widget( $args, $instance ) {
         global $WP_Views;
@@ -159,7 +170,10 @@ class WPV_Widget_filter extends WP_Widget {
 			$out = $WP_Views->short_tag_wpv_view_form( $atts );
 			$out = wpv_do_shortcode( $out );
 			$post_type_object = get_post_type_object( 'view' );
-			if ( current_user_can( $post_type_object->cap->edit_post, $instance['view'] ) ) {
+			if ( 
+				! $WP_Views->is_embedded() 
+				&& current_user_can( $post_type_object->cap->edit_post, $instance['view'] ) 
+			) {
 				$out .= widget_view_link( $instance['view'] );
 			}
 			echo $out;

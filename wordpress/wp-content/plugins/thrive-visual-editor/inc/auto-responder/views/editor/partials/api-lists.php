@@ -5,7 +5,7 @@
         <h6><?php echo empty($list_subtitle) ? 'Choose your mailing list:' : $list_subtitle ?></h6>
         <?php if (false === $lists) : /** this means there's been an error while connecting / communicating to the API */ ?>
             <p class="error-message" style="color: red">
-                <?php echo __('Error while communicating with the service:', 'thrive-cb')?> <?php echo $connection->getApiError() ?>
+                <?php echo __('Error while communicating with the service:', 'thrive-cb')?> <?php echo $selected_api->getApiError() ?>
             </p>
         <?php else : ?>
             <div class="tve_lightbox_select_holder tve_lightbox_input_inline tve_lightbox_select_inline">

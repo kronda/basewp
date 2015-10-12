@@ -8,7 +8,7 @@
 		<?php endfor; ?>
 	</div>
 	
-	<div class="fl-tabs-panels">
+	<div class="fl-tabs-panels fl-clearfix">
 		<?php for($i = 0; $i < count($settings->items); $i++) : if(!is_object($settings->items[$i])) continue; ?>
 		<div class="fl-tabs-panel"<?php if ( ! empty( $settings->id ) ) echo ' id="' . sanitize_html_class( $settings->id ) . '-' . $i . '"'; ?>>
 			<div class="fl-tabs-label fl-tabs-panel-label<?php if($i == 0) echo ' fl-tab-active'; ?>" data-index="<?php echo $i; ?>">

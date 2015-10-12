@@ -27,6 +27,7 @@ if ($is_thrive_leads_active) {
 }
 $landing_page_template = empty($_POST['landing_page']) ? false : $_POST['landing_page'];
 $fonts = tve_get_all_custom_fonts(true);
+$extra_custom_fonts = apply_filters('tcb_extra_custom_fonts', array(), (int)$_POST['post_id']);
 $post_type = $_POST['post_type'];
 $menus = empty($_POST['menus']) ? array() : $_POST['menus'];
 
@@ -39,6 +40,8 @@ if (function_exists('_thrive_get_patterns_from_directory')) {
 }
 
 $tve_display_save_notification = get_option('tve_display_save_notification', 1);
+
+$web_safe_fonts = tve_font_manager_get_safe_fonts();
 
 ?>
 <div class="tve_wrapper <?php echo $_cPanelPosition . ' ' . $_dColor ?>" id="tve_cpanel">
@@ -319,6 +322,7 @@ $tve_display_save_notification = get_option('tve_display_save_notification', 1);
         <a href="javascript:void(0)" id="tve_submenu_save"
            class="tve_click tve_icm tve-ic-toggle-down tve_lb_small tve_btn tve_no_hide"
            data-ctrl="controls.lb_open"
+           data-load="1"
            data-lb="lb_save_user_template"
            title="<?php echo __("Save this element as a Content Template", "thrive-cb") ?>">
             <input type="hidden" name="element" value="1"/>
@@ -368,6 +372,28 @@ $tve_display_save_notification = get_option('tve_display_save_notification', 1);
     </div>
 </div>
 
+<?php /* static lightboxes */ ?>
+<div class="tve-static-lb" style="display: none">
+    <div style="display: none" id="lb_static_lp_export">
+        <?php include dirname(__FILE__) . '/lb_static_lp_export.php' ?>
+    </div>
+    <div style="display: none;" id="lb_text_link">
+        <?php include dirname(__FILE__) . '/lb_text_link.php' ?>
+    </div>
+    <div style="display: none;" id="lb_custom_html">
+        <?php include dirname(__FILE__) . '/lb_custom_html.php' ?>
+    </div>
+    <div style="display: none;" id="lb_custom_css">
+        <?php include dirname(__FILE__) . '/lb_custom_css.php' ?>
+    </div>
+    <div style="display: none;" id="lb_table">
+        <?php include dirname(__FILE__) . '/lb_table.php' ?>
+    </div>
+    <div style="display: none;" id="lb_google_map">
+        <?php include dirname(__FILE__) . '/lb_google_map.php' ?>
+    </div>
+</div>
+
 <div style="display: none" id="tve_table_merge_actions" class="tve_table_merge_cells_actions">
     <?php include $menu_path . 'table_cell_manager.php' ?>
 </div>
@@ -381,6 +407,22 @@ $tve_display_save_notification = get_option('tve_display_save_notification', 1);
 </div>
 
 <div style="display: none" id="tve_static_elements">
+    <div data-elem="sc_borderless_html">
+        <div class="fwi thrv_wrapper tve_custom_html_placeholder code_placeholder">
+            <a class="tve_click tve_green_button clearfix" id="lb_custom_html" data-ctrl="controls.lb_open">
+                <i class="tve_icm tve-ic-code"></i>
+                <span>Insert Custom HTML</span>
+            </a>
+        </div>
+    </div>
+    <div data-elem="sc_borderless_image">
+        <div class="fwi thrv_wrapper image_placeholder code_placeholder">
+            <a class="upload_image tve_green_button clearfix" href="#" target="_self">
+                <i class="tve_icm tve-ic-upload"></i>
+                <span>Add Media</span>
+            </a>
+        </div>
+    </div>
     <div data-elem="paragraph">
         <p data-default="<?php echo __("Enter your text here...", "thrive-cb") ?>"><?php echo __("Enter your text here...", "thrive-cb") ?></p>
     </div>

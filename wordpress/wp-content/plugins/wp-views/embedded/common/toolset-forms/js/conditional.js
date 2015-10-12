@@ -1,10 +1,6 @@
 /**
  * @see WPToolset_Forms_Conditional (classes/conditional.php)
  *
- * $HeadURL: https://www.onthegosystems.com/misc_svn/common/tags/1.5/toolset-forms/js/conditional.js $
- * $LastChangedDate: 2015-03-31 13:51:36 +0000 (Tue, 31 Mar 2015) $
- * $LastChangedRevision: 32735 $ 
- * $LastChangedBy: marcin $ Riccardo
  *
  */
 var wptCondTriggers = {}
@@ -234,18 +230,27 @@ var wptCond = (function ($) {
                  */
                 if ($obj.length < 1) {
                     $obj = $('[data-wpt-name="' + name + '[datepicker]"]', formID);
+                    if ($obj.length < 1) {
+                        $obj = $('[data-item_name="date-' + name + '"]', formID);
+                    }
                 }
                 /**
                  * handle skype field
                  */
                 if ($obj.length < 1) {
                     $obj = $('[data-wpt-name="' + name + '[skypename]"]', formID);
+                    if ($obj.length < 1) {
+                        $obj = $('[data-item_name="skype-' + name + '"]', formID);
+                    }
                 }
                 /**
                  * handle checkboxes field
                  */
                 if ($obj.length < 1) {
                     $obj = $('[data-wpt-name="' + name + '[]"]', formID);
+                    if ($obj.length < 1) {
+                        $obj = $('[data-item_name="checkboxes-' + name + '"]', formID);
+                    }
                 }
                 /**
                  * catch by id

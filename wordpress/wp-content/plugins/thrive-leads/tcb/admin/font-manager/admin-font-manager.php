@@ -7,7 +7,15 @@
 </table>
 <div class="thrive-page-settings">
     <h3><?php echo __("Custom Font Manager", "thrive-cb"); ?></h3>
-    <br/>
+
+    <p>
+        <?php echo __("By default, Thrive Themes integrates with Google Fonts. This allows you to choose from 600+ fonts for use in your content. However, you can also use the blue import font button below to import your own fonts files using a service called Font Squirrel"); ?>
+        <a href="javascript:void"><?php echo __("Learn more about how to import your own fonts", 'thrive') ?></a>
+    </p>
+
+    <a class="button button-primary"
+       href="<?php echo admin_url("admin.php?page=thrive_font_import_manager") ?>"><?php echo __("Import custom font manager", 'thrive') ?></a>
+
     <table class="form-table fm" style="width: 100%; text-align: left;">
         <thead>
             <tr>
@@ -51,10 +59,10 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="5">
-                    <input class="font-button thrive_options pure-button upload" id="thrive-add-font" type="button" value="<?php echo __("+ Add Custom Font", "thrive-cb") ?>" >
-                    <input style="float: right;" class="font-button thrive_options pure-button upload" id="thrive-update-posts" type="button" value="<?php echo __("Update Posts", "thrive-cb") ?>" >
-                    <input type="hidden" value="<?php echo $new_font_id; ?>" id='new-font-id' >
+                <td colspan="4"></td>
+                <td>
+                    <a style="float: right;" id="thrive-add-font" href="javascript:void(0)"><?php _e("+ Add Custom Font", 'thrive-cb'); ?></a>
+                    <input type="hidden" value="<?php echo $new_font_id; ?>" id='new-font-id' />
                 </td>
             </tr>
         </tfoot>

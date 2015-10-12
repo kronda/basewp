@@ -754,6 +754,37 @@ function wpv_embedded_layout_extra(  $view_settings, $view_layout_settings ) {
 		</div>
 		<div class="wpv-setting">
 			<textarea cols="30" rows="10" id="wpv_layout_meta_html_content" name="wpv_layout_layout_meta_html"><?php echo ( isset( $view_layout_settings['layout_meta_html'] ) ) ? esc_textarea( $view_layout_settings['layout_meta_html'] ) : ''; ?></textarea>
+			<?php
+			$templates = array();
+			if ( isset( $view_layout_settings['included_ct_ids'] ) ) {
+				$templates = explode( ',', $view_layout_settings['included_ct_ids'] );
+				$templates = array_map( 'esc_attr', $templates );
+				$templates = array_map( 'trim', $templates );
+				$templates = array_filter( $templates, 'is_numeric' );
+				$templates = array_map( 'intval', $templates );
+				if ( count( $templates ) > 0 ) {
+					?>
+					<h4><?php _e( 'Templates for this View', 'wpv-views' ); ?></h4>
+					<div class="wpv-advanced-setting">
+						<ul>
+						<?php
+						foreach ( $templates as $tpl ) {
+							echo '<li>';
+							echo sprintf(
+								'<a href="%s" title="%s" target="_blank">%s</a>',
+								esc_url( admin_url( 'admin.php?page=view-templates-embedded&view_id=' . $tpl ) ),
+								esc_attr( get_the_title( $tpl ) ),
+								esc_attr( get_the_title( $tpl ) )
+							);
+							echo '</li>';
+						}
+						?>
+						</ul>
+					</div>
+					<?php
+				}
+			}
+			?>
 		</div>
 	</div>
 	<?php
@@ -796,3 +827,74 @@ function wpv_embedded_combined_output(  $view_settings, $view_layout_settings, $
 	</div>
 	<?php
 }
+
+
+/**
+ * Retrieve link to a post.
+ *
+ * @param array|mixed $link Link data. The array can (but doesnẗ have to) contain following elements:
+ *     array(
+ *         @type bool $is_disabed If true, the link should be disabled or not displayed at all. The URL will not work.
+ *             If this value is missing, handle as true.
+ *         @type string $url Link URL.
+ *     )
+ *     If the parameter is not an array, it's not valid and should be considered equal to array().
+ * @param string $post_type Type of the post.
+ * @param int $post_id Post ID.
+ * @param string $link_purpose For finer distinguishing of the link purpose. Common values are "view" and "edit".
+ *
+ * @since 1.10
+ */
+add_filter( 'icl_post_link', 'wpv_embedded_post_link', 10, 4 );
+
+
+/**
+ * Adjust post links for embedded Views.
+ *
+ * Currently only CT edit links are supported. See icl_post_link filter for parameter description.
+ *
+ * @param $link
+ * @param $post_type
+ * @param $post_id
+ * @param $link_purpose
+ * @return array
+ *
+ * @since 1.10
+ */
+function wpv_embedded_post_link( $link, $post_type, $post_id, $link_purpose ) {
+	global $WP_Views;
+	// Skip if we're in full Views
+	if( $WP_Views->is_embedded() ) {
+
+		if( !is_array( $link ) ) {
+			$link = array();
+		}
+
+		switch( $post_type ) {
+			// Content Templates
+			case WPV_Content_Template_Embedded::POST_TYPE:
+
+				if( 'edit' == $link_purpose ) {
+					// Content Template edit page
+
+					// Check that CT exists and is not trashed.
+					$ct = WPV_Content_Template_Embedded::get_instance( $post_id );
+					if( ( null == $ct ) || $ct->is_trashed ) {
+						$link['is_disabled'] = true;
+					} else {
+						// Generate the URL to the read-only page.
+						$link['is_disabled'] = false;
+						$link['url'] = esc_url(
+							add_query_arg(
+								array( 'page' => 'view-templates-embedded', 'view_id' => $post_id ),
+								admin_url('admin.php')
+							)
+						);
+					}
+				}
+				break;
+		}
+	}
+	return $link;
+}
+

@@ -14,8 +14,8 @@ function wpv_admin_menu_content_templates_listing_page() {
 					_e( 'Content Templates', 'wpv-views' );
 
 					printf(
-							' <a href="#" class="add-new-h2 js-add-new-content-template" data-target="%s">%s</a>',
-							add_query_arg( array( 'action' => 'wpv_ct_create_new' ), admin_url( 'admin-ajax.php' ) ),
+							' <a href="#" class="add-new-h2 page-title-action js-add-new-content-template" data-target="%s">%s</a>',
+							esc_url( add_query_arg( array( 'action' => 'wpv_ct_create_new' ), admin_url( 'admin-ajax.php' ) ) ),
 							__( 'Add new Content Template', 'wpv-views' ) );
 
 					if ( !empty( $search_term ) ) {
@@ -71,12 +71,12 @@ function wpv_admin_menu_content_templates_listing_page() {
 								foreach( $tabs as $tab_slug => $tab_label ) {
 									printf(
 										'<li><a href="%s" %s>%s</a></li>',
-										add_query_arg(
+										esc_url( add_query_arg(
 											array(
 													'page' => 'view-templates',
 													'arrangeby' => ( 'name' == $tab_slug ) ? 'name' : 'usage',
 													'usage' => $tab_slug ),
-											admin_url( 'admin.php' ) ),
+											admin_url( 'admin.php' ) ) ),
 										wpv_current_class( $arrange_by, $tab_slug, false ),
 										$tab_label );
 								}
@@ -109,7 +109,7 @@ function wpv_admin_menu_content_templates_listing_page() {
 function wpv_admin_ct_listing_message_undo( $undo_link, $message_name, $affected_ids ) {
 	if( ( 'trashed' == $message_name ) && !empty( $affected_ids ) ) {
 		$undo_link = sprintf( '<a href="%s"	class="js-wpv-untrash" data-ids="%s" data-nonce="%s">%s</a>',
-				add_query_arg( array( 'page' => 'view-templates', 'untrashed' => count( $affected_ids ) ), admin_url( 'admin.php' ) ),
+				esc_url( add_query_arg( array( 'page' => 'view-templates', 'untrashed' => count( $affected_ids ) ), admin_url( 'admin.php' ) ) ),
 				urlencode( implode( ',', $affected_ids ) ),
 				wp_create_nonce( 'wpv_view_listing_actions_nonce' ),
 				__( 'Undo', 'wpv-views' ) );
@@ -138,10 +138,10 @@ function wpv_admin_content_template_listing_name() {
 	);
 
 	// Apply post_status coming from the URL parameters.
-	if ( isset( $_GET["status"] ) && '' != $_GET["status"] ) { 
-		$wpv_args['post_status'] = sanitize_text_field( $_GET["status"] );
-		$mod_url['status'] = sanitize_text_field( $_GET["status"] );
-	}
+    $post_status = wpv_getget( 'status', 'publish', array( 'publish', 'trash' ) );
+	$wpv_args['post_status'] = $post_status;
+	$mod_url['status'] = $post_status;
+    $the_other_post_status = ( 'publish' == $post_status ) ? 'trash' : 'publish';
 
 	if ( isset( $_GET["s"] ) && '' != $_GET["s"] ) {
 		$wpv_args = wpv_modify_wpquery_for_search( $_GET["s"], $wpv_args );
@@ -167,22 +167,65 @@ function wpv_admin_content_template_listing_name() {
 		$mod_url['paged'] = (int) $_GET["paged"];
 	}
 
+    // Build a query for the other post status. We're interested only in post count
+    $other_post_status_args = $wpv_args;
+    $other_post_status_args['post_status'] = $the_other_post_status;
+    $other_post_status_args['fields'] = 'ids';
+
+    // All querying must be done between those two switch_lang() calls otherwise CT translations
+    // will be also (wrongly) included.
+    global $sitepress;
+
+    $default_language = '';
+    if( isset( $sitepress ) ) {
+        //changes to the default language
+        $default_language = $sitepress->get_default_language();
+        $sitepress->switch_lang( $default_language );
+    }
+
 	$query = new WP_Query( $wpv_args );
 
-	// Number of posts that are being displayed.
-	$wpv_count_posts = $query->post_count;
+    $other_post_status_query = new WP_Query( $other_post_status_args );
 
-	// Total number of posts matching the query.
-	$wpv_found_posts = $query->found_posts;
-	
-	$all_posts = wp_count_posts('view-template');
-	$wpv_views_status = array(); // to hold the number of Views in each status
-	$wpv_views_status['publish'] = $all_posts->publish;
-	$wpv_views_status['trash'] = $all_posts->trash;
+    if( isset( $sitepress ) ) {
+        //changes to the current language
+        $sitepress->switch_lang( ICL_LANGUAGE_CODE );
+    }
 
-	// True if some content templates (even those not matching current query) exist.
-	$some_posts_exist = ( $wpv_views_status['publish'] > 0 || $wpv_views_status['trash'] > 0 );
-	
+    // Number of posts that are being displayed.
+    $wpv_count_posts = $query->post_count;
+
+    // Total number of posts matching the query.
+    $wpv_found_posts = $query->found_posts;
+
+    // to hold the number of Views in each status
+    $ct_counts_by_post_status = array(
+        $post_status => $wpv_found_posts,
+        $the_other_post_status => $other_post_status_query->found_posts
+    );
+
+    // True if some content templates (even those not matching current query) exist.
+    $some_posts_exist = ( $ct_counts_by_post_status['publish'] > 0 || $ct_counts_by_post_status['trash'] > 0 );
+
+	$active_nondefault_languages = array();
+	$add_translation_icon = '';
+	$edit_translation_icon = '';
+
+	$are_cts_translatable = WPV_Content_Template_Embedded::is_translatable();
+    if( $are_cts_translatable ) {
+        $active_languages = apply_filters( 'wpml_active_languages', array() );
+
+        // just remove the default language
+        $active_nondefault_languages = $active_languages;
+        unset( $active_nondefault_languages[ $default_language ] );
+
+        // store urls to add/edit translaton icons
+        if( defined( 'ICL_PLUGIN_URL' ) ) {
+            $add_translation_icon = ICL_PLUGIN_URL . '/res/img/add_translation.png';
+            $edit_translation_icon = ICL_PLUGIN_URL . '/res/img/edit_translation.png';
+        }
+    }
+
 	?>
 
 	<?php
@@ -194,12 +237,12 @@ function wpv_admin_content_template_listing_name() {
 						$is_plain_publish_current_status = ( $wpv_args['post_status'] == 'publish' && !isset( $_GET["s"] ) );
 						printf(
 								'<a href="%s" %s>%s</a> (%s) | ',
-								add_query_arg(
+								esc_url( add_query_arg(
 										array( 'page' => 'view-templates', 'status' => 'publish' ),
-										admin_url( 'admin.php' ) ),
+										admin_url( 'admin.php' ) ) ),
 								$is_plain_publish_current_status ?  ' class="current" ' : '',
 								__( 'Published', 'wpv-views' ),
-								$wpv_views_status['publish'] );
+								$ct_counts_by_post_status['publish'] );
 
 					?>
 				</li>
@@ -208,12 +251,12 @@ function wpv_admin_content_template_listing_name() {
 						$is_plain_trash_current_status = ( $wpv_args['post_status'] == 'trash' && !isset( $_GET["s"] ) );
 						printf(
 								'<a href="%s" %s>%s</a> (%s)',
-								add_query_arg(
+								esc_url( add_query_arg(
 										array( 'page' => 'view-templates', 'status' => 'trash' ),
-										admin_url( 'admin.php' ) ),
+										admin_url( 'admin.php' ) ) ),
 								$is_plain_trash_current_status ?  ' class="current" ' : '',
 								__( 'Trash', 'wpv-views' ),
-								$wpv_views_status['trash'] );
+								$ct_counts_by_post_status['trash'] );
 					?>
 				</li>
 			</ul>
@@ -227,15 +270,18 @@ function wpv_admin_content_template_listing_name() {
 			</p>
 			<p class="add-new-view">
 				<button class="button js-add-new-content-template"
-				data-target="<?php echo add_query_arg( array( 'action' => 'wpv_ct_create_new' ), admin_url( 'admin-ajax.php' ) ); ?>">
+				data-target="<?php echo esc_url( add_query_arg( array( 'action' => 'wpv_ct_create_new' ), admin_url( 'admin-ajax.php' ) ) ); ?>">
 					<i class="icon-plus"></i><?php _e('Add new Content Template','wpv-views') ?>
 				</button>
 			</p><?php
 		}
 
+        // A nonce for CT action - used for individual as well as for bulk actions.
+        // It will have a value only if some posts exist.
+        $ct_action_nonce = '';
+
 		if( $some_posts_exist ) {
 
-			// A nonce for CT action - used for individual as well as for bulk actions
 			$ct_action_nonce = wp_create_nonce( 'wpv_view_listing_actions_nonce' );
 			
 			// === Render "tablenav" section (Bulk actions and Search box) ===
@@ -358,7 +404,7 @@ function wpv_admin_content_template_listing_name() {
 					</p>
 					<p class="add-new-view">
 						<button class="button js-add-new-content-template"
-								data-target="<?php echo add_query_arg( array( 'action' => 'wpv_ct_create_new' ), admin_url( 'admin-ajax.php' ) ); ?>">
+								data-target="<?php echo esc_url( add_query_arg( array( 'action' => 'wpv_ct_create_new' ), admin_url( 'admin-ajax.php' ) ) ); ?>">
 							<i class="icon-plus"></i><?php _e( 'Add new Content Template', 'wpv-views') ?>
 						</button>
 					</p>
@@ -419,6 +465,27 @@ function wpv_admin_content_template_listing_name() {
 										( 'DESC'  === $column_sort_now ) ? 'icon-sort-by-alphabet-alt' : 'icon-sort-by-alphabet' );
 							?>
 						</th>
+                        <?php
+                            if( $are_cts_translatable ) {
+                                $flag_images = array();
+
+                                foreach( $active_nondefault_languages as $language_info ) {
+                                    $flag_images[] = sprintf(
+                                        '<img style="padding: 2px;" src="%s" title="%s" alt="%s" />',
+                                        $language_info['country_flag_url'],
+                                        $language_info['translated_name'],
+                                        $language_info['code']
+                                    );
+                                }
+                                if( empty( $flag_images ) ) {
+                                    $translation_column_header = __( 'Translations', 'wpv-views' );
+                                } else {
+                                    $translation_column_header = implode( '', $flag_images );
+                                }
+
+                                printf( '<th>%s</th>', $translation_column_header );
+                            }
+                        ?>
 						<th class="wpv-admin-listing-col-usage js-wpv-col-two"><?php _e('Used on','wpv-views') ?></th>
 						<?php
 							$column_active = '';
@@ -471,6 +538,7 @@ function wpv_admin_content_template_listing_name() {
 						$query->the_post();
 						$post = get_post( get_the_id() );
 						$template_id = $post->ID;
+                        $ct = WPV_Content_Template::get_instance( $template_id );
 						$wpv_content_template_decription  = get_post_meta( $template_id, '_wpv-content-template-decription', true );
 						$layout_loop_template_for_view_id = get_post_meta( $template_id, '_view_loop_id', true );
 						$alternate = ( ' alternate' == $alternate ) ? '' : ' alternate';
@@ -487,14 +555,9 @@ function wpv_admin_content_template_listing_name() {
 								<span class="row-title">
 									<?php
 										if ( $wpv_args['post_status'] == 'trash' ) {
-											echo $post->post_title;
+											echo esc_html( $post->post_title );
 										} else {
-											printf(
-													'<a href="%s">%s</a>',
-													add_query_arg(
-															array( 'action' => 'edit', 'post' => $template_id ),
-															admin_url( 'post.php' ) ),
-													$post->post_title );
+                                            wpv_ct_editor_render_link( $template_id, esc_html( $post->post_title ) );
 										}
 									?>
 								</span>
@@ -525,22 +588,19 @@ function wpv_admin_content_template_listing_name() {
 									if ( 'publish' == $wpv_args['post_status'] ) {
 										$row_actions['edit'] = sprintf(
 												'<a href="%s">%s</a>',
-												add_query_arg(
-														array( 'action' => 'edit', 'post' => $template_id ),
-														admin_url( 'post.php' ) ),
+												esc_url( add_query_arg(
+														array( 'page' => WPV_CT_EDITOR_PAGE_NAME, 'ct_id' => $template_id ),
+														admin_url( 'admin.php' ) ) ),
 												__( 'Edit', 'wpv-views' ) );
-										/* Note that hash in <a href="#"> is present so the link behaves like a link.
-										 * <a href=""> causes problems with colorbox and with mere <a> the mouse cursor
-										 * doesn't change when hovering over the link. */
 										if ( empty( $layout_loop_template_for_view_id ) ) {
-											$row_actions['change js-list-ct-action-change'] = sprintf( '<a href="#">%s</a>', __( 'Change template usage', 'wpv-views' ) );
+											$row_actions['change js-wpv-ct-change-usage-popup'] = sprintf( '<a href="#">%s</a>', __( 'Change template usage', 'wpv-views' ) );
 										}
 										$row_actions['duplicate js-list-ct-action-duplicate'] = sprintf( '<a href="#">%s</a>', __( 'Duplicate', 'wpv-views' ) );
 										if ( empty( $layout_loop_template_for_view_id ) ) {
-											$row_actions['trash js-list-ct-action-trash'] = sprintf( '<a href="#">%s</a>', __( 'Move to trash', 'wpv-views' ) );
+											$row_actions['trash js-wpv-ct-action-trash'] = sprintf( '<a href="#">%s</a>', __( 'Move to trash', 'wpv-views' ) );
 										}
 									} else if ( 'trash' == $wpv_args['post_status'] ) {
-										$row_actions['restore-from-trash js-list-ct-action-restore-from-trash'] = sprintf( '<a href="#">%s</a>', __( 'Restore from trash', 'wpv-views' ) );
+										$row_actions['restore-from-trash js-wpv-ct-action-restore-from-trash'] = sprintf( '<a href="#">%s</a>', __( 'Restore from trash', 'wpv-views' ) );
 										$row_actions['delete js-list-ct-action-delete'] = sprintf( '<a href="#">%s</a>', __( 'Delete', 'wpv-views' ) );
 									}
 
@@ -555,6 +615,48 @@ function wpv_admin_content_template_listing_name() {
 										);
 								?>
 							</td>
+                            <?php
+                                if( $are_cts_translatable ) {
+                                    echo '<td>';
+                                    $ct_translations = $ct->wpml_translations;
+
+                                    foreach( $active_nondefault_languages as $language_info ) {
+                                        $translation = wpv_getarr( $ct_translations, $language_info['code'], null );
+
+                                        if( null == $translation ) {
+											$translation_text = __( 'Add translation', 'wpv-views' );
+											$translation_icon = $add_translation_icon;
+                                        } else {
+											$translation_text = __( 'Edit translation', 'wpv-views' );
+											$translation_icon = $edit_translation_icon;
+                                        }
+
+										$translation_editor_link = $ct->get_wpml_tm_link( $language_info['code'] );
+										if( null != $translation_editor_link ) {
+											printf(
+												'<a style="padding: 2px;" href="%s"><img alt="%s" src="%s" title="%s" /></a>',
+												$translation_editor_link,
+												$language_info['code'],
+												$translation_icon,
+												$translation_text
+											);
+										} else {
+											/** @noinspection CssInvalidFunction */
+											/** @noinspection CssUnknownProperty */
+											printf(
+												'<span style="padding: 2px">
+													<img alt="%s" src="%s" title="%s" style="-webkit-filter: grayscale(100%%); filter: grayscale(100%%)"/>
+												</span>',
+												$language_info['code'],
+												$translation_icon,
+												__( 'WPML Translation Management must be active for this link to work.', 'wpv-view' )
+											);
+										}
+                                    }
+
+                                    echo '</td>';
+                                }
+                            ?>
 							<td class="wpv-admin-listing-col-usage">
 								<?php echo wpv_content_template_used_for_list( $template_id ); ?>
 							</td>
@@ -577,7 +679,7 @@ function wpv_admin_content_template_listing_name() {
 
 			<p class="add-new-view">
 				<button class="button js-add-new-content-template"
-						data-target="<?php echo add_query_arg( array( 'action' => 'wpv_ct_create_new' ), admin_url( 'admin-ajax.php' ) ); ?>">
+						data-target="<?php echo esc_url( add_query_arg( array( 'action' => 'wpv_ct_create_new' ), admin_url( 'admin-ajax.php' ) ) ); ?>">
 					<i class="icon-plus"></i><?php _e( 'Add new Content Template','wpv-views' ) ?>
 				</button>
 			</p>
@@ -622,14 +724,33 @@ function wpv_admin_content_template_listing_usage( $usage = 'single' ) {
 	wpv_render_ct_listing_dialog_templates_arrangeby_usage();
 }
 
-// @todo this use of IN in the query can lead to long queries - problems
 
+/**
+ * Render list items with information about usage of this Content Template.
+ *
+ * Also render "Bind posts" buttons where applicable.
+ * Different info shows when CT is a loop template of some View/WPA.
+ *
+ * @param int $ct_id Content template ID
+ * @return string Rendered HTML code.
+ *
+ * @since unknown
+ *
+ * @todo this needs refactoring to get rid of wpv_get_pt_tax_array() etc.
+ */
 function wpv_content_template_used_for_list( $ct_id ) {
-	global $WP_Views, $WPV_settings;
-	$list = '';
-	$layout_loop_template_for_view_id = get_post_meta( $ct_id, '_view_loop_id', true );
-	if ( empty( $layout_loop_template_for_view_id ) ) {
-		global $wpdb;
+	global $WPV_settings;
+
+    $list = '';
+
+    $ct = WPV_Content_Template::get_instance( $ct_id );
+
+    if( null == $ct ) {
+        // this should never happen; still, there is a serious lack of error handling
+        return '';
+    }
+
+	if ( ! $ct->is_owned_by_view ) {
 		$post_types_array = wpv_get_pt_tax_array();
 		$count_single_post = count( $post_types_array['single_post'] );
 		$count_archive_post = count( $post_types_array['archive_post'] );
@@ -640,43 +761,22 @@ function wpv_content_template_used_for_list( $ct_id ) {
 			$label = $post_types_array['single_post'][$i][1];
 			if ( isset( $WPV_settings['views_template_for_' . $type] ) && $WPV_settings['views_template_for_' . $type] == $ct_id ) {
                 $list .= '<li>' . $label . __(' (single)', 'wpv-views');
-					$posts = $wpdb->get_col( 
-						$wpdb->prepare(
-							"SELECT {$wpdb->posts}.ID FROM {$wpdb->posts} 
-							WHERE post_type = %s 
-							AND post_status != 'auto-draft'",
-							$type
-						)
-					);
-					$count = sizeof( $posts );
-					if ( $count > 0 ) {
-						$posts = "'" . implode( "','", $posts ) . "'";
-						$set_count = $wpdb->get_var( 
-							$wpdb->prepare(
-								"SELECT COUNT(post_id) FROM {$wpdb->postmeta} 
-								WHERE meta_key = '_views_template' 
-								AND meta_value = %s
-								AND post_id IN ({$posts}) 
-								LIMIT %d",
-								$WPV_settings['views_template_for_' . $type],
-								$count
-							)
-						);
-						if ( ( $count - $set_count ) > 0 ) {
-							$list .= sprintf(
-									'<span class="%s"><a class="%s" data-target="%s"> %s</a></span>',
-									'js-alret-icon-hide-' . $type,
-									'button button-small button-leveled icon-warning-sign js-apply-for-all-posts js-alret-icon-hide-' . $type,
-									add_query_arg(
-											array(
-													'action' => 'wpv_ct_update_posts',
-													'type' => $type,
-													'tid' => $ct_id,
-													'wpnonce' => wp_create_nonce( 'work_view_template' ) ),
-											admin_url( 'admin-ajax.php' ) ),
-									sprintf( __( 'Bind %u %s ', 'wpv-views' ), $count - $set_count, $label ) );
-						}
-					}
+
+				// @todo We do not need the exact number here, let's create a has_dissident_posts method instead with a LIMITed query
+                $dissident_post_count = $ct->get_dissident_posts( $type, 'count' );
+
+                if ( $dissident_post_count > 0 ) {
+                    $list .= sprintf(
+                        '<span class="%s"><a class="%s" data-type="%s" data-id="%s" data-nonce="%s"> %s</a></span>',
+                        'js-wpv-apply-ct-to-cpt-single-' . $type,
+                        'button button-small button-leveled icon-warning-sign js-wpv-apply-ct-to-all-cpt-single-dialog',
+						$type,
+						$ct_id,
+						wp_create_nonce( 'work_view_template' ),
+                        sprintf( __( 'Bind %u %s ', 'wpv-views' ), $dissident_post_count, $label )
+                    );
+                }
+
 				$list .= '</li>';
 			}
 		}
@@ -703,27 +803,61 @@ function wpv_content_template_used_for_list( $ct_id ) {
 		   $list = '<span>' . __( 'No Post types/Taxonomies assigned', 'wpv-views' ) . '</span>';
 		}
 	} else {
-		$view_loop_title = get_the_title( $layout_loop_template_for_view_id );
-		$view_loop_status = get_post_status( $layout_loop_template_for_view_id );
-		$view_loop_type_text = __( 'View', 'wpv-views' );
-		if ( $WP_Views->is_archive_view( $layout_loop_template_for_view_id ) ) {
-			$view_loop_type_text = __( 'WordPress Archive', 'wpv-views' );
-		}
-		if ( $view_loop_status == 'publish' ) {
-			$view_loop_link = get_admin_url()."admin.php?page=views-editor&view_id=" . $layout_loop_template_for_view_id;
-			$list = '<span>' . sprintf( __( 'This Content Template is used as the loop block for the %s <a href="%s" target="_blank">%s</a>', 'wpv-views' ), $view_loop_type_text, $view_loop_link, $view_loop_title ) . '</span>';
+        // This CT is owned by a View/WPA and used as a loop template
+
+        $owner_view = WPV_View_Base::get_instance( $ct->loop_output_id );
+        if( null == $owner_view ) {
+            // again, there was no check for missing View before!
+            return '';
+        }
+
+        // Show usage information depending on owner View post status.
+		if ( $owner_view->is_published ) {
+			$edit_page = 'views-editor';
+			if ( WPV_View_Base::is_archive_view( $owner_view->id ) ) {
+				$edit_page = 'view-archives-editor';
+			}
+			$list = sprintf(
+                __( 'This Content Template is used as the loop block for the %s <a href="%s" target="_blank">%s</a>', 'wpv-views' ),
+                $owner_view->query_mode_display_name,
+                add_query_arg(
+                    array(
+                        'page' => $edit_page,
+                        'view_id' => $owner_view->id
+                    ),
+                    admin_url( 'admin.php' )
+                ),
+                $owner_view->title
+            );
+
 		} else {
-			$list = '<span>' . sprintf( __( 'This Content Template is used as the loop block for the trashed %s <strong>%s</strong>', 'wpv-views' ), $view_loop_type_text, $view_loop_title ) . '</span>';
+
+			$list = sprintf(
+                __( 'This Content Template is used as the loop block for the trashed %s <strong>%s</strong>', 'wpv-views' ),
+                $owner_view->query_mode_display_name,
+                $owner_view->title
+            );
+
 		}
 	}
-	return $list;
+	return "<span>$list</span>";
 }
 
-// TODO consider using WP_Views_archive_loops::get_archive_loops instead
+
+// TODO consider using WP_Views_archive_loops::get_archive_loops instead of this function
+/*
+ * array(
+ *     'single_post' => array( 'post_type_name', 'post_type_label' ),
+ *     'archive_post' => ...,
+ *     'taxonomy_post' => ...
+ * )
+ */
+
 function wpv_get_pt_tax_array(){
    static $post_types_array;
    static $taxonomies_array;
    static $wpv_posts_array;
+
    if ( !is_array($post_types_array) ){
 	   $post_types = get_post_types( array('public' => true), 'objects' );
    }
@@ -764,8 +898,8 @@ function wpv_get_pt_tax_array(){
  */ 
 // TODO check if the action URL parameter is needed when creating a CT
 function wpv_admin_menu_content_template_listing_by_type_row( $sort, $page = 0 ) {
-	global $WPV_settings, $post, $wpdb;
-	// $post_types = get_post_types( array('public' => true), 'objects' );
+	global $WPV_settings, $post;
+
 	$post_types_array = wpv_get_pt_tax_array();
 
 	ob_start();
@@ -787,11 +921,9 @@ function wpv_admin_menu_content_template_listing_by_type_row( $sort, $page = 0 )
 					</span>
 					<?php
 						$row_actions = array(
-								"change_pt js-list-ct-action-change-pt" => sprintf( '<a href="#">%s</a>', __('Change Content Template','wpv-views') ) );
+								"change_pt js-wpv-change-ct-assigned-to-something-popup" => sprintf( '<a href="#">%s</a>', __('Change Content Template','wpv-views') ) );
 
 						echo wpv_admin_table_row_actions( $row_actions,	array(
-								"data-msg" => 1,
-								"data-sort" => $sort,
 								"data-pt" => 'views_template_for_' . $type ) );
 					?>
 				</td>
@@ -799,132 +931,76 @@ function wpv_admin_menu_content_template_listing_by_type_row( $sort, $page = 0 )
 				<td class="wpv-admin-listing-col-used-title">
 					<ul>
 						<?php
-							$add_button = sprintf(
-									'<a class="button button-small" data-disabled="1"
-											href="%s">
-										<i class="icon-plus"></i>
-										%s
-									</a>',
-									add_query_arg(
-											array(
-													'post_type' => 'view-template',
-													'action' => 'wpv_ct_create_new',
-													'post_title' => urlencode( __( 'Content template for ','wpv-views' ) . $label ),
-													'ct_selected' => 'views_template_for_' . $type,
-													'toggle' => '1,0,0' ),
-											admin_url( 'post-new.php' ) ),
-									sprintf( __( 'Create a Content Template for single %s', 'wpv-views' ), $label ) );
+							$add_button = wpv_ct_listing_render_create_ct_button(
+                                sprintf( __( 'Create a Content Template for single %s', 'wpv-views' ), $label ),
+                                $label,
+                                array( 'single_post_types' => array( $type ) )
+                            );
 
-							// TODO get_posts or explanation why is it done this way (optimalization?)
-							$posts = $wpdb->get_col( 
-								$wpdb->prepare(
-									"SELECT {$wpdb->posts}.ID FROM {$wpdb->posts} 
-									WHERE post_type = %s 
-									AND post_status != 'auto-draft'",
-									$type
-								)
-							);
-							$count = sizeof( $posts );
-							$posts_ids = "'" . implode( "','", $posts ) . "'";
 
-							if ( isset( $WPV_settings[ 'views_template_for_' . $type ] ) ) {
-								if ( $WPV_settings[ 'views_template_for_' . $type ] != 0 ) {
-									$template = get_post( $WPV_settings[ 'views_template_for_' . $type ] );
-									if ( is_object( $template ) ) {
-										printf(
-												'<a href="%s">%s</a>',
-												add_query_arg( array( 'post' => $template->ID, 'action' => 'edit' ), admin_url( 'post.php' ) ),
-												$template->post_title );
-										if ( $count > 0 ) {
-											$set_count = $wpdb->get_var(
-												$wpdb->prepare(
-													"SELECT COUNT(post_id) FROM {$wpdb->postmeta}
-													WHERE meta_key = '_views_template'
-													AND meta_value = %s
-													AND post_id IN ({$posts_ids}) 
-													LIMIT %d",
-													$WPV_settings['views_template_for_' . $type],
-													$count
-												)
-											);
-											if ( ( $count - $set_count ) > 0 ) {
-												?>
-												<span class="js-alret-icon-hide-<?php echo $type; ?>">
-													<?php
-														printf(
-																'<a class="%s" data-target="%s"> %s</a>',
-																'button button-small button-leveled icon-warning-sign js-apply-for-all-posts',
-																add_query_arg(
-																		array(
-																				'action' => 'wpv_ct_update_posts',
-																				'type' => $type,
-																				'tid' => $template->ID,
-																				'wpnonce' => wp_create_nonce( 'work_view_template' ) ),
-																		admin_url( 'admin-ajax.php' ) ),
-																sprintf( __( 'Bind %u %s ', 'wpv-views' ), $count - $set_count, $label ) );
-													?>
-												</span>
-												<?php
-											}
-										}
-									} else {
-										echo $add_button;
-									}
-								} else {
-									echo $add_button;
+							if ( isset( $WPV_settings[ 'views_template_for_' . $type ] ) && $WPV_settings[ 'views_template_for_' . $type ] != 0 ) {
 
-									if ( $count > 0 ) {
-										$set_count = $wpdb->get_var(
-											$wpdb->prepare(
-												"SELECT COUNT(post_id) FROM {$wpdb->postmeta}
-												WHERE meta_key = '_views_template'
-												AND meta_value != %s
-												AND post_id IN ({$posts_ids}) 
-												LIMIT %d",
-												'0',
-												$count
-											)
-										);
-										if ( $set_count > 0) {
-											?>
-											<a class="button button-small js-single-unlink-template-open-dialog" href="#"
-													data-unclear="<?php echo $set_count; ?>"
-													data-slug="<?php echo $type; ?>"
-													data-label="<?php echo htmlentities( $label, ENT_QUOTES ); ?>">
-												<i class="icon-unlink"></i>
-												<?php echo sprintf( __('Clear %d %s', 'wpv-views'), $set_count, $label ); ?>
-											</a>
-											<?php
-										}
-									}
-								}
-							} else {
-								echo $add_button;
-								if ( $count > 0 ) {
-									$set_count = $wpdb->get_var(
-										$wpdb->prepare(
-											"SELECT COUNT(post_id) FROM {$wpdb->postmeta}
-											WHERE meta_key = '_views_template'
-											AND meta_value != %s
-											AND post_id IN ({$posts_ids}) 
-											LIMIT %d",
-											'0',
-											$count
-										)
-									);
-									if ( $set_count > 0 ) {
-										?>
-										<a class="button button-small js-single-unlink-template-open-dialog" href="#"
-												data-unclear="<?php echo $set_count; ?>"
-												data-slug="<?php echo $type; ?>"
-												data-label="<?php echo htmlentities( $label, ENT_QUOTES ); ?>">
-											<i class="icon-unlink"></i>
-											<?php echo sprintf( __('Clear %d %s', 'wpv-views'), $set_count, $label ); ?>
-										</a>
-										<?php
-									}
-								}
-							}
+                                // There is a Content Template assigned for single posts of this type
+
+                                $ct_id = $WPV_settings[ 'views_template_for_' . $type ];
+                                $ct = WPV_Content_Template::get_instance( $ct_id );
+
+                                if ( null != $ct ) {
+                                    printf(
+                                        '<a href="%s">%s</a>',
+                                        esc_url(
+                                            add_query_arg(
+                                                array( 'page' => WPV_CT_EDITOR_PAGE_NAME, 'ct_id' => $ct->id, 'action' => 'edit' ),
+                                                admin_url( 'admin.php' )
+                                            )
+                                        ),
+                                        $ct->title
+                                    );
+
+									// @todo We do not need the exact number here, let's create a has_dissident_posts method instead with a LIMITed query
+                                    $dissident_post_count = $ct->get_dissident_posts( $type, 'count' );
+
+                                    if ( $dissident_post_count > 0 ) {
+                                        ?>
+                                        <span class="js-wpv-apply-ct-to-cpt-single-<?php echo $type; ?>">
+                                            <?php
+                                                printf(
+                                                    '<a class="%s" data-type="%s" data-id="%s" data-nonce="%s"> %s</a>',
+                                                    'button button-small button-leveled icon-warning-sign js-wpv-apply-ct-to-all-cpt-single-dialog',
+													$type,
+													$ct->id,
+													wp_create_nonce( 'work_view_template' ),
+                                                    sprintf( __( 'Bind %u %s ', 'wpv-views' ), $dissident_post_count, $label )
+                                                );
+                                            ?>
+                                        </span>
+                                        <?php
+                                    }
+                                    //}
+                                } else {
+                                    echo $add_button;
+                                }
+                            } else {
+
+                                // Single posts of this type have no Content Template assigned
+
+                                echo $add_button;
+
+                                $assigned_posts_count = WPV_Content_Template_Embedded::get_posts_using_content_template_by_type( $type, 'count' );
+
+                                if ( $assigned_posts_count > 0 ) {
+                                    ?>
+                                    <a class="button button-small js-wpv-clear-cpt-from-ct-popup" href="#"
+                                            data-unclear="<?php echo $assigned_posts_count; ?>"
+                                            data-slug="<?php echo $type; ?>"
+                                            data-label="<?php echo htmlentities( $label, ENT_QUOTES ); ?>">
+                                        <i class="icon-unlink"></i>
+                                        <?php echo sprintf( __('Clear %d %s', 'wpv-views'), $assigned_posts_count, $label ); ?>
+                                    </a>
+                                    <?php
+                                }
+
+                            }
 						?>
 					</ul>
 				</td>
@@ -940,17 +1016,12 @@ function wpv_admin_menu_content_template_listing_by_type_row( $sort, $page = 0 )
 
 			$type = $post_types_array['archive_post'][ $i ][0];
 			$label = $post_types_array['archive_post'][ $i ][1];
-			$add_button = sprintf(
-					'<a class="button button-small" data-disabled="1" href="%s"><i class="icon-plus"></i> %s</a>',
-					add_query_arg(
-							array(
-									'post_type' => 'view-template',
-									'action' => 'wpv_ct_create_new',
-									'post_title' => urlencode( __( 'Content template for ', 'wpv-views' ) . $label ),
-									'ct_selected' => 'views_template_archive_for_' . $type,
-									'toggle' => '0,1,0' ),
-							admin_url( 'post-new.php' ) ),
-					__( 'Add a new Content Template for this post type', 'wpv-views' ) );
+
+			$add_button = wpv_ct_listing_render_create_ct_button(
+                __( 'Add a new Content Template for this post type', 'wpv-views' ),
+                $label,
+                array( 'post_archives' => array( $type ) )
+            );
 
 			$alternate = ' alternate' == $alternate ? '' : ' alternate';
 			?>
@@ -961,11 +1032,9 @@ function wpv_admin_menu_content_template_listing_by_type_row( $sort, $page = 0 )
 					</span>
 					<?php
 						$row_actions = array(
-								"change_pt js-list-ct-action-change-pt" => sprintf( '<a href="#">%s</a>', __( 'Change Content Template', 'wpv-views' ) ) );
+								"change_pt js-wpv-change-ct-assigned-to-something-popup" => sprintf( '<a href="#">%s</a>', __( 'Change Content Template', 'wpv-views' ) ) );
 
 						echo wpv_admin_table_row_actions( $row_actions,	array(
-								"data-msg" => 1,
-								"data-sort" => $sort,
 								"data-pt" => 'views_template_archive_for_' . $type ) );
 					?>
 				</td>
@@ -976,12 +1045,7 @@ function wpv_admin_menu_content_template_listing_by_type_row( $sort, $page = 0 )
 									&& $WPV_settings[ 'views_template_archive_for_' . $type ] != 0) {
 								$post = get_post( $WPV_settings[ 'views_template_archive_for_' . $type ] );
 								if ( is_object( $post ) ) {
-									printf(
-											'<a href="%s">%s</a>',
-											add_query_arg(
-													array( 'post' => $post->ID, 'action' => 'edit' ),
-													admin_url( 'post.php' ) ),
-											$post->post_title );
+                                    wpv_ct_editor_render_link( $post->ID, esc_html( $post->post_title ) );
 								} else {
 									echo $add_button;
 								}
@@ -1004,23 +1068,11 @@ function wpv_admin_menu_content_template_listing_by_type_row( $sort, $page = 0 )
 			$type = $post_types_array['taxonomy_post'][ $i ][0];
 			$label = $post_types_array['taxonomy_post'][ $i ][1];
 
-			$add_button = sprintf(
-					'<a class="button button-small js-wpv-ct-create-new-for-usage" data-disabled="1"
-							data-title="%s" data-usage="%s" href="%s">
-						<i class="icon-plus"></i>
-						%s
-					</a>',
-					urlencode( __( 'Content template for ', 'wpv-views' ) . $label ),
-					'views_template_loop_' . $type,
-					add_query_arg(
-							array(
-									'post_type' => 'view-template',
-									'action' => 'wpv_ct_create_new',
-									'post_title' => urlencode( __( 'Content template for ', 'wpv-views' ) . $label ),
-									'ct_selected' => 'views_template_loop_' . $type,
-									'toggle' => '0,0,1' ),
-							admin_url( 'post-new.php' ) ),
-					__( 'Add a new Content Template for this taxonomy', 'wpv-views' ) );
+			$add_button = wpv_ct_listing_render_create_ct_button(
+                __( 'Add a new Content Template for this taxonomy', 'wpv-views' ),
+                $label,
+                array( 'taxonomy_archives' => array( $type ) )
+            );
 
 			$alternate = ' alternate' == $alternate ? '' : ' alternate';
 
@@ -1032,11 +1084,9 @@ function wpv_admin_menu_content_template_listing_by_type_row( $sort, $page = 0 )
 					</span>
 					<?php
 						$row_actions = array(
-								"change_pt js-list-ct-action-change-pt" => sprintf( '<a href="#">%s</a>', __( 'Change Content Template', 'wpv-views' ) ) );
+								"change_pt js-wpv-change-ct-assigned-to-something-popup" => sprintf( '<a href="#">%s</a>', __( 'Change Content Template', 'wpv-views' ) ) );
 
 						echo wpv_admin_table_row_actions( $row_actions,	array(
-								"data-msg" => 2,
-								"data-sort" => $sort,
 								"data-pt" => 'views_template_loop_' . $type ) );
 					?>
 				</td>
@@ -1047,12 +1097,7 @@ function wpv_admin_menu_content_template_listing_by_type_row( $sort, $page = 0 )
 									&& $WPV_settings[ 'views_template_loop_' . $type ] != 0 ) {
 								$post = get_post( $WPV_settings['views_template_loop_' . $type] );
 								if ( is_object( $post ) ) {
-									printf(
-											'<a href="%s">%s</a>',
-											add_query_arg(
-													array( 'post' => $post->ID, 'action' => 'edit' ),
-													admin_url( 'post.php' ) ),
-											$post->post_title );
+                                    wpv_ct_editor_render_link( $post->ID, esc_html( $post->post_title ) );
 								} else {
 									echo $add_button;
 								}
@@ -1072,3 +1117,31 @@ function wpv_admin_menu_content_template_listing_by_type_row( $sort, $page = 0 )
 
 	return $row;
 }
+
+
+
+function wpv_ct_listing_render_create_ct_button( $button_title, $label, $usage ) {
+    $add_button = sprintf(
+        '<a class="button button-small" href="%s">
+            <i class="icon-plus"></i>
+            %s
+        </a>',
+        esc_url(
+            add_query_arg(
+
+                array(
+                    'page' => WPV_CT_EDITOR_PAGE_NAME,
+                    'action' => 'create',
+                    'title' => urlencode( __( 'Content template for ', 'wpv-views' ) . $label ),
+                    'usage' => $usage
+                ),
+                admin_url( 'admin.php' )
+            )
+        ),
+        $button_title
+    );
+
+    return $add_button;
+}
+
+

@@ -127,6 +127,8 @@ class Thrive_Api_CustomHtml
 
         $parsed_responder_code['stripped_code'] = ($this->_isMailchimp() && strpos($autoresponder_code, 'mailchimp') === false ? '<span style="display:none">mailchimp</span>' : '') . $autoresponder_code;
         $parsed_responder_code['html'] = $html;
+        $captcha_api = Thrive_List_Manager::credentials('recaptcha');
+        $parsed_responder_code['captcha_site_key'] = empty($captcha_api['site_key']) ? '' : $captcha_api['site_key'];
 
         return $parsed_responder_code;
     }

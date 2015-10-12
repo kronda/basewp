@@ -31,4 +31,13 @@ function tcb_enqueue_admin()
 
     wp_enqueue_script('wp-color-picker');
     wp_enqueue_style('wp-color-picker');
+
+    /**
+     * just enqueue font pack css file
+     * it is used for previewing imported fonts in the thickbox of adding or editing a font
+     */
+    $custom_font_css = Thrive_Font_Import_Manager::getCssFile();
+    if (!empty($custom_font_css)) {
+        wp_enqueue_style('imported_custom_font', $custom_font_css);
+    }
 }

@@ -1,6 +1,11 @@
 <form class="fl-builder-settings <?php echo $form['class']; ?>" <?php echo $form['attrs']; ?>>
 	<div class="fl-lightbox-header">
-		<h1><?php echo $form['title']; ?></h1>
+		<h1>
+			<?php echo $form['title']; ?>
+			<?php foreach ( $form['badges'] as $form_badge_slug => $form_badge_title ) : ?>
+			<span class="fl-builder-badge fl-builder-badge-<?php echo $form_badge_slug; ?>"><?php echo $form_badge_title; ?></span>
+			<?php endforeach; ?>
+		</h1>
 	</div>
 	<?php if(count($form['tabs']) > 1) : ?>
 	<div class="fl-builder-settings-tabs">
@@ -60,6 +65,9 @@
 	</div>
 	<div class="fl-lightbox-footer">
 		<span class="fl-builder-settings-save fl-builder-button fl-builder-button-large fl-builder-button-primary" href="javascript:void(0);" onclick="return false;"><?php _e('Save', 'fl-builder'); ?></span>
+		<?php if ( in_array( 'save-as', $form['buttons'] ) ) : ?>
+		<span class="fl-builder-settings-save-as fl-builder-button fl-builder-button-large" href="javascript:void(0);" onclick="return false;"><?php _e('Save As...', 'fl-builder'); ?></span>
+		<?php endif; ?>
 		<span class="fl-builder-settings-cancel fl-builder-button fl-builder-button-large" href="javascript:void(0);" onclick="return false;"><?php _e('Cancel', 'fl-builder'); ?></span>
 	</div>
 </form>

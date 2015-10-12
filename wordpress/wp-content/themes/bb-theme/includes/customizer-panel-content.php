@@ -17,7 +17,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Color_Control',
-						'label'         => __('Content Background Color', 'fl-automator')
+						'label'         => __('Background Color', 'fl-automator')
 					)
 				),
 				
@@ -28,7 +28,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Image_Control',
-						'label'     => __('Content Background Image', 'fl-automator')
+						'label'     => __('Background Image', 'fl-automator')
 					)
 				),
 
@@ -40,7 +40,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Content Background Repeat', 'fl-automator'),
+						'label'     => __('Background Repeat', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'no-repeat'  => __('None', 'fl-automator'),
@@ -59,7 +59,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Content Background Position', 'fl-automator'),
+						'label'     => __('Background Position', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'left top'      => __( 'Left Top', 'fl-automator' ),
@@ -83,7 +83,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Content Background Attachment', 'fl-automator'),
+						'label'     => __('Background Attachment', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'scroll'    => __('Scroll', 'fl-automator'),
@@ -100,7 +100,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'     => 'WP_Customize_Control',
-						'label'     => __('Content Background Scale', 'fl-automator'),
+						'label'     => __('Background Scale', 'fl-automator'),
 						'type'      => 'select',
 						'choices'   => array(
 							'auto'      => __('None', 'fl-automator'),
@@ -124,7 +124,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Blog Sidebar Position', 'fl-automator'),
+						'label'         => __('Sidebar Position', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'sidebar-right'     => __('Sidebar Right', 'fl-automator'),
@@ -141,7 +141,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Blog Sidebar Size', 'fl-automator'),
+						'label'         => __('Sidebar Size', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'4' => _x( 'Large', 'Sidebar size.', 'fl-automator' ),
@@ -158,7 +158,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('Blog Sidebar Display', 'fl-automator'),
+						'label'         => __('Sidebar Display', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'desktop'       => __('Desktop Only', 'fl-automator'),
@@ -346,7 +346,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('WooCommerce Sidebar Position', 'fl-automator'),
+						'label'         => __('Sidebar Position', 'fl-automator'),
 						'description'   => __('The location of the WooCommerce sidebar.', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
@@ -364,7 +364,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('WooCommerce Sidebar Size', 'fl-automator'),
+						'label'         => __('Sidebar Size', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'4' => _x( 'Large', 'Sidebar size.', 'fl-automator' ),
@@ -381,7 +381,7 @@ FLCustomizer::add_panel('fl-content', array(
 					),
 					'control'   => array(
 						'class'         => 'WP_Customize_Control',
-						'label'         => __('WooCommerce Sidebar Display', 'fl-automator'),
+						'label'         => __('Sidebar Display', 'fl-automator'),
 						'type'          => 'select',
 						'choices'       => array(
 							'desktop'       => __('Desktop Only', 'fl-automator'),

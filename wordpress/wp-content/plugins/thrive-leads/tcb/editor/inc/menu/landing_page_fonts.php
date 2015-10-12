@@ -54,12 +54,27 @@ $selectors = array(
                                 <li style="font-size:15px;line-height:28px"
                                     class="tve_click <?php echo $font['font_class'] ?>"
                                     data-cls="<?php echo $font['font_class'] ?>"
-                                    data-font-family="<?php echo $font['font_name'] ?>"
+                                    data-font-family="<?php echo tve_prepare_font_family($font['font_name']) ?>"
                                     data-selector="<?php echo $selector ?>"
                                     data-ctrl="function:landing_fonts.setFontFamily">
                                     <?php echo $font['font_name'] . ' ' . $font['font_size'] ?>
                                 </li>
                             <?php endforeach; ?>
+                            <?php if (!empty($extra_custom_fonts)) : ?>
+                        </ul>
+                        <strong><?php echo __('Imported fonts', 'thrive-cb') ?></strong>
+                        <div class="tve_clear"></div>
+                        <ul class="tve_font_list">
+                            <?php foreach ($extra_custom_fonts as $font) : ?>
+                            <li style="font-size:15px;line-height:28px"
+                                class="tve_click <?php echo $font['font_class'] ?>"
+                                data-cls="<?php echo $font['font_class'] ?>"
+                                data-font-family="<?php echo tve_prepare_font_family($font['font_name']) ?>"
+                                data-selector="<?php echo $selector ?>"
+                                data-ctrl="function:landing_fonts.setFontFamily">
+                                <?php echo $font['font_name'] . ' ' . $font['font_size'] ?>
+                            <?php endforeach ?>
+                            <?php endif ?>
                             <li>
                                 <a class="tve_link" href="<?php echo $_POST['font_settings_url'] ?>" target="_blank">
                                     <?php echo __("Add new Custom Font", "thrive-cb") ?>

@@ -274,7 +274,7 @@
 		_saveState: function() 
 		{
 			var post    = $('#fl-post-id').val(),
-				css     = $('#fl-builder-layout-' + post + '-css').attr('href'),
+				css     = $('link[href*="/cache/' + post + '"]').attr('href'),
 				js      = $('script[src*="/cache/' + post + '"]').attr('src'),
 				html    = $(FLBuilder._contentClass).html();
 				
@@ -302,7 +302,7 @@
 
 			// Make a new preview request.
 			this._xhr = FLBuilder.ajax({
-				action          : 'fl_builder_render_preview',
+				action          : 'fl_builder_render_layout',
 				node_id         : nodeId,
 				node_preview    : settings
 			}, $.proxy(this._renderPreview, this));
@@ -319,7 +319,7 @@
 			var heading         = typeof e == 'undefined' ? [] : $(e.target).closest('tr').find('th'),
 				widgetHeading   = $('.fl-builder-widget-settings .fl-builder-settings-title'),
 				lightboxHeading = $('.fl-builder-settings .fl-lightbox-header'),
-				loaderSrc       = flBuilderUrl + 'img/ajax-loader-small.gif',
+				loaderSrc       = FLBuilderLayoutConfig.paths.pluginUrl + 'img/ajax-loader-small.gif',
 				loader          = $('<img class="fl-builder-preview-loader" src="' + loaderSrc + '" />');
 			
 			$('.fl-builder-preview-loader').remove();

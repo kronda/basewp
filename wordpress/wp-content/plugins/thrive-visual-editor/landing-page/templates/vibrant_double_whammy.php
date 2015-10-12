@@ -242,6 +242,6 @@ $tzd = $sign . str_pad($hour, 2, '0', STR_PAD_LEFT) . ':' . str_pad($min % 60, 2
            class="tve_evt_manager_listen">Claim Your Spot And Instantly Download the Productivity Cheat Sheet PDF.</a></span></p>
 </div>
 <div class="tve_lp_footer tve_empty_dropzone tve_drop_constraint" data-forbid=".thrv_page_section,.sc_page_section">
-    <p class="tve_p_center" style="color: #333333;font-size: 17px;margin-top: 10px;">© 2014 Webinar Landing Page. All
+    <p class="tve_p_center" style="color: #333333;font-size: 17px;margin-top: 10px;">© {tcb_current_year} Webinar Landing Page. All
         rights Reserved | Disclaimer</p>
 </div>

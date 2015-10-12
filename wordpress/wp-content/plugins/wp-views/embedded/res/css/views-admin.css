@@ -247,6 +247,9 @@
 /*  VIEWS EDIT PAGE */
 /*  ----------------*/
 
+/* Note: This styling is used also on CT edit page, with the difference that
+ * all section wrappers have only the (generic) wpv-settings-section class.
+
 /* Views edit page globals */
 .wpv-setting-container {
 	position: relative;
@@ -264,7 +267,8 @@
 	.wpv-query-section,
 	.wpv-filter-section,
 	.wpv-layout-section,
-	.wpv-help-section {
+	.wpv-help-section,
+    .wpv-settings-section {
 		margin-top: 20px;
 		max-width: 930px;
 	}
@@ -273,10 +277,12 @@
 	.wpv-filter-section:before,
 	.wpv-layout-section:before,
 	.wpv-help-section:before,
+    .wpv-settings-section:before,
 	.wpv-query-section:after,
 	.wpv-filter-section:after,
 	.wpv-layout-section:after,
-	.wpv-help-section:after {
+	.wpv-help-section:after,
+    .wpv-settings-section:after{
 		content: " ";
 		display: table;
 	}
@@ -443,16 +449,44 @@
 			}
 				.wpv-setting .update-button-wrap .toolset-alert {
 					float: left;
+                    /* fix for long multiline messages */
+                    text-align: left;
 				}
+
+                    /* return list style to it's default appearance */
+                    .wpv-setting .update-button-wrap .toolset-alert ul {
+                        list-style: disc inside;
+                    }
+
+                    /* strong text should be strong */
+                    .wpv-setting .update-button-wrap .toolset-alert strong {
+                        font-weight: bold;
+                    }
+
 				.wpv-setting .update-button-wrap .spinner,
 				.wpv-settings-save-all .spinner {
 					display: inline-block;
 					float: none;
 					margin: 0 5px;
 					vertical-align: middle;
-				}
+				}                
 				.wpv-setting .update-button-wrap .spinner.hidden {
 					display: none;
+				}
+                
+                .wpv-setting .update-button-wrap .wpv-spinner.hidden {
+					display: none;
+				}
+                .wpv-setting .update-button-wrap .wpv-spinner,
+				.wpv-settings-save-all .wpv-spinner, 
+				.wpv-spinner {
+					display: inline-block;
+					float: none;
+					margin: 0 5px;
+					vertical-align: middle;
+                    background: url('../img/views-spinner.gif') no-repeat !important;
+                    width: 16px;
+                    height: 16px;
 				}
 
 			.wpv-setting .ajax-loader {
@@ -502,6 +536,7 @@
 			.wpv-ct-editors .CodeMirror,
 			.wpv-setting .CodeMirror {
 				border: solid 1px #ccc;
+				box-sizing: border-box;
 			}
 
 				.wpv-ct-editors .code-editor,
@@ -531,6 +566,14 @@
 						background: linear-gradient(to bottom,  #e5e5e5 0%,#f4f4f4 100%);
 						filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#f4f4f4',GradientType=0 );
 					}
+					
+					.wpv-setting .wpv-assets-editor {
+						border-left: 30px solid #ccc;
+					}
+					
+						.wpv-setting .wpv-assets-editor .code-editor-toolbar {
+							border-width: 0 1px 1px;
+						}
 
 					.wpv-ct-editors .more-controls-container + .code-editor>.code-editor-toolbar,
 					.wpv-setting .more-controls-container + .code-editor>.code-editor-toolbar {
@@ -624,13 +667,14 @@
 					}
 					
 					.wpv-setting .wpv-editor-instructions-toggle,
+					.wpv-setting .wpv-editor-metadata-toggle,
 					#post-body-content .wpv-editor-instructions-toggle,
 					.postbox .wpv-editor-instructions-toggle {
 						display: block;
 						margin: 0;
 						padding: 0 28px 0 0;
-						height: 30px;
-						line-height: 30px;
+						height: 35px;
+						line-height: 35px;
 						border: solid 1px #ccc;
 						font-weight: bold;
 						cursor: pointer;
@@ -645,6 +689,7 @@
 					}
 					
 					.wpv-setting .wpv-editor-instructions-toggle,
+					.wpv-setting .wpv-editor-metadata-toggle,
 					.postbox .wpv-editor-instructions-toggle {
 						border-top: none;
 					}
@@ -691,6 +736,20 @@
 						padding: 10px;
 						margin: 10px 0;
 					}
+					
+		.wpv-setting .wpv-ct-assets-inline-editor {
+			overflow:hidden;
+		}
+		
+			.wpv-setting .wpv-ct-assets-inline-editor .CodeMirror,
+			.wpv-setting .wpv-assets-editor .CodeMirror {
+				border-top: none;
+			}
+		
+			.wpv-setting .wpv-editor-metadata-toggle .icon-pushpin {
+				color: green;
+				margin-right: 5px;
+			}
 					
 /* Views edit page globals END */
 
@@ -1249,10 +1308,6 @@
 }
 .wpv-views-listing-page  {
 	padding: 0;
-}
-.wpv-archive-tables-containter + .add-new-view,
-.wpv-views-listing + .add-new-view {
-	text-align: right;
 }
 
 .wpv-views-listing-page td:first-child {
@@ -1826,6 +1881,12 @@
 	box-shadow: 0 13px 15px -12px #7ad03a;
 }
 
+.wpv-general-actions-bar.wpv-action-failure,
+.wpv-general-actions-bar-fixed .wpv-general-actions-bar.wpv-action-failure {
+    border-color: #b94a48;
+    box-shadow: 0 13px 15px -12px #b94a48;
+}
+
 .wpv-general-actions-bar-fixed .wpv-general-actions-bar {
 	position: fixed;
 	top: 0;
@@ -1872,7 +1933,7 @@
     font-family: "Open Sans",sans-serif;
     font-size: 13px;
     height: auto;
-    margin: 12px 0 25px;
+    margin: 12px 0;
     min-height: 100%;
     min-width: 600px;
     outline: 0;
@@ -1964,6 +2025,16 @@
     padding: 5px 35px;
 }
 
+.wpv-codemirror-panel.wpv-codemirror-panel-title {
+	background-color: #f7f7f7;
+	border-width: 0 1px;
+	color: #666;
+	padding: 3px 39px;
+	font-weight: bold;
+	font-family: monospace;
+	box-sizing: border-box;
+}
+
 .wpv-codemirror-panel.wpv-codemirror-panel-success {
 	background-color: #dff0d8;
 	color: #468847;
@@ -1995,3 +2066,80 @@
 .wpv-embedded-listing-table td ul {
     margin: 0;
 }
+
+/* ************************************************************************** *\
+ 		WP 4.3 admin tables pagination fix
+\* ************************************************************************** */
+
+.tablenav.wpv-listing-pagination .tablenav-pages a {
+	width: auto;
+}
+
+/* ************************************************************************** *\
+ 		EDITOR Fixes
+\* ************************************************************************** */
+.wp-media-buttons {
+	width: 80%;
+	position: absolute;
+	bottom: 0;
+}
+
+.wp-editor-wrap {
+	margin-top: 20px;
+}
+
+/* ************************************************************************** *\
+ 		RTL Adjustments
+\* ************************************************************************** */
+html[dir='rtl'] .wpv-setting-container .wpv-settings-header,
+html[dir='rtl'] .wpv-setting .code-editor-toolbar>ul>li {
+	float: right;
+}
+
+html[dir='rtl'] .wpv-settings-save-all .update-button-wrap {
+	float: left;
+}
+
+html[dir='rtl'] .CodeMirror-code {
+	direction: ltr;
+}
+
+html[dir='rtl'] .CodeMirror-code > div,
+html[dir='rtl'] .wpv-setting .update-button-wrap {
+	text-align: left;
+}
+
+html[dir='rtl'] .wpv-inline-content-template-title .wpv-inline-content-template-action-buttons {
+	right: auto;
+	left: 5px;
+}
+
+html[dir='rtl'] .toolset-help-sidebar {
+	left: auto;
+	right: 1px;
+}
+
+html[dir='rtl'] .toolset-help .icon-remove-sign,
+html[dir='rtl'] .toolset-help .icon-remove {
+	right: auto;
+	left: 0;
+}
+
+html[dir='rtl'] .toolset-help-content {
+	padding-left: 25px;
+	padding-right: 180px;
+}
+
+html[dir='rtl'] .js-wpv-query-type {
+	margin-left: 3px !important;
+	margin-right: 15px !important;
+}
+
+html[dir='rtl'] .wpv-settings-content-filter .edit-filter,
+html[dir='rtl'] .wpv-settings-content-filter .wpv-edit-filter,
+html[dir='rtl'] .wpv-itembox-header .wpv-code-editor-toggler {
+	right: auto;
+	left: 2px;
+}
+
+

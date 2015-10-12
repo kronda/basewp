@@ -398,8 +398,7 @@ function add_view_filter_extra( $view_settings, $view_id ) {
 		<div class="toolset-help js-wpv-missing-filter-container" style="display:none"></div>
 		<?php
 		}
-		
-		$controls_count = 0;
+
 		$controls_count = $controls_per_kind['cf'] + $controls_per_kind['tax'] + $controls_per_kind['pr'] + $controls_per_kind['search'];
 		?>
 		<div class="toolset-alert js-wpv-no-filters-container"<?php if ( $listing == 'posts' && $purpose == 'parametric' ) { if ( $controls_count != 0 ) { echo ' style="display:none"'; } } else { echo ' style="display:none"'; } ?>">
@@ -433,78 +432,45 @@ function add_view_filter_extra( $view_settings, $view_id ) {
 					</ul>
 				</div>
 				<textarea cols="30" rows="10" id="wpv_filter_meta_html_content" autocomplete="off" name="_wpv_settings[filter_meta_html]"><?php echo ( isset( $view_settings['filter_meta_html'] ) ) ? esc_textarea( $view_settings['filter_meta_html'] ) : ''; ?></textarea>
+				<?php 
+				$filter_extra_css = isset( $view_settings['filter_meta_html_css'] ) ? $view_settings['filter_meta_html_css'] : '';
+				$filter_extra_js = isset( $view_settings['filter_meta_html_js'] ) ? $view_settings['filter_meta_html_js'] : '';
+				?>
+				<div class="wpv-editor-metadata-toggle js-wpv-editor-metadata-toggle js-wpv-assets-editor-toggle" data-instance="filter-css-editor" data-target="js-wpv-assets-filter-css-editor" data-type="css">
+					<span class="wpv-toggle-toggler-icon js-wpv-toggle-toggler-icon">
+						<i class="icon-caret-down icon-large"></i>
+					</span>
+					<i class="icon-pushpin js-wpv-textarea-full" style="<?php echo ( empty( $filter_extra_css ) ) ? 'display:none;' : ''; ?>"></i>
+					<strong><?php _e( 'CSS editor', 'wpv-views' ); ?></strong>
+				</div>
+				<div id="wpv-assets-filter-css-editor" class="wpv-assets-editor hidden js-wpv-assets-filter-css-editor">
+					<textarea cols="30" rows="10" id="wpv_filter_meta_html_css" autocomplete="off" name="_wpv_settings[filter_meta_html_css]"><?php echo esc_textarea( $filter_extra_css ); ?></textarea>
+				</div>
+				
+				<div class="wpv-editor-metadata-toggle js-wpv-editor-metadata-toggle js-wpv-assets-editor-toggle" data-instance="filter-js-editor" data-target="js-wpv-assets-filter-js-editor" data-type="js">
+					<span class="wpv-toggle-toggler-icon js-wpv-toggle-toggler-icon">
+						<i class="icon-caret-down icon-large"></i>
+					</span>
+					<i class="icon-pushpin js-wpv-textarea-full" style="<?php echo ( empty( $filter_extra_js ) ) ? 'display:none;' : ''; ?>"></i>
+					<strong><?php _e( 'JS editor', 'wpv-views' ); ?></strong>
+				</div>
+				<div id="wpv-assets-filter-js-editor" class="wpv-assets-editor hidden js-wpv-assets-filter-js-editor">
+					<div class="code-editor-toolbar js-code-editor-toolbar">
+						<ul class="js-wpv-filter-js-edit-toolbar">
+							<li class="js-wpv-views-frontend-events-wrapper">
+								<button class="button button-secondary button-small js-code-editor-toolbar-button js-wpv-views-frontend-events-popup" data-content="wpv_filter_meta_html_js">
+									<i class="icon-fire"></i>
+									<span class="button-label"><?php _e('Frontend events','wpv-views'); ?></span>
+								</button>
+							</li>
+						</ul>
+					</div>
+					<textarea cols="30" rows="10" id="wpv_filter_meta_html_js" autocomplete="off" name="_wpv_settings[filter_meta_html_js]"><?php echo esc_textarea( $filter_extra_js ); ?></textarea>
+				</div>
 				<?php
 				wpv_formatting_help_filter();
 				?>
 			</div>
-			
-			<ul id="wpv-filter-meta-html-extra" class="wpv-filter-meta-html-extra js-wpv-filter-meta-html-extra">
-				<li class="wpv-has-itembox-header js-wpv-filter-meta-html-extra-item js-wpv-filter-meta-html-extra-css">
-					<?php 
-					$filter_extra_css = isset( $view_settings['filter_meta_html_css'] ) ? $view_settings['filter_meta_html_css'] : '';
-					?>
-					<div class="wpv-filter-meta-html-extra-header wpv-itembox-header">
-						<strong>
-							<?php
-							_e( 'CSS editor', 'wpv-views' );
-							?>
-						</strong>
-						<button class="button button-secondary button-small wpv-code-editor-toggler js-wpv-code-editor-toggler" data-kind="css" data-target="filter-css-editor">
-							<i class="icon-pushpin js-wpv-textarea-full" style="<?php if ( empty( $filter_extra_css ) ) { echo ' display:none;'; } ?>"></i>
-							<span class="js-wpv-text-holder"><?php _e( 'Open CSS editor', 'wpv-views' ) ?></span>
-						</button>
-					</div>
-					<div class="code-editor filter-css-editor wpv-code-editor-closed js-wpv-code-editor js-wpv-filter-css-editor js-wpv-code-editor-closed hidden">
-						<div class="code-editor-toolbar js-code-editor-toolbar">
-							<ul>
-								<li>
-									<button class="button-secondary js-code-editor-toolbar-button js-wpv-media-manager" data-id="<?php echo esc_attr( $view_id ); ?>" data-content="wpv_filter_meta_html_css">
-										<i class="icon-picture"></i>
-										<span class="button-label"><?php _e('Media','wpv-views'); ?></span>
-									</button>
-								</li>
-							</ul>
-						</div>
-						<textarea cols="30" rows="10" id="wpv_filter_meta_html_css" autocomplete="off" name="_wpv_settings[filter_meta_html_css]"><?php echo esc_textarea( $filter_extra_css ); ?></textarea>
-						<?php
-						wpv_formatting_help_extra_css( 'filter' );
-						?>
-					</div>
-				</li>
-				<li class="wpv-has-itembox-header js-wpv-filter-meta-html-extra-item js-wpv-filter-meta-html-extra-js">
-					<?php 
-					$filter_extra_js = isset( $view_settings['filter_meta_html_js'] ) ? $view_settings['filter_meta_html_js'] : '';
-					?>
-					<div class="wpv-filter-meta-html-extra-header wpv-itembox-header">
-						<strong>
-							<?php
-							_e( 'JS editor', 'wpv-views' );
-							?>
-						</strong>
-						<button class="button button-secondary button-small wpv-code-editor-toggler js-wpv-code-editor-toggler" data-kind="js" data-target="filter-js-editor">
-							<i class="icon-pushpin js-wpv-textarea-full" style="<?php if ( empty( $filter_extra_js ) ) { echo ' display:none;'; } ?>"></i>
-							<span class="js-wpv-text-holder"><?php _e( 'Open JS editor', 'wpv-views' ) ?></span>
-						</button>
-					</div>
-					<div class="code-editor filter-js-editor wpv-code-editor-closed js-wpv-code-editor js-wpv-filter-js-editor js-wpv-code-editor-closed hidden">
-						<div class="code-editor-toolbar js-code-editor-toolbar">
-							<ul>
-								<li>
-									<button class="button-secondary js-code-editor-toolbar-button js-wpv-media-manager" data-id="<?php echo esc_attr( $view_id ); ?>" data-content="wpv_filter_meta_html_js">
-										<i class="icon-picture"></i>
-										<span class="button-label"><?php _e('Media','wpv-views'); ?></span>
-									</button>
-								</li>
-							</ul>
-						</div>
-						<textarea cols="30" rows="10" id="wpv_filter_meta_html_js" autocomplete="off" name="_wpv_settings[filter_meta_html_js]"><?php echo esc_textarea( $filter_extra_js ); ?></textarea>
-						<?php
-						wpv_formatting_help_extra_js( 'filter' );
-						?>
-					</div>
-				</li>
-			</ul>
-
 			<p class="update-button-wrap js-wpv-update-button-wrap">
 				<span class="js-wpv-message-container"></span>
 				<button data-success="<?php echo esc_attr( __('Updated', 'wpv-views') ); ?>" data-unsaved="<?php echo esc_attr( __('Not saved', 'wpv-views') ); ?>" data-nonce="<?php echo wp_create_nonce( 'wpv_view_filter_extra_nonce' ); ?>" class="js-wpv-filter-extra-update button-secondary" disabled="disabled"><?php _e('Update', 'wpv-views'); ?></button>
@@ -516,44 +482,42 @@ function add_view_filter_extra( $view_settings, $view_id ) {
 	<div id="js-wpv-parametric-search-dialogs" class="popup-window-container"> <!-- Use this element as a container for all popup windows. This element is hidden. -->
 		
 		<!-- Dialogs for settings when inserting shortcodes -->
-		
-		<div class="wpv-dialog wpv-dialog-parametric-filter wpv-dialog-search-box js-search-box-dialog"> <!-- Popup for the search box addition -->
+		<div class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container wpv-dialog-parametric-filter wpv-dialog-search-box js-dialog-search-box-button">
 			
-			<div class="wpv-dialog-header">
-				<h2><?php _e( 'Create a search box for this parametric search', 'wpv-views' ); ?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
-			
-			<div class="js-search_shortcode_label-wrap wpv-dialog-content">
+			<div class="wpv-dialog wpv-shortcode-gui-content-wrapper js-search_shortcode_label-wrap">
 				<h3>
 					<?php _e( 'Where to search', 'wpv-views' ); ?>
 				</h3>
 				<p>
 					<input value="full_content" name="wpv-post-search-options-dialog" class="js-wpv-post-search-options-dialog" checked="checked" id="search-shortcode-full" type="radio">
 					<label for="search-shortcode-full" class="label-alignleft"><?php _e('Post content and title', 'wpv-views'); ?></label>
+					<span class="wpv-helper-text"><?php _e( 'Use this to search in both post contents and titles', 'wpv-views' ); ?></span>
 				</p>
 				<p>
 					<input value="just_title" name="wpv-post-search-options-dialog" class="js-wpv-post-search-options-dialog" id="search-shortcode-title" type="radio">
 					<label for="search-shortcode-title" class="label-alignleft"><?php _e('Just post title', 'wpv-views'); ?></label>
+					<span class="wpv-helper-text"><?php _e( 'Use this to search just in titles', 'wpv-views' ); ?></span>
+				</p>
+				<h3><?php _e( 'Styling options', 'wpv-views' ); ?></h3>
+				<p>
+					<label for="search_box_shortcode_button_classname" class="label-alignleft"><?php _e('Input classname:', 'wpv-views'); ?></label>
+					<input value="" id="search_box_shortcode_button_classname" type="text" class="js-wpv-search-box-class" />
+					<span class="wpv-helper-text"><?php _e( 'Use this to add your own classnames to the text input', 'wpv-views' ); ?></span>
+				</p>
+				<p>
+					<label for="search_box_shortcode_button_style" class="label-alignleft"><?php _e('Input style:', 'wpv-views'); ?></label>
+					<input value="" id="search_box_shortcode_button_style" type="text" class="js-wpv-search-box-style" />
+					<span class="wpv-helper-text"><?php _e( 'Use this to add your own styling to the text input', 'wpv-views' ); ?></span>
 				</p>
 			</div>
 			
 			<div class="js-errors-in-parametric-box"></div>
 			
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close" id="js_parametric_cancel"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button-primary js-code-editor-toolbar-button js-parametric-add-search-box"><?php _e('Insert search box','wpv-views') ?></button>
-			</div>
-			
 		</div> <!-- End of popup for the search box addition -->
 		
-		<div class="wpv-dialog wpv-dialog-parametric-filter wpv-dialog-search-override js-search-override-dialog"> <!-- Popup for the search override -->
-			<div class="wpv-dialog-header">
-				<h2><?php _e( 'Complete the search filter for this parametric search', 'wpv-views' ); ?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
+		<div class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container wpv-dialog-parametric-filter wpv-dialog-search-override js-dialog-search-override-button">
 			
-			<div class="js-search_shortcode_override_label-wrap wpv-dialog-content">
+			<div class="wpv-dialog wpv-shortcode-gui-content-wrapper js-search_shortcode_override_label-wrap">
 				<h3><?php _e( 'Complete the search filter', 'wpv-views' ); ?></h3>
 				<p class="js-wpv-search-filter-override-var js-wpv-search-filter-override-valid">
 				<?php _e('This View already has a valid search filter, but it is missing the search box.', 'wpv-views' ); ?>
@@ -580,36 +544,45 @@ function add_view_filter_extra( $view_settings, $view_id ) {
 				<p>
 					<input value="full_content" name="wpv-post-search-override-dialog" class="js-wpv-post-search-override-dialog" checked="checked" id="search-override-full" type="radio">
 					<label for="search-override-full" class="label-alignleft"><?php _e('Post content and title', 'wpv-views'); ?></label>
+					<span class="wpv-helper-text"><?php _e( 'Use this to search in both post contents and titles', 'wpv-views' ); ?></span>
 				</p>
 				<p>
 					<input value="just_title" name="wpv-post-search-override-dialog" class="js-wpv-post-search-override-dialog" id="search-override-title" type="radio">
 					<label for="search-override-title" class="label-alignleft"><?php _e('Just post title', 'wpv-views'); ?></label>
+					<span class="wpv-helper-text"><?php _e( 'Use this to search just in titles', 'wpv-views' ); ?></span>
+				</p>
+				
+				<h3><?php _e( 'Styling options', 'wpv-views' ); ?></h3>
+				<p>
+					<label for="search_override_shortcode_button_classname" class="label-alignleft"><?php _e('Input classname:', 'wpv-views'); ?></label>
+					<input value="" id="search_override_shortcode_button_classname" type="text" class="js-wpv-search-override-class" />
+					<span class="wpv-helper-text"><?php _e( 'Use this to add your own classnames to the text input', 'wpv-views' ); ?></span>
+				</p>
+				<p>
+					<label for="search_override_shortcode_button_style" class="label-alignleft"><?php _e('Input style:', 'wpv-views'); ?></label>
+					<input value="" id="search_override_shortcode_button_style" type="text" class="js-wpv-search-override-style" />
+					<span class="wpv-helper-text"><?php _e( 'Use this to add your own styling to the text input', 'wpv-views' ); ?></span>
 				</p>
 			</div>
 			
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close" id="js_parametric_cancel"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button-primary js-code-editor-toolbar-button js-parametric-add-search-override"><?php _e('Create search filter','wpv-views') ?></button>
-			</div>
 		</div> <!-- End of popup for the search override -->
 		
-		<div class="wpv-dialog wpv-dialog-parametric-filter wpv-dialog-submit-button js-submit-button-dialog"> <!-- Popup for the submit button addition -->
+		<div class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container wpv-dialog-parametric-filter wpv-dialog-submit-button js-wpv-dialog-submit-button"> <!-- Popup for the submit button addition -->
 			
-			<div class="wpv-dialog-header">
-				<h2><?php _e( 'Create a submit button for this parametric search.', 'wpv-views' ); ?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
-			
-			<div class="js-submit_shortcode_label-wrap wpv-dialog-content">
+			<div class="wpv-dialog ">
 				<p>
 					<label for="submit_shortcode_label" class="label-alignleft"><?php _e('Button label:', 'wpv-views'); ?></label>
 					<input value="<?php echo esc_attr( __('Search', 'wpv-views') ); ?>" id="submit_shortcode_label" type="text">
-					<!--<span class="wpv-helper-text">lorem</span>-->
 				</p>
 				<p>
 					<label for="submit_shortcode_button_classname" class="label-alignleft"><?php _e('Button classname:', 'wpv-views'); ?></label>
 					<input value="" id="submit_shortcode_button_classname" type="text">
-					<span class="wpv-helper-text"><?php _e( 'Use this to add your own styling', 'wpv-views' ); ?></span>
+					<span class="wpv-helper-text"><?php _e( 'Use this to add your own classnames to the submit button', 'wpv-views' ); ?></span>
+				</p>
+				<p>
+					<label for="submit_shortcode_button_style" class="label-alignleft"><?php _e('Button style:', 'wpv-views'); ?></label>
+					<input value="" id="submit_shortcode_button_style" type="text">
+					<span class="wpv-helper-text"><?php _e( 'Use this to add your own styling to the submit button', 'wpv-views' ); ?></span>
 				</p>
 				<p>
 					<label for="submit_shortcode_button_tag" class="label-alignleft"><?php _e('Button HTML tag:', 'wpv-views'); ?></label>
@@ -623,21 +596,11 @@ function add_view_filter_extra( $view_settings, $view_id ) {
 			
 			<div class="js-errors-in-parametric-box"></div>
 			
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close" id="js_parametric_cancel"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button-primary js-code-editor-toolbar-button js-parametric-add-submit-short-tag-label"><?php _e('Insert submit button','wpv-views') ?></button>
-			</div>
-			
 		</div> <!-- End of popup for the submit button addition -->
 		
-		<div class="wpv-dialog wpv-dialog-parametric-filter wpv-dialog-reset-button js-reset-button-dialog"> <!-- Popup for the reset button addition -->
+		<div class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container wpv-dialog-parametric-filter wpv-dialog-reset-button js-wpv-dialog-reset-button"> <!-- Popup for the reset button addition -->
 			
-			<div class="wpv-dialog-header">
-				<h2><?php _e( 'Create a reset button for this parametric search.', 'wpv-views' ); ?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
-			
-			<div class="js-reset_shortcode_label-wrap wpv-dialog-content">
+			<div class="wpv-dialog">
 				<p>
 					<label for="reset_shortcode_label" class="label-alignleft"><?php _e('Button label:', 'wpv-views'); ?></label>
 					<input value="<?php echo esc_attr( __('Reset', 'wpv-views') ); ?>" id="reset_shortcode_label" type="text">
@@ -646,7 +609,12 @@ function add_view_filter_extra( $view_settings, $view_id ) {
 				<p>
 					<label for="reset_shortcode_button_classname" class="label-alignleft"><?php _e('Button classname:', 'wpv-views'); ?></label>
 					<input value="" id="reset_shortcode_button_classname" type="text">
-					<span class="wpv-helper-text"><?php _e( 'Use this to add your own styling', 'wpv-views' ); ?></span>
+					<span class="wpv-helper-text"><?php _e( 'Use this to add your own classnames to the reset button', 'wpv-views' ); ?></span>
+				</p>
+				<p>
+					<label for="reset_shortcode_button_style" class="label-alignleft"><?php _e('Button style:', 'wpv-views'); ?></label>
+					<input value="" id="reset_shortcode_button_style" type="text">
+					<span class="wpv-helper-text"><?php _e( 'Use this to add your own styling to the reset button', 'wpv-views' ); ?></span>
 				</p>
 				<p>
 					<label for="reset_shortcode_button_tag" class="label-alignleft"><?php _e('Button HTML tag:', 'wpv-views'); ?></label>
@@ -660,21 +628,12 @@ function add_view_filter_extra( $view_settings, $view_id ) {
 			
 			<div class="js-errors-in-parametric-box"></div>
 			
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close" id="js_parametric_cancel"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button-primary js-code-editor-toolbar-button js-parametric-add-reset-short-tag-label"><?php _e('Insert clear form button','wpv-views') ?></button>
-			</div>
-			
 		</div> <!-- End of popup for the reset button addition -->
 		
-		<div class="wpv-dialog wpv-dialog-parametric-filter wpv-dialog-spinner-button js-spinner-button-dialog"> <!-- Popup for the spinner button addition -->
+		<div class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container wpv-dialog-parametric-filter wpv-dialog-spinner-button js-wpv-dialog-spinner-button"> <!-- Popup for the spinner button addition -->
 			
-			<div class="wpv-dialog-header">
-				<h2><?php _e( 'Create a spinner container for this parametric search.', 'wpv-views' ); ?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
+			<div class="wpv-dialog">
 			
-			<div class="js-spinner_shortcode_label-wrap wpv-dialog-content">
 				<p>
 					<label for="spinner_shortcode_container_type" class="label-alignleft"><?php _e('Container type:', 'wpv-views'); ?></label>
 					<select id="spinner_shortcode_container_type">
@@ -687,8 +646,14 @@ function add_view_filter_extra( $view_settings, $view_id ) {
 				<p>
 					<label for="spinner_shortcode_container_classname" class="label-alignleft"><?php _e('Container classname:', 'wpv-views'); ?></label>
 					<input value="" id="spinner_shortcode_container_classname" type="text">
-					<span class="wpv-helper-text"><?php _e( 'Use this to add your own styling', 'wpv-views' ); ?></span>
-
+					<span class="wpv-helper-text"><?php _e( 'Use this to add your own classnames to the spinner container', 'wpv-views' ); ?></span>
+				</p>
+				<p>
+					<label for="spinner_shortcode_container_style" class="label-alignleft"><?php _e('Container style:', 'wpv-views'); ?></label>
+					<input value="" id="spinner_shortcode_container_style" type="text">
+					<span class="wpv-helper-text"><?php _e( 'Use this to add your own styling to the spinner container', 'wpv-views' ); ?></span>
+				</p>
+				<p>
 					<label for="spinner_shortcode_spinner_position" class="label-alignleft"><?php _e('Spinner placement:', 'wpv-views'); ?></label>
 					<select id="spinner_shortcode_spinner_position">
 						<option value="none"><?php _e('Do not show the spinner', 'wpv-views'); ?></option>
@@ -717,20 +682,15 @@ function add_view_filter_extra( $view_settings, $view_id ) {
 					};
 					?>
 					</ul>
-					<!--<span class="wpv-helper-text">lorem</span>-->
 				</p>
 				<p>
 					<label for="spinner_shortcode_content" class="label-alignleft"><?php _e('Container text:','wpv-views'); ?></label>
 					<textarea id="spinner_shortcode_content"></textarea>
 					<span class="wpv-helper-text"><?php _e( 'This will be shown inside the container and along with the spinner', 'wpv-views' ); ?></span>
 				</p>
-			</div>
+				
+				<div class="js-errors-in-parametric-box"></div>
 			
-			<div class="js-errors-in-parametric-box"></div>
-			
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close" id="js_parametric_cancel"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button-primary js-code-editor-toolbar-button js-parametric-add-spinner-short-tag-label"><?php _e('Insert spinner container','wpv-views') ?></button>
 			</div>
 			
 		</div> <!-- End of popup for the spinner button addition -->
@@ -745,6 +705,8 @@ function add_view_filter_extra( $view_settings, $view_id ) {
 add_action( 'wp_ajax_wpv_filter_update_dps_settings', 'wpv_filter_update_dps_settings' );
 
 function wpv_filter_update_dps_settings() {
+
+    // Authentication
 	if ( ! current_user_can( 'manage_options' ) ) {
 		$data = array(
 			'type' => 'capability',
@@ -762,11 +724,9 @@ function wpv_filter_update_dps_settings() {
 		);
 		wp_send_json_error( $data );
 	}
-	if (
-		! isset( $_POST["id"] )
-		|| ! is_numeric( $_POST["id"] )
-		|| intval( $_POST['id'] ) < 1 
-	) {
+    $view_id = (int) wpv_getpost( 'id', 0 );
+    $view = WPV_View::get_instance( $view_id );
+	if ( $view_id < 1 || null == $view ) {
 		$data = array(
 			'type' => 'id',
 			'message' => __( 'Wrong or missing ID.', 'wpv-views' )
@@ -976,6 +936,7 @@ function wpv_get_dps_related() {
 add_action( 'wp_ajax_wpv_update_filter_extra', 'wpv_update_filter_extra_callback' );
 
 function wpv_update_filter_extra_callback() {
+    // Authentication
 	if ( ! current_user_can( 'manage_options' ) ) {
 		$data = array(
 			'type' => 'capability',
@@ -993,38 +954,40 @@ function wpv_update_filter_extra_callback() {
 		);
 		wp_send_json_error( $data );
 	}
-	if (
-		! isset( $_POST["id"] )
-		|| ! is_numeric( $_POST["id"] )
-		|| intval( $_POST['id'] ) < 1 
-	) {
+
+    // Get the View
+    $view_id = (int) wpv_getpost( 'id', 0 );
+    $view = WPV_View::get_instance( $view_id );
+    if ( $view_id < 1 || null == $view ) {
 		$data = array(
 			'type' => 'id',
 			'message' => __( 'Wrong or missing ID.', 'wpv-views' )
 		);
 		wp_send_json_error( $data );
 	}
-	$view_array = get_post_meta( $_POST["id"], '_wpv_settings', true );
-	if (
-		isset( $_POST["query_val"] )
-		&& (
-			! isset( $view_array['filter_meta_html'] ) 
-			|| $_POST["query_val"] != $view_array['filter_meta_html']
-		)
-	) {
-		$view_array['filter_meta_html'] = $_POST["query_val"];
-		wpv_add_controls_labels_to_translation( $_POST["query_val"], $_POST["id"] );
-	}
-	wpv_register_wpml_strings( $_POST["query_val"] );
-	$view_array['filter_meta_html_css'] = $_POST["query_css_val"];
-	$view_array['filter_meta_html_js'] = $_POST["query_js_val"];
-	if ( isset( $view_array['filter_meta_html_state'] ) ) {
-		unset( $view_array['filter_meta_html_state'] );
-	}
-	update_post_meta( $_POST["id"], '_wpv_settings', $view_array );
-	do_action( 'wpv_action_wpv_save_item', $_POST["id"] );
+
+    // Update View settings. Note that if any of those properties fail to update, nothing will be saved -
+    // that doesn't happen until finish_modifying_view_settings() is called.
+    try {
+        $view->begin_modifying_view_settings();
+
+        $filter_meta_html = wpv_getpost('query_val', null);
+        if (null != $filter_meta_html) {
+            $view->filter_meta_html = $filter_meta_html;
+        }
+        $view->filter_css = wpv_getpost('query_css_val');
+        $view->filter_js = wpv_getpost('query_js_val');
+
+        $view->finish_modifying_view_settings();
+    } catch ( WPV_RuntimeExceptionWithMessage $e ) {
+        wp_send_json_error( array( 'type' => '', 'message' => $e->getUserMessage() ) );
+    } catch ( Exception $e ) {
+        wp_send_json_error( array( 'type' => '', 'message' => __( 'An unexpected error ocurred.', 'wpv-views' ) ) );
+    }
+
+    // Indicate success.
 	$data = array(
-		'id' => $_POST["id"],
+		'id' => $view_id,
 		'message' => __( 'Filter saved', 'wpv-views' )
 	);
 	wp_send_json_success( $data );

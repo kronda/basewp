@@ -526,24 +526,20 @@ function wpv_admin_export_data( $download = true ) {
 				if ( $item_name ) {
 					$wpv_settings_to_export[$option_name] = $item_name;
 				}
-            }
-        }
-		// Translate options as indexed arrays so they can be converted to XML
-		$arrayed_options = array( 'wpv_custom_inner_shortcodes', 'wpv_custom_conditional_functions' );
-		foreach ( $arrayed_options as $arrayed_opt ) {
-			if ( isset( $WPV_settings[$arrayed_opt] ) ) {
-				if ( is_array( $WPV_settings[$arrayed_opt] ) ) {
-                    $sanitized_option_value = array();
-					foreach ( $WPV_settings[$arrayed_opt] as $candidate_value ) {
-						$sanitized_key = str_replace( '::', '-_paamayim_-', $candidate_value );
-						$sanitized_option_value[$sanitized_key] = $candidate_value;
-					}
-					$wpv_settings_to_export[$arrayed_opt] = $sanitized_option_value;
+            } else if (
+				in_array( $option_name, array( 'wpv_custom_inner_shortcodes', 'wpv_custom_conditional_functions' ) )
+				&& is_array( $option_value )
+			) {
+				$sanitized_option_value = array();
+				foreach ( $WPV_settings[$option_name] as $candidate_value ) {
+					$sanitized_key = str_replace( '::', '-_paamayim_-', $candidate_value );
+					$sanitized_option_value[$sanitized_key] = $candidate_value;
 				}
-			}
-		}
-		if ( isset( $WPV_settings['wpv_framework_keys'] ) ) {
-			if ( is_array( $WPV_settings['wpv_framework_keys'] ) ) {
+				$wpv_settings_to_export[$option_name] = $sanitized_option_value;
+			} else if ( 
+				'wpv_framework_keys' == $option_name 
+				&& is_array( $option_value )
+			) {
 				foreach ( $WPV_settings['wpv_framework_keys'] as $framework_id => $framework_keys ) {
 					if ( 
 						is_array( $framework_keys ) 
@@ -556,8 +552,10 @@ function wpv_admin_export_data( $download = true ) {
 						$wpv_settings_to_export['wpv_framework_keys'][$framework_id] = $sanitized_framework_keys;
 					}
 				}
+			} else {
+				$wpv_settings_to_export[$option_name] = $option_value;
 			}
-		}
+        }
         $data['settings'] = $wpv_settings_to_export;
     }
 

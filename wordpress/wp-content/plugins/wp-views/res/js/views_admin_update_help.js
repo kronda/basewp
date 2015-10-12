@@ -5,7 +5,7 @@
 jQuery(document).on( 'click', '.js-views-scan', function(e) {
 	e.preventDefault();
 	var thiz = jQuery( this ),
-	spinnerContainer = jQuery( '<div class="spinner ajax-loader">' ).insertBefore( thiz ).show(),
+	spinnerContainer = jQuery( '<div class="wpv-spinner ajax-loader">' ).insertBefore( thiz ).show(),
 	resultsContainer = jQuery( '.js-wpv-views-scan-results' ),
     data = {
 		action: 'wpv_scan_wpv_if',

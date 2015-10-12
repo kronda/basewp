@@ -1,7 +1,7 @@
 <?php
 
 /* global constants */
-defined('TVE_VERSION') || DEFINE("TVE_VERSION", '1.101.7');
+defined('TVE_VERSION') || DEFINE("TVE_VERSION", '1.101.11');
 defined('TVE_TCB_DB_VERSION') || define('TVE_TCB_DB_VERSION', '1.1');
 defined('TVE_TEMPLATES_PATH') || DEFINE("TVE_TEMPLATES_PATH", plugin_dir_path(__FILE__) . 'shortcodes/templates');
 defined('TVE_LANDING_PAGE_TEMPLATE') || DEFINE("TVE_LANDING_PAGE_TEMPLATE", plugins_url() . '/thrive-visual-editor/landing-page/templates');
@@ -68,6 +68,7 @@ if (is_admin() && !defined('TCB_ADMIN_INIT')) {
         if (!tve_check_if_thrive_theme()) {
             require_once plugin_dir_path(__FILE__) . 'admin/init.php';
             thrive_page_template_add_menu_page();
+            require_once plugin_dir_path(__FILE__) . 'admin/font-import-manager/init.php';
         }
         /* init the font manager admin stuff. TODO: this will be moved also to the themes */
         require_once plugin_dir_path(__FILE__) . 'admin/icon-manager/init.php';
@@ -207,6 +208,12 @@ add_action('init', 'tve_load_plugin_textdomain');
 add_action('template_redirect', 'tcb_custom_editable_content', 9);
 
 /**
+ * we need Font Import Manager required at "init" action
+ * because it has some static methods used in frontend
+ */
+add_action('init', 'tve_require_font_import_manager');
+
+/**
  * filter used to clean meta-data stuff from the content, when displaying it on frontend, e.g.: lead generation code being saved in the HTML causes SEO issues
  */
 add_filter('tcb_clean_frontend_content', 'tcb_clean_frontend_content');
@@ -217,4 +224,11 @@ add_filter('tcb_clean_frontend_content', 'tcb_clean_frontend_content');
 add_action('tve_socials_init_pinterest', 'tve_socials_init_pinterest');
 
 /* find content for quick link, by post types and input text*/
-add_action('wp_ajax_tve_find_quick_link_contents','tve_find_quick_link_contents');
+add_action('wp_ajax_tve_find_quick_link_contents', 'tve_find_quick_link_contents');
+
+add_filter('tve_filter_custom_fonts_for_enqueue_in_editor', 'tve_filter_custom_fonts_for_enqueue_in_editor');
+
+/**
+ * shows a message in the main media uploader window that states: "Only .xxx files are allowed"
+ */
+add_action('post-upload-ui', 'tve_media_restrict_filetypes');

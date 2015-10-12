@@ -21,7 +21,7 @@ $taxonomy_checkboxes_defaults = array(
 add_filter( 'wpv_view_settings', 'wpv_taxonomy_default_settings' );
 
 function wpv_taxonomy_default_settings( $view_settings ) {
-	if ( !isset( $view_settings['taxonomy_type'] ) ) {
+	if ( ! isset( $view_settings['taxonomy_type'] ) ) {
 		$view_settings['taxonomy_type'] = array();
 	}
 	$taxonomy_defaults = array(
@@ -30,30 +30,38 @@ function wpv_taxonomy_default_settings( $view_settings ) {
 		'taxonomy_pad_counts' => false,
 	);
 	foreach ( $taxonomy_defaults as $key => $value ) {
-		if ( !isset( $view_settings[$key] ) ) {
+		if ( ! isset( $view_settings[$key] ) ) {
 			$view_settings[$key] = $value;
 		}
 	}
 	return $view_settings;
 }
 
-function get_taxonomy_query($view_settings) {
+/**
+* get_taxonomy_query
+*
+* Main function to get the results of a View that lists taxonomy terms
+*
+* @param $view_settings array
+*
+* @since unknown
+*/
+
+function get_taxonomy_query( $view_settings ) {
     global $WP_Views, $wpdb, $WPVDebug;
 
-    $taxonomies = get_taxonomies('', 'objects');
+    $taxonomies = get_taxonomies( '', 'objects' );
     $view_id = $WP_Views->get_current_view();
 
-    $WPVDebug->add_log( 'info' , apply_filters('wpv-view-get-content-summary', '', $WP_Views->current_view, $view_settings) , 'short_query' );
+    $WPVDebug->add_log( 'info', apply_filters( 'wpv-view-get-content-summary', '', $WP_Views->current_view, $view_settings ), 'short_query' );
 
     $tax_query_settings = array(
         'hide_empty' => $view_settings['taxonomy_hide_empty'],
         'hierarchical' => $view_settings['taxonomy_include_non_empty_decendants'],
-        'pad_counts' => $view_settings['taxonomy_pad_counts'],
-        'orderby' => $view_settings['taxonomy_orderby'],
-        'order' => $view_settings['taxonomy_order']
+        'pad_counts' => $view_settings['taxonomy_pad_counts']
     );
 
-    $WPVDebug->add_log( 'info' , "Basic query arguments\n". print_r($tax_query_settings, true) , 'query_args' );
+    $WPVDebug->add_log( 'info', "Basic query arguments\n". print_r( $tax_query_settings, true ) , 'query_args' );
 
     /**
 	* Filter wpv_filter_taxonomy_query
@@ -71,36 +79,10 @@ function get_taxonomy_query($view_settings) {
 
     $tax_query_settings = apply_filters( 'wpv_filter_taxonomy_query', $tax_query_settings, $view_settings, $view_id );
 
-	$WPVDebug->add_log( 'filters' , "wpv_filter_taxonomy_query\n". print_r($tax_query_settings, true) , 'filters', 'Filter arguments before the query using <strong>wpv_filter_taxonomy_query</strong>' );
+	$WPVDebug->add_log( 'filters', "wpv_filter_taxonomy_query\n". print_r( $tax_query_settings, true ), 'filters', 'Filter arguments before the query using <strong>wpv_filter_taxonomy_query</strong>' );
 
-    if (
-		isset( $_GET['wpv_column_sort_id'] ) 
-		&& esc_attr( $_GET['wpv_column_sort_id'] ) != '' 
-		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
-	) {
-        $field = esc_attr( $_GET['wpv_column_sort_id'] );
-        if ( $field == 'taxonomy-link' ) {
-            $tax_query_settings['orderby'] = 'name';
-        } else if ( $field == 'taxonomy-title' ) {
-            $tax_query_settings['orderby'] = 'name';
-        } else if ( $field == 'taxonomy-post_count' ) {
-            $tax_query_settings['orderby'] = 'count';
-        }
-
-    }
-
-    if (
-		isset( $_GET['wpv_column_sort_dir'] ) 
-		&& esc_attr( $_GET['wpv_column_sort_dir'] ) != '' 
-		&& esc_attr( $_GET['wpv_view_count'] ) == $WP_Views->get_view_count()
-		&& in_array( strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) ), array( 'ASC', 'DESC' ) )
-	) {
-        $tax_query_settings['order'] = strtoupper( esc_attr( $_GET['wpv_column_sort_dir'] ) );
-
-    }
-
-    if (isset($taxonomies[$view_settings['taxonomy_type'][0]])) {
-        $items = get_terms($taxonomies[$view_settings['taxonomy_type'][0]]->name, $tax_query_settings);
+    if ( isset( $taxonomies[$view_settings['taxonomy_type'][0]] ) ) {
+        $items = get_terms( $taxonomies[$view_settings['taxonomy_type'][0]]->name, $tax_query_settings );
     } else {
         // taxonomy no longer exists.
         $items = array();
@@ -108,11 +90,11 @@ function get_taxonomy_query($view_settings) {
 
     // get_terms doesn't sort by count when child count is included.
     // we need to do it manually.
-    if ($view_settings['taxonomy_orderby'] == 'count') {
-        if ($view_settings['taxonomy_order'] == 'ASC') {
-            usort($items, '_wpv_taxonomy_sort_asc');
+    if ( $view_settings['taxonomy_orderby'] == 'count' ) {
+        if ( $view_settings['taxonomy_order'] == 'ASC' ) {
+            usort( $items, '_wpv_taxonomy_sort_asc' );
         } else {
-            usort($items, '_wpv_taxonomy_sort_dec');
+            usort( $items, '_wpv_taxonomy_sort_dec' );
         }
     }
 
@@ -121,43 +103,49 @@ function get_taxonomy_query($view_settings) {
     // this doesn't return the correct post count.
 
     $parent_id = null;
-    if (isset( $view_settings['taxonomy_parent_mode'] ) && isset ( $view_settings['taxonomy_parent_mode'][0] ) ) {
-		switch($view_settings['taxonomy_parent_mode'][0]) {
+    if (
+		isset( $view_settings['taxonomy_parent_mode'] ) 
+		&& isset( $view_settings['taxonomy_parent_mode'][0] ) 
+	) {
+		switch ( $view_settings['taxonomy_parent_mode'][0] ) {
 			case 'current_view':
-			$parent_id = $WP_Views->get_parent_view_taxonomy();
-			break;
+				$parent_id = $WP_Views->get_parent_view_taxonomy();
+				break;
 			case 'current_archive_loop':
-			if ( is_category() || is_tag() || is_tax() ) {
-				$queried_object = get_queried_object();
-				$parent_id = $queried_object->term_id;
-			}
-			break;
-			case 'this_parent':
-			$parent_id = $view_settings['taxonomy_parent_id'];
-
-			if ( 
-				isset( $view_settings['taxonomy_type'][0] ) 
-				&& ! empty( $parent_id ) 
-			) {
-				// WordPress 4.2 compatibility - split terms
-				$candidate_term_id_splitted = wpv_compat_get_split_term( $parent_id, $view_settings['taxonomy_type'][0] );
-				if ( $candidate_term_id_splitted ) {
-					$parent_id = $candidate_term_id_splitted;
+				if ( 
+					is_category() 
+					|| is_tag() 
+					|| is_tax() 
+				) {
+					$queried_object = get_queried_object();
+					$parent_id = $queried_object->term_id;
 				}
-				// Adjust for WPML support
-				$parent_id = apply_filters( 'translate_object_id', $parent_id, $view_settings['taxonomy_type'][0], true, null );
-			}
-			break;
+				break;
+			case 'this_parent':
+				$parent_id = $view_settings['taxonomy_parent_id'];
+				if ( 
+					isset( $view_settings['taxonomy_type'][0] ) 
+					&& ! empty( $parent_id ) 
+				) {
+					// WordPress 4.2 compatibility - split terms
+					$candidate_term_id_splitted = wpv_compat_get_split_term( $parent_id, $view_settings['taxonomy_type'][0] );
+					if ( $candidate_term_id_splitted ) {
+						$parent_id = $candidate_term_id_splitted;
+					}
+					// Adjust for WPML support
+					$parent_id = apply_filters( 'translate_object_id', $parent_id, $view_settings['taxonomy_type'][0], true, null );
+				}
+				break;
 		}
     }
 
-    if ($parent_id !== null) {
-        foreach($items as $index => $item) {
-            if ($item->parent != $parent_id) {
-                unset($items[$index]);
+    if ( $parent_id !== null ) {
+        foreach( $items as $index => $item ) {
+            if ( $item->parent != $parent_id ) {
+                unset( $items[$index] );
             }
         }
-        $WPVDebug->add_log( 'filters' , "Filter by parent with ID {$parent_id}\n". print_r($items, true) , 'filters', 'Filter by parent term' );
+        $WPVDebug->add_log( 'filters', "Filter by parent with ID {$parent_id}\n". print_r( $items, true ), 'filters', 'Filter by parent term' );
     }
 
     if ( isset( $view_settings['taxonomy_terms_mode'] ) ) {
@@ -185,10 +173,10 @@ function get_taxonomy_query($view_settings) {
 						}
 					}
 					$items = $filtered_terms;
-					$WPVDebug->add_log( 'filters' , "Filter by terms from the current page " . implode( ', ' , $terms_info ) . "\n" . print_r($items, true) , 'filters', 'Filter by terms from the current page' );
+					$WPVDebug->add_log( 'filters', "Filter by terms from the current page " . implode( ', ' , $terms_info ) . "\n" . print_r( $items, true ), 'filters', 'Filter by terms from the current page' );
 				} else {
 					$items = array();
-					$WPVDebug->add_log( 'filters' , "Filter by terms from the current page but for a taxonomy that no longer exists \n" . print_r($items, true) , 'filters', 'Filter by terms from the current page' );
+					$WPVDebug->add_log( 'filters', "Filter by terms from the current page but for a taxonomy that no longer exists \n" . print_r( $items, true ), 'filters', 'Filter by terms from the current page' );
 				}
 				break;
 			case 'THESE':
@@ -221,7 +209,7 @@ function get_taxonomy_query($view_settings) {
 						}
 					}
 					$items = $filtered_terms;
-					$WPVDebug->add_log( 'filters' , "Filter by specific terms " . implode( ',  ' , $view_settings['taxonomy_terms'] ) . "\n". print_r($items, true) , 'filters', 'Filter by specific terms' );
+					$WPVDebug->add_log( 'filters', "Filter by specific terms " . implode( ',  ' , $view_settings['taxonomy_terms'] ) . "\n". print_r( $items, true ), 'filters', 'Filter by specific terms' );
 				}
 				break;
 			case 'framework':
@@ -270,13 +258,16 @@ function get_taxonomy_query($view_settings) {
 		}
     }
 
-	if ( isset( $wpdb->queries ) && !empty( $wpdb->queries ) ) {
-		$WPVDebug->add_log( 'mysql_query' , $wpdb->queries , 'taxonomy' );
+	if ( 
+		isset( $wpdb->queries ) 
+		&& ! empty( $wpdb->queries ) 
+	) {
+		$WPVDebug->add_log( 'mysql_query', $wpdb->queries , 'taxonomy' );
 	}
 
-	$WPVDebug->add_log( 'info' , print_r($items, true) , 'query_results' , '' , true );
+	$WPVDebug->add_log( 'info', print_r( $items, true ), 'query_results', '', true );
 
-    $items = array_values($items);
+    $items = array_values( $items );
 
     /**
 	* Filter wpv_filter_taxonomy_post_query
@@ -295,26 +286,39 @@ function get_taxonomy_query($view_settings) {
 
     $items = apply_filters( 'wpv_filter_taxonomy_post_query', $items, $tax_query_settings, $view_settings, $view_id );
 
-    $WPVDebug->add_log( 'filters' , "wpv_filter_taxonomy_post_query\n" . print_r($items, true) , 'filters', 'Filter the returned query using <strong>wpv_filter_taxonomy_post_query</strong>' );
+    $WPVDebug->add_log( 'filters', "wpv_filter_taxonomy_post_query\n" . print_r( $items, true ), 'filters', 'Filter the returned query using <strong>wpv_filter_taxonomy_post_query</strong>' );
 
     return $items;
-
 }
 
-function _wpv_taxonomy_sort_asc($a, $b) {
-    if ($a->count == $b->count) {
+/**
+* _wpv_taxonomy_sort_asc
+*
+* Sort taxonomy terms by post count, ASC
+*
+* @since unknown
+*/
+
+function _wpv_taxonomy_sort_asc( $a, $b ) {
+    if ( $a->count == $b->count ) {
         return 0;
     }
-
-    return ($a->count < $b->count) ? -1 : 1;
+    return ( $a->count < $b->count ) ? -1 : 1;
 }
 
-function _wpv_taxonomy_sort_dec($a, $b) {
-    if ($a->count == $b->count) {
+/**
+* _wpv_taxonomy_sort_dec
+*
+* Sort taxonomy terms by post count, DESC
+*
+* @since unknown
+*/
+
+function _wpv_taxonomy_sort_dec( $a, $b ) {
+    if ( $a->count == $b->count ) {
         return 0;
     }
-
-    return ($a->count < $b->count) ? 1 : -1;
+    return ( $a->count < $b->count ) ? 1 : -1;
 }
 
 
@@ -354,15 +358,119 @@ function wpv_no_taxonomy_found($atts, $value){
 
 }
 
-add_filter('wpv_filter_requires_current_page', 'wpv_filter_tax_requires_current_page', 10, 2);
-function wpv_filter_tax_requires_current_page($state, $view_settings) {
-	if ($state) {
+/**
+* wpv_filter_tax_requires_current_page
+*
+* Whether the current View requires the current page for any filter
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.9.0
+*/
+
+add_filter( 'wpv_filter_requires_current_page', 'wpv_filter_tax_requires_current_page', 10, 2 );
+
+function wpv_filter_tax_requires_current_page( $state, $view_settings ) {
+	if ( $state ) {
 		return $state; // Already set
 	}
-    if (isset($view_settings['taxonomy_terms_mode']) && $view_settings['taxonomy_terms_mode'] == 'CURRENT_PAGE') {
+    if (
+		isset( $view_settings['taxonomy_terms_mode'] ) 
+		&& $view_settings['taxonomy_terms_mode'] == 'CURRENT_PAGE'
+	) {
         $state = true;
     }
+	return $state;
 
+}
+
+/**
+* wpv_filter_tax_requires_framework_values
+*
+* Whether the current View requires framework valus for the filter by specific terms
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_requires_framework_values', 'wpv_filter_tax_requires_framework_values', 10, 2 );
+
+function wpv_filter_tax_requires_framework_values( $state, $view_settings ) {
+	if ( $state ) {
+		return $state; // Already set
+	}
+    if (
+		isset( $view_settings['taxonomy_terms_mode'] ) 
+		&& $view_settings['taxonomy_terms_mode'] == 'framework'
+	) {
+        $state = true;
+    }
+	return $state;
+
+}
+
+/**
+* wpv_filter_tax_requires_parent_term
+*
+* Whether the current View is nested and requires the user set by the parent View for any filter
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.9.0
+*/
+
+add_filter( 'wpv_filter_requires_parent_term', 'wpv_filter_tax_requires_parent_term', 10, 2 );
+
+function wpv_filter_tax_requires_parent_term( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+	if (
+		isset( $view_settings['taxonomy_parent_mode'] ) 
+		&& isset( $view_settings['taxonomy_parent_mode'][0] ) 
+		&& $view_settings['taxonomy_parent_mode'][0] == 'current_view'
+	) {
+        $state = true;
+    }
+	return $state;
+}
+
+/**
+* wpv_filter_tax_requires_current_archive
+*
+* Whether the current View requires the current archive for the taxonomy parent filter
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_requires_current_archive', 'wpv_filter_tax_requires_current_archive', 10, 2 );
+
+function wpv_filter_tax_requires_current_archive( $state, $view_settings ) {
+	if ( $state ) {
+		return $state; // Already set
+	}
+    if (
+		isset( $view_settings['taxonomy_parent_mode'] ) 
+		&& isset( $view_settings['taxonomy_parent_mode'][0] ) 
+		&& $view_settings['taxonomy_parent_mode'][0] == 'current_archive_loop'
+	) {
+        $state = true;
+    }
 	return $state;
 
 }

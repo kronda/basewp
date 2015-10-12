@@ -529,14 +529,14 @@ function wpv_is_valid_non_empty_value_to_filter( $value ) {
 }
 
 /**
-* wpv_resolve_variable_view_setings
+* wpv_resolve_variable_view_settings
 *
 * @since 1.8.0
 */
 
-add_filter( 'wpv_view_settings', 'wpv_resolve_variable_view_setings', 100 );
+add_filter( 'wpv_filter_override_view_settings', 'wpv_resolve_variable_view_settings', 1 );
 
-function wpv_resolve_variable_view_setings( $view_settings = array() ) {
+function wpv_resolve_variable_view_settings( $view_settings = array() ) {
 	if ( ! is_array( $view_settings ) ) {
 		return $view_settings;
 	}
@@ -587,3 +587,52 @@ function wpv_resolve_variable_view_setings( $view_settings = array() ) {
 	return $view_settings;
 }
 
+/**
+* wpv_filter_variable_settings_require_framework_values
+*
+* Whether the current View requires framework data for the filter by variable settings
+*
+* @param $state (boolean) the state of this need until this filter is applied
+* @param $view_settings
+*
+* @return $state (boolean)
+*
+* @since 1.10
+*/
+
+add_filter( 'wpv_filter_requires_framework_values', 'wpv_filter_variable_settings_require_framework_values', 20, 2 );
+
+function wpv_filter_variable_settings_require_framework_values( $state, $view_settings ) {
+	if ( $state ) {
+		return $state;
+	}
+	$pattern = '/FRAME_KEY\(([^(]*?)\)/siU';
+	foreach ( $view_settings as $vs_key => $vs_value ) {
+		switch ( $vs_key ) {
+			case 'limit':
+			case 'taxonomy_limit':
+			case 'users_limit':
+			case 'offset':
+			case 'taxonomy_offset':
+			case 'users_offset':
+			case 'posts_per_page':
+				if ( preg_match_all( $pattern, $vs_value, $matches, PREG_SET_ORDER ) ) {
+					$state = true;
+				}
+				break;
+			case 'rollover':
+				if ( 
+					is_array( $vs_value )
+					&& isset( $vs_value['posts_per_page'] ) 
+				) {
+					if ( preg_match_all( $pattern, $vs_value['posts_per_page'], $matches, PREG_SET_ORDER ) ) {
+						$state = true;
+					}
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	return $state;
+}

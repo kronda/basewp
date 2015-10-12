@@ -37,6 +37,7 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
             var _selector = $button.data('selector'),
                 _font_family = $button.data('font-family'),
                 _css_class = $button.data('cls');
+
             this.addToGlobals(_selector, 'font-family', _font_family);
             tve_path_params.tve_globals.landing_fonts[_selector]['css_class'] = _css_class;
             this.add_css_rule(_selector, 'font-family: ' + _font_family);
@@ -163,8 +164,8 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
             color = tve_path_params.tve_globals.landing_fonts[_selector].color;
         } else {
             color = $(selector).css('color');
-            if(!color) {
-                var element = $('<'+ _selector  +'></' + _selector + '>').appendTo(TVE_Editor_Page.editor);
+            if (!color) {
+                var element = $('<' + _selector + '></' + _selector + '>').appendTo(TVE_Editor_Page.editor);
                 color = element.css('color');
                 element.remove();
             }

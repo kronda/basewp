@@ -56,81 +56,6 @@ function add_view_filters( $view_settings, $view_id ) {
 			</p>
 		</div>
 	</div>
-
-	<div class="popup-window-container"> <!-- Use this element as a container for all popup windows. This element is hidden. @todo we do now have a container for that in somewhere -->
-
-		<div class="wpv-dialog js-filter-add-filter-form-dialog">
-			<div class="wpv-dialog-header">
-				<h2><?php _e('Add a filter','wpv-views') ?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
-			<div class="wpv-dialog-content">
-
-				<strong><?php _e('Select what to filter by:', 'wpv-views'); ?></strong>
-
-				<?php wpv_filters_add_filter_select( $view_settings ); ?>
-
-			</div>
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close js-filters-cancel-filter"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button button-primary js-filters-insert-filter" data-nonce="<?php echo wp_create_nonce( 'wpv_view_filters_add_filter_nonce' ); ?>"><?php _e('Add filter','wpv-views') ?></button>
-			</div>
-		</div>
-
-		<div class="wpv-dialog js-filter-taxonomy-delete-filter-row-dialog">
-			<div class="wpv-dialog-header">
-				<h2><?php _e('Delete taxonomy filters','wpv-views') ?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
-			<div class="wpv-dialog-content">
-
-				<h3><?php _e('There are more than one taxonomy filters', 'wpv-views'); ?></h3>
-				<p>
-					<?php _e( 'You can delete them all at once or open the editor and delete individual filters.', 'wpv-views' ); ?>
-				</p>
-			</div>
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close js-filters-cancel-filter"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button js-wpv-filter-taxonomy-edit-filter-row"><?php _e( 'Edit the taxonomy filters', 'wpv-views' ); ?></button>
-				<button class="button button-primary js-wpv-filters-taxonomy-delete-filter-row" data-nonce="<?php echo wp_create_nonce( 'wpv_view_filter_taxonomy_row_delete_nonce' ); ?>"><?php _e('Delete all taxonomy filters','wpv-views') ?></button>
-			</div>
-		</div>
-
-		<div class="wpv-dialog js-filter-custom-field-delete-filter-row-dialog">
-			<div class="wpv-dialog-header">
-				<h2><?php _e('Delete custom field filters','wpv-views') ?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
-			<div class="wpv-dialog-content">
-				<h3><?php _e('There are more than one custom field filters', 'wpv-views'); ?></h3>
-				<p>
-					<?php _e( 'You can delete them all at once or open the editor and delete individual filters.', 'wpv-views' ); ?>
-				</p>
-			</div>
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close js-filters-cancel-filter"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button js-filter-custom-field-edit-filter-row"><?php _e( 'Edit the custom field filters', 'wpv-views' ); ?></button>
-				<button class="button button-primary js-filters-custom-field-delete-filter-row" data-nonce="<?php echo wp_create_nonce( 'wpv_view_filter_custom_field_row_delete_nonce' ); ?>"><?php _e('Delete all custom field filters','wpv-views') ?></button>
-			</div>
-		</div>
-		<div class="wpv-dialog js-filter-usermeta-field-delete-filter-row-dialog">
-			<div class="wpv-dialog-header">
-				<h2><?php _e('Delete usermeta field filters','wpv-views') ?></h2>
-				<i class="icon-remove js-dialog-close"></i>
-			</div>
-			<div class="wpv-dialog-content">
-				<p>
-					<strong><?php _e('There are more than one usermeta field filters. What would you like to do?', 'wpv-views'); ?></strong>
-				</p>
-			</div>
-			<div class="wpv-dialog-footer">
-				<button class="button js-dialog-close js-filters-cancel-filter"><?php _e('Cancel','wpv-views') ?></button>
-				<button class="button js-filter-usermeta-field-edit-filter-row"><?php _e( 'Edit the usermeta field filters', 'wpv-views' ); ?></button>
-				<button class="button button-primary js-filters-usermeta-field-delete-filter-row" data-nonce="<?php echo wp_create_nonce( 'wpv_view_filter_usermeta_field_row_delete_nonce' ); ?>"><?php _e('Delete all usermeta field filters','wpv-views') ?></button>
-			</div>
-		</div>
-
-	</div>
 <?php }
 
 add_action('admin_head', 'wpv_filter_url_check_js');
@@ -155,7 +80,7 @@ function wpv_filter_url_check_js() {
 	$toolset_reserved_words = apply_filters('wpv_toolset_reserved_words', $toolset_reserved_words);
 	
 	$toolset_reserved_attributes = array(
-		'name', 'limit', 'offset'
+		'name', 'post_type', 'order', 'orderby', 'limit', 'offset', 'posts_per_page', 'cached'
 	);
 	$toolset_reserved_attributes = apply_filters('wpv_toolset_reserved_attributes', $toolset_reserved_attributes);
 
@@ -369,9 +294,9 @@ function wpv_filters_add_filter_select($view_settings) {
 
 // @todo add proper wp_send_json_error/wp_send_json_success management here
 
-add_action( 'wp_ajax_wpv_filters_upate_filters_select', 'wpv_filters_upate_filters_select_callback' );
+add_action( 'wp_ajax_wpv_filters_update_filters_select', 'wpv_filters_update_filters_select_callback' );
 
-function wpv_filters_upate_filters_select_callback() {
+function wpv_filters_update_filters_select_callback() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		die( "Security check" );
 	}
@@ -634,8 +559,8 @@ class WPV_Filter_Item {
 			}
 			?>
 			</select>
-			<input type="text" value="<?php echo esc_attr( $jj ); ?>" size="2" maxlength="2" autocomplete="off" />
-			<input type="text" value="<?php echo esc_attr( $aa ); ?>" size="4" maxlength="4" autocomplete="off" />
+			<input class="js-wpv-filter-maybe-validate" data-type="day" type="text" value="<?php echo esc_attr( $jj ); ?>" size="2" maxlength="2" autocomplete="off" />
+			<input class="js-wpv-filter-maybe-validate" data-type="year" type="text" value="<?php echo esc_attr( $aa ); ?>" size="4" maxlength="4" autocomplete="off" />
 		</span>
 		<?php
 	}

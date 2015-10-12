@@ -158,7 +158,7 @@ abstract class WPV_List_Table_Embedded implements IWPV_Table_Decorator {
 
         // URL that will be used to build sorting links. All URL parameters except 'paged' and 'last_page' will be preserved.
         $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-        $current_url = remove_query_arg( array( 'paged', 'last_page' ), $current_url );
+        $current_url = esc_url( remove_query_arg( array( 'paged', 'last_page' ), $current_url ) );
 
         // Print table header cell for each column
         foreach ( $columns as $column_slug => $column ) {
@@ -189,9 +189,9 @@ abstract class WPV_List_Table_Embedded implements IWPV_Table_Decorator {
 
                 $title = sprintf(
                     '<a href="%s">%s%s</a>',
-                    add_query_arg(
+                    esc_url( add_query_arg(
                         array( 'order' => $new_order, 'orderby' => $new_orderby ),
-                        $current_url ),
+                        $current_url ) ),
                     wpv_getarr( $column, 'title', $column_slug ),
                     $title_order );
 

@@ -1,3 +1,31 @@
+<h4>1.3.1.3 - 08/25/2015</h4>
+<ul>
+	<li>Added Dutch translation.</li>
+	<li>Added support for core title tag rendering.</li>
+	<li>Removed favicon settings in favor of WordPress' new Site Icon settings.</li>
+</ul>
+
+<h4>1.3.1.2 - 08/11/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Tested WordPress 4.3 compatibility.</li>
+	<li>Updated translation files.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed a bug with dropdown menus on Windows.</li>
+</ul>
+
+<h4>1.3.1.1 - 07/21/2015</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Fixed a bug with the Customizer accent hover color setting.</li>
+    <li>Fixed a bug with the Customizer when no pages exist.</li>
+    <li>Fixed a bug with Customizer font weight settings.</li>
+    <li>Fixed a bug with subnav links not picking up the Customizer font weight setting.</li>
+    <li>Fixed a bug with retina logos in the fixed header.</li>
+</ul>
+
 <h4>1.3.1 - 07/08/2015</h4>
 <p>This is our biggest theme update since settings were moved to the Customizer! <strong>PLEASE NOTE:</strong> None of your customizations will immediately change as a result of this update. However, you may notice slight differences to text/link colors in the header/footer sections the next time you enter the Customizer that you are now able to adjust. Please see <a href="https://www.wpbeaverbuilder.com/the-beaver-builder-theme-is-now-even-more-customizable/">this blog post</a> for more details.</p>
 <ul>

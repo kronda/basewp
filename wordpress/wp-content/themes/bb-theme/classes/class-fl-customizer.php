@@ -410,6 +410,11 @@ final class FLCustomizer {
 			if ( isset( $panel_data['sections'] ) ) {
 
 				foreach ( $panel_data['sections'] as $section_key => $section_data ) {
+			
+					// Make sure this section should be registered.
+					if ( isset( $section_data['disable'] ) && true === $section_data['disable'] ) {
+						continue;
+					}
 
 					// Add section
 					$customizer->add_section( $section_key, array(
@@ -520,14 +525,26 @@ final class FLCustomizer {
 
 		// Set new panels or set a low priority.
 		if ( self::_has_panel_support() ) {
-			$title_tagline->panel       = 'fl-settings';
-			$nav->panel                 = 'fl-settings';
-			$static_front_page->panel   = 'fl-settings';
+			if ( is_object( $title_tagline ) ) {
+				$title_tagline->panel = 'fl-settings';
+			}
+			if ( is_object( $nav ) ) {
+				$nav->panel = 'fl-settings';
+			}
+			if ( is_object( $static_front_page ) ) {
+				$static_front_page->panel = 'fl-settings';
+			}
 		}
 		else {
-			$title_tagline->priority      = 10000;
-			$nav->priority                = 10001;
-			$static_front_page->priority  = 10002;
+			if ( is_object( $title_tagline ) ) {
+				$title_tagline->priority = 10000;
+			}
+			if ( is_object( $nav ) ) {
+				$nav->priority = 10001;
+			}
+			if ( is_object( $static_front_page ) ) {
+				$static_front_page->priority = 10002;
+			}
 		}
 	}
 
@@ -841,7 +858,7 @@ final class FLCustomizer {
 		$vars['accent-color']                   = FLColor::hex( array( $mods['fl-accent'], $defaults['fl-accent'] ) );
 		$vars['accent-hover-color']             = FLColor::hex( array( $mods['fl-accent-hover'], $mods['fl-accent'] ) );
 		$vars['accent-fg-color']                = FLColor::foreground( $vars['accent-color'] );
-		$vars['accent-hover-fg-color']          = FLColor::foreground( $vars['accent-hover-color'] );
+		$vars['accent-fg-hover-color']          = FLColor::foreground( $vars['accent-hover-color'] );
 
 		// Text Colors
 		$vars['heading-color']                  = FLColor::hex( $mods['fl-heading-text-color'] );

@@ -57,3 +57,7 @@ if ( ! defined( 'WPV_LINK_CONTENT_TEMPLATE_DOCUMENTATION' ) ) {
 if ( ! defined( 'WPV_LINK_WORDPRESS_ARCHIVE_DOCUMENTATION') ) {
 	define( 'WPV_LINK_WORDPRESS_ARCHIVE_DOCUMENTATION', 'http://wp-types.com/documentation/user-guides/normal-vs-archive-views/?utm_source=viewsplugin&utm_campaign=views&utm_medium=edit-wordpress-archive-page&utm_term=WordPress Archive documentation' );
 }
+
+if ( ! defined( 'WPV_LINK_FRAMEWORK_INTEGRATION_DOCUMENTATION') ) {
+	define( 'WPV_LINK_FRAMEWORK_INTEGRATION_DOCUMENTATION', 'http://wp-types.com/documentation/user-guides/theme-frameworks-integration/?utm_source=viewsplugin&utm_campaign=views&utm_medium=theme-framework-integration-page&utm_term=theme framework integration documentation page' );
+}

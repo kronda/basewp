@@ -19,7 +19,7 @@ WPViews.UsersFilterGUI = function( $ ) {
 	
 	self.icon_edit = '<i class="icon-chevron-up"></i>&nbsp;&nbsp;';
 	self.icon_save = '<i class="icon-ok"></i>&nbsp;&nbsp;';
-	self.spinner = '<span class="spinner ajax-loader"></span>&nbsp;&nbsp;';
+	self.spinner = '<span class="wpv-spinner ajax-loader"></span>&nbsp;&nbsp;';
 	
 	self.user_row = '.js-wpv-filter-row-users';
 	self.user_options_container_selector = '.js-wpv-filter-users-options';

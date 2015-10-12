@@ -52,7 +52,7 @@
                                 <h3 class="tve-settings-title" style="padding-left:0"><?php echo __('Reset cached statistics') ?></h3>
 
                                 <span class="tve-field-desc">
-                                    <?php echo __('In order to increase overall performance, Thrive Leads caches the number of impressions and conversions for each Lead Group, Shortcode, 2 Step Lightbox and Form. Click the following link to purge the cache and re-build it.', 'thrive-leads') ?>
+                                    <?php echo __('In order to increase overall performance, Thrive Leads caches the number of impressions and conversions for each Lead Group, Shortcode, ThriveBox and Form. Click the following link to purge the cache and re-build it.', 'thrive-leads') ?>
                                     <a class="tve-leads-clear-cache" href="javascript:void(0)"><?php echo __('Purge cache', 'thrive-leads') ?></a>
                                 </span>
                             </div>
@@ -163,9 +163,9 @@
 
         <div class="tve-collapse-table" id="tve-two-step-lightbox">
             <h2 class="tve-action-title">
-                <?php echo __('2 Step Lightboxes', 'thrive-leads') ?>
+                <?php echo __('ThriveBoxes', 'thrive-leads') ?>
                 <a class="tve-leads-button tve-btn tve-btn-blue tve-add-two-step-lightbox"
-                   href="javascript:void(0)" title="<?php echo __('Add New 2 Step Lightbox') ?>"
+                   href="javascript:void(0)" title="<?php echo __('Add New ThriveBox') ?>"
                    id="tve-lead-add"><?php echo __('Add New', 'thrive-leads') ?></a>
             </h2>
 
@@ -182,7 +182,7 @@
             </ul>
             <div class="no-two-step-lightbox">
                 <p>
-                    <?php echo __("You don't have any 2 Step Lightboxes created yet. Click the 'Add new' button to create one.", 'thrive-leads') ?>
+                    <?php echo __("You don't have any ThriveBoxes created yet. Click the 'Add new' button to create one.", 'thrive-leads') ?>
                 </p>
                 <a href="//fast.wistia.net/embed/iframe/agm7q743cx?popover=true" class="wistia-popover[height=450,playerColor=2bb914,width=800]"><img src="<?php echo  TVE_LEADS_ADMIN_URL . "img/video-thumb-2-step.jpg" ?>" alt=""/></a>
             </div>

@@ -9,6 +9,15 @@
 class Thrive_List_Connection_Drip extends Thrive_List_Connection_Abstract
 {
     /**
+     * Return the connection type
+     * @return String
+     */
+    public static function getType()
+    {
+        return 'autoresponder';
+    }
+
+    /**
      * @return string the API connection title
      */
     public function getTitle()
@@ -145,6 +154,9 @@ class Thrive_List_Connection_Drip extends Thrive_List_Connection_Abstract
      */
     public function addSubscriber($list_identifier, $arguments)
     {
+        list($first_name, $last_name) = $this->_getNameParts($arguments['name']);
+        $phone = !empty($arguments['phone']) ? $arguments['phone'] : '';
+
         try {
             /** @var Thrive_Api_Drip $api */
             $api = $this->getApi();
@@ -153,9 +165,32 @@ class Thrive_List_Connection_Drip extends Thrive_List_Connection_Abstract
                 'account_id' => $this->param('client_id'),
                 'campaign_id' => $list_identifier,
                 'email' => $arguments['email'],
+                'ip_address' => $_SERVER['REMOTE_ADDR'],
+                'custom_fields' => array(
+                    'thrive_first_name' => $first_name,
+                    'thrive_last_name' => $last_name,
+                    'thrive_phone' => $phone
+                )
             );
 
-            $api->subscribe_subscriber($user);
+            $lead = $api->create_or_update_subscriber($user);
+            if (empty($user)) {
+                return __("User could not be subscribed");
+            }
+
+            $client = array_shift($lead['subscribers']);
+
+            $api->subscribe_subscriber(array(
+                'account_id' => $this->param('client_id'),
+                'campaign_id' => $list_identifier,
+                'email' => $client['email'],
+            ));
+
+            $api->record_event(array(
+                'account_id' => $this->param('client_id'),
+                'action' => 'Submitted a Thrive Leads form',
+                'email' => $arguments['email']
+            ));
 
             return true;
 

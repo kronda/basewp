@@ -10,6 +10,12 @@ if (!window.console) {var console = {};}
 if (!console.log) {console.log = function() {};}
 
 jQuery(function($) {
+	
+	/**
+	* COLORBOX START
+	*
+	* On deprecate route
+	*/
 
     $.extend($.colorbox.settings, { // override some Colorbox defaults
         transition: 'fade',
@@ -41,191 +47,46 @@ jQuery(function($) {
          $('body').removeClass('disable-scrollbar');
     });
 
-	// @todo review if this is used anywhere outside Views, and kill it with fire!
-    $(document).on('cbox_closed', function() {
-         $('.js-select2').select2('destroy');
-         $(document).off('keypress.colorbox'); // unbind the keypress event
-    });
-
     // Bind close event to .js-dialog-close classes
+	// @todo remove when colorbox is also removed, that classname will never be used anymore
     $(document).on('click', '.js-dialog-close', function(e) {
         e.preventDefault();
         $.colorbox.close();
         return false;
     });
+	
+	/**
+	* COLORBOX END
+	*/
 
-    $(document).on('click','.js-wpv-dialog-change li',function(){
-//        $('.js-wpv-dialog-change i').removeClass('icon-check-sign').addClass('icon-check-empty');
-        $(this).find('i').addClass('icon-check-sign');
-    });
-
-    // Remove toolset alerts
+	/*
+	* Remove toolset alerts
+	* Hide toolset alerts (but don't remove)
+	*
+	* @deprecated - seems not used anywhere
     $(document).on('click', '.js-toolset-alert-remove', function(){
         $(this).closest('.toolset-alert').fadeOut('fast',function(){
             $(this).remove();
         });
     });
 
-    // Hide toolset alerts (but don't remove)
     $(document).on('click', '.js-toolset-alert-hide', function(){
         $(this).closest('.toolset-alert').fadeOut('fast');
     });
+	*/
 
     // Run wpvToolsetHelp on .js-show-toolset-message elements
-    $.each($('.js-show-toolset-message'), function(){
-        $(this)
+	// @todo this should be moved to the common utils.js file if needed, CHECK
+    $.each( $( '.js-show-toolset-message:not(.js-show-toolset-message-inited)' ), function() {
+        $( this )
+			.addClass( 'js-show-toolset-message-inited' )
             .show()
             .wpvToolsetHelp();
     });
 
 });
 
-if ( typeof jQuery.fn.wpvToolsetMessage === 'undefined' ) {
-
-	/* Validation messages */
-	(function($){
-
-		var has_stay = false, is_open = false, prev = null, FADE_FAST = 200;
-		$.fn.wpvToolsetMessage = function( options )
-		{
-			var prms = $.extend( {
-					text : "Enter a customized text to be displayed",
-					type: '',
-					inline:false,
-					
-					position : "after",
-					
-					header: false,
-					headerText: false,
-					close: false,
-					use_this: true,
-					fadeIn: 200,
-					fadeOut: 1000,
-					stay: false,
-					onClose: false,
-					args:[],
-					referTo: null,
-					offestX: -20,
-					offsetY: 0,
-					classname: ''
-				}, options ),
-				box = null,
-				header = null,
-				container = this,
-				remove = null,
-				tag = prms.inline ? 'span' : 'p'
-				bool = false;
-
-				if( container.children().length > 0 )
-				{
-					container.children().each(function(i){
-						if( $(this).text() == prms.text )
-						{
-							bool = true;
-						}
-					});
-				}
-
-				if( bool ) return;
-
-				if( has_stay )
-				{
-					if(prev)
-					{
-						var rem = prev;
-						prev = null;
-						prev_text = '';
-						has_stay = false;
-						is_open = false;
-						rem.fadeTo( 0, 0, function(){
-							rem.remove();
-							rem = null;
-						});
-					}
-				}
-
-				this.wpvMessageRemove = function()
-				{
-					if( box )
-					{
-						box.fadeTo( prms.fadeOut, 0, function(){
-							is_open = false;
-							prev = null;
-							prev_text = '';
-							has_stay = false;
-							if( prms.onClose && typeof prms.onClose == 'function' )
-							{
-								prms.onClose.apply( container, prms.args );
-							}
-							$( this ).remove();
-						});
-					}
-
-					return this;
-				};
-
-				if( prms.header && prms.headerText )
-				{
-					box = $('<div class="toolset-alert toolset-alert-'+prms.type+' '+prms.classname+'" />');
-					header = $('<h2 class="toolset-alert-header" />');
-					box.append(header);
-					header.text(prms.headerText);
-					box.append('<'+tag+'></'+tag+'>');
-					box.find(tag).html( prms.text );
-				}
-				else
-				{
-					box = $('<'+tag+' class="toolset-alert toolset-alert-'+prms.type+' '+prms.classname+'" />');
-					box.html( prms.text );
-				}
-
-				if( prms.close ){
-					remove = $('<i class="toolset-alert-close icon-remove-sign js-icon-remove-sign"></i>');
-					box.append( remove );
-					remove.on('click', function(event){
-						container.wpvMessageRemove();
-					});
-				}
-
-
-					if( is_open ) this.wpvMessageRemove();
-					if ( prms.position == 'before' ) {
-						container.prepend( box );
-					} else {
-						container.append( box );
-					}
-					box.hide();
-
-					if( null !== prms.referTo )
-					{
-						box.css({
-							"position":"absolute",
-							"z-index":10000,
-							"top": prms.referTo.position().top + prms.offestY + "px",
-							"left": prms.referTo.position().left + prms.referTo.width() + prms.offestX + "px"
-						});
-					}
-
-
-					box.fadeTo( null != prev ? 0 : prms.fadeIn, 1, function(){
-						prev = $(this);
-						prev_text = prms.text;
-						is_open = true;
-						if( prms.stay ){
-							has_stay = true;
-						}
-						else
-						{
-							container.wpvMessageRemove();
-						}
-					});
-
-				return this;
-			};
-
-	})(jQuery);
-
-}
+// @todo This is already in common util.js, keep just for backwards compatibility until Views 1.12
 
 if ( typeof jQuery.fn.wpvToolsetHelp === 'undefined' ) {
 
@@ -310,38 +171,6 @@ if ( typeof jQuery.fn.wpvToolsetHelp === 'undefined' ) {
 			return this;
 		};
 
-
-	$(document).on('click', '.update-button-wrap button', function(e){
-		$(this).prop('disabled', true);
-	});
-
 	})(jQuery);
 
 }
-
-// http://stackoverflow.com/questions/1950038/jquery-fire-event-if-css-class-changed
-(function(){
-    // Your base, I'm in it!
-    var originalPropMethod = jQuery.fn.prop, originalAttrMethod = jQuery.fn.attr;
-
-
-	jQuery.fn.prop = function()
-	{
-		var result = originalPropMethod.apply( this, arguments );
-
-		jQuery(this).trigger( "propertyChanged", arguments);
-
-        // return the original result
-        return result;
-	};
-	jQuery.fn.attr = function()
-	{
-		var result = originalAttrMethod.apply( this, arguments );
-
-		jQuery(this).trigger( "attributeChanged", arguments);
-
-        // return the original result
-        return result;
-	};
-
-})();
