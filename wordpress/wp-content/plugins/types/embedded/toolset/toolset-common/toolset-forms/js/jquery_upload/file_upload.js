@@ -1,107 +1,3 @@
-//console.log(settings.ajaxurl);
-//jQuery(function ()
-//{
-//    // Variable to store your files
-//    var files;
-//
-//    // Add events
-//    jQuery('input[type=file]').on('change', prepareUpload);
-//    jQuery('.cred-form').on('submit', uploadFiles);
-//
-//    // Grab the files and set them to our variable
-//    function prepareUpload(event)
-//    {
-//        files = event.target.files;
-//        console.log(files);
-//    }
-//
-//    // Catch the form submit and upload the files
-//    function uploadFiles(event)
-//    {
-//        event.stopPropagation(); // Stop stuff happening
-//        event.preventDefault(); // Totally stop stuff happening
-//
-//        var data = new FormData();
-//        jQuery.each(jQuery('input[type="file"]')[0].files, function(i, file) {
-//            data.append('file-'+i, file);
-//        });
-//
-//        jQuery.ajax({
-//            url: settings.ajaxurl+"?files",
-//            type: 'POST',
-//            data: data,
-//            cache: false,
-//            dataType: 'json',
-//            processData: false, // Don't process the files
-//            contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-//            success: function (data, textStatus, jqXHR)
-//            {
-//                if (typeof data.error === 'undefined')
-//                {
-//                    // Success so call function to process the form
-//                    //submitForm(event, data);
-//                }
-//                else
-//                {
-//                    // Handle errors here
-//                    console.log('ERRORS: ' + data.error);
-//                }
-//            },
-//            error: function (jqXHR, textStatus, errorThrown)
-//            {
-//                // Handle errors here
-//                console.log('ERRORS: ' + textStatus);
-//                // STOP LOADING SPINNER
-//            }
-//        });
-//    }
-//
-//    function submitForm(event, data)
-//    {
-//        // Create a jQuery object from the form
-//        jQueryform = jQuery(event.target);
-//
-//        // Serialize the form data
-//        var formData = jQueryform.serialize();
-//
-//        // You should sterilise the file names
-//        jQuery.each(data.files, function (key, value)
-//        {
-//            formData = formData + '&filenames[]=' + value;
-//        });
-//
-//        jQuery.ajax({
-//            url: 'submit.php',
-//            type: 'POST',
-//            data: formData,
-//            cache: false,
-//            dataType: 'json',
-//            success: function (data, textStatus, jqXHR)
-//            {
-//                if (typeof data.error === 'undefined')
-//                {
-//                    // Success so call function to process the form
-//                    console.log('SUCCESS: ' + data.success);
-//                }
-//                else
-//                {
-//                    // Handle errors here
-//                    console.log('ERRORS: ' + data.error);
-//                }
-//            },
-//            error: function (jqXHR, textStatus, errorThrown)
-//            {
-//                // Handle errors here
-//                console.log('ERRORS: ' + textStatus);
-//            },
-//            complete: function ()
-//            {
-//                // STOP LOADING SPINNER
-//            }
-//        });
-//    }
-//});
-
 function getExtension(filename) {
     return filename.split('.').pop().toLowerCase();
 }
@@ -134,11 +30,9 @@ jQuery(function () {
 
     function o(i, file) {
         var url = settings.ajaxurl;
-        console.log("URL:" + url);
+        //console.log("URL:" + url);
         var nonce = settings.nonce;
-        console.log("NONCE:" + nonce);
-        var id = jQuery("input[name='_cred_cred_prefix_post_id']").val();
-        console.log("ID:" + id);
+        //console.log("NONCE:" + nonce);
 
         var curr_file = file;
         var validation = jQuery(curr_file).attr('data-wpt-validate');
@@ -159,22 +53,30 @@ jQuery(function () {
             }
         }
 
+        var myid = jQuery("input[name='_cred_cred_prefix_post_id']").val();
+
         jQuery(file).fileupload({
-            url: url + '?nonce=' + nonce,
+            url: url + '?id=' + myid + '&nonce=' + nonce,
             dataType: 'json',
             cache: false,
             maxChunkSize: 0,
-            formData: {id: id},
+            formData: {id: myid},
             //acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
             done: function (e, data) {
                 var id = jQuery(curr_file).attr('id');
-                var wpt_id = id.replace("_file", "");
                 //progress bar hide
                 //jQuery('#progress_' + wpt_id).css({'width': '0%'});
-                jQuery('#progress_' + wpt_id + ' .progress-bar').css(
+//                jQuery('#progress_' + wpt_id + ' .progress-bar').css(
+//                        {'width': '0%'}
+//                );
+//                jQuery('#progress_' + wpt_id).hide();                
+
+                var wpt_id = jQuery(this).next(".meter").attr("id"); //id.replace("_file", "");
+                jQuery('#' + wpt_id).show();
+                jQuery('#' + wpt_id + ' .progress-bar').css(
                         {'width': '0%'}
                 );
-                jQuery('#progress_' + wpt_id).hide();
+                jQuery('#' + wpt_id).hide();
 
                 if (data._response.result.error && data._response.result.error != '') {
                     alert(data._response.result.error);
@@ -183,13 +85,13 @@ jQuery(function () {
                     jQuery.each(data.result.files, function (index, file) {
 
                         var id = jQuery(curr_file).attr('id');
-                        console.log(id);
+                        //console.log(id);
                         var wpt_id = id.replace("_file", "");
 //                        var wpt_id = jQuery(curr_file).attr('data-wpt-name');
 //                        wpt_id = wpt_id.replace(/[^a-z0-9\-\_]/gi, '');
-                        console.log(wpt_id);
+                        //console.log(wpt_id);
                         var myid = wpt_id;
-                        console.log(myid);
+                        //console.log(myid);
 
                         if (id.toLowerCase().indexOf("wpt-form-el") >= 0) {
                             var number = id.replace(/[^0-9]/g, '');
@@ -198,7 +100,7 @@ jQuery(function () {
                         } else
                             var hidden_id = wpt_id + '_hidden';
 
-                        console.log(hidden_id);
+                        //console.log(hidden_id);
 
                         //hidden text set
                         jQuery('#' + hidden_id).val(file);
@@ -231,7 +133,7 @@ jQuery(function () {
 
                         //add function to delete button
                         jQuery("#butt_" + myid).on('click', function () {
-                            if (confirm('Are you sure to delete this file ?')) {
+                            if (confirm(settings.delete_confirm_text)) {
                                 jQuery("#loaded_" + myid).remove();
                                 jQuery("#butt_" + myid).remove();
 
@@ -249,12 +151,11 @@ jQuery(function () {
                                     dataType: 'json',
                                     success: function (data)
                                     {
-                                        console.log(data);
                                         if (!data.result) {
                                             if (data.error)
                                                 alert(data.error);
                                             else
-                                                alert('Error deleting file !');
+                                                alert(settings.delete_alert_text);
                                         }
                                         credfile_fu_init();
                                     },
@@ -276,7 +177,7 @@ jQuery(function () {
                         uploadErrors.push(validation_message);
                     }
                     if (data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 5000000) {
-                        uploadErrors.push('Filesize is too big');
+                        uploadErrors.push(settings.too_big_file_alert_text);
                     }
                     if (uploadErrors.length > 0) {
                         alert(uploadErrors.join("\n"));
@@ -290,12 +191,17 @@ jQuery(function () {
             },
             progressall: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
-                console.log("progress => " + progress + "%");
                 var id = jQuery(curr_file).attr('id');
-                var wpt_id = id.replace("_file", "");
-                jQuery('#progress_' + wpt_id).show();
+//                var wpt_id = id.replace("_file", "");
+//                jQuery('#progress_' + wpt_id).show();
+//                //jQuery('#progress_' + wpt_id).css({'width': '100%'});
+//                jQuery('#progress_' + wpt_id + ' .progress-bar').css(
+//                        {'width': progress + '%'}
+//                );                
+                var wpt_id = jQuery(this).next(".meter").attr("id"); //id.replace("_file", "");
+                jQuery('#' + wpt_id).show();
                 //jQuery('#progress_' + wpt_id).css({'width': '100%'});
-                jQuery('#progress_' + wpt_id + ' .progress-bar').css(
+                jQuery('#' + wpt_id + ' .progress-bar').css(
                         {'width': progress + '%'}
                 );
             },

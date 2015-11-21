@@ -208,7 +208,7 @@ function wpcf_fields_skype_meta_box_ajax() {
 
     ?></h2>
         <p>
-            <input id="btn-skypename" name="skypename" value="<?php esc_attr_e($_GET['skypename']); ?>" type="text" />
+            <input id="btn-skypename" name="skypename" value="<?php echo esc_attr($_GET['skypename']); ?>" type="text" />
         </p>
         <?php
         echo WPCF_Loader::template( 'skype-select-button', $_GET );

@@ -4,11 +4,11 @@
 
 @font-face {
   font-family: "onthegosystems-icons";
-  src: url("../fonts/onthegosystems-icons_65c5f624e7b3a7731aeb86b34dab9f65.eot");
-  src: url("../fonts/onthegosystems-icons_65c5f624e7b3a7731aeb86b34dab9f65.eot?#iefix") format("embedded-opentype"),
-       url("../fonts/onthegosystems-icons_65c5f624e7b3a7731aeb86b34dab9f65.woff") format("woff"),
-       url("../fonts/onthegosystems-icons_65c5f624e7b3a7731aeb86b34dab9f65.ttf") format("truetype"),
-       url("../fonts/onthegosystems-icons_65c5f624e7b3a7731aeb86b34dab9f65.svg#onthegosystems-icons") format("svg");
+  src: url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.eot");
+  src: url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.eot?#iefix") format("embedded-opentype"),
+       url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.woff") format("woff"),
+       url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.ttf") format("truetype"),
+       url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.svg#onthegosystems-icons") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -16,7 +16,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: "onthegosystems-icons";
-    src: url("../fonts/onthegosystems-icons_65c5f624e7b3a7731aeb86b34dab9f65.svg#onthegosystems-icons") format("svg");
+    src: url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.svg#onthegosystems-icons") format("svg");
   }
 }
 
@@ -38,6 +38,8 @@
 .icon-packager:before,
 .icon-packager-logo:before,
 .icon-toolset-logo:before,
+.icon-toolset-map:before,
+.icon-toolset-map-logo:before,
 .icon-types:before,
 .icon-types-logo:before,
 .icon-views:before,
@@ -72,6 +74,8 @@
 .icon-packager:before { content: "\f120"; }
 .icon-packager-logo:before { content: "\f121"; }
 .icon-toolset-logo:before { content: "\f11a"; }
+.icon-toolset-map:before { content: "\f125"; }
+.icon-toolset-map-logo:before { content: "\f124"; }
 .icon-types:before { content: "\f11b"; }
 .icon-types-logo:before { content: "\f11c"; }
 .icon-views:before { content: "\f11d"; }

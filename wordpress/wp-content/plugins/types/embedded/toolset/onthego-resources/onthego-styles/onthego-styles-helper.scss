@@ -26,6 +26,10 @@
   .from-bot-#{$i} { margin-bottom:$i + px!important;  }
 }
 
+@for $i from 0 through 1024 {
+  .ont-manual-width-#{$i} { width:$i + px!important;  }
+}
+
 
 /* RESET MARGIN AND PADDING FOR ALL OUR ICONS ONLY */
 @each $name in (access, cred, layouts, module, types, views, packager, toolset, wpml, bootstrap, conditional){

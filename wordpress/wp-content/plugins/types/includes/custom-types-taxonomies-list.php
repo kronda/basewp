@@ -11,7 +11,7 @@ function wpcf_admin_ctt_list_header()
     if (empty($custom_types) && empty($custom_taxonomies)) {
         echo '<p>'
         . __('Custom Post Types are user-defined content types. Custom Taxonomies are used to categorize your content.', 'wpcf')
-        . ' ' . __('You can read more about Custom Post Types and Taxonomies in this tutorial. <a href="http://wp-types.com/learn/custom-post-types/" target="_blank">http://wp-types.com/learn/custom-post-types/ &raquo;</a>', 'wpcf')
+        . ' ' . __('You can read more about Custom Post Types and Taxonomies in this tutorial. <a href="https://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">https://wp-types.com/user-guides/create-a-custom-post-type/ &raquo;</a>', 'wpcf')
         . '</p>';
     }
 }

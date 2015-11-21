@@ -53,10 +53,11 @@
 	filter:Alpha(Opacity=0); /* support: IE8 */
 }
 
+/*
 .ui-front {
 	z-index: 100;
 }
-
+*/
 
 /* Interaction Cues
 ----------------------------------*/
@@ -258,7 +259,7 @@
 ----------------------------------*/
 .ui-datepicker.ui-widget {
 	font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
-	font-size: 1.1em;
+	/*font-size: 1.1em;*/
 }
 .ui-datepicker.ui-widget .ui-widget {
 	font-size: 1em;

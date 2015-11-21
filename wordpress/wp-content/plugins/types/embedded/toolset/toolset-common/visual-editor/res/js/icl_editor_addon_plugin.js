@@ -1,3 +1,8 @@
+/**
+ * @version 1.2
+ * @type {{}|WPV_Toolset}
+ * @revision: 25/09/2015 22:31
+ */
 var WPV_Toolset = WPV_Toolset  || {};
 
 WPV_Toolset.activeUrlEditor = null;

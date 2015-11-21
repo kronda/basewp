@@ -335,9 +335,20 @@ toolsetForms.CRED_taxonomy = function () {
         self.add_new_show_hide(taxonomy, this);
     });
 
+//https://onthegosystems.myjetbrains.com/youtrack/issue/cred-286
+//    self.add_new_show_hide = function (taxonomy, button) {
+//        var form = jQuery(button).closest('form');
+//        jQuery('.js-wpt-hierarchical-taxonomy-add-new-' + taxonomy, form).toggle();
+//        self.hide_parent_button_if_no_terms(taxonomy, button);
+//    }
     self.add_new_show_hide = function (taxonomy, button) {
         var form = jQuery(button).closest('form');
-        jQuery('.js-wpt-hierarchical-taxonomy-add-new-' + taxonomy, form).toggle();
+        var add_wrap = jQuery(".js-wpt-hierarchical-taxonomy-add-new-" + taxonomy);
+        if(add_wrap.is(":visible")){
+            add_wrap.hide();
+        }else{
+            add_wrap.show();
+        }
         self.hide_parent_button_if_no_terms(taxonomy, button);
     }
 

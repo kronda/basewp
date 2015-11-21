@@ -268,7 +268,7 @@ if( !class_exists('Toolset_ErrorHandler') ){
          */
         public static function started()
         {
-            return (bool) static::getNestedLevel();
+            return (bool) self::getNestedLevel();
         }
 
         /**
@@ -278,7 +278,7 @@ if( !class_exists('Toolset_ErrorHandler') ){
          */
         public static function getNestedLevel()
         {
-            return count(static::$stack);
+            return count(self::$stack);
         }
 
         /**
@@ -286,14 +286,14 @@ if( !class_exists('Toolset_ErrorHandler') ){
          *
          * @param int $errorLevel
          */
-        public static function start($errorLevel = \E_WARNING)
+        public static function start($errorLevel = E_WARNING)
         {
-            if (!static::$stack) {
+            if (!self::$stack) {
                 set_error_handler(array(get_called_class(), 'addError'), $errorLevel);
                 register_shutdown_function( array(get_called_class(), 'handle_shutdown'), true );
             }
 
-            static::$stack[] = null;
+            self::$stack[] = null;
         }
 
         /**
@@ -307,10 +307,10 @@ if( !class_exists('Toolset_ErrorHandler') ){
         {
             $errorException = null;
 
-            if (static::$stack) {
-                $errorException = array_pop(static::$stack);
+            if (self::$stack) {
+                $errorException = array_pop(self::$stack);
 
-                if (!static::$stack) {
+                if (!self::$stack) {
                     restore_error_handler();
                 }
 
@@ -324,7 +324,7 @@ if( !class_exists('Toolset_ErrorHandler') ){
 
 
         public static function handle_shutdown( ){
-            if( static::is_fatal() ){
+            if( self::is_fatal() ){
                 do_action('toolset-shutdown-hander');
             }
             exit;
@@ -346,11 +346,11 @@ if( !class_exists('Toolset_ErrorHandler') ){
          */
         public static function clean()
         {
-            if (static::$stack) {
+            if (self::$stack) {
                 restore_error_handler();
             }
 
-            static::$stack = array();
+            self::$stack = array();
         }
 
         /**
@@ -364,7 +364,7 @@ if( !class_exists('Toolset_ErrorHandler') ){
          */
         public static function addError($errno, $errstr = '', $errfile = '', $errline = 0)
         {
-            $stack = & static::$stack[count(static::$stack) - 1];
+            $stack = & self::$stack[count(self::$stack) - 1];
             $stack = new ErrorException($errstr, 0, $errno, $errfile, $errline, $stack);
         }
     }

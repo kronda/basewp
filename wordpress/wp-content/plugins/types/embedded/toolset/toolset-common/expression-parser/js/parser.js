@@ -119,8 +119,11 @@ window.ToolsetParser=window.ToolsetParser ||
             {
                 var found=false;
                 var ii=a.length;
+                //Fixed https://onthegosystems.myjetbrains.com/youtrack/issue/cred-262
+                if (ii==0 && v=='') return true; 
+                //####################################################################
                 while(--ii>=0)
-                {
+                {                    
                     if (a[ii]==v)
                     {
                         found=true;

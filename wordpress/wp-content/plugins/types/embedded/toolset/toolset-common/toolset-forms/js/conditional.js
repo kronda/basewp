@@ -619,7 +619,8 @@ var wptCond = (function ($) {
                 result = parser.eval();
             }
             catch (e) {
-                console.info("Error in Tokenizer", e, expression, " there may be an error in your expression syntax");
+                if (wptCondDebug)
+                    console.info("Error in Tokenizer", e, expression, " there may be an error in your expression syntax");
             }
 
             //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/196173370/comments#309696464
@@ -713,7 +714,8 @@ var wptCond = (function ($) {
                 result2 = parser.eval();
             }
             catch (e) {
-                console.info("Error in Tokenizer", e, expression, " there may be an error in your expression syntax");
+                if (wptCondDebug)
+                    console.info("Error in Tokenizer", e, expression, " there may be an error in your expression syntax");
             }
 
             _showHide(result || result2, _getAffected(field, formID));

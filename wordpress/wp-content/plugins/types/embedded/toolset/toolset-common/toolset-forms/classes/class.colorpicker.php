@@ -62,7 +62,7 @@ class WPToolset_Field_Colorpicker extends FieldFactory
             'args' => array(
                 'hexadecimal'
             ),
-            'message' => __( 'You can add valid hexadecimal.', 'wpv-views' ),
+            'message' => __('Please use a valid hexadecimal value.', 'wpv-views' ),
         );
         return $validation;
     }

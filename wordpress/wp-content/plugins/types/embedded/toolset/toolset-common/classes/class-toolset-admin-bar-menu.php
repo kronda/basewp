@@ -9,7 +9,7 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
 
         /**
          * Avoid executing more than once the code
-         * @var type bool
+         * @var bool
          */
         private $done;
         
@@ -60,10 +60,12 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
                 
             }
         }
-        
-        /**
-         * @see action admin_bar_menu
-         */
+
+
+		/**
+		 * @see action admin_bar_menu
+		 * @param $wp_admin_bar
+		 */
         public function admin_bar_menu( $wp_admin_bar ) {
             // Check this haven't called more than once
             if ( $this->done ) {
@@ -117,6 +119,35 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
                     'href' => $href,
                 );
                 $wp_admin_bar->add_node( $args );
+
+				/**
+				 * Collect an array of menu item definitions and create submenu items in the Toolset Admin bar menu.
+				 *
+				 * @param array $menu_item_definitions array()
+				 * @param string $context Current context - see Toolset_Admin_Bar_Menu::get_context().
+				 * @param int|bool $post_id Id of the currently displayed post or false if not applicable.
+				 * @return array Array of menu item definition. Each definition is an array with following keys:
+				 *     string $title Title of the menu item.
+				 *     string $edit_url URL of the menu item.
+				 *     string $menu_id Slug of the item. Should be unique.
+				 *     If some of the arguments is missing or empty after sanitizing, the menu item will be skipped.
+				 * @since 1.7
+				 */
+				$menu_item_definitions = apply_filters( 'toolset_filter_toolset_admin_bar_menu_insert', array(), $this->get_context(), get_the_ID() );
+
+				foreach( $menu_item_definitions as $menu_row ) {
+					$title = sanitize_text_field( toolset_getarr( $menu_row, 'title', null ) );
+					$edit_url = esc_url_raw( toolset_getarr( $menu_row, 'href', null ) );
+					$menu_id = esc_attr( toolset_getarr( $menu_row, 'menu_id', null ) );
+					if( !empty( $title ) && !empty( $edit_url ) && !empty( $menu_id ) ) {
+						$wp_admin_bar->add_node( array(
+							'parent' => 'toolset_admin_bar_menu',
+							'id' => $menu_id,
+							'title' => $title,
+							'href' => $edit_url
+						) );
+					}
+				}
 				
 				$settings_href = $this->get_settings_href();
                 $args = array(
@@ -268,6 +299,9 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
 
         /**
          * Get the best plugin available
+		 *
+		 * @fixme I don't agree. All Toolset plugins are the best plugin.
+		 *
          * @return string (layouts|views|)
          */
         private function get_default_plugin() {

@@ -148,15 +148,28 @@ function wpcf_wpml_init() {
 /**
  * WPML translate call.
  *
- * @param type $name
- * @param type $string
- * @return type
+ * @param string $name name of translated string
+ * @param mixed $string value to translate, but process only strings
+ * @param string $context context of translation
+ * @return string translated string
  */
-function wpcf_translate( $name, $string, $context = 'plugin Types' ) {
-    if ( !function_exists( 'icl_t' ) || !is_string($string) || empty($string) ) {
+function wpcf_translate( $name, $string, $context = 'plugin Types' )
+{
+    /**
+     * do not translate if $string is not a string or is empty
+     */
+    if ( empty($string) || !is_string($string) ) {
         return $string;
     }
-    return icl_t( $context, $name, stripslashes( $string ) );
+    /**
+     * translate
+     */
+    return apply_filters(
+        'wpml_translate_single_string',
+        stripslashes( $string ),
+        $context,
+        $name
+    );
 }
 
 /**

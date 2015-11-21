@@ -410,6 +410,12 @@ jQuery(document).ready(function($) {
                  * select2
                  */
                 wpcfBindSelect2($);
+				
+				var data_for_events = {
+					table: $table
+				}
+				
+				$( document ).trigger( 'js_event_wpcf_types_relationship_child_added', [ data_for_events ] );
             }
         });
         return false;
@@ -611,7 +617,7 @@ jQuery(document).ready(function($) {
         return false;
     });
     $('#wpcf-post-relationship').on('click', '.wpcf-pr-save-ajax', function() {
-        var $button = $(this), $row = $button.parents('tr'), rowId = $row.attr('id'), valid = true;
+        var $button = $(this), $row = $button.parents('tr'), rowId = $row.attr('id'), valid = true, $table = $row.closest( '.js-types-child-table' );
         if (typeof wptValidation == 'undefined') {
             $('.js-types-validate', $row).each(function() {
                 if ($('#post').validate().element($(this)) == false) {
@@ -681,6 +687,12 @@ jQuery(document).ready(function($) {
                      * select2
                      */
                     wpcfBindSelect2($);
+					
+					var data_for_events = {
+						table: $table
+					}
+					
+					$( document ).trigger( 'js_event_wpcf_types_relationship_child_saved', [ data_for_events ] );
                 }
             }
         });
@@ -924,12 +936,12 @@ function wpcfBindSelect2($) {
         },
         allowClear: true,
         placeholder: $(this).data('placeholder'),
-        minimumInputLength: 1,
+        minimumInputLength: 0,
         formatInputTooShort: $(this).data('input-too-short'),
         ajax: {
             url: ajaxurl,
             dataType: 'json',
-            quietMillis: 100,
+            quietMillis: 250,
             data: function (term, page) {
                 return {
                     nounce: $(this).data('nounce'),
@@ -941,7 +953,8 @@ function wpcfBindSelect2($) {
                 };
             },
             results: function (data, page) {
-                return { results: data.items };
+                var more = (page * data.posts_per_page) < data.total_count;
+                return { results: data.items, more: more };
             },
             cache: true
         },

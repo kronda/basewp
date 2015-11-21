@@ -1,3 +1,16 @@
+Common 1.8 (November 10, 2015)
+	- Tagged for Views 1.11.1, Types 1.8.9 and CRED 1.4.2
+	- Improved the media manager script.
+	- Added helper functions for dealing with $_GET, $_POST and arrays.
+	- Improved CRED file uploads.
+	- Improved taxonomy management in CRED forms.
+	- Improved usermeta fields management in CRED forms.
+
+-------------------------------------------------------------------------------------------------------------------
+Common 1.7 (October 30, 2015)
+	- Tagged for Views 1.11 and Layouts 1.4
+
+-------------------------------------------------------------------------------------------------------------------
 Common 1.6.2 (September 25, 2015)
 	- Tagged for CRED 1.4, Types 1.8.2
 

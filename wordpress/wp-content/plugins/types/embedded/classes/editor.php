@@ -279,6 +279,7 @@ class WPCF_Editor
             $function = 'wpcf_fields_' . strtolower( $this->field['type'] )
                     . '_editor_submit';
 
+            $shortcode = '';
             if ( function_exists( $function ) ) {
                 /*
                  * Callback

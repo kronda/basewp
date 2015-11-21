@@ -1,4 +1,13 @@
+/**
+ * @version 1.2
+ * @type {{}|WPV_Toolset|{}|WPV_Toolset}
+ * @revision 25/09/2015 22:31
+ */
 var WPV_Toolset = WPV_Toolset  || {};
+WPV_Toolset.media_manager = WPV_Toolset.media_manager || {};
+WPV_Toolset.media_manager.set_to_post_id = 0;
+WPV_Toolset.media_manager.current_plugin = '';
+WPV_Toolset.media_manager.instances = {};
 
 if ( typeof WPV_Toolset.only_img_src_allowed_here === "undefined" ) {
 	/*
@@ -21,42 +30,51 @@ if ( typeof WPV_Toolset.only_img_src_allowed_here === "undefined" ) {
 	];
 }
 
+jQuery( document ).ready( function( $ ) {
+	if ( $( '#toolset-edit-data' ).length > 0 ) {
+		WPV_Toolset.media_manager.set_to_post_id = $( '#toolset-edit-data' ).val();
+		WPV_Toolset.media_manager.current_plugin = $( '#toolset-edit-data' ).data( 'plugin' );
+	}
+});
+
 /**
  * Thanks to Thomas Griffin for his super useful example on Github
  *
  * https://github.com/thomasgriffin/New-Media-Image-Uploader
  */
-jQuery(document).ready(function($){
+jQuery( document ).ready( function( $ ) {
     
-	// Prepare the variable that holds our custom media manager.
-	var wpv_media_frame;
-	// var wp_media_post_id = wp.media.model.settings.post.id; // Store the old id
-    var toolset_edit_data = jQuery( '#toolset-edit-data' ),
-    set_to_post_id = toolset_edit_data.val(),
-    toolset_edit_plugin = toolset_edit_data.data( 'plugin' );    
-    
-	// Bind to our click event in order to open up the new media experience.
-	$(document.body).on('click', '.js-wpv-media-manager', function(e){ //mojo-open-media is the class of our form button
+	$( document.body ).on( 'click', '.js-wpv-media-manager', function( e ) {
 		// Prevent the default action from occuring.
-		e.preventDefault(toolset_edit_data);
-		
-		var referred_id = $(this).attr('data-id');
-		if (typeof referred_id !== 'undefined' && referred_id !== false) {
+		e.preventDefault();
+		// Check whether we need to set the parent post ID value
+		var set_to_post_id = WPV_Toolset.media_manager.set_to_post_id,
+		referred_id = $( this ).attr( 'data-id' );
+		if (
+			typeof referred_id !== 'undefined' 
+			&& referred_id !== false
+		) {
 			set_to_post_id = referred_id;
 		}
-	
-		var active_textarea = $(this).data('content');
+		// Set the active target by its content data attribute value
+		var active_textarea = $( this ).data( 'content' );
 		window.wpcfActiveEditor = active_textarea;
-					// If the frame already exists, re-open it.
-		if ( wpv_media_frame ) {
-			wpv_media_frame.uploader.uploader.param( 'post_id', set_to_post_id );
-			wpv_media_frame.open();
+		// Make sure the post parent ID is an integer, force zero otherwise
+		set_to_post_id = parseInt( set_to_post_id ) || 0;
+		// If the frame already exists, re-open it.
+		if ( WPV_Toolset.media_manager.instances[ set_to_post_id ] ) {
+			WPV_Toolset.media_manager.instances[ set_to_post_id ].open();
 			return;
 		} else {
-			// Set the wp.media post id so the uploader grabs the ID we want when initialised
-			wp.media.model.settings.post.id = set_to_post_id;
+			// Otherwise, set the model post ID and create the frame
+			//if ( set_to_post_id !== 0 ) {
+				wp.media.model.settings.post.id = set_to_post_id;
+			//} else {
+				//wp.media.model.settings.post.id = 0;
+			//}
 		}
-		wpv_media_frame = wp.media.frames.wpv_media_frame = wp.media({
+		
+		WPV_Toolset.media_manager.instances[ set_to_post_id ] = wp.media({
 			//Create our media frame
 			className: 'media-frame mojo-media-frame js-wpv-media-frame',
 			frame: 'post',
@@ -66,8 +84,7 @@ jQuery(document).ready(function($){
 			}
 		});
 		
-		
-		wpv_media_frame.on('open', function(event){
+		WPV_Toolset.media_manager.instances[ set_to_post_id ].on('open', function(event){
 			var media_button_insert = $('.media-button-insert'),
 			media_frame = $('.js-wpv-media-frame');
 			$('li.selected').removeClass('selected').find('a.check').trigger('click');
@@ -79,9 +96,9 @@ jQuery(document).ready(function($){
 			});
 		}); 
 		
-		wpv_media_frame.on('insert', function(){
+		WPV_Toolset.media_manager.instances[ set_to_post_id ].on('insert', function(){
 			// Watch changes in wp-includes/js/media-editor.js
-			var media_attachment = wpv_media_frame.state().get('selection').first().toJSON(),
+			var media_attachment = WPV_Toolset.media_manager.instances[ set_to_post_id ].state().get('selection').first().toJSON(),
 			filetype = media_attachment.type;
 			if ( filetype == 'image' ) {
 				var size = $('.attachment-display-settings .size').val(),// WARNING size might be undefined for some image types, like BMP or TIFF, that do not generate thumbnails
@@ -242,7 +259,7 @@ jQuery(document).ready(function($){
 		});
 	
 	// Now that everything has been set, let's open up the frame.
-	wpv_media_frame.open();
+	WPV_Toolset.media_manager.instances[ set_to_post_id ].open();
 	});
 });
 

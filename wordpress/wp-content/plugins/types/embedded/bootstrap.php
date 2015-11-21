@@ -66,7 +66,7 @@ add_action( 'init', 'wpcf_embedded_init', TYPES_INIT_PRIORITY );
  * register_post_type & register_taxonomy - must be with default pririty to 
  * handle defult taxonomies
  */
-add_action( 'init', 'wpcf_init_custom_types_taxonomies');
+add_action('init', 'wpcf_init_custom_types_taxonomies');
 
 /*
  *
@@ -156,7 +156,7 @@ function wpcf_embedded_init() {
     // Define necessary constants if plugin is not present
     // This ones are skipped if used as embedded code!
     if ( !defined( 'WPCF_VERSION' ) ) {
-        define( 'WPCF_VERSION', '1.8.6.2' );
+        define( 'WPCF_VERSION', '1.8.10' );
         define( 'WPCF_META_PREFIX', 'wpcf-' );
     }
 

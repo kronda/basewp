@@ -4,8 +4,8 @@ Donate link: http://wp-types.com
 Tags: CMS, custom field, custom fields, custom post type, custom post types, field, fields post, post type, post types, taxonomies, taxonomy
 License: GPLv2
 Requires at least: 3.4
-Tested up to: 4.3
-Stable tag: 1.8.6.2
+Tested up to: 4.3.1
+Stable tag: 1.8.10
 
 The complete and reliable plugin for managing custom post types, custom taxonomies and custom fields.
 
@@ -155,10 +155,48 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 
 == Changelog ==
 
+= 1.8.10 =
+
+* Release date: 2015-11-18
+* Changed Installer version to 1.7.2
+* Fixed usability issue with select2.
+
+= 1.8.9 =
+
+* Release date: 2015-11-10
+* Changed Installer version to 1.7
+* Changed Common version to 1.8
+
+= 1.8.8 =
+
+* Release date: 2015-11-02
+* Replaced esc_attr_e to esc_attr in skype field.
+* Changed Installer version to 1.6.8.
+
+= 1.8.7.2 =
+
+* Release date: 2015-10-28
+* Fixed the problem with select post parent if WPML is active.
+* Replaced sum of array by array merge to avoid losing values.
+
+= 1.8.7.1 =
+
+* Release date: 2015-10-20
+* Added check to do not translate if value to translate is empty or not a string.
+
+= 1.8.7 =
+
+* Release date: 2015-10-18
+* Fixed a problem with shortcode playlist.
+* Fixed a problem with backslash in WYSIWYG field name.
+* Improved WPML integration, replace `icl_t()` by filter `wpml_translate_single_string`.
+* Changed Installer version to 1.6.7 - to reduce requests to Toolset API.
+
 = 1.8.6.2 =
 
 * Release date: 2015-09-29
 * Fixed a problem with "Feature Image".
+* Fixed a problem with loading parent data in child table.
 
 = 1.8.6.1 =
 
@@ -168,7 +206,7 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 = 1.8.6 =
 
 * Release date: 2015-09-28
-* Replace parameter "numberposts" with "posts_per_page" in post relationships query.
+* Replaced parameter "numberposts" with "posts_per_page" in post relationships query.
 * Fixed a meta post data before use and if is too complex just do not handle this in Types.
 * Fixed a problem with selecting file in child tabele when is no WYSIWYG or other file field on edit screen.
 * When we get User Group we added information about affected roles.
@@ -260,12 +298,12 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 = 1.7.6 =
 
 * Release date: 2015-07-20
-* Change Installer version to 1.6.4 - to reduce load time and avoid to much update requests.
+* Changed Installer version to 1.6.4 - to reduce load time and avoid to much update requests.
 
 = 1.7.6 =
 
 * Release date: 2015-07-20
-* Change Installer version to 1.6.4 - to reduce load time and avoid to much update requests.
+* Changed Installer version to 1.6.4 - to reduce load time and avoid to much update requests.
 
 = 1.7.5 =
 
@@ -275,7 +313,7 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 = 1.7.4 =
 
 * Release date: 2015-07-09
-* Change Installer version to 1.6.1
+* Changed Installer version to 1.6.1
 
 = 1.7.3 =
 
@@ -373,7 +411,7 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 = 1.6.5 =
 
 * Release date: 2015-02-10
-* Change in relationships, now all posts are showed, even those which have show_ui to false.
+* Changed in relationships, now all posts are showed, even those which have show_ui to false.
 * Added ability to hide custom post types on post relationships list. https://wp-types.com/forums/topic/post-relationship-doesnt-show-post-type-events-created-by-events-espresso/ using filter add_filter('wpcf_show_ui_hide_in_relationships', '__return_false');
 * Fixed a problem with deleting last children on post relationships table.
 * Added filter to allow use "?" in image url. https://wp-types.com/forums/topic/image-custom-field-is-not-storing-image-path-with-parameters/
@@ -383,9 +421,9 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 * Fixed a conflict with Formidable-Pro plugin https://wp-types.com/forums/topic/plugin-conflict/
 * Fixed creating new post in relationships. WP 4.1 need real title not faked by one space.
 * Fixed problem with validate fields on user create page. http://wp-types.com/forums/topic/custom-usermeta-bypassed-even-required-is-set/
-* Improve Edit CPT and Edit CT screens to be more compatible with WP Admin UI
+* Improved Edit CPT and Edit CT screens to be more compatible with WP Admin UI
 * Fixed problem with default label which contains single quote character (eg. French) https://wp-types.com/forums/topic/default-label-always-shown/
-* Improve display list of custom fields groups.
+* Improved display list of custom fields groups.
 
 = 1.6.4 =
 
@@ -426,17 +464,17 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 = 1.6.2 =
 
 * Release date: 2014-08-29
-* Fix addslashes warning
-* Fix display problems with Types shortcodes
-* Fix PHP error for checkboxes
+* Fixed addslashes warning
+* Fixed display problems with Types shortcodes
+* Fixed PHP error for checkboxes
 
 = 1.6.1 =
 
 * Release date: 2014-08-22
-* Fix Formfactory::createForm and Formfactory::displayForm errors on some systems
-* Fix anonymous function problem with wysiwyg field
-* Fix datepicker.css so it only styles the datepicker popup
-* Fix escaping problems with the Types shortcode
+* Fixed Formfactory::createForm and Formfactory::displayForm errors on some systems
+* Fixed anonymous function problem with wysiwyg field
+* Fixed datepicker.css so it only styles the datepicker popup
+* Fixed escaping problems with the Types shortcode
 
 = 1.6 =
 
@@ -458,13 +496,13 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 * Improved import button, which is disabled until user select a import file.
 * Improved custom display logic UI for conditional display in custom fields edit screen.
 * Prevent raising group chose overlay on "Custom Fields Control" screen if there is no group.
-* Remove serialize/unserialize for exported relationships to avoid object injection.
+* Removed serialize/unserialize for exported relationships to avoid object injection.
 * Removed Zebra library and created new Toolset fields library.
 * Tweak import/export screen when is something wrong with imported file
-* Fix several security issues
+* Fixed several security issues
 * Unify code with other Toolset plugins
-* Add debug information output for improved customer support
-* Add "required" validation audio, file and video fields
+* Added debug information output for improved customer support
+* Added "required" validation audio, file and video fields
 
 = 1.5.7 =
 
@@ -642,30 +680,30 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 * Added control of the number of children displayed in the Fields table
 * Added optional hour and minutes to the Date field
 * Added check to make sure the single and plural names of a Custom Post Type are different
-* Fix handling of required conditional fields
-* Remove use of mb_ereg and mb_string functions
-* Fix JavaScript escaping
-* Fix rendering of shortcodes inside types shortcode
-* Fix Open_basedir restriction
-* Fix AJAX popup CSS and JS
-* Fix translation of "Add another field" and "Delete field" buttons
-* Fix exporting and importing of Types Taxonomy
-* Fix exporting and importing of conditional settings for groups
+* Fixed handling of required conditional fields
+* Removed use of mb_ereg and mb_string functions
+* Fixed JavaScript escaping
+* Fixed rendering of shortcodes inside types shortcode
+* Fixed Open_basedir restriction
+* Fixed AJAX popup CSS and JS
+* Fixed translation of "Add another field" and "Delete field" buttons
+* Fixed exporting and importing of Types Taxonomy
+* Fixed exporting and importing of conditional settings for groups
 
 = 1.1.3.4 =
-* Fix adding child posts for WordPress 3.5
+* Fixed adding child posts for WordPress 3.5
 
 = 1.1.3.2 =
-* Fix 'em' tags in radio.php and select.php
+* Fixed 'em' tags in radio.php and select.php
 * Added support for localized custom post slugs via WPML
 
 = 1.1.3.1 =
-* Fix saving fields in WP 3.5
+* Fixed saving fields in WP 3.5
 * Fixed a bug displaying Types credit footer when not asked to do so
 
 = 1.1.3 =
-* Add support for resizing remote images
-* Fix long and short date formats
+* Added support for resizing remote images
+* Fixed long and short date formats
 * Fixed many small bugs and glitches
 * Sync with Views 1.1.3
 
@@ -763,7 +801,7 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 * You can now enable custom field groups for content with specific templates
 
 = 0.9.4.1 =
-* Fix a few problems found in the 0.9.4 release
+* Fixed a few problems found in the 0.9.4 release
 
 = 0.9.5 =
 Try the new parent/child relationship between different post types!

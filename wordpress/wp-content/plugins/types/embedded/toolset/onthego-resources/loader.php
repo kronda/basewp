@@ -17,7 +17,7 @@
 // The version number will then be used to work out which plugin has the latest
 // version of the code.
 
-$onthegosystems_branding_version = 4;
+$onthegosystems_branding_version = 6;
 
 // ----------------------------------------------------------------------//
 // WARNING * WARNING *WARNING

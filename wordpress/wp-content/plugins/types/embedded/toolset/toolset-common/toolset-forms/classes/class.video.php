@@ -55,6 +55,7 @@ class WPToolset_Field_Video extends WPToolset_Field_File
             'mpe',
             'mpeg',
             'mpg',
+            'quicktime'
         );
         $valid_extensions = apply_filters( 'toolset_valid_video_extentions', $valid_extensions);
         $validation['extension'] = array(

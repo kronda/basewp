@@ -148,10 +148,12 @@ function wpcf_fields_wysiwyg_view( $params ) {
         $filter_state->restore( );
     }
 
-    if ( preg_match_all('/playlist[^\]]+/', $output, $matches ) ) {
+    if ( preg_match_all('/\[playlist[^\]]+\]/', $output, $matches ) ) {
         foreach( $matches[0] as $one ) {
+            $one = preg_replace('/\[/', '\\[', $one);
+            $one = preg_replace('/\]/', '\\]', $one);
             $re = '/'.$one.'/';
-            $one = preg_replace('/\&\#(8221|8243);/', '"', $one);
+            $one = preg_replace('/\&\#(8221|8243);/', '\'', $one);
             $output = preg_replace($re, $one, $output);
         }
     }

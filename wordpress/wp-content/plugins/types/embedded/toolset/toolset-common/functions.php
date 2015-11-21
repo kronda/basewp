@@ -526,20 +526,32 @@ class WPV_wpcf_switch_post_from_attr_id
 
 }
 
-// Add a filter on the content so that we can record any related posts.
-// These can then be used ine id of Types and Views shortcodes
-// eg. for a stay we can have
-// [types field='my-field' id="$room"] displays my-field from the related room
-// [wpv-post-title id="$room"] display the title of the related room
+/**
+* Add a filter on the content so that we can record any related posts.
+*
+* These can then be used in id attributes of Types and Views shortcodes:
+* [types field='my-field' id="$room"] displays my-field from the related room.
+* [wpv-post-title id="$room"] display the title of the related room.
+*
+* Then, clear the recorded relationships and take care of nested structures by restoring states.
+*
+* Note that this is also done for the Views wpv_filter_wpv_the_content_suppressed filter
+* used on [wpv-post-body view_template="..." suppress_filters="true"]
+* so that we also have parent data stored and restored when nesting Content Templates without all the filters.
+*/
+
+$WPV_wpcf_post_relationship = array();
+$WPV_wpcf_post_relationship_depth = 0;
+$WPV_wpcf_post_relationship_track = array();
 
 add_filter( 'the_content', 'WPV_wpcf_record_post_relationship_belongs', 0, 1 );
-
-$WPV_wpcf_post_relationship = Array();
+add_filter( 'wpv_filter_wpv_the_content_suppressed', 'WPV_wpcf_record_post_relationship_belongs', 0, 1 );
 
 function WPV_wpcf_record_post_relationship_belongs( $content ) {
 
-    global $post, $WPV_wpcf_post_relationship;
+    global $post, $WPV_wpcf_post_relationship, $WPV_wpcf_post_relationship_depth, $WPV_wpcf_post_relationship_track;
     static $related = array();
+	$WPV_wpcf_post_relationship_depth++;
 
     if ( !empty( $post->ID ) && function_exists( 'wpcf_pr_get_belongs' ) ) {
 
@@ -557,9 +569,27 @@ function WPV_wpcf_record_post_relationship_belongs( $content ) {
             }
         }
     }
-
+	
+	$WPV_wpcf_post_relationship_track[ $WPV_wpcf_post_relationship_depth ] = $WPV_wpcf_post_relationship;
 
     return $content;
+}
+
+add_filter( 'the_content', 'WPV_wpcf_restore_post_relationship_belongs', PHP_INT_MAX, 1 );
+add_filter( 'wpv_filter_wpv_the_content_suppressed', 'WPV_wpcf_restore_post_relationship_belongs', PHP_INT_MAX, 1 );
+
+function WPV_wpcf_restore_post_relationship_belongs( $content ) {
+	global $WPV_wpcf_post_relationship, $WPV_wpcf_post_relationship_depth, $WPV_wpcf_post_relationship_track;
+	$WPV_wpcf_post_relationship_depth--;
+	if ( 
+		$WPV_wpcf_post_relationship_depth > 0 
+		&& isset( $WPV_wpcf_post_relationship_track[ $WPV_wpcf_post_relationship_depth ] )
+	) {
+		$WPV_wpcf_post_relationship = $WPV_wpcf_post_relationship_track[ $WPV_wpcf_post_relationship_depth ];
+	} else {
+		$WPV_wpcf_post_relationship = array();
+	}
+	return $content;
 }
 
 /**
@@ -620,3 +650,67 @@ function wpv_dismiss_message_ajax() {
     die( 'ajax' );
 }
 
+
+/**
+ * Safely retrieve a key from $_POST variable.
+ *
+ * This is a wrapper for toolset_getarr(). See that for more information.
+ *
+ * @param string $key See toolset_getarr().
+ * @param mixed $default See toolset_getarr().
+ * @param null|array $valid See toolset_getarr().
+ *
+ * @return mixed See toolset_getarr().
+ *
+ * @since 1.7
+ */
+function toolset_getpost( $key, $default = '', $valid = null ) {
+    return toolset_getarr( $_POST, $key, $default, $valid );
+}
+
+
+/**
+ * Safely retrieve a key from $_GET variable.
+ *
+ * This is a wrapper for toolset_getarr(). See that for more information.
+ *
+ * @param string $key See toolset_getarr().
+ * @param mixed $default See toolset_getarr().
+ * @param null|array $valid See toolset_getarr().
+ *
+ * @return mixed See wpv_getarr().
+ *
+ * @since 1.7
+ */
+function toolset_getget( $key, $default = '', $valid = null ) {
+    return toolset_getarr( $_GET, $key, $default, $valid );
+}
+
+
+/**
+ * Safely retrieve a key from given array (meant for $_POST, $_GET, etc).
+ *
+ * Checks if the key is set in the source array. If not, default value is returned. Optionally validates against array
+ * of allowed values and returns default value if the validation fails.
+ *
+ * @param array $source The source array.
+ * @param string $key The key to be retrieved from the source array.
+ * @param mixed $default Default value to be returned if key is not set or the value is invalid. Optional.
+ *     Default is empty string.
+ * @param null|array $valid If an array is provided, the value will be validated against it's elements.
+ *
+ * @return mixed The value of the given key or $default.
+ *
+ * @since 1.7
+ */
+function toolset_getarr( &$source, $key, $default = '', $valid = null ) {
+    if( isset( $source[ $key ] ) ) {
+        $val = $source[ $key ];
+        if( is_array( $valid ) && !in_array( $val, $valid ) ) {
+            return $default;
+        }
+        return $val;
+    } else {
+        return $default;
+    }
+}

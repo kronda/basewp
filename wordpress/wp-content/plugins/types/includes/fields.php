@@ -506,25 +506,48 @@ function wpcf_admin_custom_fields_change_type( $fields, $type,
     }
     $fields = wpcf_types_cf_under_control( 'add',
             array('fields' => $fields, 'type' => $type), $post_type, $meta_name );
+	
+    /**
+	* wpcf_filter_field_control_change_type_allowed_types_from
+	*
+	* Filter the field types that you can switch to, given a type field
+	*
+	* @param array		Valid targets for a given origin type
+	* @param string		Field type to switch from
+	*
+	* @since 1.8.9
+	*/
     $allowed = array(
-        'audio' => array('wysiwyg', 'url', 'textarea', 'textfield', 'email', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'textfield' => array('wysiwyg', 'textfield', 'textarea', 'email', 'url', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'textarea' => array('wysiwyg', 'textfield', 'textarea', 'email', 'url', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'date' => array('wysiwyg', 'date', 'textarea', 'textfield', 'email', 'url', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'email' => array('wysiwyg', 'email', 'textarea', 'textfield', 'date', 'url', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'embed' => array('wysiwyg', 'url', 'textarea', 'textfield', 'email', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'file' => array('wysiwyg', 'file', 'textarea', 'textfield', 'email', 'url', 'phone', 'fdate', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'image' => array('wysiwyg', 'image', 'textarea', 'textfield', 'email', 'url', 'phone', 'file', 'idate', 'numeric', 'audio', 'video', 'embed'),
-        'numeric' => array('wysiwyg', 'numeric', 'textarea', 'textfield', 'email', 'url', 'phone', 'file', 'image', 'date', 'audio', 'video', 'embed'),
-        'phone' => array('wysiwyg', 'phone', 'textarea', 'textfield', 'email', 'url', 'date', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'select' => array('wysiwyg', 'select', 'textarea', 'textfield', 'date', 'email', 'url', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'skype' => array('wysiwyg', 'skype', 'textarea', 'textfield', 'date', 'email', 'url', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'url' => array('wysiwyg', 'url', 'textarea', 'textfield', 'email', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'checkbox' => array('wysiwyg', 'checkbox', 'textarea', 'textfield', 'email', 'url', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'radio' => array('wysiwyg', 'radio', 'textarea', 'textfield', 'email', 'url', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'video' => array('wysiwyg', 'url', 'textarea', 'textfield', 'email', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'),
-        'wysiwyg' => array('wysiwyg', 'textarea'),
+        'audio'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'url', 'textarea', 'textfield', 'email', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'audio' ),
+        'textfield'	=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'textfield', 'textarea', 'email', 'url', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'textfield' ),
+        'textarea'	=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'textfield', 'textarea', 'email', 'url', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'textarea' ),
+        'date'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'date', 'textarea', 'textfield', 'email', 'url', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'date' ), 
+        'email'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'email', 'textarea', 'textfield', 'date', 'url', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'email' ),
+        'embed'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'url', 'textarea', 'textfield', 'email', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'embed' ),
+        'file'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'file', 'textarea', 'textfield', 'email', 'url', 'phone', 'fdate', 'image', 'numeric', 'audio', 'video', 'embed'), 'file' ),
+        'image'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'image', 'textarea', 'textfield', 'email', 'url', 'phone', 'file', 'idate', 'numeric', 'audio', 'video', 'embed'), 'image' ),
+        'numeric'	=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'numeric', 'textarea', 'textfield', 'email', 'url', 'phone', 'file', 'image', 'date', 'audio', 'video', 'embed'), 'numeric' ),
+        'phone'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'phone', 'textarea', 'textfield', 'email', 'url', 'date', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'phone' ),
+        'select'	=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'select', 'textarea', 'textfield', 'date', 'email', 'url', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'select' ),
+        'skype'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'skype', 'textarea', 'textfield', 'date', 'email', 'url', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'skype' ),
+        'url'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'url', 'textarea', 'textfield', 'email', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'url' ),
+        'checkbox'	=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'checkbox', 'textarea', 'textfield', 'email', 'url', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'checkbox' ),
+        'radio'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'radio', 'textarea', 'textfield', 'email', 'url', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'radio' ),
+        'video'		=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'url', 'textarea', 'textfield', 'email', 'date', 'phone', 'file', 'image', 'numeric', 'audio', 'video', 'embed'), 'video' ),
+        'wysiwyg'	=> apply_filters( 'wpcf_filter_field_control_change_type_allowed_types_from', array('wysiwyg', 'textarea'), 'wysiwyg' ),
     );
+	
+	/**
+	* wpcf_filter_field_control_change_type_allowed_types
+	*
+	* Filter the pairs field type origin -> valid field type targets when using the fields control change field type feature
+	*
+	* @param array $allowed Valid correspondence between field types and target field types
+	*
+	* @since 1.8.9
+	*/
+	$allowed = apply_filters( 'wpcf_filter_field_control_change_type_allowed_types', $allowed );
+	
     $all_fields = wpcf_admin_fields_get_fields( false, false, false, $meta_name );
     foreach ( $fields as $field_id ) {
         if ( !isset( $all_fields[$field_id] ) ) {

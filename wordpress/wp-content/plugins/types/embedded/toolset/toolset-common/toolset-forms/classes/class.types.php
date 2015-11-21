@@ -13,7 +13,7 @@
 if ( !class_exists('WPToolset_Types') ){   
 class WPToolset_Types
 {
-
+    static $is_user_meta = false;
     /**
      * Filters Types field to match data structure needed for shared code.
      *
@@ -25,7 +25,6 @@ class WPToolset_Types
      */
     static function filterField($field, $post_id = null, $_post_wpcf = array())
     {
-
         // Get field settings (as when using get_option('wpcf-fields') from DB)
         $field = self::getConfig( $field );
         if ( is_null( $field ) ) return array();
@@ -134,12 +133,6 @@ class WPToolset_Types
                         . $k . ' title', $option['title'] ),
                     );
                 }
-            }
-            break;
-        case 'entry':
-            $_field['post_type'] = 'post';
-            if ( isset($field['data']['post_type']) ) {
-                $_field['post_type'] = $field['data']['post_type'];
             }
             break;
         }
@@ -416,7 +409,7 @@ class WPToolset_Types
 
             // Get field settings
             $c_field = self::getConfig( $c_field_id );
-
+            
             // If it's Types field
             if ( !empty( $c_field ) ) {
 
@@ -470,7 +463,7 @@ class WPToolset_Types
      */
     public static function getFields()
     {
-        return get_option( 'wpcf-fields', array() );
+        return self::$is_user_meta ? get_option( 'wpcf-usermeta', array() ) : get_option( 'wpcf-fields', array() );
     }
 
     /**

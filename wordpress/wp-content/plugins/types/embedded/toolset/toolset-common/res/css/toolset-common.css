@@ -13,6 +13,7 @@ Toolset Primary Button Style - use with .button.button-primary-toolset classname
  	box-shadow: inset 0 1px 0 rgba(239, 239, 239, 0.5), 0 1px 0 rgba(0,0,0,.15);
  	color: #fff !important;
 	text-decoration: none;
+	text-shadow: 0 -1px 1px #EF6223, 1px 0 1px #EF6223, 0 1px 1px #EF6223, -1px 0 1px #EF6223;
 }
 
 .wp-core-ui .button-primary-toolset.hover,
@@ -42,6 +43,13 @@ Toolset Primary Button Style - use with .button.button-primary-toolset classname
 	color: rgba(255,255,255,0.95);
  	-webkit-box-shadow: inset 0 1px 0 rgba(0,0,0,0.1);
  	box-shadow: inset 0 1px 0 rgba(0,0,0,0.1);
+}
+
+.wp-core-ui .notice .button-primary-toolset.active,
+.wp-core-ui .notice .button-primary-toolset.active:hover,
+.wp-core-ui .notice .button-primary-toolset.active:focus,
+.wp-core-ui .notice .button-primary-toolset:active {
+	vertical-align: baseline;
 }
 
 .wp-core-ui .button-primary-toolset[disabled],

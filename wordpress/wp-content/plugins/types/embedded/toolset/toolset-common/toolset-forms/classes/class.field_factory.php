@@ -140,9 +140,19 @@ abstract class FieldFactory extends FieldAbstract
 
     public function getAttr() {
         if ( array_key_exists( 'attribute', $this->_data ) ) {
-            return $this->_data['attribute'];
+            /**
+             * Change field attributes
+             *
+             * This filter allow to change field attributes.
+             *
+             * @since x.x.x
+             *
+             * @param array $attributes array with field attributes
+             * @param object $field current field
+             */
+            return apply_filters( 'toolset_field_factory_get_attributes', $this->_data['attribute'], $this);
         }
-        return array();
+        return apply_filters( 'toolset_field_factory_get_attributes', array(), $this);
     }
 
     public function getWPMLAction()

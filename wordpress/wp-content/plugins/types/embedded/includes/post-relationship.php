@@ -554,7 +554,7 @@ function wpcf_relationship_is_parent( $parent_post_type, $child_post_type ) {
 
 function wpcf_pr_admin_wpcf_relationship_check($keys_to_check = array())
 {
-    $keys_to_check += array('nounce', 'post_id', 'post_type');
+    $keys_to_check = array_unique(array_merge($keys_to_check, array('nounce', 'post_id', 'post_type')));
     foreach( $keys_to_check as $key ) {
         if ( !isset($_REQUEST[$key] ) ) {
             die(__('Sorry, something went wrong. The requested can not be completed.', 'wpcf'));
@@ -577,15 +577,23 @@ function wpcf_pr_admin_wpcf_relationship_search()
         'post_status' => apply_filters( 'wpcf_pr_belongs_post_status', array( 'publish', 'private' ) ),
         'post_type' => $_REQUEST['post_type'],
         'suppress_filters' => 1,
-        's' => $_REQUEST['s'],
     );
+
+    if ( isset( $_REQUEST['s'] ) ) {
+        $args['s'] = $_REQUEST['s'];
+    }
+
+    if ( isset( $_REQUEST['page'] ) && preg_match('/^\d+$/', $_REQUEST['page']) ) {
+        $args['paged'] = intval($_REQUEST['page']);
+    }
 
     $the_query = new WP_Query( $args );
 
     $posts = array(
         'items' => array(),
         'total_count' => $the_query->found_posts,
-        'incomplete_results' => $the_query->found_posts > $numberposts,
+        'incomplete_results' => $the_query->found_posts > $posts_per_page,
+        'posts_per_page' => $posts_per_page,
     );
 
     if ( $the_query->have_posts() ) {
@@ -602,6 +610,27 @@ function wpcf_pr_admin_wpcf_relationship_search()
     }
     /* Restore original Post Data */
     wp_reset_postdata();
+
+    // If WPML is on
+    if ( $active_lang = apply_filters( 'wpml_current_language', false ) ) {
+        foreach ($posts['items'] as $key => $item) {
+            $args = array('element_id' => $posts['items'][ $key ]['ID'], 'element_type' => $posts['items'][ $key ]['post_type'] );
+            $item_lang = apply_filters( 'wpml_element_language_code', NULL, $args );
+
+            // unset the item if not in the current language
+            if (
+                !is_null($item_lang)
+                && $item_lang != $active_lang
+            ) {
+                unset( $posts['items'][ $key ] );
+                $posts['total_count']--;
+            }
+        }
+
+        // Reset numerical keys
+        $posts['items'] = array_values( $posts['items'] );
+        $posts['incomplete_results'] = $posts['total_count'] > $posts_per_page;
+    }
 
     echo json_encode($posts);
     die;

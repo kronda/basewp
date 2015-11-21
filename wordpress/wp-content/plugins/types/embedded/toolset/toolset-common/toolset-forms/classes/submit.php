@@ -47,7 +47,7 @@ send_origin_headers();
 $data = array();
 
 if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false)) {
-    $post_id = intval($_POST['id']);
+
     if (isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['file'])) {
         $file = $_POST['file'];
 
@@ -87,50 +87,52 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
 //        }
         //$data = ($res) ? array('result' => $res) : array('result' => $res, 'error' => 'Error Deleting ' . $file);
     } else {
+        if (isset($_GET['id'])) {
+            $post_id = intval($_GET['id']);
+            $error = false;
+            $files = array();
 
-
-
-        $error = false;
-        $files = array();
-
-        $upload_overrides = array('test_form' => false);
-        if (!empty($_FILES)) {
-            foreach ($_FILES as $file) {
+            $upload_overrides = array('test_form' => false);
+            if (!empty($_FILES)) {
+                foreach ($_FILES as $file) {
 //For repetitive
-                foreach ($file as &$f) {
-                    if (is_array($f)) {
-                        foreach ($f as $p) {
-                            $f = $p;
-                            break;
+                    foreach ($file as &$f) {
+                        if (is_array($f)) {
+                            foreach ($f as $p) {
+                                $f = $p;
+                                break;
+                            }
                         }
                     }
+
+                    $res = wp_handle_upload($file, $upload_overrides);
+
+                    if (!isset($res['error'])) {
+
+                        $attachment = array(
+                            'post_mime_type' => $res['type'],
+                            'post_title' => basename($res['file']),
+                            'post_content' => '',
+                            'post_status' => 'inherit',
+                            'post_parent' => $post_id,
+                            'post_type' => 'attachment',
+                            'guid' => $res['url'],
+                        );
+                        $attach_id = wp_insert_attachment($attachment, $res['file']);
+                        $attach_data = wp_generate_attachment_metadata($attach_id, $res['file']);
+                        wp_update_attachment_metadata($attach_id, $attach_data);
+
+                        $files[] = $res['url'];
+                    } else {
+                        $error = true;
+                    }
                 }
-
-                $res = wp_handle_upload($file, $upload_overrides);
-
-                if (!isset($res['error'])) {
-
-                    $attachment = array(
-                        'post_mime_type' => $res['type'],
-                        'post_title' => basename($res['file']),
-                        'post_content' => '',
-                        'post_status' => 'inherit',
-                        'post_parent' => $post_id,
-                        'post_type' => 'attachment',
-                        'guid' => $res['url'],
-                    );
-                    $attach_id = wp_insert_attachment($attachment, $res['file']);
-                    $attach_data = wp_generate_attachment_metadata($attach_id, $res['file']);
-                    wp_update_attachment_metadata($attach_id, $attach_data);
-
-                    $files[] = $res['url'];
-                } else {
-                    $error = true;
-                }
+                $data = ($error) ? array('error' => 'There was an error uploading your files: ' . $res['error']) : array('files' => $files, 'delete_nonce' => time());
+            } else {
+                $data = array('error' => 'Error: Files is too big, Max upload size is: ' . ini_get('post_max_size'));
             }
-            $data = ($error) ? array('error' => 'There was an error uploading your files: ' . $res['error']) : array('files' => $files, 'delete_nonce' => time());
         } else {
-            $data = array('error' => 'Error: Files is too big, Max upload size is: ' . ini_get('post_max_size'));
+            $data = array('result' => false, 'error' => 'Error post id: check _cred_cred_prefix_post_id');
         }
     }
 } else {

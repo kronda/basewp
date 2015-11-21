@@ -1,13 +1,13 @@
 {
   "checksum": {
-    "previous": "65c5f624e7b3a7731aeb86b34dab9f6546b6019d0e948635813de379e3a3ee8f",
-    "current": "65c5f624e7b3a7731aeb86b34dab9f6546b6019d0e948635813de379e3a3ee8f"
+    "previous": "69b3ac844e2982eac8a71a161ae6068f035af7c234b4049fa236b4bce932a523",
+    "current": "69b3ac844e2982eac8a71a161ae6068f035af7c234b4049fa236b4bce932a523"
   },
   "fonts": [
-    "fonts/onthegosystems-icons_65c5f624e7b3a7731aeb86b34dab9f65.ttf",
-    "fonts/onthegosystems-icons_65c5f624e7b3a7731aeb86b34dab9f65.svg",
-    "fonts/onthegosystems-icons_65c5f624e7b3a7731aeb86b34dab9f65.woff",
-    "fonts/onthegosystems-icons_65c5f624e7b3a7731aeb86b34dab9f65.eot"
+    "fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.ttf",
+    "fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.svg",
+    "fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.woff",
+    "fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.eot"
   ],
   "glyphs": {
     "access": {
@@ -70,6 +70,14 @@
       "codepoint": 61722,
       "source": "vectors/toolset-logo.svg"
     },
+    "toolset-map": {
+      "codepoint": 61733,
+      "source": "vectors/toolset-map.svg"
+    },
+    "toolset-map-logo": {
+      "codepoint": 61732,
+      "source": "vectors/toolset-map-logo.svg"
+    },
     "types": {
       "codepoint": 61723,
       "source": "vectors/types.svg"
@@ -95,7 +103,7 @@
     "autowidth": false,
     "config": "fontcustom.yml",
     "css_selector": ".icon-{{glyph}}",
-    "debug": false,
+    "debug": true,
     "file_hash": false,
     "font_name": "onthegosystems-icons",
     "force": false,
