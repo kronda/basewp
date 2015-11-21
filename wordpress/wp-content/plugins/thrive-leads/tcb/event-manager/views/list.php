@@ -9,6 +9,13 @@
     <hr class="tve_lightbox_line"/>
     <h5><?php echo __("Existing Events", "thrive-cb") ?></h5>
 <?php $error_indexes = array() ?>
+<?php foreach ($events as $index => $event) {
+    $actions[$event['a']]->setConfig(empty($event['config']) ? array() : $event['config']);
+    if (!$actions[$event['a']]->validateConfig()) { /* we need to make sure that the current event is not corrupted. Example: user deleted a lightbox */
+        $error_indexes [] = $index;
+        unset($events[$index]);
+    }
+} ?>
 <?php if (empty($events)) : ?>
     <?php if ($scope == 'page') : ?>
         <p><?php echo __("There are no events currently set up for this page", "thrive-cb") ?></p>
@@ -25,27 +32,23 @@
             </thead>
             <tbody>
             <?php foreach ($events as $index => $event) : ?>
-                <?php $actions[$event['a']]->setConfig(empty($event['config']) ? array() : $event['config']) ?>
-                <?php if (!$actions[$event['a']]->validateConfig()) : /* we need to make sure that the current event is not corrupted. Example: user deleted a lightbox */
-                    $error_indexes [] = $index ?>
-                <?php else : ?>
-                    <tr>
-                        <td><?php echo $triggers[$event['t']]->getName() ?></td>
-                        <td>
-                            <?php echo $actions[$event['a']]->getName();
-                            if (!empty($event['config'])) echo $actions[$event['a']]->getSummary() ?>
-                            <?php if (method_exists($actions[$event['a']], 'getRowActions')) : ?>
-                                <?php echo $actions[$event['a']]->getRowActions() ?>
-                            <?php endif ?>
-                        </td>
-                        <td style="text-align: right">
-                            <a href="javascript:void(0)" data-action="edit" data-index="<?php echo $index ?>"
-                               class="tve_event_onclick tve_lightbox_link tve_lightbox_link_edit"><?php echo __("Edit", "thrive-cb") ?></a> &nbsp; &nbsp;
-                            <a href="javascript:void(0)" data-action="remove" data-index="<?php echo $index ?>"
-                               class="tve_event_onclick tve_lightbox_link tve_lightbox_link_remove"><?php echo __("Remove", "thrive-cb") ?></a>
-                        </td>
-                    </tr>
-                <?php endif ?>
+                <tr>
+                    <td><?php echo $triggers[$event['t']]->getName() ?></td>
+                    <td>
+                        <?php echo $actions[$event['a']]->getName();
+                        if (!empty($event['config'])) echo $actions[$event['a']]->getSummary() ?>
+                        <?php if (method_exists($actions[$event['a']], 'getRowActions')) : ?>
+                            <?php echo $actions[$event['a']]->getRowActions() ?>
+                        <?php endif ?>
+                    </td>
+                    <td style="text-align: right">
+                        <a href="javascript:void(0)" data-action="edit" data-index="<?php echo $index ?>"
+                           class="tve_event_onclick tve_lightbox_link tve_lightbox_link_edit"><?php echo __("Edit", "thrive-cb") ?></a>
+                        &nbsp; &nbsp;
+                        <a href="javascript:void(0)" data-action="remove" data-index="<?php echo $index ?>"
+                           class="tve_event_onclick tve_lightbox_link tve_lightbox_link_remove"><?php echo __("Remove", "thrive-cb") ?></a>
+                    </td>
+                </tr>
             <?php endforeach ?>
             </tbody>
         </table>

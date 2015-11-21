@@ -717,6 +717,10 @@ msgstr ""
 msgid "Ribbon general options"
 msgstr ""
 
+#: editor-layouts/element-menus/greedy_ribbon.php:2
+msgid "Greedy Ribbon general options"
+msgstr ""
+
 #: editor-layouts/element-menus/ribbon.php:38
 #: editor-layouts/element-menus/screen_filler.php:38
 #: editor-layouts/element-menus/slide_in.php:11

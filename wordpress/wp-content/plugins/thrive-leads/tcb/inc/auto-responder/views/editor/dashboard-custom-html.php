@@ -15,6 +15,8 @@
         </a>
     </div>
 <?php else : ?>
-    <?php $show_textarea = true;
+    <?php
+    $show_textarea = true;
+    $show_reCaptcha = false;
     include dirname(__FILE__) . '/autoresponder-code-fields.php'; ?>
 <?php endif; ?>

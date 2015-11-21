@@ -1,0 +1,38 @@
+.green {
+  background: url('../images/greenGradient.jpg') repeat-x bottom #7BC143;
+}
+.red {  
+  background: url('../images/redGradient.jpg') repeat-x bottom #F2393F;
+}
+.blue {
+  background: url('../images/blueGradient.jpg') repeat-x bottom #2F5FC0;
+}
+.purple {
+  background: url('../images/purpleGradient.jpg') repeat-x bottom #7F5AAC;
+}
+.orange {
+  background: url('../images/orangeGradient.jpg') repeat-x bottom #E8653D;
+}
+.gBt, .cta_bnt {
+	background: url('../images/whiteGradient.jpg') repeat-x bottom #FFFFFF;
+}
+.tabs_widget .tabs_headers ul li a {
+	background: url('../images/smallGreenGradient.jpg') repeat-x bottom #7BC143;
+}
+.mre  {
+	background: url('../images/grayGradient.jpg') repeat-x bottom #898989;
+}
+.mre:hover {
+	background: url('../images/grayGradientHover.jpg') repeat-x bottom #6d6d6d;
+}
+.cnt .bSe article, .brd .wrp, .scn {
+	background: #fff;
+	border: 1px solid #e6e6e6;
+}
+section footer {
+  border-bottom: 1px solid #e6e6e6;
+}
+section footer ul ul {
+	display: block;
+	top: 40px;
+}

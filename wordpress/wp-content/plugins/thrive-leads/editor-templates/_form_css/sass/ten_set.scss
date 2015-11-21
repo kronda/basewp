@@ -141,7 +141,7 @@ body {
       line-height: 31px;
       padding: 24px 10px;
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       border-radius: 5px;
       @include opensans();
       box-shadow: none;

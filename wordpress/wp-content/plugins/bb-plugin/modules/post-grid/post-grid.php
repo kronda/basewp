@@ -58,7 +58,7 @@ FLBuilder::register_module('FLPostGridModule', array(
 						'toggle'        => array(
 							'grid'          => array(
 								'sections'      => array('grid', 'image', 'content'),
-								'fields'        => array('show_author')
+								'fields'        => array('show_author', 'match_height')
 							),
 							'feed'          => array(
 								'sections'      => array('image', 'content'),
@@ -67,6 +67,15 @@ FLBuilder::register_module('FLPostGridModule', array(
 							'gallery'		=> array(
 								'tabs'			=> array( 'style' )
 							)
+						)
+					),
+					'match_height'  => array(
+						'type'          => 'select',
+						'label'         => __('Equal Heights', 'fl-builder'),
+						'default'       => '0',
+						'options'       => array(
+							'1'             => __('Yes', 'fl-builder'),
+							'0'             => __('No', 'fl-builder')
 						)
 					),
 					'pagination'     => array(

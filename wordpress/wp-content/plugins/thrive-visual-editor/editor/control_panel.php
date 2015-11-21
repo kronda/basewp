@@ -41,6 +41,9 @@ if (function_exists('_thrive_get_patterns_from_directory')) {
 
 $tve_display_save_notification = get_option('tve_display_save_notification', 1);
 
+$tve_disqus_shortname = get_option('tve_comments_disqus_shortname');
+$tve_facebook_admins = get_option('tve_comments_facebook_admins');
+
 $web_safe_fonts = tve_font_manager_get_safe_fonts();
 
 ?>
@@ -87,6 +90,9 @@ $web_safe_fonts = tve_font_manager_get_safe_fonts();
 
 <div class="tve_cpanel_onpage <?php echo $_dColor ?>" style="display: none" id="tve_cpanel_onpage">
     <div class="tve_secondLayer">
+        <div id="typefocus_menu">
+            <?php include $menu_path . 'typefocus.php'; ?>
+        </div>
         <div id="text_menu">
             <?php include $menu_path . 'text.php' ?>
         </div>
@@ -311,6 +317,14 @@ $web_safe_fonts = tve_font_manager_get_safe_fonts();
 
         <div id="number_counter_menu">
             <?php include $menu_path . 'number_counter.php' ?>
+        </div>
+
+        <div id="facebook_comments_menu">
+            <?php include $menu_path . 'facebook_comments.php' ?>
+        </div>
+
+        <div id="disqus_comments_menu">
+            <?php include $menu_path . 'disqus_comments.php' ?>
         </div>
         <?php echo do_action('tcb_custom_menus_html', $menu_path); ?>
 
@@ -2432,6 +2446,16 @@ $web_safe_fonts = tve_font_manager_get_safe_fonts();
                     Number Counter
                 </span>
             </div>
+        </div>
+    </div>
+    <div data-elem="sc_facebook_comments">
+        <div class="thrv_wrapper thrv_facebook_comments">
+            <div class="tve-fb-comments" data-colorscheme="light" data-numposts="20" data-order-by="social" data-width="100%" data-href="" data-fb-moderator-ids="<?php echo $tve_facebook_admins; ?>"></div>
+        </div>
+    </div>
+    <div data-elem="sc_disqus_comments">
+        <div class="thrv_wrapper thrv_disqus_comments">
+            <div id="disqus_thread" data-disqus_identifier="<?php echo $_POST['post_id']; ?>" data-disqus_shortname="<?php echo $tve_disqus_shortname; ?>" data-disqus_url=""></div>
         </div>
     </div>
 </div>

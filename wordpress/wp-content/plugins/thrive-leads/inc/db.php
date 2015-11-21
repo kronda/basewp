@@ -427,10 +427,6 @@ class Thrive_Leads_DB
                 FROM " . tve_leads_table_name('event_log') . "
                 WHERE referrer!='' ";
 
-        /* $sql = "SELECT COUNT(DISTINCT id) as conversions, IFNULL(referrer, 'own site') as referring_url
-                FROM " . tve_leads_table_name('event_log') . "
-                WHERE 1 "; */
-
         if (!empty($filter['event_type'])) {
             $sql .= "AND `event_type` = %d ";
             $params [] = $filter['event_type'];
@@ -621,8 +617,32 @@ class Thrive_Leads_DB
      */
     public function tve_leads_get_tracking_links($filter, $return_count = false)
     {
-        $sql = "SELECT COUNT(DISTINCT id) AS conversions, utm_source AS source, utm_campaign AS name, utm_medium AS medium
-             FROM " . tve_leads_table_name('event_log') . " WHERE (utm_source!='' OR utm_campaign!='' OR utm_medium!='') ";
+        if (!empty($filter['tracking_type'])) {
+            switch ($filter['tracking_type']) {
+                case 'source':
+                    $select = ' utm_source AS source ';
+                    $group_by = 'utm_source';
+                    break;
+                case 'campaign':
+                    $select = ' utm_campaign AS name ';
+                    $group_by = 'utm_campaign';
+                    break;
+                case 'medium':
+                    $select = 'utm_medium AS medium ';
+                    $group_by = 'utm_medium';
+                    break;
+                case 'all':
+                default:
+                    $select = ' utm_source AS source, utm_campaign AS name, utm_medium AS medium ';
+                    $group_by = 'utm_campaign, utm_medium, utm_source';
+            }
+        } else {
+            $select = ' utm_source AS source, utm_campaign AS name, utm_medium AS medium ';
+            $group_by = 'utm_campaign, utm_medium, utm_source';
+        }
+
+        $sql = "SELECT COUNT(DISTINCT id) AS conversions, " . $select .
+            "FROM " . tve_leads_table_name('event_log') . " WHERE (utm_source!='' OR utm_campaign!='' OR utm_medium!='') ";
 
         if (!empty($filter['event_type'])) {
             $sql .= "AND `event_type` = %d ";
@@ -646,7 +666,7 @@ class Thrive_Leads_DB
             $params [] = $filter['archived_log'];
         }
 
-        $sql .= "GROUP BY utm_campaign, utm_medium, utm_source";
+        $sql .= "GROUP BY " . $group_by;
         if (!$return_count && !empty($filter['itemsPerPage']) && !empty($filter['page'])) {
             $sql .= " ORDER BY conversions DESC";
             $sql .= " LIMIT %d, %d ";
@@ -678,6 +698,11 @@ class Thrive_Leads_DB
         if (!empty($filter['main_group_id']) && $filter['main_group_id'] > 0) {
             $sql .= "AND `main_group_id` = %d ";
             $params [] = $filter['main_group_id'];
+        }
+
+        if (!empty($filter['source_type']) && $filter['source_type'] > 0) {
+            $sql .= "AND `screen_type` = %d ";
+            $params [] = $filter['source_type'];
         }
 
         if (!empty($filter['start_date']) && !empty($filter['end_date'])) {

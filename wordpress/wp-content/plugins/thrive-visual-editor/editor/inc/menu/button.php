@@ -1,5 +1,8 @@
 <span class="tve_options_headline"><span class="tve_icm tve-ic-move"></span><?php echo __("Button menu", "thrive-cb") ?></span>
-
+<!--
+    Tooltip Example
+<li><span class="tve_tooltip" data-title="This is some lorem ipsum which will be set as a a tooltip" data-cls="tve_btn1">?</span></li>
+-->
 <ul class="tve_menu">
     <?php $has_custom_colors = true;
     include dirname(__FILE__) . '/_custom_colors.php' ?>

@@ -11,6 +11,11 @@
 	color: #<?php echo $settings->color; ?>;
 }
 <?php endif; ?>
+<?php if( !empty($settings->font) && $settings->font['family'] != 'Default' ) : ?>
+.fl-node-<?php echo $id; ?> .fl-heading .fl-heading-text{
+	<?php FLBuilderFonts::font_css( $settings->font ); ?>
+}
+<?php endif; ?>
 <?php if($global_settings->responsive_enabled && ($settings->r_font_size == 'custom' || $settings->r_alignment == 'custom')) : ?>
 @media (max-width: <?php echo $global_settings->responsive_breakpoint; ?>px) {
 	

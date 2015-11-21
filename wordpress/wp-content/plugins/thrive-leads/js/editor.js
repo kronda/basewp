@@ -39,6 +39,9 @@ var TL_Editor = TL_Editor || {};
         } else if (element.is('.thrv-leads-screen-filler')) {
             load_control_panel_menu(element, 'form_screen_filler');
             return true;
+        }else if (element.is('.thrv-greedy-ribbon')) {
+            load_control_panel_menu(element, 'form_greedy_ribbon');
+            return true;
         }
     };
 
@@ -91,6 +94,12 @@ var TL_Editor = TL_Editor || {};
                     _maxWidth = parseInt(element.find('.tve-screen-filler-content').outerWidth());
                 }
                 $menu.find('#screen_filler_size').val(_maxWidth).trigger('change');
+                break;
+            case 'form_greedy_ribbon':
+                var _maxWidth = parseInt(element.find('.tve-greedy-ribbon-content').outerWidth());
+                if (!isNaN(_maxWidth)) {
+                    $menu.find('#greedy_ribbon_size').val(_maxWidth).trigger('change');
+                }
                 break;
         }
         /**

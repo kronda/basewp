@@ -224,4 +224,24 @@
             </div>
         </div>
     <?php endif; ?>
+
+    <div class="tve_option_separator tve_clearfix" title="Comments">
+        <div class="tve_icm tve-ic-comment-o tve_left"></div>
+        <span class="tve_expanded tve_left"><?php echo __("Comments", "thrive-cb") ?></span>
+        <span class="tve_caret tve_icm tve_sub_btn tve_right tve_expanded"></span>
+
+        <div class="tve_clear"></div>
+        <div class="tve_sub_btn" title="Comments">
+            <div class="tve_sub">
+                <ul>
+                    <li class="cp_draggable sc_facebook_comments" title="Facebook" data-elem="sc_facebook_comments">
+                        <div class="tve_icm tve-ic-plus"></div><?php echo __("Facebook", "thrive-cb") ?>
+                    </li>
+                    <li class="cp_draggable sc_disqus_comments" title="Disqus" data-elem="sc_disqus_comments">
+                        <div class="tve_icm tve-ic-plus"></div><?php echo __("Disqus", "thrive-cb") ?>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>

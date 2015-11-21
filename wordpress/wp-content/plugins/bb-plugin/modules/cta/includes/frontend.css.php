@@ -1,5 +1,5 @@
 <?php if($settings->title_size == 'custom') : ?>
-.fl-builder-content .fl-cta-title {
+.fl-builder-content .fl-node-<?php echo $id; ?> .fl-cta-title {
 	font-size: <?php echo $settings->title_custom_size; ?>px;
 }
 <?php endif; ?>

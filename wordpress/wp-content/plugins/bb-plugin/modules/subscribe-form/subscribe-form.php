@@ -33,20 +33,30 @@ class FLSubscribeFormModule extends FLBuilderModule {
 	 */  
 	public function submit()
 	{
-		$name       = isset( $_POST['name'] ) ? sanitize_text_field( $_POST['name'] ) : false;
-		$email      = isset( $_POST['email'] ) ? sanitize_email( $_POST['email'] ) : false;
-		$node_id    = isset( $_POST['node_id'] ) ? sanitize_text_field( $_POST['node_id'] ) : false;
-		$result     = array(
-			'action'    => false,
-			'error'     => false,
-			'message'   => false,
-			'url'       => false
+		$name       		= isset( $_POST['name'] ) ? sanitize_text_field( $_POST['name'] ) : false;
+		$email      		= isset( $_POST['email'] ) ? sanitize_email( $_POST['email'] ) : false;
+		$node_id    		= isset( $_POST['node_id'] ) ? sanitize_text_field( $_POST['node_id'] ) : false;
+		$template_id    	= isset( $_POST['template_id'] ) ? sanitize_text_field( $_POST['template_id'] ) : false;
+		$template_node_id   = isset( $_POST['template_node_id'] ) ? sanitize_text_field( $_POST['template_node_id'] ) : false;
+		$result    			= array(
+			'action'    		=> false,
+			'error'     		=> false,
+			'message'   		=> false,
+			'url'       		=> false
 		);
 		
 		if ( $email && $node_id ) {
 			
-			$module   = FLBuilderModel::get_module( $node_id );
-			$settings = $module->settings;
+			// Get the module settings.
+			if ( $template_id ) {
+				$post_id  = FLBuilderModel::get_node_template_post_id( $template_id );
+				$data	  = FLBuilderModel::get_layout_data( 'published', $post_id );
+				$settings = $data[ $template_node_id ]->settings;
+			}
+			else {
+				$module   = FLBuilderModel::get_module( $node_id );
+				$settings = $module->settings;
+			}
 			
 			// Subscribe.
 			$instance = FLBuilderServices::get_service_instance( $settings->service );

@@ -483,12 +483,23 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                  * upgrade old html to newer version of extended lead generation element
                  */
                 upgradeHtml: function () {
+                    var $inputs = $element.find('input[type="text"], input[type="email"]');
+                    if ($inputs.length) {
+                        $inputs.each(function () {
+                            var $this = $(this);
+                            //MailChimp has a text input for bot checks and
+                            //we dont want to apply tve_lg_input class on its parent
+                            if ($this.css("position") === 'absolute') {
+                                return;
+                            }
+                            $this.parent().addClass('tve_lg_input');
+                        });
+                    }
                     $element.attr('data-tve-version', 1);
-                    $element.find('input[type="text"], input[type="email"]').parent().addClass('tve_lg_input');
                     $element.find('textarea').parent().addClass('tve_lg_textarea');
                     $element.find('select').parent().addClass('tve_lg_dropdown');
-                    $element.find('input[type="radio"]').parents('.tve_lg_input_container ').first().addClass('tve_lg_radio');
-                    $element.find('input[type="checkbox"]').parents('.tve_lg_input_container ').first().addClass('tve_lg_checkbox');
+                    $element.find('input[type="radio"]').parents('.tve_lg_input_container').first().addClass('tve_lg_radio');
+                    $element.find('input[type="checkbox"]').parents('.tve_lg_input_container').first().addClass('tve_lg_checkbox');
                     $element.find('button').parent().addClass('tve_lg_submit');
                 },
 
@@ -730,11 +741,10 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                  * @param element the data about the input
                  * @returns {*}
                  */
-                renderTextInput: function (input, element) {
-
+                renderTextInput: function (input, element, type) {
                     var first_input = $element.find('.tve_lead_generated_inputs_container').find('input[type="text"],input[type="email"]').filter(':visible').first(),
                         placeholder = this._readStringProp(input, 'txt_label'),
-                        $input = jQuery('<input type="text" data-field="' + input + '" data-required="' + this._readBoolProp(input, 'required') +
+                        $input = jQuery('<input type="' + type + '" data-field="' + input + '" data-required="' + this._readBoolProp(input, 'required') +
                             '" data-validation="' + this._readStringProp(input, 'validation') + '" name="' + element.name +
                             '" placeholder="' + placeholder + '" data-placeholder="' + placeholder + '" />'),
                         $oldInput = $element.find('input[data-field="' + input + '"]');
@@ -902,9 +912,13 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 generateForm: function () {
                     var form_data = this.connection_type == 'api' ? this.api_form_data : this.jsonFields;
                     var inputs_count = 1,
-                        $form = jQuery('<form method="' + form_data.form_method + '" action="' + form_data.form_action + '"></form>'),
+                        $form = jQuery('<form action="#" method="' + form_data.form_method + '"></form>'),
+                        $hidden_action = jQuery('<input type="hidden" class="tve-f-a-hidden" value="' + form_data.form_action + '" />'),
                         $inputsContainer = jQuery('<div class="tve_lead_generated_inputs_container tve_clearfix"><div class="tve_lead_fields_overlay"></div></div>'),
                         self = this;
+
+                    /* We store the form action in a hidden input and place it back at DOM ready so the bots won't find it. */
+                    $form.append($hidden_action);
 
                     function appendElement(encoded_name) {
                         var elem_data = form_data.elements[encoded_name];
@@ -918,7 +932,8 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                                 element = self.renderTextNode(elem_data);
                                 break;
                             case 'text':
-                                element = self.renderTextInput(encoded_name, elem_data);
+                            case 'email':
+                                element = self.renderTextInput(encoded_name, elem_data, elem_data.type);
                                 break;
                             case 'radio':
                                 element = self.renderRadioInput(encoded_name, elem_data);

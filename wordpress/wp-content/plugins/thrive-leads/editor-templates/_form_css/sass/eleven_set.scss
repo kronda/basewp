@@ -162,7 +162,7 @@ body {
       line-height: 31px;
       padding: 21px 10px;
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       border-radius: 5px;
       @include lato();
       box-shadow: none;
@@ -236,7 +236,7 @@ $color-pallete: 'blue' #4192d9 #3475ae #2c6393 #9ecae3,
       }
     }
     .thrv_lead_generation.tve_#{nth($color, 1)} {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         &:hover {
           background: nth($color, 5);
         }

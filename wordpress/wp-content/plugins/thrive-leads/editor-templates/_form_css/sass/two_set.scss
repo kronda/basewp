@@ -109,7 +109,7 @@ body {
         }
       }
       &.thrv_lead_generation_vertical {
-        input[type="text"] {
+        input[type="text"], input[type="email"] {
           padding: 18px 10px !important;
           margin-bottom: 15px;
         }
@@ -137,7 +137,7 @@ body {
         font-weight: 600;
         font-size: 28px;
       }
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         @include opensans();
         border-radius: 0;
         border: 2px solid #dddddd;
@@ -276,7 +276,7 @@ body {
               }
             }
           }
-          input[type='text'] {
+          input[type='text'], input[type="email"] {
             font-size: 16px;
             line-height: 20px;
             padding: 15px 10px !important;
@@ -340,7 +340,7 @@ body {
       }
       .thrv_lead_generation {
         &.thrv_lead_generation_vertical {
-          input[type='text'] {
+          input[type='text'], input[type="email"] {
             margin-bottom: 10px;
             padding: 11px 10px !important;
           }
@@ -367,7 +367,7 @@ body {
           }
           .thrv_lead_generation {
             &.thrv_lead_generation_vertical {
-              input[type='text'] {
+              input[type='text'], input[type="email"] {
                 margin-bottom: 14px;
               }
               button {
@@ -473,7 +473,7 @@ body {
             }
           }
         }
-        input[type='text'] {
+        input[type='text'], input[type="email"] {
           border: 0;
           color: #cccccc;
           font-size: 15px;
@@ -508,7 +508,7 @@ body {
       }
       .thrv_lead_generation {
         &.thrv_lead_generation_vertical {
-          input[type='text'] {
+          input[type='text'], input[type="email"] {
             font-size: 16px;
             line-height: 23px;
             margin-bottom: 12px;
@@ -565,7 +565,7 @@ body {
         border-width: 0;
         .thrv_lead_generation {
           &.thrv_lead_generation_vertical {
-            input[type='text'] {
+            input[type='text'], input[type="email"] {
               margin-bottom: 7px;
             }
             button {
@@ -598,7 +598,7 @@ body {
         border-width: 0;
         .thrv_lead_generation {
           &.thrv_lead_generation_vertical {
-            input[type='text'] {
+            input[type='text'], input[type="email"] {
               margin-bottom: 9px;
             }
             button {
@@ -775,7 +775,7 @@ body {
           }
           .thrv_lead_generation {
             &.thrv_lead_generation_vertical {
-              input[type='text'] {
+              input[type='text'], input[type="email"] {
                 margin-bottom: 10px;
               }
             }
@@ -954,7 +954,7 @@ $color-pallete: 'blue' #23648c #32617d #1d5374 #2ea2cc #2a97be #4cafd3 #2ea2cc #
     }
     .thrv_lead_generation.tve_#{nth($color, 1)} {
       .thrv_lead_generation_container {
-        input[type='text'] {
+        input[type='text'], input[type="email"] {
           &:hover {
             border-color: rgba(nth($color, 2), .35);
           }

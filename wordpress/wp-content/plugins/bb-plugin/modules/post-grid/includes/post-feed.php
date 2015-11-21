@@ -23,7 +23,7 @@
 					<span class="fl-sep"> | </span>
 				<?php endif; ?>
 				<span class="fl-post-feed-date" itemprop="datePublished" datetime="<?php echo the_time('Y-m-d'); ?>">
-					<?php the_time($settings->date_format); ?>
+					<?php FLBuilderLoop::post_date($settings->date_format); ?>
 				</span>
 			<?php endif; ?>
 			<?php if($settings->show_comments) : ?>

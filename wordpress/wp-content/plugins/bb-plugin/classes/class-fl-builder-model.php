@@ -1574,7 +1574,22 @@ final class FLBuilderModel {
 	 */
 	static public function process_col_settings($col, $new_settings)
 	{
+		// Resize sibling cols if needed.
 		$new_settings->size = self::resize_col($col->node, $new_settings->size);
+
+		// Adjust sibling equal height setting if needed.
+	    if ( $col->settings->equal_height != $new_settings->equal_height ) {
+
+			$data = self::get_layout_data();
+	        $cols = self::get_nodes( 'column', $col->parent );
+
+			foreach ( $cols as $node_id => $node ) {
+	            $data[ $node_id ]->settings->equal_height = $new_settings->equal_height;
+	        }
+	        
+	        self::update_layout_data( $data );
+
+	    }
 
 		return $new_settings;
 	}
@@ -1702,6 +1717,123 @@ final class FLBuilderModel {
 	}
 
 	/**
+	 * Resizes a column and its sibling using the provided widths.
+	 *
+	 * @since 1.6.4
+	 * @param string $col_id Node ID of the column to resize.
+	 * @param int $col_width New width of the column.
+	 * @param string $sibling_id Node ID of the sibling to resize.
+	 * @param int $sibling_width New width of the sibling.
+	 * @return void
+	 */
+	static public function resize_cols( $col_id = null, $col_width = null, $sibling_id = null, $sibling_width = null )
+	{
+		$data 			= self::get_layout_data();
+		$post_data		= self::get_post_data();
+		$col_id			= isset( $post_data['col_id'] ) ? $post_data['col_id'] : $col_id;
+		$col_width		= isset( $post_data['col_width'] ) ? $post_data['col_width'] : $col_width;
+		$sibling_id		= isset( $post_data['sibling_id'] ) ? $post_data['sibling_id'] : $sibling_id;
+		$sibling_width	= isset( $post_data['sibling_width'] ) ? $post_data['sibling_width'] : $sibling_width;
+		
+		// Save the column width.
+		$data[ $col_id ]->settings->size = $col_width;
+		
+		// Save the sibling width.
+		$data[ $sibling_id ]->settings->size = $sibling_width;
+		
+		// Update the layout data.
+		self::update_layout_data( $data );
+	}
+
+	/**
+	 * Resets the widths of all columns in a group.
+	 *
+	 * @since 1.6.4
+	 * @param string $group_id Node ID of the group whose columns to reset.
+	 * @return void
+	 */
+	static public function reset_col_widths( $group_id = null )
+	{
+		$data 			= self::get_layout_data();
+		$post_data		= self::get_post_data();
+		$group_id		= isset( $post_data['group_id'] ) ? $post_data['group_id'] : $group_id;
+		$cols			= self::get_nodes( 'column', $group_id );
+		$width			= round( 100 / count( $cols ), 2 );
+		
+		foreach ( $cols as $col_id => $col ) {
+			$data[ $col_id ]->settings->size = $width;
+		}
+		
+		self::update_layout_data( $data );
+	}
+
+	/**
+	 * Inserts a column before or after another column.
+	 *
+	 * @since 1.6.4
+	 * @param string $node_id Node ID of the column to insert before or after.
+	 * @param string $insert Either before or after.
+	 * @return void
+	 */
+	static public function insert_col( $node_id = null, $insert = 'before' )
+	{
+		$post_data			= self::get_post_data();
+		$data				= self::get_layout_data();
+		$col_id				= isset( $post_data['node_id'] ) ? $post_data['node_id'] : $node_id;
+		$insert				= isset( $post_data['insert'] ) ? $post_data['insert'] : $insert;
+		$new_col_id			= self::generate_node_id();
+		$col	 			= self::get_node( $col_id );
+		$parent 			= self::get_node( $col->parent );
+		$cols 				= self::get_nodes( 'column', $col->parent );
+		$num_cols 			= count( $cols ) + 1;
+		
+		// Get the new width.
+		if ( 6 === $num_cols ) {
+			$new_width = 16.65;
+		}
+		elseif ( 7 === $num_cols ) {
+			$new_width = 14.28;
+		}
+		else {
+			$new_width = round( 100 / $num_cols, 2 );
+		}
+		
+		// Get the new column position.
+		if ( 'before' == $insert ) {
+			$new_col_position = $col->position - 1 < 0 ? 0 : $col->position;
+		}
+		else {
+			$new_col_position = $col->position + 1;
+		}
+
+		// Add the column.
+		$data[ $new_col_id ]					= new StdClass();
+		$data[ $new_col_id ]->node				= $new_col_id;
+		$data[ $new_col_id ]->type				= 'column';
+		$data[ $new_col_id ]->parent			= $parent->node;
+		$data[ $new_col_id ]->position			= self::next_node_position( 'column', $parent->node );
+		$data[ $new_col_id ]->settings			= new StdClass();
+		$data[ $new_col_id ]->settings->size 	= $new_width;
+	
+		// Add node template data.
+		if ( self::is_node_global( $parent ) ) {
+			$data[ $new_col_id ]->template_id 	   = $parent->template_id;
+			$data[ $new_col_id ]->template_node_id = $new_col_id;
+		}
+		
+		// Resize sibling columns.
+		foreach ( $cols as $sibling_col_id => $sibling_col ) {
+			$data[ $sibling_col_id ]->settings->size = $new_width;
+		}
+
+		// Update the layout data.
+		self::update_layout_data( $data );
+
+		// Position the new column.
+		self::reorder_node( $new_col_id, $new_col_position );
+	}
+
+	/**
 	 * Returns the default settings for column nodes.
 	 *
 	 * @since 1.0
@@ -1819,6 +1951,13 @@ final class FLBuilderModel {
 	static public function get_categorized_modules( $show_disabled = false )
 	{
 		$enabled_modules = self::get_enabled_modules();
+		$widgets		 = null;
+		$categories		 = array();
+		
+		// Add any predefined custom categories.
+		foreach ( apply_filters( 'fl_builder_module_categories', array() ) as $custom_category ) {
+			$categories[ $custom_category ] = array();
+		}
 		
 		// Get the core category keys. 
 		$basic_key		 = __('Basic Modules', 'fl-builder');
@@ -1827,11 +1966,9 @@ final class FLBuilderModel {
 		$widgets_key	 = __('WordPress Widgets', 'fl-builder');
 
 		// Build the default category arrays. 
-		$categories = array();
 		$categories[ $basic_key ] = array();
 		$categories[ $advanced_key ] = array();
 		$categories[ $other_key ] = array();
-		$categories[ $widgets_key ] = array();
 
 		// Build the categories array.
 		foreach(self::$modules as $module) {
@@ -1843,7 +1980,7 @@ final class FLBuilderModel {
 				continue;
 			}
 			else if($module->slug == 'widget') {
-				$categories[$widgets_key] = self::get_wp_widgets();
+				$widgets = self::get_wp_widgets();
 			}
 			else if(isset($module->category)) {
 
@@ -1856,6 +1993,11 @@ final class FLBuilderModel {
 			else {
 				$categories[$other_key][$module->name] = $module;
 			}
+		}
+		
+		// Add widgets if we have them.
+		if ( $widgets ) {
+			$categories[$widgets_key] = $widgets;
 		}
 
 		// Sort the modules.
@@ -2278,7 +2420,7 @@ final class FLBuilderModel {
 	 */
 	static public function register_settings_form($id, $form)
 	{
-		self::$settings_forms[$id] = $form;
+		self::$settings_forms[$id] = apply_filters( 'fl_builder_register_settings_form', $form, $id );
 	}
 
 	/**
@@ -2522,6 +2664,38 @@ final class FLBuilderModel {
 		self::delete_asset_cache_for_all_posts();
 
 		return update_option('_fl_builder_settings', $settings);
+	}
+
+	/**
+	 * Get color presets.
+	 *
+	 * @since 1.0
+	 * @return object
+	 */
+	static public function get_color_presets()
+	{
+		$settings = get_option('_fl_builder_color_presets');
+
+		if(!$settings) {
+			return false;
+		}
+
+		return (array)$settings;
+	}
+
+	/**
+	 * Save color presets.
+	 *
+	 * @since 1.0
+	 * @param array $presets The new color presets collection.
+	 * @return object
+	 */
+	static public function save_color_presets($presets = array())
+	{
+		$post_data		= self::get_post_data();
+		$presets		= isset($post_data['presets']) ? $post_data['presets'] : $presets;
+
+		return update_option('_fl_builder_color_presets', $presets);
 	}
 
 	/**
@@ -4335,6 +4509,7 @@ final class FLBuilderModel {
 			delete_option('_fl_builder_editing_capability');
 			delete_option('_fl_builder_global_templates_editing_capability');
 			delete_option('_fl_builder_help_button');
+			delete_option('_fl_builder_color_presets');
 			
 			// Delete builder user meta.
 			delete_metadata('user', 0, '_fl_builder_launched', 1, true);

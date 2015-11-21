@@ -141,7 +141,7 @@ final class FLBuilderLoop {
 				$format = '&paged=%#%';
 			} 
 			else {
-				$format = 'page/%#%/';
+				$format = '/page/%#%/';
 			}
 			
 			echo paginate_links(array(

@@ -181,7 +181,6 @@ if (!class_exists('Thrive_Leads_State_Switch_Action')) {
                         'wrap' => false,
                         'hide' => true,
                         'hide_inner' => false,
-                        'animation' => false
                     ));
                     break;
                 case 'screen_filler':

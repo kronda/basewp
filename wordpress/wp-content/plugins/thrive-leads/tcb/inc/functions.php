@@ -296,6 +296,27 @@ function thrive_page_row_buttons($actions, $page_object)
     return $actions;
 }
 
+/**
+ * Load meta tags for social media and others
+ * @param int $post_id
+ */
+function tve_load_meta_tags($post_id = 0)
+{
+
+    if (empty($post_id)) {
+        $post_id = get_the_ID();
+    }
+    $globals = tve_get_post_meta($post_id, 'tve_globals');
+    if (!empty($globals['fb_comment_admins'])) {
+        $fb_admins = json_decode($globals['fb_comment_admins']);
+        if (!empty($fb_admins) && is_array($fb_admins)) {
+            foreach ($fb_admins as $admin) {
+                echo '<meta property="fb:admins" content="' . $admin . '"/>';
+            }
+        }
+    }
+}
+
 
 /**
  * it's a hook on the wp_head WP action
@@ -371,7 +392,7 @@ function tve_output_custom_font_css($fonts)
     /** @var array $css prepare and array of css classes what will have as value an array of css rules */
     $css = array();
     foreach ($fonts as $font) {
-        $font = (object) $font;
+        $font = (object)$font;
         $css[$font->font_class] = array(
             "font-family: " . (strpos($font->font_name, ",") === false ? "'" . $font->font_name . "'" : $font->font_name) . " !important;",
         );
@@ -573,6 +594,7 @@ function tve_save_post()
         }
         tve_update_post_meta($_POST['post_id'], 'thrive_icon_pack', empty($_POST['has_icons']) ? 0 : 1);
         tve_update_post_meta($_POST['post_id'], 'tve_has_masonry', empty($_POST['tve_has_masonry']) ? 0 : 1);
+        tve_update_post_meta($_POST['post_id'], 'tve_has_typefocus', empty($_POST['tve_has_typefocus']) ? 0 : 1);
         if (!empty($_POST['social_fb_app_id'])) {
             update_option('tve_social_fb_app_id', $_POST['social_fb_app_id']);
         }
@@ -683,7 +705,9 @@ function tve_editor_content($content)
             }
         }
         if (!isset($tve_saved_content)) {
-            $tve_saved_content = tve_restore_script_tags(stripslashes(tve_get_post_meta(get_the_ID(), "tve_updated_post", true)));
+            $tve_saved_content = tve_get_post_meta(get_the_ID(), "tve_updated_post", true);
+            $tve_saved_content = tve_restore_script_tags($tve_saved_content);
+            $tve_saved_content = stripslashes($tve_saved_content);
         }
         if (empty($tve_saved_content)) {
             // return empty content if nothing is inserted in the editor - this is to make sure that first page section on the page will actually be displayed ok
@@ -875,7 +899,7 @@ function tve_hide_custom_fields($protected, $meta_key)
         'tve_save_post', 'tve_updated_post', 'tve_content_before_more_shortcoded', 'tve_content_before_more',
         'tve_style_family', 'tve_updated_post_shortcoded', 'tve_user_custom_css', 'tve_custom_css',
         'tve_content_more_found', 'tve_landing_page', 'thrive_post_fonts', 'thrive_tcb_post_fonts', 'tve_globals', 'tve_special_lightbox',
-        'thrive_icon_pack', 'tve_global_scripts', 'tve_has_masonry', 'tve_page_events'
+        'thrive_icon_pack', 'tve_global_scripts', 'tve_has_masonry', 'tve_page_events', 'tve_typefocus'
     );
     $landing_page_templates = array_keys(include dirname(dirname(__FILE__)) . '/landing-page/templates/_config.php');
 
@@ -1755,6 +1779,8 @@ function tve_enqueue_editor_scripts()
                         'UnknownError' => __('An unknown error has occured. Response was: ', 'thrive-cb'),
                         'LPImportConfirm' => __('Importing a landing page will overwrite the current contents of this page. Are you sure you want to continue ?', 'thrive-cb'),
                         'InvalidImageSelected' => __('Invalid file selected. Please select an image.', 'thrive-cb'),
+                        'AddTextVariation' => __("Please add text for last variation !", 'thrive-cb'),
+                        'TypeFocusVariationSpeed' => __("You cannot set the slide speed below 1000 ms !", "thrive-cb"),
                     )
                 );
                 $tve_path_params['extra_body_class'] .= ($tve_cp_config['position'] == 'left' ? ' tve_cpanelFlip' : '');
@@ -2054,6 +2080,28 @@ function tve_check_in_loop($post_id)
 }
 
 /**
+ * replace [tcb-script] with script tags
+ *
+ * @param array $matches
+ * @return string
+ */
+function tve_restore_script_tags_replace($matches)
+{
+    $matches[2] = str_replace('<\\/script', '<\\\\/script', $matches[2]);
+    return '<script' . $matches[1] . '>' . html_entity_decode($matches[2]) . '</script>';
+}
+
+/**
+ * replace [tcb-noscript] with <noscript> tags
+ * @param array $matches
+ * @return string
+ */
+function tve_restore_script_tags_noscript_replace($matches)
+{
+    return '<noscript' . $matches[1] . '>' . html_entity_decode($matches[2]) . '</noscript>';
+}
+
+/**
  * restore all script tags from custom html controls. script tags are replaced with <code class="tve_js_placeholder">
  *
  * @param string $content
@@ -2062,8 +2110,12 @@ function tve_check_in_loop($post_id)
 function tve_restore_script_tags($content)
 {
     $shortcode_js_pattern = '/\[tcb-script(.*?)\](.*?)\[\/tcb-script\]/s';
+    $content = preg_replace_callback($shortcode_js_pattern, 'tve_restore_script_tags_replace', $content);
 
-    return preg_replace($shortcode_js_pattern, '<script$1>$2</script>', $content);
+    $shortcode_nojs_pattern = '/\[tcb-noscript(.*?)\](.*?)\[\/tcb-noscript\]/s';
+    $content = preg_replace_callback($shortcode_nojs_pattern, 'tve_restore_script_tags_noscript_replace', $content);
+
+    return $content;
 }
 
 /**
@@ -2338,13 +2390,16 @@ function tve_do_wp_shortcodes($content, $is_editor_page = false)
             $post_id = get_the_ID();
         }
         $featured_image = wp_get_attachment_image_src(get_post_thumbnail_id($post_id), 'full');
+        $permalink = get_permalink($post_id); // TODO: I think get_the_permalink is slow, we need to cache this somehow
         $content = str_replace(array(
             '{tcb_post_url}',
+            '{tcb_encoded_post_url}',
             '{tcb_post_title}',
             '{tcb_post_image}',
             '{tcb_current_year}'
         ), array(
-            get_permalink($post_id), // TODO: I think get_the_permalink is slow, we need to cache this somehow
+            $permalink,
+            urlencode($permalink),
             get_the_title($post_id),
             !empty($featured_image) && !empty($featured_image[0]) ? $featured_image[0] : '',
             date('Y')
@@ -2891,6 +2946,9 @@ function tve_enqueue_custom_scripts()
         if (tve_get_post_meta($post->ID, 'tve_has_masonry')) {
             wp_script_is("jquery-masonry") || wp_enqueue_script("jquery-masonry", array('jquery'));
         }
+        if (tve_get_post_meta($post->ID, 'tve_has_typefocus')) {
+            wp_script_is("tve_typed") || wp_enqueue_script("tve_typed", tve_editor_js() . '/typed.min.js',  array('tve_frontend'));
+        }
         $globals = tve_get_post_meta($post->ID, 'tve_globals');
         if (!empty($globals['js_sdk'])) {
             foreach ($globals['js_sdk'] as $handle) {
@@ -3120,7 +3178,7 @@ function tve_menu_custom_font_family($attrs, $menu_item)
     $font_family = $GLOBALS['tve_menu_top_link_custom_font_family'];
     $style = 'font-family: ' . $font_family . ';';
 
-    if(isset($attrs['style']) && !empty($attrs['style'])) {
+    if (isset($attrs['style']) && !empty($attrs['style'])) {
         $style = trim(";", $attrs['style']) . ";" . $style;
     }
 
@@ -3473,6 +3531,7 @@ function tve_get_used_meta_keys()
         'thrive_icon_pack',
         'thrive_tcb_post_fonts',
         'tve_has_masonry',
+        'tve_has_typefocus',
         'tve_updated_post',
     );
 
@@ -3532,7 +3591,9 @@ function tve_ajax_update_option()
 
     $allowed = array(
         'tve_display_save_notification',
-        'tve_social_fb_app_id'
+        'tve_social_fb_app_id',
+        'tve_comments_disqus_shortname',
+        'tve_comments_facebook_admins'
     );
     if (!in_array($option_name, $allowed)) {
         exit();

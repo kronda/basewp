@@ -29,5 +29,7 @@
             </tfoot>
         </table>
     </div>
-    <?php include dirname(__FILE__) . '/captcha-settings.php'; ?>
+    <?php if (!empty($show_reCaptcha)): ?>
+        <?php include dirname(__FILE__) . '/captcha-settings.php'; ?>
+    <?php endif; ?>
 </div>

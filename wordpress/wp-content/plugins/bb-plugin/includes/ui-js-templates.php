@@ -2,7 +2,7 @@
 	<div class="fl-row-overlay fl-block-overlay<# if ( data.global ) { #> fl-block-overlay-global<# } #>" data-node="{{data.node}}">
 		<div class="fl-block-overlay-header">
 			<div class="fl-block-overlay-actions">
-				<div class="fl-block-overlay-title"><?php _e('Row', 'fl-builder'); ?><# if ( data.global ) { #><span class="fl-block-overlay-title-global"><?php _e('Global', 'fl-builder'); ?></span><# } #></div>
+				<div class="fl-block-overlay-title"><?php _e('Row', 'fl-builder'); ?></div>
 				<# if ( data.global && ! FLBuilderConfig.userCanEditGlobalTemplates ) { #>
 				<i class="fa fa-lock fl-tip" title="<?php _e('Locked', 'fl-builder'); ?>"></i>
 				<# } else { #>
@@ -26,14 +26,45 @@
 	<div class="fl-col-overlay fl-block-overlay<# if ( data.global ) { #> fl-block-overlay-global<# } #>">
 		<div class="fl-block-overlay-header">
 			<div class="fl-block-overlay-actions">
-				<div class="fl-block-overlay-title"><?php _e( 'Column', 'fl-builder' ); ?><# if ( data.global ) { #><span class="fl-block-overlay-title-global"><?php _e('Global', 'fl-builder'); ?></span><# } #></div>
 				<?php if ( ! $simple_ui ) : ?>
-				<i class="fl-block-columns fa fa-wrench fl-tip" title="<?php _e( 'Column Settings', 'fl-builder' ); ?>"></i>
+				<span class="fl-builder-has-submenu">
+					<i class="fl-block-settings fa fa-wrench fl-tip" title="<?php _e( 'Edit Column', 'fl-builder' ); ?>"></i>
+					<ul class="fl-builder-submenu fl-block-col-submenu">
+						<li><a class="fl-block-col-edit" href="javascript:void(0);"><?php _e( 'Column Settings', 'fl-builder' ); ?></a></li>
+						<# if ( data.numCols < 12 ) { #>
+						<li><a class="fl-block-col-insert-before" href="javascript:void(0);"><?php _e( 'Insert Column Before', 'fl-builder' ); ?></a></li>
+						<li><a class="fl-block-col-insert-after" href="javascript:void(0);"><?php _e( 'Insert Column After', 'fl-builder' ); ?></a></li>
+						<# } #>
+						<# if ( data.numCols > 1 ) { #>
+						<li><a class="fl-block-col-reset" href="javascript:void(0);"><?php _e( 'Reset Column Widths', 'fl-builder' ); ?></a></li>
+						<# } #>
+					</ul>
+				</span>
 				<i class="fl-block-remove fa fa-times fl-tip" title="<?php _e( 'Remove', 'fl-builder' ); ?>"></i>
 				<?php endif; ?>
 			</div>
 			<div class="fl-clear"></div>
 		</div>
+		<?php if ( ! $simple_ui ) : ?>
+		<# if ( ! data.first ) { #>
+		<div class="fl-block-col-resize fl-block-col-resize-w">
+			<div class="fl-block-col-resize-handle-wrap">
+				<div class="fl-block-col-resize-feedback fl-block-col-resize-feedback-left"></div>
+				<div class="fl-block-col-resize-handle"></div>
+				<div class="fl-block-col-resize-feedback fl-block-col-resize-feedback-right"></div>
+			</div>
+		</div>
+		<# } #>
+		<# if ( ! data.last ) { #>
+		<div class="fl-block-col-resize fl-block-col-resize-e">
+			<div class="fl-block-col-resize-handle-wrap">
+				<div class="fl-block-col-resize-feedback fl-block-col-resize-feedback-left"></div>
+				<div class="fl-block-col-resize-handle"></div>
+				<div class="fl-block-col-resize-feedback fl-block-col-resize-feedback-right"></div>
+			</div>
+		</div>
+		<# } #>
+		<?php endif; ?>
 	</div>
 </script>
 <!-- #tmpl-fl-col-overlay -->
@@ -42,7 +73,6 @@
 	<div class="fl-module-overlay fl-block-overlay<# if ( data.global ) { #> fl-block-overlay-global<# } #>">
 		<div class="fl-block-overlay-header">
 			<div class="fl-block-overlay-actions">
-				<div class="fl-block-overlay-title">{{data.moduleName}}<# if ( data.global ) { #><span class="fl-block-overlay-title-global"><?php _e('Global', 'fl-builder'); ?></span><# } #></div>
 				<# if ( data.global && ! FLBuilderConfig.userCanEditGlobalTemplates ) { #>
 				<i class="fa fa-lock fl-tip" title="<?php _e('Locked', 'fl-builder'); ?>"></i>
 				<# } else { #>
@@ -52,13 +82,46 @@
 				<i class="fl-block-settings fa fa-wrench fl-tip" title="{{data.moduleName}} <?php _e('Settings', 'fl-builder'); ?>"></i>
 				<?php if ( ! FLBuilderModel::is_post_user_template( 'module' ) && ! $simple_ui ) : ?>
 				<i class="fl-block-copy fa fa-copy fl-tip" title="<?php _e( 'Duplicate', 'fl-builder' ); ?>"></i>
-				<i class="fl-block-columns fa fa-columns fl-tip" title="<?php _e( 'Column Settings', 'fl-builder' ); ?>"></i>
+				<span class="fl-builder-has-submenu">
+					<i class="fl-block-col-settings fa fa-columns fl-tip" title="<?php _e( 'Edit Column', 'fl-builder' ); ?>"></i>
+					<ul class="fl-builder-submenu fl-block-col-submenu">
+						<li><a class="fl-block-col-edit" href="javascript:void(0);"><?php _e( 'Column Settings', 'fl-builder' ); ?></a></li>
+						<li><a class="fl-block-col-delete" href="javascript:void(0);"><?php _e( 'Delete Column', 'fl-builder' ); ?></a></li>
+						<# if ( data.numCols < 12 ) { #>
+						<li><a class="fl-block-col-insert-before" href="javascript:void(0);"><?php _e( 'Insert Column Before', 'fl-builder' ); ?></a></li>
+						<li><a class="fl-block-col-insert-after" href="javascript:void(0);"><?php _e( 'Insert Column After', 'fl-builder' ); ?></a></li>
+						<# } #>
+						<# if ( data.numCols > 1 ) { #>
+						<li><a class="fl-block-col-reset" href="javascript:void(0);"><?php _e( 'Reset Column Widths', 'fl-builder' ); ?></a></li>
+						<# } #>
+					</ul>
+				</span>
 				<i class="fl-block-remove fa fa-times fl-tip" title="<?php _e( 'Remove', 'fl-builder' ); ?>"></i>
 				<?php endif; ?>
 				<# } #>
 			</div>
 			<div class="fl-clear"></div>
 		</div>
+		<?php if ( ! $simple_ui ) : ?>
+		<# if ( ! data.parentFirst ) { #>
+		<div class="fl-block-col-resize fl-block-col-resize-w">
+			<div class="fl-block-col-resize-handle-wrap">
+				<div class="fl-block-col-resize-feedback fl-block-col-resize-feedback-left"></div>
+				<div class="fl-block-col-resize-handle"></div>
+				<div class="fl-block-col-resize-feedback fl-block-col-resize-feedback-right"></div>
+			</div>
+		</div>
+		<# } #>
+		<# if ( ! data.parentLast ) { #>
+		<div class="fl-block-col-resize fl-block-col-resize-e">
+			<div class="fl-block-col-resize-handle-wrap">
+				<div class="fl-block-col-resize-feedback fl-block-col-resize-feedback-left"></div>
+				<div class="fl-block-col-resize-handle"></div>
+				<div class="fl-block-col-resize-feedback fl-block-col-resize-feedback-right"></div>
+			</div>
+		</div>
+		<# } #>
+		<?php endif; ?>
 	</div>
 </script>
 <!-- #tmpl-fl-module-overlay -->

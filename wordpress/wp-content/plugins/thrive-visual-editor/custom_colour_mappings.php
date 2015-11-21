@@ -1,6 +1,21 @@
 <?php
 /* custom color mappings file */
 return array(
+    'typefocus' => array(
+        'undefined' => array(
+            'all' => array(
+                array(
+                    "label" => "Highlight color",
+                    "selector" => "",
+                    'selector_suffix' => ' .tve_selected_typist',
+                    'force_non_existent' => 1,
+                    'opacity' => 1,
+                    "property" => "background-color",
+                    "value" => "[color]",
+                ),
+            ),
+        )
+    ),
     'post_grid' => array(
         "undefined" => array(
             "Flat" => array(

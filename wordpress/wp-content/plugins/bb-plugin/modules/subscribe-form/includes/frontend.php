@@ -1,4 +1,4 @@
-<div class="fl-subscribe-form fl-subscribe-form-<?php echo $settings->layout; ?> fl-subscribe-form-name-<?php echo $settings->show_name; ?> fl-form fl-clearfix">
+<div class="fl-subscribe-form fl-subscribe-form-<?php echo $settings->layout; ?> fl-subscribe-form-name-<?php echo $settings->show_name; ?> fl-form fl-clearfix" <?php if ( isset( $module->template_id ) ) echo 'data-template-id="' . $module->template_id . '" data-template-node-id="' . $module->template_node_id . '"'; ?>>
 	
 	<?php if ( 'show' == $settings->show_name ) : ?>
 	<div class="fl-form-field">

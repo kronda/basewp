@@ -1,6 +1,8 @@
 <script>
 
 var FLBuilderConfig = {
+	colorPresets: <?php echo json_encode( $color_presets ); ?>,
+	customImageSizeTitles: <?php echo json_encode( apply_filters( 'image_size_names_choose', array() ) ); ?>,
 	debug: <?php if( defined( 'WP_DEBUG' ) && WP_DEBUG ) echo 'true'; else echo 'false'; ?>,
 	enabledTemplates: '<?php echo $enabled_templates; ?>',
 	help: <?php echo json_encode( $help_button ); ?>,
@@ -26,9 +28,10 @@ var FLBuilderStrings = {
 	contentSliderSelectLayout:  '<?php esc_attr_e('Please select either a background layout or content layout before submitting.', 'fl-builder'); ?>',
 	deleteAccount: '<?php esc_attr_e('Remove Account', 'fl-builder'); ?>',
 	deleteAccountWarning: '<?php esc_attr_e('Are you sure you want to remove this account? Other modules that are connected to it will be affected.', 'fl-builder'); ?>',
+	deleteColumnMessage: '<?php esc_attr_e('Do you really want to delete this column?', 'fl-builder') ?>',
 	deleteFieldMessage: '<?php esc_attr_e('Do you really want to delete this item?', 'fl-builder'); ?>',
-	deleteModuleMessage: '<?php esc_attr_e('Do you really want to delete this module? All content data will be permanently deleted.', 'fl-builder') ?>',
-	deleteRowMessage: '<?php esc_attr_e('Do you really want to delete this row? All content data will be permanently deleted.', 'fl-builder') ?>',
+	deleteModuleMessage: '<?php esc_attr_e('Do you really want to delete this module?', 'fl-builder') ?>',
+	deleteRowMessage: '<?php esc_attr_e('Do you really want to delete this row?', 'fl-builder') ?>',
 	deleteTemplate: '<?php esc_attr_e('Do you really want to delete this template?', 'fl-builder'); ?>',
 	deleteGlobalTemplate: '<?php esc_attr_e('WARNING! You are about to delete a global template that may be linked to other pages. Do you really want to delete this template and unlink it?', 'fl-builder'); ?>',
 	discard: '<?php esc_attr_e('Discard Changes', 'fl-builder'); ?>',
@@ -103,7 +106,19 @@ var FLBuilderStrings = {
 	unloadWarning: '<?php esc_attr_e('The settings you are currently editing will not be saved if you navigate away from this page.', 'fl-builder'); ?>',
 	viewKnowledgeBase: '<?php esc_attr_e('View the Knowledge Base', 'fl-builder'); ?>',
 	visitForums: '<?php esc_attr_e('Visit the Forums', 'fl-builder'); ?>',
-	watchHelpVideo: '<?php esc_attr_e('Watch the Video', 'fl-builder'); ?>'
+	watchHelpVideo: '<?php esc_attr_e('Watch the Video', 'fl-builder'); ?>',
+	welcomeMessage: '<?php esc_attr_e('Welcome! It looks like this might be your first time using the builder. Would you like to take a tour?', 'fl-builder'); ?>',
+	yesPlease: '<?php esc_attr_e('Yes Please!', 'fl-builder'); ?>',
+	colorPresets: '<?php esc_attr_e( 'Color Presets', 'fl-builder' ) ?>',
+	colorPicker: '<?php esc_attr_e( 'Color Picker', 'fl-builder' ) ?>',
+	placeholder: '<?php esc_attr_e( 'Paste color here...', 'fl-builder' ) ?>',
+	removePresetConfirm: '<?php esc_attr_e( 'Are you sure?', 'fl-builder' ) ?>',
+	noneColorSelected: '<?php esc_attr_e( 'Please enter a color first.', 'fl-builder' ) ?>',
+	alreadySaved: '<?php esc_attr_e( ' is already a saved preset.', 'fl-builder' ) ?>',
+	noPresets: '<?php esc_attr_e( 'Add a color preset first.', 'fl-builder' ) ?>',
+	presetAdded: '<?php esc_attr_e( ' added to presets!', 'fl-builder' ) ?>'
 };
+
+<?php FLBuilderFonts::js(); ?>
 
 </script>

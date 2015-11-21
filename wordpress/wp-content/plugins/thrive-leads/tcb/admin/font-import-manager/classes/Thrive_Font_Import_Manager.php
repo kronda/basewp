@@ -134,8 +134,6 @@ class Thrive_Font_Import_Manager
                 'family' => $name,
                 'variants' => array(
                     'regular',
-                    'italic',
-                    '600'
                 ),
                 'subsets' => array(
                     'latin'

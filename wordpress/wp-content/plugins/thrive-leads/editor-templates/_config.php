@@ -5,6 +5,10 @@
 
 return array(
     'ribbon' => array(
+        'blank_set' => array(
+            'name' => 'Blank Ribbon',
+            'css' => 'blank_set.css'
+        ),
         'one_set' => array(
             'name' => 'Ribbon Set 001',
             'css' => 'one_set.css',
@@ -69,6 +73,10 @@ return array(
         ),
     ),
     'lightbox' => array(
+        'blank_set' => array(
+            'name' => 'Blank Lightbox',
+            'css' => 'blank_set.css'
+        ),
         'one_set_v1' => array(
             'name' => 'Lightbox Set 001 v1',
             'css' => 'one_set.css',
@@ -789,6 +797,10 @@ return array(
         )
     ),
     'widget' => array(
+        'blank_set' => array(
+            'name' => 'Blank Widget',
+            'css' => 'blank_set.css'
+        ),
         'one_set' => array(
             'name' => 'Widget Set 001',
             'css' => 'one_set.css',
@@ -1074,7 +1086,66 @@ return array(
             ),
         ),
     ),
+    'greedy_ribbon' => array(
+        'blank_set' => array(
+            'name' => 'Blank Scroll Mat',
+            'css' => 'blank_set.css'
+        ),
+        'gr_one_set' => array(
+            'name' => 'Scroll Mat set 001',
+            'css' => 'gr_one_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Oswald:400,300,700',
+                '//fonts.googleapis.com/css?family=Merriweather:400,700,300'
+            ),
+            'icons' => array(
+                'gr-one-set-close'
+            )
+        ),
+        'gr_two_set' => array(
+            'name' => 'Scroll Mat set 002',
+            'css' => 'gr_two_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700,800'
+            ),
+            'icons' => array(
+                'gr-two-set-close'
+            )
+        ),
+        'gr_three_set' => array(
+            'name' => 'Scroll Mat set 003',
+            'css' => 'gr_three_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700',
+                '//fonts.googleapis.com/css?family=Roboto:400,300,700'
+            ),
+            'icons' => array(
+                'gr-three-set-close'
+            )
+        ),
+        /*'gr_four_set' => array(
+            'name' => 'Scroll Mat set 004',
+            'css' => 'gr_four_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Roboto:400,300,700,300italic'
+            ),
+            'icons' => array(
+                'gr-four-set-close', 'gr-four-set-mail'
+            )
+        ),
+        'gr_five_set' => array(
+            'name' => 'Scroll Mat set 005',
+            'css' => 'gr_five_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Montserrat:400,700'
+            )
+        ),*/
+    ),
     'screen_filler' => array(
+        'blank_set' => array(
+            'name' => 'Blank Screen filler',
+            'css' => 'blank_set.css'
+        ),
         'two_set_v1' => array(
             'name' => 'Screen filler Set 002 v1',
             'css' => 'two_set.css',
@@ -1442,6 +1513,10 @@ return array(
         )
     ),
     'slide_in' => array (
+        'blank_set' => array(
+            'name' => 'Blank Slide in',
+            'css' => 'blank_set.css'
+        ),
         'one_set_v1' => array(
             'name' => 'Slide in Set 001 v1',
             'css' => 'one_set.css',
@@ -1533,6 +1608,10 @@ return array(
         ),
     ),
     'post_footer' => array(
+        'blank_set' => array(
+            'name' => 'Blank Post footer',
+            'css' => 'blank_set.css'
+        ),
         'one_set' => array(
             'name' => 'Post footer Set 001',
             'css' => 'one_set.css',
@@ -2067,6 +2146,10 @@ return array(
         )
     ),
     'in_content' => array(
+        'blank_set' => array(
+            'name' => 'Blank In content',
+            'css' => 'blank_set.css'
+        ),
         'one_set' => array(
             'name' => 'In content Set 001',
             'css' => 'one_set.css',
@@ -2330,6 +2413,10 @@ return array(
         ),
     ),
     'shortcode' => array(
+        'blank_set' => array(
+            'name' => 'Blank Shortcode',
+            'css' => 'blank_set.css'
+        ),
         'one_set' => array(
             'name' => 'Shortcode Set 001',
             'css' => 'one_set.css',

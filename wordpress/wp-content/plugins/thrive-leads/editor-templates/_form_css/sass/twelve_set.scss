@@ -160,7 +160,7 @@ body {
       line-height: 25px;
       padding: 22px 10px;
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       border-radius: 5px;
       @include roboto();
       box-shadow: 0 3px 4px -3px rgba(#000, .4) inset;
@@ -234,7 +234,7 @@ $color-pallete: 'blue' #667b81 #85959a #57696e #516267 #bad2d9 #667b81,
       }
     }
     .thrv_lead_generation.tve_#{nth($color, 1)} {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         border: 2px solid rgba(nth($color, 5), .2);
         &:hover {
           border: 2px solid rgba(nth($color, 5), .35);

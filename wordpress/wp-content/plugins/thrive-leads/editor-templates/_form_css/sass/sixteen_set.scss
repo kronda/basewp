@@ -142,7 +142,7 @@ $black: #000;
       line-height: 30px;
       padding: 14px 10px;
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       border-radius: 0;
       @include roboto();
       border: 3px double #ccc;

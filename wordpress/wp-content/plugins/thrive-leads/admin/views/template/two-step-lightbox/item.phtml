@@ -1,8 +1,11 @@
 <div class="tve-two-step-lightbox-heading tve-shortcode-heading collapse-table-list-heading">
     <span
         class="tve-two-step-lightbox-part tve-shortcode-part collapse-table-part-condensed collapse-table-part tve-two-step-lightbox-title collapse-table-part-title">
-
-            <strong class="bigger"><#= two_step_lightbox.get('post_title') #></strong>
+            <span class="group-title"><strong class="bigger"><#= two_step_lightbox.get('post_title') #></strong></span>
+            <input class="tve-form-control tve-input-small tve-input-inline tve-input-condensed tve-edit-title-input" style="display: none;">
+            <a href="javascript:void(0)" class="tve-btn tve-btn-icon tve-edit-title" style="margin-right: 5px;">
+                <span class="tve-icon-pencil"></span>
+            </a>
             <# if(two_step_lightbox.get('active_test')) { #>
             <span class="testing"><?php echo __('(test in progress)', 'thrive-leads') ?></span>
             <# } #>

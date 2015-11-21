@@ -1,0 +1,170 @@
+@mixin transition($transition-property, $transition-time, $method) {
+  -webkit-transition: $transition-property $transition-time $method;
+  -moz-transition: $transition-property $transition-time $method;
+  -ms-transition: $transition-property $transition-time $method;
+  -o-transition: $transition-property $transition-time $method;
+  transition: $transition-property $transition-time $method;
+}
+@mixin box-sizing {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+}
+@mixin bshadow(){
+  box-shadow: 0px 4px 2px -2px #e0e0e0;
+  background: #ffffff;
+  //@include box-shadow(0 0 3px rgba(1,1,1,.16));
+
+}
+@mixin border($borderWidth, $borderStyle, $borderColor) {
+  border: $borderWidth $borderStyle $borderColor;
+}
+@mixin marginBottom {
+  margin-bottom: 20px;
+}
+@mixin hoverOpacity {
+  @include transition(opacity, 0.5s, ease);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility:    hidden;
+  -ms-backface-visibility:     hidden;
+  opacity: 1;
+  &:hover {
+    opacity: 0.8;
+
+  }
+}
+@mixin setGalleryWidths($containerWidth, $className, $startNo, $endNo, $defaultWidth) {
+  @for $i from $startNo through $endNo {
+    .#{$className} .gallery-columns-#{$i} {
+      .gallery-item {
+        $size: $containerWidth / $i;
+        $gridWidth: 100% / $i;
+        width: $gridWidth !important;
+        @if $defaultWidth == true and $size < 90px {
+          dt {
+            a {
+              height: 120px !important;
+              width: 120px !important;
+            }
+          }
+        }
+        dt {
+          a {
+            height: $size;
+            width: $size;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@mixin responsivebackground {
+  @media only screen and (max-width: 1080px) {
+    .wrp {
+      background: yellow;
+    }
+  }
+  @media only screen and (max-width: 940px) {
+    .wrp {
+      background: blue;
+    }
+  }
+  @media only screen and (max-width: 774px) and (min-width: 540px) {
+    .wrp {
+      background: green;
+    }
+  }
+  @media only screen and (max-width: 540px) {
+    .wrp {
+      background: pink;
+    }
+  }
+  @media only screen and (max-width: 380px) {
+    .wrp {
+      background: purple;
+    }
+  }
+}
+
+@mixin clearfix {
+  &:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
+}
+
+@mixin animation-duration($time) {
+  animation-duration: $time;
+  -webkit-animation-duration: $time;
+}
+
+@mixin animation-timing-function($function-name) {
+  animation-timing-function: $function-name;
+  -webkit-animation-timing-function: $function-name;
+}
+
+@mixin animation-name($keyframe-name) {
+  animation-name: $keyframe-name;
+  -webkit-animation-name: $keyframe-name;
+}
+
+@mixin animation-iteration-count($animation-iteration) {
+  animation-iteration-count: $animation-iteration;
+  -webkit-animation-iteration-count: $animation-iteration;
+}
+
+@mixin animation-fill-mode($animation-fill) {
+  animation-fill-mode: $animation-fill;
+  -webkit-animation-fill-mode: $animation-fill;
+}
+@mixin animation-play-state($animation-state) {
+  animation-play-state: $animation-state;
+  -webkit-animation-play-state: $animation-state;
+}
+@keyframes progress-bar {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@-webkit-keyframes progress-bar {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes fill-counter {
+  from {
+    height: 0%;
+  }
+  to {
+    height: 100%;
+  }
+}
+
+@-webkit-keyframes fill-counter {
+  from {
+    height: 0;
+  }
+  to {
+    height: 100%;
+  }
+}
+@mixin cover-background {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}

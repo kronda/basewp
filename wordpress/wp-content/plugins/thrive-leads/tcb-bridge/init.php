@@ -74,6 +74,9 @@ function tve_leads_frontend_enqueue_scripts()
     if (tve_get_post_meta(get_the_ID(), 'tve_has_masonry')) {
         wp_enqueue_script("jquery-masonry", array('jquery'));
     }
+    if (tve_get_post_meta(get_the_ID(), 'tve_has_typefocus')) {
+        tve_enqueue_script('tve_typed', tve_editor_js() . '/typed.min.js', array(), false, true);
+    }
     wp_enqueue_style("tve_default", tve_editor_css() . '/thrive_default.css');
     wp_enqueue_style("tve_colors", tve_editor_css() . '/thrive_colors.css');
     tve_enqueue_style_family();

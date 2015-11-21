@@ -221,7 +221,7 @@ $black: #000;
         line-height: 31px;
       }
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       @include cabin();
       border-radius: 7px;
       box-shadow: 0 0 5px 0 rgba(#000, .24) inset;

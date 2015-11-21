@@ -38,6 +38,24 @@
 		_addModuleAfterRowRender    : null,
 		
 		/**
+		 * An object that holds data for column resizing.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @property {Object} _colResizeData
+		 */
+		_colResizeData              : null,
+		
+		/**
+		 * A flag for whether a column is being resized or not.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @property {Boolean} _colResizing
+		 */
+		_colResizing              	: false,
+		
+		/**
 		 * The CSS class of the main content wrapper for the
 		 * current layout that is being worked on.
 		 *
@@ -530,7 +548,13 @@
 			$(document).on('heartbeat-tick', FLBuilder._initPostLock);
 			
 			/* Unload Warning */
-			$(window).on('beforeunload', FLBuilder._warnBeforeUnload);  
+			$(window).on('beforeunload', FLBuilder._warnBeforeUnload);
+			
+			/* Submenus */
+			$('body').delegate('.fl-builder-has-submenu', 'click', FLBuilder._submenuParentClicked);
+			$('body').delegate('.fl-builder-has-submenu a', 'click', FLBuilder._submenuChildClicked);
+			$('body').delegate('.fl-builder-submenu', 'mouseenter', FLBuilder._submenuMouseenter);
+			$('body').delegate('.fl-builder-submenu', 'mouseleave', FLBuilder._submenuMouseleave);
 			
 			/* Bar */
 			$('.fl-builder-tools-button').on('click', FLBuilder._toolsClicked);
@@ -604,15 +628,20 @@
 			
 			/* Columns */
 			$('body').delegate('.fl-col-overlay', 'click', FLBuilder._colSettingsClicked);
-			$('body').delegate('.fl-col-overlay .fl-block-settings', 'click', FLBuilder._colSettingsClicked);
 			$('body').delegate('.fl-builder-col-settings .fl-builder-settings-save', 'click', FLBuilder._saveSettings);
 			$('body').delegate('.fl-col-overlay .fl-block-remove', 'click', FLBuilder._deleteColClicked);
+			
+			/* Columns Submenu */
+			$('body').delegate('.fl-block-col-submenu .fl-block-col-edit', 'click', FLBuilder._colSettingsClicked);
+			$('body').delegate('.fl-block-col-submenu .fl-block-col-delete', 'click', FLBuilder._deleteColClicked);
+			$('body').delegate('.fl-block-col-submenu .fl-block-col-insert-before', 'click', FLBuilder._insertColBeforeClicked);
+			$('body').delegate('.fl-block-col-submenu .fl-block-col-insert-after', 'click', FLBuilder._insertColAfterClicked);
+			$('body').delegate('.fl-block-col-submenu .fl-block-col-reset', 'click', FLBuilder._resetColumnWidths);
 			
 			/* Modules */
 			$('body').delegate('.fl-module-overlay .fl-block-remove', 'click', FLBuilder._deleteModuleClicked);
 			$('body').delegate('.fl-module-overlay .fl-block-copy', 'click', FLBuilder._moduleCopyClicked);
 			$('body').delegate('.fl-module-overlay .fl-block-move', 'mousedown', FLBuilder._blockDragInit);
-			$('body').delegate('.fl-module-overlay .fl-block-columns', 'click', FLBuilder._colSettingsClicked);
 			$('body').delegate('.fl-module-overlay .fl-block-settings', 'click', FLBuilder._moduleSettingsClicked);
 			$('body').delegate('.fl-module-overlay', 'click', FLBuilder._moduleSettingsClicked);
 			$('body').delegate('.fl-builder-module-settings .fl-builder-settings-save', 'click', FLBuilder._saveModuleClicked);
@@ -669,6 +698,9 @@
 			
 			/* Loop Builder Fields */
 			$('body').delegate('.fl-loop-builder select[name=post_type]', 'change', FLBuilder._loopBuilderPostTypeChange);
+
+			/* Text Fields - Add Value Selector */
+			$('body').delegate('.fl-select-add-value', 'change', FLBuilder._textFieldAddValueSelectChange);
 		},
 		
 		/**
@@ -808,6 +840,89 @@
 		_hideTipTips: function()
 		{
 			$('#tiptip_holder').stop().remove();
+		},
+		
+		/* Submenus
+		----------------------------------------------------------*/
+		
+		/**
+		 * Callback for when the parent of a submenu is clicked.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _submenuParentClicked
+		 * @param {Object} e The event object.
+		 */
+		_submenuParentClicked: function( e )
+		{
+			var parent 	 = $( this ),
+				submenu  = parent.find( '.fl-builder-submenu' );
+				
+			if ( parent.hasClass( 'fl-builder-submenu-open' ) ) {
+				parent.removeClass( 'fl-builder-submenu-open' );
+				parent.removeClass( 'fl-builder-submenu-right' );
+			}
+			else {
+				
+				if( parent.offset().left + submenu.width() > $( window ).width() ) {
+					parent.addClass( 'fl-builder-submenu-right' );
+				}
+				
+				parent.addClass( 'fl-builder-submenu-open' );
+			}
+			
+			FLBuilder._hideTipTips();
+			e.preventDefault();
+			e.stopPropagation();
+		},
+		
+		/**
+		 * Callback for when the child of a submenu is clicked.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _submenuChildClicked
+		 * @param {Object} e The event object.
+		 */
+		_submenuChildClicked: function( e )
+		{
+			$( this ).closest( '.fl-builder-submenu-open' ).removeClass( 'fl-builder-submenu-open' );
+		},
+		
+		/**
+		 * Callback for when the mouse enters a submenu.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _submenuMouseenter
+		 * @param {Object} e The event object.
+		 */
+		_submenuMouseenter: function( e )
+		{
+			var menu 	= $( this ),
+				timeout = menu.data( 'timeout' );
+				
+			if ( 'undefined' != typeof timeout ) {
+				clearTimeout( timeout );
+			}
+		},
+		
+		/**
+		 * Callback for when the mouse leaves a submenu.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _submenuMouseleave
+		 * @param {Object} e The event object.
+		 */
+		_submenuMouseleave: function( e )
+		{
+			var menu 	= $( this ),
+				timeout = setTimeout( function(){
+					menu.closest( '.fl-builder-submenu-open' ).removeClass( 'fl-builder-submenu-open' );
+				}, 500 );
+			
+			menu.data( 'timeout', timeout );
 		},
 		
 		/* Bar
@@ -2228,11 +2343,9 @@
 		 */
 		_removeAllOverlays: function()
 		{
-			var modules = $('.fl-module');
-			
-			modules.removeClass('fl-block-overlay-active');
-			modules.find('.fl-module-overlay').remove();
 			FLBuilder._removeRowOverlays();
+			FLBuilder._removeColOverlays();
+			FLBuilder._removeModuleOverlays();
 			FLBuilder._hideTipTips();
 		},
 		
@@ -2375,7 +2488,7 @@
 		{
 			var row      = $( this ),
 				template = wp.template( 'fl-row-overlay' );
-			
+
 			if ( ! row.hasClass( 'fl-block-overlay-active' ) ) {
 				FLBuilder._appendOverlay( row, template( { 
 					global : row.hasClass( 'fl-node-global' ), 
@@ -2705,6 +2818,9 @@
 			var col 	 	  	= $( this ),
 				global		  	= col.hasClass( 'fl-node-global' ),
 				parentGlobal  	= col.parents( '.fl-node-global' ).length > 0,
+				numCols		  	= col.parents( '.fl-col-group' ).find( '.fl-col' ).length,
+				first   		= 0 === col.index(),
+				last    		= numCols === col.index() + 1,
 				template 		= wp.template( 'fl-col-overlay' );
 
 			if ( FLBuilderConfig.simpleUi ) {
@@ -2716,10 +2832,22 @@
 			else if ( col.find( '.fl-module' ).length > 0 ) {
 				return;
 			}
-			else if ( ! col.hasClass( 'fl-block-overlay-active' ) ) {     
+			else if ( ! col.hasClass( 'fl-block-overlay-active' ) ) {
+				
+				// Remove existing overlays.
+				FLBuilder._removeColOverlays();
+				FLBuilder._removeModuleOverlays();
+				
+				// Append the template.
 				FLBuilder._appendOverlay( col, template( {
-					global: global
+					global	: global,
+					numCols	: numCols,
+					first   : first,
+					last   	: last
 				} ) );
+				
+				// Init column resizing.
+				FLBuilder._initColDragResizing();
 			}
 			
 			$( 'body' ).addClass( 'fl-block-overlay-muted' );
@@ -2745,8 +2873,22 @@
 				return;
 			}
 			
-			col.removeClass('fl-block-overlay-active');
-			col.find('.fl-col-overlay').remove();
+			FLBuilder._removeColOverlays();
+		},
+		
+		/**
+		 * Removes all column overlays from the page.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _removeColOverlays
+		 */
+		_removeColOverlays: function()
+		{
+			var cols = $( '.fl-col' );
+			
+			cols.removeClass('fl-block-overlay-active');
+			cols.find('.fl-col-overlay').remove();
 			$('body').removeClass('fl-block-overlay-muted');
 		},
 		
@@ -2762,6 +2904,10 @@
 		_colSettingsClicked: function(e)
 		{
 			var nodeId = $(this).closest('.fl-col').attr('data-node');
+			
+			if ( FLBuilder._colResizing ) {
+				return;
+			}
 			
 			FLBuilder._closePanel();
 			FLBuilder._showLightbox();
@@ -2806,10 +2952,20 @@
 		 * @method _deleteColClicked
 		 * @param {Object} e The event object.
 		 */
-		_deleteColClicked: function(e)
+		_deleteColClicked: function( e )
 		{
-			FLBuilder._deleteCol($(this).closest('.fl-col'));
-			FLBuilder._removeAllOverlays();
+			var button = $( this ),
+				col    = button.closest( '.fl-col' ),
+				module = button.closest( '.fl-module' ),
+				result = true;
+				
+			if ( module.length > 0 ) {
+				result = confirm( FLBuilderStrings.deleteColumnMessage );	
+			}
+			if ( result ) {
+				FLBuilder._deleteCol( col );
+				FLBuilder._removeAllOverlays();
+			}
 			
 			e.stopPropagation();
 		},
@@ -2842,7 +2998,17 @@
 					group.remove();
 				}
 				else {
-					width = 100/groupCols.length;
+					
+					if ( 6 === groupCols.length ) {
+						width = 16.65;
+					}
+					else if ( 7 === groupCols.length ) {
+						width = 14.28;
+					}
+					else {
+						width = Math.round( 100 / groupCols.length * 100 ) / 100;
+					}
+					
 					groupCols.css('width', width + '%');
 				}
 			
@@ -2854,6 +3020,60 @@
 					silent          : true
 				});
 			}
+		},
+		
+		/**
+		 * Inserts a column before another column when the insert
+		 * column before link is clicked.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _insertColBeforeClicked
+		 * @param {Object} e The event object.
+		 */
+		_insertColBeforeClicked: function( e )
+		{
+			FLBuilder._insertCol( $( this ).closest( '.fl-col' ), 'before' );
+			
+			e.stopPropagation();
+		},
+		
+		/**
+		 * Inserts a column after another column when the insert
+		 * column after link is clicked.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _insertColAfterClicked
+		 * @param {Object} e The event object.
+		 */
+		_insertColAfterClicked: function( e )
+		{
+			FLBuilder._insertCol( $( this ).closest( '.fl-col' ), 'after' );
+			
+			e.stopPropagation();
+		},
+		
+		/**
+		 * Inserts a column before or after another column.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _insertCol
+		 * @param {Object} col A jQuery reference of the column to insert before or after.
+		 * @param {String} insert Either before or after.
+		 */
+		_insertCol: function( col, insert )
+		{
+			FLBuilder.showAjaxLoader();
+			FLBuilder._removeAllOverlays();
+			
+			FLBuilder.ajax( {
+				action          : 'fl_builder_save',
+				method          : 'insert_col',
+				node_id         : col.attr('data-node'),
+				insert 			: insert
+			}, FLBuilder._updateLayout );
 		},
 		
 		/**
@@ -2924,6 +3144,212 @@
 			FLBuilder._initSortables();
 		},
 		
+		/**
+		 * Initializes draggables for column resizing.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _initColDragResizing
+		 */
+		_initColDragResizing: function()
+		{
+			$( '.fl-block-col-resize' ).draggable( {
+				axis 	: 'x',
+				start 	: FLBuilder._colDragResizeStart,
+				drag	: FLBuilder._colDragResize,
+				stop 	: FLBuilder._colDragResizeStop
+			} );
+		},
+		
+		/**
+		 * Fires when dragging for a column resize starts.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _colDragResizeStart
+		 * @param {Object} e The event object.
+		 * @param {Object} ui An object with additional info for the drag.
+		 */
+		_colDragResizeStart: function( e, ui )
+		{
+			// Setup resize vars.
+			var handle 		= $( ui.helper ),
+				direction 	= '',
+				group		= handle.closest( '.fl-col-group' ),
+				cols 		= group.find( '.fl-col' ),
+				col 		= handle.closest( '.fl-col' ),
+				sibling 	= null,
+				availWidth  = 100,
+				i 			= 0;
+			
+			// Find the direction and sibling.
+			if ( handle.hasClass( 'fl-block-col-resize-e' ) ) {
+				direction = 'e';
+				sibling = col.next( '.fl-col' );
+			}
+			else {
+				direction = 'w';
+				sibling = col.prev( '.fl-col' );
+			}
+			
+			// Find the available width.
+			for ( ; i < cols.length; i++ ) {
+				
+				if ( cols.eq( i ).data( 'node' ) == col.data( 'node' ) ) {
+					continue;
+				}
+				if ( cols.eq( i ).data( 'node' ) == sibling.data( 'node' ) ) {
+					continue;
+				}
+				
+				availWidth -= parseFloat( cols.eq( i )[ 0 ].style.width );
+			}
+			
+			// Build the resize data object.
+			FLBuilder._colResizeData = {
+				handle			: handle,
+				feedbackLeft	: handle.find( '.fl-block-col-resize-feedback-left' ),
+				feedbackRight	: handle.find( '.fl-block-col-resize-feedback-right' ),
+				direction		: direction,
+				groupWidth		: group.outerWidth(),
+				col 			: col,
+				colWidth 		: parseFloat( col[ 0 ].style.width ) / 100,
+				sibling 		: sibling,
+				offset  		: ui.position.left,
+				availWidth		: availWidth
+			};
+			
+			// Set the resizing flag.
+			FLBuilder._colResizing = true;
+			
+			// Close the builder panel and destroy overlay events.
+			FLBuilder._closePanel();
+			FLBuilder._destroyOverlayEvents();
+		},
+		
+		/**
+		 * Fires when dragging for a column resize is in progress.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _colDragResize
+		 * @param {Object} e The event object.
+		 * @param {Object} ui An object with additional info for the drag.
+		 */
+		_colDragResize: function( e, ui )
+		{
+			// Setup resize vars.
+			var data 			= FLBuilder._colResizeData,
+				change 			= ( data.offset - ui.position.left ) / data.groupWidth,
+				colWidth 		= 'e' == data.direction ? ( data.colWidth - change ) * 100 : ( data.colWidth + change ) * 100,
+				colRound 		= Math.round( colWidth * 100 ) / 100,
+				siblingWidth	= data.availWidth - colWidth,
+				siblingRound	= Math.round( siblingWidth * 100 ) / 100,
+				minRound		= 10,
+				maxRound		= Math.round( ( data.availWidth - 10 ) * 100 ) / 100;
+			
+			// Set the min/max width if needed.
+			if ( colRound < 10 ) {
+				colRound 		= minRound;
+				siblingRound 	= maxRound;
+			}
+			else if ( siblingRound < 10 ) {
+				colRound 		= maxRound;
+				siblingRound 	= minRound;
+			}
+			
+			// Set the feedback values.
+			if ( 'e' == data.direction ) {
+				data.feedbackLeft.html( colRound.toFixed( 1 ) + '%'  ).show();
+				data.feedbackRight.html( siblingRound.toFixed( 1 ) + '%'  ).show();
+			}
+			else {
+				data.feedbackLeft.html( siblingRound.toFixed( 1 ) + '%'  ).show();
+				data.feedbackRight.html( colRound.toFixed( 1 ) + '%'  ).show();
+			}
+			
+			// Set the width attributes.
+			data.col.css( 'width', colRound + '%' );
+			data.sibling.css( 'width', siblingRound + '%' );
+		},
+		
+		/**
+		 * Fires when dragging for a column resize stops.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _colDragResizeStop
+		 * @param {Object} e The event object.
+		 * @param {Object} ui An object with additional info for the drag.
+		 */
+		_colDragResizeStop: function( e, ui )
+		{
+			var data = FLBuilder._colResizeData;
+			
+			// Hide the feedback divs.
+			FLBuilder._colResizeData.feedbackLeft.hide();
+			FLBuilder._colResizeData.feedbackRight.hide();
+			
+			// Save the resize data.
+			FLBuilder.ajax({
+				action			: 'fl_builder_save',
+				method			: 'resize_cols',
+				col_id			: data.col.data( 'node' ),
+				col_width		: parseFloat( data.col[ 0 ].style.width ),
+				sibling_id		: data.sibling.data( 'node' ),
+				sibling_width	: parseFloat( data.sibling[ 0 ].style.width ),
+				silent			: true
+			});
+			
+			// Reset the resize data.
+			FLBuilder._colResizeData = null;
+			
+			// Rebind overlay events.
+			FLBuilder._bindOverlayEvents();
+			
+			// Set the resizing flag to false with a timeout so other events get the right value.
+			setTimeout( function() { FLBuilder._colResizing = false; }, 50 );
+		},
+		
+		/**
+		 * Resets the widths of all columns in a group.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _resetColumnWidths
+		 * @param {Object} e The event object.
+		 */
+		_resetColumnWidths: function( e )
+		{
+			var group = $( this ).closest( '.fl-col-group' ),
+				cols  = group.find( '.fl-col' ),
+				width = 0;
+			
+			// Get the new width.
+			if ( 6 === cols.length ) {
+				width = 16.65;
+			}
+			else if ( 7 === cols.length ) {
+				width = 14.28;
+			}
+			else {
+				width = Math.round( 100 / cols.length * 100 ) / 100;
+			}
+			
+			// Apply it to the columns.
+			cols.css('width', width + '%');
+			
+			// Save the resize data.
+			FLBuilder.ajax({
+				action		: 'fl_builder_save',
+				method		: 'reset_col_widths',
+				group_id	: group.data( 'node' ),
+				silent		: true
+			});
+			
+			e.stopPropagation();
+		},
+		
 		/* Modules
 		----------------------------------------------------------*/
 		
@@ -2940,21 +3366,39 @@
 				moduleName    = module.attr( 'data-name' ),
 				global		  = module.hasClass( 'fl-node-global' ),
 				parentGlobal  = module.parents( '.fl-node-global' ).length > 0,
+				numCols		  = module.parents( '.fl-col-group' ).find( '.fl-col' ).length,
+				parentCol	  = module.parents( '.fl-col' ),
+				parentFirst   = 0 === parentCol.index(),
+				parentLast    = numCols === parentCol.index() + 1,
 				template	  = wp.template( 'fl-module-overlay' );
+				
+			// Remove existing overlays.
+			FLBuilder._removeColOverlays();
+			FLBuilder._removeModuleOverlays();
 			
+			// Don't show if this is a global row in a standard layout.
 			if ( global && parentGlobal && 'row' != FLBuilderConfig.userTemplateType ) {
 				return;
 			}
+			// Show the overlay.
 			else if ( ! module.hasClass( 'fl-block-overlay-active' ) ) {
 
+				// Adjust the height if needed.
 				if ( module.outerHeight( true ) < 20 ) {
 					module.addClass( 'fl-module-adjust-height' );
 				}
 				
+				// Append the template.
 				FLBuilder._appendOverlay( module, template( { 
 					global 		: global, 
-					moduleName	: moduleName 
+					moduleName	: moduleName,
+					numCols		: numCols,
+					parentFirst : parentFirst,
+					parentLast  : parentLast
 				} ) );
+				
+				// Init column resizing.
+				FLBuilder._initColDragResizing();
 			}
 			
 			$( 'body' ).addClass( 'fl-block-overlay-muted' );
@@ -2979,9 +3423,23 @@
 				return;
 			}
 			
-			module.removeClass('fl-module-adjust-height');
-			module.removeClass('fl-block-overlay-active');
-			module.find('.fl-module-overlay').remove();
+			FLBuilder._removeModuleOverlays();
+		},
+		
+		/**
+		 * Removes all module overlays from the page.
+		 *
+		 * @since 1.6.4
+		 * @access private
+		 * @method _removeModuleOverlays
+		 */
+		_removeModuleOverlays: function()
+		{
+			var modules = $('.fl-module');
+			
+			modules.removeClass('fl-module-adjust-height');
+			modules.removeClass('fl-block-overlay-active');
+			modules.find('.fl-module-overlay').remove();
 			$('body').removeClass('fl-block-overlay-muted');
 		},
 		
@@ -3198,6 +3656,9 @@
 			
 			e.stopPropagation();
 			
+			if ( FLBuilder._colResizing ) {
+				return;
+			}
 			if ( global && ! FLBuilderConfig.userCanEditGlobalTemplates ) {
 				return;
 			}
@@ -3670,6 +4131,7 @@
 			FLBuilder._initMultipleFields();
 			FLBuilder._initAutoSuggestFields();
 			FLBuilder._initLinkFields();
+			FLBuilder._initFontFields();
 		},
 		
 		/**
@@ -4349,49 +4811,34 @@
 		 */ 
 		_initColorPickers: function()
 		{
-			$('.fl-color-picker').each(function(){
-			
-				var wrapper  = $(this),
-					picker   = wrapper.find('.fl-color-picker-color'),
-					startHex = '#' + wrapper.find('.fl-color-picker-value').val();
-					
-				picker.ColorPicker({
-					color: startHex,
-					onShow: function (dialog) {
-						$(dialog).fadeIn(500);
-						return false;
-					},
-					onHide: function (dialog) {
-						$(dialog).fadeOut(500);
-						return false;
-					},
-					onChange: function (hsb, hex, rgb) {
-						picker.css('background-color', '#' + hex);  
-						wrapper.removeClass('fl-color-picker-empty');
-						wrapper.find('.fl-color-picker-value').val(hex).trigger('change');
-					}
-				}).css('background-color', startHex);
-				
-				wrapper.find('.fl-color-picker-clear').on('click', FLBuilder._clearColorPicker);
-			});
+
+			var colorPresets 	   = FLBuilderConfig.colorPresets ? FLBuilderConfig.colorPresets : [];
+			FLBuilder.colorPicker  = new FLBuilderColorPicker({
+				elements: '.fl-color-picker .fl-color-picker-value',
+		    	presets: colorPresets,
+				labels: {
+					colorPresets 		: FLBuilderStrings.colorPresets,
+					colorPicker 		: FLBuilderStrings.colorPicker,
+					placeholder			: FLBuilderStrings.placeholder,
+					removePresetConfirm	: FLBuilderStrings.removePresetConfirm,
+					noneColorSelected	: FLBuilderStrings.noneColorSelected,
+					alreadySaved		: FLBuilderStrings.alreadySaved,
+					noPresets			: FLBuilderStrings.noPresets,
+					presetAdded			: FLBuilderStrings.presetAdded,
+				}
+		    });
+
+			$( FLBuilder.colorPicker ).on( 'presetRemoved presetAdded', function( event, data ){
+	    		FLBuilder.ajax({
+				    action: 'fl_builder_save',
+				    method: 'save_color_presets',
+				   presets: data.presets
+				});
+
+	    	});
+
 		},
-		
-		/**
-		 * Clears the color of a color picker field.
-		 *
-		 * @since 1.0
-		 * @access private
-		 * @method _clearColorPicker
-		 */ 
-		_clearColorPicker: function()
-		{
-			var button = $(this);
 				
-			button.siblings('.fl-color-picker-color').css('background-color', 'transparent');
-			button.siblings('.fl-color-picker-value').val('').trigger('change');
-			button.parent().addClass('fl-color-picker-empty');
-		},
-		
 		/* Single Photo Fields
 		----------------------------------------------------------*/
 		
@@ -4508,6 +4955,7 @@
 			var html     = '',
 				size     = null,
 				selected = null,
+				title    = '',
 				titles = {
 					full      : FLBuilderStrings.fullSize,
 					large     : FLBuilderStrings.large,
@@ -4521,8 +4969,19 @@
 			else {
 				
 				for(size in photo.sizes) {
+					
+					if ( 'undefined' != typeof titles[ size ] ) {
+						title = titles[ size ] + ' - ';
+					}
+					else if ( 'undefined' != typeof FLBuilderConfig.customImageSizeTitles[ size ] ) {
+						title = FLBuilderConfig.customImageSizeTitles[ size ] + ' - ';
+					}
+					else {
+						title = '';
+					}
+					
 					selected = size == 'full' ? ' selected="selected"' : '';
-					html += '<option value="' + photo.sizes[size].url + '"' + selected + '>' + titles[size]  + ' - ' + photo.sizes[size].width + ' x ' + photo.sizes[size].height + '</option>';
+					html += '<option value="' + photo.sizes[size].url + '"' + selected + '>' + title + photo.sizes[size].width + ' x ' + photo.sizes[size].height + '</option>';
 				}
 			}
 			
@@ -5018,6 +5477,79 @@
 		{
 			$(this).parent().hide();
 		},
+
+		/* Font Fields
+		----------------------------------------------------------*/
+		
+		/**
+		 * Initializes all font fields in a settings form.
+		 *
+		 * @since  1.6.3
+		 * @access private
+		 * @method _initFontFields
+		 */ 
+		_initFontFields: function(){
+			$('.fl-font-field').each( FLBuilder._initFontField );
+		},
+
+		/**
+		 * Initializes a single font field in a settings form.
+		 *
+		 * @since  1.6.3
+		 * @access private
+		 * @method _initFontFields
+		 */ 
+		_initFontField: function(){
+			var wrap   = $(this),
+				font   = wrap.find( '.fl-font-field-font' );
+	
+			font.on( 'change', function(){
+				FLBuilder._getFontWeights( font );
+			} );
+
+		},
+
+		/**
+		 * Renders the correct weights list for a respective font.
+		 *
+		 * @since  1.6.3
+		 * @acces  private
+		 * @method _getFontWeights
+		 * @param  {Object} currentFont The font field element.
+		 */
+		_getFontWeights: function( currentFont ){
+			var selectWeight = currentFont.next( '.fl-font-field-weight' ),
+				font         = currentFont.val(),
+				weightMap    = {
+					'default' : 'Default',
+					'100': 'Thin 100',
+					'200': 'Extra-Light 200',
+					'300': 'Light 300',
+					'400': 'Normal 400',
+					'500': 'Medium 500',
+					'600': 'Semi-Bold 600',
+					'700': 'Bold 700',
+					'800': 'Extra-Bold 800',
+					'900': 'Ultra-Bold 900'
+				},
+				weights      = {};
+
+				selectWeight.html('');
+
+				if ( 'undefined' != typeof FLBuilderFontFamilies.system[ font ] ) {
+					weights = FLBuilderFontFamilies.system[ font ].weights;
+				}
+				else if ( 'undefined' != typeof FLBuilderFontFamilies.google[ font ] ) {
+					weights = FLBuilderFontFamilies.google[ font ];
+				} else {
+					weights = FLBuilderFontFamilies.default[ font ];
+				}
+
+			$.each( weights, function( key, value ){
+				selectWeight.append( '<option value="' + value + '">' + weightMap[ value ] + '</option>' );
+			} );
+
+		},
 		
 		/* Editor Fields
 		----------------------------------------------------------*/
@@ -5102,6 +5634,40 @@
 			
 			$('.fl-loop-builder-filter').hide();
 			$('.fl-loop-builder-' + val + '-filter').show();
+		},
+
+		/* Text Fields - Add Value Selector
+		----------------------------------------------------------*/
+
+		/**
+		 * Callback for when "add value" selectors for text fields changes.
+		 *
+		 * @since  1.6.5
+		 * @access private
+		 * @method _textFieldAddValueSelectChange
+		 */
+		_textFieldAddValueSelectChange: function()
+		{
+
+			var dropdown     = $( this ),
+			    textField    = $( 'input[name="' + dropdown.data( 'target' ) + '"]' ),
+			    currentValue = textField.val(),
+			    addingValue  = dropdown.val();
+
+			// Adding selected value to target text field only once
+
+				if ( -1 == currentValue.indexOf( addingValue ) ) {
+
+					textField
+						.attr( 'value', ( currentValue.trim() + ' ' + addingValue.trim() ) );
+
+				}
+
+			// Resetting the selector
+
+				dropdown
+					.val( '' );
+
 		},
 		
 		/* AJAX
@@ -5306,7 +5872,6 @@
 		_lightboxClosed: function()
 		{
 			FLBuilder._lightbox.empty();
-			$('div.colorpicker').empty().remove();
 			clearTimeout(FLBuilder._lightboxScrollbarTimeout);
 		},
 		

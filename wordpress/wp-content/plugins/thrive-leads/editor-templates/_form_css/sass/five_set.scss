@@ -180,7 +180,7 @@ $black: #000;
   }
   .thrv_lead_generation {
     &.thrv_lead_generation_vertical {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         background: #fff;
         margin-bottom: 15px;
         padding: 23px 10px!important;
@@ -191,7 +191,7 @@ $black: #000;
       }
     }
     &.thrv_lead_generation_horizontal {
-      input[type='text'] {
+      input[type='text'], input[type="email"] {
         background: #fff;
         line-height: 15px;
         margin-bottom: 0;
@@ -211,7 +211,7 @@ $black: #000;
       font-size: 12px;
       word-wrap: break-word;
     }
-    input[type='text'] {
+    input[type='text'], input[type="email"] {
       border-radius: 4px;
       box-shadow: inset -1px 3px 3px -2px #d6d6d6;
       @include opensans();
@@ -349,7 +349,7 @@ $black: #000;
           }
         }
       }
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         line-height: 15px;
         padding: 14px 10px !important;
       }
@@ -393,7 +393,7 @@ $black: #000;
       }
     }
     .thrv_lead_generation_vertical {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         margin-bottom: 25px;
       }
       button {
@@ -472,7 +472,7 @@ $black: #000;
     &.tve_five_set_v2 {
       .thrv_lead_generation {
         &.thrv_lead_generation_horizontal {
-          input[type='text'] {
+          input[type='text'], input[type="email"] {
             padding: 23px 10px !important;
           }
           button {
@@ -551,7 +551,7 @@ $black: #000;
     }
     .thrv_lead_generation {
       &.thrv_lead_generation_horizontal {
-        input[type='text'] {
+        input[type='text'], input[type="email"] {
           line-height: 15px;
           padding: 14px 10px !important;
         }
@@ -612,7 +612,7 @@ $color-pallete: 'blue' #388ec8 #5cace2 #4393c9 #4c99ce #3280b4 #4c99ce #4c99ce,
       @include linear-gradient(nth($color, 3) 0%, nth($color, 7) 100%);
     }
     .thrv_lead_generation.tve_#{nth($color, 1)} {
-      input[type='text'] {
+      input[type='text'], input[type="email"] {
         &:hover {
           border: 1px solid nth($color, 3);
         }

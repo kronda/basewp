@@ -19,7 +19,7 @@
 
 	<?php if(isset($_POST['fl-updater-nonce'])) : ?>
 	<div class="updated">
-		<p><?php _e('Email address saved!', 'fl-builder'); ?></p>
+		<p><?php _e('License key saved!', 'fl-builder'); ?></p>
 	</div>
 	<?php endif; ?>
 

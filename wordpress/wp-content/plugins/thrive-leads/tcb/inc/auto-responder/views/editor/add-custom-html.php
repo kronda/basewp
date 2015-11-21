@@ -4,5 +4,5 @@
     <a class="tve_lightbox_link tve_lightbox_link_info" target="_blank" href="http://thrivethemes.com/tkb_item/add-autoresponder-code-form/"><?php echo __("in our knowledge base", "thrive-cb") ?></a>
 </p>
 
-<?php $show_textarea = true; include dirname(__FILE__) . '/autoresponder-code-fields.php' ?>
+<?php $show_textarea = true; $show_reCaptcha = false; include dirname(__FILE__) . '/autoresponder-code-fields.php' ?>
 

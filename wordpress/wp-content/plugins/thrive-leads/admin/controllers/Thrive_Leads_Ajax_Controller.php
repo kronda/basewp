@@ -299,6 +299,7 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
                 $post->has_frequency_settings = tve_leads_form_type_has_frequency_settings($post);
                 $post->has_position_settings = tve_leads_form_type_has_position_settings($post);
                 $post->has_animation_settings = tve_leads_form_type_has_animation_settings($post);
+                $post->has_trigger_settings = tve_leads_form_type_has_trigger_settings($post);
                 $post->content_locking = 0;
                 /**
                  * get all the tests that run at group level and make sure this form type is not included in one
@@ -534,6 +535,9 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
             'end_date' => $this->param('tve-report-end-date'),
             'order_by' => $this->param('order_by'),
             'order_dir' => $this->param('order_dir'),
+            'referral_type' => $this->param('tve-referral-type'),
+            'source_type' => $this->param('tve-source-type'),
+            'tracking_type' => $this->param('tve-tracking-type'),
             'archived_log' => 0
         );
 

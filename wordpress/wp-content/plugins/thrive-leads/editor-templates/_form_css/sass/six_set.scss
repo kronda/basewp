@@ -234,7 +234,7 @@ body {
   }
   .thrv_lead_generation {
     &.thrv_lead_generation_vertical {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         margin-bottom: 15px;
         padding: 20px 10px !important;
       }
@@ -251,10 +251,10 @@ body {
       }
     }
     &.thrv_lead_generation_horizontal {
-      input[type="text"], button {
+      input[type="text"], button , input[type="email"]{
         margin-bottom: 0;
       }
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         padding: 12px 10px !important;
       }
       button {
@@ -271,7 +271,7 @@ body {
       font-weight: 700;
       line-height: 22px;
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       border-radius: 3px;
       box-shadow: 0 3px 1px 0 rgba($black, .25) inset;
       @include lato();
@@ -450,7 +450,7 @@ body {
         }
       }
       .thrv_lead_generation_vertical {
-        input[type="text"] {
+        input[type="text"], input[type="email"] {
           margin-bottom: 30px;
         }
       }
@@ -529,7 +529,7 @@ $color-pallete: 'blue' #529bbf #64a5c6 #4a8bac #176D97 #64a5c6,
       background: nth($color, 5);
     }
     .thrv_lead_generation.tve_#{nth($color, 1)} {
-      input[type='text'] {
+      input[type='text'], input[type="email"] {
         &:hover, &:active {
           border: 1px solid nth($color, 2);
         }

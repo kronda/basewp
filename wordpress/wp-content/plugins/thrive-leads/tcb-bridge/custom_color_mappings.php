@@ -160,4 +160,37 @@ return array(
             )
         )
     ),
+    'form_greedy_ribbon' => array(
+        'undefined' => array(
+            'all' => array(
+                array(
+                    'label' => 'Background color',
+                    'opacity' => 1,
+                    'selector' => '',
+                    'property' => 'background-color',
+                    'value' => '[color]',
+                    'save_key' => 'item_bg'
+                ),
+                array(
+                    'label' => 'Border color',
+                    'selector' => '',
+                    'property' => 'border-color',
+                    'value' => '[color]',
+                ),
+                array(
+                    'label' => 'Close icon color',
+                    'selector' => '.tve-greedy-ribbon-close',
+                    'property' => 'color',
+                    'value' => '[color]',
+                ),
+                array(
+                    'label' => 'Close icon background',
+                    'selector' => '.tve-greedy-ribbon-close',
+                    'property' => 'background-color',
+                    'value' => '[color]',
+                    'opacity' => 1
+                )
+            )
+        )
+    ),
 );

@@ -3,7 +3,7 @@
 /*
 Plugin Name: Thrive Leads
 Plugin URI: https://thrivethemes.com
-Version: 1.51
+Version: 1.55
 Author: <a href="https://thrivethemes.com">Thrive Themes</a>
 Description: The ultimate lead capture solution for Wordpress
 Text Domain: thrive-leads
@@ -19,14 +19,14 @@ $MyUpdateChecker = new PluginUpdateChecker(
 
 define('TVE_LEADS_TEST_DATA', false);
 
-define('TVE_LEADS_VERSION', '1.51');
+define('TVE_LEADS_VERSION', '1.55');
 
 define('TVE_LEADS_DB_VERSION', '1.15');
 
 /**
  * Required version of TCB
  */
-define('TVE_REQUIRED_TCB_VERSION', '1.101.11');
+define('TVE_REQUIRED_TCB_VERSION', '1.101.13');
 
 /* the base URL for the plugin */
 define('TVE_LEADS_URL', str_replace(array(
@@ -73,6 +73,18 @@ define('TVE_SCREEN_POST', 4);
 define('TVE_SCREEN_CUSTOM_POST', 5);
 define('TVE_SCREEN_ARCHIVE', 6);
 define('TVE_SCREEN_OTHER', 7);
+
+/**
+ * Date interval options
+ */
+define('TVE_LAST_7_DAYS', 1);
+define('TVE_LAST_30_DAYS', 2);
+define('TVE_THIS_MONTH', 3);
+define('TVE_LAST_MONTH', 4);
+define('TVE_THIS_YEAR', 5);
+define('TVE_LAST_YEAR', 6);
+define('TVE_LAST_12_MONTHS', 7);
+define('TVE_CUSTOM_DATE_RANGE', 8);
 
 /**
  * test statuses

@@ -125,7 +125,7 @@ if (!class_exists('Thrive_Leads_State_Lightbox_Action')) {
                     root.trigger("switchstate", [container, current]);
                     return false;
                 }
-                var evtData = {form_type: "lightbox", $target: ThriveGlobal.$j("#trigger-state-l-" + c.s + " .tve_p_lb_content").parent()};ThriveGlobal.$j(TL_Front).trigger("showform.thriveleads", evtData);return false;
+                var evtData = {form_type: "lightbox", $target: ThriveGlobal.$j(".tl-style[data-state=" + c.s + "] .tve_p_lb_content").parent()};ThriveGlobal.$j(TL_Front).trigger("showform.thriveleads", evtData);return false;
             }';
         }
 
@@ -229,10 +229,11 @@ if (!class_exists('Thrive_Leads_State_Lightbox_Action')) {
             }
 
             if (empty(self::$FOOTER_HTML[$state['parent_id']])) {
-                self::$FOOTER_HTML[$state['parent_id']] = '<div class="tl-states-root">';
+                self::$FOOTER_HTML[$state['parent_id']]['root'] = '<div class="tl-states-root tl-anim-' . $state['display_animation'] . '">';
+                self::$FOOTER_HTML[$state['parent_id']]['states'] = array();
             }
 
-            self::$FOOTER_HTML[$state['parent_id']] .= '<div id="trigger-state-l-' . $data['s'] . '">' . tve_leads_display_form_lightbox('__return_content', tve_editor_custom_content($state), $state, null, null, $params) . '</div>';
+            array_unshift(self::$FOOTER_HTML[$state['parent_id']]['states'], tve_leads_display_form_lightbox('__return_content', tve_editor_custom_content($state), $state, null, null, $params));
 
             remove_filter('tve_leads_append_states_ajax', array('Thrive_Leads_State_Lightbox_Action', 'ajax_output_states'), 10);
             add_filter('tve_leads_append_states_ajax', array('Thrive_Leads_State_Lightbox_Action', 'ajax_output_states'), 10, 2);
@@ -248,8 +249,8 @@ if (!class_exists('Thrive_Leads_State_Lightbox_Action')) {
         public function applyContentFilter($data)
         {
             $out = '';
-            foreach (self::$FOOTER_HTML as $html) {
-                $out .= $html . '</div>';
+            foreach (self::$FOOTER_HTML as $parts) {
+                $out .= $parts['root'] . implode('', $parts['states']) . '</div>';
             }
             /**
              * output it just once

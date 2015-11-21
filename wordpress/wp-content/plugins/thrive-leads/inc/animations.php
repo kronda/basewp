@@ -1,8 +1,8 @@
 <?php
+
 /**
  * Structure for all the available animations
  */
-
 class TVE_Leads_Animation_Abstract
 {
     const ANIM_INSTANT = 'instant';
@@ -13,6 +13,20 @@ class TVE_Leads_Animation_Abstract
     const ANIM_SLIDE_IN_BOT = 'slide_bot';
     const ANIM_SLIDE_IN_LEFT = 'slide_left';
     const ANIM_SLIDE_IN_RIGHT = 'slide_right';
+    const ANIM_3D_SLIT = '3d_slit';
+    const ANIM_3D_FLIP_HORIZONTAL = '3d_flip_horizontal';
+    const ANIM_3D_FLIP_VERTICAL = '3d_flip_vertical';
+    const ANIM_3D_SIGN = '3d_sign';
+    const ANIM_3D_ROTATE_BOTTOM = '3d_rotate_bottom';
+    const ANIM_3D_ROTATE_LEFT = '3d_rotate_left';
+    const ANIM_BLUR = 'blur';
+    const ANIM_MAKE_WAY = 'make_way';
+    const ANIM_SLIP_FORM_TOP = 'slip_from_top';
+    const ANIM_BOUNCE_IN = 'bounce_in';
+    const ANIM_BOUNCE_IN_DOWN = 'bounce_in_down';
+    const ANIM_BOUNCE_IN_LEFT = 'bounce_in_left';
+    const ANIM_BOUNCE_IN_RIGHT = 'bounce_in_right';
+    const ANIM_BOUNCE_IN_UP = 'bounce_in_up';
 
     public static $AVAILABLE = array(
         self::ANIM_INSTANT,
@@ -23,6 +37,20 @@ class TVE_Leads_Animation_Abstract
         self::ANIM_SLIDE_IN_BOT,
         self::ANIM_SLIDE_IN_LEFT,
         self::ANIM_SLIDE_IN_RIGHT,
+        self::ANIM_3D_SLIT,
+        self::ANIM_3D_FLIP_HORIZONTAL,
+        self::ANIM_3D_FLIP_VERTICAL,
+        self::ANIM_3D_SIGN,
+        self::ANIM_3D_ROTATE_BOTTOM,
+        self::ANIM_3D_ROTATE_LEFT,
+        self::ANIM_BLUR,
+        self::ANIM_MAKE_WAY,
+        self::ANIM_SLIP_FORM_TOP,
+        self::ANIM_BOUNCE_IN,
+        self::ANIM_BOUNCE_IN_DOWN,
+        self::ANIM_BOUNCE_IN_LEFT,
+        self::ANIM_BOUNCE_IN_RIGHT,
+        self::ANIM_BOUNCE_IN_UP,
     );
 
     /**
@@ -218,4 +246,144 @@ class TVE_Leads_Animation_Slide_Left extends TVE_Leads_Animation_Abstract
 class TVE_Leads_Animation_Slide_Right extends TVE_Leads_Animation_Abstract
 {
     protected $title = 'Slide in from Right';
+}
+
+/**
+ * Form 3D Slit
+ *
+ * Class TVE_Leads_Animation_3d_Slit
+ */
+class TVE_Leads_Animation_3d_Slit extends TVE_Leads_Animation_Abstract
+{
+    protected $title = '3D Slit';
+}
+
+/**
+ * Form 3D Flip Horizontal
+ *
+ * Class TVE_Leads_Animation_3d_Flip_Horizontal
+ */
+class TVE_Leads_Animation_3d_Flip_Horizontal extends TVE_Leads_Animation_Abstract
+{
+    protected $title = '3D Flip (Horizontal)';
+}
+
+/**
+ * Form 3D Flip Vertical
+ *
+ * Class TVE_Leads_Animation_3d_Flip_Vertical
+ */
+class TVE_Leads_Animation_3d_Flip_Vertical extends TVE_Leads_Animation_Abstract
+{
+    protected $title = '3D Flip (Vertical)';
+}
+
+/**
+ * Form 3D Flip Vertical
+ *
+ * Class TVE_Leads_Animation_3d_Sign
+ */
+class TVE_Leads_Animation_3d_Sign extends TVE_Leads_Animation_Abstract
+{
+    protected $title = '3D Sign';
+}
+
+/**
+ * Form 3D Rotate Bottom
+ *
+ * Class TVE_Leads_Animation_3d_Rotate_Bottom
+ */
+class TVE_Leads_Animation_3d_Rotate_Bottom extends TVE_Leads_Animation_Abstract
+{
+    protected $title = '3D Rotate Bottom';
+}
+
+/**
+ * Form 3D Rotate Bottom
+ *
+ * Class TVE_Leads_Animation_3d_Rotate_Left
+ */
+class TVE_Leads_Animation_3d_Rotate_Left extends TVE_Leads_Animation_Abstract
+{
+    protected $title = '3D Rotate Left';
+}
+
+/**
+ * Form Blur
+ *
+ * Class TVE_Leads_Animation_Blur
+ */
+class TVE_Leads_Animation_Blur extends TVE_Leads_Animation_Abstract
+{
+    protected $title = 'Blur';
+}
+
+/**
+ * Form Make Way
+ *
+ * Class TVE_Leads_Animation_Make_Way
+ */
+class TVE_Leads_Animation_Make_Way extends TVE_Leads_Animation_Abstract
+{
+    protected $title = 'Make Way';
+}
+
+/**
+ * Form Slip from Top
+ *
+ * Class TVE_Leads_Animation_Slip_From_Top
+ */
+class TVE_Leads_Animation_Slip_From_Top extends TVE_Leads_Animation_Abstract
+{
+    protected $title = 'Slip from Top';
+}
+
+/**
+ * Form Bounce In
+ *
+ * Class TVE_Leads_Animation_Bounce_In
+ */
+class TVE_Leads_Animation_Bounce_In extends TVE_Leads_Animation_Abstract
+{
+    protected $title = 'Bounce In';
+}
+
+/**
+ * Form Bounce In Down
+ *
+ * Class TVE_Leads_Animation_Bounce_In_Down
+ */
+class TVE_Leads_Animation_Bounce_In_Down extends TVE_Leads_Animation_Abstract
+{
+    protected $title = 'Bounce In Down';
+}
+
+/**
+ * Form Bounce In Left
+ *
+ * Class TVE_Leads_Animation_Bounce_In_Left
+ */
+class TVE_Leads_Animation_Bounce_In_Left extends TVE_Leads_Animation_Abstract
+{
+    protected $title = 'Bounce In Left';
+}
+
+/**
+ * Form Bounce In Right
+ *
+ * Class TVE_Leads_Animation_Bounce_In_Right
+ */
+class TVE_Leads_Animation_Bounce_In_Right extends TVE_Leads_Animation_Abstract
+{
+    protected $title = 'Bounce In Right';
+}
+
+/**
+ * Form Bounce In Up
+ *
+ * Class TVE_Leads_Animation_Bounce_In_Up
+ */
+class TVE_Leads_Animation_Bounce_In_Up extends TVE_Leads_Animation_Abstract
+{
+    protected $title = 'Bounce In Up';
 }

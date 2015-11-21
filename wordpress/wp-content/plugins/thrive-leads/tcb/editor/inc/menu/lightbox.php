@@ -103,21 +103,6 @@
                    data-size="1"> px&nbsp;&nbsp;
         </label>
     </li>
-    <li class="tve_firstOnRow tve_ed_btn tve_btn_text">
-        <div class="tve_option_separator">
-            <span class="tve_ind tve_left" data-default="Lightbox style"><?php echo __("Lightbox style", "thrive-cb") ?></span><span
-                class="tve_caret tve_icm tve_left"></span>
-
-            <div class="tve_clear"></div>
-            <div class="tve_sub_btn">
-                <div class="tve_sub active_sub_menu">
-                    <ul>
-                        <li data-style="style1" class="tve_lightbox_style tve_click"><?php echo sprintf(__("Style %s", "thrive-cb"), "1") ?></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </li>
     <li class="tve_firstOnRow tve_ed_btn_text clearfix">
         <label class="tve_left" style="color: #878787">
             <?php echo __("Max width:", "thrive-cb") ?>

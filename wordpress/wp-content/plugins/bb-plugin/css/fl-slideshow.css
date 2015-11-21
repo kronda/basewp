@@ -61,7 +61,7 @@
 .fl-fullscreen-close-message span {
 	display: inline-block;
 	padding: 15px 25px;
-	background: url('http://www.smugmug.com/photos/1852179328_QJKsRGc-O.png') repeat;
+	background: url('../img/slideshow/transparent-bg-dark.png') repeat;
 	border-radius: 8px;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
@@ -98,7 +98,7 @@
 	height: 60px;
 	position: absolute;
 	z-index: 2;
-	background: url('http://www.smugmug.com/photos/1891028873_pGVrr7F-O.png') -120px -80px no-repeat;
+	background: url('../img/slideshow/icons-light.png') -120px -80px no-repeat;
 }
 .fl-slideshow-video-button:hover {
 	background-position: -220px -80px;
@@ -110,7 +110,7 @@
 	bottom: 0;
 	left: 0;
 	z-index: 1000;
-	background: url('http://www.smugmug.com/photos/1852179328_QJKsRGc-O.png') repeat;
+	background: url('../img/slideshow/transparent-bg-dark.png') repeat;
 }
 .fl-slideshow-video-wrap {
 	top: 45px;
@@ -136,7 +136,7 @@
 	top: 5px;
 	width: 40px;
 	height: 40px;
-	background: url('http://www.smugmug.com/photos/1891028873_pGVrr7F-O.png') 0 -80px no-repeat;
+	background: url('../img/slideshow/icons-light.png') 0 -80px no-repeat;
 }
 .fl-slideshow-video-close:hover {
 	background-position: -40px -80px;
@@ -212,7 +212,7 @@
 	display: inline-block;
 	width: 40px;
 	height: 40px;
-	background-image: url('http://www.smugmug.com/photos/1891028873_pGVrr7F-O.png');
+	background-image: url('../img/slideshow/icons-light.png');
 	vertical-align: middle;
 }
 .fl-slideshow-nav-count {
@@ -277,7 +277,7 @@
 	background: none !important;
 }
 .fl-slideshow-image-nav-left a {
-	background: url('http://www.smugmug.com/photos/1958336862_VJJkzTT-O.png') left center no-repeat !important;
+	background: url('../img/slideshow/arrows-prev.png') left center no-repeat !important;
 }
 .fl-slideshow-image-nav-left a:hover {
 	background-position: -70px center !important;
@@ -295,7 +295,7 @@
 	background: none !important;
 }
 .fl-slideshow-image-nav-right a {
-	background: url('http://www.smugmug.com/photos/1958336867_z422z4t-O.png') right center no-repeat !important;
+	background: url('../img/slideshow/arrows-next.png') right center no-repeat !important;
 }
 .fl-slideshow-image-nav-right a:hover {
 	background-position: 30px center !important;
@@ -313,12 +313,12 @@
 .fl-slideshow-mouse-nav-prev,
 .fl-slideshow-mouse-nav-prev div, 
 .fl-slideshow-mouse-nav-prev img  {
-	cursor: url('http://www.smugmug.com/photos/1953630432_HdGWtRw-O.png'), w-resize !important;
+	cursor: url('../img/slideshow/arrow-prev.png'), w-resize !important;
 }
 .fl-slideshow-mouse-nav-next,
 .fl-slideshow-mouse-nav-next div, 
 .fl-slideshow-mouse-nav-next img {
-	cursor: url('http://www.smugmug.com/photos/1953631239_mJjjpW9-O.png'), e-resize !important;
+	cursor: url('../img/slideshow/arrow-next.png'), e-resize !important;
 }
 
 /* Thumbs
@@ -415,7 +415,7 @@
 --------------------------------------------------------------*/
 
 .fl-slideshow-overlay {
-	background: url('http://www.smugmug.com/photos/1852179328_QJKsRGc-O.png') repeat;
+	background: url('../img/slideshow/transparent-bg-dark.png') repeat;
 }
 .fl-slideshow-overlay-close {
 	position: absolute;
@@ -423,7 +423,7 @@
 	right: 0;
 	width: 40px;
 	height: 40px;
-	background: url('http://www.smugmug.com/photos/1891028873_pGVrr7F-O.png') 0 -80px no-repeat;
+	background: url('../img/slideshow/icons-light.png') 0 -80px no-repeat;
 }
 .fl-slideshow-overlay-close:hover {
 	background-position: -40px -80px;
@@ -432,7 +432,7 @@
 .fl-slideshow-social .fl-slideshow-overlay-close {
 	width: 30px;
 	height: 30px;
-	background: url('http://www.smugmug.com/photos/1891028873_pGVrr7F-O.png') -80px -80px no-repeat;
+	background: url('../img/slideshow/icons-light.png') -80px -80px no-repeat;
 }
 .fl-slideshow-caption .fl-slideshow-overlay-close:hover,
 .fl-slideshow-social .fl-slideshow-overlay-close:hover {
@@ -457,15 +457,15 @@
 
 /* Nav */
 .fl-slideshow-light .fl-slideshow-nav a {
-	background-image: url('http://www.smugmug.com/photos/1900766460_zx7TpJF-O.png');
+	background-image: url('../img/slideshow/icons-dark.png');
 }
 
 /* Video */
 .fl-slideshow-light .fl-slideshow-video {
-	background: url('http://www.smugmug.com/photos/1900766462_Bzx8kTW-O.png') repeat;
+	background: url('../img/slideshow/transparent-bg-light.png') repeat;
 }
 .fl-slideshow-light .fl-slideshow-video-close {
-	background: url('http://www.smugmug.com/photos/1900766460_zx7TpJF-O.png') 0 -80px no-repeat;
+	background: url('../img/slideshow/icons-dark.png') 0 -80px no-repeat;
 }
 .fl-slideshow-light .fl-slideshow-video-close:hover {
 	background-position: -40px -80px;
@@ -491,14 +491,14 @@
 
 /* Overlays */
 .fl-slideshow-light .fl-slideshow-overlay {
-	background-image: url('http://www.smugmug.com/photos/1900766462_Bzx8kTW-O.png');
+	background-image: url('../img/slideshow/transparent-bg-light.png');
 }
 .fl-slideshow-light .fl-slideshow-overlay-close {
-	background-image: url('http://www.smugmug.com/photos/1900766460_zx7TpJF-O.png');
+	background-image: url('../img/slideshow/icons-dark.png');
 }
 .fl-slideshow-light .fl-slideshow-caption .fl-slideshow-overlay-close,
 .fl-slideshow-light .fl-slideshow-social .fl-slideshow-overlay-close {
-	background-image: url('http://www.smugmug.com/photos/1900766460_zx7TpJF-O.png');
+	background-image: url('../img/slideshow/icons-dark.png');
 }
 
 /* SM Font Icon Overrides

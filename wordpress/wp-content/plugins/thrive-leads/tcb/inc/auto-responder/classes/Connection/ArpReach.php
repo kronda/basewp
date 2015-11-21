@@ -150,10 +150,18 @@ class Thrive_List_Connection_ArpReach extends Thrive_List_Connection_Abstract
             /** @var Thrive_Api_ArpReach $api */
             $api = $this->getApi();
 
-            $api->subscribe($list_identifier, $params);
+            //add contact
+            $api->addContact($params);
+            //add to list
+            $api->addToList($list_identifier, $params);
 
             return true;
-
+        } catch (Thrive_Api_ArpReach_ContactException_Exists $e) {
+            // make sure the contact is updated
+            $api->editContact($params);
+            // add contact to the list
+            $api->addToList($list_identifier, $params);
+            return true;
         } catch (Exception $e) {
             return $e->getMessage();
         }

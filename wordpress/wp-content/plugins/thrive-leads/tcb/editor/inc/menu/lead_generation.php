@@ -154,7 +154,7 @@
             <span class="tve_caret tve_icm tve_left"></span>
 
             <div class="tve_clear"></div>
-            <div class="tve_sub_btn" style="min-width: 137px">
+            <div class="tve_sub_btn" style="min-width: 140px">
                 <div class="tve_sub active_sub_menu">
                     <ul>
                         <li class="tve_clearfix tve_click" data-ctrl="controls.click.toggle_menu"

@@ -226,7 +226,7 @@ $black: #000;
       }
     }
     &.thrv_lead_generation_vertical {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         margin-bottom: 10px;
       }
     }
@@ -242,7 +242,7 @@ $black: #000;
       padding: 15px 10px;
       text-shadow: none;
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       @include lato();
       border-radius: 0;
       box-shadow: none;

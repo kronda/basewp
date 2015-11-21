@@ -483,3 +483,15 @@ body {
     width: 100%;
   }
 }
+
+/*
+  Scroll Mat
+*/
+.thrv-greedy-ribbon {
+  box-sizing: border-box;
+  height: 100vh;
+  &.thrv_wrapper {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}

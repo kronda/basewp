@@ -87,19 +87,26 @@ class PostGridHelper
         );
 
         if (!empty($filters['category'])) {
-            $categories = trim($filters['category'], ",");
-            //$args['category_name'] = $categories;
+            $filters['category'] = trim($filters['category'], ",");
+            $category_names = explode(",", $filters['category']);
+            $category_IDs = array();
+            if(!empty($category_names)) {
+                foreach($category_names as $name) {
+                    $name = stripslashes($name);
+                    $category_IDs[] = get_cat_ID($name);
+                }
+            }
             $args['tax_query'] = array(
                 'relation' => 'OR',
                 array(
                     'taxonomy' => 'category',
-                    'field' => 'name',
-                    'terms' => explode(",", $categories),
+                    'field' => 'term_id',
+                    'terms' => $category_IDs
                 ),
                 array(
                     'taxonomy' => 'apprentice',
                     'field' => 'name',
-                    'terms' => explode(",", $categories),
+                    'terms' => $filters['category'],
                 )
             );
         }

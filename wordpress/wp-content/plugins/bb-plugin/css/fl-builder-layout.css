@@ -154,6 +154,110 @@
 	z-index: 1;
 }
 
+/* Full Height Rows */
+.fl-row-full-height .fl-row-content-wrap{
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;	
+  	  -webkit-box-align: center;
+  	-webkit-align-items: center;
+  	     -ms-flex-align: center;
+  	        align-items: center;
+  	   -webkit-box-pack: center;
+  	-webkit-justify-content: center;
+  	      -ms-flex-pack: center;
+  	        justify-content: center;
+	min-height: 100vh;
+	
+}
+.fl-builder-ie-11 .fl-row-full-height .fl-row-content-wrap {
+	/*Damn you, IE11!*/
+	height: 1px;
+}
+.fl-row-full-height .fl-row-content{
+  -webkit-box-flex: 1 1 auto;
+  	 -moz-box-flex: 1 1 auto;
+  	  -webkit-flex: 1 1 auto;
+  		  -ms-flex: 1 1 auto;
+  			  flex: 1 1 auto;
+}
+.fl-row-full-height .fl-row-full-width.fl-row-content{
+	max-width: 100%;
+	width: 100%;
+}
+
+/** 
+ * iPad with portrait orientation.
+ */
+@media all and (device-width: 768px) and (device-height: 1024px) and (orientation:portrait){
+  .fl-row-full-height .fl-row-content-wrap{
+    height: 1024px;
+  }
+}
+
+/** 
+ * iPad with landscape orientation.
+ */
+@media all and (device-width: 1024px) and (device-height: 768px) and (orientation:landscape){
+  .fl-row-full-height .fl-row-content-wrap{
+    height: 768px;
+  }
+}
+
+/**
+ * iPhone 5
+ * You can also target devices with aspect ratio.
+ */
+@media screen and (device-aspect-ratio: 40/71) {
+  .fl-row-full-height .fl-row-content-wrap {
+    height: 500px;
+  }
+}
+
+/* Column Groups
+------------------------------------------------------ */
+.fl-col-group-equal-height,
+.fl-col-group-equal-height .fl-col,
+.fl-col-group-equal-height .fl-col-content{
+	display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+.fl-col-group-equal-height{
+    -webkit-flex-wrap: wrap;
+    	-ms-flex-wrap: wrap;
+    		flex-wrap: wrap;
+}
+.fl-col-group-equal-height .fl-col,
+.fl-col-group-equal-height .fl-col-content{
+  -webkit-box-flex: 1 1 auto;
+  	 -moz-box-flex: 1 1 auto;
+  	  -webkit-flex: 1 1 auto;
+  		  -ms-flex: 1 1 auto;
+  			  flex: 1 1 auto;
+}
+.fl-col-group-equal-height .fl-col-content{
+	    -webkit-box-orient: vertical;
+	 -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+			   flex-shrink: 1;
+			     min-width: 1px;
+            	 max-width: 100%;
+            	 	 width: 100%;
+}
+.fl-col-group-equal-height:before,
+.fl-col-group-equal-height .fl-col:before,
+.fl-col-group-equal-height .fl-col-content:before,
+.fl-col-group-equal-height:after,
+.fl-col-group-equal-height .fl-col:after,
+.fl-col-group-equal-height .fl-col-content:after{
+	content: none;
+}
+
 /* Columns
 ------------------------------------------------------ */
 
@@ -422,12 +526,7 @@
 /* Lightbox
 ------------------------------------------------------ */
 
-.mfp-wrap button {
-	background: transparent !important;
-	box-shadow: none !important;
-	-moz-box-shadow: none !important;
-	-webkit-box-shadow: none !important;
-}
+.mfp-wrap button.mfp-arrow,
 .mfp-wrap button.mfp-arrow:active, 
 .mfp-wrap button.mfp-arrow:hover, 
 .mfp-wrap button.mfp-arrow:focus {
@@ -436,7 +535,11 @@
 	outline: none;
 	position: absolute;
 	top: 50%;
+	box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
 }
+.mfp-wrap .mfp-close,
 .mfp-wrap .mfp-close:active,
 .mfp-wrap .mfp-close:hover,
 .mfp-wrap .mfp-close:focus {
@@ -445,6 +548,9 @@
 	outline: none;
 	position: absolute;
 	top: 0;
+	box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
 }
 img.mfp-img {
 	padding: 0;

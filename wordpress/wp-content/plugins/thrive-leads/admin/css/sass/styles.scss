@@ -1767,11 +1767,14 @@ label.tve-custom-select {
     background: #fff;
     border: 1px solid #cccccc;
     display: inline-block;
-    font: inherit;
+    font-weight: 300;
     line-height: 1.2;
     margin: 0; /* remove focus ring from Webkit */
     outline: none;
     padding: 3px 20px 3px 5px;
+    option {
+      padding: 0;
+    }
   }
 }
 
@@ -2065,4 +2068,9 @@ input.tve-leads-input-error {
     }
   }
 
+}
+
+.tve-shortcode-heading .bigger .tve-edit-title, .tve-two-step-lightbox-heading .tve-two-step-lightbox-part .tve-edit-title {
+  display: inline-block;
+  float: none !important;
 }

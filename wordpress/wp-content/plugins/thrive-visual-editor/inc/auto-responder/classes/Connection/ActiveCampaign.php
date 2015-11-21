@@ -149,7 +149,10 @@ class Thrive_List_Connection_ActiveCampaign extends Thrive_List_Connection_Abstr
                     if (empty($forms[$list_id])) {
                         $forms[$list_id] = array();
                     }
-                    $forms[$list_id][] = array(
+                    /**
+                     * for some reason, I've seen an instance where forms were duplicated (2 or more of the same form were displayed in the list)
+                     */
+                    $forms[$list_id][$form['id']] = array(
                         'id' => $form['id'],
                         'name' => $form['name']
                     );

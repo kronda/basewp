@@ -95,7 +95,7 @@ $black: #000;
   .thrv_lead_generation {
     &.thrv_lead_generation_horizontal {
       &.tve_2 {
-        button, input[type="text"] {
+        button, input[type="text"], input[type="email"] {
           margin-bottom: 0;
         }
       }
@@ -124,7 +124,7 @@ $black: #000;
       padding: 12px 10px;
       text-shadow: none;
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       @include roboto();
       border-radius: 5px;
       border: 0;
@@ -298,7 +298,7 @@ $color-pallete: 'blue' #4a60ac #384891 #5169b6 #313f86 #4a60ac #94a0ca #69759f,
       border-top: 7px solid nth($color, 6);
     }
     .thrv_lead_generation.tve_#{nth($color, 1)} {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         background: nth($color, 7);
         &:hover {
           background: nth($color, 8);

@@ -159,7 +159,6 @@ body .tve_p_lb_content #tve_editor .tve_p_lb_control {
 
 /* Screen Filler Settings */
 .tve-leads-screen-filler {
-  background-color: white;
   position: fixed;
   top: 0;
   left: 0;
@@ -263,4 +262,11 @@ body .tve_p_lb_content #tve_editor .tve_p_lb_control {
 
 #tve_page_loader {
   display: none;
+}
+
+.tve_lead_locked_overlay {
+  display: block;
+  height: 100%;
+  position: absolute;
+  width: 100%;
 }

@@ -55,6 +55,7 @@ $available = Thrive_List_Manager::getAvailableAPIs(true);
     <?php
     $fields_table = isset($data['fields_table']) ? $data['fields_table'] : '';
     $show_thank_you_url = true;
+    $show_reCaptcha = true;
     include dirname(__FILE__) . '/autoresponder-code-fields.php';
     ?>
     <div class="tve-sp"></div>

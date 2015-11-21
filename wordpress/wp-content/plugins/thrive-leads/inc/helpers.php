@@ -73,6 +73,12 @@ function tve_leads_get_default_form_types($include_extra = false)
             'post_title' => __('PHP Insert', 'thrive-leads'),
             'tve_form_type' => 'php_insert',
             'edit_selector' => '.thrv-leads-form-box'
+        ),
+        'greedy_ribbon' => array(
+            'post_title' => __('Scroll Mat', 'thrive-leads'),
+            'tve_form_type' => 'greedy_ribbon',
+            'edit_selector' => '.thrv-greedy-ribbon', // selector for the element settings in editing mode
+            'wp_hook' => 'wp_footer',
         )
     );
 
@@ -490,6 +496,10 @@ function tve_leads_shortcode_render($attributes)
         wp_enqueue_script('jquery-masonry');
     }
 
+    if (get_post_meta($attributes['id'], 'tve_leads_typefocus', true)) {
+        tve_enqueue_script('tve_typed', tve_editor_js() . '/typed.min.js', array(), false, true);
+    }
+
     if (!empty($attributes['for_editor']) || !$ajax_load_forms) {
         $variation = tve_leads_determine_variation($shortcode, !empty($attributes['for_editor'])); // if we render it in the TCB editor => do not use/store cookies
         if (empty($variation)) {
@@ -592,7 +602,7 @@ function tve_leads_shortcode_lock_render($attributes, $content)
         return sprintf(
             '<div class="tve_content_lock tve_lock_hide tve_lead_lock">
                 <div class="tve_lead_lock_shortcode">%s</div>
-                <div class="tve_lead_locked_content">%s</div>
+                <div class="tve_lead_locked_content"><div class="tve_lead_locked_overlay"></div>%s</div>
             </div>',
             $shortcode,
             $content
@@ -606,7 +616,7 @@ function tve_leads_shortcode_lock_render($attributes, $content)
     $html = sprintf(
         '<div class="tve_content_lock %s tve_lead_lock">
             <div class="tve_lead_lock_shortcode">%s</div>
-            <div class="tve_lead_locked_content">%s</div>
+            <div class="tve_lead_locked_content"><div class="tve_lead_locked_overlay"></div>%s</div>
         </div>',
         $main_class,
         $shortcode,
@@ -663,6 +673,10 @@ function tve_leads_two_step_render($attributes, $content)
 
     if (get_post_meta($attributes['id'], 'tve_leads_masonry', true)) {
         wp_enqueue_script('jquery-masonry');
+    }
+
+    if (get_post_meta($attributes['id'], 'tve_leads_typefocus', true)) {
+        tve_enqueue_script('tve_typed', tve_editor_js() . '/typed.min.js', array(), false, true);
     }
 
     if ($ajax_load_forms) {
@@ -821,7 +835,8 @@ function tve_leads_form_type_has_frequency_settings($form_type)
         'ribbon',
         'slide_in',
         'lightbox',
-        'screen_filler'
+        'screen_filler',
+        'greedy_ribbon'
     ));
 }
 
@@ -891,6 +906,39 @@ function tve_leads_form_type_has_animation_settings($form_type)
     return in_array($form_type, array(
         'lightbox',
         'screen_filler'
+    ));
+}
+
+/**
+ * returns whether or not a form_type allows trigger settings
+ * currently, trigger settings are enabled for all form types, except for the Scroll Mat form type
+ *
+ * @param int|WP_Post $form_type
+ * @return bool
+ */
+function tve_leads_form_type_has_trigger_settings($form_type)
+{
+    if (is_null($form_type)) {
+        return false;
+    }
+
+    if (is_numeric($form_type)) {
+        $form_type = tve_leads_get_form_type($form_type);
+    }
+
+    if (is_object($form_type)) {
+        if (empty($form_type->tve_form_type)) {
+            return false;
+        }
+        $form_type = $form_type->tve_form_type;
+    }
+
+    if (empty($form_type)) {
+        return false;
+    }
+
+    return !in_array($form_type, array(
+        'greedy_ribbon'
     ));
 }
 

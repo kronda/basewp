@@ -1,0 +1,162 @@
+/*responsive focus areas for the admin*/
+/*---------- Responsive - width 1080px  ----------*/
+@media only screen and (max-width: 1410px) {
+    div.opt_in_template {
+        margin-right: 3.8%;
+    }
+}
+
+/*---------- Responsive - width 1080px  ----------*/
+@media only screen and (max-width: 1280px) {
+    #postbox-container-1, #postbox-container-2 {
+        /*float: none !important;*/
+        width: 100% !important;
+    }
+    #post-body.columns-2 #postbox-container-1, #poststuff #post-body.columns-2 {
+        margin-right: 10px;
+    }
+}
+
+/*---------- Responsive - width 1080px  ----------*/
+@media only screen and (max-width: 1080px) {
+
+    .wrp {
+        width: 90%;
+    }
+    .f5 .frm .input_for_2_fields {
+        margin-right: 2%;
+        width: 25%;
+    }
+    .f5 .frm .input_for_1_fields {
+        margin-left: 16%;
+        width: 30%;
+    }
+    .f5 .frm .submit_with_1_fields {
+        margin-right: 16%;
+        width: 28%;
+    }
+}
+
+/*----------  Responsive - width 940px  ----------*/
+@media only screen and (max-width: 940px) {
+    .wrp {
+        width: 90%;
+    }
+    .f2 .left, .f2 .right {
+        clear: both;
+        width: 100%;
+    }
+    .f2 .left {
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .f2 .right {
+        text-align: center;
+    }
+    .f3 .left, .f4 .left {
+        width: 59%;
+    }
+    .f3 .right, .f4 .right {
+        width: 40%;
+    }
+    .f5 .frm .btn input[type="submit"] {
+        padding: 0.44em 0.3em;
+    }
+    .f5 .frm .input_for_1_fields {
+        margin-left: 12%;
+    }
+    div.opt_in_template {
+        width: 46%;
+    }
+    div.opt_in_template:nth-child(3n) {
+        margin-right: 3.8%;
+    }
+    div.opt_in_template:nth-child(2n) {
+        margin-right: 0px;
+    }
+
+}
+
+/*----------  Responsive - width 740px  ----------*/
+@media only screen and (max-width: 774px) {
+    .wrp {
+        width: 490px;
+    }
+    .f2 .wrp {
+        padding: 0px 20px;
+    }
+    .f3, .f4, .f5 {
+        text-align: center;
+    }
+    .f3 ul, .f4 ul, .f5 ul {
+        margin: 0 auto;
+        text-align: left;
+    }
+    .f3 .wrp, .f4 .wrp, .f5 .wrp {
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+        padding: 0px 20px;
+    }
+    .f3 .left, .f3 .right, .f4 .left, .f4 .right, .f5 .left, .f5 .right {
+        width: 100%;
+    }
+    .f3 .left, .f4 .left, .f5 .left {
+        margin-bottom: 10px;
+    }
+    .f5 {
+        width: 100%;
+    }
+    .f5 .frm {
+        padding-left: 0px;
+    }
+    .f5 .frm input[type="text"] {
+        float: none;
+        margin: 0 auto 10px auto;
+        width: 91%;
+    }
+    .f5 .frm .btn {
+        float: none;
+        margin: 0 auto;
+        width: 91%;
+    }
+    .f5 .frm .submit_with_2_fields {
+        width: 91%;
+    }
+    .f5 .frm .input_for_1_fields {
+        width: 90%;
+    }
+    .f5 .frm .input_for_1_fields, .f5 .frm .submit_with_1_fields {
+        margin: 0px 0px 10px 0px;
+    }
+}
+
+/*----------  Responsive - width 540px  ----------*/
+@media only screen and (max-width: 540px) {
+    .wrp {
+        width: 340px;
+    }
+    .f5 .frm .input_for_1_fields {
+        width: 85%;
+    }
+    .imgButtons .pure-button, #thrieve_btn_focus_image {
+        float: none;
+        width: 100%;
+    }
+    .imgButtons .pure-button.remove {
+        margin-left: 0px;
+        margin-top: 10px;
+        width: 86%;
+    }
+}
+
+/*----------  Responsive - width 340px  ----------*/
+@media only screen and (max-width: 380px) {
+    .wrp {
+        width: 320px;
+    }
+    .f5 {
+        width: 100%;
+    }
+}

@@ -1,3 +1,64 @@
+<h4>1.6.4.2 - 11/05/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added a Match Height setting to the Posts module's Grid layout.</li>
+	<li>Custom module categories now show up before the WordPress Widgets category.</li>
+	<li>Added the fl_builder_module_categories filter.</li>
+	<li>Text field enhancements for developers that allow for a list of predefined options. Thanks Oliver!</li>
+	<li>Added Danish translation.</li>
+	<li>Added Hebrew translation.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a bug with cropping photos that have a query string in their URL. Fixes issues with Jetpack's Photon module.</li>
+	<li>Fixed a bug with custom image size titles showing as undefined.</li>
+	<li>Fixed a bug with margins not working on equal height columns in FireFox.</li>
+	<li>Fixed a bug with UI images for the Slideshow module loading from an external domain not on HTTPS.</li>
+	<li>Fixed a bug with the Slideshow module caused when the body color is set to an rgba value.</li>
+	<li>Fixed a bug with the Subscribe Form module not working in global rows.</li>
+	<li>Fixed a bug with full height rows on iOS devices.</li>
+	<li>Fixed a bug with the Posts module and the Append extensions on Pages plugin.</li>
+	<li>Fixed a bug with editing templates in the Sage theme.</li>
+	<li>Fixed a bug with Slideshow module transitions in IE11.</li>
+	<li>Fixed a bug with the Insert Pages plugin not working when used within a builder layout.</li>
+</ul>
+
+<h4>1.6.4.1 - 10/21/2015</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Images in the Content Slider module now have alt tags.</li>
+	<li>Updated various translations.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a content rendering bug that caused pages to become unresponsive with some shortcodes.</li>
+	<li>Fixed an edge case multisite domain mapping issue with scripts/styles loading under the incorrect domain.</li>
+	<li>Fixed an issue making it so you couldn't have fixed width content in a full height row.</li>
+	<li>Fixed an issue with widgets such as the GeoDirectory plugin that output the widget_id as a JavaScript variable name.</li>
+	<li>Fixed a post date bug with the feed layout in the Posts module.</li>
+	<li>Fixed a bug caused by plugins that use a forward slash in the browser hash.</li>
+</ul>
+
+<h4>1.6.4 - 10/13/2015</h4>
+<p>This update adds a number of new features. Be sure to check out <a href="https://www.wpbeaverbuilder.com/beaver-builder-1-6-4-featuring-a-new-color-picker-full-height-rows-the-number-counter-module-and-more/" target="_blank">the blog post</a> for detailed info on what was added.
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added an all new modern color picker that allows you to save color presets.</li>
+	<li>Added the ability to create full height rows.</li>
+	<li>Added the ability to create equal height columns.</li>
+	<li>Added a column settings dropdown that allows you to edit, delete and insert new columns.</li>
+	<li>Added the ability to resize columns by dragging.</li>
+	<li>Added the Number Counter module.</li>
+	<li>Added a new font setting to the Heading module for picking custom font families.</li>
+	<li>Misc UI improvements.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a bug with saving a template where hitting enter loads a 404 page.</li>
+	<li>Fixed a bug with the Content Slider module's mobile images not showing.</li>
+	<li>Removed generic lightbox button styling that caused issues with third party themes.</li>
+</ul>
+
 <h4>1.6.3.4 - 10/10/2015</h4>
 <p><strong>Bug Fixes</strong></p>
 <ul>

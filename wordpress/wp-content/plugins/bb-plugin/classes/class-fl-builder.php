@@ -8,12 +8,12 @@
 final class FLBuilder {
 
 	/**
-	 * Stores the ID of the post that is currently being rendered.
+	 * The ID of a post that is currently being rendered.
 	 *
-	 * @since 1.5.9
+	 * @since 1.6.4.2
 	 * @var int $post_rendering
 	 */
-	static private $post_rendering = null;
+	static public $post_rendering = null;
 
 	/**
 	 * Localization
@@ -316,8 +316,8 @@ final class FLBuilder {
 
 		$original_post  = $post;
 		$ver            = FL_BUILDER_VERSION;
-		$css_url        = FL_BUILDER_URL . 'css/';
-		$js_url         = FL_BUILDER_URL . 'js/';
+		$css_url 		= plugins_url('/css/', FL_BUILDER_FILE);
+		$js_url  		= plugins_url('/js/', FL_BUILDER_FILE);
 
 		// Register additional CSS
 		wp_register_style('font-awesome',           $css_url . 'font-awesome.min.css', array(), $ver);
@@ -401,6 +401,7 @@ final class FLBuilder {
 			foreach($nodes['modules'] as $module) {
 
 				$module->enqueue_icon_styles();
+				$module->enqueue_font_styles();
 				$module->enqueue_scripts();
 
 				foreach($module->css as $handle => $props) {
@@ -424,6 +425,9 @@ final class FLBuilder {
 
 			wp_enqueue_style('fl-builder-layout-' . $post_id, $asset_info['css_url'], $deps, $asset_ver, $media);
 
+			// Enqueue Google Fonts
+			FLBuilderFonts::enqueue_styles();
+
 			// Enqueue main JS
 			if(!file_exists($asset_info['js'])) {
 				FLBuilder::render_js();
@@ -444,8 +448,8 @@ final class FLBuilder {
 		if(FLBuilderModel::is_builder_active()) {
 
 			$ver     = FL_BUILDER_VERSION;
-			$css_url = FL_BUILDER_URL . 'css/';
-			$js_url  = FL_BUILDER_URL . 'js/';
+			$css_url = plugins_url('/css/', FL_BUILDER_FILE);
+			$js_url  = plugins_url('/js/', FL_BUILDER_FILE);
 
 			/* We have a custom version of sortable that fixes a bug. */
 			wp_deregister_script('jquery-ui-sortable');
@@ -458,7 +462,7 @@ final class FLBuilder {
 			wp_enqueue_style('jquery-autosuggest',      $css_url . 'jquery.autoSuggest.min.css', array(), $ver);
 			wp_enqueue_style('jquery-tiptip',           $css_url . 'jquery.tiptip.css', array(), $ver);
 			wp_enqueue_style('bootstrap-tour',          $css_url . 'bootstrap-tour-standalone.min.css', array(), $ver);
-			wp_enqueue_style('fl-color-picker',         $css_url . 'colorpicker.css', array(), $ver);
+			wp_enqueue_style('fl-color-picker',         $css_url . 'fl-color-picker.css', array(), $ver);
 			wp_enqueue_style('fl-lightbox',             $css_url . 'fl-lightbox.css', array(), $ver);
 			wp_enqueue_style('fl-icon-selector',        $css_url . 'fl-icon-selector.css', array(), $ver);
 			wp_enqueue_style('fl-builder',              $css_url . 'fl-builder.css', array(), $ver);
@@ -482,6 +486,9 @@ final class FLBuilder {
 			wp_enqueue_script('json2');
 			wp_enqueue_script('jquery-ui-droppable');
 			wp_enqueue_script('jquery-ui-draggable');
+			wp_enqueue_script('jquery-ui-slider');
+			wp_enqueue_script('jquery-ui-widget');
+			wp_enqueue_script('jquery-ui-position');
 			wp_enqueue_script('jquery-ui-sortable',     $js_url . 'jquery.ui.sortable.js', array('jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-mouse'), $ver, true);
 			wp_enqueue_script('jquery-nanoscroller',    $js_url . 'jquery.nanoscroller.min.js', array(), $ver, true);
 			wp_enqueue_script('jquery-autosuggest',     $js_url . 'jquery.autoSuggest.min.js', array(), $ver, true);
@@ -490,7 +497,7 @@ final class FLBuilder {
 			wp_enqueue_script('jquery-validate',        $js_url . 'jquery.validate.min.js', array(), $ver, true);
 			wp_enqueue_script('bootstrap-tour',         $js_url . 'bootstrap-tour-standalone.min.js', array(), $ver, true);
 			wp_enqueue_script('ace',                    $js_url . 'ace/ace.js', array(), $ver, true);
-			wp_enqueue_script('fl-color-picker',        $js_url . 'colorpicker.js', array(), $ver, true);
+			wp_enqueue_script('fl-color-picker',        $js_url . 'fl-color-picker.js', array('jquery', 'jquery-ui-position'), $ver, true);
 			wp_enqueue_script('fl-lightbox',            $js_url . 'fl-lightbox.js', array(), $ver, true);
 			wp_enqueue_script('fl-icon-selector',       $js_url . 'fl-icon-selector.js', array(), $ver, true);
 			wp_enqueue_script('fl-stylesheet',          $js_url . 'fl-stylesheet.js', array(), $ver, true);
@@ -574,6 +581,7 @@ final class FLBuilder {
 			$post_id            = $wp_the_query->post->ID;
 			$help_button 		= FLBuilderModel::get_help_button_settings();
 			$enabled_templates  = FLBuilderModel::get_enabled_templates();
+			$color_presets      = FLBuilderModel::get_color_presets();
 			$simple_ui			= ! current_user_can( FLBuilderModel::get_editing_capability() );
 			$categories         = FLBuilderModel::get_categorized_modules();
 			$row_templates		= null;
@@ -806,26 +814,6 @@ final class FLBuilder {
 	}
 
 	/**
-	 * Called by the_content filter with a priority of 1 to
-	 * reset the internal post_rendering flag when a new post
-	 * starts to render.
-	 *
-	 * @since 1.6.3.3
-	 * @param string $content The existing content.
-	 * @return string
-	 */
-	static public function render_content_init( $content )
-	{
-		global $post;
-		
-		if ( $post->ID == FLBuilderModel::get_post_id() ) {
-			self::$post_rendering = null;
-		}
-		
-		return $content;
-	}
-
-	/**
 	 * Renders the content for a builder layout while in the loop. 
 	 * This method should only be called by the_content filter as 
 	 * defined in fl-builder.php. To output builder content, use 
@@ -837,59 +825,90 @@ final class FLBuilder {
 	 */
 	static public function render_content( $content )
 	{
-		global $wp_filter;
-
 		$post_id        = FLBuilderModel::get_post_id();
 		$enabled        = FLBuilderModel::is_builder_enabled();
-		$rendering		= $post_id === self::$post_rendering;
+		$rendering      = $post_id === self::$post_rendering;
 		$ajax           = defined( 'DOING_AJAX' );
 		$in_loop        = in_the_loop();
 		$is_global      = in_array( $post_id, FLBuilderModel::get_global_posts() );
 
 		if( $enabled && ! $rendering && ! $ajax && ( $in_loop || $is_global ) ) {
 			
-			// Store this post ID so we know it is currently being rendered
-			// in case another method or function calls apply filters on the 
-			// content after this method has run which creates an infinite loop.
+			// Set the post rendering ID.
 			self::$post_rendering = $post_id;
-			
-			// Store a reference to the current the_content filters array since 
-			// any modules or widgets that call apply_filters on the_content cause 
-			// the array pointer to move to the end. That makes it so the builder
-			// content doesn't receive filters after this method runs as it should.
-			$filters = $wp_filter['the_content'];
-			
-			// Remove the builder's render_content filter so it's not called again
-			// by modules or widgets that call apply_filters on the content.
-			remove_filter( 'the_content', 'FLBuilder::render_content_init', 1 );
+
+			// Remove the builder's render_content filter so it's not called again.
 			remove_filter( 'the_content', 'FLBuilder::render_content' );
-			
-			// Build the content class.
-			$class = 'fl-builder-content fl-builder-content-' . $post_id;
-			
-			// Add template classes to the content class.
-			if ( FLBuilderModel::is_post_user_template() ) {
-				$class .= ' fl-builder-template';
-				$class .= ' fl-builder-' . FLBuilderModel::get_user_template_type() . '-template';
-			}
-			
-			// Add the global templates locked class.
-			if ( ! current_user_can( FLBuilderModel::get_global_templates_editing_capability() ) ) {
-				$class .= ' fl-builder-global-templates-locked';
-			}
 			
 			// Render the content.
 			ob_start();
-			echo '<div class="' . $class . '" data-post-id="' . $post_id . '">';
+			echo '<div class="' . self::render_content_classes() . '" data-post-id="' . $post_id . '">';
 			self::render_nodes();
 			echo '</div>';
 			$content = ob_get_clean();
 			
-			// Restore the original the_content filters array.
-			$wp_filter['the_content'] = $filters;
+			// Reapply the builder's render_content filter.
+			add_filter( 'the_content', 'FLBuilder::render_content' );
+			
+			// Do shortcodes here since letting the WP filter run can cause an infinite loop.
+			$pattern = get_shortcode_regex();
+			$content = preg_replace_callback( "/$pattern/s", 'FLBuilder::double_escape_shortcodes', $content );
+			$content = do_shortcode( $content );
+			
+			// Clear the post rendering ID.
+			self::$post_rendering = null;
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Escaped shortcodes need to be double escaped or they will
+	 * be parsed by WP's shortcodes filter.
+	 *
+	 * @since 1.6.4.1
+	 * @param array $matches The existing content.
+	 * @return string
+	 */
+	static public function double_escape_shortcodes( $matches )
+	{
+		if ( $matches[1] == '[' && $matches[6] == ']' ) {
+			return '[' . $matches[0] . ']';
+		}
+		
+		return $matches[0];
+	}
+
+	/**
+	 * Renders the CSS classes for the main content div tag.
+	 *
+	 * @since 1.6.4
+	 * @return string
+	 */
+	static public function render_content_classes()
+	{
+		// Build the content class.
+		$classes = 'fl-builder-content fl-builder-content-' . FLBuilderModel::get_post_id();
+		
+		// Add template classes to the content class.
+		if ( FLBuilderModel::is_post_user_template() ) {
+			$classes .= ' fl-builder-template';
+			$classes .= ' fl-builder-' . FLBuilderModel::get_user_template_type() . '-template';
+		}
+		
+		// Add the global templates locked class.
+		if ( ! current_user_can( FLBuilderModel::get_global_templates_editing_capability() ) ) {
+			$classes .= ' fl-builder-global-templates-locked';
+		}
+		
+		// Add browser specific classes.
+		if ( isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
+			if ( stristr( $_SERVER[ 'HTTP_USER_AGENT' ], 'Trident/7.0' ) && stristr( $_SERVER[ 'HTTP_USER_AGENT' ], 'rv:11.0' ) ) {
+				$classes .= ' fl-builder-ie-11';
+			}
+		}
+		
+		return $classes;
 	}
 
 	/**
@@ -1014,6 +1033,7 @@ final class FLBuilder {
 	 */
 	static public function render_settings_field($name, $field, $settings = null)
 	{
+		$field              = apply_filters( 'fl_builder_render_settings_field', $field, $name, $settings ); // Allow field settings filtering first
 		$i                  = null;
 		$is_multiple        = isset($field['multiple']) && $field['multiple'] === true;
 		$supports_multiple  = $field['type'] != 'editor' && $field['type'] != 'photo' && $field['type'] != 'service';
@@ -1266,15 +1286,15 @@ final class FLBuilder {
 	 * @param string $template The current template to be loaded.
 	 * @return string
 	 */
-	static public function render_template($template)
+	static public function render_template( $template )
 	{
 		global $post;
+		
+		if ( 'string' == gettype( $template ) && $post && $post->post_type == 'fl-builder-template' ) {
 
-		if($post && $post->post_type == 'fl-builder-template') {
+			$page = locate_template( array( 'page.php' ) );
 
-			$page = locate_template(array('page.php'));
-
-			if(!empty($page)) {
+			if ( ! empty( $page ) ) {
 				return $page;
 			}
 		}
@@ -1373,6 +1393,10 @@ final class FLBuilder {
 		echo ' class="fl-row';
 		echo ' fl-row-' . $row->settings->width . '-width';
 		echo ' fl-row-bg-' . $row->settings->bg_type;
+
+		if ( ! empty( $row->settings->full_height ) && $row->settings->full_height == 'full' ) {
+			echo ' fl-row-full-height';
+		}
 
 		if ( in_array( $row->settings->bg_type, $overlay_bgs ) && ! empty( $row->settings->bg_overlay_color ) ) {
 			echo ' fl-row-bg-overlay';
@@ -1511,6 +1535,26 @@ final class FLBuilder {
 		}
 	}
 
+	static public function is_column_equal_height( $group ){
+		$cols = FLBuilderModel::get_nodes( 'column', $group );
+
+		foreach( $cols as $col ){
+			if( isset( $col->settings->equal_height ) && $col->settings->equal_height == 'yes' )
+				return true;
+		}
+		return false;
+	}
+
+	static public function column_has_custom_width( $group ){
+		$cols = FLBuilderModel::get_nodes( 'column', $group );
+
+		foreach( $cols as $col ){
+			if( isset( $col->settings->responsive_size ) && $col->settings->responsive_size == 'custom' )
+				return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Adds a new column group and renders it.
 	 *
@@ -1522,7 +1566,9 @@ final class FLBuilder {
 	 */
 	static public function render_column_group_attributes( $group )
 	{
-		echo ' class="fl-col-group fl-node-' . $group->node . '"'; 
+		$equal_height = self::is_column_equal_height( $group ) ? ' fl-col-group-equal-height' : '';
+		$custom_width = self::column_has_custom_width( $group ) ? ' fl-col-group-custom-width' : '';
+		echo ' class="fl-col-group fl-node-' . $group->node . $equal_height . $custom_width . '"';
 		echo ' data-node="' . $group->node . '"';
 	}
 
@@ -1833,7 +1879,7 @@ final class FLBuilder {
 		echo ' data-node="' . $module->node . '" ';
 		echo ' data-animation-delay="' . $module->settings->animation_delay . '" ';
 
-		if ( FLBuilderModel::is_builder_active() ) {
+		if ( $active ) {
 			echo ' data-parent="' . $module->parent . '" ';
 			echo ' data-type="' . $module->settings->type . '" ';
 			echo ' data-name="' . $module->name . '" ';

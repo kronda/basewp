@@ -252,7 +252,7 @@ body {
       }
     }
     &.thrv_lead_generation_horizontal {
-      input[type="text"], button {
+      input[type="text"], button, input[type="email"] {
         margin-bottom: 0;
       }
     }
@@ -268,7 +268,7 @@ body {
       line-height: 21px;
       padding: 22px 10px;
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       border-radius: 3px;
       @include opensans();
       box-shadow: 0 2px 2px 0 rgba(#000101, .05) inset;
@@ -376,7 +376,7 @@ body {
       border-top-right-radius: 3px;
     }
     .thrv_lead_generation_horizontal {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         padding: 12px 10px !important;
       }
       button {
@@ -407,7 +407,7 @@ body {
           top: 40%;
         }
       }
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         margin-bottom: 17px;
       }
     }
@@ -448,7 +448,7 @@ body {
           top: 40%;
         }
       }
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         margin-bottom: 18px;
       }
     }
@@ -483,13 +483,13 @@ body {
     }
     .thrv_lead_generation_vertical {
       .tve_lg_input_container {
-        input[type="text"] {
+        input[type="text"],input[type="email"] {
           &:hover, &:active, &:focus {
             border-width: 2px;
           }
         }
       }
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         border-width: 2px;
         font-size: 19px;
         margin-bottom: 14px;
@@ -533,7 +533,7 @@ body {
     //lightbox 2
     &.tve_eight_set_v2 {
       .thrv_lead_generation_vertical {
-        input[type="text"] {
+        input[type="text"], input[type="email"] {
           margin-bottom: 35px;
         }
       }
@@ -583,7 +583,7 @@ body {
       max-width: 1170px;
     }
     .thrv_lead_generation_horizontal {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         padding: 12px 10px !important;
       }
       button {
@@ -654,7 +654,7 @@ $color-pallete: 'blue' #1f8eae #19759c #1c809c #16698c #145d7d #19728b #00a7db #
       }
     }
     .thrv_lead_generation.tve_#{nth($color, 1)} {
-      input[type='text'] {
+      input[type='text'], input[type="email"] {
         &:hover {
           box-shadow: 0 2px 2px 0 rgba(nth($color, 8), .2) inset;
           border: 1px solid nth($color, 8);

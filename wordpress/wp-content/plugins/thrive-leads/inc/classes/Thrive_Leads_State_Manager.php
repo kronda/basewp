@@ -130,7 +130,7 @@ class Thrive_Leads_State_Manager extends Thrive_Leads_Request_Handler
 
         ob_start();
         $variation = $current_variation;
-        $form_type = tve_leads_get_form_type_from_variation($current_variation);
+        $form_type = $this->type($current_variation);
         $available = tve_leads_get_default_form_types(true);
         $form_type_name = tve_leads_get_form_type_name($form_type);
         include dirname(dirname(dirname(__FILE__))) . '/editor-layouts/element-menus/side-menu/settings.php';

@@ -181,6 +181,7 @@ class Thrive_Leads_Template_Manager extends Thrive_Leads_Request_Handler
             TVE_LEADS_FIELD_CUSTOM_FONTS,
             TVE_LEADS_FIELD_ICON_PACK,
             TVE_LEADS_FIELD_HAS_MASONRY,
+            TVE_LEADS_FIELD_HAS_TYPEFOCUS,
         );
 
         foreach ($fields as $field) {
@@ -424,6 +425,7 @@ class Thrive_Leads_Template_Manager extends Thrive_Leads_Request_Handler
         } else {
             $this->variation[TVE_LEADS_FIELD_TEMPLATE] = $template;
             $this->variation[TVE_LEADS_FIELD_SAVED_CONTENT] = tve_leads_get_editor_template_content($this->variation, $template);
+            $this->variation[TVE_LEADS_FIELD_SAVED_CONTENT] = $this->parse_state_events($this->variation[TVE_LEADS_FIELD_SAVED_CONTENT], self::type($template), array());
         }
 
         tve_leads_save_form_variation($this->variation);

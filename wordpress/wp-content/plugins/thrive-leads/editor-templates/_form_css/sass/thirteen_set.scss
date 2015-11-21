@@ -236,7 +236,7 @@ $black: #000;
       line-height: 38px;
       padding: 24px 10px;
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       border-radius: 100px;
       @include sourcesans();
       box-shadow: 0 0 0 3px #dbdfd4;
@@ -383,7 +383,7 @@ $color-pallete: 'blue' #60808b #60808b #90a6ae #fff,
   #tve_thirteen_set {
     [class*="tve_thirteen_set"] {
       .thrv_lead_generation {
-        input[type="text"] {
+        input[type="text"], input[type="email"] {
           padding: 10px !important;
         }
         button {

@@ -330,6 +330,12 @@ class FLPhotoModule extends FLBuilderModule {
 			$filename    = uniqid(); // Return a file that doesn't exist.
 		}
 		else {
+			
+			if ( stristr( $url, '?' ) ) {
+				$parts = explode( '?', $url );
+				$url   = $parts[0];
+			}
+			
 			$pathinfo    = pathinfo($url);
 			$dir         = $pathinfo['dirname'];
 			$ext         = $pathinfo['extension'];

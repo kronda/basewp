@@ -1,4 +1,4 @@
-<form class="fl-builder-settings <?php echo $form['class']; ?>" <?php echo $form['attrs']; ?>>
+<form class="fl-builder-settings <?php echo $form['class']; ?>" <?php echo $form['attrs']; ?> onsubmit="return false;">
 	<div class="fl-lightbox-header">
 		<h1>
 			<?php echo $form['title']; ?>
@@ -18,47 +18,47 @@
 		<div class="fl-nanoscroller-content">
 			<?php $i = 0; foreach($form['tabs'] as $id => $tab) : // Tabs ?>
 			<div id="fl-builder-settings-tab-<?php echo $id; ?>" class="fl-builder-settings-tab <?php if($i == 0) echo 'fl-active'; ?>">
-			
+
 				<?php if(isset($tab['file']) && file_exists($tab['file'])) : // Tab File ?>
-				
+
 					<?php include $tab['file']; ?>
-					
+
 				<?php else : ?>
-					
-					<?php if(!empty($tab['description'])) : // Tab Description ?>                            
+
+					<?php if(!empty($tab['description'])) : // Tab Description ?>
 					<p class="fl-builder-settings-tab-description"><?php echo $tab['description']; ?></p>
 					<?php endif; ?>
-			
+
 					<?php foreach($tab['sections'] as $id => $section) : // Tab Sections ?>
 					<div id="fl-builder-settings-section-<?php echo $id; ?>" class="fl-builder-settings-section">
-					
+
 						<?php if(isset($section['file']) && file_exists($section['file'])) : // Section File ?>
-				
+
 							<?php include $section['file']; ?>
-							
+
 						<?php else : ?>
-					
-							<?php if(!empty($section['title'])) : // Section Title ?>                            
+
+							<?php if(!empty($section['title'])) : // Section Title ?>
 							<h3 class="fl-builder-settings-title"><?php echo $section['title']; ?></h3>
 							<?php endif; ?>
-							
+
 							<table class="fl-form-table">
-								<?php 
-								
-								foreach($section['fields'] as $name => $field) {  // Fields 
+								<?php
+
+								foreach($section['fields'] as $name => $field) {  // Fields
 									FLBuilder::render_settings_field($name, $field, $settings);
 								}
-								
+
 								?>
 							</table>
-					
+
 						<?php endif; ?>
-					
+
 					</div>
 					<?php endforeach; ?>
-					
+
 				<?php endif; ?>
-			
+
 			</div>
 			<?php $i++; endforeach; ?>
 		</div>

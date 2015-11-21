@@ -1,25 +1,29 @@
 @import "_common";
 @import "_animation";
-
-html,body {
+html, body {
   &.tve-o-hidden.tve-hide-overflow.tve-l-open {
     overflow: hidden;
     height: auto !important;
   }
+  &.tve-so-hidden.tve-sl-open.tve-s-hide-overflow {
+    overflow: hidden;
+    height: 100% !important;
+  }
 }
-
+.tve-gr-hidden {
+  overflow: hidden;
+  height: auto !important;
+}
 /*
 trigger for the 2-step lightbox form
 */
 .tve-leads-two-step-trigger {
   cursor: pointer;
 }
-
 /* Ribbon form type */
 .tve-leads-ribbon {
   top: 0;
 }
-
 /* Slide In form type */
 .tve-leads-slide-in {
   position: fixed;
@@ -27,7 +31,7 @@ trigger for the 2-step lightbox form
   .thrv-leads-slide-in {
     float: right;
   }
-  &.tl_bot_left  {
+  &.tl_bot_left {
     bottom: 0;
     left: 0;
   }
@@ -47,7 +51,6 @@ trigger for the 2-step lightbox form
     left: 0;
   }
 }
-
 @media(max-width: 782px) {
   body {
     .tve-leads-slide-in.tve-tl-anim {
@@ -70,7 +73,6 @@ trigger for the 2-step lightbox form
     }
   }
 }
-
 /* post footer, in content, shortcode */
 .tve-leads-post-footer, .tve-leads-in-content, .tve-leads-shortcode {
   &.tve-trigger-hide {
@@ -84,7 +86,6 @@ trigger for the 2-step lightbox form
     @include transition(all .5s ease-in-out);
   }
 }
-
 /* screen fillers */
 .tve-leads-screen-filler {
   &.tve_lb_closing {
@@ -94,7 +95,6 @@ trigger for the 2-step lightbox form
     }
   }
 }
-
 /* lightboxes */
 .tve-leads-lightbox {
   .tve_lb_closing {
@@ -104,3 +104,30 @@ trigger for the 2-step lightbox form
     }
   }
 }
+/*
+  Scroll Mat
+*/
+.tve-leads-greedy_ribbon.tve-tl-anim.tl-anim-slide_top {
+  @include transition(transform .6s linear);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  opacity: 1;
+  z-index: -1;
+  @include transform(translateY(-100%));
+  &.tve-no-animation {
+    @include transition(none!important);
+  }
+  &.tve-leads-triggered {
+    @include transform(translateY(0));
+    @include transition(transform .6s linear);
+    z-index: 999992;
+  }
+}
+.thrv-greedy-ribbon {
+  box-sizing: border-box;
+  height: 100vh;
+  margin: 0;
+}
+

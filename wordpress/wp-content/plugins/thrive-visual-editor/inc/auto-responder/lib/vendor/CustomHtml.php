@@ -268,7 +268,7 @@ class Thrive_Api_CustomHtml
                     'options' => array()
                 );
             }
-            $response['elements'][$element_name]['options'][$this->attrName($value)] = $value;
+            $response['elements'][$element_name]['options'][sanitize_title($value)] = $value;
         } elseif ($element_type === 'checkbox') {
             $value = $element->getAttribute('value');
             $response['elements'][$element_name] = array(

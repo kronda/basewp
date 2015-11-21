@@ -18,6 +18,8 @@
 function thrive_api_remote_get($url, $args = array())
 {
     $args['sslverify'] = false;
+    /* SUPP-988 increased timeout to 15, it seems some hosts have some issues, not being able to resolve API URLs in 5 seconds */
+    $args['timeout'] = 15;
     return wp_remote_get($url, $args);
 }
 
@@ -33,6 +35,8 @@ function thrive_api_remote_get($url, $args = array())
 function thrive_api_remote_post($url, $args = array())
 {
     $args['sslverify'] = false;
+    /* SUPP-988 increased timeout to 15, it seems some hosts have some issues, not being able to resolve API URLs in 5 seconds */
+    $args['timeout'] = 15;
     return wp_remote_post($url, $args);
 }
 

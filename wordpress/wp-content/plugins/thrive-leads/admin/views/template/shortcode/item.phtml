@@ -2,7 +2,12 @@
     <span class="tve-shortcode-part collapse-table-part-condensed collapse-table-part tve-shortcode-title collapse-table-part-title">
 
             <strong class="bigger">
-                <#= shortcode.get('post_title') #>
+                <span class="group-title"><strong class="bigger"><#= shortcode.get('post_title') #></strong></span>
+                <input class="tve-form-control tve-input-small tve-input-inline tve-input-condensed tve-edit-title-input" style="display: none;">
+                <a href="javascript:void(0)" class="tve-btn tve-btn-icon tve-edit-title" style="margin-right: 5px;">
+                    <span class="tve-icon-pencil"></span>
+                </a>
+
                 <span class="tve-copy-code-container">
                     (<a href="javascript:void(0)" class="tve-leads-php-code" title="<?php echo __('Get PHP Code', 'thrive-leads') ?>"><?php echo __('Get PHP Code', 'thrive-leads') ?></a>)
                 </span>

@@ -20,15 +20,17 @@
         </div>
     </td>
 <# } #>
-<td>
-    <# if (post_status == 'publish' && has_trigger_settings) { #>
-        <a href="#triggers/<#= post_parent #>/<#= key #>">
-    <# } #>
-    <#= trigger_nice_name #>
-    <# if (post_status == 'publish') { #>
-        </a>
-    <# } #>
-</td>
+<# if (has_trigger_settings) { #>
+    <td>
+        <# if (post_status == 'publish' && has_trigger_options) { #>
+            <a href="#triggers/<#= post_parent #>/<#= key #>">
+        <# } #>
+        <#= trigger_nice_name #>
+        <# if (post_status == 'publish') { #>
+            </a>
+        <# } #>
+    </td>
+<# } #>
 <# if (has_frequency_settings) { #>
     <td>
         <# if (post_status == 'publish') { #>

@@ -11,7 +11,7 @@
 /* Panel
 ------------------------------------------------------ */
 
-.fl-builder-blocks-section > span i {
+.fl-builder-blocks-section .fl-builder-blocks-section-title i {
 	float: left;
 }
 
@@ -58,4 +58,81 @@
 .fl-help-tooltip-text {
 	left: auto;
 	right: 23px;
+}
+
+/* Tour
+------------------------------------------------------ */
+
+.popover[class*=tour-] {
+	text-align: right;
+}
+
+.popover[class*=tour-] .fa-times {
+	right: auto;
+	left: 3px;
+}
+
+/* LightBox
+------------------------------------------------------ */
+
+.fl-lightbox-footer {
+	text-align: left;
+}
+
+.fl-lightbox-header .fl-builder-settings-fields {
+	right: auto;
+	left: 10px;
+}
+
+/* Nano Scroller
+------------------------------------------------------ */
+
+.fl-nanoscroller > .fl-nanoscroller-pane {
+    right: auto;
+    left: 2px;
+}
+
+/* Color Picker
+------------------------------------------------------ */
+
+.fl-color-picker-preset-add {
+    right: auto;
+    left: 8px;
+}
+
+.fl-color-picker-preset-add:before {
+    left: auto;
+    right: 3px;
+}
+
+.fl-color-picker-preset-add:after {
+		left: auto;
+		right: 6px;
+}
+
+.fl-color-picker-clear .fl-color-picker-icon-remove {
+    left: 0;
+    right: auto;
+}
+
+.fl-color-picker-icon-remove:before {
+		left: auto;
+		right: 6px;
+}
+
+.fl-color-picker-icon-remove:after {
+		left: auto;
+		right: 6px;
+}
+
+.fl-color-picker-presets-list .fl-color-picker-preset-remove {
+		right: auto;
+		left: 5px;
+}
+
+/* Auto Suggest
+------------------------------------------------------ */
+
+ul.as-selections li {
+    float: right;
 }

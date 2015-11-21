@@ -218,6 +218,9 @@ function tve_leads_query_group()
         if (get_post_meta($tve_lead_group->ID, 'tve_leads_masonry', true)) {
             wp_enqueue_script('jquery-masonry');
         }
+        if (get_post_meta($tve_lead_group->ID, 'tve_leads_typefocus', true)) {
+            tve_enqueue_script('tve_typed', tve_editor_js() . '/typed.min.js', array(), false, true);
+        }
         tve_leads_register_group();
     }
 
@@ -455,6 +458,7 @@ function tve_leads_register_impression($group, $form_type_or_shortcode, $variati
     if (defined('DOING_AJAX') && DOING_AJAX && !empty($_REQUEST['http_referrer'])) {
         $referrer = $_REQUEST['http_referrer'];
     }
+    $referrer = preg_replace('#http(s)?://#', '', rtrim($referrer, '/'));
     if ($referrer) {
         $trimmed = preg_replace('#http(s)?://#', '', trim($referrer, '/'));
         $host = preg_replace('#http(s)?://#', '', trim($_SERVER['HTTP_HOST'], '/'));
@@ -687,6 +691,9 @@ function tve_leads_print_footer_scripts()
         if (!empty($_REQUEST[$_tracking_field])) {
             $custom_post_data[$_tracking_field] = $_REQUEST[$_tracking_field];
         }
+    }
+    foreach ($_GET as $k => $v) {
+        $custom_post_data['get_data'][$k] = $v;
     }
     if (!empty($_SERVER['HTTP_REFERER'])) {
         $custom_post_data['http_referrer'] = $_SERVER['HTTP_REFERER'];
@@ -957,6 +964,22 @@ function tve_leads_display_form_lightbox($flag = '', $form_output = null, $varia
         }
     }
 
+    /* we need to set the animation from the parent (main) state, if any */
+    if (!empty($variation['parent_id'])) {
+        $parent = tve_leads_get_form_variation(null, $variation['parent_id']);
+        $parent_form_type = tve_leads_get_form_type_from_variation($parent, false, true);
+
+        /**
+         * cases:
+         * - lightbox with multiple states opened from an inline form (shortcode, widget etc)
+         * - 2-step lightbox with multiple states
+         *
+         */
+        if ($parent['form_state'] != $variation['form_state'] && $parent_form_type != 'lightbox') {
+            $parent = $variation;
+        }
+    }
+
     $config = tve_leads_lightbox_globals($variation);
     list($type, $key) = explode('|', $variation[TVE_LEADS_FIELD_TEMPLATE]);
 
@@ -974,7 +997,7 @@ function tve_leads_display_form_lightbox($flag = '', $form_output = null, $varia
         $container_id . (empty($control['animation']) ? ' tve_p_lb_background' : '') . '" data-s-state="' . (empty($done) ? '' : $done['key']),
         $config['overlay']['css'],
         $config['overlay']['custom_color'],
-        !empty($control['animation']) ? 'tve-tl-anim tl-anim-' . $variation['display_animation'] : '',
+        (!empty($control['animation']) ? 'tve-tl-anim tl-anim-' . (isset($parent) ? $parent['display_animation'] : $variation['display_animation']) : ''),
         $config['content']['class'],
         $config['content']['css'],
         $config['content']['custom_color'],
@@ -987,7 +1010,7 @@ function tve_leads_display_form_lightbox($flag = '', $form_output = null, $varia
 
     $html .= $already_subscribed . (empty($variation['parent_id']) ? apply_filters('tve_leads_variation_append_states', '', $variation) : ''); // if this is the main (default) state, we need to bring together all the other states
     if (empty($variation['parent_id'])) {
-        $html = '<div class="tl-states-root">' . $html . '</div>';
+        $html = '<div class="tl-states-root tl-anim-' . $variation['display_animation'] . '">' . $html . '</div>';
     }
 
     if ($flag === '__return_content') {
@@ -1086,6 +1109,95 @@ function tve_leads_display_form_screen_filler($flag = '', $form_output = null, $
 
     tve_leads_display_js_impression_data('screen_filler');
 }
+
+
+/**
+ * output the contents for a Scroll Mat form type
+ * this is called in the WP_footer hook
+ *
+ * @param string $flag used to control the output
+ * @param string $form_output if present, it will take this instead of the GLOBALS
+ * @param array $variation_state current variation state
+ * @param array $control used to change the output in various ways
+ *
+ * @return void|string
+ */
+function tve_leads_display_form_greedy_ribbon($flag = '', $form_output = null, $variation_state = null, $control = array())
+{
+    if (!isset($GLOBALS['tve_lead_forms']['greedy_ribbon']['form_output']) && empty($form_output)) {
+        return;
+    }
+
+    $form_output = isset($form_output) ? $form_output : $GLOBALS['tve_lead_forms']['greedy_ribbon']['form_output'];
+
+    /**
+     * just output the form placeholder
+     */
+    if (!empty($GLOBALS['tve_lead_forms']['greedy_ribbon']['placeholder'])) {
+        echo $form_output;
+        return;
+    }
+
+    /**
+     * load the greedy_ribbon trigger
+     */
+    $GLOBALS['tl_triggers']['greedy_ribbon'] = true;
+
+    $defaults = array(
+        'wrap' => true,
+        'hide' => false
+    );
+    $control = array_merge($defaults, $control);
+
+    $variation = isset($variation_state) ? $variation_state : $GLOBALS['tve_lead_forms']['greedy_ribbon']['variation'];
+
+    $greedy_ribbon_position = !in_array($variation['position'], array('top', 'bottom')) ? 'top' : $variation['position'];
+
+    /**
+     * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
+     */
+    $already_subscribed = tve_leads_get_already_subscribed_html($variation, 'greedy_ribbon');
+
+    /**
+     * if no "Already Subscribed" state has been defined and the visitor comes from an inbound link which shows the already subscribed state,
+     * we don't display anything
+     */
+    if (empty($already_subscribed) && empty($variation['parent_id']) && tve_leads_force_subscribed_state()) {
+        if ($flag == '__return_content') {
+            return '';
+        }
+
+        echo '';
+        return;
+    }
+
+    $control['hide'] = $control['hide'] || !empty($already_subscribed);
+
+    $html = tve_leads_state_html($form_output, $variation, $control) . $already_subscribed;
+
+    if (!empty($control['wrap'])) {
+        $html = sprintf(
+                '<div data-position="%s" data-tl-type="greedy_ribbon" class="tl-state-root tve-leads-greedy_ribbon%s tve-tl-anim tve-leads-track-greedy_ribbon-%s %s">',
+                $greedy_ribbon_position,
+                empty($variation['trigger']) || $variation['trigger'] == 'page_load' ? '' : ' tve-trigger-hide',
+                $variation['key'],
+                'tl-anim-' . ($greedy_ribbon_position == 'top' ? 'slide_top' : 'slide_bot')
+            ) . $html;
+        // if this is the main (default) state, we need to bring together all the other states
+        $html .= apply_filters('tve_leads_variation_append_states', '', $variation) . '</div>';
+    }
+
+    tve_leads_display_js_impression_data('greedy_ribbon');
+
+    if ($flag === '__return_content') {
+        return $html;
+    }
+
+    echo $html;
+}
+
+
+
 
 /**
  * output the contents for a post footer
@@ -1650,6 +1762,22 @@ function tve_leads_ajax_load_forms()
 {
     define('TVE_AJAX_LOAD_FORM', 1);
 
+    $excluded = array(
+        "action",
+        "main_group_id",
+        "'tl_target_all",
+        "tl_groups",
+        "tl_form_type",
+        "tl_period_type",
+        "tl_period_days"
+    );
+    if (!empty($_POST['get_data'])) {
+        foreach ($_POST['get_data'] as $k => $v) {
+            if(!in_array($k, $excluded)) {
+                $_REQUEST[$k] = $_GET[$k] = $v;
+            }
+        }
+    }
     global $tve_lead_group;
     /* the following line causes the plugin not to work on wp-engine */
 //    check_ajax_referer('tve-leads-front-js-track-123333', 'security');

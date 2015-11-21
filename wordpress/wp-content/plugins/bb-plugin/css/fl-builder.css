@@ -144,6 +144,60 @@ html.fl-builder-edit {
 	background: #ff9600;
 }
 
+/* Builder Submenus
+------------------------------------------------------ */
+
+.fl-builder-has-submenu {
+	position: relative;
+}
+ul.fl-builder-submenu {
+	background: #3ba0ff;
+	box-shadow: 0 0 20px rgba(0,0,0,0.20);
+	display: none;
+	left: 0;
+	list-style: none;
+	margin: 0;
+	padding: 6px 0;
+	position: absolute;
+	text-align: left;
+	top: 100%;
+	width: 155px;
+	z-index: 100008;
+}
+.fl-builder-submenu-right ul.fl-builder-submenu {
+	left: auto;
+	right: 0;
+}
+.fl-builder-submenu-open ul.fl-builder-submenu {
+	display: block;
+}
+ul.fl-builder-submenu li a {
+	color: #fff;
+	display: block;
+    line-height: 13px;
+    font-size: 13px;
+    font-family: Helvetica, Verdana, sans-serif;
+    font-weight: normal;
+	opacity: 0.8;
+	filter: alpha(opacity = 80);
+    padding: 6px 12px;
+    text-decoration: none;
+}
+ul.fl-builder-submenu li a:hover {
+    background: #54acff;
+	color: #fff;
+    opacity: 1;
+	filter: alpha(opacity = 100);
+}
+
+/* Global Submenus */
+.fl-block-overlay-global ul.fl-builder-submenu {
+	background: #ff9600;
+}
+.fl-block-overlay-global ul.fl-builder-submenu li a:hover {
+    background: #ffaa33;
+}
+
 /* Builder Bar
 ------------------------------------------------------ */
 
@@ -511,26 +565,36 @@ span.fl-builder-block-no-node-templates:hover {
 .fl-block-overlay-actions {
 	background: #3ba0ff;
 	float: left;
+	margin: 0 -1px;
 	text-shadow: none;
+}
+.fl-block-overlay-actions > span {
+	display: block;
+	float: left;
 }
 .fl-block-overlay-actions i {
 	color: #fff !important;
 	cursor: pointer;
 	display: block !important;
 	float: left;
-	font-size: 16px !important;
-	height: 30px !important;
+	font-size: 14px !important;
+	height: 28px !important;
 	font-weight: 100 !important;
-	line-height: 30px !important;
+	line-height: 28px !important;
 	opacity: 0.8;
 	filter: alpha(opacity = 80);
 	text-align: center;
-	vertical-align: middle;
-	width: 32px !important;
+	width: 28px !important;
 }
 .fl-block-overlay-actions i:hover {
 	opacity: 1;
 	filter: alpha(opacity = 100);
+}
+.fl-block-overlay-actions > i:first-child {
+	padding-left: 4px;
+}
+.fl-block-overlay-actions > i:last-child {
+	padding-right: 2px;
 }
 .fl-block-overlay-actions i.fl-block-move {
 	cursor: move;
@@ -543,8 +607,8 @@ span.fl-builder-block-no-node-templates:hover {
 	font-size: 13px;
 	height: 30px;
 	line-height: 29px;
-	margin-right: 4px;
-	padding: 0 10px;
+	margin-right: 2px;
+	padding: 0 8px;
 }
 
 /* Row Overlays */
@@ -662,9 +726,6 @@ span.fl-builder-block-no-node-templates:hover {
 .fl-block-overlay-muted .fl-row-overlay .fl-block-overlay-title {
 	border-right: 1px solid #a6a6a6;
 }
-.fl-block-overlay-muted .fl-row-overlay .fl-block-overlay-title-global {
-	color: #8c8c8c;
-}
 
 /* Disabled Overlays */
 .fl-node-disabled {
@@ -677,6 +738,59 @@ span.fl-builder-block-no-node-templates:hover {
 	position: absolute;
 	right: 0;
 	top: 0;
+}
+
+/* Column Resize Handles */
+.fl-block-col-resize {
+	bottom: 0 !important;
+	position: absolute;
+	top: 0 !important;
+	width: 6px;
+}
+.fl-block-col-resize-e {
+	cursor: ew-resize;
+	left: auto !important;
+	right: -4px !important;
+}
+.fl-block-col-resize-w {
+	cursor: ew-resize;
+	left: -4px !important;
+}
+.fl-block-col-resize-handle-wrap {
+	margin: -4px 0 0 -5px;
+	padding: 0 5px;
+	position: absolute;
+	top: 50% !important;
+}
+.fl-block-col-resize-e .fl-block-col-resize-handle-wrap {
+	margin-left: -6px;
+}
+.fl-block-col-resize-handle {
+	background: #fff;
+	border: 1px solid #259aff; 
+	height: 7px;
+	width: 7px;
+}
+.fl-block-col-resize-feedback {
+	color: #333 !important;
+	display: none;
+	font-family: Helvetica, Verdana, sans-serif !important;
+	font-size: 11px !important;
+	position: absolute;
+}
+.fl-block-col-resize-feedback-left,
+.fl-block-col-resize-feedback-right {
+	background: #fff;
+	border: 1px solid #3ba0ff;
+	padding: 2px 4px;
+}
+.fl-block-col-resize-feedback-left {
+	right: 20px;
+	top: -7px;
+}
+.fl-block-col-resize-feedback-right {
+	left: 20px;
+	top: -7px;
 }
 
 /* Actions Lightbox
@@ -1046,28 +1160,8 @@ form.fl-builder-settings {
 /* Color Picker */
 .fl-color-picker {
 	cursor: pointer;
-	height: 30px;
-	width: 48px;
-}
-.fl-color-picker.fl-color-picker-empty .fl-color-picker-color {
-	background: url(../img/sprite.png) 0 -24px no-repeat;
-}
-.fl-color-picker .fl-color-picker-color {
-	border: 1px solid #ccc;
-	float: left;
-	height: 30px;
-	width: 30px;
-}
-.fl-color-picker.fl-color-picker-empty .fl-color-picker-clear {
-	display: none;
-}
-.fl-color-picker .fl-color-picker-clear {
-	background: url(../img/sprite.png) -124px 2px no-repeat;
-	border: 1px solid #ccc;
-	border-left: none;
-	float: left;
-	height: 30px;
-	width: 15px;
+	/*height: 30px;*/
+	/*width: 48px;*/
 }
 .fl-color-picker .fl-color-picker-clear:hover {
 	background-color: #ededed;

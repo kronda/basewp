@@ -8,6 +8,7 @@ var FLBuilderPostGrid;
 		this.nodeClass      = '.fl-node-' + settings.id;
 		this.wrapperClass   = this.nodeClass + ' .fl-post-' + this.settings.layout;
 		this.postClass      = this.wrapperClass + '-post';
+		this.matchHeight	= settings.matchHeight;
 		
 		if(this._hasPosts()) {
 			this._initLayout();
@@ -47,6 +48,8 @@ var FLBuilderPostGrid;
 		_gridLayout: function()
 		{
 			var wrap = $(this.wrapperClass);
+			
+			this._gridLayoutMatchHeight();
 				
 			wrap.masonry({
 				columnWidth         : this.nodeClass + ' .fl-post-grid-sizer',
@@ -56,9 +59,28 @@ var FLBuilderPostGrid;
 				transitionDuration  : 0
 			});
 				
-			wrap.imagesLoaded(function() {
+			wrap.imagesLoaded( $.proxy( function() {
+				this._gridLayoutMatchHeight();
 				wrap.masonry();
-			});
+			}, this ) );
+		},
+	  
+		_gridLayoutMatchHeight: function()
+		{
+			var highestBox = 0;
+			
+			if ( 0 === this.matchHeight ) {
+				return;
+			}
+            
+            $(this.postClass).each(function(){
+                
+                if($(this).height() > highestBox) {
+                	highestBox = $(this).height();
+                }
+            });
+                
+            $(this.postClass).height(highestBox);
 		},
 		
 		_galleryLayout: function()
@@ -104,10 +126,11 @@ var FLBuilderPostGrid;
 			elements = $(elements);
 			
 			if(this.settings.layout == 'grid') {
-				wrap.imagesLoaded(function() {
+				wrap.imagesLoaded( $.proxy( function() {
+					this._gridLayoutMatchHeight();
 					wrap.masonry('appended', elements);
 					elements.css('visibility', 'visible');
-				});
+				}, this ) );
 			}
 			else if(this.settings.layout == 'gallery') {
 				this.gallery.resize();

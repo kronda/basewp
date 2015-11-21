@@ -25,7 +25,7 @@ class Thrive_Api_Html_Renderer
             ),
             'email' => array(
                 'display' => 1,
-                'type' => 'text',
+                'type' => 'email',
                 'name' => 'email',
                 'label' => __('Email', 'thrive-cb'),
                 'validation' => 'email',
@@ -111,7 +111,8 @@ class Thrive_Api_Html_Renderer
         foreach ($elements as $element) {
             switch ($element['type']) {
                 case 'text':
-                    $html .= $this->_textRow($element, $input_index);
+                case 'email':
+                    $html .= $this->_textRow($element, $input_index, $element['type']);
                     break;
                 case 'radio':
                     $html .= $this->_radioRow($element, $input_index);
@@ -165,7 +166,7 @@ class Thrive_Api_Html_Renderer
      *
      * @return string
      */
-    protected function _textRow($element, $input_index)
+    protected function _textRow($element, $input_index, $type = 'text')
     {
         $field_name = $field = $element['name'];
         $field = $this->encodeAttrName($field);
@@ -190,7 +191,7 @@ class Thrive_Api_Html_Renderer
                 <input type="hidden" class="lg_elem_field" value="<?php echo $field ?>" />
             </td>
             <td>
-                <input type="text" data-elem-field="label" value="<?php echo empty($element['label']) ? '' : $element['label'] ?>" class='tve_lightbox_input' id='txt_label_<?php echo $field; ?>'/>
+                <input type="<?php echo $type;?>" data-elem-field="label" value="<?php echo empty($element['label']) ? '' : $element['label'] ?>" class='tve_lightbox_input' id='txt_label_<?php echo $field; ?>'/>
             </td>
             <td>
                 <div class="tve_lightbox_select_holder">

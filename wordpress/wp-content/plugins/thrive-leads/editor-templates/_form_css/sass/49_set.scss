@@ -267,7 +267,7 @@ $black: #000;
         line-height: 36px;
       }
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       @include robotoslab();
       border-radius: 0;
       box-shadow: none;

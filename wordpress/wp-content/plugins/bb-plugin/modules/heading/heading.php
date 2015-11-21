@@ -75,7 +75,7 @@ FLBuilder::register_module('FLHeadingModule', array(
 						'type'          => 'color',
 						'show_reset'    => true,
 						'label'         => __('Text Color', 'fl-builder')
-					)
+					),
 				)
 			),
 			'structure'     => array(
@@ -108,6 +108,18 @@ FLBuilder::register_module('FLHeadingModule', array(
 							'h5'            =>  'h5',
 							'h6'            =>  'h6'
 						)
+					),
+					'font'          => array(
+						'type'          => 'font',
+						'default'		=> array(
+							'family'		=> 'Default',
+							'weight'		=> 300
+						),
+						'label'         => __('Font', 'fl-builder'),
+						'preview'         => array(
+							'type'            => 'font',
+							'selector'        => '.fl-heading-text'
+						)					
 					),
 					'font_size'     => array(
 						'type'          => 'select',

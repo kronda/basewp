@@ -71,7 +71,7 @@ body {
         .tve_p_lb_content {
           max-width: 1130px;
           .thrv_lead_generation_horizontal {
-            input[type='text'] {
+            input[type='text'], input[type="email"] {
               padding: 13px 10px !important;
             }
           }
@@ -149,7 +149,7 @@ body {
     }
     .thrv_lead_generation {
       &.thrv_lead_generation_horizontal {
-        input[type='text'] {
+        input[type='text'], input[type="email"] {
           font-size: 18px;
         }
         button {
@@ -166,7 +166,7 @@ body {
         }
       }
       &.thrv_lead_generation_vertical {
-        input[type='text'] {
+        input[type='text'], input[type="email"] {
           font-size: 18px;
           margin-bottom: 10px;
           padding: 18px 10px !important;
@@ -186,7 +186,7 @@ body {
           text-shadow: none;
         }
       }
-      input[type='text'] {
+      input[type='text'], input[type="email"] {
         @include roboto();
         box-shadow: none;
         border: 1px solid $white;
@@ -349,7 +349,7 @@ body {
         }
       }
       .thrv_lead_generation_horizontal {
-        input[type="text"] {
+        input[type="text"], input[type="email"] {
           font-size: 19px;
           padding: 16px 10px;
         }
@@ -503,7 +503,7 @@ body {
       box-shadow: none;
       padding: 13px 0 8px;
       .thrv_lead_generation_horizontal {
-        input[type='text'] {
+        input[type='text'], input[type="email"] {
           font-size: 16px;
         }
         button {
@@ -533,7 +533,7 @@ body {
         }
       }
       .thrv_lead_generation_horizontal {
-        input[type='text'] {
+        input[type='text'], input[type="email"] {
           padding: 13px 10px !important;
         }
         &.tve_2 {
@@ -644,7 +644,7 @@ $color-pallete: 'blue' #415c71 #334858 #8d9daa #85919b #415c71 #3a5365 #415c71,
     }
     .thrv_lead_generation {
       &.tve_#{nth($color, 1)} {
-        input[type='text'] {
+        input[type='text'], input[type="email"] {
           &:hover {
             box-shadow: 0 0 0 2px nth($color, 4);
           }

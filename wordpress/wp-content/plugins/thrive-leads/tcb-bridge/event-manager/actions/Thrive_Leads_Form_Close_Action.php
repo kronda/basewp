@@ -18,6 +18,7 @@ if (!class_exists('Thrive_Leads_Form_Close_Action')) {
             'in_content',
             'php_insert',
             'shortcode',
+            'greedy_ribbon',
         );
 
         /**

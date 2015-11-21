@@ -26,16 +26,18 @@
 		
 		_submitForm: function( form )
 		{
-			var postId      = form.closest( '.fl-builder-content' ).data( 'post-id' ),
-				nodeId      = form.closest( '.fl-module' ).data( 'node' ),
-				button      = form.find( '.fl-form-button' ),
-				buttonText  = button.find( '.fl-button-text' ).text(),
-				waitText    = button.data( 'wait-text' ),
-				name        = form.find( 'input[name=fl-subscribe-form-name]' ),
-				email       = form.find( 'input[name=fl-subscribe-form-email]' ),
-				re          = /\S+@\S+\.\S+/,
-				valid       = true;
-			
+			var postId      	= form.closest( '.fl-builder-content' ).data( 'post-id' ),
+				templateId		= form.data( 'template-id' ),
+				templateNodeId	= form.data( 'template-node-id' ),
+				nodeId      	= form.closest( '.fl-module' ).data( 'node' ),
+				button      	= form.find( '.fl-form-button' ),
+				buttonText  	= button.find( '.fl-button-text' ).text(),
+				waitText    	= button.data( 'wait-text' ),
+				name        	= form.find( 'input[name=fl-subscribe-form-name]' ),
+				email       	= form.find( 'input[name=fl-subscribe-form-email]' ),
+				re          	= /\S+@\S+\.\S+/,
+				valid       	= true;
+
 			if ( button.hasClass( 'fl-form-button-disabled' ) ) {
 				return; // Already submitting
 			}
@@ -58,11 +60,13 @@
 				button.addClass( 'fl-form-button-disabled' );
 				
 				$.post( FLBuilderLayoutConfig.paths.wpAjaxUrl, {
-					action  : 'fl_builder_subscribe_form_submit',
-					name    : name.val(),
-					email   : email.val(),
-					post_id : postId,
-					node_id : nodeId
+					action  			: 'fl_builder_subscribe_form_submit',
+					name    			: name.val(),
+					email   			: email.val(),
+					post_id 			: postId,
+					template_id 		: templateId,
+					template_node_id 	: templateNodeId,
+					node_id 			: nodeId
 				}, function( response ) {
 					FLSubscribeForm._submitFormComplete( form, response );
 				});

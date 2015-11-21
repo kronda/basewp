@@ -138,7 +138,17 @@ function tve_leads_admin_enqueue($hook)
         'CHART_RED' => '#F60000',
         'CHART_GREEN' => '#006600',
         'CHART_GREY' => '#C0C0C0',
-        'CHART_COLORS' => $tve_leads_chart_colors
+        'CHART_COLORS' => $tve_leads_chart_colors,
+        'date_intervals' => array(
+            'last_7_days' => TVE_LAST_7_DAYS,
+            'last_30_days' => TVE_LAST_30_DAYS,
+            'this_month' => TVE_THIS_MONTH,
+            'last_month' => TVE_LAST_MONTH,
+            'this_year' => TVE_THIS_YEAR,
+            'last_year' => TVE_LAST_YEAR,
+            'last_12_months' => TVE_LAST_12_MONTHS,
+            'custom_date_range' => TVE_CUSTOM_DATE_RANGE
+        )
     );
 
     /**

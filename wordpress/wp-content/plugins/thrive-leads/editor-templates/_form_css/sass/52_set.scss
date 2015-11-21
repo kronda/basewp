@@ -291,7 +291,7 @@ $black: #000;
         }
       }
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       @include opensans();
       border-radius: 0;
       box-shadow: none;

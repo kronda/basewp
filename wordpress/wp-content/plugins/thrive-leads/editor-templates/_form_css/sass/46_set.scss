@@ -237,7 +237,7 @@ $black: #000;
       padding: 8px 10px;
       text-shadow: none;
     }
-    input[type="text"] {
+    input[type="text"], input[type="email"] {
       @include robotoslab();
       border-radius: 0;
       box-shadow: none;

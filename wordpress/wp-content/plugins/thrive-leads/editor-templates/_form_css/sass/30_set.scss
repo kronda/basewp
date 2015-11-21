@@ -84,7 +84,7 @@ $black: #000;
   }
   .thrv_lead_generation {
     &.thrv_lead_generation_vertical {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         margin-bottom: 15px;
       }
     }
@@ -116,7 +116,7 @@ $black: #000;
       }
     }
     .tve_lg_input_container.tve_lg_input {
-      input[type="text"] {
+      input[type="text"], input[type="email"] {
         @include sourcesans();
         border-radius: 0;
         border: 0;

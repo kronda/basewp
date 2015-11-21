@@ -15,6 +15,28 @@ TL_Front.add_page_css = function (stylesheets) {
     });
 };
 
+/**
+ * we need to add the scripts using this method, to make sure the onload callback is fired properly
+ * @param src
+ * @param onload
+ */
+TL_Front.add_head_script = function (src, id, onload) {
+    var script = document.createElement('script'),
+        head = ThriveGlobal.$j('head')[0];
+
+    script.async = true;
+    if (typeof onload === 'function') {
+        script.onload = script.onreadystatechange = onload;
+    }
+    if (typeof id !== 'undefined') {
+        script.id = id;
+    }
+
+    script.src = src;
+
+    head.insertBefore(script, head.firstChild);
+};
+
 TL_Front.add_page_js = function (links, onLoad) {
     if (typeof onLoad !== 'function') {
         onLoad = function () {};
@@ -23,11 +45,14 @@ TL_Front.add_page_js = function (links, onLoad) {
     ThriveGlobal.$j.each(links, function (_id, href) {
         _id += '-js';
         if (href && !ThriveGlobal.$j('#' + _id).length) {
+            to_load++;
+            /* facebook needs to be inserted with a custom fragment appended - jQuery.getScript does not allow that */
             if (href.indexOf('connect.facebook.net') !== -1) {
-                ThriveGlobal.$j('<script type="text/javascript" src="' + href + '" id="' + _id + '"></script>').appendTo('head');
+                TL_Front.add_head_script(href, _id, function () {
+                    to_load--;
+                });
                 return true;
             }
-            to_load++;
             ThriveGlobal.$j.getScript(href, function() {
                 to_load--;
             });

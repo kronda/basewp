@@ -38,6 +38,11 @@ define('TVE_LEADS_FIELD_CUSTOM_FONTS', 'fonts');
 define('TVE_LEADS_FIELD_HAS_MASONRY', 'masonry');
 
 /**
+ * field for a flag that indicates whether or not the form variation needs a typist library
+ */
+define('TVE_LEADS_FIELD_HAS_TYPEFOCUS', 'typefocus');
+
+/**
  * field that holds the key of the template used for the form design
  */
 define('TVE_LEADS_FIELD_TEMPLATE', 'tpl');
@@ -175,6 +180,7 @@ function tve_leads_get_editor_fields()
         TVE_LEADS_FIELD_CUSTOM_FONTS,
         TVE_LEADS_FIELD_GLOBALS,
         TVE_LEADS_FIELD_HAS_MASONRY,
+        TVE_LEADS_FIELD_HAS_TYPEFOCUS,
         TVE_LEADS_FIELD_ICON_PACK,
         TVE_LEADS_FIELD_INLINE_CSS,
         TVE_LEADS_FIELD_SAVED_CONTENT,
@@ -670,6 +676,10 @@ function tve_editor_custom_content($variation = null, $filters = array())
         wp_enqueue_script('jquery-masonry');
     }
 
+    if (!empty($variation[TVE_LEADS_FIELD_HAS_TYPEFOCUS])) {
+        tve_enqueue_script('tve_typed', tve_editor_js() . '/typed.min.js', array(), false, true);
+    }
+
     $tve_saved_content = preg_replace_callback('/__CONFIG_lead_generation__(.+?)__CONFIG_lead_generation__/s', 'tcb_lg_err_inputs', $tve_saved_content);
 
     if (!$is_editor_page) {
@@ -725,6 +735,7 @@ function tve_leads_save_editor_content()
     $variation[TVE_LEADS_FIELD_CUSTOM_FONTS] = tve_leads_get_custom_font_links(empty($_POST['custom_font_classes']) ? array() : $_POST['custom_font_classes']);
     $variation[TVE_LEADS_FIELD_ICON_PACK] = empty($_POST['has_icons']) ? 0 : 1;
     $variation[TVE_LEADS_FIELD_HAS_MASONRY] = empty($_POST['tve_has_masonry']) ? 0 : 1;
+    $variation[TVE_LEADS_FIELD_HAS_TYPEFOCUS] = empty($_POST['tve_has_typefocus']) ? 0 : 1;
 
     tve_leads_save_form_variation($variation);
 
@@ -768,6 +779,7 @@ function tve_leads_get_editor_template_content(& $variation, $template_key = nul
     $variation[TVE_LEADS_FIELD_CUSTOM_FONTS] = array();
     $variation[TVE_LEADS_FIELD_ICON_PACK] = '';
     $variation[TVE_LEADS_FIELD_HAS_MASONRY] = '';
+    $variation[TVE_LEADS_FIELD_HAS_TYPEFOCUS] = '';
 
     /**
      * also read in any other configuration values that might be rquired for this form
@@ -880,6 +892,7 @@ function tve_leads_custom_elements_menu($menu_path)
     include dirname(dirname(__FILE__)) . '/editor-layouts/element-menus/slide_in.php';
     include dirname(dirname(__FILE__)) . '/editor-layouts/element-menus/lead_form.php';
     include dirname(dirname(__FILE__)) . '/editor-layouts/element-menus/screen_filler.php';
+    include dirname(dirname(__FILE__)) . '/editor-layouts/element-menus/greedy_ribbon.php';
 }
 
 /**

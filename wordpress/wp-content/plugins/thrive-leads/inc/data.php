@@ -1039,6 +1039,16 @@ function tve_leads_save_form_variation($model)
             }
         }
 
+        if (isset($data['tcb_fields'][TVE_LEADS_FIELD_HAS_TYPEFOCUS])) {
+            /**
+             * update the typefocus option also in the parent post, because if the lazy-load option is set, we need to include typist in the main page
+             */
+            update_post_meta($data['post_parent'], 'tve_leads_typefocus', $data['tcb_fields'][TVE_LEADS_FIELD_HAS_TYPEFOCUS]);
+            if (!empty($form_type->post_parent)) {
+                update_post_meta($form_type->post_parent, 'tve_leads_typefocus', $data['tcb_fields'][TVE_LEADS_FIELD_HAS_TYPEFOCUS]);
+            }
+        }
+
         $parent = $tvedb->save_form_variation($data);
 
         if (!empty($model['form_child_states'])) {
@@ -1815,12 +1825,46 @@ function tve_leads_get_lead_referral_report_data($filter)
         'count' => true,
         'itemsPerPage' => 10,
         'page' => 1,
-        'event_type' => TVE_LEADS_CONVERSION
+        'event_type' => TVE_LEADS_CONVERSION,
+        'referral_type' => 'domain'
     );
     $filter = array_merge($defaults, $filter);
 
     global $tvedb;
     $lead_referral = $tvedb->tve_leads_get_top_referring_links($filter, $filter['count']);
+
+    if ($filter['referral_type'] == 'domain' && $filter['count'] == false) {
+        $temp = array();
+        foreach ($lead_referral as $referrer) {
+            $domain = parse_url($referrer->referring_url, PHP_URL_HOST);
+            $domain = str_replace('www.', '', $domain);
+            if (empty($temp[$domain])) {
+                $temp[$domain] = new stdClass();
+                $temp[$domain]->conversions = 0;
+                $temp[$domain]->referring_url = $domain;
+            }
+            $temp[$domain]->conversions += $referrer->conversions;
+        }
+        $lead_referral = array_values($temp);
+    }
+
+    /* sort the result */
+    if ($filter['count'] == false && !empty($filter['order_dir'])) {
+        for ($i = 0; $i < count($lead_referral) - 1; $i++) {
+            for ($j = $i + 1; $j < count($lead_referral); $j++) {
+                if (($filter['order_by'] == 'url' && strcmp($lead_referral[$i]->referring_url, $lead_referral[$j]->referring_url) > 0) ||
+                    ($filter['order_by'] == 'conversions' && ($lead_referral[$i]->conversions - $lead_referral[$j]->conversions > 0))
+                ) {
+                    $aux = $lead_referral[$i];
+                    $lead_referral[$i] = $lead_referral[$j];
+                    $lead_referral[$j] = $aux;
+                }
+            }
+        }
+        if ($filter['order_dir'] == 'DESC') {
+            $lead_referral = array_reverse($lead_referral);
+        }
+    }
 
     if ($filter['count'] == true) {
         return array('table_data' => array('count_table_data' => $lead_referral));
@@ -1840,6 +1884,7 @@ function tve_leads_get_lead_source_report_data($filter)
         'count' => true,
         'itemsPerPage' => 500,
         'page' => 1,
+        'source_type' => 0,
         'order_by' => '',
         'order_dir' => ''
     );
@@ -1879,6 +1924,7 @@ function tve_leads_get_lead_tracking_report_data($filter)
         'count' => true,
         'itemsPerPage' => 10,
         'page' => 1,
+        'tracking_type' => 'all',
         'event_type' => TVE_LEADS_CONVERSION
     );
     $filter = array_merge($defaults, $filter);

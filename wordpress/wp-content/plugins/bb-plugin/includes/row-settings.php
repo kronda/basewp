@@ -42,6 +42,19 @@ FLBuilder::register_settings_form('row', array(
 								'type'            => 'none'
 							)
 						),
+						'full_height'  => array(
+							'type'          => 'select',
+							'label'         => __('Height', 'fl-builder'),
+							'default'       => 'default',
+							'options'       => array(
+								'default'        => __('Default', 'fl-builder'),
+								'full'          => __('Full Height', 'fl-builder')
+							),
+							'help'          => __('Full height rows fill the height of the browser window.', 'fl-builder'),
+							'preview'         => array(
+								'type'            => 'none'
+							)
+						),
 					)
 				),
 				'colors'        => array(

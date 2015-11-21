@@ -7,8 +7,6 @@
  * Time: 5:03 PM
  */
 
-require_once dirname(__FILE__) . "/ArpReach/Exception.php";
-
 class Thrive_Api_ArpReach
 {
 
@@ -51,6 +49,72 @@ class Thrive_Api_ArpReach
         return $this->call_api('add_contact', $params);
     }
 
+    /**
+     * Adds the contact to the list
+     * @param $user
+     * @return mixed
+     * @throws Thrive_Api_ArpReach_ContactException_Exists
+     * @throws Thrive_Api_ArpReach_Exception
+     */
+    public function addContact($user)
+    {
+        $params = array(
+            'email_address' => $user['email'],
+            'first_name' => $user['first_name'],
+            'last_name' => $user['last_name'],
+            'phone_number_1' => $user['phone'],
+        );
+
+        return $this->call_api('add_contact', $params);
+
+    }
+
+    /**
+     * Edits the contact in the list
+     * @param $user
+     * @return mixed
+     * @throws Thrive_Api_ArpReach_ContactException_Exists
+     * @throws Thrive_Api_ArpReach_Exception
+     */
+    public function editContact($user)
+    {
+        $params = array(
+            'email_address' => $user['email'],
+            'first_name' => $user['first_name'],
+            'last_name' => $user['last_name'],
+            'phone_number_1' => $user['phone'],
+        );
+
+        return $this->call_api('edit_contact', $params);
+
+    }
+
+    /**
+     * Adds the contact (added/edited) to the new list
+     * @param $list
+     * @param $user
+     * @return mixed
+     * @throws Thrive_Api_ArpReach_ContactException_Exists
+     * @throws Thrive_Api_ArpReach_Exception
+     */
+    public function addToList($list, $user)
+    {
+
+        $params = array(
+            'email_address' => $user['email'],
+            'lists' => json_encode(array(
+                array(
+                    'list' => $list,
+                    'status' => 0,
+                    'next_message' => 2
+                )
+            ))
+        );
+
+        return $this->call_api('add_to_list', $params);
+
+    }
+
     protected function call_api($method, $params = array())
     {
         $url = trim($this->url, "/") . "/a.php/api/" . trim($method, "/");
@@ -82,6 +146,11 @@ class Thrive_Api_ArpReach
         }
 
         if (!empty($api_response->status) && $api_response->status === 'error') {
+
+            if($api_response->detail === "Contact already exists") {
+                throw new Thrive_Api_ArpReach_ContactException_Exists($api_response->detail);
+            }
+
             throw new Thrive_Api_ArpReach_Exception($api_response->detail);
         }
 

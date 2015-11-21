@@ -251,7 +251,7 @@ function tve_social_network_default_pin_share($config, $editor_page)
 {
     $html = sprintf(
         '<a href="//www.pinterest.com/pin/create/button/?url=%s&media=%s&description=%s" data-pin-do="buttonPin" %s data-pin-color="red"></a>',
-        !empty($config['pin_share']['href']) ? $config['pin_share']['href'] : '{tcb_post_url}',
+        !empty($config['pin_share']['href']) ? urlencode($config['pin_share']['href']) : '{tcb_encoded_post_url}',
         !empty($config['pin_share']['media']) ? $config['pin_share']['media'] : '{tcb_post_image}',
         !empty($config['pin_share']['description']) ? $config['pin_share']['description'] : '{tcb_post_title}',
         $config['btn_type'] == 'btn_count' ? 'data-pin-config="beside" data-pin-zero="true"' : ''
