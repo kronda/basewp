@@ -63,7 +63,7 @@ class Thrive_List_Connection_ArpReach extends Thrive_List_Connection_Abstract
         $this->setCredentials($_POST['connection']);
 
         if ($this->testConnection() !== true) {
-            return $this->error(__('Could not connect to ArpReach', 'thrive-cb'));
+            return $this;
         }
 
         $this->save();
@@ -85,6 +85,7 @@ class Thrive_List_Connection_ArpReach extends Thrive_List_Connection_Abstract
             return strtolower($api->testConnection()->status) === 'ok';
 
         } catch (Exception $e) {
+            $this->error($e->getMessage());
             return false;
         }
     }

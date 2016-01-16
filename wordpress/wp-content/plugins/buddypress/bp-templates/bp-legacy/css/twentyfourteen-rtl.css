@@ -422,14 +422,6 @@ http://codex.buddypress.org/themes/buddypress-companion-stylesheets/
 	margin-bottom: 5px;
 }
 
-#buddypress form#whats-new-form textarea#whats-new {
-	width: 100%;
-}
-
-#buddypress form#whats-new-form #whats-new-content #whats-new-options[style] {
-	height: auto !important;
-}
-
 @media screen and (max-width: 594px) {
 	#buddypress form#whats-new-form #whats-new-content #whats-new-options {
 		display: flex;
@@ -779,9 +771,6 @@ body.activity-permalink #buddypress {
 		text-align: right;
 		width: 20%;
 	}
-	.bp-user #buddypress #item-header #item-header-avatar img {
-		margin: 0;
-	}
 	.bp-user #buddypress #item-header #item-header-content {
 		float: left;
 		width: 78%;
@@ -815,7 +804,7 @@ body.activity-permalink #buddypress {
 
 #group-settings-form .radio ul,
 #create-group-form .radio ul {
-	color: #777777;
+	color: #787878;
 }
 
 #group-settings-form #group-creation-previous,

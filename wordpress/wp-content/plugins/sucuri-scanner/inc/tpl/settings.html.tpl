@@ -2,55 +2,69 @@
 <div class="sucuriscan-tabs">
     <ul>
         <li>
-            <a href="#" data-tabname="settings-general">General Settings</a>
+            <a href="#general" data-tabname="general">General</a>
         </li>
         <li>
-            <a href="#" data-tabname="settings-scanner">Scanner Settings</a>
+            <a href="#scanner" data-tabname="scanner">Scanner</a>
         </li>
         <li>
-            <a href="#" data-tabname="settings-ignorescanning">Ignore Scanning</a>
+            <a href="#notifications" data-tabname="notifications">Alerts</a>
         </li>
         <li>
-            <a href="#" data-tabname="settings-notifications">Alert Settings</a>
+            <a href="#apiservice" data-tabname="apiservice">API Service</a>
         </li>
         <li>
-            <a href="#" data-tabname="settings-ignorerules">Ignore Alerts</a>
+            <a href="#selfhosting" data-tabname="selfhosting">Log Exporter</a>
         </li>
         <li>
-            <a href="#" data-tabname="settings-trustip">Trust IP</a>
+            <a href="#ignorescanning" data-tabname="ignorescanning">Ignore Scanning</a>
         </li>
         <li>
-            <a href="#" data-tabname="settings-heartbeat">Heartbeat</a>
+            <a href="#ignorerules" data-tabname="ignorerules">Ignore Alerts</a>
+        </li>
+        <li>
+            <a href="#trustip" data-tabname="trustip">Trust IP</a>
+        </li>
+        <li>
+            <a href="#heartbeat" data-tabname="heartbeat">Heartbeat</a>
         </li>
     </ul>
 
     <div class="sucuriscan-tab-containers">
-        <div id="sucuriscan-settings-general">
-            %%SUCURI.Settings.General%%
+        <div id="sucuriscan-general">
+            %%%SUCURI.Settings.General%%%
         </div>
 
-        <div id="sucuriscan-settings-scanner">
-            %%SUCURI.Settings.Scanner%%
+        <div id="sucuriscan-scanner">
+            %%%SUCURI.Settings.Scanner%%%
         </div>
 
-        <div id="sucuriscan-settings-ignorescanning">
-            %%SUCURI.Settings.IgnoreScanning%%
+        <div id="sucuriscan-notifications">
+            %%%SUCURI.Settings.Alerts%%%
         </div>
 
-        <div id="sucuriscan-settings-notifications">
-            %%SUCURI.Settings.Notifications%%
+        <div id="sucuriscan-apiservice">
+            %%%SUCURI.Settings.ApiService%%%
         </div>
 
-        <div id="sucuriscan-settings-ignorerules">
-            %%SUCURI.Settings.IgnoreRules%%
+        <div id="sucuriscan-selfhosting">
+            %%%SUCURI.Settings.SelfHosting%%%
         </div>
 
-        <div id="sucuriscan-settings-trustip">
-            %%SUCURI.Settings.TrustIP%%
+        <div id="sucuriscan-ignorescanning">
+            %%%SUCURI.Settings.IgnoreScanning%%%
         </div>
 
-        <div id="sucuriscan-settings-heartbeat">
-            %%SUCURI.Settings.Heartbeat%%
+        <div id="sucuriscan-ignorerules">
+            %%%SUCURI.Settings.IgnoreRules%%%
+        </div>
+
+        <div id="sucuriscan-trustip">
+            %%%SUCURI.Settings.TrustIP%%%
+        </div>
+
+        <div id="sucuriscan-heartbeat">
+            %%%SUCURI.Settings.Heartbeat%%%
         </div>
     </div>
 </div>

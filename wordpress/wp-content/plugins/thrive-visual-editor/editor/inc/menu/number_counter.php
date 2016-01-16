@@ -2,7 +2,7 @@
 <ul class="tve_menu">
     <?php $has_custom_colors = true;
     include dirname(__FILE__) . '/_custom_colors.php' ?>
-    <li class="tve_ed_btn tve_btn_text">
+    <li class="tve_ed_btn tve_btn_text" data-multiple-hide>
         <div class="tve_option_separator">
             <span class="tve_ind tve_left"><?php echo __("Data Settings", "thrive-cb") ?></span><span
                 class="tve_caret tve_icm tve_left" id="sub_02"></span>
@@ -79,7 +79,7 @@
     <?php include dirname(__FILE__) . '/_custom_font.php' ?>
     <?php include dirname(__FILE__) . '/_margin.php' ?>
     <li>
-        <input type="text" class="tve_change tve_text element_id" placeholder="ID" data-ctrl="controls.change.element_id">
+        <input type="text" class="tve_change tve_text element_id" placeholder="ID" data-ctrl="controls.change.element_id" data-multiple-hide>
     </li>
     <li><input type="text" class="element_class tve_text tve_change" data-ctrl="controls.change.cls" placeholder="<?php echo __("Custom class", "thrive-cb") ?>"></li>
 </ul>

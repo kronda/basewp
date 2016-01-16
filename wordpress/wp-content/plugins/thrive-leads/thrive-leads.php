@@ -3,7 +3,7 @@
 /*
 Plugin Name: Thrive Leads
 Plugin URI: https://thrivethemes.com
-Version: 1.55
+Version: 1.60
 Author: <a href="https://thrivethemes.com">Thrive Themes</a>
 Description: The ultimate lead capture solution for Wordpress
 Text Domain: thrive-leads
@@ -19,14 +19,14 @@ $MyUpdateChecker = new PluginUpdateChecker(
 
 define('TVE_LEADS_TEST_DATA', false);
 
-define('TVE_LEADS_VERSION', '1.55');
+define('TVE_LEADS_VERSION', '1.60');
 
-define('TVE_LEADS_DB_VERSION', '1.15');
+define('TVE_LEADS_DB_VERSION', '1.16');
 
 /**
  * Required version of TCB
  */
-define('TVE_REQUIRED_TCB_VERSION', '1.101.13');
+define('TVE_REQUIRED_TCB_VERSION', '1.101.17');
 
 /* the base URL for the plugin */
 define('TVE_LEADS_URL', str_replace(array(
@@ -54,6 +54,7 @@ define('TVE_LEADS_VARIATION_TEST_TYPE', 1);
 define('TVE_LEADS_GROUP_TEST_TYPE', 2);
 define('TVE_LEADS_SHORTCODE_TEST_TYPE', 3);
 define('TVE_LEADS_TWO_STEP_LIGHTBOX_TEST_TYPE', 4);
+define('TVE_LEADS_TWO_ASSET_GROUP_TEST_TYPE', 5);
 
 /**
  * post types
@@ -62,6 +63,7 @@ define('TVE_LEADS_POST_FORM_TYPE', 'tve_form_type');
 define('TVE_LEADS_POST_GROUP_TYPE', 'tve_lead_group');
 define('TVE_LEADS_POST_SHORTCODE_TYPE', 'tve_lead_shortcode');
 define('TVE_LEADS_POST_TWO_STEP_LIGHTBOX', 'tve_lead_2s_lightbox');
+define('TVE_LEADS_POST_ASSET_GROUP', 'tve_lead_asset_group');
 
 /**
  * screen types
@@ -92,6 +94,9 @@ define('TVE_CUSTOM_DATE_RANGE', 8);
  */
 define('TVE_LEADS_TEST_STATUS_RUNNING', 'running');
 define('TVE_LEADS_TEST_STATUS_ARCHIVED', 'archived');
+
+/* Defined for variation that have the content hidden */
+define('TVE_ALREADY_SUBSCRIBED_HIDDEN','already_subscribed_hidden');
 
 /**
  * Actions

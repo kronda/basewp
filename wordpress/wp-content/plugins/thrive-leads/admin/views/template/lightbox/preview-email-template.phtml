@@ -1,0 +1,37 @@
+<div class="tve-form tve-leads-assets-preview-templates tve_leads_clearfix">
+    <h1 class="larger-text"><?php echo __('Subject', 'thrive-leads') ?></h1>
+    <div class="tve-leads-preview-subject">
+        <#  if(post_subject) {
+                var res = post_subject.replace(/\[lead_name\]/g, ThriveLeads.objects.AssetsWizard.get('admin_name'));
+            } else {
+                var res = ThriveLeads.objects.AssetsWizard.get('email_data').template_subject.replace(/\[lead_name\]/g, ThriveLeads.objects.AssetsWizard.get('admin_name'));
+            }
+            var res = res.replace(/\[asset_name\]/g, post_title);
+        #>
+        <p><#= res #></p>
+    </div>
+    <h1 class="larger-text"><?php echo __('Content', 'thrive-leads') ?></h1>
+    <div class="tve-leads-preview-body">
+        <#
+            if(post_content) {
+                var res = post_content.replace(/\[lead_name\]/g, ThriveLeads.objects.AssetsWizard.get('admin_name'));
+            } else {
+                var res = ThriveLeads.objects.AssetsWizard.get('email_data').template_body.replace(/\[lead_name\]/g, ThriveLeads.objects.AssetsWizard.get('admin_name'));
+            }
+            var res = res.replace(/\[asset_name\]/g, post_title);
+
+            files_html = '';
+            for(var k in files.models) {
+                var html = '<a href="' + files.models[k].get('link') + '">' + files.models[k].get('link_anchor') + '</a><br/>';
+                var files_html = files_html.concat(html);
+            }
+
+            var res = res.replace(/\[asset_download\]/g, files_html);
+
+            #>
+        <#= res #>
+    </div>
+
+    <a href="javascript:void(0)" class="tve-btn tve-btn-green tve-btn-large tve-close-thickbox pull-right" tabindex="3"><?php echo __('Close', 'thrive-leads') ?></a>
+
+</div>

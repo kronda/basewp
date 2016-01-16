@@ -51,7 +51,7 @@ $config = array(
                            placeholder="Name">
                 </div>
                 <div class="tve_lg_input_container  tve_lg_3 tve_lg_input">
-                    <input type="text" name="name" value="" data-placeholder="email"
+                    <input type="text" name="email" value="" data-placeholder="email"
                            placeholder="Email">
                 </div>
                 <div class="tve_lg_input_container tve_submit_container tve_lg_3 tve_lg_submit">

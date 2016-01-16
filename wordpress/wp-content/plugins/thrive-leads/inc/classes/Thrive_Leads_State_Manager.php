@@ -185,10 +185,15 @@ class Thrive_Leads_State_Manager extends Thrive_Leads_Request_Handler
          */
         update_post_meta($current_variation['post_parent'], 'tve_last_edit_state_' . $this->variation['key'], $current_variation['key']);
 
+        ob_start();
+        tve_leads_output_custom_css($current_variation, false);
+        $custom_css = ob_get_contents();
+        ob_end_clean();
+
         return array(
             'state_bar' => $state_bar,
             'main_page_content' => trim($this->render_ajax_content($current_variation)),
-            'custom_css' => tve_leads_output_custom_css($current_variation, true),
+            'custom_css' => $custom_css,
             'css' => $css_links,
             'body_class' => $type == 'lightbox' ? 'tve-l-open tve-o-hidden tve-lightbox-page' : '',
             'page_buttons' => $page_buttons,
@@ -236,6 +241,11 @@ class Thrive_Leads_State_Manager extends Thrive_Leads_Request_Handler
 
         $child = $this->variation;
         unset($child['key']);
+        /**
+         *
+         * UPDATE 19.11.2015 the user custom CSS is only saved in the parent state
+         */
+        $child[TVE_LEADS_FIELD_USER_CSS] = '';
         $child['form_state'] = $this->param('state');
         $child['state_order'] = $tvedb->variation_get_max_state_order($this->variation['key']) + 1;
         $child['parent_id'] = $this->variation['key'];
@@ -277,11 +287,16 @@ class Thrive_Leads_State_Manager extends Thrive_Leads_Request_Handler
 
         $variation = tve_leads_get_form_variation(null, $id);
         $child = $variation;
-        if (empty($child['parent_id'])) { /** if the default one gets duplicated, this means adding the new variation as a child of the main one */
+        if (empty($child['parent_id'])) {
+            /** if the default one gets duplicated, this means adding the new variation as a child of the main one */
             $child['parent_id'] = $variation['key'];
         }
         $child['form_state'] = empty($child['form_state']) ? 'default' : $child['form_state'];
         unset($child['key']);
+        /**
+         * UPDATE 19.11.2015 the user custom CSS is only saved in the parent state
+         */
+        $child[TVE_LEADS_FIELD_USER_CSS] = '';
         $child['state_order'] = (int)$child['state_order'] + 1;
 
         $tvedb->variation_increment_state_order($child['parent_id'], $child['state_order']);
@@ -354,6 +369,24 @@ class Thrive_Leads_State_Manager extends Thrive_Leads_Request_Handler
         }
 
         return $this->state_data($variation);
+    }
+
+    public function api_visibility()
+    {
+        $id = $this->param('_key');
+        $visible = $this->param('visible');
+        $visible = empty($visible) ? 1 : 0;
+
+
+        $variation = tve_leads_get_form_variation(null, $id);
+        $variation[TVE_LEADS_FIELD_STATE_VISIBILITY] = $visible;
+
+        /* update form visibility */
+        tve_leads_save_form_variation($variation);
+        $state_data = $this->state_data($variation);
+        $state_data['message'] = $visible ? __('Form will be visible for already subscribed users!', 'thrive-leads') : __('Form will be hidden for already subscribed users!', 'thrive-leads');
+
+        return $state_data;
     }
 
 }

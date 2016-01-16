@@ -373,6 +373,14 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
         shareCount: function ($input) {
             var config = $social.getConfig();
             if ($input.is('input[type=checkbox]')) {
+                /**
+                 * if only Twitter is selected, we need to display a warning that the total share counts will not be displayed
+                 */
+                if ($input.is(':checked') && config.type === 'custom' && $.isArray(config.selected) && config.selected.length === 1 && config.selected[0] === 't_share') {
+                    tve_add_notification(tve_path_params.translations.TwitterShareCountDisabled, true, 8000);
+                    $input.prop('checked', false);
+                    return;
+                }
                 var $cnt = $('#tve-share-min-shares');
                 $cnt.prop('disabled', !$input.is(':checked'))
                 config.global = config.global || {};
@@ -424,6 +432,7 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
             if (!$tabs.find('li.tve_tS:visible').length) {
                 $tabs.find('.tve_scT li:visible').first().click();
             }
+
             this.positionTabs();
         },
         positionTabs: function () {

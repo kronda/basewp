@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Thrive Visual Editor\n"
-"POT-Creation-Date: 2015-10-07 10:45+0300\n"
-"PO-Revision-Date: 2015-10-07 10:45+0300\n"
+"POT-Creation-Date: 2015-11-25 13:56+0200\n"
+"PO-Revision-Date: 2015-11-25 13:57+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -13,7 +13,7 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __\n"
+"X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: .git\n"
 "X-Poedit-SearchPathExcluded-1: .idea\n"
@@ -40,8 +40,10 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
-#: admin/font-import-manager/views/form.php:10 event-manager/views/list.php:45
-#: inc/auto-responder/views/editor/dashboard-api.php:36
+#: admin/font-import-manager/views/form.php:10
+#: editor/inc/menu/facebook_comments.php:63
+#: editor/inc/menu/facebook_comments.php:75 event-manager/views/list.php:49
+#: inc/auto-responder/views/editor/dashboard-api.php:35
 #: inc/auto-responder/views/setup/arpreach.php:32
 #: inc/auto-responder/views/setup/arpreach.php:58
 #: inc/auto-responder/views/setup/sendy.php:23
@@ -118,7 +120,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: admin/font-import-manager/views/main.php:41 editor/control_panel.php:59
+#: admin/font-import-manager/views/main.php:41 editor/control_panel.php:62
 msgid "Preview"
 msgstr ""
 
@@ -161,7 +163,7 @@ msgid "Size"
 msgstr ""
 
 #: admin/font-manager/admin-font-manager.php:29
-#: admin/font-manager/admin-font-options.php:135 editor/control_panel.php:336
+#: admin/font-manager/admin-font-options.php:135 editor/control_panel.php:351
 msgid "Color"
 msgstr ""
 
@@ -173,7 +175,7 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: admin/font-manager/admin-font-manager.php:52 event-manager/views/list.php:43
+#: admin/font-manager/admin-font-manager.php:52 event-manager/views/list.php:46
 #: inc/auto-responder/views/admin-list.php:94
 msgid "Edit"
 msgstr ""
@@ -187,6 +189,10 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: admin/font-manager/admin-font-manager.php:64
+msgid "+ Add Custom Font"
+msgstr ""
+
 #: admin/font-manager/admin-font-options.php:42
 msgid "Show all fonts"
 msgstr ""
@@ -197,6 +203,10 @@ msgstr ""
 
 #: admin/font-manager/admin-font-options.php:50
 msgid "Web Safe Fonts"
+msgstr ""
+
+#: admin/font-manager/admin-font-options.php:54
+msgid "Imported Fonts"
 msgstr ""
 
 #: admin/font-manager/admin-font-options.php:57
@@ -217,9 +227,9 @@ msgstr ""
 msgid "Custom CSS"
 msgstr ""
 
-#: admin/font-manager/admin-font-options.php:151 editor/control_panel.php:370
+#: admin/font-manager/admin-font-options.php:151 editor/control_panel.php:385
 #: editor/lb_social.php:670 inc/auto-responder/views/editor/add-api.php:17
-#: inc/auto-responder/views/editor/dashboard-api.php:92
+#: inc/auto-responder/views/editor/dashboard-api.php:93
 msgid "Save"
 msgstr ""
 
@@ -271,138 +281,138 @@ msgid ""
 "upload a new file."
 msgstr ""
 
-#: editor/control_panel.php:51 editor/control_panel.php:52
+#: editor/control_panel.php:54 editor/control_panel.php:55
 msgid "Save Changes"
 msgstr ""
 
-#: editor/control_panel.php:56
+#: editor/control_panel.php:59
 msgid "Publish"
 msgstr ""
 
-#: editor/control_panel.php:319 editor/control_panel.php:361
+#: editor/control_panel.php:333 editor/control_panel.php:376
 #: editor/inc/menu/social_sort.php:7 editor/inc/menu/table_cell_manager.php:3
-#: editor/inc/side-menu/page_actions.php:35 event-manager/views/list.php:58
+#: editor/inc/side-menu/page_actions.php:35 event-manager/views/list.php:61
 msgid "Close"
 msgstr ""
 
-#: editor/control_panel.php:326
+#: editor/control_panel.php:341
 msgid "Save this element as a Content Template"
 msgstr ""
 
-#: editor/control_panel.php:331
+#: editor/control_panel.php:346
 msgid "Text Color"
 msgstr ""
 
-#: editor/control_panel.php:340
+#: editor/control_panel.php:355
 msgid "Opacity"
 msgstr ""
 
-#: editor/control_panel.php:349
+#: editor/control_panel.php:364
 msgid "Save as Favourite Color"
 msgstr ""
 
-#: editor/control_panel.php:352
+#: editor/control_panel.php:367
 msgid "OK"
 msgstr ""
 
-#: editor/control_panel.php:429
+#: editor/control_panel.php:441
 msgid "Enter your text here..."
 msgstr ""
 
-#: editor/control_panel.php:435
+#: editor/control_panel.php:447
 msgid "Add Media"
 msgstr ""
 
-#: editor/control_panel.php:446
+#: editor/control_panel.php:458
 msgid "Add Icon"
 msgstr ""
 
-#: editor/control_panel.php:466 editor/control_panel.php:473
+#: editor/control_panel.php:478 editor/control_panel.php:485
 msgid "Your content here..."
 msgstr ""
 
-#: editor/control_panel.php:484 editor/control_panel.php:485
-#: editor/control_panel.php:490 editor/control_panel.php:491
-#: editor/control_panel.php:492 editor/control_panel.php:497
-#: editor/control_panel.php:498 editor/control_panel.php:499
-#: editor/control_panel.php:500 editor/control_panel.php:505
-#: editor/control_panel.php:506 editor/control_panel.php:507
-#: editor/control_panel.php:508 editor/control_panel.php:509
-#: editor/control_panel.php:514 editor/control_panel.php:515
+#: editor/control_panel.php:496 editor/control_panel.php:497
+#: editor/control_panel.php:502 editor/control_panel.php:503
+#: editor/control_panel.php:504 editor/control_panel.php:509
+#: editor/control_panel.php:510 editor/control_panel.php:511
+#: editor/control_panel.php:512 editor/control_panel.php:517
+#: editor/control_panel.php:518 editor/control_panel.php:519
 #: editor/control_panel.php:520 editor/control_panel.php:521
-#: editor/control_panel.php:527 editor/control_panel.php:528
-#: editor/control_panel.php:534 editor/control_panel.php:536
-#: editor/control_panel.php:541 editor/control_panel.php:543
-#: editor/control_panel.php:545 editor/control_panel.php:550
-#: editor/control_panel.php:552 editor/control_panel.php:554
-#: editor/control_panel.php:559 editor/control_panel.php:560
-#: editor/control_panel.php:563 editor/inc/menu/lead_generation_radio.php:16
+#: editor/control_panel.php:526 editor/control_panel.php:527
+#: editor/control_panel.php:532 editor/control_panel.php:533
+#: editor/control_panel.php:539 editor/control_panel.php:540
+#: editor/control_panel.php:546 editor/control_panel.php:548
+#: editor/control_panel.php:553 editor/control_panel.php:555
+#: editor/control_panel.php:557 editor/control_panel.php:562
+#: editor/control_panel.php:564 editor/control_panel.php:566
+#: editor/control_panel.php:571 editor/control_panel.php:572
+#: editor/control_panel.php:575 editor/inc/menu/lead_generation_radio.php:16
 #: editor/inc/menu/lead_generation_radio.php:24
 #, php-format
 msgid "Column %s"
 msgstr ""
 
-#: editor/control_panel.php:571
+#: editor/control_panel.php:583
 msgid "Insert your tweetable quote/phrase here"
 msgstr ""
 
-#: editor/control_panel.php:576
+#: editor/control_panel.php:588
 msgid "Click to Tweet"
 msgstr ""
 
-#: editor/control_panel.php:610
+#: editor/control_panel.php:622
 msgid "ADD TO CART"
 msgstr ""
 
-#: editor/control_panel.php:618 inc/functions.php:1734
+#: editor/control_panel.php:630 inc/functions.php:1776
 msgid "Please enter a valid email address"
 msgstr ""
 
-#: editor/control_panel.php:619 inc/functions.php:1735
+#: editor/control_panel.php:631 inc/functions.php:1777
 msgid "Please enter a valid phone number"
 msgstr ""
 
-#: editor/control_panel.php:620
+#: editor/control_panel.php:632
 msgid "Highlighted fields are required"
 msgstr ""
 
-#: editor/control_panel.php:637
+#: editor/control_panel.php:649
 msgid "Sign Up"
 msgstr ""
 
-#: editor/control_panel.php:2245
+#: editor/control_panel.php:2257
 msgid "Content Toggle Headline"
 msgstr ""
 
-#: editor/control_panel.php:2248
+#: editor/control_panel.php:2260
 msgid "Add your content here..."
 msgstr ""
 
-#: editor/control_panel.php:2258
+#: editor/control_panel.php:2270
 msgid "Add Table"
 msgstr ""
 
-#: editor/control_panel.php:2266
+#: editor/control_panel.php:2278
 msgid "Embed Google Map"
 msgstr ""
 
-#: editor/control_panel.php:2274
+#: editor/control_panel.php:2286
 msgid "Add Video"
 msgstr ""
 
-#: editor/control_panel.php:2286
+#: editor/control_panel.php:2298
 msgid "Quick Navigation"
 msgstr ""
 
-#: editor/control_panel.php:2309
+#: editor/control_panel.php:2321
 msgid "Insert Custom HTML"
 msgstr ""
 
-#: editor/control_panel.php:2320
+#: editor/control_panel.php:2332
 msgid "Add Post Grid"
 msgstr ""
 
-#: editor/inc/helpers/post_grid.php:312
+#: editor/inc/helpers/post_grid.php:321
 msgid "Read More"
 msgstr ""
 
@@ -410,17 +420,17 @@ msgstr ""
 msgid "Border Radius"
 msgstr ""
 
-#: editor/inc/menu/_custom_class.php:4 editor/inc/menu/button.php:100
+#: editor/inc/menu/_custom_class.php:4 editor/inc/menu/button.php:103
 #: editor/inc/menu/contentbox.php:6 editor/inc/menu/fill_counter.php:135
 #: editor/inc/menu/icon.php:91 editor/inc/menu/img.php:75
 #: editor/inc/menu/number_counter.php:84 editor/inc/menu/pricing_table.php:10
 #: editor/inc/menu/progress_bar.php:77 editor/inc/menu/social_custom.php:90
-#: editor/inc/menu/text.php:186 editor/inc/menu/text_inline_only.php:88
+#: editor/inc/menu/text.php:237 editor/inc/menu/text_inline_only.php:99
 msgid "Custom class"
 msgstr ""
 
-#: editor/inc/menu/_custom_colors.php:10 editor/inc/menu/text.php:12
-#: editor/inc/menu/text.php:51 editor/inc/menu/text_inline_only.php:12
+#: editor/inc/menu/_custom_colors.php:10 editor/inc/menu/text.php:14
+#: editor/inc/menu/text.php:57 editor/inc/menu/text_inline_only.php:12
 #: editor/inc/menu/tw_qs.php:11
 msgid "Default Colors"
 msgstr ""
@@ -429,28 +439,30 @@ msgstr ""
 #: editor/inc/menu/landing_page_content.php:17
 #: editor/inc/menu/landing_page_fonts.php:29 editor/inc/menu/lightbox.php:12
 #: editor/inc/menu/page_section.php:12 editor/inc/menu/table_cell.php:13
-#: editor/inc/menu/text.php:25 editor/inc/menu/text.php:64
+#: editor/inc/menu/text.php:28 editor/inc/menu/text.php:71
 #: editor/inc/menu/text_inline_only.php:25 editor/inc/menu/tw_qs.php:17
 msgid "Custom Colors"
 msgstr ""
 
 #: editor/inc/menu/_custom_font.php:4 editor/inc/menu/landing_page_fonts.php:46
-#: editor/inc/menu/text.php:155 editor/inc/menu/text_inline_only.php:68
+#: editor/inc/menu/text.php:195 editor/inc/menu/text_inline_only.php:68
 msgid "Custom Font"
 msgstr ""
 
-#: editor/inc/menu/_custom_font.php:12 editor/inc/menu/text.php:162
+#: editor/inc/menu/_custom_font.php:12 editor/inc/menu/text.php:204
+#: editor/inc/menu/text_inline_only.php:75
 msgid "Choose Web Standard Fonts"
 msgstr ""
 
 #: editor/inc/menu/_custom_font.php:28
-#: editor/inc/menu/landing_page_fonts.php:80 editor/inc/menu/text.php:175
+#: editor/inc/menu/landing_page_fonts.php:80 editor/inc/menu/text.php:222
+#: editor/inc/menu/text_inline_only.php:88
 msgid "Add new Custom Font"
 msgstr ""
 
 #: editor/inc/menu/_custom_font.php:37
-#: editor/inc/menu/landing_page_fonts.php:90 editor/inc/menu/text.php:182
-#: editor/inc/menu/text_inline_only.php:84
+#: editor/inc/menu/landing_page_fonts.php:90 editor/inc/menu/text.php:231
+#: editor/inc/menu/text_inline_only.php:95
 msgid "Clear custom font"
 msgstr ""
 
@@ -467,7 +479,7 @@ msgstr ""
 msgid "Imported fonts"
 msgstr ""
 
-#: editor/inc/menu/_font_size.php:7 editor/inc/menu/text.php:152
+#: editor/inc/menu/_font_size.php:7 editor/inc/menu/text.php:191
 #: editor/inc/menu/text_inline_only.php:65
 msgid "Clear font size"
 msgstr ""
@@ -541,7 +553,7 @@ msgid "Internal Shadow"
 msgstr ""
 
 #: editor/inc/menu/_shadow.php:28 editor/inc/menu/_shadow.php:71
-#: editor/inc/menu/button.php:40 editor/inc/menu/button.php:47
+#: editor/inc/menu/button.php:43 editor/inc/menu/button.php:50
 #: editor/inc/menu/feature_grid.php:14 editor/inc/menu/fill_counter.php:43
 #: editor/inc/menu/page_section.php:143 editor/inc/menu/page_section.php:180
 #: editor/inc/menu/thrive_optin.php:64
@@ -633,10 +645,10 @@ msgstr ""
 #: editor/inc/menu/bullets.php:6 editor/inc/menu/bullets.php:13
 #: editor/inc/menu/bullets.php:14 editor/inc/menu/bullets.php:15
 #: editor/inc/menu/bullets.php:16 editor/inc/menu/bullets.php:17
-#: editor/inc/menu/bullets.php:18 editor/inc/menu/button.php:8
-#: editor/inc/menu/button.php:16 editor/inc/menu/button.php:19
-#: editor/inc/menu/button.php:22 editor/inc/menu/button.php:25
-#: editor/inc/menu/button.php:28 editor/inc/menu/button.php:31
+#: editor/inc/menu/bullets.php:18 editor/inc/menu/button.php:11
+#: editor/inc/menu/button.php:19 editor/inc/menu/button.php:22
+#: editor/inc/menu/button.php:25 editor/inc/menu/button.php:28
+#: editor/inc/menu/button.php:31 editor/inc/menu/button.php:34
 #: editor/inc/menu/countdown_timer.php:7 editor/inc/menu/countdown_timer.php:15
 #: editor/inc/menu/countdown_timer.php:18
 #: editor/inc/menu/countdown_timer.php:21
@@ -644,10 +656,9 @@ msgstr ""
 #: editor/inc/menu/countdown_timer_evergreen.php:15
 #: editor/inc/menu/countdown_timer_evergreen.php:18
 #: editor/inc/menu/countdown_timer_evergreen.php:21
-#: editor/inc/menu/lightbox.php:115 editor/inc/menu/social_custom.php:25
-#: editor/inc/menu/social_custom.php:33 editor/inc/menu/social_custom.php:36
-#: editor/inc/menu/social_custom.php:39 editor/inc/menu/social_custom.php:42
-#: editor/inc/menu/social_custom.php:45
+#: editor/inc/menu/social_custom.php:25 editor/inc/menu/social_custom.php:33
+#: editor/inc/menu/social_custom.php:36 editor/inc/menu/social_custom.php:39
+#: editor/inc/menu/social_custom.php:42 editor/inc/menu/social_custom.php:45
 #: editor/inc/side-menu/multi_style_elements.php:93
 #: editor/inc/side-menu/multi_style_elements.php:94
 #: editor/inc/side-menu/multi_style_elements.php:95
@@ -689,22 +700,22 @@ msgstr ""
 msgid "Button menu"
 msgstr ""
 
-#: editor/inc/menu/button.php:48 editor/inc/menu/fill_counter.php:36
+#: editor/inc/menu/button.php:51 editor/inc/menu/fill_counter.php:36
 #: editor/inc/menu/fill_counter.php:44
 #: inc/auto-responder/views/editor/captcha-settings.php:47
 msgid "Normal"
 msgstr ""
 
-#: editor/inc/menu/button.php:49 editor/inc/menu/fill_counter.php:45
+#: editor/inc/menu/button.php:52 editor/inc/menu/fill_counter.php:45
 #: editor/inc/menu/thrive_optin.php:66
 msgid "Big"
 msgstr ""
 
-#: editor/inc/menu/button.php:50
+#: editor/inc/menu/button.php:53
 msgid "Huge"
 msgstr ""
 
-#: editor/inc/menu/button.php:51 editor/inc/menu/lead_generation.php:62
+#: editor/inc/menu/button.php:54 editor/inc/menu/lead_generation.php:62
 #: editor/inc/menu/lead_generation_dropdown.php:58
 #: editor/inc/menu/lead_generation_input.php:58
 #: editor/inc/menu/lead_generation_submit.php:69
@@ -712,66 +723,67 @@ msgstr ""
 msgid "Full Width"
 msgstr ""
 
-#: editor/inc/menu/button.php:52 editor/inc/menu/thrive_custom_phone.php:16
-#: inc/functions.php:1516
+#: editor/inc/menu/button.php:55 editor/inc/menu/thrive_custom_phone.php:16
+#: inc/functions.php:1558
 msgid "Default"
 msgstr ""
 
-#: editor/inc/menu/button.php:60
+#: editor/inc/menu/button.php:63
 msgid "Link Settings"
 msgstr ""
 
-#: editor/inc/menu/button.php:69
+#: editor/inc/menu/button.php:72
 #: editor/inc/side-menu/simple_content_elements.php:5
-#: editor/lb_post_grid.php:99
+#: editor/lb_post_grid.php:100
 msgid "Text"
 msgstr ""
 
-#: editor/inc/menu/button.php:70 editor/inc/menu/lead_generation_submit.php:48
+#: editor/inc/menu/button.php:73 editor/inc/menu/lead_generation_submit.php:48
 #: editor/inc/menu/thrive_optin.php:72
 msgid "Button text"
 msgstr ""
 
-#: editor/inc/menu/button.php:76 editor/inc/menu/calltoaction.php:5
-#: editor/inc/menu/text.php:198 editor/inc/menu/text_inline_only.php:95
-#: editor/lb_image_link.php:4 editor/lb_text_link.php:4
+#: editor/inc/menu/button.php:79 editor/inc/menu/calltoaction.php:5
+#: editor/inc/menu/facebook_comments.php:41 editor/inc/menu/text.php:252
+#: editor/inc/menu/text_inline_only.php:106 editor/lb_image_link.php:4
+#: editor/lb_text_link.php:4
 msgid "URL"
 msgstr ""
 
-#: editor/inc/menu/button.php:84
+#: editor/inc/menu/button.php:87
 msgid "New window?"
 msgstr ""
 
-#: editor/inc/menu/button.php:90
+#: editor/inc/menu/button.php:93
 msgid "Nofollow?"
 msgstr ""
 
-#: editor/inc/menu/button.php:116
+#: editor/inc/menu/button.php:119
 msgid "Use Icon"
 msgstr ""
 
-#: editor/inc/menu/button.php:126 editor/inc/menu/icon.php:86
+#: editor/inc/menu/button.php:129 editor/inc/menu/icon.php:86
 msgid "Change Icon"
 msgstr ""
 
-#: editor/inc/menu/button.php:137 editor/inc/menu/icon.php:60
+#: editor/inc/menu/button.php:140 editor/inc/menu/icon.php:60
 msgid "Icon size"
 msgstr ""
 
-#: editor/inc/menu/button.php:154
+#: editor/inc/menu/button.php:157
 msgid "Use Image"
 msgstr ""
 
-#: editor/inc/menu/button.php:163 editor/inc/menu/img.php:55
+#: editor/inc/menu/button.php:166 editor/inc/menu/img.php:55
 #: editor/inc/menu/lead_generation_image_submit.php:35
 msgid "Change Image"
 msgstr ""
 
-#: editor/inc/menu/button.php:173 editor/inc/menu/img.php:66
+#: editor/inc/menu/button.php:176 editor/inc/menu/img.php:66
 msgid "Image size"
 msgstr ""
 
-#: editor/inc/menu/button.php:191
+#: editor/inc/menu/button.php:194
 msgid "Show Credit Card Icons?"
 msgstr ""
 
@@ -783,8 +795,8 @@ msgstr ""
 msgid "Test Link"
 msgstr ""
 
-#: editor/inc/menu/calltoaction.php:13 editor/inc/menu/text.php:204
-#: editor/inc/menu/text_inline_only.php:101
+#: editor/inc/menu/calltoaction.php:13 editor/inc/menu/text.php:263
+#: editor/inc/menu/text_inline_only.php:112
 msgid "Open link in new window?"
 msgstr ""
 
@@ -815,6 +827,7 @@ msgstr ""
 
 #: editor/inc/menu/content_container.php:12
 #: editor/inc/menu/contents_table.php:49
+#: editor/inc/menu/facebook_comments.php:34
 #: editor/inc/menu/landing_page_content.php:61
 msgid "Max-width"
 msgstr ""
@@ -828,7 +841,7 @@ msgid "Reveal content after"
 msgstr ""
 
 #: editor/inc/menu/content_reveal.php:23
-#: inc/auto-responder/views/editor/dashboard-api.php:72
+#: inc/auto-responder/views/editor/dashboard-api.php:73
 msgid "Redirect to URL"
 msgstr ""
 
@@ -857,25 +870,25 @@ msgid "Min-width"
 msgstr ""
 
 #: editor/inc/menu/contents_table.php:53 editor/inc/menu/table.php:49
-#: editor/inc/menu/table_cell.php:66 editor/inc/menu/text.php:100
+#: editor/inc/menu/table_cell.php:66 editor/inc/menu/text.php:116
 #: editor/inc/menu/text_inline_only.php:49
 msgid "Text align left"
 msgstr ""
 
 #: editor/inc/menu/contents_table.php:56 editor/inc/menu/table.php:52
-#: editor/inc/menu/table_cell.php:69 editor/inc/menu/text.php:103
+#: editor/inc/menu/table_cell.php:69 editor/inc/menu/text.php:121
 #: editor/inc/menu/text_inline_only.php:52
 msgid "Text align center"
 msgstr ""
 
 #: editor/inc/menu/contents_table.php:59 editor/inc/menu/table.php:55
-#: editor/inc/menu/table_cell.php:72 editor/inc/menu/text.php:106
+#: editor/inc/menu/table_cell.php:72 editor/inc/menu/text.php:125
 #: editor/inc/menu/text_inline_only.php:55
 msgid "Text align right"
 msgstr ""
 
 #: editor/inc/menu/contents_table.php:62 editor/inc/menu/table.php:58
-#: editor/inc/menu/table_cell.php:75 editor/inc/menu/text.php:109
+#: editor/inc/menu/table_cell.php:75 editor/inc/menu/text.php:130
 #: editor/inc/menu/text_inline_only.php:58
 msgid "Text align justify"
 msgstr ""
@@ -884,7 +897,7 @@ msgstr ""
 msgid "Countdown Timer options"
 msgstr ""
 
-#: editor/inc/menu/countdown_timer.php:30 editor/lb_post_grid.php:218
+#: editor/inc/menu/countdown_timer.php:30 editor/lb_post_grid.php:219
 #: inc/auto-responder/classes/LogsTable.php:42
 msgid "Date"
 msgstr ""
@@ -914,7 +927,7 @@ msgstr ""
 #: editor/inc/menu/countdown_timer.php:71
 #: editor/inc/menu/countdown_timer_evergreen.php:118
 #: editor/inc/menu/icon.php:42 editor/inc/menu/widget_menu.php:37
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:371
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:372
 msgid "None"
 msgstr ""
 
@@ -929,7 +942,7 @@ msgstr ""
 #: editor/inc/menu/countdown_timer_evergreen.php:76
 #: editor/inc/menu/countdown_timer_evergreen.php:130
 #: editor/inc/menu/countdown_timer_evergreen.php:131
-#: editor/lb_post_grid.php:263
+#: editor/lb_post_grid.php:264
 msgid "Days"
 msgstr ""
 
@@ -977,6 +990,85 @@ msgstr ""
 
 #: editor/inc/menu/default_element.php:1
 msgid "Element options"
+msgstr ""
+
+#: editor/inc/menu/disqus_comments.php:1
+msgid "Disqus Comments"
+msgstr ""
+
+#: editor/inc/menu/disqus_comments.php:6
+msgid "Disqus forum name"
+msgstr ""
+
+#: editor/inc/menu/disqus_comments.php:7
+msgid ""
+"Your forum name is part of the address that you login to \"http://xxxxxxxx."
+"disqus.com\" - the xxxxxxx is your shortname.  For example, with this URL: "
+"https://hairfreelife.disqus.com/ the shortname is \"hairfreelife\"."
+msgstr ""
+
+#: editor/inc/menu/disqus_comments.php:14
+msgid "Disqus URL"
+msgstr ""
+
+#: editor/inc/menu/disqus_comments.php:15
+#: editor/inc/menu/facebook_comments.php:42
+msgid ""
+"If you leave this blank then the URL of the current piece of content will be "
+"used.  You can, however, specify a different URL to store comments against, "
+"if you prefer."
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:1
+msgid "Facebook Comments"
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:6
+msgid "Colour Scheme"
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:8 editor/inc/menu/page_section.php:59
+#: inc/auto-responder/views/editor/captcha-settings.php:27
+msgid "Light"
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:9 editor/inc/menu/page_section.php:60
+#: inc/auto-responder/views/editor/captcha-settings.php:28
+msgid "Dark"
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:16
+msgid "Number of comments"
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:23
+msgid "Order By"
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:25
+msgid "Social Popularity"
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:26
+msgid "Oldest First"
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:27
+msgid "Newest first"
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:49
+msgid "Comments Moderators"
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:56
+msgid ""
+"Add Facebook user ID for the people that you will like to moderate the "
+"comments."
+msgstr ""
+
+#: editor/inc/menu/facebook_comments.php:69
+msgid "Add Moderator"
 msgstr ""
 
 #: editor/inc/menu/feature_grid.php:1
@@ -1063,6 +1155,7 @@ msgstr ""
 #: editor/inc/menu/lead_generation_textarea.php:18
 #: editor/inc/menu/lightbox.php:86 editor/inc/menu/page_section.php:105
 #: editor/inc/menu/table.php:13 editor/inc/menu/table_cell.php:30
+#: inc/auto-responder/classes/Connection/ActiveCampaign.php:151
 msgid "none"
 msgstr ""
 
@@ -1338,12 +1431,12 @@ msgstr ""
 
 #: editor/inc/menu/lead_generation.php:21
 #: editor/inc/menu/lead_generation.php:30 editor/inc/menu/thrive_optin.php:30
-#: editor/inc/menu/widget_menu.php:63 editor/lb_post_grid.php:155
+#: editor/inc/menu/widget_menu.php:63 editor/lb_post_grid.php:156
 msgid "Vertical"
 msgstr ""
 
 #: editor/inc/menu/lead_generation.php:35 editor/inc/menu/thrive_optin.php:31
-#: editor/inc/menu/widget_menu.php:62 editor/lb_post_grid.php:153
+#: editor/inc/menu/widget_menu.php:62 editor/lb_post_grid.php:154
 msgid "Horizontal"
 msgstr ""
 
@@ -1494,10 +1587,6 @@ msgid "Overlay opacity"
 msgstr ""
 
 #: editor/inc/menu/lightbox.php:108
-msgid "Lightbox style"
-msgstr ""
-
-#: editor/inc/menu/lightbox.php:123
 msgid "Max width:"
 msgstr ""
 
@@ -1523,16 +1612,6 @@ msgstr ""
 
 #: editor/inc/menu/page_section.php:52
 msgid "Text style"
-msgstr ""
-
-#: editor/inc/menu/page_section.php:59
-#: inc/auto-responder/views/editor/captcha-settings.php:27
-msgid "Light"
-msgstr ""
-
-#: editor/inc/menu/page_section.php:60
-#: inc/auto-responder/views/editor/captcha-settings.php:28
-msgid "Dark"
 msgstr ""
 
 #: editor/inc/menu/page_section.php:81
@@ -1571,7 +1650,7 @@ msgstr ""
 msgid "Move highlighted column:"
 msgstr ""
 
-#: editor/inc/menu/pricing_table.php:8 inc/functions.php:1757
+#: editor/inc/menu/pricing_table.php:8 inc/functions.php:1799
 msgid "Add highlighted column"
 msgstr ""
 
@@ -1933,96 +2012,100 @@ msgstr ""
 msgid "Choose Testimonial Image"
 msgstr ""
 
-#: editor/inc/menu/text.php:1
+#: editor/inc/menu/text.php:2
 msgid "Text element menu"
 msgstr ""
 
-#: editor/inc/menu/text.php:32
+#: editor/inc/menu/text.php:37
 msgid "Clear text color"
 msgstr ""
 
-#: editor/inc/menu/text.php:72
+#: editor/inc/menu/text.php:82
 msgid "Clear highlight"
 msgstr ""
 
-#: editor/inc/menu/text.php:82 editor/inc/menu/text_inline_only.php:37
+#: editor/inc/menu/text.php:93 editor/inc/menu/text_inline_only.php:37
 msgid "Bold"
 msgstr ""
 
-#: editor/inc/menu/text.php:85 editor/inc/menu/text_inline_only.php:40
+#: editor/inc/menu/text.php:97 editor/inc/menu/text_inline_only.php:40
 msgid "Italic"
 msgstr ""
 
-#: editor/inc/menu/text.php:88 editor/inc/menu/text_inline_only.php:43
+#: editor/inc/menu/text.php:101 editor/inc/menu/text_inline_only.php:43
 msgid "Underline"
 msgstr ""
 
-#: editor/inc/menu/text.php:91 editor/inc/menu/text_inline_only.php:46
+#: editor/inc/menu/text.php:105 editor/inc/menu/text_inline_only.php:46
 msgid "Strike-through"
 msgstr ""
 
-#: editor/inc/menu/text.php:94
+#: editor/inc/menu/text.php:109
 msgid "Unordered List"
 msgstr ""
 
-#: editor/inc/menu/text.php:97
+#: editor/inc/menu/text.php:113
 msgid "Numbered List"
 msgstr ""
 
-#: editor/inc/menu/text.php:112
+#: editor/inc/menu/text.php:136
 msgid "Create link"
 msgstr ""
 
-#: editor/inc/menu/text.php:120
+#: editor/inc/menu/text.php:145
 msgid "Insert more link"
 msgstr ""
 
-#: editor/inc/menu/text.php:125
+#: editor/inc/menu/text.php:151
 msgid "Formatting"
 msgstr ""
 
-#: editor/inc/menu/text.php:132
+#: editor/inc/menu/text.php:159
 msgid "Paragraph"
 msgstr ""
 
-#: editor/inc/menu/text.php:133
+#: editor/inc/menu/text.php:161
 msgid "Address"
 msgstr ""
 
-#: editor/inc/menu/text.php:134
+#: editor/inc/menu/text.php:163
 msgid "Preformatted"
 msgstr ""
 
-#: editor/inc/menu/text.php:135
+#: editor/inc/menu/text.php:165
 msgid "Blockquote"
 msgstr ""
 
-#: editor/inc/menu/text.php:136 editor/inc/menu/text.php:137
-#: editor/inc/menu/text.php:138 editor/inc/menu/text.php:139
-#: editor/inc/menu/text.php:140 editor/inc/menu/text.php:141
+#: editor/inc/menu/text.php:167 editor/inc/menu/text.php:169
+#: editor/inc/menu/text.php:171 editor/inc/menu/text.php:173
+#: editor/inc/menu/text.php:175 editor/inc/menu/text.php:177
 #, php-format
 msgid "Heading %s"
 msgstr ""
 
-#: editor/inc/menu/text.php:149 editor/inc/menu/text_inline_only.php:62
+#: editor/inc/menu/text.php:185 editor/inc/menu/text_inline_only.php:62
 #: editor/inc/menu/widget_menu.php:43
 msgid "Font Size"
 msgstr ""
 
-#: editor/inc/menu/text.php:184 editor/inc/menu/text_inline_only.php:86
+#: editor/inc/menu/text.php:233 editor/inc/menu/text_inline_only.php:97
 msgid "ID"
 msgstr ""
 
-#: editor/inc/menu/text.php:195 editor/inc/menu/text_inline_only.php:92
+#: editor/inc/menu/text.php:248 editor/inc/menu/text_inline_only.php:103
 msgid "Anchor Text"
 msgstr ""
 
-#: editor/inc/menu/text.php:201 editor/inc/menu/text_inline_only.php:98
+#: editor/inc/menu/text.php:258 editor/inc/menu/text_inline_only.php:109
 msgid "Anchor name"
 msgstr ""
 
-#: editor/inc/menu/text.php:208
+#: editor/inc/menu/text.php:268
 msgid "Make Link no follow?"
+msgstr ""
+
+#: editor/inc/menu/text.php:271
+msgid "TypeFocus"
 msgstr ""
 
 #: editor/inc/menu/text_inline_only.php:1
@@ -2099,8 +2182,8 @@ msgstr ""
 msgid "Choose Thrive Opt-In"
 msgstr ""
 
-#: editor/inc/menu/thrive_optin.php:23 editor/lb_post_grid.php:69
-#: editor/lb_post_grid.php:134
+#: editor/inc/menu/thrive_optin.php:23 editor/lb_post_grid.php:70
+#: editor/lb_post_grid.php:135
 msgid "Layout"
 msgstr ""
 
@@ -2116,7 +2199,7 @@ msgstr ""
 msgid "Thrive Posts List options"
 msgstr ""
 
-#: editor/inc/menu/thrive_posts_list.php:5 editor/lb_post_grid.php:184
+#: editor/inc/menu/thrive_posts_list.php:5 editor/lb_post_grid.php:185
 msgid "Number of posts"
 msgstr ""
 
@@ -2168,6 +2251,55 @@ msgstr ""
 msgid "Custom URL"
 msgstr ""
 
+#: editor/inc/menu/typefocus.php:2
+msgid "TypeFocus element menu"
+msgstr ""
+
+#: editor/inc/menu/typefocus.php:15
+msgid ""
+"TypeFocus allows you to rotate a selection of text in an animated way that "
+"can increase your conversions."
+msgstr ""
+
+#: editor/inc/menu/typefocus.php:16
+msgid "Default text"
+msgstr ""
+
+#: editor/inc/menu/typefocus.php:20
+msgid "You don't currently have any text variations, so TypeFocus is disabled"
+msgstr ""
+
+#: editor/inc/menu/typefocus.php:23
+msgid "Add text variation"
+msgstr ""
+
+#: editor/inc/menu/typefocus.php:24
+#, php-format
+msgid ""
+"%s For longer texts, you may need to increase the time delay to prevent the "
+"animation from glitching"
+msgstr ""
+
+#: editor/inc/menu/typefocus.php:24
+msgid "Note:"
+msgstr ""
+
+#: editor/inc/menu/typefocus.php:31
+msgid "Slide delay:"
+msgstr ""
+
+#: editor/inc/menu/typefocus.php:36
+msgid "Clear TypeFocus"
+msgstr ""
+
+#: editor/inc/menu/typefocus.php:39
+msgid "Blink cursor effect"
+msgstr ""
+
+#: editor/inc/menu/typefocus.php:43
+msgid "Display highlight if set"
+msgstr ""
+
 #: editor/inc/menu/widget.php:1
 msgid "Widget options"
 msgstr ""
@@ -2192,8 +2324,8 @@ msgstr ""
 msgid "Edit menu"
 msgstr ""
 
-#: editor/inc/menu/widget_menu.php:49 editor/lb_post_grid.php:92
-#: editor/lb_post_grid.php:222 inc/views/quick-links-table.php:4
+#: editor/inc/menu/widget_menu.php:49 editor/lb_post_grid.php:93
+#: editor/lb_post_grid.php:223 inc/views/quick-links-table.php:4
 msgid "Title"
 msgstr ""
 
@@ -2377,6 +2509,18 @@ msgstr ""
 
 #: editor/inc/side-menu/advanced_elements.php:209
 msgid "Thrive Leads Forms"
+msgstr ""
+
+#: editor/inc/side-menu/advanced_elements.php:230
+msgid "Comments"
+msgstr ""
+
+#: editor/inc/side-menu/advanced_elements.php:238
+msgid "Facebook"
+msgstr ""
+
+#: editor/inc/side-menu/advanced_elements.php:241
+msgid "Disqus"
 msgstr ""
 
 #: editor/inc/side-menu/editor_settings.php:29
@@ -2651,7 +2795,7 @@ msgstr ""
 msgid "Content Templates"
 msgstr ""
 
-#: editor/inc/side-menu/user_templates.php:22 inc/functions.php:2002
+#: editor/inc/side-menu/user_templates.php:22 inc/functions.php:2046
 msgid "No Content Templates yet"
 msgstr ""
 
@@ -2806,138 +2950,138 @@ msgstr ""
 msgid "Load Landing Page"
 msgstr ""
 
-#: editor/lb_landing_pages.php:116 inc/functions.php:145
+#: editor/lb_landing_pages.php:116 inc/functions.php:136
 msgid "Revert to theme template"
 msgstr ""
 
-#: editor/lb_post_grid.php:70
+#: editor/lb_post_grid.php:71
 msgid "Edit Query"
 msgstr ""
 
-#: editor/lb_post_grid.php:71
+#: editor/lb_post_grid.php:72
 msgid "Filter Settings"
 msgstr ""
 
-#: editor/lb_post_grid.php:72
+#: editor/lb_post_grid.php:73
 msgid "Display Settings"
 msgstr ""
 
-#: editor/lb_post_grid.php:78
+#: editor/lb_post_grid.php:79
 msgid "Teaser Layout"
 msgstr ""
 
-#: editor/lb_post_grid.php:85
+#: editor/lb_post_grid.php:86
 msgid "Featured image"
 msgstr ""
 
-#: editor/lb_post_grid.php:105
+#: editor/lb_post_grid.php:106
 msgid "Read more link"
 msgstr ""
 
-#: editor/lb_post_grid.php:111
+#: editor/lb_post_grid.php:112
 msgid "Text type"
 msgstr ""
 
-#: editor/lb_post_grid.php:118
+#: editor/lb_post_grid.php:119
 msgid "Summary"
 msgstr ""
 
-#: editor/lb_post_grid.php:122
+#: editor/lb_post_grid.php:123
 msgid "Excerpt"
 msgstr ""
 
-#: editor/lb_post_grid.php:126
+#: editor/lb_post_grid.php:127
 msgid "Full text"
 msgstr ""
 
-#: editor/lb_post_grid.php:137
+#: editor/lb_post_grid.php:138
 msgid "Drag the items into the correct order for display:"
 msgstr ""
 
-#: editor/lb_post_grid.php:147
+#: editor/lb_post_grid.php:148
 msgid "Grid layout:"
 msgstr ""
 
-#: editor/lb_post_grid.php:158
+#: editor/lb_post_grid.php:159
 msgid ""
 "For vertical grids the images will always be displayed on the left part of "
 "posts."
 msgstr ""
 
-#: editor/lb_post_grid.php:169
+#: editor/lb_post_grid.php:170
 msgid "Content to include"
 msgstr ""
 
-#: editor/lb_post_grid.php:189
+#: editor/lb_post_grid.php:190
 msgid "All"
 msgstr ""
 
-#: editor/lb_post_grid.php:198
+#: editor/lb_post_grid.php:199
 msgid "Start"
 msgstr ""
 
-#: editor/lb_post_grid.php:211
+#: editor/lb_post_grid.php:212
 msgid "Order by"
 msgstr ""
 
-#: editor/lb_post_grid.php:226 editor/lb_post_grid.php:295
+#: editor/lb_post_grid.php:227 editor/lb_post_grid.php:296
 msgid "Author"
 msgstr ""
 
-#: editor/lb_post_grid.php:230
+#: editor/lb_post_grid.php:231
 msgid "Number of Comments"
 msgstr ""
 
-#: editor/lb_post_grid.php:234
+#: editor/lb_post_grid.php:235
 msgid "Random"
 msgstr ""
 
-#: editor/lb_post_grid.php:240 editor/lb_post_grid.php:328
+#: editor/lb_post_grid.php:241 editor/lb_post_grid.php:329
 msgid "Order"
 msgstr ""
 
-#: editor/lb_post_grid.php:247
+#: editor/lb_post_grid.php:248
 msgid "Descending"
 msgstr ""
 
-#: editor/lb_post_grid.php:251
+#: editor/lb_post_grid.php:252
 msgid "Ascending"
 msgstr ""
 
-#: editor/lb_post_grid.php:257
+#: editor/lb_post_grid.php:258
 msgid "Show Items More Recent Than"
 msgstr ""
 
-#: editor/lb_post_grid.php:272
+#: editor/lb_post_grid.php:273
 msgid "Choose which content to include"
 msgstr ""
 
-#: editor/lb_post_grid.php:273
+#: editor/lb_post_grid.php:274
 msgid "Categories"
 msgstr ""
 
-#: editor/lb_post_grid.php:280
+#: editor/lb_post_grid.php:281
 #: inc/auto-responder/views/setup/activecampaign/forms-list.php:20
 msgid "Tags"
 msgstr ""
 
-#: editor/lb_post_grid.php:287
+#: editor/lb_post_grid.php:288
 msgid "Custom Taxonomies"
 msgstr ""
 
-#: editor/lb_post_grid.php:302
+#: editor/lb_post_grid.php:303
 msgid "Individual Posts/Pages"
 msgstr ""
 
-#: editor/lb_post_grid.php:315
+#: editor/lb_post_grid.php:316
 msgid "Number of Columns"
 msgstr ""
 
-#: editor/lb_post_grid.php:335
+#: editor/lb_post_grid.php:336
 msgid "Grid"
 msgstr ""
 
-#: editor/lb_post_grid.php:339
+#: editor/lb_post_grid.php:340
 msgid "Masonry"
 msgstr ""
 
@@ -3333,7 +3477,7 @@ msgstr ""
 #: editor/lb_social.php:675 event-manager/views/form.php:53
 #: inc/auto-responder/views/editor/add-api.php:13
 #: inc/auto-responder/views/editor/autoresponder-code-fields.php:6
-#: inc/auto-responder/views/editor/dashboard-api.php:87
+#: inc/auto-responder/views/editor/dashboard-api.php:88
 msgid "Cancel"
 msgstr ""
 
@@ -3369,11 +3513,11 @@ msgstr ""
 msgid "Anchor name (optional)"
 msgstr ""
 
-#: event-manager/views/form.php:9 event-manager/views/list.php:22
+#: event-manager/views/form.php:9 event-manager/views/list.php:29
 msgid "Trigger"
 msgstr ""
 
-#: event-manager/views/form.php:10 event-manager/views/list.php:23
+#: event-manager/views/form.php:10 event-manager/views/list.php:30
 msgid "Action"
 msgstr ""
 
@@ -3393,15 +3537,15 @@ msgstr ""
 msgid "Existing Events"
 msgstr ""
 
-#: event-manager/views/list.php:14
+#: event-manager/views/list.php:21
 msgid "There are no events currently set up for this page"
 msgstr ""
 
-#: event-manager/views/list.php:16
+#: event-manager/views/list.php:23
 msgid "There are no events currently set up for this element"
 msgstr ""
 
-#: event-manager/views/list.php:61
+#: event-manager/views/list.php:64
 msgid "Add Event"
 msgstr ""
 
@@ -3465,7 +3609,7 @@ msgstr ""
 msgid "How many seconds after page load should the event be triggered ?"
 msgstr ""
 
-#: inc/auto-responder/admin.php:97
+#: inc/auto-responder/admin.php:99
 msgid "is now disconnected"
 msgstr ""
 
@@ -3508,10 +3652,6 @@ msgstr ""
 
 #: inc/auto-responder/classes/Connection/ArpReach.php:58
 msgid "Please provide at least one list for your subscribers"
-msgstr ""
-
-#: inc/auto-responder/classes/Connection/ArpReach.php:66
-msgid "Could not connect to ArpReach"
 msgstr ""
 
 #: inc/auto-responder/classes/Connection/ArpReach.php:71
@@ -3733,6 +3873,20 @@ msgstr ""
 msgid "Unknown Error"
 msgstr ""
 
+#: inc/auto-responder/classes/Connection/Mandrill.php:50
+msgid "You must provide a valid Mandrill key"
+msgstr ""
+
+#: inc/auto-responder/classes/Connection/Mandrill.php:59
+#, php-format
+msgid ""
+"Could not connect to Mandrill using the provided key (<strong>%s</strong>)"
+msgstr ""
+
+#: inc/auto-responder/classes/Connection/Mandrill.php:66
+msgid "Mandrill connected successfully"
+msgstr ""
+
 #: inc/auto-responder/classes/Connection/Ontraport.php:51
 msgid "You must provide a valid Ontraport AppID/APIKey"
 msgstr ""
@@ -3744,6 +3898,24 @@ msgstr ""
 
 #: inc/auto-responder/classes/Connection/Ontraport.php:66
 msgid "Ontraport connected successfully"
+msgstr ""
+
+#: inc/auto-responder/classes/Connection/Postmark.php:52
+msgid "You must provide a valid Postmark key"
+msgstr ""
+
+#: inc/auto-responder/classes/Connection/Postmark.php:56
+msgid "Email field must not be empty"
+msgstr ""
+
+#: inc/auto-responder/classes/Connection/Postmark.php:66
+#, php-format
+msgid ""
+"Could not connect to Postmark using the provided key (<strong>%s</strong>)"
+msgstr ""
+
+#: inc/auto-responder/classes/Connection/Postmark.php:73
+msgid "Postmark connected successfully"
 msgstr ""
 
 #: inc/auto-responder/classes/Connection/ReCaptcha.php:51
@@ -3825,9 +3997,10 @@ msgstr ""
 
 #: inc/auto-responder/classes/LogsTable.php:123
 #: inc/auto-responder/lib/vendor/Html/Renderer.php:30
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:372
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:373
 #: inc/auto-responder/views/setup/madmimi.php:13
 #: inc/auto-responder/views/setup/madmimi.php:15
+#: inc/auto-responder/views/setup/postmark.php:12
 msgid "Email"
 msgstr ""
 
@@ -3839,40 +4012,40 @@ msgstr ""
 msgid "Retry"
 msgstr ""
 
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:146
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:147
 msgid "Display"
 msgstr ""
 
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:146
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:147
 msgid "Field Number"
 msgstr ""
 
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:147
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:148
 msgid "Field Properties"
 msgstr ""
 
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:148
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:149
 msgid "Field Label / Description"
 msgstr ""
 
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:149
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:150
 msgid "Validation"
 msgstr ""
 
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:150
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:151
 msgid "Required Field"
 msgstr ""
 
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:151
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:152
 msgid "Show Icon"
 msgstr ""
 
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:212
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:257
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:213
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:258
 msgid "Add icon"
 msgstr ""
 
-#: inc/auto-responder/lib/vendor/Html/Renderer.php:373
+#: inc/auto-responder/lib/vendor/Html/Renderer.php:374
 msgid "Phone number"
 msgstr ""
 
@@ -3881,60 +4054,64 @@ msgid ""
 "You must provide a subdomain and API key for your Infusionsoft application."
 msgstr ""
 
-#: inc/auto-responder/misc.php:146
+#: inc/auto-responder/misc.php:150
 msgid "Log ID is not valid !"
 msgstr ""
 
-#: inc/auto-responder/misc.php:156
+#: inc/auto-responder/misc.php:160
 #, php-format
 msgid "An error occurred: %s"
 msgstr ""
 
-#: inc/auto-responder/misc.php:161
+#: inc/auto-responder/misc.php:165
 #, php-format
 msgid "The log with ID: %s could not be found !"
 msgstr ""
 
-#: inc/auto-responder/misc.php:167
+#: inc/auto-responder/misc.php:171
 #, php-format
 msgid "API Log with ID: %s has been deleted with success !"
 msgstr ""
 
-#: inc/auto-responder/misc.php:189
+#: inc/auto-responder/misc.php:193
 msgid "Connection is not specified !"
 msgstr ""
 
-#: inc/auto-responder/misc.php:196
+#: inc/auto-responder/misc.php:200
 msgid "Where should I subscribe this user? List is not specified !"
 msgstr ""
 
-#: inc/auto-responder/misc.php:203
+#: inc/auto-responder/misc.php:207
 msgid "Email is not specified !"
 msgstr ""
 
-#: inc/auto-responder/misc.php:232
+#: inc/auto-responder/misc.php:222
+msgid "Cannot establish API connection"
+msgstr ""
+
+#: inc/auto-responder/misc.php:259
 msgid ""
 "Subscription was made with success but we could not delete the log from "
 "database !"
 msgstr ""
 
-#: inc/auto-responder/misc.php:239
+#: inc/auto-responder/misc.php:266
 msgid "Subscription was made with success !"
 msgstr ""
 
-#: inc/auto-responder/misc.php:264
+#: inc/auto-responder/misc.php:291
 msgid "Please prove us that you are not a robot!!!"
 msgstr ""
 
-#: inc/auto-responder/misc.php:272
+#: inc/auto-responder/misc.php:299
 msgid "The email address is required"
 msgstr ""
 
-#: inc/auto-responder/misc.php:278
+#: inc/auto-responder/misc.php:305
 msgid "The email address is invalid"
 msgstr ""
 
-#: inc/auto-responder/misc.php:295
+#: inc/auto-responder/misc.php:322
 msgid "No connection for this form"
 msgstr ""
 
@@ -4057,39 +4234,39 @@ msgstr ""
 msgid "Compact"
 msgstr ""
 
-#: inc/auto-responder/views/editor/dashboard-api.php:14
+#: inc/auto-responder/views/editor/dashboard-api.php:13
 msgid ""
 "Your sign up form is connected to service(s) using the following API "
 "connections:"
 msgstr ""
 
-#: inc/auto-responder/views/editor/dashboard-api.php:19
+#: inc/auto-responder/views/editor/dashboard-api.php:18
 msgid "Service Name"
 msgstr ""
 
-#: inc/auto-responder/views/editor/dashboard-api.php:31
+#: inc/auto-responder/views/editor/dashboard-api.php:30
 msgid "Settings"
 msgstr ""
 
-#: inc/auto-responder/views/editor/dashboard-api.php:49
+#: inc/auto-responder/views/editor/dashboard-api.php:48
 msgid "Add New Connection"
 msgstr ""
 
-#: inc/auto-responder/views/editor/dashboard-api.php:54
+#: inc/auto-responder/views/editor/dashboard-api.php:53
 msgid ""
 "Select which fields to display and their properties (you can reorder them by "
 "dragging the \"move\" icon from the left):"
 msgstr ""
 
-#: inc/auto-responder/views/editor/dashboard-api.php:63
+#: inc/auto-responder/views/editor/dashboard-api.php:64
 msgid "Thank You Page URL"
 msgstr ""
 
-#: inc/auto-responder/views/editor/dashboard-api.php:65
+#: inc/auto-responder/views/editor/dashboard-api.php:66
 msgid "After the form is submitted:"
 msgstr ""
 
-#: inc/auto-responder/views/editor/dashboard-api.php:70
+#: inc/auto-responder/views/editor/dashboard-api.php:71
 msgid "Reload current page"
 msgstr ""
 
@@ -4197,8 +4374,12 @@ msgstr ""
 #: inc/auto-responder/views/setup/madmimi.php:8
 #: inc/auto-responder/views/setup/mailchimp.php:6
 #: inc/auto-responder/views/setup/mailchimp.php:8
+#: inc/auto-responder/views/setup/mandrill.php:6
+#: inc/auto-responder/views/setup/mandrill.php:8
 #: inc/auto-responder/views/setup/ontraport.php:12
 #: inc/auto-responder/views/setup/ontraport.php:14
+#: inc/auto-responder/views/setup/postmark.php:17
+#: inc/auto-responder/views/setup/postmark.php:19
 #: inc/auto-responder/views/setup/webinarjamstudio.php:6
 #: inc/auto-responder/views/setup/webinarjamstudio.php:8
 msgid "API key"
@@ -4440,8 +4621,27 @@ msgid ""
 "You currently do not have the MailPoet WP plugin installed or activated."
 msgstr ""
 
+#: inc/auto-responder/views/setup/mandrill.php:14
+msgid "Save Mandrill API Key"
+msgstr ""
+
 #: inc/auto-responder/views/setup/ontraport.php:20
 msgid "Connect to Ontraport"
+msgstr ""
+
+#: inc/auto-responder/views/setup/postmark.php:4
+msgid ""
+"Postmark requires your email to be verified before allowing any emails to be "
+"sent. Please be sure that the email you set here matches the email you "
+"confirmed on the postmark website."
+msgstr ""
+
+#: inc/auto-responder/views/setup/postmark.php:9
+msgid "Postmark-approved email address"
+msgstr ""
+
+#: inc/auto-responder/views/setup/postmark.php:25
+msgid "Save Postmark API Key"
 msgstr ""
 
 #: inc/auto-responder/views/setup/recaptcha.php:5
@@ -4529,166 +4729,166 @@ msgstr ""
 msgid "Edit Thrive Lightbox"
 msgstr ""
 
-#: inc/functions.php:111
+#: inc/functions.php:102
 msgid ""
 "This page is setup as a \"Blog Page\" from Wordpress Reading Settings. "
 "Thrive Content Builder cannot be loaded in such instances."
 msgstr ""
 
-#: inc/functions.php:116 inc/functions.php:304 inc/functions.php:452
+#: inc/functions.php:107 inc/functions.php:304 inc/functions.php:473
 msgid "Edit with Thrive Content Builder"
 msgstr ""
 
-#: inc/functions.php:132
+#: inc/functions.php:123
 msgid ""
 "Are you sure you want to DELETE all of the content that was created in this "
 "landing page and revert to the theme page?\\nIf you click OK, any custom "
 "content you added to the landing page will be deleted."
 msgstr ""
 
-#: inc/functions.php:140
+#: inc/functions.php:131
 msgid ""
 "You are currently using a Content Builder landing page to display this piece "
 "of content."
 msgstr ""
 
-#: inc/functions.php:142
+#: inc/functions.php:133
 msgid ""
 "If you'd like to revert back to your theme template then click the button "
 "below:"
 msgstr ""
 
-#: inc/functions.php:1515
+#: inc/functions.php:1557
 msgid "Clear"
 msgstr ""
 
-#: inc/functions.php:1517
+#: inc/functions.php:1559
 msgid "Select Color"
 msgstr ""
 
-#: inc/functions.php:1518
+#: inc/functions.php:1560
 msgid "Current Color"
 msgstr ""
 
-#: inc/functions.php:1596
+#: inc/functions.php:1638
 msgid "All categories"
 msgstr ""
 
-#: inc/functions.php:1720
+#: inc/functions.php:1762
 msgid "Required value"
 msgstr ""
 
-#: inc/functions.php:1721
+#: inc/functions.php:1763
 msgid "Please correct the marked errors and try again."
 msgstr ""
 
-#: inc/functions.php:1722
+#: inc/functions.php:1764
 msgid "this is null or not defined"
 msgstr ""
 
-#: inc/functions.php:1723
+#: inc/functions.php:1765
 msgid "is not a function"
 msgstr ""
 
-#: inc/functions.php:1724
+#: inc/functions.php:1766
 msgid "If you leave this page then any unsaved changes will be lost"
 msgstr ""
 
-#: inc/functions.php:1725
+#: inc/functions.php:1767
 msgid "Tweet text limit accepts maximum 140 characters !"
 msgstr ""
 
-#: inc/functions.php:1726
+#: inc/functions.php:1768
 msgid "There was an error on this page."
 msgstr ""
 
-#: inc/functions.php:1727
+#: inc/functions.php:1769
 msgid "Error description"
 msgstr ""
 
-#: inc/functions.php:1728
+#: inc/functions.php:1770
 msgid "Click OK to continue."
 msgstr ""
 
-#: inc/functions.php:1729
+#: inc/functions.php:1771
 msgid ""
 "The changes could not be saved. Maybe you are logged out from the "
 "administration section ? Please open a new tab and check to see if you are "
 "logged in"
 msgstr ""
 
-#: inc/functions.php:1730
+#: inc/functions.php:1772
 msgid "You do not have sufficient permissions to edit this post"
 msgstr ""
 
-#: inc/functions.php:1731
+#: inc/functions.php:1773
 msgid ""
 "It seems you have been logged out. Please open a new tab and re-login to the "
 "admin panel. After that, you should be able to save this content (without "
 "refreshing the page)."
 msgstr ""
 
-#: inc/functions.php:1732
+#: inc/functions.php:1774
 msgid "All changes saved!"
 msgstr ""
 
-#: inc/functions.php:1733
+#: inc/functions.php:1775
 msgid "Something went wrong! You might not have the required user capability."
 msgstr ""
 
-#: inc/functions.php:1736
+#: inc/functions.php:1778
 msgid "Please fill in all of the required fields"
 msgstr ""
 
-#: inc/functions.php:1737
+#: inc/functions.php:1779
 msgid "Click to replace anchor text"
 msgstr ""
 
-#: inc/functions.php:1738
+#: inc/functions.php:1780
 msgid "New template added!"
 msgstr ""
 
-#: inc/functions.php:1739
+#: inc/functions.php:1781
 msgid ""
 "You are trying to change the size of an icon, however the button currently "
 "contains an image. Click on the \"Use Image\" button to modify the size"
 msgstr ""
 
-#: inc/functions.php:1740
+#: inc/functions.php:1782
 msgid "Only numbers are accepted !"
 msgstr ""
 
-#: inc/functions.php:1741
+#: inc/functions.php:1783
 msgid "Font size should be between 6 and 200 pixels !"
 msgstr ""
 
-#: inc/functions.php:1742
+#: inc/functions.php:1784
 msgid ""
 "The redirection will not take place because the URL you've entered is not "
 "valid !"
 msgstr ""
 
-#: inc/functions.php:1743
+#: inc/functions.php:1785
 msgid "Only digits are accepted or \"none\" string value !"
 msgstr ""
 
-#: inc/functions.php:1744
+#: inc/functions.php:1786
 msgid "Max width cannot be smaller than 100 pixels !"
 msgstr ""
 
-#: inc/functions.php:1745
+#: inc/functions.php:1787
 msgid "Only digits are accepted !"
 msgstr ""
 
-#: inc/functions.php:1746
+#: inc/functions.php:1788
 msgid "Min width cannot be lower than zero !"
 msgstr ""
 
-#: inc/functions.php:1747
+#: inc/functions.php:1789
 msgid "Only three headings can be selected at once !"
 msgstr ""
 
-#: inc/functions.php:1748
+#: inc/functions.php:1790
 msgid ""
 "Are you sure you want to DELETE all of the content that was created in this "
 "landing page and revert to the theme page?\n"
@@ -4696,103 +4896,111 @@ msgid ""
 "deleted."
 msgstr ""
 
-#: inc/functions.php:1749
+#: inc/functions.php:1791
 msgid "First, you must select a template from the available ones."
 msgstr ""
 
-#: inc/functions.php:1750
+#: inc/functions.php:1792
 msgid ""
 "Are you sure you want to CLEAR all content from this Landing Page? This "
 "action cannot be undone"
 msgstr ""
 
-#: inc/functions.php:1751
+#: inc/functions.php:1793
 msgid "Please enter a template name, it will be easier to reload it after."
 msgstr ""
 
-#: inc/functions.php:1752
+#: inc/functions.php:1794
 msgid "Please select a saved template first"
 msgstr ""
 
-#: inc/functions.php:1753
+#: inc/functions.php:1795
 msgid ""
 "Are you sure you want to delete this saved template? This action cannot be "
 "undone"
 msgstr ""
 
-#: inc/functions.php:1754
+#: inc/functions.php:1796
 msgid "Please choose an existing API connection and a mailing list!"
 msgstr ""
 
-#: inc/functions.php:1755
+#: inc/functions.php:1797
 msgid ""
 "Are you sure you want to remove this Content Template? This action cannot be "
 "undone"
 msgstr ""
 
-#: inc/functions.php:1756
+#: inc/functions.php:1798
 msgid "Remove highlighted column"
 msgstr ""
 
-#: inc/functions.php:1758
+#: inc/functions.php:1800
 msgid ""
 "An Event is already registered for this Trigger and Action. Please choose a "
 "different configuration."
 msgstr ""
 
-#: inc/functions.php:1759
+#: inc/functions.php:1801
 msgid "Error validating the ID. Please check your input and try again"
 msgstr ""
 
-#: inc/functions.php:1760
+#: inc/functions.php:1802
 msgid ""
 "Please set a correct App ID and validate it using the \"Validate App ID\" "
 "button"
 msgstr ""
 
-#: inc/functions.php:1761
+#: inc/functions.php:1803
 msgid "The tweet contains too many characters. Please shorten your message"
 msgstr ""
 
-#: inc/functions.php:1762
+#: inc/functions.php:1804
 msgid "Username is required"
 msgstr ""
 
-#: inc/functions.php:1763
+#: inc/functions.php:1805
 msgid "Template name is required"
 msgstr ""
 
-#: inc/functions.php:1764
+#: inc/functions.php:1806
 msgid "An unknown error has occured. Response was: "
 msgstr ""
 
-#: inc/functions.php:1765
+#: inc/functions.php:1807
 msgid ""
 "Importing a landing page will overwrite the current contents of this page. "
 "Are you sure you want to continue ?"
 msgstr ""
 
-#: inc/functions.php:1766
+#: inc/functions.php:1808
 msgid "Invalid file selected. Please select an image."
 msgstr ""
 
-#: inc/functions.php:1917
+#: inc/functions.php:1809
+msgid "Please add text for last variation !"
+msgstr ""
+
+#: inc/functions.php:1810
+msgid "You cannot set the slide speed below 1000 ms !"
+msgstr ""
+
+#: inc/functions.php:1961
 msgid "That template name already exists, please use another name"
 msgstr ""
 
-#: inc/functions.php:3365
+#: inc/functions.php:3444
 msgid "Thrive Visual Editor Content"
 msgstr ""
 
-#: inc/functions.php:3366
+#: inc/functions.php:3445
 msgid "Thrive Visual Editor Custom CSS"
 msgstr ""
 
-#: inc/functions.php:3367
+#: inc/functions.php:3446
 msgid "Landing Page"
 msgstr ""
 
-#: inc/functions.php:3804
+#: inc/functions.php:3886
 #, php-format
 msgid "Only %s files are accepted"
 msgstr ""
@@ -4900,19 +5108,19 @@ msgstr ""
 msgid "Could not write file %s"
 msgstr ""
 
-#: thrive-visual-editor.php:520
+#: thrive-visual-editor.php:524
 msgid "Invalid request"
 msgstr ""
 
-#: thrive-visual-editor.php:534
+#: thrive-visual-editor.php:538
 msgid "Landing Page exported successfully!"
 msgstr ""
 
-#: thrive-visual-editor.php:557
+#: thrive-visual-editor.php:561
 msgid "Invalid attachment id"
 msgstr ""
 
-#: thrive-visual-editor.php:567
+#: thrive-visual-editor.php:571
 msgid "Landing Page imported successfully!"
 msgstr ""
 

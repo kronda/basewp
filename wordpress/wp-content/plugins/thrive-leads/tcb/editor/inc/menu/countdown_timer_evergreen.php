@@ -2,7 +2,7 @@
 <ul class="tve_menu">
     <?php $has_custom_colors = true;
     include dirname(__FILE__) . '/_custom_colors.php' ?>
-    <li class="tve_ed_btn tve_btn_text">
+    <li class="tve_ed_btn tve_btn_text" data-multiple-hide>
         <div class="tve_option_separator">
             <span class="tve_ind tve_left"><?php echo sprintf(__("Style %s", "thrive-cb"), "1") ?></span><span
                 class="tve_caret tve_icm tve_left" id="sub_02"></span>
@@ -25,7 +25,7 @@
             </div>
         </div>
     </li>
-    <li class="tve_text tve_firstOnRow">
+    <li class="tve_text tve_firstOnRow" data-multiple-hide>
         <label class="tve_text">
             <?php echo __("Days", "thrive-cb") ?>
             <select class="tve_change" id="ct_day">
@@ -62,7 +62,7 @@
             </select>
         </label>
     </li>
-    <li class="tve_ed_btn tve_btn_text">
+    <li class="tve_ed_btn tve_btn_text" data-multiple-hide>
         <div class="tve_option_separator">
             <span class="tve_ind tve_left"><?php echo __("Starts again after", "thrive-cb") ?></span>
             <span class="tve_caret tve_icm tve_left"></span>
@@ -99,8 +99,8 @@
             </div>
         </div>
     </li>
-    <li class="tve_clear"></li>
-    <li class="tve_ed_btn_text tve_firstOnRow">
+    <li class="tve_clear" data-multiple-hide></li>
+    <li class="tve_ed_btn_text tve_firstOnRow" data-multiple-hide>
         <label class="tve_text">
             <?php echo __("Text to show on complete", "thrive-cb") ?> <input type="text" class="tve_change" id="ct_text" />
         </label>

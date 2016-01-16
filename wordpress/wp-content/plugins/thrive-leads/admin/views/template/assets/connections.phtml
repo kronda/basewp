@@ -1,0 +1,109 @@
+ <div class="asset-connection-list-item tve-leads-test-connection-<#= connection #> ">
+    <div class="tve-form-wrapper <# if(connection == active) {#> tve-leads-table-selected <# }#>">
+        <div class="tve-custom-table tve-leads-def-tablebody">
+            <div class="custom-table-column custom-table-column-small">
+                <span class="tve-leads-connection-icon tve-leads-def-cell">
+                    <img
+                        src="<?php echo plugin_dir_url(dirname(dirname(dirname(__FILE__)))); ?>img/<#= connection #>-logo-small.png"></span>
+                <span
+                class="tve-leads-connection-name tve-leads-def-cell"><strong><?php echo __("<#= connection #>", "thrive-leads"); ?></strong></span>
+            </div>
+            <div class="custom-table-column custom-table-column-large">
+                <span class="tve-leads-connection-change  tve-leads-def-cell">
+                    <label
+                        class="tve-switch tve-switch-extended <# if(connection == active) {#> tve-leads-connection-disabled <# }#>">
+                        <input type="checkbox" data="<#= connection #>"
+                        <# if(connection == active) {#> checked="checked"
+                            <# }#>
+                                value="1" class="tve-leads-connection-setting-change" autocomplete="off">
+                                <i></i>
+                    </label>
+                </span>
+                <span class="tve-leads-connection-status  tve-leads-def-cell">
+                    <strong>Connected,
+                        <# if(connection == active) {#> active
+                            <# } else {#> inactive
+                                <# } #>
+                    </strong>
+                </span>
+            </div>
+            <div class="custom-table-column custom-table-column-small">
+                <span class="tve-leads-connection-test-<#= connection #>  tve-leads-def-cell">
+                    <span class="tve-icon-transfer"></span>
+                    <a id="tve-asset-group-test" class="tve-asset-group-test" data="<#= connection #>"
+                       title="Test connection"
+                       href="javascript:void(0)">
+                        <strong><?php echo __("Test connection", "thrive-leads"); ?></strong>
+                    </a>
+                </span>
+            </div>
+            <div class="custom-table-column custom-table-column-small tve_leads_clearfix">
+                <span class="tve-asset-group-test-result pull-left  tve-leads-def-cell"></span>
+                <span class="pull-right  tve-leads-def-cell">
+                    <a href="javascript:void(0)"
+                       class="tve-leads-connection-edit tve-leads-connection-edit-<#= connection #> tve-icon-pencil"></a>
+                </span>
+            </div>
+        </div>
+        <span class="tve-leads-test-response"></span>
+    </div>
+</div>
+<# if(connection == 'mandrill') { #>
+    <div class="tve-leads-delivery-<#= connection #>-edit tve-leads-delivery-connection" style="display: none;">
+        <div class="tve-form">
+            <p class="tve-form-description larger-text"><?php echo __('Enter your Mandrill API key below', 'thrive-leads') ?>
+                . <a class="tl-play-link wistia-popover[height=450,playerColor=2bb914,width=800]" href="//fast.wistia.net/embed/iframe/s2s94z4w66?popover=true"><?php echo __('Click Here', 'thrive-leads') ?></a> <?php echo __('for instructions on how to get your API key', 'thrive-leads') ?>
+                .</p>
+
+            <div class="tve-center-lightbox">
+                <input placeholder="<?php echo __("API key", "thrive-leads") ?>" type="text"
+                       class="text tve-leads-key-mandrill" name="connection[key]"
+                       value="<#= connection_instance.key #>"/>
+                <br><br>
+                <button class="tve-btn tve-btn-green tve-leads-submit-connection-edit"
+                        value="<#= connection #>"><?php echo __("Save Mandrill API Key", "thrive-leads") ?></button>
+                <button
+                    class="tve-btn tve-btn-gray  tve-leads-back-api-edit"><?php echo __("Go Back", "thrive-leads") ?></button>
+            </div>
+        </div>
+    </div>
+    <# } else { #>
+        <div class="tve-leads-delivery-<#= connection #>-edit tve-leads-delivery-connection" style="display: none;">
+            <div class="tve-form">
+                <p class="tve-form-description"><?php echo __('Enter your Postmark API key below', 'thrive-leads') ?>.
+                    <a class="tl-play-link wistia-popover[height=450,playerColor=2bb914,width=800]" href="//fast.wistia.net/embed/iframe/4wlzzbsk34?popover=true"><?php echo __('Click Here', 'thrive-leads') ?></a> <?php echo __('for instructions on how to get your API key', 'thrive-leads') ?>
+                    .</p>
+                <?php $admin_email = get_option('admin_email');
+                ?>
+                <p class="tve-form-description"><?php echo __('Postmark requires your email to be verified before allowing any emails to be sent. Please be sure that the email you set here matches the email you confirmed on the postmark website.', 'thrive-leads') ?></p>
+                <table class="form-table">
+                    <tbody>
+                    <tr>
+                        <th scope="row"><label><?php echo __("Postmark-approved email address", "thrive-leads") ?>
+                                :</label></th>
+                        <td>
+                            <input placeholder="<?php echo __("Email", "thrive-leads") ?>" type="text"
+                                   class="text tve-leads-email-postmark" name="connection[email]"
+                                   value="<#= connection_instance.email #>"/>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label><?php echo __("API key", "thrive-leads") ?>:</label></th>
+                        <td>
+                            <input placeholder="<?php echo __("API key", "thrive-leads") ?>" type="text"
+                                   class="text tve-leads-key-postmark" name="connection[key]"
+                                   value="<#= connection_instance.key #>"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <td>
+                        <button class="tve-btn tve-btn-gray tve-leads-back-api-edit"><?php echo __("Go Back", "thrive-leads") ?></button>                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <# } #>
+

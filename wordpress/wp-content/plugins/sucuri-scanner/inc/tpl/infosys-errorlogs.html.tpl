@@ -36,7 +36,7 @@
                     Note that if the log file is not empty but the table is, it means that the
                     format of the logs used by the web server is not supported by the scanner,
                     you can try to increase the number of lines processed though from
-                    <a href="%%SUCURI.URL.Settings%%#settings-scanner">here</a> in case that
+                    <a href="%%SUCURI.URL.Settings%%#scanner">here</a> in case that
                     other lines have a different format which is very common on servers with
                     mixed configurations.
                 </p>
@@ -71,7 +71,7 @@
     </thead>
 
     <tbody>
-        %%SUCURI.ErrorLog.List%%
+        %%%SUCURI.ErrorLog.List%%%
 
         <tr class="sucuriscan-%%SUCURI.ErrorLog.InvalidFormatVisibility%%">
             <td colspan="5">

@@ -15,6 +15,6 @@
     </thead>
 
     <tbody>
-        %%SUCURI.LoggedInUsers.List%%
+        %%%SUCURI.LoggedInUsers.List%%%
     </tbody>
 </table>

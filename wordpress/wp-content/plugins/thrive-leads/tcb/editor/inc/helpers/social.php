@@ -442,6 +442,7 @@ function tve_social_fetch_count_fb_share($url)
  */
 function tve_social_fetch_count_t_share($url)
 {
+    return 0;
     $data = _tve_social_helper_get_json('http://cdn.api.twitter.com/1/urls/count.json?url=' . rawurlencode($url));
 
     return empty($data['count']) ? 0 : (int)$data['count'];

@@ -23,7 +23,7 @@
     </thead>
 
     <tbody>
-        %%SUCURI.UserList%%
+        %%%SUCURI.UserList%%%
 
         <tr class="sucuriscan-%%SUCURI.UserList.NoItemsVisibility%%">
             <td colspan="6">

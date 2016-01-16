@@ -8,6 +8,7 @@ $tve_leads_help_videos = array(
     'LeadGroups' => '//fast.wistia.net/embed/iframe/dzmputa1z3?popover=true', // displayed when there are no Lead Groups and when adding a new Lead Group
     'LeadShortcodes' => '//fast.wistia.net/embed/iframe/0ixjohsmn3?popover=true', // displayed when there are no Lead Shortcodes and when adding a new Lead Shortcode
     'TwoStepLightbox' => '//fast.wistia.net/embed/iframe/agm7q743cx?popover=true', // displayed when there are no Lead 2-step lightboxes and when adding a new one
+    'AssetGroup' => '//fast.wistia.net/embed/iframe/agm7q743cx?popover=true', // displayed when there are no asset groups and when adding a new one
     'TriggerSettings' => '//fast.wistia.net/embed/iframe/cjdd4fw8pu?popover=true', // displayed on the Trigger Settings Lightbox
     'VariationTest' => '//fast.wistia.net/embed/iframe/h7qzx5xdlp?popover=true', // displayed when starting a Variation Test (between designs)
     'GroupTest' => '//fast.wistia.net/embed/iframe/zsiofuiy1h?popover=true', // displayed when starting a Group-level test (between form-types)

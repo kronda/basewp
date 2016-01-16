@@ -1,5 +1,10 @@
 /** CSS animations used in the preview of the animation (admin) and both on frontend **/
 .tve-l-open {
+  &.tl-anim-instant {
+    .tve_p_lb_content {
+      @include transition(none);
+    }
+  }
   &.tl-anim-rotational {
     .tve_p_lb_content.tve-leads-triggered {
       @include transform(scale(1) rotate(0deg));
@@ -93,7 +98,7 @@
   }
 }
 .tve-sl-open {
-  &.tl-anim-rotational {
+  &.stl-anim-rotational {
     .tve-leads-triggered {
       .thrv-leads-screen-filler.thrv_wrapper {
         @include transform(scale(1) rotate(0deg));
@@ -106,7 +111,7 @@
       }
     }
   }
-  &.tl-anim-zoom_in {
+  &.stl-anim-zoom_in {
     .tve-leads-triggered {
       .thrv-leads-screen-filler.thrv_wrapper {
         @include transform(scale(1));
@@ -119,7 +124,7 @@
       }
     }
   }
-  &.tl-anim-zoom_out {
+  &.stl-anim-zoom_out {
     .tve-leads-triggered {
       .thrv-leads-screen-filler.thrv_wrapper {
         @include transform(scale(1));
@@ -132,7 +137,7 @@
       }
     }
   }
-  &.tl-anim-slide_top {
+  &.stl-anim-slide_top {
     .tve-leads-triggered {
       .thrv-leads-screen-filler.thrv_wrapper {
         @include transform(translateY(0));
@@ -145,7 +150,7 @@
       }
     }
   }
-  &.tl-anim-slide_bot {
+  &.stl-anim-slide_bot {
     .tve-leads-triggered {
       .thrv-leads-screen-filler.thrv_wrapper {
         @include transform(translateY(0));
@@ -158,7 +163,7 @@
       }
     }
   }
-  &.tl-anim-slide_left {
+  &.stl-anim-slide_left {
     .tve-leads-triggered {
       .thrv-leads-screen-filler.thrv_wrapper {
         @include transform(translateX(0));
@@ -171,7 +176,7 @@
       }
     }
   }
-  &.tl-anim-slide_right {
+  &.stl-anim-slide_right {
     .tve-leads-triggered {
       .thrv-leads-screen-filler.thrv_wrapper {
         @include transform(translateX(0));
@@ -208,49 +213,49 @@
     @include transform(translateX(800px));
   }
 }
-.tl-anim-rotational {
+.stl-anim-rotational {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(scale(0.1) rotate(400deg));
     }
   }
 }
-.tl-anim-zoom_in {
+.stl-anim-zoom_in {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(scale(0));
     }
   }
 }
-.tl-anim-zoom_out {
+.stl-anim-zoom_out {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(scale(2));
     }
   }
 }
-.tl-anim-slide_top {
+.stl-anim-slide_top {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(translateY(-100%));
     }
   }
 }
-.tl-anim-slide_bot {
+.stl-anim-slide_bot {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(translateY(100%));
     }
   }
 }
-.tl-anim-slide_left {
+.stl-anim-slide_left {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(translateX(-800px));
     }
   }
 }
-.tl-anim-slide_right {
+.stl-anim-slide_right {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(translateX(800px));
@@ -669,7 +674,7 @@
 }
 html.tve-sl-open {
   min-height: 100%;
-  &.tl-anim-3d_slit {
+  &.stl-anim-3d_slit {
     .tve-leads-screen-filler {
       -webkit-backface-visibility: hidden;
       -moz-backface-visibility: hidden;
@@ -700,7 +705,7 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-3d_flip_horizontal {
+  &.stl-anim-3d_flip_horizontal {
     .tve-leads-screen-filler {
       -webkit-backface-visibility: hidden;
       -moz-backface-visibility: hidden;
@@ -725,7 +730,7 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-3d_flip_vertical {
+  &.stl-anim-3d_flip_vertical {
     .tve-leads-screen-filler {
       -webkit-backface-visibility: hidden;
       -moz-backface-visibility: hidden;
@@ -750,7 +755,7 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-3d_sign {
+  &.stl-anim-3d_sign {
     .tve-leads-screen-filler {
       -webkit-backface-visibility: hidden;
       -moz-backface-visibility: hidden;
@@ -775,7 +780,7 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-3d_rotate_bottom {
+  &.stl-anim-3d_rotate_bottom {
     .tve-leads-screen-filler {
       -webkit-backface-visibility: hidden;
       -moz-backface-visibility: hidden;
@@ -800,7 +805,7 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-3d_rotate_left {
+  &.stl-anim-3d_rotate_left {
     .tve-leads-screen-filler {
       -webkit-backface-visibility: hidden;
       -moz-backface-visibility: hidden;
@@ -825,11 +830,12 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-slip_from_top {
+  &.stl-anim-slip_from_top {
     -webkit-perspective: 900px;
     -moz-perspective: 900px;
     perspective: 900px;
     background: #000;
+    margin-top: 0 !important;
     body {
       @include animation(tl-slip-top .5s forwards ease-in);
       -webkit-transform-origin: 50% 100%;
@@ -852,7 +858,7 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-bounce_in {
+  &.stl-anim-bounce_in {
     .tve-leads-screen-filler.tve-leads-triggered {
       .thrv-leads-screen-filler {
         @include transition(none);
@@ -865,7 +871,7 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-bounce_in_down {
+  &.stl-anim-bounce_in_down {
     .tve-leads-screen-filler.tve-leads-triggered {
       .thrv-leads-screen-filler {
         @include transition(none);
@@ -878,7 +884,7 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-bounce_in_left {
+  &.stl-anim-bounce_in_left {
     .tve-leads-screen-filler.tve-leads-triggered {
       .thrv-leads-screen-filler {
         @include transition(none);
@@ -891,7 +897,7 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-bounce_in_right {
+  &.stl-anim-bounce_in_right {
     .tve-leads-screen-filler.tve-leads-triggered {
       .thrv-leads-screen-filler {
         @include transition(none);
@@ -904,7 +910,7 @@ html.tve-sl-open {
       }
     }
   }
-  &.tl-anim-bounce_in_up {
+  &.stl-anim-bounce_in_up {
     .tve-leads-screen-filler.tve-leads-triggered {
       .thrv-leads-screen-filler {
         @include transition(none);
@@ -1287,7 +1293,7 @@ html.tve-l-open {
   -webkit-backface-visibility: hidden;
   opacity: 0;
 }
-.tve-leads-screen-filler.tl-anim-3d_flip_horizontal {
+.tve-leads-screen-filler.stl-anim-3d_flip_horizontal {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(rotateY(-70deg) translateZ(1px));
@@ -1304,7 +1310,7 @@ html.tve-l-open {
   transform-style: preserve-3d;
   opacity: 0;
 }
-.tve-leads-screen-filler.tl-anim-3d_flip_vertical {
+.tve-leads-screen-filler.stl-anim-3d_flip_vertical {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(rotateX(-70deg));
@@ -1324,7 +1330,7 @@ html.tve-l-open {
   transform-origin: center top;
   opacity: 0;
 }
-.tve-leads-screen-filler.tl-anim-3d_sign {
+.tve-leads-screen-filler.stl-anim-3d_sign {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(rotateX(-70deg) translateZ(1px));
@@ -1346,7 +1352,7 @@ html.tve-l-open {
   transform-origin: 0 bottom;
   opacity: 0;
 }
-.tve-leads-screen-filler.tl-anim-3d_rotate_bottom {
+.tve-leads-screen-filler.stl-anim-3d_rotate_bottom {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(translateY(100%) rotateX(90deg));
@@ -1368,7 +1374,7 @@ html.tve-l-open {
   transform-origin: 0 100%;
   opacity: 0;
 }
-.tve-leads-screen-filler.tl-anim-3d_rotate_left {
+.tve-leads-screen-filler.stl-anim-3d_rotate_left {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(rotateY(10deg) translateZ(100px) translateX(-100%));
@@ -1396,7 +1402,7 @@ html.tve-l-open {
   @include transform(translateY(-200%));
   opacity: 0;
 }
-.tve-leads-screen-filler.tl-anim-slip_from_top {
+.tve-leads-screen-filler.stl-anim-slip_from_top {
   .tl-style:first-of-type {
     .thrv-leads-screen-filler {
       @include transform(translateY(-200%));

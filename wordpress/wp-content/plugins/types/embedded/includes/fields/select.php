@@ -17,6 +17,8 @@ function wpcf_fields_select() {
  * Form data for post edit page.
  * 
  * @param type $field 
+ *
+ * @deprecated seems
  */
 function wpcf_fields_select_meta_box_form($field) {
     $options = array();
@@ -73,8 +75,11 @@ function wpcf_fields_select_view($params) {
         foreach ($field['data']['options'] as $option_key => $option) {
             if (isset($option['value'])
                     && $option['value'] == $params['field_value']) {
-                $field_value = wpcf_translate('field ' . $params['field']['id'] . ' option '
-                        . $option_key . ' title', $option['title']);
+				// We need to translate here because the stored value is on the original language
+				// When updaing the value in the Field group, we might have problems
+				// @wpmlhere
+                $field_value = wpcf_translate('field ' . $params['field']['id'] . ' option ' . $option_key . ' title', $option['title']);
+				//$field_value = $option['title'];
             }
         }
         $output = $field_value;

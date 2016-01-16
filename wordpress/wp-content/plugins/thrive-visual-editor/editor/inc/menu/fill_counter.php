@@ -40,15 +40,15 @@
             <div class="tve_sub_btn">
                 <div class="tve_sub active_sub_menu">
                     <ul>
-                        <li id="tve_smallfc" class="tve_click" data-cls="tve_smallfc" data-size="1" data-ctrl="controls.click.add_class"><?php echo __("Small", "thrive-cb") ?></li>
-                        <li id="tve_normalfc" class="tve_click" data-cls="tve_normalfc" data-size="1" data-ctrl="controls.click.add_class"><?php echo __("Normal", "thrive-cb") ?></li>
-                        <li id="tve_bigfc" class="tve_click" data-cls="tve_bigfc" data-size="1" data-ctrl="controls.click.add_class"><?php echo __("Big", "thrive-cb") ?></li>
+                        <li id="tve_smallfc" class="tve_click" data-cls="tve_smallfc" data-size="1" data-ctrl="controls.click.change_attr"><?php echo __("Small", "thrive-cb") ?></li>
+                        <li id="tve_normalfc" class="tve_click" data-cls="tve_normalfc" data-size="1" data-ctrl="controls.click.change_attr"><?php echo __("Normal", "thrive-cb") ?></li>
+                        <li id="tve_bigfc" class="tve_click" data-cls="tve_bigfc" data-size="1" data-ctrl="controls.click.change_attr"><?php echo __("Big", "thrive-cb") ?></li>
                     </ul>
                 </div>
             </div>
         </div>
     </li>
-    <li class="tve_ed_btn tve_btn_text">
+    <li class="tve_ed_btn tve_btn_text" data-multiple-hide>
         <div class="tve_option_separator">
             <span class="tve_ind tve_left"><?php echo __("Data Settings", "thrive-cb") ?></span><span
                 class="tve_caret tve_icm tve_left" id="sub_02"></span>
@@ -107,7 +107,7 @@
                         </li>
                         <li class="tve_no_hover tve_no_click">
                             <label class="tve_text">
-                                Please note that the animation/fill percentage is only a representation in edit mode. They are updated on the preview page.
+                                Please note that the animation for the fill counter is now displayed in edit mode. It will animate only on the preview page.
                             </label>
                         </li>
                     </ul>
@@ -129,7 +129,7 @@
     </li>
     <?php include dirname(__FILE__) . '/_custom_font.php' ?>
     <?php include dirname(__FILE__) . '/_margin.php' ?>
-    <li>
+    <li data-multiple-hide>
         <input type="text" class="tve_change tve_text element_id" placeholder="ID" data-ctrl="controls.change.element_id">
     </li>
     <li><input type="text" class="element_class tve_text tve_change" data-ctrl="controls.change.cls" placeholder="<?php echo __("Custom class", "thrive-cb") ?>"></li>

@@ -3,14 +3,14 @@ $captcha_api = Thrive_List_Manager::credentials('recaptcha');
 $captcha_available = !empty($captcha_api['site_key']);
 ?>
 <div class="tve_lead_captcha_settings">
-    <div>
-        <label>
+    <div class="tve_lightbox_input_holder">
             <input class="tve_lg_validation_options tve_change"
                    type="checkbox"
                    name="tve_api_use_captcha"
-                   data-ctrl="function:auto_responder.use_captcha_changed"
+                   data-ctrl="function:auto_responder.use_captcha_changed" id="tve-captcha"
                 <?php echo $captcha_available ? '' : ' disabled'; ?>
                 >
+        <label for="tve-captcha">
             <?php
             echo __('Add Captcha to Prevent Spam Signups', 'thrive-cb');
             if (!$captcha_available) {

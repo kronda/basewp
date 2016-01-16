@@ -31,10 +31,10 @@
             <td>Heartbeat status</td>
             <td>%%SUCURI.HeartbeatStatus%%</td>
             <td class="td-with-button">
-                <form action="%%SUCURI.URL.Settings%%#settings-heartbeat" method="post">
+                <form action="%%SUCURI.URL.Settings%%#heartbeat" method="post">
                     <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
                     <select name="sucuriscan_heartbeat_status">
-                        %%SUCURI.HeartbeatStatusOptions%%
+                        %%%SUCURI.HeartbeatStatusOptions%%%
                     </select>
                     <button type="submit" class="button-primary">Change</button>
                 </form>
@@ -45,10 +45,10 @@
             <td>Pulse interval</td>
             <td>%%SUCURI.HeartbeatPulse%%</td>
             <td class="td-with-button">
-                <form action="%%SUCURI.URL.Settings%%#settings-heartbeat" method="post">
+                <form action="%%SUCURI.URL.Settings%%#heartbeat" method="post">
                     <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
                     <select name="sucuriscan_heartbeat_pulse">
-                        %%SUCURI.HeartbeatPulseOptions%%
+                        %%%SUCURI.HeartbeatPulseOptions%%%
                     </select>
                     <button type="submit" class="button-primary">Change</button>
                 </form>
@@ -59,10 +59,10 @@
             <td>Interval speed</td>
             <td>%%SUCURI.HeartbeatInterval%%</td>
             <td class="td-with-button">
-                <form action="%%SUCURI.URL.Settings%%#settings-heartbeat" method="post">
+                <form action="%%SUCURI.URL.Settings%%#heartbeat" method="post">
                     <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
                     <select name="sucuriscan_heartbeat_interval">
-                        %%SUCURI.HeartbeatIntervalOptions%%
+                        %%%SUCURI.HeartbeatIntervalOptions%%%
                     </select>
                     <button type="submit" class="button-primary">Change</button>
                 </form>
@@ -73,7 +73,7 @@
             <td>Auto-start</td>
             <td>%%SUCURI.HeartbeatAutostart%%</td>
             <td class="td-with-button">
-                <form action="%%SUCURI.URL.Settings%%#settings-heartbeat" method="post">
+                <form action="%%SUCURI.URL.Settings%%#heartbeat" method="post">
                     <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
                     <input type="hidden" name="sucuriscan_heartbeat_autostart" value="%%SUCURI.HeartbeatAutostartSwitchValue%%" />
                     <button type="submit" class="button-primary %%SUCURI.HeartbeatAutostartSwitchCssClass%%">%%SUCURI.HeartbeatAutostartSwitchText%%</button>

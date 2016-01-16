@@ -1,7 +1,7 @@
 <?php
 
 /* global constants */
-defined('TVE_VERSION') || DEFINE("TVE_VERSION", '1.101.13');
+defined('TVE_VERSION') || DEFINE("TVE_VERSION", '1.101.17');
 defined('TVE_TCB_DB_VERSION') || define('TVE_TCB_DB_VERSION', '1.1');
 defined('TVE_TEMPLATES_PATH') || DEFINE("TVE_TEMPLATES_PATH", plugin_dir_path(__FILE__) . 'shortcodes/templates');
 defined('TVE_LANDING_PAGE_TEMPLATE') || DEFINE("TVE_LANDING_PAGE_TEMPLATE", plugins_url() . '/thrive-visual-editor/landing-page/templates');
@@ -138,6 +138,9 @@ if (defined('DOING_AJAX') && DOING_AJAX) {
     add_action('wp_ajax_nopriv_tve_api_form_submit', 'tve_api_form_submit');
     add_action('wp_ajax_tve_api_form_submit', 'tve_api_form_submit');
 
+    add_action('wp_ajax_nopriv_tve_custom_form_submit', 'tve_custom_form_submit');
+    add_action('wp_ajax_tve_custom_form_submit', 'tve_custom_form_submit');
+
     add_action('wp_ajax_tve_api_form_retry', 'tve_api_form_retry');
     add_action('wp_ajax_tve_api_delete_log', 'tve_api_delete_log');
 }
@@ -177,10 +180,10 @@ add_action('admin_bar_menu', 'thrive_editor_admin_bar', 100);
 
 // To fight against themes creating custom wpautop scripts and injecting rogue <br/> and <p> tags into content we have to apply shortcodes early, then add our content to the page
 // at priority 101, hence the two separate "the_content" actions
-if (is_editor_page_raw()) {
-    add_filter('the_content', 'tve_editor_content', PHP_INT_MAX);
-} else {
-    add_filter('the_content', 'tve_editor_content');
+add_action('wp', 'tve_wp_action');
+function tve_wp_action()
+{
+    add_filter('the_content', 'tve_editor_content', is_editor_page() ? PHP_INT_MAX : 10);
 }
 
 // this is a fix for the "Pitch" theme that tries to use a backend function get_current_screen() in a media library filter that we run in the front end and therefore breaks the page.

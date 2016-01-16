@@ -5,7 +5,7 @@ function tve_thrive_license_check($licensed_email, $license_key = '')
     $api_url = "https://thrivethemes.com/wp-content/plugins/license_check/api/request.php";
     $api_url .= "?license=" . $license_key;
     $api_url .= "&email=" . $licensed_email;
-    $api_url .= "&product_id=4,5,6,7,37,38,39,40,41,42,43,1,2,3,27,28,29";
+    $api_url .= "&product_id=4,5,6,7,37,38,39,40,41,42,43,1,2,3,27,28,29,47,48";
     $licenseValid = wp_remote_get($api_url, array('sslverify' => false));
 
     if (is_wp_error($licenseValid)) {

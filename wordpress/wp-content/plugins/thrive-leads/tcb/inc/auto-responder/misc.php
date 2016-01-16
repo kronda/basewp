@@ -215,7 +215,30 @@ function tve_api_form_retry()
         'url' => $url,
     );
 
-    $response = tve_api_add_subscriber($connection_name, $list_id, $data, false);
+    if($list_id == "asset") {
+
+        $api = Thrive_List_Manager::connectionInstance($connection_name);
+        if (!$api) {
+            $response =  __('Cannot establish API connection', "thrive-cb");
+        } else {
+
+            $post_data['_asset_group'] = $_POST['_asset_group'];
+            $post_data['email'] = $_POST['email'];
+            if(isset($_POST['name'])) { $post_data['name'] = $_POST['name']; }
+
+            $response = true;
+            try {
+                $api->sendEmail($post_data);
+            } catch (Exception $e) {
+                $response = $e->getMessage();
+            }
+
+        }
+
+    } else {
+        $response = tve_api_add_subscriber($connection_name, $list_id, $data, false);
+    }
+
 
     if ($response !== true) {
         exit(json_encode(array(
@@ -378,4 +401,20 @@ function tve_api_add_subscriber($connection, $list_identifier, $data, $log_error
     $wpdb->insert($wpdb->prefix . 'tcb_api_error_log', $log_data);
 
     return $result;
+}
+
+/**
+ * Sends the asset delivery mail
+ * @return mixed
+ */
+function tve_custom_form_submit()
+{
+    /**
+     * action filter -  allows hooking into the form submission event
+     *
+     * @param array $post the full _POST data
+     *
+     */
+    do_action('tcb_api_form_submit', $_POST);
+
 }

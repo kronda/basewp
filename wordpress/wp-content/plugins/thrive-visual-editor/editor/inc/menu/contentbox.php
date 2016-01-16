@@ -1,10 +1,10 @@
 <span class="tve_options_headline"><span class="tve_icm tve-ic-move"></span><?php echo __("Content Box options", "thrive-cb") ?></span>
 <ul class="tve_menu">
-    <?php $has_custom_colors = true; include dirname(__FILE__) . '/_custom_colors.php' ?>
+    <?php $has_custom_colors = true; $extra_attr = 'data-multiple-hide'; include dirname(__FILE__) . '/_custom_colors.php' ?>
     <?php include dirname(__FILE__) . '/_margin.php' ?>
     <?php include dirname(__FILE__) . '/_shadow.php' ?>
     <li><input type="text" class="element_class tve_text tve_change" data-ctrl="controls.change.cls" placeholder="<?php echo __("Custom class", "thrive-cb") ?>"></li>
-    <li><input type="text" class="element_id tve_change tve_text" data-ctrl="controls.change.element_id" placeholder="<?php echo __("Custom ID", "thrive-cb") ?>"></li>
+    <li data-multiple-hide><input type="text" class="element_id tve_change tve_text" data-ctrl="controls.change.element_id" placeholder="<?php echo __("Custom ID", "thrive-cb") ?>"></li>
     <?php $border_radius_selector = ".tve_cb,.tve_hd" ?>
     <?php include dirname(__FILE__) . '/_border_radius.php' ?>
     <?php include dirname(__FILE__) . '/_event_manager.php' ?>

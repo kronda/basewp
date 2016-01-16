@@ -26,6 +26,8 @@ add_filter( 'wpv_condition_end',
  * Form data for post edit page.
  * 
  * @param type $field 
+ *
+ * @deprecated seems
  */
 function wpcf_fields_checkboxes_meta_box_form( $field, $field_object ) {
     $options = array();
@@ -185,15 +187,24 @@ function wpcf_fields_checkboxes_view( $params ) {
             if ( $option['display'] == 'db'
                     && !empty( $option['set_value'] ) && !empty( $value ) ) {
                 $value = $option['set_value'];
+				// We need to translate here because the stored value is on the original language
+				// When updaing the value in the Field group, we might have problems
+				// @wpmlhere
                 $value = wpcf_translate( 'field ' . $params['field']['id'] . ' option ' . $name . ' value',
                         $value );
             } else if ( $option['display'] == 'value' ) {
                 if ( isset( $option['display_value_selected'] ) && !empty( $value ) ) {
                     $value = $option['display_value_selected'];
+					// We need to translate here because the stored value is on the original language
+				// When updaing the value in the Field group, we might have problems
+				// @wpmlhere
                     $value = wpcf_translate( 'field ' . $params['field']['id'] . ' option ' . $name . ' display value selected',
                             $value );
                 } else {
                     $value = $option['display_value_not_selected'];
+					// We need to translate here because the stored value is on the original language
+				// When updaing the value in the Field group, we might have problems
+				// @wpmlhere
                     $value = wpcf_translate( 'field ' . $params['field']['id'] . ' option ' . $name . ' display value not selected',
                             $value );
                 }
@@ -260,6 +271,9 @@ function wpcf_fields_checkboxes_view( $params ) {
         if ( !empty( $option['data']['set_value'] )
                 && $option['value'] != '__wpcf_unchecked' ) {
             $output = $option['data']['set_value'];
+			// We need to translate here because the stored value is on the original language
+			// When updaing the value in the Field group, we might have problems
+			// @wpmlhere
             $output = wpcf_translate( 'field ' . $params['field']['id']
                     . ' option ' . $option['key'] . ' value', $output );
         }
@@ -271,6 +285,9 @@ function wpcf_fields_checkboxes_view( $params ) {
         if ( $option['value'] != '__wpcf_unchecked' ) {
             if ( isset( $option['data']['display_value_selected'] ) ) {
                 $output = $option['data']['display_value_selected'];
+				// We need to translate here because the stored value is on the original language
+				// When updaing the value in the Field group, we might have problems
+				// @wpmlhere
                 $output = wpcf_translate( 'field ' . $params['field']['id'] . ' option ' . $option['key'] . ' display value selected',
                         $output );
             }
@@ -281,6 +298,9 @@ function wpcf_fields_checkboxes_view( $params ) {
              */
         } else if ( isset( $option['data']['display_value_not_selected'] ) ) {
             $output = $option['data']['display_value_not_selected'];
+			// We need to translate here because the stored value is on the original language
+			// When updaing the value in the Field group, we might have problems
+			// @wpmlhere
             $output = wpcf_translate( 'field ' . $params['field']['id'] . ' option ' . $option['key'] . ' display value not selected',
                     $output );
         }

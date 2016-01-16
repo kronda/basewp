@@ -44,25 +44,25 @@
     <?php $css_selector = '_parent::.tve_image_caption'; $btn_class = 'tve_hidden_feature_grid';
     include dirname(__FILE__) . '/_margin.php' ?>
 
-    <li class="tve_ed_btn">
+    <li class="tve_ed_btn" data-multiple-hide>
         <span class="tve_click tve_lb_small tve_icm tve-ic-chain" data-ctrl="controls.lb_open" id="lb_image_link"></span>
     </li>
     <?php include dirname(__FILE__) . '/_quick_link.php' ?>
     <!-- this only shows when the user clicks on a hyperlink -->
-    <li class="tve_ed_btn tve_link_btns">
+    <li class="tve_ed_btn tve_link_btns" data-multiple-hide>
         <span class="tve_icm tve-ic-unlink tve_click" data-ctrl="controls.click.image_unlink"></span>
     </li>
-    <li id="change_image" class="tve_ed_btn tve_center tve_btn_text btn_alignment upload_image_cpanel"><?php echo __("Change Image", "thrive-cb") ?></li>
-    <li class="tve_text clearfix">
+    <li id="change_image" class="tve_ed_btn tve_center tve_btn_text btn_alignment upload_image_cpanel" data-multiple-hide><?php echo __("Change Image", "thrive-cb") ?></li>
+    <li class="tve_text clearfix" data-multiple-hide>
         <label for="img_alt_att" class="tve_left"><?php echo __("Alt text", "thrive-cb") ?>&nbsp;</label>
         <input type="text" id="img_alt_att" class="tve_left tve_change">
     </li>
-    <li class="tve_text clearfix tve_btn_text">
+    <li class="tve_text clearfix tve_btn_text" data-multiple-hide>
         <label for="img_title_att" class="tve_left"><?php echo __("Title text", "thrive-cb") ?>&nbsp;</label>
         <input type="text" id="img_title_att" class="tve_left tve_change">
     </li>
     <li class="tve_text tve_slider_config tve_hidden_feature_grid tve_image_slider_menu tve_hidden_borderless" data-value="300" data-min-value="0" data-max-value="available"
-        data-input-selector="#image_width_input">
+        data-input-selector="#image_width_input" data-multiple-hide>
         <label for="image_width_input" class="tve_left">&nbsp;<?php echo __("Image size", "thrive-cb") ?></label>
 
         <div class="tve_slider tve_left">
@@ -123,6 +123,6 @@
             </div>
         </div>
     </li>
-    <?php $li_custom_class = ''; include dirname(__FILE__) . '/_event_manager.php'; unset($li_custom_class) ?>
+    <?php $li_custom_style = ' data-multiple-hide'; include dirname(__FILE__) . '/_event_manager.php'; unset($li_custom_class) ?>
     <li class="tve_clear"></li>
 </ul>

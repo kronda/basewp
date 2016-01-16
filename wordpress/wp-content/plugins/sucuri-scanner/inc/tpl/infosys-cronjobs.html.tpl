@@ -42,7 +42,7 @@
         </thead>
 
         <tbody>
-            %%SUCURI.Cronjobs.List%%
+            %%%SUCURI.Cronjobs.List%%%
         </tbody>
 
         <tfoot>

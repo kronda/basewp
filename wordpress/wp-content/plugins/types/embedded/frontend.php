@@ -244,29 +244,9 @@ function types_render_field_single( $field, $params, $content = null, $code = ''
     if ( is_string( $params['field_value'] ) ) {
         $params['field_value'] = addslashes( stripslashes( strval( $params['field_value'] ) ) );
     }
-
-    // Set values
-    if ( is_array( $params['field_value'] ) ) {
-        foreach ( $params['field_value'] as $f_key => $f_value ) {
-            if ((isset($field['data']['repetitive'])) && ($field['data']['repetitive'])) {
-                //Repetitive fields, used meta ID for proper string translation unique identification
-                $params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value '.$meta_id, $params['field_value'] );
-            } else {
-                //Non-repetitive fields, use post ID
-                $params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value '.$post->ID, $params['field_value'] );
-            }
-        }
-    } else {
-        if ((isset($field['data']['repetitive'])) && ($field['data']['repetitive'])) {
-
-    		//Repetitive fields, used meta ID for proper string translation unique identification
-    		$params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value '.$meta_id, $params['field_value'] );
-
-    	} else {
-    		//Non-repetitive fields, use post ID
-    		$params['field_value'] = wpcf_translate( 'field ' . $field['id'] . ' value '.$post->ID, $params['field_value'] );
-    	}
-    }
+	
+	// Note that $params['field_value'] does NOT need translating
+	// When a variable string or label output needs translating we do it on 'wpcf_fields_type_' . $field['type'] . '_value_display' on a field type basis
 
     $field['name'] = wpcf_translate( 'field ' . $field['id'] . ' name', $field['name'] );
     $params['field'] = $field;

@@ -1,7 +1,7 @@
 <span class="tve_options_headline"><?php echo __("Text Input Options", "thrive-cb") ?></span>
 <ul class="tve_menu">
     <?php
-    $css_selector = $css_padding_selector = "input[type='text']";
+    $css_selector = $css_padding_selector = "input[type='text'],input[type='email']";
     $margin_right_hide = $margin_left_hide = true;
     include dirname(__FILE__) . '/_margin.php';
     ?>

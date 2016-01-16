@@ -11,6 +11,15 @@
             </div>
             <div class="panel-body">
                 <form>
+
+                    <div id="tve-chart-annotations">
+                        <label class="tve-switch">
+                            <span><?php echo __('Load Annotations', 'thrive-leads'); ?></span>
+                            <input class="tve_load_annotation" type="checkbox" name="tve_load_annotations" value="1" <?php if ($tve_load_annotations): ?>checked="checked"<?php endif; ?> autocomplete="off">
+                            <i></i>
+                        </label>
+                    </div>
+
                     <div class="tve-report-type-title">
 
                     </div>
@@ -71,7 +80,7 @@
                                                     value="<?php echo $group->ID ?>"><?php echo $group->post_title ?></option>
                                             <?php endforeach ?>
                                         <?php else: ?>
-                                            <option value="-1" disabled>(empty)</option>
+                                            <option value="-1" disabled>(<?php echo __('empty', 'thrive-leads') ?>)</option>
                                         <?php endif; ?>
                                     </optgroup>
                                     <optgroup label="<?php echo __('Shortcodes', 'thrive-leads'); ?>">
@@ -81,7 +90,7 @@
                                                     value="<?php echo $shortcode->ID ?>"><?php echo $shortcode->post_title ?></option>
                                             <?php endforeach ?>
                                         <?php else: ?>
-                                            <option value="-1" disabled>(empty)</option>
+                                            <option value="-1" disabled>(<?php echo __('empty', 'thrive-leads') ?>)</option>
                                         <?php endif; ?>
                                     </optgroup>
                                     <optgroup label="<?php echo __('ThriveBoxes', 'thrive-leads'); ?>">
@@ -91,7 +100,7 @@
                                                     value="<?php echo $tsl->ID ?>"><?php echo $tsl->post_title ?></option>
                                             <?php endforeach ?>
                                         <?php else: ?>
-                                            <option value="-1" disabled>(empty)</option>
+                                            <option value="-1" disabled>(<?php echo __('empty', 'thrive-leads') ?>)</option>
                                         <?php endif; ?>
                                     </optgroup>
                                 </select>

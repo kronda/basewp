@@ -332,7 +332,7 @@ $web_safe_fonts = tve_font_manager_get_safe_fonts();
     </div>
     <a href="javascript:void(0)" id="tve_submenu_close" title="<?php echo __("Close", "thrive-cb") ?>"></a>
 
-    <div class="tve_menu">
+    <div class="tve_menu" data-multiple-hide>
         <a href="javascript:void(0)" id="tve_submenu_save"
            class="tve_click tve_icm tve-ic-toggle-down tve_lb_small tve_btn tve_no_hide"
            data-ctrl="controls.lb_open"
@@ -2415,14 +2415,10 @@ $web_safe_fonts = tve_font_manager_get_safe_fonts();
     </div>
     <div data-elem="sc_fill_counter">
         <div class="thrv_wrapper thrv_fill_counter tve_red tve_normalfc thrv_data_element" data-tve-style="1">
-            <div class="tve_fill_counter" data-fill="135">
-                <div class="tve_fill_circle tve_fill_circle1">
-                    <div class="tve_fill_c_in"></div>
-                </div>
-                <div class="tve_fill_circle tve_fill_circle2">
-                    <div class="tve_fill_c_in"></div>
-                    <div class="tve_fill_c_in tve_fill_c_in-d"></div>
-                </div>
+            <div class="tve_fill_counter_n" style="stroke-dasharray: 476.25 635;" data-fill="75">
+                <svg viewBox="0 0 202 202" class="tve_fill_counter_circle" shape-rendering="optimizeSpeed">
+                    <circle r="101" cx="101" cy="101"></circle>
+                </svg>
                 <div class="tve_fill_text_in">
                     <div class="tve_fill_text_value">
                         <span class="tve_fill_text_before"></span>

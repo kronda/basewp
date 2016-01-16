@@ -15,7 +15,7 @@
 
         <tr>
             <th>&nbsp;</th>
-            <th width="160">Date</th>
+            <th width="200">Date</th>
             <th>Username</th>
             <th>IP Address</th>
             <th>Event Message</th>
@@ -23,7 +23,7 @@
     </thead>
 
     <tbody>
-        %%SUCURI.AuditLogs.List%%
+        %%%SUCURI.AuditLogs.List%%%
 
         <tr class="sucuriscan-%%SUCURI.AuditLogs.NoItemsVisibility%%">
             <td colspan="5">
@@ -34,7 +34,7 @@
         <tr class="sucuriscan-%%SUCURI.AuditLogs.PaginationVisibility%%">
             <td colspan="5">
                 <ul class="sucuriscan-pagination">
-                    %%SUCURI.AuditLogs.PaginationLinks%%
+                    %%%SUCURI.AuditLogs.PaginationLinks%%%
                 </ul>
             </td>
         </tr>

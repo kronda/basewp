@@ -21,11 +21,12 @@
 
         <div class="inside">
             <p>
-                This is a list of registered <a href="http://codex.wordpress.org/Post_Types"
-                target="_blank">Post Types</a>, since you have enabled the email notifications
-                for <strong>new site content</strong>, we will send you an alert if any of these
-                <code>post-types</code> are changed. You may want to ignore some of them, in
-                which case you can use the buttons in the table bellow to do that.
+                This is a list of registered <a href="https://codex.wordpress.org/Post_Types"
+                target="_blank">Post Types</a>, since you have enabled the <strong>email alerts
+                for new or modified content</strong>, we will send you an alert if any of these
+                <code>post-types</code> are created and/or updated. You may want to ignore some
+                of them as some 3rd-party extensions create temporary data in the posts table
+                to track changes in their own tools.
             </p>
         </div>
     </div>
@@ -43,6 +44,6 @@
     </thead>
 
     <tbody>
-        %%SUCURI.IgnoreRules.PostTypes%%
+        %%%SUCURI.IgnoreRules.PostTypes%%%
     </tbody>
 </table>

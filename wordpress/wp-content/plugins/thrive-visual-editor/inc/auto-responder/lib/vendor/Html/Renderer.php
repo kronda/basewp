@@ -112,7 +112,7 @@ class Thrive_Api_Html_Renderer
             switch ($element['type']) {
                 case 'text':
                 case 'email':
-                    $html .= $this->_textRow($element, $input_index, $element['type']);
+                    $html .= $this->_textRow($element, $input_index, 'text');
                     break;
                 case 'radio':
                     $html .= $this->_radioRow($element, $input_index);

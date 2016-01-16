@@ -37,7 +37,7 @@ $config = array(
                                         <input type="text" data-placeholder="" value="" name="name" placeholder="Name"/>
                                     </div>
                                     <div class=" tve_lg_input_container tve_lg_3 tve_lg_input">
-                                        <input type="text" data-placeholder="" value="" name="name" placeholder="Email"/>
+                                        <input type="text" data-placeholder="" value="" name="email" placeholder="Email"/>
                                     </div>
                                     <div class="tve_lg_input_container tve_submit_container tve_lg_3 tve_lg_submit">
                                         <button type="Submit">SUBSCRIBE</button>

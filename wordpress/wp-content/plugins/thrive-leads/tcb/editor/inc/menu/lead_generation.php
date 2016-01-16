@@ -11,7 +11,7 @@
     include dirname(__FILE__) . '/_margin.php'
     ?>
 
-    <li>
+    <li data-multiple-hide>
         <div id="lb_lead_generation_code" class="tve_ed_btn tve_btn tve_btn_text tve_click" data-wpapi="lb_lead_generation_code"
              data-ctrl="controls.lb_open"><?php echo __("Connect with Service", "thrive-cb") ?>
         </div>

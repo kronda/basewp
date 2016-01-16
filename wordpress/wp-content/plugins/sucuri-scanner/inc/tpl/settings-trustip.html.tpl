@@ -12,7 +12,7 @@
                 specify ranges of IP addresses <em>(only 8, 16, and 24)</em>.
             </p>
 
-            <form action="%%SUCURI.URL.Settings%%#settings-trustip" method="POST">
+            <form action="%%SUCURI.URL.Settings%%#trustip" method="POST">
                 <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
                 <input type="text" name="sucuriscan_trust_ip" placeholder="e.g. 182.120.56.0/24" />
                 <input type="submit" value="Add Entry" class="button button-primary" />
@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<form action="%%SUCURI.URL.Settings%%#settings-trustip" method="post">
+<form action="%%SUCURI.URL.Settings%%#trustip" method="post">
     <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
 
     <table class="wp-list-table widefat sucuriscan-table sucuriscan-settings-trustip">
@@ -38,7 +38,7 @@
         </thead>
 
         <tbody>
-            %%SUCURI.TrustedIPs.List%%
+            %%%SUCURI.TrustedIPs.List%%%
 
             <tr class="sucuriscan-%%SUCURI.TrustedIPs.NoItems.Visibility%%">
                 <td colspan="4">

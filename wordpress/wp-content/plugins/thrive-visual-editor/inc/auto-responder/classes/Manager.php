@@ -10,7 +10,11 @@ class Thrive_List_Manager
 {
     public static $ADMIN_HAS_ERROR = false;
 
-    public static $API_TYPES = array('autoresponder' => 'Autoresponders / CRMs', 'webinar' => 'Webinar Services', 'captcha' => 'Captcha Services');
+    public static $API_TYPES = array(
+        'autoresponder' => 'Autoresponders / CRMs',
+        'webinar' => 'Webinar Services',
+        'captcha' => 'Captcha Services',
+    );
 
     public static $AVAILABLE = array(
         'mailchimp' => 'Thrive_List_Connection_Mailchimp',
@@ -34,6 +38,7 @@ class Thrive_List_Manager
         'gotowebinar' => 'Thrive_List_Connection_GoToWebinar',
         'recaptcha' => 'Thrive_List_Connection_ReCaptcha',
         'hubspot' => 'Thrive_List_Connection_HubSpot',
+
     );
 
     /**
@@ -48,6 +53,9 @@ class Thrive_List_Manager
         $lists = array();
 
         $credentials = self::credentials();
+
+        self::$AVAILABLE = apply_filters("tve_filter_available_connection", self::$AVAILABLE);
+
         foreach (self::$AVAILABLE as $key => $api) {
             /** @var Thrive_List_Connection_Abstract $instance */
             $instance = new $api($key);
@@ -55,6 +63,35 @@ class Thrive_List_Manager
                 continue;
             }
             $lists[$key] = self::connectionInstance($key, isset($credentials[$key]) ? $credentials[$key] : array());
+        }
+
+        return $lists;
+    }
+
+    /**
+     * get a list of all available APIs by type
+     *
+     * @param bool $onlyConnected if true, it will return only APIs that are already connected
+     * @param array $include_types exclude connection by their type
+     * @return array Thrive_List_Connection_Abstract[]
+     */
+    public static function getAvailableAPIsByType($onlyConnected = false, $include_types = array())
+    {
+        $lists = array();
+
+        $credentials = self::credentials();
+
+        self::$AVAILABLE = apply_filters("tve_filter_available_connection", self::$AVAILABLE);
+
+        foreach (self::$AVAILABLE as $key => $api) {
+            /** @var Thrive_List_Connection_Abstract $instance */
+            $instance = new $api($key);
+            if (($onlyConnected && empty($credentials[$key])) || !in_array($instance->getType(), $include_types)) {
+                continue;
+            }
+
+            $lists[$key] = self::connectionInstance($key, isset($credentials[$key]) ? $credentials[$key] : array());
+
         }
 
         return $lists;
@@ -106,6 +143,11 @@ class Thrive_List_Manager
      */
     public static function connectionInstance($key, $savedCredentials = false)
     {
+        self::$AVAILABLE = apply_filters("tve_filter_available_connection", self::$AVAILABLE);
+
+        if (!isset(self::$AVAILABLE[$key])) {
+            return null;
+        }
         /** @var Thrive_List_Connection_Abstract $instance */
         $instance = new self::$AVAILABLE[$key]($key);
 

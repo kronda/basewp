@@ -119,7 +119,7 @@ function tve_leads_register_group()
             }
 
             if (isset($config['wp_hook'])) {
-                add_action($config['wp_hook'], 'tve_leads_display_form_' . $_type);
+                add_action($config['wp_hook'], 'tve_leads_display_form_' . $_type, isset($config['priority']) ? $config['priority'] : 10);
             }
 
             if ($ajax_load_forms) {
@@ -232,6 +232,8 @@ function tve_leads_query_group()
  */
 function tve_leads_enqueue_default_scripts()
 {
+    $js_suffix = defined('TVE_DEBUG') && TVE_DEBUG ? '.js' : '.min.js';
+
     /* flat is the default style for Thrive Leads */
     global $tve_style_family_classes;
     $tve_style_families = tve_get_style_families();
@@ -254,7 +256,7 @@ function tve_leads_enqueue_default_scripts()
 
     if (!wp_script_is('tve_frontend')) {
 
-        tve_enqueue_script('tve_frontend', tve_editor_js() . '/thrive_content_builder_frontend.min.js', array('jquery'), false, true);
+        tve_enqueue_script('tve_frontend', tve_editor_js() . '/thrive_content_builder_frontend' . $js_suffix, array('jquery'), false, true);
 
         $frontend_options = array(
             'is_editor_page' => is_editor_page(),
@@ -269,7 +271,7 @@ function tve_leads_enqueue_default_scripts()
      * enqueue the general frontend script for forms - this one needs to be included in the footer - the last parameter is set to true
      * this is to allow it to be localized in the wp_print_footer_scripts hook
      */
-    tve_leads_enqueue_script('tve_leads_frontend', TVE_LEADS_URL . 'js/frontend.js', array('jquery'), false, true);
+    tve_leads_enqueue_script('tve_leads_frontend', TVE_LEADS_URL . 'js/frontend' . $js_suffix, array('jquery'), false, true);
 }
 
 /**
@@ -367,7 +369,7 @@ function tve_leads_enqueue_form_scripts()
     /**
      * TODO: at some point, we'll need to check for each shortcode what CSS we can output here
      */
-    if (empty($GLOBALS['tve_lead_forms'])) {
+    if (empty($GLOBALS['tve_lead_forms']) && (!tve_leads_is_preview_page() || tve_leads_is_editor_page())) {
         // no form defined / found
         return;
     }
@@ -381,26 +383,28 @@ function tve_leads_enqueue_form_scripts()
     }
 
     /* custom CSS for each form; Icon Packs are enqueued when we are rendering the content */
-    foreach ($GLOBALS['tve_lead_forms'] as $_type => $data) {
+    if (!empty($GLOBALS['tve_lead_forms'])) {
+        foreach ($GLOBALS['tve_lead_forms'] as $_type => $data) {
 
-        /**
-         * at this point, we just proceed in the normal, server-side way
-         */
+            /**
+             * at this point, we just proceed in the normal, server-side way
+             */
 
-        tve_leads_enqueue_variation_scripts($data['variation']);
+            tve_leads_enqueue_variation_scripts($data['variation']);
 
-        /* finally, generate the content, and wrap it inside a <div> to mark it in the DOM */
-        $GLOBALS['tve_lead_forms'][$_type]['form_output'] = tve_editor_custom_content($data['variation']);
+            /* finally, generate the content, and wrap it inside a <div> to mark it in the DOM */
+            $GLOBALS['tve_lead_forms'][$_type]['form_output'] = tve_editor_custom_content($data['variation']);
 
-        /* also record any of the form types that are displayed to use in the conversion tracking mechanism */
-        $GLOBALS['tve_leads_form_config']['forms'][$_type] = array(
-            '_key' => $data['variation']['key'],
-            'trigger' => $data['variation']['trigger'],
-            'trigger_config' => !empty($data['variation']['trigger_config']) ? $data['variation']['trigger_config'] : new stdClass(),
-            'form_type_id' => $data['form_type'] ? $data['form_type']->ID : '',
-            'main_group_id' => $tve_lead_group->ID,
-            'active_test_id' => !empty($data['active_test_id']) ? $data['active_test_id'] : ''
-        );
+            /* also record any of the form types that are displayed to use in the conversion tracking mechanism */
+            $GLOBALS['tve_leads_form_config']['forms'][$_type] = array(
+                '_key' => $data['variation']['key'],
+                'trigger' => $data['variation']['trigger'],
+                'trigger_config' => !empty($data['variation']['trigger_config']) ? $data['variation']['trigger_config'] : new stdClass(),
+                'form_type_id' => $data['form_type'] ? $data['form_type']->ID : '',
+                'main_group_id' => $tve_lead_group->ID,
+                'active_test_id' => !empty($data['active_test_id']) ? $data['active_test_id'] : ''
+            );
+        }
     }
 }
 
@@ -417,6 +421,10 @@ function tve_leads_enqueue_form_scripts()
 function tve_leads_register_impression($group, $form_type_or_shortcode, $variation, $test_model_id, $current_screen)
 {
     if (current_user_can('manage_options')) {
+        return;
+    }
+
+    if (isset($_COOKIE['tl-conv-' . $variation['key']])) {
         return;
     }
 
@@ -539,7 +547,11 @@ function tve_leads_register_conversion($group, $form_type, $variation, $test_mod
      * also update the cached values if they are not null (if any previous cache has been calculated for this form variation)
      */
     $cache_variation_data = !is_null($variation['cache_conversions']);
-    $tvedb->insert_event($event_log, $test_model_id, $cache_variation_data);
+    $log_id = $tvedb->insert_event($event_log, $test_model_id, $cache_variation_data);
+
+    $name = empty($post_data['custom_fields']['name']) ? '' : $post_data['custom_fields']['name'];
+    unset($post_data['custom_fields']['name']);
+    $tvedb->tve_leads_register_contact($log_id, $name, $post_data['email'], $post_data['custom_fields']);
 
     if (!empty($test_model_id)) {
         tve_leads_test_check_winner($test_model_id);
@@ -574,13 +586,66 @@ function tve_leads_ajax_impression()
  */
 function tve_leads_api_form_submit($post_data)
 {
+    // check if the send asset option is selected, if yes send the asset to the user
+    if (!empty($post_data['_asset_option']) || $post_data['_asset_option'] == 1) {
+        tve_leads_send_asset($post_data);
+
+    }
     if (empty($post_data['thrive_leads'])) {
         return;
     }
     $data = $post_data['thrive_leads'];
     $data['email'] = $post_data['email'];
 
+    /* Add custom fields so we can save them for the contacts view */
+    $ignored_fields = tve_get_lead_generation_ignored_fields();
+    $data['custom_fields'] = array();
+    foreach ($post_data as $field => $value) {
+        if (!is_array($value) && !in_array($field, $ignored_fields)) {
+            $data['custom_fields'][$field] = $value;
+        }
+    }
+
     tve_leads_process_conversion($data);
+}
+
+/**
+ *  Gets the connection type and calls the sendEmail method
+ *
+ * @param $post_data
+ */
+function tve_leads_send_asset($post_data)
+{
+
+    $connection = get_option('tve_api_delivery_service', false);
+    if (!$connection) {
+        return;
+    }
+    $api = Thrive_List_Manager::connectionInstance($connection);
+    if (!$api) {
+        return;
+    }
+
+    try {
+        $api->sendEmail($post_data);
+    } catch (Exception $e) {
+        global $wpdb;
+
+        /**
+         * at this point, we need to log the error in a DB table, so that the user can see all these error later on and (maybe) re-subscribe the user
+         */
+        $log_data = array(
+            'date' => date('Y-m-d H:i:s'),
+            'error_message' => $e->getMessage(),
+            'api_data' => serialize($post_data),
+            'connection' => $api->getKey(),
+            'list_id' => 'asset'
+        );
+
+        $wpdb->insert($wpdb->prefix . 'tcb_api_error_log', $log_data);
+
+    }
+
 }
 
 /**
@@ -597,6 +662,7 @@ function tve_leads_process_conversion($post_data)
         'variation_key' => !empty($post_data['tl_data']['_key']) ? $post_data['tl_data']['_key'] : 0,
         'main_group_id' => !empty($post_data['tl_data']['main_group_id']) ? $post_data['tl_data']['main_group_id'] : 0,
         'form_type_id' => !empty($post_data['tl_data']['form_type_id']) ? $post_data['tl_data']['form_type_id'] : 0,
+        'custom_fields' => !empty($post_data['custom_fields']) ? $post_data['custom_fields'] : array(),
     );
 
     //add referrer and utm data from post
@@ -700,6 +766,7 @@ function tve_leads_print_footer_scripts()
     }
     $form_config['custom_post_data'] = $custom_post_data;
     $form_config['current_screen'] = tve_get_current_screen();
+    $form_config['ignored_fields'] = tve_get_lead_generation_ignored_fields();
 
     $js = json_encode($form_config);
     echo sprintf('<script type="text/javascript">/*<![CDATA[*/var TL_Const=%s/*]]> */</script>', $js);
@@ -731,10 +798,6 @@ function tve_leads_print_footer_scripts()
     }
 
     $ajax_load_forms = tve_leads_get_option('ajax_load');
-
-    if (tve_leads_is_preview_page() || !$ajax_load_forms) {
-        include dirname(dirname(__FILE__)) . '/js/triggers.js.php';
-    }
 
     if ($ajax_load_forms) {
         /**
@@ -842,6 +905,16 @@ function tve_leads_display_form_ribbon($flag = '', $form_output = null, $variati
      * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
      */
     $already_subscribed = tve_leads_get_already_subscribed_html($variation, 'ribbon');
+    /* If the already subscribed state is hidden then we don't display anything and return empty */
+    if ($already_subscribed === TVE_ALREADY_SUBSCRIBED_HIDDEN) {
+        unset($GLOBALS['tve_lead_impressions']['ribbon']);
+        if ($flag == '__return_content') {
+            return '';
+        }
+
+        echo '';
+        return;
+    }
 
     /**
      * if no "Already Subscribed" state has been defined and the visitor comes from an inbound link which shows the already subscribed state,
@@ -945,6 +1018,12 @@ function tve_leads_display_form_lightbox($flag = '', $form_output = null, $varia
 
     if (empty($variation['parent_id']) && (isset($_COOKIE['tl-conv-' . $variation['key']]) || $show_already_subscribed)) {
         $done = tve_leads_get_already_subscribed_state($variation);
+
+        /* If the already subscribed state is hidden then we don't display anything */
+        if (tve_leads_check_variation_visibility($done)) {
+            return;
+        }
+
         if (!empty($done)) {
             tve_leads_enqueue_variation_scripts($done);
             $control['hide'] = true;
@@ -1071,6 +1150,16 @@ function tve_leads_display_form_screen_filler($flag = '', $form_output = null, $
      * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
      */
     $already_subscribed = tve_leads_get_already_subscribed_html($variation, 'screen_filler', $skip_inbound_link_check);
+    /* If the already subscribed state is hidden then we don't display anything and return empty */
+    if ($already_subscribed === TVE_ALREADY_SUBSCRIBED_HIDDEN) {
+        unset($GLOBALS['tve_lead_impressions']['screen_filler']);
+        if ($flag == '__return_content') {
+            return '';
+        }
+
+        echo '';
+        return;
+    }
 
     /**
      * if no "Already Subscribed" state has been defined and the visitor comes from an inbound link which shows the already subscribed state,
@@ -1094,7 +1183,7 @@ function tve_leads_display_form_screen_filler($flag = '', $form_output = null, $
         $html = sprintf(
                 '<div class="tve-leads-screen-filler tl-state-root %s tve-tl-anim %s" style="visibility: hidden;">',
                 $container_id,
-                'tl-anim-' . $variation['display_animation'] .
+                'stl-anim-' . $variation['display_animation'] .
                 (empty($variation['trigger']) || $variation['trigger'] == 'page_load' ? '' : ' tve-trigger-hide')
             ) . $html;
 
@@ -1157,6 +1246,16 @@ function tve_leads_display_form_greedy_ribbon($flag = '', $form_output = null, $
      * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
      */
     $already_subscribed = tve_leads_get_already_subscribed_html($variation, 'greedy_ribbon');
+    /* If the already subscribed state is hidden then we don't display anything and return empty */
+    if ($already_subscribed === TVE_ALREADY_SUBSCRIBED_HIDDEN) {
+        unset($GLOBALS['tve_lead_impressions']['greedy_ribbon']);
+        if ($flag == '__return_content') {
+            return '';
+        }
+
+        echo '';
+        return;
+    }
 
     /**
      * if no "Already Subscribed" state has been defined and the visitor comes from an inbound link which shows the already subscribed state,
@@ -1195,8 +1294,6 @@ function tve_leads_display_form_greedy_ribbon($flag = '', $form_output = null, $
 
     echo $html;
 }
-
-
 
 
 /**
@@ -1278,6 +1375,11 @@ function tve_leads_display_form_post_footer($content, $form_output = null, $vari
      * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
      */
     $already_subscribed = tve_leads_get_already_subscribed_html($variation, 'post_footer');
+    /* If the already subscribed state is hidden then we don't display anything and return empty */
+    if ($already_subscribed === TVE_ALREADY_SUBSCRIBED_HIDDEN) {
+        unset($GLOBALS['tve_lead_impressions']['post_footer']);
+        return '';
+    }
 
     /**
      * if no "Already Subscribed" state has been defined and the visitor comes from an inbound link which shows the already subscribed state,
@@ -1385,6 +1487,11 @@ function tve_leads_display_form_in_content($content, $form_output = null, $varia
      * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
      */
     $already_subscribed = tve_leads_get_already_subscribed_html($variation, 'in_content');
+    /* If the already subscribed state is hidden then we don't display anything and return empty */
+    if ($already_subscribed === TVE_ALREADY_SUBSCRIBED_HIDDEN) {
+        unset($GLOBALS['tve_lead_impressions']['in_content']);
+        return $content;
+    }
 
     /**
      * if no "Already Subscribed" state has been defined and the visitor comes from an inbound link which shows the already subscribed state,
@@ -1477,6 +1584,16 @@ function tve_leads_display_form_slide_in($flag = '', $form_output = null, $varia
      * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
      */
     $already_subscribed = tve_leads_get_already_subscribed_html($variation, 'slide_in');
+    /* If the already subscribed state is hidden then we don't display anything and return empty */
+    if ($already_subscribed === TVE_ALREADY_SUBSCRIBED_HIDDEN) {
+        unset($GLOBALS['tve_lead_impressions']['slide_in']);
+        if ($flag == '__return_content') {
+            return '';
+        }
+
+        echo '';
+        return;
+    }
 
     /**
      * if no "Already Subscribed" state has been defined and the visitor comes from an inbound link which shows the already subscribed state,
@@ -1551,6 +1668,16 @@ function tve_leads_display_form_widget($flag = '', $form_output = null, $variati
      * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
      */
     $already_subscribed = tve_leads_get_already_subscribed_html($variation, 'widget');
+    /* If the already subscribed state is hidden then we don't display anything and return empty */
+    if ($already_subscribed === TVE_ALREADY_SUBSCRIBED_HIDDEN) {
+        unset($GLOBALS['tve_lead_impressions']['widget']);
+        if ($flag == '__return_content') {
+            return '';
+        }
+
+        echo '';
+        return;
+    }
 
     /**
      * if no "Already Subscribed" state has been defined and the visitor comes from an inbound link which shows the already subscribed state,
@@ -1615,6 +1742,16 @@ function tve_leads_display_form_shortcode($flag, $form_output, $variation, $cont
      * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
      */
     $already_subscribed = tve_leads_get_already_subscribed_html($variation, 'shortcode', true);
+    /* If the already subscribed state is hidden then we don't display anything and return empty */
+    if ($already_subscribed === TVE_ALREADY_SUBSCRIBED_HIDDEN) {
+        unset($GLOBALS['tve_lead_impressions']['shortcode']);
+        if ($flag == '__return_content') {
+            return '';
+        }
+
+        echo '';
+        return;
+    }
     $control['hide'] = $control['hide'] || !empty($already_subscribed);
 
     $html = tve_leads_state_html($form_output, $variation, $control) . $already_subscribed;
@@ -1687,6 +1824,16 @@ function tve_leads_display_form_php_insert($flag = '', $form_output = null, $var
      * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
      */
     $already_subscribed = tve_leads_get_already_subscribed_html($variation, 'php_insert');
+    /* If the already subscribed state is hidden then we don't display anything and return empty */
+    if ($already_subscribed === TVE_ALREADY_SUBSCRIBED_HIDDEN) {
+        unset($GLOBALS['tve_lead_impressions']['php_insert']);
+        if ($flag == '__return_content') {
+            return '';
+        }
+
+        echo '';
+        return;
+    }
 
     /**
      * if no "Already Subscribed" state has been defined and the visitor comes from an inbound link which shows the already subscribed state,
@@ -1773,7 +1920,7 @@ function tve_leads_ajax_load_forms()
     );
     if (!empty($_POST['get_data'])) {
         foreach ($_POST['get_data'] as $k => $v) {
-            if(!in_array($k, $excluded)) {
+            if (!in_array($k, $excluded)) {
                 $_REQUEST[$k] = $_GET[$k] = $v;
             }
         }
@@ -1892,6 +2039,10 @@ function tve_leads_ajax_load_forms()
 
             $form_output = preg_replace('/__CONFIG_lead_generation_(.+?)__CONFIG_lead_generation_/ms', '', tve_editor_custom_content($variation));
             $response['html'][$type_key] = tve_leads_display_form_shortcode('__return_content', $form_output, $variation);
+            if (empty($response['html'][$type_key])) {
+                unset($response['html'][$type_key]);
+                continue;
+            }
 
             /* also record any of the form types that are displayed to use in the conversion tracking mechanism */
             $response['js']['shortcode_' . $ID] = array(
@@ -1947,6 +2098,11 @@ function tve_leads_ajax_load_forms()
                 $variation['form_type'] = 'lightbox';
             }
 
+            if (empty($response['html']['two_step_' . $ID])) {
+                unset($response['html']['two_step_' . $ID]);
+                continue;
+            }
+
             $response['html']['two_step_' . $ID] = preg_replace('/__CONFIG_lead_generation_(.+?)__CONFIG_lead_generation_/ms', '', $response['html']['two_step_' . $ID]);
             $variation['form_id'] = '2step-' . $variation['key'];
 
@@ -1978,7 +2134,6 @@ function tve_leads_ajax_load_forms()
          * javascript for the triggers
          */
         ob_start();
-        include dirname(dirname(__FILE__)) . '/js/triggers.js.php';
         $output_variations = apply_filters('tve_leads_append_states_ajax', $output_variations);
 
         foreach ($output_variations as $type => $variation) {
@@ -2186,4 +2341,15 @@ function thrive_dynamic_sidebar_params($params)
     }
 
     return $params;
+}
+
+function tve_leads_filter_api_types($types) {
+    $types['email'] = __("Email Delivery Services", "thrive-leads");
+    return $types;
+}
+
+function tve_leads_filter_available_connection($available) {
+    $available['mandrill'] = 'Thrive_List_Connection_Mandrill';
+    $available['postmark'] = 'Thrive_List_Connection_Postmark';
+    return $available;
 }

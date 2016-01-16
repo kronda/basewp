@@ -26,7 +26,7 @@
                 </thead>
 
                 <tbody>
-                    %%SUCURI.SecurityKeys.List%%
+                    %%%SUCURI.SecurityKeys.List%%%
                 </tbody>
             </table>
 

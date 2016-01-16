@@ -57,6 +57,8 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 connections_str: lead_generation.api_config_str,
                 thank_you_url: lead_generation.api_form_data.thank_you_url,
                 submit_option: lead_generation.api_form_data.submit_option,
+                asset_option: lead_generation.asset_option,
+                asset_group: lead_generation.asset_group,
                 use_captcha: lead_generation.use_captcha,
                 api_fields: lead_generation.api_form_data.elements || null,
                 api_fields_order: lead_generation.api_form_data.element_order || null
@@ -101,6 +103,24 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
          * @param $btn
          */
         save_custom_code: function ($btn) {
+            var group = jQuery('.tve-asset-select-holder').find('select#tve-api-submit-option').val();
+            if (typeof group === 'undefined' || typeof group === 'null') {
+                group = '';
+            }
+            if (lead_generation.asset_group === 'undefined' || lead_generation.asset_group === 'null') {
+                lead_generation.asset_group = '';
+            }
+
+            lead_generation.jsonFields.elements._asset_group = {
+                type: 'hidden',
+                name: '_asset_group',
+                value: lead_generation.asset_group || group
+            };
+            lead_generation.jsonFields.elements._asset_option = {
+                type: 'hidden',
+                name: '_asset_option',
+                value: lead_generation.asset_option || ''
+            };
             lead_generation.generateForm().applyStyle();
             TVE_Content_Builder.controls.lb_close();
         },
@@ -111,6 +131,25 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
             /**
              * add the thank you url as a hidden input
              */
+
+            var group = jQuery('.tve-asset-select-holder').find('select#tve-api-submit-option').val();
+            if (typeof group === 'undefined' || typeof group === 'null') {
+                group = '';
+            }
+            if (lead_generation.asset_group === 'undefined' || lead_generation.asset_group === 'null') {
+                lead_generation.asset_group = '';
+            }
+
+            lead_generation.api_form_data.elements._asset_group = {
+                type: 'hidden',
+                name: '_asset_group',
+                value: lead_generation.asset_group || group
+            };
+            lead_generation.api_form_data.elements._asset_option = {
+                type: 'hidden',
+                name: '_asset_option',
+                value: lead_generation.asset_option || ''
+            };
             lead_generation.api_form_data.elements._back_url = {
                 type: 'hidden',
                 name: '_back_url',
@@ -148,6 +187,7 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                     });
                 }
             });
+
             lead_generation.generateForm().applyStyle();
             TVE_Content_Builder.controls.lb_close();
         },
@@ -239,6 +279,24 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
             if ($select.find('option:selected').length) {
                 lead_generation.captcha_options[option] = $select.find('option:selected').val();
             }
+        },
+        /**
+         * @param $select
+         */
+        asset_group: function($select) {
+            var option = $select.val();
+            lead_generation.asset_group = option;
+        },
+        /**
+         * @param $select
+         */
+        asset_option_changed: function ($input) {
+            var option = $input.is(':checked') ? 1 : 0,
+                asset = $input.parent().next('.tve-asset-select-holder').hide();
+            if(option == 1) {
+                asset.show();
+            }
+            lead_generation.asset_option = option;
         },
         /**
          * actions related to API connections
@@ -381,8 +439,11 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 form_code: '',
                 api_config: {},
                 connection_type: '',
-                api_form_data: {},
+                api_form_data: {
+                },
                 use_captcha: 0,
+                asset_option: '',
+                asset_group: '',
                 captcha_options: {
                     captcha_theme: 'light',
                     captcha_type: 'image',
@@ -402,6 +463,8 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                     if (this.connection_type == 'api') {
                         this.readApiElements();
                     } else if (this.connection_type == 'custom-html') {
+                        this.asset_option = $element.find('input#_asset_option').val() || 0;
+                        this.asset_group = $element.find('input#_asset_group').val() || 0;
                         this.use_captcha = $element.find('.tve-captcha-container').length > 0 ? 1 : 0;
                     }
 
@@ -1058,6 +1121,8 @@ var TVE_Content_Builder = TVE_Content_Builder || {};
                 readApiElements: function () {
                     this.api_form_data.thank_you_url = $element.find('input#_back_url').val() || '';
                     this.api_form_data.submit_option = $element.find('input#_submit_option').val() || 'reload';
+                    this.asset_option = $element.find('input#_asset_option').val() || 0;
+                    this.asset_group = $element.find('input#_asset_group').val() || 0;
                     this.use_captcha = $element.find('input#_use_captcha').val() || 0;
                     this.api_config_str = $element.find('#__tcb_lg_fc').val();
                     this.api_form_data.element_order = [];

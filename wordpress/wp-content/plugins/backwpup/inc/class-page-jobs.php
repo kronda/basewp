@@ -182,9 +182,11 @@ class BackWPup_Page_Jobs extends WP_List_Table {
 		}
 		if ( current_user_can( 'backwpup_logs' ) && BackWPup_Option::get( $item, 'logfile' ) ) {
 			$logfile = basename( BackWPup_Option::get( $item, 'logfile' ) );
-			if ( is_object( $this->job_object ) && $this->job_object->job[ 'jobid' ] == $item )
-				$logfile = basename( $this->job_object->logfile );
-			$actions[ 'lastlog' ]   = '<a href="' . admin_url( 'admin-ajax.php' ) . '?&action=backwpup_view_log&logfile=' . $logfile .'&_ajax_nonce=' . wp_create_nonce( 'view-logs' ) . '&amp;TB_iframe=true&amp;width=640&amp;height=440\" title="' . esc_attr( $logfile ) . '" class="thickbox">' . __( 'Last log', 'backwpup' ) . '</a>';
+			if ( is_object( $this->job_object ) && $this->job_object->job[ 'jobid' ] == $item ) {
+			    $logfile = basename( $this->job_object->logfile );
+			}
+			$log_name = str_replace( array( '.html', '.gz' ), '', basename( $logfile ) );
+			$actions[ 'lastlog' ]   = '<a href="' . admin_url( 'admin-ajax.php' ) . '?&action=backwpup_view_log&log=' . $log_name .'&_ajax_nonce=' . wp_create_nonce( 'view-log_'. $log_name ) . '&amp;TB_iframe=true&amp;width=640&amp;height=440\" title="' . esc_attr( $logfile ) . '" class="thickbox">' . __( 'Last log', 'backwpup' ) . '</a>';
 		}
 		$actions = apply_filters( 'backwpup_page_jobs_actions', $actions, $item, FALSE );
 		$r .= '<div class="job-normal"' . $job_normal_hide . '>' . $this->row_actions( $actions ) . '</div>';
@@ -280,7 +282,7 @@ class BackWPup_Page_Jobs extends WP_List_Table {
 				$r .= __( 'Not scheduled!', 'backwpup' ) . '<br />';
 			}
 		}
-		if ( BackWPup_Option::get( $item, 'activetype' ) == 'easycron' ) {
+		elseif ( BackWPup_Option::get( $item, 'activetype' ) == 'easycron' ) {
 			$easycron_status = BackWPup_EasyCron::status( $item );
 			if ( !empty( $easycron_status ) ) {
 				$nextrun = BackWPup_Cron::cron_next( $easycron_status[ 'cron_expression' ] ) + ( get_option( 'gmt_offset' ) * 3600 );
@@ -288,6 +290,9 @@ class BackWPup_Page_Jobs extends WP_List_Table {
 			} else {
 				$r .= __( 'Not scheduled!', 'backwpup' ) . '<br />';
 			}
+		}
+		elseif ( BackWPup_Option::get( $item, 'activetype' ) == 'link' ) {
+			$r .= __( 'External link', 'backwpup' ) . '<br />';
 		}
 		else {
 			$r .= __( 'Inactive', 'backwpup' );
@@ -319,15 +324,19 @@ class BackWPup_Page_Jobs extends WP_List_Table {
 			$r .= __( 'not yet', 'backwpup' );
 		}
 		$r .= "<br /><span class=\"last-action-links\">";
-		if ( current_user_can( 'backwpup_backups_download' ) && BackWPup_Option::get( $item, 'lastbackupdownloadurl' ) ) {
-			$r .= "<a  href=\"" . wp_nonce_url( BackWPup_Option::get( $item, 'lastbackupdownloadurl' ), 'download-backup' ) . "\" title=\"" . esc_attr( __( 'Download last backup', 'backwpup' ) ) . "\">" . __( 'Download', 'backwpup' ) . "</a> | ";
+		if ( current_user_can( 'backwpup_backups_download' ) ) {
+		    $download_url = BackWPup_Option::get( $item, 'lastbackupdownloadurl' );
+            if ( ! empty( $download_url ) ) {
+			    $r .= "<a  href=\"" . wp_nonce_url( $download_url, 'download-backup_' . $item ). "\" title=\"" . esc_attr( __( 'Download last backup', 'backwpup' ) ) . "\">" . __( 'Download', 'backwpup' ) . "</a> | ";
+		    }
 		}
 		if ( current_user_can( 'backwpup_logs' ) && BackWPup_Option::get( $item, 'logfile' ) ) {
 			$logfile = basename( BackWPup_Option::get( $item, 'logfile' ) );
 			if ( is_object( $this->job_object ) && $this->job_object->job[ 'jobid' ] == $item ) {
 				$logfile = basename( $this->job_object->logfile );
 			}
-			$r .= '<a class="thickbox" href="' . admin_url( 'admin-ajax.php' ) . '?&action=backwpup_view_log&logfile=' . $logfile .'&_ajax_nonce=' . wp_create_nonce( 'view-logs' ) . '&amp;TB_iframe=true&amp;width=640&amp;height=440" title="' . esc_attr( $logfile ) . '">' . __( 'Log', 'backwpup' ) . '</a>';
+			$log_name = str_replace( array( '.html', '.gz' ), '', basename( $logfile ) );
+			$r .= '<a class="thickbox" href="' . admin_url( 'admin-ajax.php' ) . '?&action=backwpup_view_log&log=' . $log_name .'&_ajax_nonce=' . wp_create_nonce( 'view-log_' . $log_name ) . '&amp;TB_iframe=true&amp;width=640&amp;height=440" title="' . esc_attr( $logfile ) . '">' . __( 'Log', 'backwpup' ) . '</a>';
 
 		}
 		$r .= "</span>";

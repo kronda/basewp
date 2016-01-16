@@ -6,9 +6,10 @@
 
         <div class="sucuriscan-inline-alert-info">
             <p>
-                The data used to generate these charts comes from the last <strong>%%SUCURI.AuditReport.Logs4Report%%
-                audit logs</strong>, you can configure this number from the plugin settings page,
-                you can also disable and enable this panel from there at any time.
+                The data used to generate these charts comes from the last
+                <strong>%%SUCURI.AuditReport.Logs4Report%% audit logs</strong>, you can
+                configure this number from the plugin settings page, you can also disable
+                and enable this panel from there at any time.
             </p>
         </div>
 
@@ -16,13 +17,13 @@
 
             <div class="sucuriscan-pull-left sucuriscan-report-chart">
                 <h4>Audit Logs per Event</h4>
-                <h5>source http://sucuri.net/</h5>
+                <h5>source https://sucuri.net/</h5>
                 <div id="sucuriscan-report-events-per-type"></div>
             </div>
 
             <div class="sucuriscan-pull-right sucuriscan-report-chart">
                 <h4>Successful/Failed Logins</h4>
-                <h5>source http://sucuri.net/</h5>
+                <h5>source https://sucuri.net/</h5>
                 <div id="sucuriscan-report-events-per-login"></div>
             </div>
 
@@ -32,13 +33,13 @@
 
             <div class="sucuriscan-pull-left sucuriscan-report-chart">
                 <h4>Audit Logs per User</h4>
-                <h5>source http://sucuri.net/</h5>
+                <h5>source https://sucuri.net/</h5>
                 <div id="sucuriscan-report-events-per-user"></div>
             </div>
 
             <div class="sucuriscan-pull-right sucuriscan-report-chart">
                 <h4>Audit Logs per IP Address</h4>
-                <h5>source http://sucuri.net/</h5>
+                <h5>source https://sucuri.net/</h5>
                 <div id="sucuriscan-report-events-per-ipaddress"></div>
             </div>
 
@@ -79,29 +80,29 @@ jQuery(document).ready(function($){
     /* Pie-chart with number of audit logs per event type. */
     sucuriscan_pie_chart(
         '#sucuriscan-report-events-per-type',
-        [ %%SUCURI.AuditReport.EventsPerType%% ],
-        [ %%SUCURI.AuditReport.EventColors%% ]
+        [ %%%SUCURI.AuditReport.EventsPerType%%% ],
+        [ %%%SUCURI.AuditReport.EventColors%%% ]
     );
 
     /* Column-chart with number of audit logs per event login. */
     sucuriscan_pie_chart(
         '#sucuriscan-report-events-per-login',
-        [ %%SUCURI.AuditReport.EventsPerLogin%% ],
+        [ %%%SUCURI.AuditReport.EventsPerLogin%%% ],
         [ '#5cb85c', '#f27d7d' ]
     );
 
     /* Bar-chart with number of audit logs per user account. */
     sucuriscan_bar_chart(
         '#sucuriscan-report-events-per-user',
-        [ %%SUCURI.AuditReport.EventsPerUserCategories%% ],
-        [ 'data', %%SUCURI.AuditReport.EventsPerUserSeries%% ]
+        [ %%%SUCURI.AuditReport.EventsPerUserCategories%%% ],
+        [ 'data', %%%SUCURI.AuditReport.EventsPerUserSeries%%% ]
     );
 
     /* Bar-chart with number of audit logs per remote address. */
     sucuriscan_bar_chart(
         '#sucuriscan-report-events-per-ipaddress',
-        [ %%SUCURI.AuditReport.EventsPerIPAddressCategories%% ],
-        [ 'data', %%SUCURI.AuditReport.EventsPerIPAddressSeries%% ]
+        [ %%%SUCURI.AuditReport.EventsPerIPAddressCategories%%% ],
+        [ 'data', %%%SUCURI.AuditReport.EventsPerIPAddressSeries%%% ]
     );
 
 });

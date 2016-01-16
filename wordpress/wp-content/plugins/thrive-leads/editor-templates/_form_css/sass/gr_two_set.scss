@@ -539,7 +539,7 @@ $color-pallete: 'blue' #1956a2 #094084 #3067ab #094084,
     }
   }
 }
-@media only screen and (max-height: 700px) {
+@media only screen and (max-height: 940px) {
   #tve_gr_two_set {
     h2, p {
       margin-bottom: 15px!important;
@@ -555,28 +555,34 @@ $color-pallete: 'blue' #1956a2 #094084 #3067ab #094084,
 }
 @media only screen and (max-height: 600px) {
   #tve_gr_two_set {
+    .thrv-greedy-ribbon {
+      padding-top: 10px;
+    }
     h2 {
-      font-size: 30px!important;
+      font-size: 20px!important;
+    }
+    p {
+      font-size: 15px!important;
     }
     .thrv_lead_generation {
       input[type="text"], input[type="email"] {
-        font-size: 20px;
-        line-height: 25px;
+        font-size: 15px;
+        line-height: 20px;
         margin-bottom: 5px;
-        padding: 10px!important;
+        padding: 5px!important;
       }
       button {
-        font-size: 20px;
-        line-height: 25px;
-        padding: 10px;
+        font-size: 15px;
+        line-height: 20px;
+        padding: 5px;
       }
     }
     .thrv_button_shortcode {
       .tve_btn3.tve_btn.tve_normalBtn {
-        font-size: 20px;
-        line-height: 25px!important;
+        font-size: 15px;
+        line-height: 20px!important;
         .tve_btnLink {
-          padding: 10px;
+          padding: 5px;
         }
       }
     }

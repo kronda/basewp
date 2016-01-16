@@ -278,6 +278,27 @@ class Thrive_Leads_DB
     }
 
     /**
+     * Add contact info from a conversion for the contact view
+     * @param $log_id
+     * @param string $name
+     * @param string $email
+     * @param array $custom_fields
+     * @return false|int
+     */
+    function tve_leads_register_contact($log_id, $name = '', $email = '', $custom_fields = array())
+    {
+        $data = array(
+            'log_id' => $log_id,
+            'name' => $name,
+            'email' => $email,
+            'date' => date('Y-m-d H:i:s'),
+            'custom_fields' => json_encode($custom_fields)
+        );
+
+        return $this->wpdb->insert(tve_leads_table_name('contacts'), $data);
+    }
+
+    /**
      * Returns a count of event_types from a group in a time period
      *
      * @param $filter Array of filters for the result
@@ -299,8 +320,21 @@ class Thrive_Leads_DB
                 break;
         }
 
-        $sql = "SELECT IFNULL(COUNT( DISTINCT log.id ), 0) AS log_count, event_type, log." . $filter['data_group'] . " AS data_group, {$date_interval}
-                FROM " . tve_leads_table_name('event_log') . " AS `log` WHERE 1 ";
+        $sql = "SELECT IFNULL(COUNT( DISTINCT log.id ), 0) AS log_count, event_type, log." . $filter['data_group'] . " AS data_group, {$date_interval} ";
+
+        if (!empty($filter['unique_email']) && $filter['unique_email'] == 1) {
+            /* count if this email is added for the first time. if so, this is a lead, else it's just a simple conversion */
+            $sql .= ", SUM( IF( t_log.id IS NOT NULL , 1, 0) ) AS leads ";
+        }
+
+        $sql .= " FROM " . tve_leads_table_name('event_log') . " AS `log` ";
+
+        if (!empty($filter['unique_email']) && $filter['unique_email'] == 1) {
+            /* t_logs - temporary select to see if an email is added for the first time or not */
+            $sql .= " LEFT JOIN (SELECT user, MIN(id) AS id FROM " . tve_leads_table_name('event_log') . " GROUP BY user) AS t_log ON log.user=t_log.user AND log.id=t_log.id ";
+        }
+
+        $sql .= "  WHERE 1 ";
 
         $params = array();
 
@@ -596,7 +630,7 @@ class Thrive_Leads_DB
             $params[] = $filters['test_type'];
         }
 
-        if (!empty($filters['main_group_id'])) {
+        if (!empty($filters['main_group_id']) && $filters['main_group_id'] > 0) {
             $sql .= " AND main_group_id = '%d'";
             $params[] = $filters['main_group_id'];
         }
@@ -604,6 +638,12 @@ class Thrive_Leads_DB
         if (!empty($filters['status'])) {
             $sql .= " AND status = '%s'";
             $params[] = $filters['status'];
+        }
+
+        if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
+            $sql .= " AND DATE(`date_started`) BETWEEN  %s AND %s ";
+            $params [] = $filters['start_date'];
+            $params [] = $filters['end_date'];
         }
 
         return $this->wpdb->get_results($this->prepare($sql, $params));
@@ -685,14 +725,24 @@ class Thrive_Leads_DB
         }
     }
 
+    /**
+     * Get source data for each conversion.
+     * We also count if this email is added for the first time. If so, this is a lead, else it's just a simple conversion
+     * @param $filter
+     * @param bool|false $return_count
+     * @return array|null|object
+     */
     function  tve_leads_get_lead_source_data($filter, $return_count = false)
     {
-        $sql = "SELECT screen_type, screen_id,
+        /* Screen type can be null for the conversions that happened before the release of this feature. We will mark the source as Unknown */
+        $sql = "SELECT IF(screen_type IS NULL, 0, screen_type) AS screen_type, IF(screen_id IS NULL, 0,screen_id ) AS screen_id,
                     SUM(IF(event_type=" . TVE_LEADS_CONVERSION . ",1,0)) AS conversions,
                     SUM(IF(event_type=" . TVE_LEADS_UNIQUE_IMPRESSION . ",1,0)) AS impressions,
-                    (SUM(IF(event_type=" . TVE_LEADS_CONVERSION . ",1,0))/SUM(IF(event_type=" . TVE_LEADS_UNIQUE_IMPRESSION . ",1,0))) AS conversion_rate
-                FROM " . tve_leads_table_name('event_log') . "
-                WHERE screen_type IS NOT NULL AND screen_id IS NOT NULL ";
+                    SUM(IF(event_type=" . TVE_LEADS_CONVERSION . ",1,0))/SUM(IF(event_type=" . TVE_LEADS_UNIQUE_IMPRESSION . ",1,0)) AS conversion_rate,
+                    SUM( IF( t_log.id IS NOT NULL , 1, 0) ) AS leads
+                FROM " . tve_leads_table_name('event_log') . " logs
+                LEFT JOIN (SELECT user, MIN(id) AS id FROM " . tve_leads_table_name('event_log') . " GROUP BY user) AS t_log ON logs.user=t_log.user AND logs.id=t_log.id
+                WHERE 1 ";
 
         $params = array();
         if (!empty($filter['main_group_id']) && $filter['main_group_id'] > 0) {
@@ -1162,6 +1212,11 @@ class Thrive_Leads_DB
             $state[$k] = $v;
         }
 
+        /* return empty content when the form is hidden */
+        if (tve_leads_check_variation_visibility($state)) {
+            $state['content'] = '';
+        }
+
         return $state;
     }
 
@@ -1219,6 +1274,224 @@ class Thrive_Leads_DB
 
     }
 
+    /**
+     * Get one contact from DB
+     * @param $id
+     * @return array|null|object|void
+     */
+    public function tve_get_contact($id)
+    {
+        return $this->wpdb->get_row('
+            SELECT  `contacts`.name, `contacts`.email, `contacts`.custom_fields, `contacts`.date, `posts`.post_title as source
+            FROM ' . tve_leads_table_name('contacts') . ' AS `contacts`
+            LEFT JOIN ' . tve_leads_table_name('event_log') . ' `logs` ON `contacts`.log_id=`logs`.id
+            LEFT JOIN ' . $this->wpdb->posts . ' AS `posts` ON `logs`.main_group_id=`posts`.ID
+            WHERE `contacts`.id=' . $id);
+    }
+
+    /**
+     *  Get the contacts for contact storage download manager
+     * @param $source string
+     * @param $filters array
+     * @return mixed
+     */
+    public function tve_leads_get_contacts_stored($source, $filters = array())
+    {
+        $table_name = tve_leads_table_name('contacts');
+        $sql = "SELECT * FROM {$table_name} ";
+        $params = array();
+        switch ($source) {
+            case 'last_download':
+                $latest_download = $this->tve_leads_get_contacts_last_download_date();
+                $sql .= " WHERE date > %s ORDER BY date";
+                $params[] = $latest_download->date;
+
+                break;
+            case 'current_report':
+                if ($filters['source'] > 0) {
+                    $sql .= " AS `contacts` JOIN " . tve_leads_table_name('event_log') . " `logs` ON `logs`.id=`contacts`.`log_id` WHERE `logs`.`main_group_id`=%s ";
+                    $params[] = $filters['source'];
+                } else {
+                    $sql .= " AS `contacts` WHERE 1";
+                }
+
+                if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
+                    $sql .= " AND `contacts`.`date` BETWEEN %s AND %s ";
+                    $params [] = $filters['start_date'];
+                    $params [] = $filters['end_date'] . ' 23:59:59';
+                }
+
+                $sql .= " ORDER BY `contacts`.date DESC";
+
+                break;
+            case 'all':
+            default:
+                $sql .= " ORDER BY date DESC;";
+        }
+
+        ini_set('memory_limit', '1024M');
+
+        return $this->wpdb->get_results($this->prepare($sql, $params));
+    }
+
+    /**
+     *  Get the the date of the last download
+     * @return mixed
+     */
+
+    public function tve_leads_get_contacts_last_download_date()
+    {
+        $table_name = tve_leads_table_name('contact_download');
+        $sql = "SELECT MAX(date) AS date FROM {$table_name}";
+        return $this->wpdb->get_row($sql);
+    }
+
+    /**
+     * Insert new download for the contacts
+     * @param $source
+     * @param $file_url
+     * @param $params array
+     * @return int
+     */
+    function tve_leads_write_contact_download($source, $file_url, $params = array())
+    {
+        switch ($source) {
+            case 'all':
+                $data['type'] = __('All Contacts in Database', 'thrive-leads');
+                break;
+            case 'last_download':
+                $latest_download = $this->tve_leads_get_contacts_last_download_date();
+                $data['type'] = __('All Contacts since ', 'thrive-leads') . $latest_download->date;
+                break;
+            case 'current_report':
+                $source_name = $params['source'] > 0 ? __('in ', 'thrive-leads') . get_the_title($params['source']) : '';
+
+                $data['type'] = __('All Contacts ', 'thrive-leads') . $source_name . ' ' .
+                    __('from', 'thrive-leads') . ' ' . date('d M, Y', strtotime($params['start_date'])) . ' ' .
+                    __('to', 'thrive-leads') . ' ' . date('d M, Y', strtotime($params['end_date']));
+
+                break;
+        }
+
+        $data['status'] = 'pending';
+        $data['date'] = date('Y-m-d H:i:s');
+        $data['download_link'] = $file_url;
+
+        $this->wpdb->insert(tve_leads_table_name('contact_download'), $data);
+
+        return $this->wpdb->insert_id;
+    }
+
+    /**
+     * Update download status
+     * @param $id
+     * @param string $status
+     * @return false|int
+     */
+    function tve_leads_update_contacts_download_status($id, $status = 'pending')
+    {
+        return $this->wpdb->update(tve_leads_table_name('contact_download'), array('status' => $status), array('id' => $id));
+    }
+
+    /**
+     * Gets the list of downloads that have been generated
+     * @return array
+     */
+    public function tve_leads_get_download_list()
+    {
+        $table_name = tve_leads_table_name('contact_download');
+        $sql = "SELECT * FROM {$table_name} ORDER BY date DESC";
+
+        $downloads = $this->wpdb->get_results($sql);
+
+        foreach ($downloads as $d) {
+            /* If 10 minutes have passed since the download was started and the download still has status pending, then something wrong happened so we change the status. */
+            if (time() - strtotime($d->date) > 60 * 10 && $d->status == 'pending') {
+                $this->tve_leads_update_contacts_download_status($d->id, 'error');
+                $d->status = 'error';
+            }
+
+            switch ($d->status) {
+                case 'complete':
+                    $d->status_title = __('Complete', 'thrive-leads');
+                    break;
+                case 'pending':
+                    $d->status_title = __('Pending', 'thrive-leads');
+                    break;
+                case 'error':
+                    $d->status_title = __('An error occurred while trying to prepare the download.', 'thrive-leads');
+                    break;
+            }
+        }
+        return $downloads;
+    }
+
+    /**
+     * Delete a download item
+     * @param $id
+     * @return false|int
+     */
+    public function tve_leads_delete_download_item($id)
+    {
+        return $this->wpdb->delete(tve_leads_table_name('contact_download'), array('id' => $id));
+    }
+
+    /*
+     * Get the ids for the archived or deleted variations
+     * @return array
+     */
+    public function get_variation_ids()
+    {
+        $table_name = tve_leads_table_name('form_variations');
+        $sql = "SELECT `key` FROM {$table_name} WHERE `post_status` = 'trash' OR `post_status` = 'archived'";
+
+        return $this->wpdb->get_col($sql);
+    }
+
+    /**
+     * Get the ids for the archived split tests
+     * @return array
+     */
+    public function get_split_test_ids()
+    {
+        $table_name = tve_leads_table_name('split_test');
+        $sql = "SELECT `id` FROM {$table_name} WHERE `status` = 'archived'";
+
+        return $this->wpdb->get_col($sql);
+    }
+
+    /**
+     * Delete the variation logs
+     * @param $ids
+     * @return mixed
+     */
+    public function delete_conversion_logs($ids)
+    {
+        $table_name = tve_leads_table_name('event_log');
+        $v = implode("', '", $ids);
+        $sql = "DELETE FROM {$table_name} WHERE `variation_key` IN ('{$v}') OR archived = 1";
+
+        return $this->wpdb->query($sql);
+    }
+
+    /**
+     * Delete split test and split test items
+     * @param $ids
+     * @return bool
+     */
+    public function delete_split_logs($ids)
+    {
+        $table_name = tve_leads_table_name('split_test');
+        $table_name_i = tve_leads_table_name('split_test_items');
+        $v = implode("', '", $ids);
+
+        $sql = "DELETE FROM {$table_name} WHERE `id` IN ('{$v}')";
+        $sql_i = "DELETE FROM {$table_name_i} WHERE `test_id` IN ('{$v}')";
+        $s = $this->wpdb->query($sql);
+        $i = $this->wpdb->query($sql_i);
+
+        return $s + $i;
+    }
 }
 
 $tvedb = new Thrive_Leads_DB();

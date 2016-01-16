@@ -156,7 +156,7 @@ function wpcf_embedded_init() {
     // Define necessary constants if plugin is not present
     // This ones are skipped if used as embedded code!
     if ( !defined( 'WPCF_VERSION' ) ) {
-        define( 'WPCF_VERSION', '1.8.10' );
+        define( 'WPCF_VERSION', '1.8.11' );
         define( 'WPCF_META_PREFIX', 'wpcf-' );
     }
 

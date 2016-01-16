@@ -48,7 +48,7 @@ $config = array(
                     <input type="text" name="name" value="" data-placeholder="name" placeholder="Enter Name...">
                 </div>
                 <div class="tve_lg_input_container  tve_lg_3 tve_lg_input">
-                    <input type="text" name="name" value="" data-placeholder="email" placeholder="Enter Email...">
+                    <input type="text" name="email" value="" data-placeholder="email" placeholder="Enter Email...">
                 </div>
                 <div class="tve_lg_input_container tve_submit_container tve_lg_3 tve_lg_submit">
                     <button type="Submit">DOWNLOAD</button>

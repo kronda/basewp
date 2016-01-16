@@ -1,10 +1,10 @@
 === Sucuri Security - Auditing, Malware Scanner and Security Hardening ===
 Contributors: dd@sucuri.net
-Donate Link: http://sucuri.net/
+Donate Link: https://sucuri.net/
 Tags: malware, security, firewall, scan, spam, virus, sucuri, protection,WordPress Security, Login Security,Security Auditing,File Integrity,htaccess,phishing,backdoors,SQL Injection, RFI, LFI, XSS, CSRF, website firewall, Website Security, Performance Optimization, Zero Day, Software Vulnerability, Exploits, Hacks, Attackers, Bad Actors, Reverse Proxy, Two Factor Security, Two Factor Authentication, Security Logs, HeatBleed Vulnerability, Website Protection, Bash Vulnerability, RevSlider Vulnerability, MailPoet Vulnerability, Malware Prevention, Website Firewall, Website AntiVirus, Security Response, Security Detection, Security Prevention
 Requires at least:3.2
-Stable tag:1.7.13
-Tested up to: 4.2.3
+Stable tag: 1.7.17
+Tested up to: 4.4.1
 
 The Sucuri WordPress Security plugin is a security toolset for security integrity monitoring, malware detection and security hardening.
 
@@ -79,10 +79,9 @@ Here is a video of the Security File Integrity Monitoring feature:
 = Remote Security Malware Scanning =
 
 This feature is powered by our very powerful scanning engine, found on our
-free security scanner - <a href="http://sitecheck.sucuri.net">SiteCheck</a>. It’s
-important to take some time to <a
-href="http://blog.sucuri.net/2012/10/ask-sucuri-how-does-sitecheck-work.html">understand
-how this scanner works</a>.
+free security scanner - <a href="https://sitecheck.sucuri.net">SiteCheck</a>. It’s
+important to take some time to <a href="https://blog.sucuri.net/2012/10/ask-sucuri-how-does-sitecheck-work.html">
+understand how this scanner works</a>.
 
 Here is a video of the Remote Security Malware Scanning feature:
 
@@ -178,8 +177,11 @@ This is coupled with a number of features like:
 <li>Failover and Redundancy</li>
 </ol>
 
-This is not included as a <strong>Free</strong> option to the plugin, but is
-integrated so that if purchased you are able to activate.  If you prefer to leverage the Sucuri Security Website Firewall (CloudProxy) product by itself, you have the option to operate the <a href="https://wordpress.org/plugins/sucuri-cloudproxy-waf/">Website Firewall WordPress Security</a> plugin in standalone mode.
+This is <strong>not included as a free</strong> option to the plugin, but is
+integrated so that if purchased you are able to activate.  If you prefer to
+leverage the Sucuri Security Website Firewall (CloudProxy) product by itself,
+you have the option to operate the <a href="https://wordpress.org/plugins/sucuri-cloudproxy-waf/">
+Website Firewall WordPress Security</a> plugin in standalone mode.
 
 Here is a video of the Sucuri Security Website Firewall (Add On Security Service) feature:
 
@@ -208,7 +210,7 @@ To install Sucuri Security and complement your Security posture:
 
 
 1. You will want to log into your WordPress administration panel - (e.g.,
-http://yourdomain/wp-admin)
+https://yourdomain/wp-admin)
 
 2. Navigate to <strong>Plugins Menu</strong> option in your WordPress
 administration panel
@@ -253,7 +255,7 @@ security needs as you see fit.
 == FAQ ==
 
 More information can be found on the the Sucuri Security WordPress Security
-plugin via our free [Knowledge Base](http://kb.sucuri.net/plugins/WordPress+Plugin/index).
+plugin via our free [Knowledge Base](https://kb.sucuri.net/plugins/WordPress+Plugin/index).
 
 = What does this plugin do that other WordPress security plugins don't do? =
 
@@ -351,6 +353,34 @@ service from the WordPress dashboard.
 
 
 == Changelog ==
+
+= 1.7.17 =
+* Added API service failback mechanism
+* Added core integrity email on force scan
+* Slight interface redesign
+* Various bugfixes and improvements
+
+= 1.7.16 =
+* Fixing a low severity XSS (needs admin access to create it)
+
+= 1.7.14 =
+* Added alternative method to send email alerts
+* Added button to reset options with explanation
+* Added suggestion for new users to check plugin settings
+* Allow mark as fixed non-writable core files
+* Fixed display menus items single or network panels
+* Fixed handle boolean values in PHP config retrieval
+* Fixed non-standard content location in core integrity
+* Fixed user identifier as integer on password reset
+* Modified css and js files to reduce size
+* Modified do not load resources on hidden sidebar
+* Modified fully redesign of general settings page
+* Modified hide update warning if versions are the same
+* Modified wording of post-types alert settings
+* Removed ellipsis of long IPv6 addresses in last logins
+* Removed unnecessary dns lookups in infosys page
+* Removed unnecessary monospace fonts in settings status
+* Removed unnecessary ssl verification option processor
 
 = 1.7.13 =
 * Fixed issue affecting site performance
@@ -565,5 +595,5 @@ service from the WordPress dashboard.
 
 == Credits ==
 
- * <a href="http://sucuri.net">Sucuri Security</a>
+ * <a href="https://sucuri.net">Sucuri Security</a>
 

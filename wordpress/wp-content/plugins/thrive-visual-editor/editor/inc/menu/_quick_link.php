@@ -1,5 +1,5 @@
 
-<li class="tve_btn_text<?php if (isset($btn_class)) echo ' ' . $btn_class;unset($btn_class) ?> tve_quick_link_input_holder">
+<li class="tve_btn_text<?php if (isset($btn_class)) echo ' ' . $btn_class;unset($btn_class) ?> tve_quick_link_input_holder" data-multiple-hide>
     <div class="tve_option_separator">
         <label>
             <?php echo __("Quick Link", "thrive-cb"); ?>

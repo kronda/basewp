@@ -34,8 +34,7 @@
     <?php endif; ?>
 
     <?php if($this->wrap) :?>
-        <?php $encoded_config = json_encode($config); ?>
-        <?php $encoded_config = str_replace("\\", "", $encoded_config); ?>
+        <?php $encoded_config = tve_json_utf8_unslashit(json_encode($config)); ?>
         <div class="thrive-shortcode-config"
              style="display: none !important"><?php echo '__CONFIG_post_grid__' . $encoded_config  . '__CONFIG_post_grid__' ?></div>
     <?php endif; ?>

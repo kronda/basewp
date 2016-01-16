@@ -18,6 +18,8 @@ function wpcf_fields_radio() {
  * Form data for post edit page.
  * 
  * @param type $field 
+ *
+ * @deprecated seems
  */
 function wpcf_fields_radio_meta_box_form( $field ) {
     $options = array();
@@ -162,14 +164,19 @@ function wpcf_fields_radio_view( $params ) {
         foreach ( $field['data']['options'] as $option_key => $option ) {
             if ( isset( $option['value'] )
                     && stripslashes( $option['value'] )  == stripslashes( $params['field_value'] ) ) {
-                $field_value = wpcf_translate( 'field ' . $params['field']['id'] . ' option '
-                        . $option_key . ' title', $option['title'] );
+				// We need to translate here because the stored value is on the original language
+				// When updaing the value in the Field group, we might have problems
+				// @wpmlhere
+                $field_value = wpcf_translate( 'field ' . $params['field']['id'] . ' option ' . $option_key . ' title', $option['title'] );
+				//$field_value = $option['title'];
                 if ( isset( $params['field']['data']['display'] )
                         && $params['field']['data']['display'] != 'db'
                         && !empty( $option['display_value'] ) ) {
-                    $field_value = wpcf_translate( 'field ' . $params['field']['id'] . ' option '
-                            . $option_key . ' display value',
-                            $option['display_value'] );
+					// We need to translate here because the stored value is on the original language
+					// When updaing the value in the Field group, we might have problems
+					// @wpmlhere
+                    $field_value = wpcf_translate( 'field ' . $params['field']['id'] . ' option ' . $option_key . ' display value', $option['display_value'] );
+					//$field_value = $option['display_value'];
                 }
             }
         }

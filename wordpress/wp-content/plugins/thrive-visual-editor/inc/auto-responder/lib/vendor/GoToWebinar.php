@@ -66,7 +66,8 @@ class Thrive_Api_GoToWebinar
             'client_id' => $this->apiKey
         );
 
-        $data = $this->_call('oauth/access_token', $params, 'GET', false);
+        $data = $this->_call('oauth/access_token', $params, 'POST', false, 'url-encoded');
+
         $this->accessToken = $data['access_token'];
         $this->organizerKey = $data['organizer_key'];
         $this->expiresAt = time() + $data['expires_in'];
@@ -109,8 +110,9 @@ class Thrive_Api_GoToWebinar
      * @param array $params request parameters
      * @param string $method GET or POST
      * @param bool $auth whether or not to use access token when sending the request
+     * @param string $content_type for directLogin, it seems we have to use the x-www-form-urlencoded request. For others, application/json
      */
-    protected function _call($path, $params = array(), $method = 'GET', $auth = true)
+    protected function _call($path, $params = array(), $method = 'GET', $auth = true, $content_type = 'application/json')
     {
         if ($auth) {
             $params['oauth_token'] = $this->accessToken;
@@ -120,14 +122,17 @@ class Thrive_Api_GoToWebinar
 
         $args = array(
             'headers' => array(
-                'Content-type' => 'application/json',
                 'Accept' => 'application/json',
             ),
         );
 
+        if ($content_type == 'application/json') {
+            $args['headers']['Content-type'] = $content_type;
+        }
+
         switch ($method) {
             case 'POST':
-                $args['body'] = json_encode($params);
+                $args['body'] = $content_type == 'application/json' ? json_encode($params) : $params; // default to www-url-encoded
                 $result = thrive_api_remote_post($url, $args);
                 break;
             case 'GET':
@@ -176,6 +181,12 @@ class Thrive_Api_GoToWebinar
 
         }
 
+        /**
+         * SUP-1111 GoToWebinar cannot connect
+         */
+        if (!empty($data['error'])) {
+            throw new Thrive_Api_GoToWebinar_Exception('API call returned error: ' . $data['error']);
+        }
 
         return $data;
     }

@@ -12,65 +12,35 @@ window.log = function(){
 (function(b){function c(){}for(var d="assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,markTimeline,profile,profileEnd,time,timeEnd,trace,warn".split(","),a;a=d.pop();)b[a]=b[a]||c})(window.console=window.console||{});
 
 jQuery(document).ready(function($){
-    // Uploader
-    var uploadID = ''; /*setup the var*/
+// Uploader
 
-    jQuery('.upload-button').click(function() {
-        uploadID = jQuery(this).prev('input'); /*grab the specific input*/
-        formfield = jQuery('.upload').attr('name');
-        tb_show('', 'media-upload.php?type=image&amp;TB_iframe=true');
-        return false;
-    });
+  var _custom_media = true,
+      _orig_send_attachment = wp.media.editor.send.attachment;
 
- window.send_to_editor = function(h) {
-        if(uploadID != ''){
-        imgurl = jQuery('img',h).attr('src');
-        uploadID.val(imgurl); /*assign the value to the input*/
-        tb_remove();
-        uploadID = '';
-        }else{
-          var ed, mce = typeof(tinymce) != 'undefined', qt = typeof(QTags) != 'undefined';
+  $('.upload-button').click(function(e) {
+    var send_attachment_bkp = wp.media.editor.send.attachment;
+    var button = $(this);
+    var id = jQuery(this).prev('input');
+    _custom_media = true; 
+    wp.media.editor.send.attachment = function(props, attachment){
+      var size = props.size;
+      var att =attachment.sizes[size];
 
-          if ( !wpActiveEditor ) {
-            if ( mce && tinymce.activeEditor ) {
-              ed = tinymce.activeEditor;
-              wpActiveEditor = ed.id;
-            } else if ( !qt ) {
-              return false;
-            }
-          } else if ( mce ) {
-            if ( tinymce.activeEditor && (tinymce.activeEditor.id == 'mce_fullscreen' || tinymce.activeEditor.id == 'wp_mce_fullscreen') )
-              ed = tinymce.activeEditor;
-            else
-              ed = tinymce.get(wpActiveEditor);
-          }
+      //props.size
+      if ( _custom_media ) {
+        $(id).val(att.url);
+      } else {
+        return _orig_send_attachment.apply( this, [props, attachment] );
+      };
+    }
 
-          if ( ed && !ed.isHidden() ) {
-            // restore caret position on IE
-            if ( tinymce.isIE && ed.windowManager.insertimagebookmark )
-              ed.selection.moveToBookmark(ed.windowManager.insertimagebookmark);
+    wp.media.editor.open(button);
+    return false;
+  });
 
-            if ( h.indexOf('[caption') === 0 ) {
-              if ( ed.plugins.wpeditimage )
-                h = ed.plugins.wpeditimage._do_shcode(h);
-            } else if ( h.indexOf('[gallery') === 0 ) {
-              if ( ed.plugins.wpgallery )
-                h = ed.plugins.wpgallery._do_gallery(h);
-            } else if ( h.indexOf('[embed') === 0 ) {
-              if ( ed.plugins.wordpress )
-                h = ed.plugins.wordpress._setEmbed(h);
-            }
-
-            ed.execCommand('mceInsertContent', false, h);
-          } else if ( qt ) {
-            QTags.insertContent(h);
-          } else {
-            document.getElementById(wpActiveEditor).value += h;
-          }
-
-          try{tb_remove();}catch(e){};
-        }
-    };
+  $('.add_media').on('click', function(){
+    _custom_media = false;
+  });
     
     // Color Picker
     $('.pickcolor').click( function(e) {
@@ -83,5 +53,29 @@ jQuery(document).ready(function($){
     		$(colorPicker).hide();
     	});
 	});
+
+  // Hide feedburner stuff
+    if($('#comingsoon_mailinglist').val() == 'feedburner'){
+  jQuery('#comingsoon_feedburner_button_text').parent().parent().show();
+  jQuery('#comingsoon_feedburner_placeholder_text').parent().parent().show();
+  jQuery('#comingsoon_feedburner_address').parent().parent().show();
+    }else{
+  jQuery('#comingsoon_feedburner_button_text').parent().parent().hide();
+  jQuery('#comingsoon_feedburner_placeholder_text').parent().parent().hide();
+  jQuery('#comingsoon_feedburner_address').parent().parent().hide();
+    }
+
+  $('#comingsoon_mailinglist').change(function() {
+    if($(this).val() == 'feedburner'){
+  jQuery('#comingsoon_feedburner_button_text').parent().parent().show();
+  jQuery('#comingsoon_feedburner_placeholder_text').parent().parent().show();
+  jQuery('#comingsoon_feedburner_address').parent().parent().show();
+    }else{
+  jQuery('#comingsoon_feedburner_button_text').parent().parent().hide();
+  jQuery('#comingsoon_feedburner_placeholder_text').parent().parent().hide();
+  jQuery('#comingsoon_feedburner_address').parent().parent().hide();
+    }
+  });
 });
+
 

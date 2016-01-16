@@ -57,7 +57,8 @@ function tve_leads_get_default_form_types($include_extra = false)
             'post_title' => __('In content', 'thrive-leads'),
             'tve_form_type' => 'in_content',
             'edit_selector' => '.thrv-leads-in-content', // selector for the element settings in editing mode
-            'wp_hook' => 'the_content'
+            'wp_hook' => 'the_content',
+            'priority' => 20,
         ),
         'screen_filler' => array(
             'post_title' => __('Screen filler Lightbox', 'thrive-leads'),
@@ -656,6 +657,12 @@ function tve_leads_two_step_render($attributes, $content)
         if (empty($variation)) {
             return __('No form found', 'thrive-leads');
         }
+
+        /* If the subscribed state is hidden, we don't display the trigger for the two step lightbox */
+        $already_subscribed_html = tve_leads_get_already_subscribed_html($variation, 'lightbox', true);
+        if ($already_subscribed_html === TVE_ALREADY_SUBSCRIBED_HIDDEN) {
+            return '';
+        }
     }
 
     /**
@@ -754,7 +761,7 @@ function tve_leads_two_step_render($attributes, $content)
 function tve_leads_trigger_nice_name($variation)
 {
     $trigger = TVE_Leads_Trigger_Abstract::factory($variation['trigger'], $variation['trigger_config']);
-    return $trigger->get_display_name();
+    return $trigger ? $trigger->get_display_name() : '';
 }
 
 /**
@@ -1089,6 +1096,12 @@ function tve_leads_enqueue_script($handle, $src = false, $deps = array(), $ver =
     if ($ver === false) {
         $ver = TVE_LEADS_VERSION;
     }
+
+    if (defined('TVE_DEBUG') && TVE_DEBUG) {
+        $src = str_replace('/js-min/', '/js/', $src);
+        $src = preg_replace('#\.min\.js$#', '.js', $src);
+    }
+
     wp_enqueue_script($handle, $src, $deps, $ver, $in_footer);
 }
 
@@ -1439,6 +1452,24 @@ function tve_leads_is_preview_page()
 }
 
 /**
+ * check if we are editing a TL form
+ */
+function tve_leads_is_editor_page()
+{
+    $post_type = get_post_type(get_the_ID());
+    if (!in_array($post_type, array(TVE_LEADS_POST_FORM_TYPE, TVE_LEADS_POST_TWO_STEP_LIGHTBOX, TVE_LEADS_POST_SHORTCODE_TYPE))) {
+        return false;
+    }
+
+    global $variation;
+    if (empty($variation)) {
+        return false;
+    }
+
+    return isset($_GET[TVE_EDITOR_FLAG]);
+}
+
+/**
  * check if a conversion has been registered for this variation and, if so, we need to check if there is an "Already subscribed" state defined and show that instead
  *
  * @param array $variation the main variation where the "Already Subscribed" state should have been setup
@@ -1459,6 +1490,11 @@ function tve_leads_get_already_subscribed_html($variation, $type, $skip_inbound_
 
     if (empty($done)) {
         return '';
+    }
+
+    /* Return empty when the content is hidden */
+    if (tve_leads_check_variation_visibility($done)) {
+        return TVE_ALREADY_SUBSCRIBED_HIDDEN;
     }
 
     /**
@@ -1689,14 +1725,30 @@ function tve_get_current_screen_for_reporting_table($screen_type, $screen_id)
             );
             break;
         case TVE_SCREEN_OTHER:
-        default:
             return array(
                 '',
                 __('Other', 'thrive-leads'),
                 __('Other', 'thrive-leads')
             );
             break;
+        default:
+            return array(
+                '',
+                __('Unknown', 'thrive-leads'),
+                __('Unknown', 'thrive-leads')
+            );
     }
+}
+
+/**
+ * Return an array with all the fields that we want to ignore when storing contacts in the database.
+ * Email is already stored in another variable so we don't need it again
+ * @return array
+ */
+function tve_get_lead_generation_ignored_fields()
+{
+    return array('email', '_captcha_size', '_captcha_theme', '_captcha_type', '_submit_option', '_use_captcha', 'g-recaptcha-response',
+        '__tcb_lg_fc', '_back_url', '_submit_option', 'url', '_asset_group', '_asset_option', 'mailchimp_optin');
 }
 
 /**
@@ -1722,67 +1774,12 @@ function tve_leads_force_subscribed_state()
     return $show_already_subscribed;
 }
 
-//tve_leads_generate_test_data();die;
-function tve_leads_generate_test_data()
+/**
+ * Check if the current state of the variation is visible
+ * @param array $variation
+ * @return bool
+ */
+function tve_leads_check_variation_visibility($variation = array())
 {
-    global $wpdb;
-    global $tvedb;
-
-    //erase all data from the test before adding new one.
-    $reset_data = true;
-    $number_of_tests = 10;
-    $number_of_entries = 1000;
-
-    $conversion_rates = array();
-
-    $sql = 'SELECT * FROM `wp_tve_leads_split_test_items` INNER JOIN (SELECT id, date_started, date_completed FROM wp_tve_leads_split_test ORDER BY id DESC LIMIT ' . $number_of_tests . ') as ids on ids.id=test_id ';
-    $items = $wpdb->get_results($sql);
-
-    foreach ($items as $i => $item) {
-        if ($reset_data == true) {
-            $wpdb->query('DELETE FROM `wp_tve_leads_event_log` WHERE variation_key=' . $item->variation_key);
-            $wpdb->query('UPDATE `wp_tve_leads_split_test_items` SET `unique_impressions` = 0, `conversions`=0  WHERE `variation_key` =' . $item->variation_key);
-        }
-        $modulo = ($i > 9) ? $i % 10 : $i;
-
-        $conversion_rates[$i] = ($modulo + 1) * 3;
-    }
-    shuffle($conversion_rates);
-
-    $wpdb->query('START TRANSACTION');
-
-    for ($i = 1; $i <= $number_of_entries; $i++) {
-        $index = mt_rand(0, count($items) - 1);
-        $random_test_item = $items[$index];
-        //generate random date between when the test was created and when it has finished or today
-        $int = mt_rand(
-            strtotime($random_test_item->date_started),
-            $random_test_item->date_completed == null ? time() : strtotime($random_test_item->date_completed)
-        );
-
-        $data['date'] = date("Y-m-d H:i:s", $int);
-
-        $data['main_group_id'] = $random_test_item->main_group_id;
-        $data['form_type_id'] = $random_test_item->form_type_id;
-        $data['variation_key'] = $random_test_item->variation_key;
-        $data['event_type'] = TVE_LEADS_UNIQUE_IMPRESSION;
-        $data['is_unique'] = ($int % 50 == 0 ? 1 : 0);
-        $wpdb->insert(tve_leads_table_name('event_log'), $data);
-        $tvedb->update_test_item_data($data, array('id' => $random_test_item->test_id), '+');
-
-        if (mt_rand() % $conversion_rates[$index] == 0) {
-            $data['is_unique'] = 0;
-            $data['event_type'] = TVE_LEADS_CONVERSION;
-            $data['user'] = 'user-' . mt_rand(1, 100);
-            $data['ip'] = mt_rand(1, 255) . '.' . mt_rand(0, 255) . '.' . mt_rand(0, 255) . '.' . mt_rand(0, 255);
-            $data['referrer'] = 'referrer-' . mt_rand(1, 124);
-            $data['utm_source'] = 'source-' . mt_rand(1, 24);
-            $data['utm_medium'] = 'medium-' . mt_rand(1, 24);
-            $data['utm_campaign'] = 'name-' . mt_rand(1, 24);
-            $wpdb->insert(tve_leads_table_name('event_log'), $data);
-            $tvedb->update_test_item_data($data, array('id' => $random_test_item->test_id), '+');
-        }
-
-    }
-    $wpdb->query('COMMIT');
+    return isset($variation[TVE_LEADS_FIELD_STATE_VISIBILITY]) && empty($variation[TVE_LEADS_FIELD_STATE_VISIBILITY]);
 }

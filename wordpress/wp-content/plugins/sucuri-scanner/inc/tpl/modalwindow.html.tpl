@@ -13,8 +13,7 @@
         </div>
 
         <div class="sucuriscan-modal-inside">
-            %%SUCURI.Content%%
+            %%%SUCURI.Content%%%
         </div>
-
     </div>
 </div>

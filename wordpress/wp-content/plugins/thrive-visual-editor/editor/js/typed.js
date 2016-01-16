@@ -469,21 +469,21 @@
 
         // Start & Stop currently not working
 
-        // , stop: function() {
-        //     var self = this;
+        pause: function() {
+             var self = this;
 
-        //     self.stop = true;
-        //     clearInterval(self.timeout);
-        // }
+             self.stop = true;
+             clearInterval(self.timeout);
+         },
 
-        // , start: function() {
-        //     var self = this;
-        //     if(self.stop === false)
-        //        return;
+        start: function() {
+             var self = this;
+             if(self.stop === false)
+                return;
 
-        //     this.stop = false;
-        //     this.init();
-        // }
+             this.stop = false;
+             this.init();
+         },
 
         // Reset and rebuild the element
         reset: function () {

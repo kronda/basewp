@@ -87,10 +87,11 @@ if (!class_exists('TCB_Landing_Page')) {
             $this->fonts();
 
             if (!empty($this->globalScripts['head'])) {
+                $this->globalScripts['head'] = $this->removeJQuery($this->globalScripts['head']);
                 echo $this->globalScripts['head'];
             }
 
-            empty($this->config['do_not_strip_css']) ?
+            empty($this->globals['do_not_strip_css']) ?
                 $this->stripHeadCss() : wp_head();
 
             /* finally, call the tcb_landing_head hook */
@@ -205,7 +206,11 @@ if (!class_exists('TCB_Landing_Page')) {
          */
         public function afterBodyOpen()
         {
-            echo !empty($this->globalScripts['body']) ? $this->globalScripts['body'] : '';
+            if (!empty($this->globalScripts['body'])) {
+                $this->globalScripts['body'] = $this->removeJQuery($this->globalScripts['body']);
+                echo $this->globalScripts['body'];
+            }
+
             apply_filters(self::HOOK_BODY_OPEN, $this->id);
         }
 
@@ -223,7 +228,11 @@ if (!class_exists('TCB_Landing_Page')) {
         public function beforeBodyEnd()
         {
             apply_filters(self::HOOK_BODY_CLOSE, $this->id);
-            echo !empty($this->globalScripts['footer']) ? $this->globalScripts['footer'] : '';
+
+            if (!empty($this->globalScripts['footer'])) {
+                $this->globalScripts['footer'] = $this->removeJQuery($this->globalScripts['footer']);
+                echo $this->globalScripts['footer'];
+            }
         }
 
         /* general usability functions - implemented like this - more developer friendly */
@@ -296,6 +305,24 @@ if (!class_exists('TCB_Landing_Page')) {
                 include dirname(dirname(__FILE__)) . '/lightboxes/' . $this->template . '.php';
             }
             return ob_get_clean();
+        }
+
+        /**
+         * removes references to jquery loaded directly from CDN - this will break the editor scripts on this page
+         *
+         * @param string $custom_script
+         *
+         * @return string
+         */
+        public function removeJQuery($custom_script)
+        {
+            if (!is_editor_page()) {
+                return $custom_script;
+            }
+
+            $js_search = '/src=(["\'])(.+?)((code.jquery.com\/jquery-|ajax.googleapis.com\/ajax\/libs\/jquery\/))(\d)(.+?)\1/si';
+
+            return preg_replace($js_search, 'src=$1$1', $custom_script);
         }
 
     }

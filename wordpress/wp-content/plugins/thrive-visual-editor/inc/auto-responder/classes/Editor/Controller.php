@@ -232,7 +232,7 @@ class Thrive_List_Editor_Controller
         /**
          * list of all connected APIs (that have been setup from admin) but exclude captcha
          */
-        $connected_apis = Thrive_List_Manager::getAvailableAPIs(true, array('captcha'));
+        $connected_apis = Thrive_List_Manager::getAvailableAPIs(true, array('captcha', 'email'));
         /**
          * existing setup connections for this form
          */

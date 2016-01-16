@@ -59,6 +59,7 @@ function display_layouts()
 
 }
 
+$_POST = stripslashes_deep($_POST);
 
 ?>
 <div class="tve_post_grid_tabs_container">

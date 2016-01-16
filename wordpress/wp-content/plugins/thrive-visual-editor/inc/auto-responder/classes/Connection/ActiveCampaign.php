@@ -144,6 +144,14 @@ class Thrive_List_Connection_ActiveCampaign extends Thrive_List_Connection_Abstr
             $raw = $this->getApi()->getForms();
             $forms = array();
 
+            $lists = $this->getLists();
+            foreach($lists as $list) {
+                $forms[$list['id']][0] = array(
+                    'id' => 0,
+                    'name' => __('none', 'thrive-cb')
+                );
+            }
+
             foreach ($raw as $form) {
                 foreach ($form['lists'] as $list_id) {
                     if (empty($forms[$list_id])) {

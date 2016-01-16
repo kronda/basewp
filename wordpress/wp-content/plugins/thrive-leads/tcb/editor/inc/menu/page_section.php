@@ -65,7 +65,7 @@
         </li>
     <?php endif ?>
     <?php $css_padding_selector = '.in'; include dirname(__FILE__) . '/_margin.php' ?>
-    <li><input type="text" class="element_id tve_change tve_text" data-ctrl="controls.change.element_id" placeholder="<?php echo __("Custom ID", "thrive-cb") ?>"></li>
+    <li data-multiple-hide><input type="text" class="element_id tve_change tve_text" data-ctrl="controls.change.element_id" placeholder="<?php echo __("Custom ID", "thrive-cb") ?>"></li>
     <li class="tve_clear"></li>
     <li class="tve_text clearfix tve_firstOnRow">
         <input class="tve_change tve_left tve_checkbox_bottom" type="checkbox" id="tve_page_section_bg_fixed"
@@ -125,7 +125,7 @@
 
 
     <li class="tve_ed_btn tve_btn_text tve_shadow_control<?php if (isset($btn_class)) echo ' ' . $btn_class;
-    unset($btn_class) ?>">
+    unset($btn_class) ?>" data-multiple-hide>
         <div class="tve_option_separator">
             <span class="tve_ind tve_left"><?php echo __("Shadow", "thrive-cb") ?></span><span class="tve_caret tve_icm tve_left" id="sub_02"></span>
 

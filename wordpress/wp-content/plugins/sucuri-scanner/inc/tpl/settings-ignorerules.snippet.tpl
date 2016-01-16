@@ -5,7 +5,7 @@
     <td><span class="sucuriscan-label-%%SUCURI.IgnoreRules.IsIgnoredClass%%">%%SUCURI.IgnoreRules.IsIgnored%%</span></td>
     <td><em class="sucuriscan-monospace">%%SUCURI.IgnoreRules.WasIgnoredAt%%</em></td>
     <td class="td-with-button">
-        <form action="%%SUCURI.URL.Settings%%#settings-ignorerules" method="post">
+        <form action="%%SUCURI.URL.Settings%%#ignorerules" method="post">
             <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
             <input type="hidden" name="sucuriscan_ignorerule" value="%%SUCURI.IgnoreRules.PostType%%" />
             <input type="hidden" name="sucuriscan_ignorerule_action" value="%%SUCURI.IgnoreRules.Action%%" />

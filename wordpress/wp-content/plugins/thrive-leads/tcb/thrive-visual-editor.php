@@ -3,7 +3,7 @@
 /*
 Plugin Name: Thrive Visual Editor
 Plugin URI: http://www.thrivethemes.com
-Version: 1.101.13
+Version: 1.101.17
 Author: <a href="http://www.thrivethemes.com">Thrive Themes</a>
 Description: Live front end editor for your Wordpress content
 */
@@ -38,12 +38,6 @@ add_filter('get_the_content_limit', 'tve_genesis_get_post_excerpt', 10, 4);
 // automatically modify lightbox title if the title of the associated landing page is modified - applies ony to TCB
 add_action('save_post', 'tve_save_post_callback');
 
-// integration with YOAST SEO
-add_filter('wpseo_pre_analysis_post_content', 'tve_yoast_seo_integration');
-
-// YOAST sitemaps - add image links
-add_filter('wpseo_sitemap_urlimages', 'tve_yoast_sitemap_images', 10, 2);
-
 /* filter that allows adding custom icon packs to the "Choose icon" lightbox in the TCB editor */
 add_filter('tcb_get_extra_icons', 'tve_landing_page_extra_icon_packs', 10, 2);
 
@@ -53,11 +47,19 @@ add_filter('tcb_extra_custom_fonts', 'tve_get_extra_custom_fonts', 10, 2);
 /* action that fires when the custom fonts css should be included in the page */
 add_action('tcb_extra_fonts_css', 'tve_output_extra_custom_fonts_css');
 
+/** fires when all plugins are loaded - used for intermediate filter setup / plugin overrides */
+add_action('plugins_loaded', 'tve_plugins_loaded_hook');
+
 /**
  * TCB-specific AJAX actions
  */
 add_action('wp_ajax_tve_lp_export', 'tve_ajax_landing_page_export');
 add_action('wp_ajax_tve_lp_import', 'tve_ajax_landing_page_import');
+
+/**
+ * AJAX call to return the TCB-added content for a post
+ */
+add_action('wp_ajax_get_tcb_content', 'tve_ajax_yoast_tcb_post_content');
 
 if (!function_exists('tve_editor_url')) {
     /**
@@ -74,6 +76,8 @@ if (!function_exists('tve_editor_url')) {
  */
 function tve_frontend_enqueue_scripts()
 {
+    $js_suffix = defined('TVE_DEBUG') && TVE_DEBUG ? '.js' : '.min.js';
+
     if (!is_editor_page_raw()) {
         /**
          * enqueue scripts and styles only for posts / pages that actually have tcb content
@@ -98,7 +102,7 @@ function tve_frontend_enqueue_scripts()
     wp_enqueue_style("tve_colors", tve_editor_css() . '/thrive_colors.css');
     tve_enqueue_style_family();
 
-    tve_enqueue_script("tve_frontend", tve_editor_js() . '/thrive_content_builder_frontend.min.js', array('jquery'), false, true);
+    tve_enqueue_script("tve_frontend", tve_editor_js() . '/thrive_content_builder_frontend' . $js_suffix, array('jquery'), false, true);
 
     if (!is_editor_page() && is_singular()) {
         $events = tve_get_post_meta(get_the_ID(), 'tve_page_events');
@@ -646,4 +650,47 @@ function tve_get_extra_custom_fonts($fonts, $post_id = null)
     }
 
     return array_merge($fonts, $globals['extra_fonts']);
+}
+
+/**
+ * called on the 'plugins_loaded' hook
+ */
+function tve_plugins_loaded_hook()
+{
+    if (defined('WPSEO_VERSION')) {
+        // integration with YOAST SEO
+        /* version 3 removed this filter completely - this is handled from javascript from version 3.0 onwards */
+        if (version_compare(WPSEO_VERSION, '3.0', '<') === true) {
+            add_filter('wpseo_pre_analysis_post_content', 'tve_yoast_seo_integration');
+        } else {
+            /* this is handled from javascript */
+        }
+
+        // YOAST sitemaps - add image links
+        add_filter('wpseo_sitemap_urlimages', 'tve_yoast_sitemap_images', 10, 2);
+    }
+
+}
+
+/**
+ * sends an ajax response containing the TCB-saved post content, stripped of tags for yoast SEO integration
+ *
+ * @return void
+ */
+function tve_ajax_yoast_tcb_post_content()
+{
+    $id = filter_input(INPUT_POST, 'post_id', FILTER_SANITIZE_NUMBER_INT);
+
+    /**
+     * mimic the the_content filter on the post - this will return all TCB content
+     */
+    global $post;
+    $post = get_post($id);
+
+    $all_content = tve_editor_content($post->post_content, 'tcb_content');
+
+    wp_send_json(array(
+        'post_id' => $post->ID,
+        'content' => $all_content
+    ));
 }

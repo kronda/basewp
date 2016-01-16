@@ -67,6 +67,8 @@ function tve_api_connect()
     $available_apis = Thrive_List_Manager::getAvailableAPIs();
     $api_types = Thrive_List_Manager::$API_TYPES;
 
+    $api_types = apply_filters("tve_filter_api_types", $api_types);
+
     $current_key = !empty($_REQUEST['api']) ? $_REQUEST['api'] : '';
 
     Thrive_List_Manager::flashMessages();

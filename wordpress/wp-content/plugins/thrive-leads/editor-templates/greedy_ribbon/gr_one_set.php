@@ -9,7 +9,7 @@ $config = array(
 <div class="thrv-greedy-ribbon tve_no_drag tve_no_icons tve_element_hover thrv_wrapper tve_gr_one_set tve_blue">
     <div class="tve-greedy-ribbon-content tve_editor_main_content">
         <h2 class="tve_p_center rft" style="color: #232323; font-size: 55px;margin-top: 0;margin-bottom: 50px;">
-            Get More Up to 260% More Social Traffic on Your Next Blog Post
+            Get Up to 260% More Social Traffic on Your Next Blog Post
         </h2>
 
         <p class="tve_p_center" style="color: #686868; font-size: 30px;margin-top: 0;margin-bottom: 50px;">

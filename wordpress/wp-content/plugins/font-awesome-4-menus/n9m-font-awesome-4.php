@@ -1,16 +1,16 @@
 <?php
 /*
 Plugin Name: Font Awesome 4 Menus
-Plugin URI: http://www.newnine.com/plugins/font-awesome-4-menus
-Description: Join the retina/responsive revolution by easily adding Font Awesome 4.4 icons to your WordPress menus and anywhere else on your site! No programming necessary.
-Version: 4.4.0.0
+Plugin URI: https://www.newnine.com/plugins/font-awesome-4-menus
+Description: Join the retina/responsive revolution by easily adding Font Awesome 4.5 icons to your WordPress menus and anywhere else on your site! No programming necessary.
+Version: 4.5.0.0
 Author: New Nine Media
-Author URI: http://www.newnine.com
+Author URI: https://www.newnine.com
 License: GPLv2 or later
 */
 
 /*
-    Copyright 2013  NEW NINE MEDIA, L.P.  (tel : +1-800-288-9699)
+    Copyright 2013  NEW NINE MEDIA  (tel : +1-800-288-9699)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -29,6 +29,22 @@ License: GPLv2 or later
 class FontAwesomeFour {
 
     var $defaults;
+
+    function __construct(){
+        $this->defaults = array(
+            'maxcdn_location' => '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
+            'spacing' => 1,
+            'stylesheet' => 'local',
+            'version' => '4.5.0'
+        );
+        add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+        add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+        add_action( 'admin_notices', array( $this, 'admin_notice' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ) );
+        add_filter( 'wp_nav_menu' , array( $this, 'menu' ), 10, 2 );
+        add_shortcode( 'fa', array( $this, 'shortcode_icon' ) );
+        add_shortcode( 'fa-stack', array( $this, 'shortcode_stack' ) );
+    }
 
     function admin_enqueue_scripts( $hook ){
         if( 'settings_page_n9m-font-awesome-4-menus' == $hook ){
@@ -66,8 +82,8 @@ class FontAwesomeFour {
         $settings = get_option( 'n9m-font-awesome-4-menus', $this->defaults );
         print ' <div class="wrap">
                     <h2><i class="fa fa-thumbs-o-up"></i> '.get_admin_page_title().'</h2>
-                    <p>Thank you for using Font Awesome 4 Menus by <a href="http://www.newnine.com" target="_blank">New Nine</a>! To view available icons, <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">click here to visit the Font Awesome website</a>.</p>
-                    <form action="'.admin_url( 'options-general.php?page=n9m-font-awesome-4-menus' ).'" method="post">
+                    <p>Thank you for using Font Awesome 4 Menus by <a href="https://www.newnine.com" target="_blank">New Nine</a>! To view available icons, <a href="http://fortawesome.github.io/Font-Awesome/icons/" target="_blank">click here to visit the Font Awesome website</a>.</p>
+                    <form action="' . admin_url( 'options-general.php?page=n9m-font-awesome-4-menus' ) . '" method="post">
                         <h3>Font Awesome Stylesheet</h3>
                         <p>Select how you want Font Awesome 4&#8217;s stylesheet loaded on your site (if at all):</p>
                         <table class="form-table">
@@ -106,7 +122,7 @@ class FontAwesomeFour {
         if( 'plugins.php' == $pagenow && !$shownotice ){
             print ' <div class="updated">
                         <div style="float: right;"><a href="?action=kill-n9m-font-awesome-4-notice" style="color: #7ad03a; display: block; padding: 8px;">&#10008;</a></div>
-                        <p>Thank you for installing Font Awesome Menus 4 by <a href="http://www.newnine.com">New Nine</a>! Want to see what else we&#8217;re up to? Subscribe below to our infrequent updates. You can unsubscribe at any time.</p>
+                        <p>Thank you for installing Font Awesome Menus 4 by <a href="https://www.newnine.com">New Nine</a>! Want to see what else we&#8217;re up to? Subscribe below to our infrequent updates. You can unsubscribe at any time.</p>
                         <form action="http://newnine.us2.list-manage.com/subscribe/post?u=067bab5a6984981f003cf003d&amp;id=1b25a2aee6" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank">
                             <p><input type="text" name="FNAME" placeholder="First Name" value="'.( !empty( $current_user->first_name ) ? $current_user->first_name : '' ).'"> <input type="text" name="LNAME" placeholder="Last Name" value="'.( !empty( $current_user->last_name ) ? $current_user->last_name : '' ).'"> <input type="text" name="EMAIL" placeholder="Email address" required value="'.$current_user->user_email.'"> <input type="hidden" id="group_1" name="group[14489][1]" value="1"> <input type="submit" name="subscribe" value="Join" class="button action"></p>
                         </form>
@@ -228,21 +244,5 @@ class FontAwesomeFour {
         }
     }
     
-    
-    function __construct(){
-        $this->defaults = array(
-            'maxcdn_location' => '//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
-            'spacing' => 1,
-            'stylesheet' => 'local',
-            'version' => '4.4.0'
-        );
-        add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-        add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-        add_action( 'admin_notices', array( $this, 'admin_notice' ) );
-        add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ) );
-        add_filter( 'wp_nav_menu' , array( $this, 'menu' ), 10, 2 );
-        add_shortcode( 'fa', array( $this, 'shortcode_icon' ) );
-        add_shortcode( 'fa-stack', array( $this, 'shortcode_stack' ) );
-    }
 }
 $n9m_font_awesome_four = new FontAwesomeFour();

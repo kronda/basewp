@@ -4,8 +4,8 @@ Donate link: http://wp-types.com
 Tags: CMS, custom field, custom fields, custom post type, custom post types, field, fields post, post type, post types, taxonomies, taxonomy
 License: GPLv2
 Requires at least: 3.4
-Tested up to: 4.3.1
-Stable tag: 1.8.10
+Tested up to: 4.4
+Stable tag: 1.8.11
 
 The complete and reliable plugin for managing custom post types, custom taxonomies and custom fields.
 
@@ -154,6 +154,13 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 9. Children post list
 
 == Changelog ==
+
+= 1.8.11 =
+
+* Release date: 2015-12-07
+* Fixed compatibility with WPML related to custom field translations.
+* Fixed compatibility with WordPress 4.4 related to menu management.
+* Added 'action' to the list of reserved words that can not be used to name post types or taxonomies.
 
 = 1.8.10 =
 

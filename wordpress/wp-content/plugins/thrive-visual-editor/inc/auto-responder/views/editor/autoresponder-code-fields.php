@@ -32,4 +32,6 @@
     <?php if (!empty($show_reCaptcha)): ?>
         <?php include dirname(__FILE__) . '/captcha-settings.php'; ?>
     <?php endif; ?>
+    <?php do_action('tve_tcb_delivery_connection'); ?>
+
 </div>

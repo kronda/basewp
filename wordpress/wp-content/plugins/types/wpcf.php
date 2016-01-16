@@ -5,7 +5,7 @@
   Description: Define custom post types, custom taxonomies and custom fields.
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com
-  Version: 1.8.10
+  Version: 1.8.11
  */
 /**
  *
@@ -16,7 +16,7 @@ if ( !defined( 'WPCF_VERSION' ) ) {
     /**
      * make sure that WPCF_VERSION in embedded/bootstrap.php is the same!
      */
-    define( 'WPCF_VERSION', '1.8.10' );
+    define( 'WPCF_VERSION', '1.8.11' );
 }
 
 define( 'WPCF_REPOSITORY', 'http://api.wp-types.com/' );
@@ -230,6 +230,7 @@ function wpcf_is_reserved_name($name, $context, $check_pages = true)
 function wpcf_reserved_names()
 {
     $reserved = array(
+        'action',
         'attachment',
         'attachment_id',
         'author',
@@ -239,8 +240,8 @@ function wpcf_reserved_names()
         'category',
         'category__and',
         'category__in',
-        'category__not_in',
         'category_name',
+        'category__not_in',
         'comments_per_page',
         'comments_popup',
         'cpage',
@@ -253,11 +254,12 @@ function wpcf_reserved_names()
         'fields',
         'format',
         'hour',
+        'lang',
         'link_category',
         'm',
         'minute',
-        'monthnum',
         'mode',
+        'monthnum',
         'more',
         'name',
         'nav_menu',
@@ -274,16 +276,16 @@ function wpcf_reserved_names()
         'pb',
         'perm',
         'post',
-        'post__in',
-        'post__not_in',
         'post_format',
+        'post__in',
         'post_mime_type',
-        'post_status',
-        'post_tag',
-        'post_type',
+        'post__not_in',
         'posts',
         'posts_per_archive_page',
         'posts_per_page',
+        'post_status',
+        'post_tag',
+        'post_type',
         'preview',
         'robots',
         's',
@@ -296,9 +298,9 @@ function wpcf_reserved_names()
         'subpost_id',
         'tag',
         'tag__and',
+        'tag_id',
         'tag__in',
         'tag__not_in',
-        'tag_id',
         'tag_slug__and',
         'tag_slug__in',
         'taxonomy',
@@ -309,10 +311,6 @@ function wpcf_reserved_names()
         'withcomments',
         'withoutcomments',
         'year',
-        'lang',
-//        'comments',
-//        'blog',
-//        'files'
     );
 
     return apply_filters( 'wpcf_reserved_names', $reserved );

@@ -66,7 +66,7 @@ $config = array(
                                 <div class="tve_lead_generated_inputs_container tve_clearfix">
                                     <div class="tve_lead_fields_overlay"></div>
                                     <div class="tve_lg_input_container tve_lg_3 tve_lg_input">
-                                        <input type="text" name="email" value="" data-placeholder="Enter your name..."
+                                        <input type="text" name="name" value="" data-placeholder="Enter your name..."
                                                placeholder="Enter your name...">
                                     </div>
                                     <div class="tve_lg_input_container tve_lg_3 tve_lg_input">

@@ -43,12 +43,12 @@
 
     <?php $margin_config['hide_padding'] = true; $css_selector = '_parent::.thrv_icon'; include dirname(__FILE__) . '/_margin.php' ?>
 
-    <li class="tve_ed_btn tve_firstOnRow tve_hide_cb">
+    <li class="tve_ed_btn tve_firstOnRow tve_hide_cb" data-multiple-hide>
         <span class="tve_click tve_lb_small tve_icm tve-ic-chain" id="lb_image_link" data-ctrl="controls.lb_open"></span>
     </li>
     <?php include dirname(__FILE__) . '/_quick_link.php' ?>
     <!-- this only shows when the user clicks on a hyperlink -->
-    <li class="tve_ed_btn tve_link_btns tve_firstOnRow tve_hide_cb">
+    <li class="tve_ed_btn tve_link_btns tve_firstOnRow tve_hide_cb" data-multiple-hide>
         <span class="tve_icm tve-ic-unlink tve_click" data-ctrl="controls.click.image_unlink"></span>
     </li>
     <li class="tve_text tve_slider_config tve_firstOnRow tve_hide_cb" data-value="30" data-min-value="10"
@@ -83,9 +83,9 @@
     <?php $border_radius_selector = '.tve_sc_icon'; $border_radius_callback = 'icon'; $max_width = '300'; include dirname(__FILE__) . '/_border_radius.php' ?>
 
     <li id="lb_icon" data-load="1" data-wpapi="lb_icon"
-        class="tve_ed_btn tve_btn_text tve_btn tve_click tve_icon_ctrl" data-ctrl="controls.lb_open"><?php echo __("Change Icon", "thrive-cb") ?>
+        class="tve_ed_btn tve_btn_text tve_btn tve_click tve_icon_ctrl" data-ctrl="controls.lb_open" data-multiple-hide><?php echo __("Change Icon", "thrive-cb") ?>
     </li>
-    <li class="tve_text tve_text_ctrl">
+    <li class="tve_text tve_text_ctrl" data-multiple-hide>
         <label class="tve_left"><?php echo __("Icon text", "thrive-cb") ?> &nbsp;</label><input class="tve_change tve_left" id="tve_icon_text" type="text" data-ctrl="controls.change.icon_text" placeholder="<?php echo __("Icon text", "thrive-cb") ?>" value="1" size="2">
     </li>
     <li class=""><input type="text" class="element_class tve_change" data-ctrl="controls.change.cls" placeholder="<?php echo __("Custom class", "thrive-cb") ?>"></li>

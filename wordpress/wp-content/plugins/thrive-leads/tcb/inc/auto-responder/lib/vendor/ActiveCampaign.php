@@ -101,7 +101,7 @@ class Thrive_Api_ActiveCampaign
             'last_name' => $lastName,
             'phone' => $phone,
             'p[' . $list_id . ']' => $list_id,
-            'instantresponders['. $list_id . ']' => 1,
+            'instantresponders[' . $list_id . ']' => 1,
             'status[' . $list_id . ']' => 1
         );
         if (!empty($form_id)) {
@@ -173,6 +173,10 @@ class Thrive_Api_ActiveCampaign
         $data = $this->_parseResponse($body);
 
         if (empty($data)) {
+            if (strpos($data, 'g-recaptcha') !== FALSE) {
+                throw new Thrive_Api_ActiveCampaign_Exception('Unknown problem with the API request. Please recheck your account.');
+            }
+
             throw new Thrive_Api_ActiveCampaign_Exception('Unknown problem with the API request. Response was:' . $body);
         }
 

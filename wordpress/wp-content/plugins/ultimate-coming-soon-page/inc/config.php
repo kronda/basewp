@@ -441,10 +441,28 @@ $seedprod_comingsoon->options[] = array( "type" => "custom",
 
 $seedprod_comingsoon->options[] = array( "type" => "textbox",
                 "id" => "comingsoon_feedburner_address",
-                "label" => __("FeedBurn Address", 'ultimate-coming-soon-page'),
+                "label" => __("FeedBurner Address", 'ultimate-coming-soon-page'),
                 "desc" => __("<strong>Note:</strong> Enter the part after http://feeds2.feedburner.com/ <a href='http://wordpress.org/extend/plugins/ultimate-coming-soon-page/faq/'' target='_blank'> Learn how</a> to use FeedBurner to collect emails.", 'ultimate-coming-soon-page'),
                 "section_id" => "seedprod_section_coming_soon",
                 "setting_id" => "seedprod_comingsoon_options",
+                );
+
+$seedprod_comingsoon->options[] = array( "type" => "textbox",
+                "id" => "comingsoon_feedburner_button_text",
+                "label" => __("FeedBurner Button Text", 'ultimate-coming-soon-page'),
+                "desc" => __("Enter the text for the button if you use FeedBurner, disregard otherwise.", 'ultimate-coming-soon-page'),
+                "section_id" => "seedprod_section_coming_soon",
+                "setting_id" => "seedprod_comingsoon_options",
+                "default_value" => "Notify Me!",
+                );
+
+$seedprod_comingsoon->options[] = array( "type" => "textbox",
+                "id" => "comingsoon_feedburner_placeholder_text",
+                "label" => __("FeedBurner Placeholder Text", 'ultimate-coming-soon-page'),
+                "desc" => __("Enter the text for the placeholder if you use FeedBurner, disregard otherwise.", 'ultimate-coming-soon-page'),
+                "section_id" => "seedprod_section_coming_soon",
+                "setting_id" => "seedprod_comingsoon_options",
+                "default_value" => "Enter Your Email",
                 );
 
 $seedprod_comingsoon->options[] = array( "type" => "textarea",
@@ -468,7 +486,7 @@ $seedprod_comingsoon->options[] = array( "type" => "textarea",
 $seedprod_comingsoon->options[] = array( "type" => "checkbox",
                 "id" => "disable_default_exclude_terms",
                 "label" => __("Disable Default Excluded URLs", 'ultimate-coming-soon-page'),
-                "desc" => sprintf(__("By default urls with the terms: login, admin, dashboard and account are excluded. Check to disbale. ", 'ultimate-coming-soon-page'),home_url()),
+                "desc" => sprintf(__("By default urls with the terms: login, admin, dashboard and account are excluded. Check to disable. ", 'ultimate-coming-soon-page'),home_url()),
                 "option_values" => array('1'=>__('Yes', 'ultimate-coming-soon-page')),
                 "section_id" => "seedprod_section_coming_soon",
                 "setting_id" => "seedprod_comingsoon_options",

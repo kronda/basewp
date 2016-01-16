@@ -2,7 +2,6 @@
 <hr class="tve_lightbox_line"/>
 <?php
 $connection_config = $data['connection_config'];
-
 /**
  * at this stage, we have a list of existing connections that are to be displayed in a list
  */
@@ -57,6 +56,7 @@ $available = Thrive_List_Manager::getAvailableAPIs(true);
     $show_thank_you_url = true;
     $show_reCaptcha = true;
     include dirname(__FILE__) . '/autoresponder-code-fields.php';
+
     ?>
     <div class="tve-sp"></div>
     <?php if (!empty($data['show_submit_options'])) : ?>

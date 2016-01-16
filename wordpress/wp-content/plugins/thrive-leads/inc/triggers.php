@@ -1,8 +1,8 @@
 <?php
+
 /**
  * Structure for all the available triggers
  */
-
 abstract class TVE_Leads_Trigger_Abstract
 {
     public static $AVAILABLE = array(
@@ -470,8 +470,6 @@ class TVE_Leads_Trigger_Page_Bottom extends TVE_Leads_Trigger_Abstract
      */
     public function get_title()
     {
-        return __('Show when user reaches the end of the content', 'thrive-leads');
+        return __('Show when user reaches the bottom of the page', 'thrive-leads');
     }
-
-
 }

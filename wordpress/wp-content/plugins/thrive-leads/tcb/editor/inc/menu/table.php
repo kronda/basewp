@@ -1,7 +1,7 @@
 <span class="tve_options_headline"><span class="tve_icm tve-ic-move"></span><?php echo __("Table options", "thrive-cb") ?></span>
 <ul class="tve_menu">
-    <?php $has_custom_colors = true; include dirname(__FILE__) . '/_custom_colors.php' ?>
-    <li class="tve_ed_btn tve_btn_text">
+    <?php $has_custom_colors = true; $extra_attr = 'data-multiple-hide'; include dirname(__FILE__) . '/_custom_colors.php' ?>
+    <li class="tve_ed_btn tve_btn_text" data-multiple-hide>
         <div class="tve_option_separator">
             <span class="tve_ind tve_left" data-default="Border Type"><?php echo __("Border Type", "thrive-cb") ?></span><span
                 class="tve_caret tve_icm tve_left"></span>
@@ -24,18 +24,18 @@
             </div>
         </div>
     </li>
-    <li class="tve_ed_btn_text clearfix">
+    <li class="tve_ed_btn_text clearfix" data-multiple-hide>
         <label class="tve_left" style="color: #878787">
             <input id="table_border_width" class="tve_change" value="0" type="text" size="3"
                    data-css-property="border-width" data-suffix="px"
                    data-size="1"> px
         </label>
     </li>
-    <li class="tve_text clearfix">
+    <li class="tve_text clearfix" data-multiple-hide>
         <input class="tve_change tve_left tve_checkbox_bottom" type="checkbox" id="table_outer_border" value="1">
         <label for="table_outer_border" class="tve_left"><?php echo __("Outer Border", "thrive-cb") ?></label>
     </li>
-    <li class="tve_text clearfix">
+    <li class="tve_text clearfix" data-multiple-hide>
         <input class="tve_change tve_left tve_checkbox_bottom" type="checkbox" id="table_inner_border" value="1">
         <label for="table_inner_border" class="tve_left"><?php echo __("Inner Border", "thrive-cb") ?></label>
     </li>
@@ -77,10 +77,10 @@
              data-prop="height" data-val=""
              title="<?php echo __("Reset all row heights to their initial values", "thrive-cb") ?>"><?php echo __("Reset heights", "thrive-cb")?>
         </div>
-        <div class="tve_ed_btn tve_btn_text tve_center tve_left tve_click" id="tve_table_manage_cells">
+        <div class="tve_ed_btn tve_btn_text tve_center tve_left tve_click" id="tve_table_manage_cells" data-multiple-hide>
             <?php echo __("Manage cells...", "thrive-cb") ?>
         </div>
-        <div class="tve_ed_btn tve_btn_text tve_center tve_left tve_click" id="tve_table_clear_alternating" title="<?php echo __("Clear the alternating colors set for rows", "thrive-cb") ?>">
+        <div class="tve_ed_btn tve_btn_text tve_center tve_left tve_click" id="tve_table_clear_alternating" title="<?php echo __("Clear the alternating colors set for rows", "thrive-cb") ?>" data-multiple-hide>
             <?php echo __("Clear alternating colors", "thrive-cb") ?>
         </div>
     </li>

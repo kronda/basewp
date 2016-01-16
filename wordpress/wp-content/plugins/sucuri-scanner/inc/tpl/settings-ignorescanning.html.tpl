@@ -30,7 +30,7 @@
                     prevent the misuse of this tool.
                 </p>
 
-                <form action="%%SUCURI.URL.Settings%%#settings-ignorescanning" method="post">
+                <form action="%%SUCURI.URL.Settings%%#ignorescanning" method="post">
                     <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
                     <input type="hidden" name="sucuriscan_ignorescanning_action" value="ignore" />
                     <input type="text" name="sucuriscan_ignorescanning_file"
@@ -44,7 +44,7 @@
     </div>
 </div>
 
-<form action="%%SUCURI.URL.Settings%%#settings-ignorescanning" method="post">
+<form action="%%SUCURI.URL.Settings%%#ignorescanning" method="post">
     <input type="hidden" name="sucuriscan_page_nonce" value="%%SUCURI.PageNonce%%" />
 
     <table class="wp-list-table widefat sucuriscan-table sucuriscan-settings-ignorescanning">
@@ -55,11 +55,11 @@
             </th>
             <th class="manage-column">&nbsp;</th>
             <th class="manage-column">Directory</th>
-            <th class="manage-column" width="180">Ignored At</th>
+            <th class="manage-column" width="200">Ignored At</th>
         </thead>
 
         <tbody>
-            %%SUCURI.IgnoreScanning.ResourceList%%
+            %%%SUCURI.IgnoreScanning.ResourceList%%%
 
             <tr class="sucuriscan-%%SUCURI.IgnoreScanning.NoItemsVisibility%%">
                 <td colspan="4">

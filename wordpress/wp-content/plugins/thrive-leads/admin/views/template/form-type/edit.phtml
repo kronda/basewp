@@ -16,15 +16,17 @@
             <div class="clear"></div>
             <a href="javascript:void(0)" class="tve-leads-main-php-code" title="<?php echo __('Get PHP Code', 'thrive-leads') ?>"><?php echo __('Get PHP Code', 'thrive-leads') ?></a>
         </div>
-        <# } else if(model instanceof ThriveLeads.models.TwoStepLightbox) { #>
-            <div class="white-box">
-                <input readonly class="tve-shortcode tve-form-control tve-input-small tve-input-inline" type="text" value="<#= model.getCode() #>" />
+    <# } else if(model instanceof ThriveLeads.models.TwoStepLightbox) { #>
+        <div class="white-box">
+            <input readonly class="tve-shortcode tve-form-control tve-input-small tve-input-inline" type="text" value="<#= model.getCode() #>" />
+            <span>
                 <a class="tve-copy-to-clipboard tve-btn tve-btn-blue margin-right-10" href="javascript:void(0)">
                     <span class="tve-icon-clone2"></span>
                     <span class="tl-copy-text"><?php echo __('Copy', 'thrive-leads') ?> &nbsp;</span>
                 </a>
-            </div>
-            <# } #>
+            </span>
+        </div>
+    <# } #>
 </div>
 <div class="tve-no-content tl-show-no-forms" style="display: none;">
     <div class="tve-notice">

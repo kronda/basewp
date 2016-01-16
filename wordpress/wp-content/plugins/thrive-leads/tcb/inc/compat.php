@@ -129,6 +129,25 @@ function tve_compat_content_filters_before_shortcode($content)
         $content = s3mv($content);
     }
 
+    /**
+     * FD Footnotes plugin does not have standard shortcodes
+     */
+    if (function_exists('fdfootnote_convert')) {
+        $content = fdfootnote_convert($content);
+    }
+
+    /**
+     * A3 Lazy Load plugin
+     * This plugin adds a filter on "the_content" inside of "wp" action callback -> the same as TCB does
+     * Its "the_content" filter callback is executed first because of its name -> A3
+     * We call its filter implementation on TCB content
+     */
+    if (class_exists('A3_Lazy_Load') && method_exists('A3_Lazy_Load', 'filter_content_images')) {
+        global $a3_lazy_load_global_settings;
+        if ($a3_lazy_load_global_settings['a3l_apply_image_to_content'] == true) {
+            $content = A3_Lazy_Load::filter_content_images($content);
+        }
+    }
 
     return $content;
 }

@@ -79,13 +79,13 @@ body {
 .tve-leads-slide-in {
   position: static;
   &.tl_bot_left {
-//    bottom: 20px;
-//    left: 20px;
+    //    bottom: 20px;
+    //    left: 20px;
     .tve_editor_page & {
-//      bottom: 170px;
+      //      bottom: 170px;
     }
     .tve_editor_page.tl-state-collapse & {
-  //    bottom: 20px;
+      //    bottom: 20px;
     }
     .thrv-leads-slide-in {
       margin-left: 0;
@@ -94,13 +94,13 @@ body {
   }
 
   &.tl_bot_right {
-//    bottom: 20px;
-//    right: 20px;
+    //    bottom: 20px;
+    //    right: 20px;
     .tve_editor_page & {
-//      bottom: 170px;
+      //      bottom: 170px;
     }
     .tve_editor_page.tl-state-collapse & {
-  //    bottom: 20px;
+      //    bottom: 20px;
     }
     .thrv-leads-slide-in {
       margin-right: 0;
@@ -109,8 +109,8 @@ body {
   }
 
   &.tl_top_right {
-//    top: 20px;
-//    right: 20px;
+    //    top: 20px;
+    //    right: 20px;
     .tve_editor_page & {
       //padding-bottom: 170px;
     }
@@ -124,13 +124,13 @@ body {
   }
 
   &.tl_top_left {
-//    top: 20px;
-//    left: 20px;
+    //    top: 20px;
+    //    left: 20px;
     .tve_editor_page & {
-//      padding-bottom: 170px;
+      //      padding-bottom: 170px;
     }
     .tve_editor_page.tl-state-collapse & {
-  //    padding-bottom: 0;
+      //    padding-bottom: 0;
     }
     .thrv-leads-slide-in {
       margin-left: 0;
@@ -149,8 +149,6 @@ body {
 .admin-bar .tve-screen-filler-content {
   top: 32px;
 }
-
-
 
 /*
   tl template chooser
@@ -220,7 +218,7 @@ body {
     color: #f5f5f5;
     font-size: 18px;
     line-height: 18px;
-    text-shadow: 1px 1px rgba(0,0,0,.3);
+    text-shadow: 1px 1px rgba(0, 0, 0, .3);
     .tve_icm {
       color: #f5f5f5;
       @include icon-size(18px);
@@ -369,6 +367,27 @@ body {
         border-color: #666666;
       }
     }
+    .lightbox-step-visibility {
+      .tve-icon-visible {
+        &:before {
+          font-family: 'tveicomoon';
+          content: "\e632";
+          color: #666666;
+          font-size: 18px;
+        }
+      }
+      .tve-icon-invisible {
+        &:before {
+          font-family: 'tveicomoon';
+          content: "\e633";
+          color: #666666;
+          font-size: 18px;
+        }
+      }
+      &:hover {
+        border-color: #666666;
+      }
+    }
     .lightbox-step-name {
       color: #666666;
     }
@@ -494,4 +513,27 @@ body {
     margin-top: 0;
     margin-bottom: 0;
   }
+}
+
+//edit mode conflict with theme
+.tve-html-editor {
+  .cnt {
+    background: #fff;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    article {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+#tve-leads-empty-template {
+  left: 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  transform: translateY(-50%);
+  top: 50%;
 }

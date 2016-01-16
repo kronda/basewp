@@ -108,8 +108,21 @@ global $seedprod_comingsoon;
               <form action="http://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open('http://feedburner.google.com/fb/a/mailverify?uri=<?php echo $sc_jdt['comingsoon_feedburner_address']; ?>', 'popupwindow', 'scrollbars=yes,width=550,height=520');return true">
                     <input type="hidden" value="<?php echo $sc_jdt['comingsoon_feedburner_address']; ?>" name="uri"/>
                     <input type="hidden" name="loc" value="en_US"/>
-                    <input id="notify-email" type="text" name="email" placeholder="<?php _e('Enter Your Email', 'ultimate-coming-soon-page') ?>"/>
-                    <button id="notify-btn" type="submit"><?php _e('Notify Me!', 'ultimate-coming-soon-page') ?></button>
+
+                    <?php if(!empty($sc_jdt['comingsoon_feedburner_placeholder_text'])){ ?>
+                        <input id="notify-email" type="text" name="email" placeholder="<?php echo $sc_jdt['comingsoon_feedburner_placeholder_text']; ?>"/>
+                    <?php }else{ ?>
+                        <input id="notify-email" type="text" name="email" placeholder="<?php _e('Enter Your Email', 'ultimate-coming-soon-page') ?>"/>
+                    <?php } ?>
+                    
+
+                    
+                    <?php if(!empty($sc_jdt['comingsoon_feedburner_button_text'])){ ?>
+                        <button id="notify-btn" type="submit"><?php echo $sc_jdt['comingsoon_feedburner_button_text']; ?></button>
+                    <?php }else{ ?>
+                        <button id="notify-btn" type="submit"><?php _e('Notify Me!', 'ultimate-coming-soon-page') ?></button>
+                    <?php } ?>
+                    
           </form>
             <?php endif; ?>
 

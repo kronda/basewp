@@ -4,18 +4,18 @@
     <td>%%SUCURI.AdminUsers.RegisteredAt%%</td>
     <td class="adminusers-lastlogin">
         <div class="sucuriscan-%%SUCURI.AdminUsers.NoLastLogins%%">
-            <i>No data available for this account.</i>
+            <i>No data available.</i>
         </div>
 
         <table class="widefat sucuriscan-admins-lastlogins sucuriscan-%%SUCURI.AdminUsers.NoLastLoginsTable%%">
             <thead>
                 <tr>
                     <th>IP Address</th>
-                    <th>Date & Time</th>
+                    <th>Date &amp; Time</th>
                 </tr>
             </thead>
             <tbody>
-                %%SUCURI.AdminUsers.LastLogins%%
+                %%%SUCURI.AdminUsers.LastLogins%%%
             </tbody>
         </table>
     </td>

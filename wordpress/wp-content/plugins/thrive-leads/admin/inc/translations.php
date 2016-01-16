@@ -10,12 +10,18 @@ return array(
     'PleaseSelectANameForYourTemplate' =>  __("Please select a name for your template !", 'thrive-leads'),
     //
     'AddNewForm' => __('Add New Form', 'thrive-leads'),
+    'addAssetGroup' => __('Add New Asset Group', 'thrive-leads'),
+    'addNewFile' => __('Add New File', 'thrive-leads'),
+    'emailTemplate' => __('Default Email Template', 'thrive-leads'),
+    'previewEmail' => __('Email Preview', 'thrive-leads'),
+    'showShortcodesList' => __('List of Available Shortcodes', 'thrive-leads'),
     'AddShortcode' => __('Add New Lead Shortcode', 'thrive-leads'),
     'AddTwoStepLightbox' => __('Add New ThriveBox', 'thrive-leads'),
     'AddGroup' => __('Add New Lead Group', 'thrive-leads'),
     'ReAddForm' => __('Re-add Form', 'thrive-leads'),
     'ArchiveForm' => __('Archive Form', 'thrive-leads'),
     'DeleteForm' => __('Delete Form', 'thrive-leads'),
+    'addAPIConnection' => __('Email Delivery Setup', 'thrive-leads'),
     'StartVariationTest' => __('Start New A/B Test', 'thrive-leads'),
     'StartFormtypeTest' => __('Start New Test of Opt-In Form Types', 'thrive-leads'),
     'TestTitleRequired' => __('Test title is required', 'thrive-leads'),
@@ -46,6 +52,11 @@ return array(
     'GroupNameRequired' => 'Lead Group Name cannot be empty',
     'ShortcodeNameRequired' => 'Lead Shortcode Name cannot be empty',
     'TwoStepLightboxNameRequired' => 'ThriveBox Name cannot be empty',
+    'AssetGroupNameRequired' => 'Asset Group Name cannot be empty',
+    'AssetGroupNameRequired' => 'Asset Group Name cannot be empty',
+    'AssetFileNameRequired' => 'File Name cannot be empty',
+    'AssetFileAnchorRequired' => 'File Anchor cannot be empty',
+    'AssetFileLinkRequired' => 'File Link must be a valid URL',
     'MissingFormContent' => 'Some of the forms do not have any content. Please edit all the form designs marked below before starting a test.',
     'NoTestCompleted' => 'No tests have been completed',
     'DbOptimized' => 'Thrive Leads database tables have been optimized',
@@ -69,6 +80,11 @@ return array(
         '<a href="%s" title="%s" class="tl-play-link wistia-popover[height=450,playerColor=2bb914,width=800]"><span class="tve-icon-play"> </span></a>',
         $tve_leads_help_videos['TwoStepLightbox'],
         __('Lead Shortcodes', 'thrive-leads')
+    ),
+    'AddNewAssetGroupVideo' => sprintf(
+        '<a href="%s" title="%s" class="tl-play-link wistia-popover[height=450,playerColor=2bb914,width=800]"><span class="tve-icon-play"> </span></a>',
+        $tve_leads_help_videos['AssetGroup'],
+        __('Asset Groups', 'thrive-leads')
     ),
     'TriggerSettingsVideo' => sprintf(
         '<a href="%s" title="%s" class="tl-play-link wistia-popover[height=450,playerColor=2bb914,width=800]"><span class="tve-icon-play"> </span></a>',

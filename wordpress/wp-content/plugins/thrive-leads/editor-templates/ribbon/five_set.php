@@ -41,7 +41,7 @@ $config = array(
                         <div class="tve_lead_generated_inputs_container tve_clearfix">
                             <div class="tve_lead_fields_overlay"></div>
                             <div class=" tve_lg_input_container tve_lg_2 tve_lg_input">
-                                <input type="text" data-placeholder="" value="" name="name" placeholder="Full Name"/>
+                                <input type="text" data-placeholder="" value="" name="email" placeholder="Email Address"/>
                             </div>
                             <div class="tve_lg_input_container tve_submit_container tve_lg_2 tve_lg_submit">
                                 <button type="Submit">DOWNLOAD</button>

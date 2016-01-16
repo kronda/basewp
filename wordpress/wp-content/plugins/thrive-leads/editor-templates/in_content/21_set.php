@@ -39,7 +39,7 @@ $config = array(
                     <div class="thrv_wrapper thrv_icon tve_brdr_solid">
                         <span class="tve_sc_icon set-21-icon-mail tve_white" data-tve-icon="set-21-icon-mail" style="color: #b1b1b1;"></span>
                     </div>
-                    <input type="text" name="name" value="" data-placeholder="email" placeholder="Your Email">
+                    <input type="text" name="email" value="" data-placeholder="email" placeholder="Your Email">
                 </div>
                 <div class="tve_lg_input_container tve_submit_container tve_lg_2 tve_lg_submit">
                     <button type="Submit">Join, It’s Free!</button>

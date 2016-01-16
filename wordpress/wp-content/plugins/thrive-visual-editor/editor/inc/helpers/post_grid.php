@@ -38,6 +38,8 @@ class PostGridHelper
             unset($config['currentConfig']);
         }
 
+        $config = stripslashes_deep($config);
+
         $this->_config = $config;
 
         $this->_template = !empty($this->_config['grid_layout']) && $this->_config['grid_layout'] === 'vertical' ? "sc_post_grid_vertical.php" : $this->_template;

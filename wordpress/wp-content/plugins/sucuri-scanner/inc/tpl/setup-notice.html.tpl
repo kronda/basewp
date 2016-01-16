@@ -1,6 +1,6 @@
 
 <div class="updated sucuriscan-setup-notice sucuriscan-clearfix">
-    <a href="http://sucuri.net/" target="_blank" class="sucuriscan-pull-left sucuriscan-setup-image">
+    <a href="https://sucuri.net/" target="_blank" class="sucuriscan-pull-left sucuriscan-setup-image">
         <img src="%%SUCURI.SucuriURL%%/inc/images/logo.png" alt="Sucuri Scanner" />
     </a>
 

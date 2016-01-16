@@ -37,7 +37,7 @@
 
     <?php if($this->wrap) :?>
         <div class="thrive-shortcode-config"
-             style="display: none !important"><?php echo '__CONFIG_post_grid__' . json_encode($config) . '__CONFIG_post_grid__' ?></div>
+             style="display: none !important"><?php echo '__CONFIG_post_grid__' . tve_json_utf8_unslashit(json_encode($config)) . '__CONFIG_post_grid__' ?></div>
     <?php endif; ?>
 
     <div class="tve_post_grid_wrapper tve_post_grid_vertical tve_clearfix tve_post_grid_<?php echo $config['display']; ?>">

@@ -10,7 +10,7 @@
  */
 ?>
 <li class="tve_ed_btn tve_btn_text tve_shadow_control<?php if (isset($btn_class)) echo ' ' . $btn_class;
-unset($btn_class) ?>">
+unset($btn_class) ?>" data-multiple-hide>
     <div class="tve_option_separator">
         <span class="tve_ind tve_left"><?php echo __("Shadow", "thrive-cb") ?></span><span class="tve_caret tve_icm tve_left" id="sub_02"></span>
 

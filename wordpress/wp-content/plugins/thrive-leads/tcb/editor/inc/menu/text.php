@@ -44,7 +44,7 @@
         </div>
     </li>
     <?php /* colour picker for background color (highlight of current selection */ ?>
-    <li class="tve_ed_btn tve_btn_text">
+    <li class="tve_ed_btn tve_btn_text" data-multiple-hide>
         <div class="tve_option_separator tve_mousedown" data-ctrl="controls.prevent_default">
             <i class="tve_icm tve-ic-brush tve_left"></i><span
                 class="tve_caret tve_icm tve_left" id="sub_01"></span>
@@ -104,11 +104,11 @@
         <div class="tve_icm tve-ic-strikethrough tve_mousedown" data-ctrl="controls.rangy_cls"
              data-command="strikethrough" title="<?php echo __("Strike-through", "thrive-cb") ?>"></div>
     </li>
-    <li class="tve_ed_btn tve_btn_icon">
+    <li class="tve_ed_btn tve_btn_icon" data-multiple-hide>
         <div class="tve_icm tve-ic-list2 tve_click" id="text_bullet"
              title="<?php echo __("Unordered List", "thrive-cb") ?>"></div>
     </li>
-    <li class="tve_ed_btn tve_btn_icon">
+    <li class="tve_ed_btn tve_btn_icon" data-multiple-hide>
         <div class="tve_icm tve-ic-numbered-list tve_click" id="text_numbered_bullet"
              title="<?php echo __("Numbered List", "thrive-cb") ?>"></div>
     </li>
@@ -130,18 +130,18 @@
              title="<?php echo __("Text align justify", "thrive-cb") ?>" data-ctrl="controls.click.text_align"
              data-cls="tvealignjustify"></div>
     </li>
-    <li class="tve_ed_btn tve_btn_icon tve_nolink_btns">
+    <li class="tve_ed_btn tve_btn_icon tve_nolink_btns" data-multiple-hide>
         <span class="tve_click tve_lb_small tve_icm tve-ic-chain tve_mousedown" data-ctrl-click="controls.lb_open"
               data-ctrl-mousedown="controls.save_selection" data-key="linkSel" id="lb_text_link"
               title="<?php echo __("Create link", "thrive-cb") ?>"></span>
     </li>
     <?php include dirname(__FILE__) . '/_quick_link.php' ?>
-    <li class="tve_ed_btn tve_link_btns">
+    <li class="tve_ed_btn tve_link_btns" data-multiple-hide>
         <span class="tve_icm tve-ic-unlink tve_click tve_mousedown" data-key="linkSel"
               data-ctrl-mousedown="controls.save_selection" data-ctrl="controls.text_unlink"></span>
     </li>
     <?php if (empty($_POST['disabled_controls']['more_link'])) : ?>
-        <li class="tve_ed_btn tve_btn_icon">
+        <li class="tve_ed_btn tve_btn_icon" data-multiple-hide>
             <span class="tve_icm tve-ic-more-horiz tve_click" title="<?php echo __("Insert more link", "thrive-cb") ?>"
                   data-ctrl="controls.click.more_link"></span>
         </li>
@@ -229,7 +229,7 @@
     </li>
     <li class="tve_ed_btn tve_btn_text tve_click"
         id="tve_clear_custom_font"><?php echo __("Clear custom font", "thrive-cb") ?></li>
-    <li>
+    <li data-multiple-hide>
         <input type="text" class="tve_change tve_text element_id" placeholder="<?php echo __("ID", "thrive-cb") ?>"
                data-ctrl="controls.change.element_id">
     </li>
@@ -242,31 +242,31 @@
     <!-- this only shows when the user clicks on a hyperlink -->
 
     <?php $li_custom_class = 'tve_link_btns';
-    $li_custom_style = 'style="display: none"';
+    $li_custom_style = 'style="display: none" data-multiple-hide';
     include dirname(__FILE__) . '/_event_manager.php' ?>
-    <li class="tve_link_btns tve_firstOnRow"><span class="" id="text_h6">
+    <li class="tve_link_btns tve_firstOnRow" data-multiple-hide><span class="" id="text_h6">
             <input type="text" id="link_anchor" placeholder="<?php echo __("Anchor Text", "thrive-cb") ?>"
                    class="tve_change" data-ctrl="controls.change.link_text"/></span>
     </li>
-    <li class="tve_link_btns"><span class="" id="text_h6">
+    <li class="tve_link_btns" data-multiple-hide><span class="" id="text_h6">
             <input type="text" id="link_url" placeholder="<?php echo __("URL", "thrive-cb") ?>" class="tve_change"
                    data-ctrl="controls.change.link_url"/>
         </span></li>
-    <li class="tve_link_btns">
+    <li class="tve_link_btns" data-multiple-hide>
         <span class="" id="text_h6">
             <input type="text" id="anchor_name" class="tve_change" data-ctrl="controls.change.link_name"
                    placeholder="<?php echo __("Anchor name", "thrive-cb") ?>"/>
         </span>
     </li>
-    <li class="tve_text tve_link_btns clearfix">
+    <li class="tve_text tve_link_btns clearfix" data-multiple-hide>
         <input type="checkbox" id="link_new_window" class="tve_left tve_change" data-ctrl="controls.change.link_target">
         <label for="link_new_window" class="tve_left"><?php echo __("Open link in new window?", "thrive-cb") ?></label>
     </li>
-    <li class="tve_text tve_link_btns clearfix">
+    <li class="tve_text tve_link_btns clearfix" data-multiple-hide>
         <input type="checkbox" id="link_no_follow" class="tve_change" data-ctrl="controls.change.link_rel"
                data-value="nofollow">
         <label for="link_no_follow" class="tve_left"><?php echo __("Make Link no follow?", "thrive-cb") ?></label>
     </li>
     <li style="display: none;" class="tve_ed_btn tve_btn_text tve_click tve_typefocus_btn"
-        data-ctrl="controls.typefocus.transform_selection"><?php echo __("TypeFocus", "thrive-cb") ?></li>
+        data-ctrl="controls.typefocus.transform_selection" data-multiple-hide><?php echo __("TypeFocus", "thrive-cb") ?></li>
 </ul>

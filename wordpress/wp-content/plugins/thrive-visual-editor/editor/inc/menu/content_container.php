@@ -18,7 +18,7 @@
 
         <div class="clear"></div>
     </li>
-    <li>
+    <li data-multiple-hide>
         <input type="text" class="tve_change tve_text element_id" placeholder="ID" data-ctrl="controls.change.element_id">
     </li>
     <li>

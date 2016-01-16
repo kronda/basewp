@@ -53,6 +53,11 @@ define('TVE_LEADS_FIELD_TEMPLATE', 'tpl');
 define('TVE_LEADS_FIELD_STATE_INDEX', 'state_index');
 
 /**
+ * field that holds the visibility status of the already-subscribed state
+ */
+define('TVE_LEADS_FIELD_STATE_VISIBILITY', 'visibility');
+
+/**
  * the action name for the save post ajax callback
  */
 define('TVE_LEADS_ACTION_SAVE_POST', 'tve_leads_save_form');
@@ -131,7 +136,7 @@ add_filter('tcb_user_can_edit', 'tve_leads_editor_check_tcb_version');
 /**
  * check if custom CSS code exists for a form and output that
  */
-add_action('tcb_content_custom_css', 'tve_leads_output_custom_css', 10, 1);
+add_action('tcb_content_custom_css', 'tve_leads_output_custom_css', 10, 3);
 
 /**
  * action hook that overrides the default tve_save_post action from the editor
@@ -186,7 +191,8 @@ function tve_leads_get_editor_fields()
         TVE_LEADS_FIELD_SAVED_CONTENT,
         TVE_LEADS_FIELD_USER_CSS,
         TVE_LEADS_FIELD_TEMPLATE,
-        TVE_LEADS_FIELD_STATE_INDEX
+        TVE_LEADS_FIELD_STATE_INDEX,
+        TVE_LEADS_FIELD_STATE_VISIBILITY,
     );
 }
 
@@ -398,7 +404,7 @@ function tve_leads_get_form_layout($current_templates, $post_id, $post_type)
 
     if (is_editor_page()) {
 
-        tve_leads_enqueue_script('tve-leads-editor', TVE_LEADS_URL . 'js/editor.js', array('tve_editor'));
+        tve_leads_enqueue_script('tve-leads-editor', TVE_LEADS_URL . 'js/editor.min.js', array('tve_editor'));
         /**
          * build up the page data configuration array
          */
@@ -505,7 +511,7 @@ function tve_leads_variation_has_content($variation)
 /**
  * output custom CSS for a form variation
  *
- * this will only be displayed
+ * UPDATE 19.11.2015 - the Custom CSS is only saved once in the default state (in the "parent" variation)
  *
  * @param mixed $variation can be either a numeric value - for variation_key or an already loaded variation array
  * @param bool $return whether to output the CSS or return it
@@ -525,12 +531,31 @@ function tve_leads_output_custom_css($variation, $return = false)
     if (!empty($variation[TVE_LEADS_FIELD_INLINE_CSS])) { /* inline style rules = custom colors */
         $css .= sprintf('<style type="text/css" class="tve_custom_style">%s</style>', $variation[TVE_LEADS_FIELD_INLINE_CSS]);
     }
+
     /* user-defined Custom CSS rules for the form */
+    $custom_css = '';
+    /**
+     * first, check for a parent variation
+     */
+    if (!empty($variation['parent_id'])) {
+        $parent_state = tve_leads_get_form_variation(null, $variation['parent_id']);
+        if (!empty($parent_state) && !empty($parent_state[TVE_LEADS_FIELD_USER_CSS])) {
+            $custom_css = $parent_state[TVE_LEADS_FIELD_USER_CSS] . $custom_css;
+        }
+    }
+
+    /**
+     * fallback / backwards-compatibility: get the CustomCSS from the state itself
+     */
     if (!empty($variation[TVE_LEADS_FIELD_USER_CSS])) {
+        $custom_css = $variation[TVE_LEADS_FIELD_USER_CSS] . $custom_css;
+    }
+
+    if (!empty($custom_css)) {
         $css .= sprintf(
             '<style type="text/css"%s class="tve_user_custom_style">%s</style>',
             $return ? '' : ' id="tve_head_custom_css"', // if we return the CSS, do not append the id to the stylesheet
-            $variation[TVE_LEADS_FIELD_USER_CSS]
+            $custom_css
         );
     }
 
@@ -736,6 +761,16 @@ function tve_leads_save_editor_content()
     $variation[TVE_LEADS_FIELD_ICON_PACK] = empty($_POST['has_icons']) ? 0 : 1;
     $variation[TVE_LEADS_FIELD_HAS_MASONRY] = empty($_POST['tve_has_masonry']) ? 0 : 1;
     $variation[TVE_LEADS_FIELD_HAS_TYPEFOCUS] = empty($_POST['tve_has_typefocus']) ? 0 : 1;
+
+    /**
+     * UPDATE 19.11.2015 - the custom CSS will be saved in the parent form
+     */
+    if (!empty($variation['parent_id']) && ($parent_state = tve_leads_get_form_variation(null, $variation['parent_id']))) {
+        $parent_state[TVE_LEADS_FIELD_USER_CSS] = $_POST['tve_custom_css'];
+        $variation[TVE_LEADS_FIELD_USER_CSS] = '';
+
+        tve_leads_save_form_variation($parent_state);
+    }
 
     tve_leads_save_form_variation($variation);
 
@@ -1227,4 +1262,49 @@ function tve_leads_enqueue_resources_preview($enqueue_resources)
     }
 
     return tve_leads_is_preview_page();
+}
+
+function tve_leads_delivery_connection()
+{
+    $connection = get_option('tve_api_delivery_service', false);
+    $email_body = get_option('tve_leads_asset_mail_subject', false);
+    $email_subject = get_option('tve_leads_asset_mail_body', false);
+    $connected_apis = Thrive_List_Manager::getAvailableAPIsByType(true, array('email'));
+    $asset = !empty($_POST['asset_option']) ? $_POST['asset_option'] : '0';
+    $asset_group = !empty($_POST['asset_group']) ? $_POST['asset_group'] : '';
+
+    if (!empty($connected_apis) && $connection !== false && $email_body !== false && $email_subject !== false) {
+        $args = array(
+            'post_type' => 'tve_lead_asset_group',
+            'post_status' => 'publish',
+            'orderby' => 'date',
+            'order' => 'ASC',
+        );
+        $posts_array = get_posts($args);
+
+        if(!empty($posts_array)) {
+            $data = '<div class="tve_lead_asset_delivery"><div class="tve_lightbox_input_holder"><input';
+            if ($asset == 1) {
+                $data .= ' checked';
+            }
+            $data .= ' class="tve_change" data-ctrl="function:auto_responder.asset_option_changed" id="tve-asset-connection" type="checkbox" value="' . $connection . '"><label for="tve-asset-connection">' . __("Enable Asset Delivery", "thrive-leads") . '</label></div>';
+            $data .= '<div class="tve-asset-select-holder"';
+            if ($asset == 0) {
+                $data .= ' style="display: none" ';
+            }
+            $data .= '><label>' . __("Select the asset group to deliver:", "thrive-leads") . '</label><div class="tve_lightbox_select_holder" style="display: inline-block;"><select id="tve-api-submit-option" class="tve_change " data-ctrl="function:auto_responder.asset_group">';
+
+            foreach ($posts_array as $post) {
+                if (!empty($asset_group) && $asset_group == $post->ID) {
+                    $data .= '<option value="' . $post->ID . '" selected="selected">' . $post->post_title . '</option>';
+                } else {
+                    $data .= '<option value="' . $post->ID . '">' . $post->post_title . '</option>';
+                }
+
+            }
+            $data .= '</select></div></div></div>';
+            echo $data;
+        }
+    }
+
 }

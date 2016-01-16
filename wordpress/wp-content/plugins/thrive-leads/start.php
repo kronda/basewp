@@ -90,6 +90,7 @@ if (defined('DOING_AJAX') && DOING_AJAX) {
      * hook into the TCB form submission action - this is triggered for forms that are connected to an API
      */
     add_action('tcb_api_form_submit', 'tve_leads_api_form_submit');
+    add_action('tve_tcb_delivery_connection', 'tve_leads_delivery_connection');
 }
 
 if (!is_admin()) {
@@ -122,8 +123,9 @@ if (!is_admin()) {
 
     /**
      * it seems WP has an issue with redirection causing infinite loop if the administrator has setup the url to have uppercase characters
+     * SUPP-1043: increased priority from 10 to 12 - was causing some sort of weird 500 Internal Server Error on pagination
      */
-    add_filter('redirect_canonical', 'tve_leads_canonical_url_lowercase', 10, 2);
+    add_filter('redirect_canonical', 'tve_leads_canonical_url_lowercase', 12, 2);
 
     /**
      * this is called before template_redirect hook
@@ -134,4 +136,7 @@ if (!is_admin()) {
      * filter sidebar params
      */
     add_action('dynamic_sidebar_params', 'thrive_dynamic_sidebar_params');
+} else {
+    add_filter('tve_filter_api_types', 'tve_leads_filter_api_types');
+    add_filter('tve_filter_available_connection', 'tve_leads_filter_available_connection');
 }

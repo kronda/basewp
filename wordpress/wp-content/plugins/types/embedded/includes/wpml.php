@@ -1028,7 +1028,7 @@ function wpcf_wpml_is_translated_profile_page( $field ) {
  */
 function wpcf_wpml_field_is_copy( $field ) {
     if ( !defined( 'WPML_TM_VERSION' ) ) return false;
-    return isset( $field['wpml_action'] ) && $field['wpml_action'] === 1;
+    return isset( $field['wpml_action'] ) && intval( $field['wpml_action'] ) === 1;
 }
 
 /**
@@ -1039,7 +1039,7 @@ function wpcf_wpml_field_is_copy( $field ) {
  */
 function wpcf_wpml_field_is_translated( $field ) {
     if ( !defined( 'WPML_TM_VERSION' ) ) return false;
-    return isset( $field['wpml_action'] ) && $field['wpml_action'] === 2;
+    return isset( $field['wpml_action'] ) && intval( $field['wpml_action'] ) === 2;
 }
 
 /**

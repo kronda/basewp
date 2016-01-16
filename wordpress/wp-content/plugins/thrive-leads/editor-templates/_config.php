@@ -1123,6 +1123,172 @@ return array(
                 'gr-three-set-close'
             )
         ),
+        'gr_four_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 004 v1',
+            'css' => 'gr_four_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            ),
+            'icons' => array(
+                'gr-four-set-close'
+            )
+        ),
+        'gr_four_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 004 v1',
+            'css' => 'gr_four_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            ),
+            'icons' => array(
+                'gr-four-set-close'
+            )
+        ),
+        'gr_four_set_vms_step1_v2' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 004 v2',
+            'css' => 'gr_four_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            ),
+            'icons' => array(
+                'gr-four-set-close'
+            )
+        ),
+        'gr_four_set_vms_step2_v2' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 004 v2',
+            'css' => 'gr_four_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700'
+            ),
+            'icons' => array(
+                'gr-four-set-close'
+            )
+        ),
+        'gr_five_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 005',
+            'css' => 'gr_five_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+                '//fonts.googleapis.com/css?family=Allan:400,700'
+            ),
+            'icons' => array(
+                'gr-five-set-close'
+            )
+        ),
+        'gr_five_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 005',
+            'css' => 'gr_five_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Open+Sans:400,300,700',
+                '//fonts.googleapis.com/css?family=Allan:400,700'
+            ),
+            'icons' => array(
+                'gr-five-set-close'
+            )
+        ),
+        'gr_six_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 006',
+            'css' => 'gr_six_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Courgette'
+            ),
+            'icons' => array(
+                'gr-six-set-close'
+            ),
+            'custom_color_mappings' => array(
+                'contentbox' => array(
+                    '5s' => array(
+                        'Flat' => array(
+                            array(
+                                "label" => "Bubble Border Color",
+                                'opacity' => 1,
+                                "selector" => ".tve_cb5",
+                                "property" => "color",
+                                "value" => "[color]"
+                            ),
+                        )
+                    ),
+                )
+            )
+        ),
+        'gr_six_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 006',
+            'css' => 'gr_six_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Courgette'
+            ),
+            'icons' => array(
+                'gr-six-set-close'
+            ),
+            'custom_color_mappings' => array(
+                'contentbox' => array(
+                    '5s' => array(
+                        'Flat' => array(
+                            array(
+                                "label" => "Bubble Border Color",
+                                'opacity' => 1,
+                                "selector" => ".tve_cb5",
+                                "property" => "color",
+                                "value" => "[color]"
+                            ),
+                        )
+                    ),
+                )
+            )
+        ),
+        'gr_seven_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 007',
+            'css' => 'gr_seven_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:400,700,300,900,300italic'
+            ),
+            'icons' => array(
+                'gr-seven-set-close'
+            )
+        ),
+        'gr_seven_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 007',
+            'css' => 'gr_seven_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Lato:400,700,300,900,300italic'
+            ),
+            'icons' => array(
+                'gr-seven-set-close'
+            )
+        ),
+        'gr_eight_set_vms_step1' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 008',
+            'css' => 'gr_eight_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Roboto+Slab:300,400,100',
+                '//fonts.googleapis.com/css?family=Lato:400,700,300,900,300italic'
+            ),
+            'icons' => array(
+                'gr-eight-set-close'
+            )
+        ),
+        'gr_eight_set_vms_step2' => array(
+            'multi_step' => true,
+            'name' => 'Scroll Mat set 008',
+            'css' => 'gr_eight_set.css',
+            'fonts' => array(
+                '//fonts.googleapis.com/css?family=Roboto+Slab:300,400,100',
+                '//fonts.googleapis.com/css?family=Lato:400,700,300,900,300italic'
+            ),
+            'icons' => array(
+                'gr-eight-set-close'
+            )
+        ),
         /*'gr_four_set' => array(
             'name' => 'Scroll Mat set 004',
             'css' => 'gr_four_set.css',
@@ -1130,7 +1296,7 @@ return array(
                 '//fonts.googleapis.com/css?family=Roboto:400,300,700,300italic'
             ),
             'icons' => array(
-                'gr-four-set-close', 'gr-four-set-mail'
+                'gr-four-set-close', 'gr-four-set-mail' .
             )
         ),
         'gr_five_set' => array(
@@ -3861,6 +4027,86 @@ return array(
                     ),
                     2 => array(
                         'tpl' => 'screen_filler|53_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            )
+        ),
+        'greedy_ribbon' => array(
+            'gr_four_set' => array(
+                'name' => 'Scroll Mat multi-step set 004 v1',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'greedy_ribbon|gr_four_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'greedy_ribbon|gr_four_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            'gr_four_set_v2' => array(
+                'name' => 'Scroll Mat multi-step set 004 v2',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'greedy_ribbon|gr_four_set_vms_step1_v2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'greedy_ribbon|gr_four_set_vms_step2_v2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            'gr_five_set' => array(
+                'name' => 'Scroll Mat multi-step set 005',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'greedy_ribbon|gr_five_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'greedy_ribbon|gr_five_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            'gr_six_set' => array(
+                'name' => 'Scroll Mat multi-step set 006',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'greedy_ribbon|gr_six_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'greedy_ribbon|gr_six_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            'gr_seven_set' => array(
+                'name' => 'Scroll Mat multi-step set 007',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'greedy_ribbon|gr_seven_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'greedy_ribbon|gr_seven_set_vms_step2',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                )
+            ),
+            'gr_eight_set' => array(
+                'name' => 'Scroll Mat multi-step set 008',
+                'states' => array(
+                    1 => array(
+                        'tpl' => 'greedy_ribbon|gr_eight_set_vms_step1',
+                        'state' => 'default', // or already_subscribed
+                    ),
+                    2 => array(
+                        'tpl' => 'greedy_ribbon|gr_eight_set_vms_step2',
                         'state' => 'default', // or already_subscribed
                     ),
                 )

@@ -1,0 +1,68 @@
+<div class="tve-form tve-leads-assets-email-templates">
+    <p class="tve-form-description larger-text"><?php echo __('Below, you can define what your default asset delivery email will look like. You can change this for individual emails, later', 'thrive-leads') ?>.</p>
+    <label><?php echo __('Subject Line:', 'thrive-leads') ?></label>
+    <# if(post_subject) { #>
+        <input class="tve-form-control tve-leads-asset-subject-input" placeholder="<?php echo __('Email Subject', 'thrive-leads') ?>" value="<#= post_subject #>"><br>
+        <# } else { #>
+            <input class="tve-form-control tve-leads-asset-subject-input" placeholder="<?php echo __('Email Subject', 'thrive-leads') ?>" value="<#= ThriveLeads.objects.AssetsWizard.get('email_data').template_subject #>">
+            <# } #>
+
+    <span class="tve-subject-wrapper">
+    </span>
+                <label><?php echo __('Email Content:', 'thrive-leads') ?></label>
+                <textarea id="my-id-<#= ID #>"></textarea>
+                <ul class="tve-inside-collapsable-list" id="tve-asset-group-shortcodes">
+                    <li class="collapse-table-list-item clearfix tve-no-margin">
+                        <div class="tve-leads-shortcode-heading collapse-table-list-heading tve_leads_clearfix tve-leads-def-tableheader">
+                <span class="asset-shortcode-heading-part tve-inside-collapsable-part larger-text">
+                    <?php echo __('Show available short codes', 'thrive-leads') ?>
+                </span>
+                <span class="relative asset-shortcode-heading-part tve-inside-collapsable-part tl-text-right">
+                    <a class="tl-tooltip tve-prevent-click tve-btn tve-btn-icon tve-group-details larger-text" href="javascript:void(0)">
+                        <span class="tve-icon-plus-circle"></span>
+                    </a>
+                </span>
+                        </div>
+                        <div class="tve-leads-shortcode-list tve-leads-def-tablebody">
+                            <input readonly  class="form-label tve-form-control tve-input-small tve-input-inline tve-input-condensed tve-control-label" value="[asset_name]">
+                <span class="tve-leads-copy-container">
+                    <a class="tve-copy-to-clipboard tve-btn tve-btn-blue tve-btn-small margin-right-10" href="javascript:void(0)">
+                        <span class="tve-icon-clone2"></span>
+                        <span class="tl-copy-text"><?php echo __('Copy', 'thrive-leads') ?> &nbsp;</span>
+                    </a>
+                </span>
+                <span>
+                    <?php echo __('Displays the name of your opt-in offer.', 'thrive-leads') ?>
+                </span>
+                            <div class="tve_leads_clearfix"></div>
+                            <br>
+                            <input readonly  class="form-label tve-form-control tve-input-small tve-input-inline tve-input-condensed tve-control-label" value="[lead_name]">
+                <span class="tve-leads-copy-container">
+                    <a class="tve-copy-to-clipboard tve-btn tve-btn-blue tve-btn-small margin-right-10" href="javascript:void(0)">
+                        <span class="tve-icon-clone2"></span>
+                        <span class="tl-copy-text"><?php echo __('Copy', 'thrive-leads') ?> &nbsp;</span>
+                    </a>
+                </span>
+                <span>
+                    <?php echo __('Displays the name of the person receiving the email(if available).', 'thrive-leads') ?>
+                </span>
+                            <div class="tve_leads_clearfix"></div>
+                            <br>
+                            <input readonly  class="form-label tve-form-control tve-input-small tve-input-inline tve-input-condensed tve-control-label" value="[asset_download]">
+                <span class="tve-leads-copy-container">
+                    <a class="tve-copy-to-clipboard tve-btn tve-btn-blue tve-btn-small margin-right-10" href="javascript:void(0)">
+                        <span class="tve-icon-clone2"></span>
+                        <span class="tl-copy-text"><?php echo __('Copy', 'thrive-leads') ?> &nbsp;</span>
+                    </a>
+                </span>
+                <span>
+                    <?php echo __('Insert a download link or a list of download links.', 'thrive-leads') ?>
+                </span>
+                            <div class="tve_leads_clearfix"></div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="form-buttons right">
+                    <button class="tve-btn tve-btn-green tve-btn-large tve-leads-submit-template" value="mandrill"><?php echo __("Save Template & Continue", "thrive-cb") ?></button>
+                </div>
+</div>

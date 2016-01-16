@@ -1,10 +1,10 @@
 
 <div id="poststuff">
-    %%SUCURI.WordpressVersion%%
+    %%%SUCURI.WordpressVersion%%%
 
-    %%SUCURI.CoreFiles%%
+    %%%SUCURI.CoreFiles%%%
 
-    %%SUCURI.AuditReports%%
+    %%%SUCURI.AuditReports%%%
 
-    %%SUCURI.AuditLogs%%
+    %%%SUCURI.AuditLogs%%%
 </div>

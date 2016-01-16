@@ -1,8 +1,8 @@
 <span class="tve_options_headline"><span class="tve_icm tve-ic-move"></span><?php echo __("Post Grid options", "thrive-cb") ?></span>
 <ul class="tve_menu">
-    <?php $has_custom_colors = true; include dirname(__FILE__) . '/_custom_colors.php' ?>
+    <?php $has_custom_colors = true; $extra_attr = 'data-multiple-hide'; include dirname(__FILE__) . '/_custom_colors.php' ?>
     <?php include dirname(__FILE__) . '/_margin.php' ?>
-    <li id="lb_post_grid" class="tve_ed_btn tve_btn tve_btn_text tve_click" data-load="1" data-wpapi="lb_post_grid" data-ctrl="controls.lb_open"><?php echo __("Edit Grid", "thrive-cb") ?></li>
+    <li id="lb_post_grid" class="tve_ed_btn tve_btn tve_btn_text tve_click" data-load="1" data-wpapi="lb_post_grid" data-ctrl="controls.lb_open" data-multiple-hide><?php echo __("Edit Grid", "thrive-cb") ?></li>
     <?php include dirname(__FILE__) . '/_custom_font.php' ?>
 
     <?php $font_size_label = __('Title Font Size', "thrive-cb") ?>

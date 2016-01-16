@@ -19,9 +19,18 @@
             <div class="tve-logo tve_leads_clearfix">
                 <?php echo '<img src="' . plugins_url('thrive-leads/admin/img') . '/logo.png" > '; ?>
                 <div class="tve-global-settings">
+                    <a href="<?php menu_page_url('thrive_leads_contacts'); ?>" class="tl-leads-users-contacts" title="<?php echo __('Leads Export', 'thrive-leads') ?>">
+                        <span class="tve-icon-users-group"></span>
+                    </a>
+                    &nbsp;
+                    <a href="<?php echo admin_url( 'admin.php?page=thrive_leads_asset_delivery' ); ?>"  title="<?php echo __('Thrive Leads Asset Delivery', 'thrive-leads') ?>">
+                        <span class="tve-icon-cloud"></span>
+                    </a>
+                    &nbsp;
                     <a href="javascript:void(0)" class="tl-inbound-link-builder" title="<?php echo __('Thrive Leads SmartLinks', 'thrive-leads') ?>">
                         <span class="tve-icon-link"></span>
                     </a>
+
                     &nbsp;
                     <a href="javascript:void(0)" class="tl-open-settings" title="<?php echo __('Settings', 'thrive-leads') ?>">
                         <span class="tve-icon-cog"></span>
@@ -55,6 +64,12 @@
                                     <?php echo __('In order to increase overall performance, Thrive Leads caches the number of impressions and conversions for each Lead Group, Shortcode, ThriveBox and Form. Click the following link to purge the cache and re-build it.', 'thrive-leads') ?>
                                     <a class="tve-leads-clear-cache" href="javascript:void(0)"><?php echo __('Purge cache', 'thrive-leads') ?></a>
                                 </span>
+                            </div>
+                            <div class="tve-input-group tve_leads_clearfix">
+                                <h3 class="tve-settings-title" style="padding-left:0"><?php echo __('Logs') ?></h3>
+                                <label><?php echo __('Clear Archived Logs') ?></label>
+                                <a class="tve-leads-delete-logs" href="javascript:void(0)"><span class="tve-icon-trash-o"></span></a>
+
                             </div>
                         </div>
                     </div>

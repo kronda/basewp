@@ -115,7 +115,20 @@ if (!class_exists('Thrive_Icon_Manager_Data')) {
 
             $search = "font-family: '{$font_family}';";
             $replacement = "font-family: '{$font_family}' !important;";
-            $file_content = substr_replace($file_content, $replacement, strpos($file_content, $search, strrpos($file_content, 'font-family')), strlen($search));
+
+            /**
+             * make sure the replace is done after the @font-face declaration
+             */
+            if (!preg_match('#@font-face([^\}]+)\}#si', $file_content, $m, PREG_OFFSET_CAPTURE)) {
+                return true;
+            }
+            $position = strlen($m[0][0]) + $m[0][1];
+            $position = strpos($file_content, $search, $position);
+            if ($position === false) {
+                return true;
+            }
+
+            $file_content = substr_replace($file_content, $replacement, $position, strlen($search));
 
             return file_put_contents($css_file, $file_content);
         }

@@ -10,6 +10,6 @@
     </thead>
 
     <tbody>
-        %%SUCURI.AdminUsers.List%%
+        %%%SUCURI.AdminUsers.List%%%
     </tbody>
 </table>

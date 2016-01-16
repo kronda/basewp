@@ -7,7 +7,7 @@ html, body {
   }
   &.tve-so-hidden.tve-sl-open.tve-s-hide-overflow {
     overflow: hidden;
-    height: 100% !important;
+    height: auto !important;
   }
 }
 .tve-gr-hidden {
@@ -23,32 +23,50 @@ trigger for the 2-step lightbox form
 /* Ribbon form type */
 .tve-leads-ribbon {
   top: 0;
+  &.tl-anim-slide_bot {
+    top: auto;
+    bottom: -100%;
+  }
 }
 /* Slide In form type */
 .tve-leads-slide-in {
   position: fixed;
-  z-index: 999992;
+  &.tve-leads-triggered {
+    z-index: 999992;
+  }
   .thrv-leads-slide-in {
     float: right;
   }
   &.tl_bot_left {
     bottom: 0;
-    left: 0;
+    left: -100%;
+    &.tve-leads-triggered {
+      left: 0;
+    }
   }
 
   &.tl_bot_right {
     bottom: 0;
-    right: 0;
+    right: -100%;
+    &.tve-leads-triggered {
+      right: 0;
+    }
   }
 
   &.tl_top_right {
     top: 0;
-    right: 0;
+    right: -100%;
+    &.tve-leads-triggered {
+      right: 0;
+    }
   }
 
   &.tl_top_left {
     top: 0;
-    left: 0;
+    left: -100%;
+    &.tve-leads-triggered {
+      left: 0;
+    }
   }
 }
 @media(max-width: 782px) {
@@ -88,11 +106,15 @@ trigger for the 2-step lightbox form
 }
 /* screen fillers */
 .tve-leads-screen-filler {
+ // height: 100vh;
   &.tve_lb_closing {
     .tve_p_lb_overlay {
       opacity: 0 !important;
       @include transition(opacity .3s ease-out !important);
     }
+  }
+  .thrv-leads-screen-filler {
+    height: 100vh;
   }
 }
 /* lightboxes */
@@ -107,6 +129,9 @@ trigger for the 2-step lightbox form
 /*
   Scroll Mat
 */
+.tve-tl-gr-anim {
+  @include transition(margin-top, .6s, linear);
+}
 .tve-leads-greedy_ribbon.tve-tl-anim.tl-anim-slide_top {
   @include transition(transform .6s linear);
   position: absolute;

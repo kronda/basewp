@@ -8,6 +8,6 @@
     </thead>
 
     <tbody>
-        %%SUCURI.WordpressConfig.Rules%%
+        %%%SUCURI.WordpressConfig.Rules%%%
     </tbody>
 </table>

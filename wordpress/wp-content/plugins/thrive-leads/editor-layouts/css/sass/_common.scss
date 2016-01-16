@@ -37,6 +37,9 @@ body {
 .tve_editor_main_content {
   .thrv_wrapper {
     padding: 0;
+    &.thrv_content_reveal {
+      padding: 1px;
+    }
   }
 }
 
@@ -58,7 +61,10 @@ body .tve_p_lb_content #tve_editor .tve_p_lb_control {
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 999991;
+  z-index: -1;
+  &.tve-leads-triggered {
+    z-index: 999991;
+  }
   .single-tve_form_type & {
     z-index: 0;
     top: 32px;

@@ -100,7 +100,7 @@ $is_custom = isset($config['type']) && $config['type'] == 'custom';
 <div class="tve_clear"></div>
 <br/><br/>
 <div id="tve-social-custom-config">
-    <h><b><?php echo __("Step 2.", "thrive-cb") ?></b> <?php echo __("Configure the options for each button:", "thrive-cb") ?></h>
+    <h6><b><?php echo __("Step 2.", "thrive-cb") ?></b> <?php echo __("Configure the options for each button:", "thrive-cb") ?></h6>
 
     <div id="tve-lb-form">
         <div class="thrv_wrapper thrv_tabs_shortcode">
@@ -414,6 +414,13 @@ $is_custom = isset($config['type']) && $config['type'] == 'custom';
                         <h4>
                             <?php echo __("Twitter Tweet Settings", "thrive-cb") ?>
                         </h4>
+                        <?php if ($is_custom) : ?>
+                            <div class="tve_message tve_warning" style="margin-top: -10px">
+                                <?php echo sprintf(__('Please note: Twitter has removed support for the public URL share counter, as stated %shere%s.', "thrive-cb"), '<a href="https://blog.twitter.com/2015/hard-decisions-for-a-sustainable-platform" target="_blank">', '</a>') ?>
+                                <?php echo  __('As a result, we are not able to display share counts for the URL - the individual Twitter counts will be hidden', "thrive-cb") ?>
+                            </div>
+                            <div class="tve-sp"></div>
+                        <?php endif ?>
                         <label class="tve_lightbox_label"><?php echo __("URL to tweet", "thrive-cb") ?></label>
                         <input id="ts-url" type="text" data-ctrl="function:networks.t_share.setup.tweetLength"
                                class="tve_keyup social-config-text tve_lightbox_input tve_lightbox_input_inline"
@@ -462,6 +469,8 @@ $is_custom = isset($config['type']) && $config['type'] == 'custom';
 
                         <div class="tve-sp"></div>
                         <?php if ($is_custom) : ?>
+                            <?php
+                            /* Twitter removed the public API for retrieving counts. this option is not needed anymore
                             <label class="tve_lightbox_label"><?php echo __("Counter URL", "thrive-cb") ?></label>
                             <input type="text" class="social-config-text tve_lightbox_input tve_lightbox_input_inline"
                                    name="counter"
@@ -472,6 +481,7 @@ $is_custom = isset($config['type']) && $config['type'] == 'custom';
                                 <?php echo __("Optional. If you've shortened your link, add the full URL for the share counter here.", 'thrive-cb') ?>
                             </span>
                             <div class="tve-sp"></div>
+                            */ ?>
                             <label class="tve_lightbox_label"><?php echo __("Button Label", 'thrive-cb') ?></label>
                             <input type="text" class="social-config-text tve_lightbox_input tve_lightbox_input_inline"
                                    name="label"

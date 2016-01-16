@@ -1,0 +1,76 @@
+<div class="tve-leads-delivery-step1">
+    <p class="tve-form-description larger-text"><?php echo __('Select the email delivery service you wany yo use for the Asset Delivery feature. Integrating with one of these services ensures that your emails get delivered without you needing to deal with email server setups and spam protection', 'thrive-leads') ?></p>
+    <p class="tve-form-description tl-text-center larger-text"><?php echo __("Select to continue", "thrive-leads"); ?></p>
+
+    <div class="tve-form tve-asset-conections">
+        <div class="tve_leads_clearfix">
+            <a href="javascript:void(0)" class="tve-leads-mandrill-api tve-asset-delivery-conection tl-text-center">
+                <span class="tve-asset-conection-icon"></span>
+                <br/><span class="tve-leads-connection-name"><?php echo __("Mandrill", "thrive-leads"); ?></span>
+            </a>
+            <a href="javascript:void(0)" class="tve-leads-postmark-api tve-asset-delivery-conection tl-text-center">
+                <span class="tve-asset-conection-icon"></span>
+                <br/><span class="tve-leads-connection-name"><?php echo __("Postmark", "thrive-leads"); ?></span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="tve-leads-delivery-mandrill tve-leads-delivery-connection" style="display: none;">
+    <div class="tve-form">
+        <p class="tve-form-description larger-text"><?php echo __('Enter your Mandrill API key below', 'thrive-leads') ?>. <a class="tl-play-link wistia-popover[height=450,playerColor=2bb914,width=800]" href="//fast.wistia.net/embed/iframe/s2s94z4w66?popover=true"><?php echo __('Click Here', 'thrive-leads') ?></a> <?php echo __('for instructions on how to get your API key', 'thrive-leads') ?>.</p>
+        <br>
+        <div class="tve-center-lightbox">
+            <input placeholder="<?php echo __("API key", "thrive-cb") ?>" type="text" class="text tve-leads-key-mandrill" name="connection[key]" value=""/>
+            <br><br>
+            <button class="tve-btn tve-btn-green tve-leads-submit-connection" value="mandrill"><?php echo __("Save Mandrill API Key", "thrive-cb") ?></button>
+            <button class="tve-btn tve-btn-gray tve-leads-back-api"><?php echo __("Go Back", "thrive-cb") ?></button>
+        </div>
+    </div>
+</div>
+<div class="tve-leads-delivery-postmark tve-leads-delivery-connection" style="display: none;">
+    <div class="tve-form">
+        <p class="tve-form-description"><?php echo __('Enter your Postmark API key below', 'thrive-leads') ?>. <a class="tl-play-link wistia-popover[height=450,playerColor=2bb914,width=800]" href="//fast.wistia.net/embed/iframe/4wlzzbsk34?popover=true"><?php echo __('Click Here', 'thrive-leads') ?></a> <?php echo __('for instructions on how to get your API key', 'thrive-leads') ?>.</p>
+        <?php $admin_email = get_option('admin_email');
+        ?>
+        <p class="tve-form-description"><?php echo __('Postmark requires your email to be verified before allowing any emails to be sent. Please be sure that the email you set here matches the email you confirmed on the postmark website.', 'thrive-leads') ?></p>
+        <table class="form-table">
+            <tbody>
+            <tr>
+                <th scope="row"><label><?php echo __("Postmark-approved email address", "thrive-cb") ?>:</label></th>
+                <td>
+                    <input placeholder="<?php echo __("Email", "thrive-cb") ?>" type="text" class="text tve-leads-email-postmark" name="connection[email]" value="<?php echo $admin_email;  ?>"/>
+
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label><?php echo __("API key", "thrive-cb") ?>:</label></th>
+                <td>
+                    <input placeholder="<?php echo __("API key", "thrive-cb") ?>" type="text" class="text tve-leads-key-postmark" name="connection[key]" value=""/>
+                </td>
+            </tr>
+            <tr>
+                <th></th>
+                <td>
+                    <button class="tve-btn tve-btn-green tve-leads-submit-connection" value="postmark"><?php echo __("Save Postmark API Key", "thrive-cb") ?></button>
+                    <button class="tve-btn tve-btn-gray tve-leads-back-api"><?php echo __("Go Back", "thrive-cb") ?></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="tve-leads-delivery-success" style="display: none;">
+    <div class="tve-form">
+        <br>
+        <span class="tve-leads-success">
+            <i class="tve-icon-checkmark"></i><?php echo __("SUCCESS", "thrive-leads"); ?>
+        </span>
+        <br><br>
+        <p class="tve-form-description tl-text-center larger-text"><?php echo __('You have succesfully connected to', 'thrive-leads') ?> <span class="tve-leads-connection-name"></span> <?php echo __('for you email asset delivery', 'thrive-leads') ?>!</p>
+        <br>
+        <div class="tl-text-center">
+            <button class="tve-btn tve-btn-green tve-leads-asset-close" value="mandrill"><?php echo __("Save & Continue", "thrive-cb") ?></button>
+        </div>
+    </div>
+</div>

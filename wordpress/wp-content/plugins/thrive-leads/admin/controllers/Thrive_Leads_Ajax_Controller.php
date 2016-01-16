@@ -69,7 +69,8 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
     public function globalSettingsAPIAction()
     {
         $allowed = array(
-            'ajax_load'
+            'ajax_load',
+            'tve_load_annotations'
         );
         $field = $this->param('field');
         $value = $this->param('value');
@@ -179,6 +180,92 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
     }
 
     /**
+     * Asset Groups for CRUD (new name: ThriveBox)
+     *
+     * @return mixed based on the handled HTTP operation
+     */
+    public function assetsAction()
+    {
+        $model = json_decode(file_get_contents('php://input'), true);
+        $method = empty($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']) ? 'GET' : $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
+
+        switch ($method) {
+            case 'POST':
+            case 'PUT':
+            case 'PATCH':
+                return tve_leads_save_asset_group($model);
+            case 'DELETE':
+                return tve_leads_delete_post($this->param('ID', 0));
+            case 'GET':
+                if ($this->param('custom')) {
+                    switch ($this->param('custom')) {
+                        case 'update_service':
+                            $connection = $this->param('new_connection', array());
+                            return update_option('tve_api_delivery_service', $connection);
+                        case 'test_service':
+                            $connection = $this->param('test_connection', array());
+                            $api = Thrive_List_Manager::connectionInstance($connection);
+                            $test = $api->testConnection();
+                            if ($test === true) {
+                                $class = "updated";
+                                return "<div class='" . $class . "'><p>" . __('Connection was made successfully', 'thrive-leads') . "</p></div>";
+                            } else {
+                                $class = "error";
+                                return "<div class='" . $class . "'><p>" . $test . "</p></div>";
+                            }
+                    }
+                }
+                break;
+        }
+
+    }
+
+    /**
+     * Asset Group Files for CRUD (new name: ThriveBox)
+     *
+     * @return mixed based on the handled HTTP operation
+     */
+    public function filesAddAction()
+    {
+        $model = json_decode(file_get_contents('php://input'), true);
+        $method = empty($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']) ? 'GET' : $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
+
+        switch ($method) {
+            case 'POST':
+            case 'PUT':
+            case 'PATCH':
+                return tve_leads_update_asset_files($model);
+            case 'DELETE':
+                return tve_leads_delete_asset_file($this->param('parent_ID', 0), $this->param('ID', 0));
+            case 'GET':
+                break;
+        }
+
+    }
+
+    /**
+     * Asset Group Files for CRUD (new name: ThriveBox)
+     *
+     * @return mixed based on the handled HTTP operation
+     */
+    public function wizardAddAction()
+    {
+        $model = json_decode(file_get_contents('php://input'), true);
+        $method = empty($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']) ? 'GET' : $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
+
+        switch ($method) {
+            case 'POST':
+            case 'PUT':
+            case 'PATCH':
+                return tve_leads_add_wizard_group($model);
+            case 'DELETE':
+                return tve_leads_delete_post($this->param('ID', 0));
+            case 'GET':
+                break;
+        }
+    }
+
+    /**
      * Lead Groups API for CRUD
      *
      * @return mixed based on the handled HTTP operation
@@ -191,7 +278,6 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
         if ($this->param('get_empty_variations')) {
             return array('ids' => tve_leads_get_group_empty_form_variations($this->param('ID')));
         }
-
         switch ($method) {
             case 'POST':
             case 'PUT':
@@ -454,7 +540,7 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
     public function testAPIAction()
     {
         $model = json_decode(file_get_contents('php://input'), true);
-        $method = empty($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']) ? 'GET' : $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];;
+        $method = empty($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']) ? 'GET' : $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
 
         switch ($method) {
             case 'POST':
@@ -538,6 +624,7 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
             'referral_type' => $this->param('tve-referral-type'),
             'source_type' => $this->param('tve-source-type'),
             'tracking_type' => $this->param('tve-tracking-type'),
+            'load_annotations' => $this->param('tve_load_annotations'),
             'archived_log' => 0
         );
 
@@ -761,6 +848,13 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
      */
     public function clearCacheStatisticsAction()
     {
+        $this->_purgeCache();
+
+        die('done');
+    }
+
+    private function _purgeCache()
+    {
         global $tvedb;
 
         /**
@@ -772,8 +866,7 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
         /**
          * form variations
          */
-        $tvedb->update_all_fields('form_variations', array('cache_impressions' => null, 'cache_conversions' => null));
-        die('done');
+        return $tvedb->update_all_fields('form_variations', array('cache_impressions' => null, 'cache_conversions' => null));
     }
 
     /**
@@ -783,5 +876,91 @@ class Thrive_Leads_Ajax_Controller extends Thrive_Leads_Request_Handler
     {
         include dirname(dirname(__FILE__)) . '/views/inbound_link_builder.php';
         die;
+    }
+
+    public function addAssetAPIAction()
+    {
+        $connection = $this->param('type', array());
+        $api = Thrive_List_Manager::connectionInstance($connection);
+        $connection_type = get_option('tve_api_delivery_service', false);
+
+
+        if ($connection_type == false) {
+            update_option('tve_api_delivery_service', $connection);
+        }
+        $_POST['connection']['key'] = $_POST['key'];
+        $_POST['connection']['email'] = $_POST['email'];
+
+        $connect = $api->readCredentials();
+
+        return $connect;
+
+    }
+
+    /**
+     * Handle actions for the Contacts view.
+     * @return array
+     */
+    public function contactsAction()
+    {
+        switch ($this->param('actionType')) {
+            case 'send-email':
+                $data = $this->param('data');
+
+                $result = tve_send_contacts_email($data['id'], $data['email_address'], $data['save_email']);
+                break;
+
+            case 'delete-download':
+                global $tvedb;
+                $id = $this->param('id');
+
+                $result = $tvedb->tve_leads_delete_download_item($id);
+                break;
+
+            case 'download':
+                $source = $this->param('source');
+                $type = $this->param('type');
+                $params = $this->param('params');
+
+                $result = tve_leads_process_contact_download($source, $type, $params);
+                break;
+
+            default:
+                $result = '';
+        }
+
+        return $result;
+    }
+
+    public function setEmailTemplateAction()
+    {
+        tve_leads_set_email_template($_POST);
+        return true;
+    }
+
+    public function setWizardCompleteAction()
+    {
+        return update_option('tve_leads_asset_wizard_complete', 1);
+    }
+
+    public function deleteLogsAction()
+    {
+        global $tvedb;
+        $v_ids = $tvedb->get_variation_ids();
+        $t_ids = $tvedb->get_split_test_ids();
+
+        $v_result = 0;
+        if (!empty($v_ids)) {
+            $v_result = $tvedb->delete_conversion_logs($v_ids);
+        }
+
+        $t_result = 0;
+        if (!empty($t_ids)) {
+            $t_result = $tvedb->delete_split_logs($t_ids);
+        }
+
+        $this->_purgeCache();
+
+        return $v_result + $t_result;
     }
 }

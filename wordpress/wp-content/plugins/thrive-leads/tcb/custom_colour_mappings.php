@@ -171,7 +171,7 @@ return array(
         )
     ),
     "contentbox" => array(
-        "1" => array(
+        "1s" => array(
             "Flat" => array(
                 array(
                     "label" => "Headline Background",
@@ -275,7 +275,7 @@ return array(
                 ),
             )
         ),
-        "2" => array(
+        "2s" => array(
             "Flat" => array(
                 array(
                     "label" => "Background",
@@ -365,7 +365,7 @@ return array(
                 ),
             ),
         ),
-        "3" => array(
+        "3s" => array(
             "Flat" => array(
                 array(
                     "label" => "Headline Background",
@@ -470,7 +470,7 @@ return array(
                 ),
             ),
         ),
-        "4" => array(
+        "4s" => array(
             "Flat" => array(
                 array(
                     "label" => "Border",
@@ -554,7 +554,7 @@ return array(
                 ),
             ),
         ),
-        "5" => array(
+        "5s" => array(
             "Flat" => array(
                 array(
                     "label" => "Background",
@@ -632,7 +632,7 @@ return array(
                 ),
             )
         ),
-        "6" => array(
+        "6s" => array(
             "Flat" => array(
                 array(
                     "label" => "Background",
@@ -1945,19 +1945,19 @@ return array(
             "Flat" => array(
                 array(
                     "label" => "Inputs Text Color",
-                    "selector" => 'input[type="text"],textarea,select',
+                    "selector" => 'input[type="text"],textarea,select,input[type="email"]',
                     "property" => 'color',
                     "value" => "[color]",
                 ),
                 array(
                     "label" => "Inputs Border Color",
-                    "selector" => 'input[type="text"],textarea,select',
+                    "selector" => 'input[type="text"],textarea,select, input[type="email"]',
                     "property" => 'border-color',
                     "value" => "[color]",
                 ),
                 array(
                     "label" => "Inputs Border Color(hover)",
-                    "selector" => 'input[type="text"],textarea,select',
+                    "selector" => 'input[type="text"],textarea,select,input[type="email"]',
                     "property" => 'border-color',
                     "value" => "[color]",
                     'hover' => 1
@@ -2017,19 +2017,19 @@ return array(
             "Classy" => array(
                 array(
                     "label" => "Inputs Text Color",
-                    "selector" => 'input[type="text"],textarea,select',
+                    "selector" => 'input[type="text"],textarea,select,input[type="email"]',
                     "property" => 'color',
                     "value" => "[color]",
                 ),
                 array(
                     "label" => "Inputs Border Color",
-                    "selector" => 'input[type="text"],textarea,select',
+                    "selector" => 'input[type="text"],textarea,select,input[type="email"]',
                     "property" => 'border-color',
                     "value" => "[color]",
                 ),
                 array(
                     "label" => "Inputs Border Color(hover)",
-                    "selector" => 'input[type="text"],textarea,select',
+                    "selector" => 'input[type="text"],textarea,select,input[type="email"]',
                     "property" => 'border-color',
                     "value" => "[color]",
                     'hover' => 1
@@ -2089,19 +2089,19 @@ return array(
             "Minimal" => array(
                 array(
                     "label" => "Inputs Text Color",
-                    "selector" => 'input[type="text"],textarea,select',
+                    "selector" => 'input[type="text"],textarea,select,input[type="email"]',
                     "property" => 'color',
                     "value" => "[color]",
                 ),
                 array(
                     "label" => "Inputs Border Color",
-                    "selector" => 'input[type="text"],textarea,select',
+                    "selector" => 'input[type="text"],textarea,select,input[type="email"]',
                     "property" => 'border-color',
                     "value" => "[color]",
                 ),
                 array(
                     "label" => "Inputs Border Color(hover)",
-                    "selector" => 'input[type="text"],textarea,select',
+                    "selector" => 'input[type="text"],textarea,select,input[type="email"]',
                     "property" => 'border-color',
                     "value" => "[color]",
                     'hover' => 1

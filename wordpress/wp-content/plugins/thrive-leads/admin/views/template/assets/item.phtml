@@ -1,0 +1,39 @@
+<div class="tve-asset-group-heading collapse-table-list-heading">
+    <span class="tve-group-part collapse-table-part tve-asset-group-title collapse-table-part-title">
+        <span class="asset-group-title"><strong class="bigger"><#= post_title #></strong></span>
+        <input class="tve-form-control tve-input-small tve-input-inline tve-input-condensed tve-edit-title-input" style="display: none;">
+        <a href="javascript:void(0)" class="tve-btn tve-btn-icon tve-edit-title" style="margin-right: 5px;">
+            <span class="tve-icon-pencil"></span>
+        </a>
+    </span>
+    <span class="relative tve-group-part collapse-table-part tve-row-actions collapse-table-part-action tve-asset-group-icons">
+        <span class="tve-files-count"> <?php echo __('Files', 'thrive-leads') ?></span>&nbsp;
+        <a href="javascript:void(0)" title="<?php echo __('View details', 'thrive-leads') ?>" class="tl-tooltip tve-prevent-click tve-btn tve-btn-icon tve-group-details tve-assey-group-details"><span class="tve-icon-plus-circle"></span></a>
+
+        <a href="javascript:void(0)" title="<?php echo __('Delete Asset Group', 'thrive-leads') ?>" data-title="<?php echo __('Delete Asset Group', 'thrive-leads') ?>" class="tl-tooltip tve-prevent-click tve-btn tve-btn-icon tve-asset-group-delete" data-id="<#= ID #>"><span class="tve-icon-trash-o"></span></a>
+
+    </span>
+</div>
+<div class="tve-asset-group-details" style="display: none;">
+    <div class="tve-asset-group-files clearfix">
+        <h2><strong>Files</strong></h2>
+        <div class="tve-form-wrapper tve_leads_clearfix">
+            <ul class="tve-inside-collapsable-list tve-table-condensed tve-asset-group-container" id="tve-asset-group-files">
+                <li class="asset-file-list-title tve-inside-collapsable-list-item clearfix">
+                    <span class="asset-file-list-part tve-inside-collapsable-part"><?php echo __('File Name', 'thrive-leads') ?></span>
+                    <span class="asset-file-list-part tve-inside-collapsable-part"><?php echo __('Link Anchor Text', 'thrive-leads') ?></span>
+                    <span class="asset-file-list-part tve-inside-collapsable-part"><?php echo __('File URL', 'thrive-leads') ?></span>
+                    <span class="asset-file-list-part tve-group-title tve-inside-collapsable-part-last">&nbsp;</span>
+                </li>
+            </ul>
+            <div class="pull-left tve-asset-add-file-group">
+                <button class="tve-btn tve-btn-green tve-asset-group-file-add" data-id="<#= ID #>"><?php echo __('Add New File', 'thrive-leads') ?></button>&nbsp;
+                <button class="tve-btn tve-btn-green tve-btn-disabled tve-asset-group-file-add-prev" data-id="<#= ID #>"><?php echo __('Previously Added Files', 'thrive-leads') ?></button>
+            </div>
+        </div>
+    </div>
+    <div class="tve-asset-email-actions">
+        <a href="javascript:void(0)" class="tve-asset-preview-email larger-text" data-id="<#= ID #>"><span class="tve-icon-file-text"></span> <span class="tve-asset-graytext"><?php echo __('Preview Email', 'thrive-leads') ?></span></a>&nbsp;
+        <a href="javascript:void(0)" class="tve-asset-change-email larger-text" data-id="<#= ID #>"><span class="tve-icon-pencil-square-o"></span> <span class="tve-asset-graytext"><?php echo __('Customize Email', 'thrive-leads') ?></span></a>
+    </div>
+</div>

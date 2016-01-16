@@ -1,9 +1,9 @@
 === Font Awesome 4 Menus ===
 Contributors: New Nine
-Author URI: http://www.newnine.com
+Author URI: https://www.newnine.com
 Tags: menus, font awesome, navigation, responsive, nav menu, wp_nav_menu
 Requires at least: 3
-Tested up to: 4.2.4
+Tested up to: 4.3.1
 Stable tag: trunk
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -66,7 +66,7 @@ Yes! Go to Settings->Font Awesome and choose how you want Font Awesome 4 loaded.
 
 No. On your site, Font Awesome 4 Menus will load one of four ways depending on how you set it up:
 
-* loads one minified stylesheet (18kb) to load the fonts, or
+* loads one minified stylesheet (27kb) to load the fonts, or
 * loads the fonts from the official Font Awesome 4 CDN at MaxCDN, or
 * loads the fonts from a custom url or CDN you choose, or
 * doesn't load the fonts at all if you choose this option.
@@ -80,6 +80,9 @@ Your site will be fine. Where you used Font Awesome 4 Menus, those menu items wi
 If you uninstall the plugin, Font Awesome 4 Menus cleans up after itself by removing the site option and user meta that it set in your database. No bloat here and we clean up after ourselves!
 
 == Upgrade Notice ==
+
+= 4.5.0.0 =
+Update to Font Awesome 4.5
 
 = 4.4.0.0 =
 Update to Font Awesome 4.4
@@ -100,6 +103,9 @@ Update to Font Awesome 4.2 which includes another 40 icons
 This upgrade allows you to load Font Awesome from a CDN or prevent double-loading of the stylesheet. It also adds the ability to remove the space in your menus for finer style control.
 
 == Changelog ==
+
+= 4.5.0.0 =
+* Update to Font Awesome 4.5
 
 = 4.4.0.0 =
 * Update to Font Awesome 4.4

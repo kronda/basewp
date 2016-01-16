@@ -7,12 +7,16 @@ $attributes = array(
     'color' => isset($_POST['phone_color']) ? $_POST['phone_color'] : "default",
 );
 
+$attributes = stripslashes_deep($attributes);
+$attributes['phone_text'] = wptexturize($attributes['phone_text']);
+$attributes['mobile_phone_text'] = wptexturize($attributes['mobile_phone_text']);
+
 ?>
 
 <?php if (empty($_POST['nowrap'])) : ?>
     <div class="thrv_wrapper thrv_custom_phone">
 <?php endif ?>
-    <div class="thrive-shortcode-config" style="display: none !important"><?php echo '__CONFIG_custom_phone__' . json_encode($attributes) . '__CONFIG_custom_phone__' ?></div>
+    <div class="thrive-shortcode-config" style="display: none !important"><?php echo '__CONFIG_custom_phone__' . tve_json_utf8_unslashit(json_encode($attributes)) . '__CONFIG_custom_phone__' ?></div>
     <div class="thrive-shortcode-html">
         <?php echo thrive_shortcode_custom_phone($attributes, '') ?>
     </div>

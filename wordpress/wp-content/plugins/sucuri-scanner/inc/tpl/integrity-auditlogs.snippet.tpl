@@ -10,6 +10,6 @@
     <td>
         <span>%%SUCURI.AuditLog.Message%%</span>
 
-        %%SUCURI.AuditLog.Extra%%
+        %%%SUCURI.AuditLog.Extra%%%
     </td>
 </tr>
