@@ -1,0 +1,313 @@
+/*----------------------------------------------------------*/
+/*--------------------- Entries Table ----------------------*/
+/*----------------------------------------------------------*/
+
+.eps-table { 
+   width: 100%;
+   table-layout:fixed;
+}
+   
+.eps-table .eps-table tr, #eps-redirect-save tr {
+    background: #fefefe;
+}
+
+#eps-redirect-save,
+#eps-redirect-entries,
+.eps-table .eps-table {
+    border: 1px solid #eeeeee;
+}
+
+
+    
+.eps-table tr {
+    background: #fcfcfc;
+}
+.eps-table tr.active {
+    display: none;
+}
+
+.eps-table.eps-table-striped tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.eps-table td,
+.eps-table th {
+    padding: 5px;
+    text-align: left;
+    overflow: hidden;
+}
+
+.eps-table th a:link,
+.eps-table th a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+.eps-table th {
+    padding: 6px 10px;
+    background: #2A95C5;
+    color:#FFFFFF;
+}
+
+.eps-table td.redirect-small, .eps-table th.redirect-small {
+    width: 40px;
+    text-align: center;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+.eps-table td.redirect-actions, .eps-table th.redirect-actions {
+    width: 120px;
+}
+
+
+/*----------------------------------------------------------*/
+/*---------------------- notifications ---------------------*/
+/*----------------------------------------------------------*/
+
+.eps-notification-area {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 0px 4px; padding: 4px 8px;
+    text-shadow: 1px 1px 1px white;    display: inline-block;
+    zoom: 1;
+}
+
+.eps-notification-area.valid {
+   background: #cdf2d9; color: #195b2d; border: 1px solid #587b63;
+}
+
+.eps-notification-area.invalid {
+   background: #f2cdcd; color: #6a2222; border: 1px solid #935e5e;
+}
+
+/*----------------------------------------------------------*/
+/*-------------------------- Buttons -----------------------*/
+/*----------------------------------------------------------*/
+
+#eps-redirect-new {
+  display: block;
+  background: #fafafa;
+  border: 2px solid #f4f4f4;
+  text-align: center;
+  padding: 8px;
+  text-decoration: none;
+  width: 10%; min-width: 100px;
+  margin: 0px auto;
+}
+#eps-redirect-new:hover {
+    background: #fcfcfc;
+}
+#eps-redirect-new span {
+    display: block;
+    margin: 0px auto;
+    font-size: 32px;
+    background: #fcfcfc;
+    border: 2px solid #f4f4f4;
+    width: 32px; height: 32px; line-height: 32px;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    border-radius: 16px;
+}
+#eps-redirect-new:hover span {
+    background: #ffffff;
+}
+
+.url-input { display: inline-block; width: 350px; max-width: 100%; }
+
+select.eps-small-select { display: inline-block; } 
+
+
+/*----------------------------------------------------------*/
+/*--------------------------  misc  ------------------------*/
+/*----------------------------------------------------------*/
+
+.eps-padding { padding: 12px; }
+.eps-margin-top { margin-top: 12px; }
+.eps-grey-text { color: #999999; }
+.float-right { float: right; }
+.eps-text-center { text-align: center; }
+.eps-small { font-size: 10px; }
+.eps-url { 
+    text-decoration: none; font-size: 12px !important;
+    background: #ffffff;
+    display: block;
+    border: 1px solid #eeeeee; 
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -o-border-radius: 4px;
+    }
+    
+    
+.eps-warning.eps-url {
+    border: 1px solid #c34343; 
+    color: #c34343;
+}
+.eps-warning.eps-url .eps-url-root {
+    background: #f9f1f1;
+}
+
+#eps-redirect-save .eps-url {  display: inline-block; }
+
+.eps-url > span { 
+    padding: 3px 6px; 
+    display: inline-block; 
+    background: #f4f4f4; 
+    }
+    
+.eps-url .eps-url-root { 
+    color: #aaaaaa;
+}
+
+.eps-url .eps-url-fragment { 
+    font-weight: bold;
+    background: #ffffff;
+}
+
+.eps-url .eps-url-endcap { 
+    -webkit-border-radius: 0px 4px 4px 0px; 
+    -moz-border-radius: 0px 4px 4px 0px; 
+    border-radius:  0px 4px 4px 0px; 
+}
+.eps-url .eps-url-startcap { 
+    -webkit-border-radius: 4px 0px 0px 4px; 
+    -moz-border-radius: 4px 0px 0px 4px; 
+    border-radius: 4px 0px 0px 4px;  
+}
+.eps-url .eps-url-nopadding { padding: 0px; }
+
+
+/*----------------------------------------------------------*/
+/*------------------------  upgrade  ------------------------*/
+/*----------------------------------------------------------*/
+
+.eps-redirects-big-button,
+.eps-redirects-big-button:link,
+.eps-redirects-big-button:hover
+{
+    display: block;
+    padding: 32px 16px;
+    text-align: center;
+    background: #444444;
+    color: #bbbbbb;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 600ms;
+}
+.eps-redirects-big-button:hover {
+    background: #333333;
+    color: #ffffff;
+}
+#eps-redirects-checklist {
+    margin-top: 16px;
+}
+#eps-redirects-checklist,
+#eps-redirects-checklist li {
+    display: block;
+    list-style: none;
+}
+#eps-redirects-checklist li
+{
+    border: 1px solid #eeeeee;
+    background: url('../images/icon-check.png') left center no-repeat;
+    padding: 16px;
+    padding-left: 72px;
+}
+#eps-redirects-checklist li > span
+{
+    border-left: 1px solid #dddddd;
+    display: inline-block;
+    padding: 16px;
+    font-size: 18px; line-height: 150%;
+}
+
+/*----------------------------------------------------------*/
+/*------------------------  donate  ------------------------*/
+/*----------------------------------------------------------*/
+
+.eps-panel { border: 1px solid #d6d6d6; background: white; box-shadow: 1px 1px 6px #f4f4f4; padding: 20px; }
+
+#donate-box {
+    border: 1px solid #d6d6d6; background: white; box-shadow: 1px 1px 6px #f4f4f4;
+    width: 250px;
+    margin-top: 12px;
+    float: right;
+    text-align: center;
+}
+#donate-box p { margin-bottom: 12px; }
+#donate-box h3 { margin-bottom: 12px; font-size: 1.2em; }
+
+/*----------------------------------------------------------*/
+/*------------------------  Helpers  ------------------------*/
+/*----------------------------------------------------------*/
+
+.eps-redirects-50 {
+    width: 50%;
+    margin: 0px; padding: 0px;
+    float: left;
+}
+.eps-redirects-lead {
+    font-size: 18px;
+}
+
+/* Contain floats: nicolasgallagher.com/micro-group-hack/ */ 
+.group:before, .group:after { content: ""; display: table; }
+.group:after { clear: both; }
+.group { zoom: 1; }
+
+.right { float: right; }
+.left { float: left; }
+
+.text-right { text-align: right; }
+
+.eps-redirects-fit {
+    display: block; max-width: 100%; width: 100%;
+}
+
+.padding { padding: 16px; }
+.padding-lots { padding: 32px; }
+
+
+.eps-notice {
+    padding: 16px;
+    margin: 6px auto;
+    background: white;
+    box-shadow: 1px 1px 4px #dddddd;
+    border-left: 3px solid #888888;
+    font-weight: bold;
+    font-size: 14px;
+}
+.eps-notice.eps-warning {
+    border-left: 3px solid #940000;
+    color: #940000;
+}
+/*----------------------------------------------------------*/
+/*--------------------  media queries  ---------------------*/
+/*----------------------------------------------------------*/
+
+@media only screen  and (max-width : 600px) {
+    #eps-redirect-entries tr.redirect-entry .redirect-hits {
+        width: 0px !important; 
+    }
+    #eps-tabs {  padding: 12px 12px; }
+    .eps-url .eps-url-root { display: none; }
+    
+    .eps-panel{ width: 100% !important; }
+    #eps-redirect-entries tr.redirect-entry td, 
+    #eps-redirect-entries tr.redirect-entry th { padding: 5px;  }
+}
+
+
+@media only screen and (max-width : 768px) and (min-width : 600px)  {
+    .eps-panel{ width: 100% !important; }
+    .eps-url .eps-url-root { display: none; }
+   
+}
+
+@media only screen and (max-width : 1024px) and (min-width : 768px)  {
+    .eps-url .eps-url-root { display: none; }
+
+    
+
+}

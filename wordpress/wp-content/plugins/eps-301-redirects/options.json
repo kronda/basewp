@@ -1,0 +1,20 @@
+{
+   "redirects":{
+			"title":"Redirects",
+			"description":"",
+            "callback":"redirects",
+			"fields":{}
+   },
+   "404s":{
+			"title":"404s",
+			"description":"",
+            "callback":"404s",
+			"fields":{}
+   },
+   "import-export":{
+			"title":"Import/Export",
+			"description":"",
+            "callback":"import_export",
+			"fields":{}
+   }
+}
