@@ -10,8 +10,17 @@ function wpcf_fields_embed() {
         'id' => 'wpcf-embed',
         'title' => __( 'Embedded Media', 'wpcf' ),
         'description' => __( 'Embedded Media', 'wpcf' ),
-        'validate' => array('required', 'url' => array('forced' => true)),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            ),
+            'url' => array(
+                'forced' => true,
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/url.php' )
+            )
+        ),
         'wp_version' => '3.6',
+        'font-awesome' => 'code',
     );
 }
 
@@ -119,6 +128,9 @@ function wpcf_fields_embed_editor_submit( $data, $field, $context ) {
     if ( $context == 'usermeta' ) {
         $add .= wpcf_get_usermeta_form_addon_submit();
         $shortcode = wpcf_usermeta_get_shortcode( $field, $add );
+	} elseif ( $context == 'termmeta' ) {
+        $add .= wpcf_get_termmeta_form_addon_submit();
+        $shortcode = wpcf_termmeta_get_shortcode( $field, $add );
     } else {
         $shortcode = wpcf_fields_get_shortcode( $field, $add );
     }

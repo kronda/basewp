@@ -10,9 +10,18 @@ function _pre($v) {
     echo "</pre>";
 }
 
-function get_root_path() {
-    $urlp = explode('wp-content', $_SERVER['SCRIPT_FILENAME']);
-    return $urlp[0];
+function find_wp_config_path() {
+    $dir = dirname(__FILE__);
+    do {
+        if (file_exists($dir . "/wp-config.php")) {
+            return $dir.'/';
+        }
+    } while ($dir = realpath("$dir/.."));
+    return null;
+}
+
+function get_root_path() {   
+    return find_wp_config_path();
 }
 
 function get_local($url) {
@@ -109,9 +118,10 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
 
                     if (!isset($res['error'])) {
 
+                        $bname = basename($res['file']);   
                         $attachment = array(
                             'post_mime_type' => $res['type'],
-                            'post_title' => basename($res['file']),
+                            'post_title' => $bname,
                             'post_content' => '',
                             'post_status' => 'inherit',
                             'post_parent' => $post_id,

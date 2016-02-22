@@ -97,6 +97,12 @@ class WPCF_Relationship_Child_Form
             $this->_dummy_post = true;
         }
         $this->child_post_type_object = get_post_type_object( $this->child_post_type );
+        if (
+            !isset($this->child_post_type_object->slug)
+            && isset($this->child_post_type_object->name)
+        ) {
+            $this->child_post_type_object->slug = $this->child_post_type_object->name;
+        }
 
         // Collect params from request
         foreach ( $this->__params as $__param ) {
@@ -114,7 +120,7 @@ class WPCF_Relationship_Child_Form
             return;
         }
         /**
-         * custom post types
+         * post types
          */
         $post_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
         if (
@@ -192,20 +198,16 @@ class WPCF_Relationship_Child_Form
 
         // Pagination
         $total_items = count( $this->children );
-        $per_page = $wpcf->relationship->get_items_per_page( $this->parent_post_type,
-                $this->child_post_type );
+        $per_page = $wpcf->relationship->get_items_per_page( $this->parent_post_type, $this->child_post_type );
         $page = isset( $_GET['page'] ) ? intval( $_GET['page'] ) : 1;
-        $numberposts = $page == 1 ? 1 : ($page - 1) * $per_page;
-        $slice = $page == 1 ? 0 : ($page - 1) * $per_page;
-        $next = count( $this->children ) > $numberposts + $per_page;
-        $prev = $page == 1 ? false : true;
+        $offset = ( $page == 1 ) ? 0 : ( ( $page - 1 ) * $per_page );
+        $next = ( $total_items > ( $offset + $per_page ) );
+        $prev = ( $page == 1 ) ? false : true;
         if ( $total_items > $per_page ) {
-            $this->children = array_splice( $this->children, $slice, $per_page );
+            $this->children = array_splice( $this->children, $offset, $per_page );
         }
 
-        $this->pagination_top = wpcf_pr_admin_has_pagination( $this->parent,
-                $this->child_post_type, $page, $prev, $next, $per_page,
-                $total_items );
+        $this->pagination_top = wpcf_pr_admin_has_pagination( $this->parent, $this->child_post_type, $page, $prev, $next, $per_page, $total_items );
         /*
          *
          *
@@ -549,7 +551,7 @@ class WPCF_Relationship_Child_Form
     );
     }
     /**
-     * Returns HTML formatted taxonomy form.
+     * Returns HTML formatted Taxonomy form.
      *
      * @param type $taxonomy
      * @return type
@@ -818,28 +820,19 @@ class WPCF_Relationship_Child_Form
                 || $header == '_wp_featured_image'
             ) {
                 $headers[$header] = $this->get_header($header);
-            } else if ( strpos( $header, WPCF_META_PREFIX ) === 0
-                    && isset( $wpcf_fields[str_replace( WPCF_META_PREFIX, '',
-                                    $header )] ) ) {
-                wpcf_field_enqueue_scripts( $wpcf_fields[str_replace( WPCF_META_PREFIX,
-                                '', $header )]['type'] );
-                $field_dir = $sort_field == $header ? $dir : $dir_default;
-                $headers[$header] = '';
-                $headers[$header] .= $sort_field == $header ? '<div class="wpcf-pr-sort-' . $dir . '"></div>' : '';
-                $headers[$header] .= '<a href="' . admin_url( 'admin-ajax.php?action=wpcf_ajax&amp;wpcf_action=pr_sort&amp;field='
-                                . $header . '&amp;sort=' . $field_dir . '&amp;post_id=' . $post->ID . '&amp;post_type='
-                                . $post_type . '&amp;_wpnonce='
-                                . wp_create_nonce( 'pr_sort' ) ) . '">' . stripslashes( $wpcf_fields[str_replace( WPCF_META_PREFIX,
-                                        '', $header )]['name'] ) . '</a>';
             } else {
+                $link_text = $this->get_header($header);
+                if (
+                    strpos( $header, WPCF_META_PREFIX ) === 0
+                    && isset( $wpcf_fields[str_replace( WPCF_META_PREFIX, '', $header )] )
+                ) {
+                    wpcf_field_enqueue_scripts( $wpcf_fields[str_replace( WPCF_META_PREFIX, '', $header )]['type'] );
+                    $link_text = stripslashes( $wpcf_fields[str_replace( WPCF_META_PREFIX, '', $header )]['name'] );
+                }
                 $field_dir = $sort_field == $header ? $dir : $dir_default;
                 $headers[$header] = '';
                 $headers[$header] .= $sort_field == $header ? '<div class="wpcf-pr-sort-' . $dir . '"></div>' : '';
-                $headers[$header] .= '<a href="' . admin_url( 'admin-ajax.php?action=wpcf_ajax&amp;wpcf_action=pr_sort&amp;field='
-                                . $header . '&amp;sort=' . $field_dir . '&amp;post_id=' . $post->ID . '&amp;post_type='
-                                . $post_type . '&amp;_wpnonce='
-                                . wp_create_nonce( 'pr_sort' ) ) . '">'
-                        . $this->get_header($header) . '</a>';
+                $headers[$header] .= '<a href="' . admin_url( 'admin-ajax.php?action=wpcf_ajax&amp;wpcf_action=pr_sort&amp;field=' . $header . '&amp;sort=' . $field_dir . '&amp;post_id=' . $post->ID . '&amp;post_type=' . $post_type . '&amp;_wpnonce=' . wp_create_nonce( 'pr_sort' ) ) . '">' . $link_text . '</a>';
             }
         }
         if ( !empty( $this->headers['__parents'] ) ) {

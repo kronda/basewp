@@ -87,16 +87,20 @@ function wpcf_embedded_after_setup_theme_hook()
  */
 function wpcf_init_custom_types_taxonomies()
 {
-    $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
-    if ( !empty( $custom_taxonomies ) ) {
-        require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-taxonomies.php';
-        wpcf_custom_taxonomies_init();
-    }
+    // register post types first
     $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
     if ( !empty( $custom_types ) ) {
         require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-types.php';
         wpcf_custom_types_init();
     }
+
+    // and than taxonomies, because register_taxonomy_for_object_type() checks if post type is available
+    $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
+    if ( !empty( $custom_taxonomies ) ) {
+        require_once WPCF_EMBEDDED_INC_ABSPATH . '/custom-taxonomies.php';
+        wpcf_custom_taxonomies_init();
+    }
+
 }
 
 /**
@@ -166,16 +170,21 @@ function wpcf_embedded_check_import()
 /**
  * Actions for outside fields control.
  *
- * @param type $action
+ * @param string $action
+ * @param array $args
+ * @param string $post_type
+ * @param string $option_name
+ *
+ * @return bool|array
  */
 function wpcf_types_cf_under_control( $action = 'add', $args = array(),
-        $post_type = TYPES_CUSTOM_FIELD_GROUP_CPT_NAME, $meta_name = 'wpcf-fields' ) {
+        $post_type = TYPES_CUSTOM_FIELD_GROUP_CPT_NAME, $option_name = 'wpcf-fields' ) {
     global $wpcf_types_under_control;
     $wpcf_types_under_control['errors'] = array();
     switch ( $action ) {
         case 'add':
             $fields = wpcf_admin_fields_get_fields( false, true, false,
-                    $meta_name, false );
+                    $option_name, false );
             foreach ( $args['fields'] as $field_id ) {
                 $field_type = !empty( $args['type'] ) ? $args['type'] : 'textfield';
                 if ( strpos( $field_id, md5( 'wpcf_not_controlled' ) ) !== false ) {
@@ -214,13 +223,13 @@ function wpcf_types_cf_under_control( $action = 'add', $args = array(),
                     }
                 }
             }
-            wpcf_admin_fields_save_fields( $fields, true, $meta_name );
+            wpcf_admin_fields_save_fields( $fields, true, $option_name );
             return $args['fields'];
             break;
 
         case 'check_exists':
             $fields = wpcf_admin_fields_get_fields( false, true, false,
-                    $meta_name, false );
+                    $option_name, false );
             $field = $args;
             if ( array_key_exists( $field, $fields ) && empty( $fields[$field]['data']['disabled'] ) ) {
                 return true;
@@ -230,7 +239,7 @@ function wpcf_types_cf_under_control( $action = 'add', $args = array(),
 
         case 'check_outsider':
             $fields = wpcf_admin_fields_get_fields( false, true, false,
-                    $meta_name, false );
+                    $option_name, false );
             $field = $args;
             if ( array_key_exists( $field, $fields ) && !empty( $fields[$field]['data']['controlled'] ) ) {
                 return true;
@@ -300,7 +309,7 @@ function wpcf_pr_get_has($post_type)
  * Gets individual post ID to which queried post belongs.
  *
  * @param type $post_id
- * @param type $post_type Post type of owner
+ * @param type $post_type Post Type of owner
  * @return type
  */
 function wpcf_pr_post_get_belongs($post_id, $post_type)
@@ -390,22 +399,23 @@ function wpcf_admin_is_repetitive($field)
 }
 
 /**
- * Returns unique ID.
+ * Returns an unique string identifier every time it is called.
  *
  * @staticvar array $cache
- * @param type $cache_key
- * @return type
+ * @param string $cache_key
+ * @return string Unique identifier
+ * @since unknown
  */
-function wpcf_unique_id($cache_key)
-{
-    $cache_key = md5( strval( $cache_key ) . strval( time() ) . rand() );
-    static $cache = array();
-    if ( !isset( $cache[$cache_key] ) ) {
-        $cache[$cache_key] = 1;
-    } else {
-        $cache[$cache_key] += 1;
-    }
-    return $cache_key . '-' . $cache[$cache_key];
+function wpcf_unique_id($cache_key) {
+	$cache_key = md5( strval( $cache_key ) . strval( time() ) . rand() );
+	static $cache = array();
+	if ( ! isset( $cache[ $cache_key ] ) ) {
+		$cache[ $cache_key ] = 1;
+	} else {
+		$cache[ $cache_key ] += 1;
+	}
+
+	return $cache_key . '-' . $cache[ $cache_key ];
 }
 
 /**
@@ -471,6 +481,9 @@ function wpcf_get_post_id($context = 'group')
  */
 function wpcf_enqueue_scripts()
 {
+    if( !is_admin() )
+        return;
+    
     if ( !wpcf_is_embedded() ) {
         /**
          * Basic JS
@@ -489,6 +502,11 @@ function wpcf_enqueue_scripts()
             )
         );
         wp_enqueue_script('wpcf-js');
+
+        if( function_exists( 'wpcf_admin_add_js_settings' ) ) {
+            wpcf_admin_add_js_settings( 'wpcf_nonce_toggle_group',
+                '\'' . wp_create_nonce( 'group_form_collapsed' ) . '\'' );
+        }
     }
     /**
      * Basic JS
@@ -496,7 +514,7 @@ function wpcf_enqueue_scripts()
     wp_enqueue_script(
         'wpcf-js-embedded',
         WPCF_EMBEDDED_RES_RELPATH . '/js/basic.js',
-        array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs'),
+        array('jquery', 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-tabs', 'select2'),
         WPCF_VERSION
     );
     /*
@@ -536,22 +554,36 @@ function wpcf_enqueue_scripts()
     /**
      * select2
      */
+    $select2_version = '3.5.2';
     if ( !wp_script_is('select2', 'registered') ) {
-        $select2_version = '3.5.2';
         wp_register_script(
             'select2',
-            WPCF_EMBEDDED_RELPATH. '/common/utility/js/select2.min.js',
+            WPCF_EMBEDDED_RELPATH. '/toolset/toolset-common/utility/js/select2.min.js',
             array( 'jquery' ),
             $select2_version
         );
+    }
+    if ( !wp_style_is('select2', 'registered') ) {
         wp_register_style(
             'select2',
-            WPCF_EMBEDDED_RELPATH. '/common/utility/css/select2/select2.css',
+            WPCF_EMBEDDED_RELPATH. '/toolset/toolset-common/utility/css/select2/select2.css',
             array(),
             $select2_version
         );
+    }
+    if ( !wp_style_is('select2') ) {
         wp_enqueue_style('select2');
     }
+
+    // Add JS settings
+    wpcf_admin_add_js_settings( 'wpcfFormUniqueValuesCheckText',
+        '\'' . __( 'Warning: same values selected', 'wpcf' ) . '\'' );
+    wpcf_admin_add_js_settings( 'wpcfFormUniqueNamesCheckText',
+        '\'' . __( 'Warning: field name already used', 'wpcf' ) . '\'' );
+    wpcf_admin_add_js_settings( 'wpcfFormUniqueSlugsCheckText',
+        '\'' . __( 'Warning: field slug already used', 'wpcf' ) . '\'' );
+    wpcf_admin_add_js_settings( 'wpcfFormUsedOrReservedSlug',
+        '\'' . __( 'You cannot use this slug because it is already used or a reserved word. Please choose a different slug.', 'wpcf' ) . '\'' );
 }
 
 /**
@@ -569,7 +601,7 @@ function wpcf_edit_post_screen_scripts()
         wp_enqueue_script( 'wpcf-form-validation',
                 WPCF_EMBEDDED_RES_RELPATH . '/js/'
                 . 'jquery-form-validation/jquery.validate.js', array('jquery'),
-                WPCF_VERSION );
+               WPCF_VERSION );
         wp_enqueue_script( 'wpcf-form-validation-additional',
                 WPCF_EMBEDDED_RES_RELPATH . '/js/'
                 . 'jquery-form-validation/additional-methods.min.js',
@@ -585,7 +617,7 @@ function wpcf_edit_post_screen_scripts()
             array('wpcf-css-embedded'), WPCF_VERSION );
     wp_enqueue_script( 'toolset-colorbox' );
     wp_enqueue_style( 'toolset-colorbox' );
-    wp_enqueue_style( 'toolset-font-awesome' );
+    wp_enqueue_style( 'font-awesome' );
 }
 
 /**
@@ -599,7 +631,7 @@ function wpcf_is_embedded()
 }
 
 /**
- * Returns custom post type settings.
+ * Returns post type settings.
  *
  * @param type $post_type
  * @return type
@@ -611,7 +643,7 @@ function wpcf_get_custom_post_type_settings($item)
 }
 
 /**
- * Returns taxonomy settings.
+ * Returns Taxonomy settings.
  *
  * @param type $taxonomy
  * @return type
@@ -723,13 +755,17 @@ function types_validate($method, $args)
 /**
  * Gets post_types supported by specific group.
  *
- * @param type $group_id
- * @return array list of custom post types belongs to selected group
+ * @param int $group_id
+ * @return array list of post types belongs to selected group
  */
 function wpcf_admin_get_post_types_by_group($group_id)
 {
     $post_types = get_post_meta( $group_id, '_wp_types_group_post_types', true );
     if ( $post_types == 'all' ) {
+        return array();
+    }
+    $post_types = trim( $post_types, ',' );
+    if ( empty($post_types) ) {
         return array();
     }
     $post_types = explode( ',', trim( $post_types, ',' ) );
@@ -764,6 +800,55 @@ function wpcf_get_all_fields_slugs($fields)
     }
     return $post_meta_keys;
 }
+/**
+ * Get buuild in taxonomies.
+ *
+ * This is a wrapper for WordPress get_taxonomies() function. It gets public 
+ * build-in taxonomies.
+ *
+ * @since 1.9.0
+ *
+ * @param string $output The type of output to return, either taxonomy 'names'
+ * or 'objects'. Default: 'names'
+ *
+ * @return array Array of taxonomies.
+ *
+ * @deprecated Use WPCF_Utils::get_builtin_taxonomies() instead.
+ */
+function wpcf_get_builtin_in_taxonomies($output = 'names')
+{
+    static $taxonomies = array();
+    if ( empty( $taxonomies ) ) {
+        $taxonomies = get_taxonomies(array('public' => true, '_builtin' => true), $output);
+    }
+    /**
+     * remove post_format
+     */
+    if ( isset( $taxonomies['post_format'] ) ) {
+        unset($taxonomies['post_format']);
+    }
+    return $taxonomies;
+}
+
+/**
+ * Check is a build-in taxonomy
+ *
+ * Check is that build-in taxonomy?
+ *
+ * @since 1.9.0
+ *
+ * @parem string taxonomy slug
+ * @return boolean is this build-in taxonomy
+ */
+function wpcf_is_builtin_taxonomy($taxonomy)
+{
+    switch($taxonomy) {
+    case 'post_tag':
+    case 'category':
+        return true;
+    }
+    return in_array($taxonomy, wpcf_get_builtin_in_taxonomies());
+}
 
 function wpcf_get_builtin_in_post_types()
 {
@@ -779,6 +864,41 @@ function wpcf_is_builtin_post_types($post_type)
     $post_types = wpcf_get_builtin_in_post_types();
     return in_array($post_type, $post_types);
 }
+
+/**
+ * Check is a build-in taxonomy
+ *
+ * Check is that build-in taxonomy?
+ *
+ * @since 1.9.0
+ *
+ * @parem string taxonomy slug
+ * @return boolean is this build-in taxonomy
+ */
+function wpcf_builtin_preview_only($ct, $form)
+{
+    if ( isset($ct['_builtin']) && $ct['_builtin'] ) {
+
+        foreach( $form as $key => $data ) {
+            if ( !isset($data['#type'] ) ) {
+                continue;
+            }
+            if ( isset($data['_builtin']) ) {
+                switch( $data['#type'] ) {
+                case 'textfield':
+                case 'textarea':
+                    $form[$key]['#attributes']['readonly'] = 'readonly';
+                    break;
+                default:
+                }
+                continue;
+            }
+            unset($form[$key]);
+        }
+    }
+    return $form;
+}
+
 
 /**
  * Adds JS settings.
@@ -802,3 +922,127 @@ function wpcf_admin_add_js_settings( $id, $setting = '' )
     $settings[$id] = $setting;
 }
 
+/**
+ * Use sanitize_text_field recursively.
+ *
+ * @since 1.9.0
+ *
+ * @param mixed $data data to sanitize_text_field
+ * @return mixed sanitized input
+ */
+function sanitize_text_field_recursively($data)
+{
+    if ( empty($data) ) {
+        return $data;
+    }
+    if ( is_array( $data ) ) {
+        foreach ( $data as $key => $value ) {
+            if ( is_array( $value ) ) {
+                $value = sanitize_text_field_recursively($value);
+            } else {
+               $value = sanitize_text_field($value);
+            }
+            $data[$key] = $value;
+        }
+        return $data;
+    }
+    return sanitize_text_field($data);
+}
+
+/**
+ * Gets user roles supported by specific group.
+ *
+ * @param type $group_id
+ * @return type
+ */
+function wpcf_admin_get_groups_showfor_by_group($group_id) {
+    $for_users = get_post_meta($group_id, '_wp_types_group_showfor', true);
+    if (empty($for_users) || $for_users == 'all') {
+        return array();
+    }
+    $for_users = explode(',', trim($for_users, ','));
+    return $for_users;
+}
+
+// See wpv_get* counterparts in Views for description.
+// This is a temporary solution until these functions land in Toolset Common Library.
+
+function wpcf_getpost( $key, $default = '', $valid = null ) {
+    return wpcf_getarr( $_POST, $key, $default, $valid );
+}
+
+
+function wpcf_getget( $key, $default = '', $valid = null ) {
+    return wpcf_getarr( $_GET, $key, $default, $valid );
+}
+
+
+/**
+ * @param mixed|array $source
+ * @param string $key
+ * @param mixed $default
+ * @param null|array $valid
+ *
+ * @return mixed
+ */
+function wpcf_getarr( &$source, $key, $default = '', $valid = null ) {
+    if( isset( $source[ $key ] ) ) {
+        $val = $source[ $key ];
+        if( is_array( $valid ) && !in_array( $val, $valid ) ) {
+            return $default;
+        }
+
+        return $val;
+    } else {
+        return $default;
+    }
+}
+
+
+/**
+ * Ensure that a variable is an array.
+ *
+ * @param mixed $array The original value.
+ * @param array $default Default value to use when no array is provided. This one should definitely be an array,
+ *     otherwise the function doesn't make much sense.
+ * @return array The original array or a default value if no array is provided.
+ *
+ * @since 1.9
+ */
+function wpcf_ensarr( $array, $default = array() ) {
+	return ( is_array( $array ) ? $array : $default );
+}
+
+
+/**
+ * Get a value from nested associative array.
+ *
+ * This function will try to traverse a nested associative array by the set of keys provided.
+ *
+ * E.g. if you have $source = array( 'a' => array( 'b' => array( 'c' => 'my_value' ) ) ) and want to reach 'my_value',
+ * you need to write: $my_value = wpcf_getnest( $source, array( 'a', 'b', 'c' ) );
+ *
+ * @param mixed|array $source The source array.
+ * @param string[] $keys Keys which will be used to access the final value.
+ * @param null|mixed $default Default value to return when the keys cannot be followed.
+ *
+ * @return mixed|null Value in the nested structure defined by keys or default value.
+ */
+function wpcf_getnest( &$source, $keys = array(), $default = null ) {
+
+	$current_value = $source;
+	while( !empty( $keys ) ) {
+		$current_key = array_shift( $keys );
+		$is_last_key = empty( $keys );
+
+		$current_value = wpcf_getarr( $current_value, $current_key, null );
+
+		if( $is_last_key ) {
+			return $current_value;
+		} elseif( !is_array( $current_value ) ) {
+			return $default;
+		}
+	}
+
+	return $default;
+}

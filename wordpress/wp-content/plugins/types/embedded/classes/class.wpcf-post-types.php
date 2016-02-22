@@ -28,7 +28,7 @@ class WPCF_Post_Types
     function __construct()
     {
         add_action('admin_init', array($this, 'admin_init'));
-		global $wp_version;
+        global $wp_version;
 		if ( version_compare( $wp_version, '4.4' ) < 0 ) {
 			add_action('admin_head-nav-menus.php', array($this, 'add_filters'));
 			add_filter('wp_setup_nav_menu_item',  array( $this, 'setup_archive_item'));
@@ -38,7 +38,7 @@ class WPCF_Post_Types
     /**
      * Check has some custom fields to display.
      *
-     * Check custom post type for custom fields to display on custom post edit 
+     * Check post type for custom fields to display on custom post edit 
      * screen.
      *
      * @since 1.7
@@ -199,7 +199,6 @@ class WPCF_Post_Types
                         /**
                          * turn of sorting for complex data
                          */
-                    case 'date':
                     case 'skype':
                         $columns[$data['meta_key']] = false;;
                         break;

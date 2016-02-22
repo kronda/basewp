@@ -56,12 +56,72 @@ function wpcf_custom_taxonomies_default() {
 /**
  * Inits custom taxonomies.
  */
-function wpcf_custom_taxonomies_init() {
+function wpcf_custom_taxonomies_init()
+{
     $custom_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
     if ( !empty( $custom_taxonomies ) ) {
         foreach ( $custom_taxonomies as $taxonomy => $data ) {
-            wpcf_custom_taxonomies_register( $taxonomy, $data );
+            if ( isset($data['_builtin']) && $data['_builtin']) {
+                wpcf_taxonomies_register( $taxonomy, $data );
+            } else {
+                wpcf_custom_taxonomies_register( $taxonomy, $data );
+            }
         }
+    }
+}
+/**
+ * Handle builtin taxonomies
+ *
+ * Function add or remove taxonomy to post type
+ *
+ * @since 1.9.0
+ *
+ * @param string $taxonomy taxonomy slug/name
+ * @param array $data taxonomy configuration
+ *
+ */
+function wpcf_taxonomies_register($taxonomy, $data)
+{
+
+    // check which types are supported
+    if ( isset( $data['supports'] ) && is_array( $data['supports'] ) ) {
+
+        if( !empty( $data['supports'] ) ) {
+            foreach( array_keys($data['supports']) as $post_type ) {
+                register_taxonomy_for_object_type( $taxonomy, $post_type);
+            }
+        }
+
+        // check for inbuilt Tags (post_tag) and Categories if post is not supported,
+        // so it needs to get unregistered
+        if( (
+                $data['slug'] == 'post_tag'
+                || $data['slug'] == 'category'
+            )
+            && !array_key_exists( 'post', $data['supports'] ) ) {
+            unregister_taxonomy_for_object_type( $taxonomy, 'post' );
+        }
+
+    }
+
+    // this is only left for backwards compatibility
+    if ( isset($data['disabled_post_types']) && is_array($data['disabled_post_types'])) {
+        foreach( array_keys($data['disabled_post_types']) as $post_type ) {
+            unregister_taxonomy_for_object_type($taxonomy, $post_type);
+        }
+    }
+
+
+
+    // unregister
+    if ( isset($data['disabled']) && $data['disabled']) {
+        register_taxonomy($data['slug'], array());
+    // hide
+    } else if( isset( $data['public'] ) && strval( $data['public'] ) == 'hidden' ) {
+        global $wp_taxonomies;
+        $wp_taxonomies[$data['slug']]->public = false;
+        $wp_taxonomies[$data['slug']]->show_ui = false;
+        $wp_taxonomies[$data['slug']]->show_in_menu = false;
     }
 }
 
@@ -100,7 +160,7 @@ function wpcf_custom_taxonomies_register( $taxonomy, $data ) {
                 case 'add_new_item':
                 case 'new_item_name':
                     $data['labels'][$label_key] = sprintf( $label,
-                            $data['labels']['singular_name'] );
+                        $data['labels']['singular_name'] );
                     break;
 
                 case 'search_items':
@@ -111,13 +171,13 @@ function wpcf_custom_taxonomies_register( $taxonomy, $data ) {
                 case 'choose_from_most_used':
                 case 'menu_name':
                     $data['labels'][$label_key] = sprintf( $label,
-                            $data['labels']['name'] );
+                        $data['labels']['name'] );
                     break;
             }
         }
     }
     $data['description'] = !empty( $data['description'] ) ? htmlspecialchars( stripslashes( $data['description'] ),
-                    ENT_QUOTES ) : '';
+        ENT_QUOTES ) : '';
     $data['public'] = (empty( $data['public'] ) || strval( $data['public'] ) == 'hidden') ? false : true;
     $data['show_ui'] = (empty( $data['show_ui'] ) || !$data['public']) ? false : true;
     $data['hierarchical'] = (empty( $data['hierarchical'] ) || $data['hierarchical'] == 'flat') ? false : true;
@@ -150,8 +210,8 @@ function wpcf_custom_taxonomies_register( $taxonomy, $data ) {
     // Force removing capabilities here
     unset( $data['capabilities'] );
     register_taxonomy( $taxonomy,
-            apply_filters( 'wpcf_taxonomy_objects', $object_types, $taxonomy ),
-            apply_filters( 'wpcf_taxonomy_data', $data, $taxonomy, $object_types ) );
+        apply_filters( 'wpcf_taxonomy_objects', $object_types, $taxonomy ),
+        apply_filters( 'wpcf_taxonomy_data', $data, $taxonomy, $object_types ) );
 }
 
 /**

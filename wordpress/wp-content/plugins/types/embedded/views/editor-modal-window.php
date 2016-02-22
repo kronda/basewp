@@ -50,7 +50,7 @@ $data = array_merge(
                     <p class="form-inline">
                         <input type="checkbox" id="types-modal-raw" name="raw_mode" value="1" data-bind="checked: raw, click: rawDisableAll" />
                         <label for="types-modal-raw"><?php _e( 'Display this field without any formatting', 'wpcf' ); ?></label>
-                        <i class="icon-question-sign js-show-tooltip" data-header="<?php _e( 'RAW mode', 'wpv-views' ) ?>" data-content="<?php _e( 'When checked, displays raw data stored in database.', 'wpcf' ) ?>"></i>
+                        <i class="fa fa-question-circle icon-question-sign js-show-tooltip" data-header="<?php _e( 'RAW mode', 'wpv-views' ) ?>" data-content="<?php _e( 'When checked, displays raw data stored in database.', 'wpcf' ) ?>"></i>
                     </p>
                 </div>
             </div>
@@ -59,7 +59,7 @@ $data = array_merge(
                 <div class="types-media-frame-title-inner">
                     <h1><i class="<?php echo $data['icon_class']; ?>"></i><?php echo $data['title']; ?></h1>
                 </div>
-                <i class="icon-remove js-close-types-popup"></i>
+                <i class="fa fa-times icon-remove js-close-types-popup"></i>
             </div>
 
             <div class="types-media-frame-content">
@@ -75,11 +75,10 @@ $data = array_merge(
                         <?php endforeach; ?>
                     <div class="tab js-raw-disable" data-bind="tedSupports: 'styling', template: {name:'tpl-types-editor-modal-styling'}"></div>
                     <div class="tab" data-bind="tedSupports: 'separator', template: {name:'tpl-types-editor-modal-separator'}"></div>
-                    <div class="tab" data-bind="tedSupports: 'user_id'">
-                        <h2><?php _e( 'Display the field for this user', 'wpcf' ); ?></h2>
-                        <?php echo $data['user_form']; ?>
-                    </div>
+                    
                     <div class="tab" data-bind="tedSupports: 'post_id', template: {name:'tpl-types-editor-modal-post_id'}"></div>
+					<div class="wpcf-extra" data-bind="tedSupports: 'term_id', template: {name:'tpl-types-editor-modal-term_id'}"></div>
+					<div class="tab" data-bind="tedSupports: 'user_id',  template: {name:'tpl-types-editor-modal-user_id'}"></div>
                 </div>
             </div>
             <div class="types-media-frame-toolbar">
@@ -110,7 +109,7 @@ $data = array_merge(
             <label for="types-modal-style" class="input-title"><?php _e( 'CSS style:', 'wpcf' ); ?></label>
             <input type="text" name="style" value="<?php echo $data['style']; ?>" id="types-modal-style" data-bind="disable: !output() || !supports('style')" />
             <!-- ko ifnot: supports('style') -->
-            <i class="icon-warning-sign js-show-tooltip" data-header="<?php _e( 'Warning', 'wpcf' ); ?>" data-content="<?php printf( __( 'Style is not available for %s field', 'wpcf' ), $data['field_name'] ); ?>"></i><?php printf( __( 'Style is not available for %s field', 'wpcf' ), $data['field_name'] ); ?><!-- /ko -->
+            <i class="fa fa-exclamation-triangle icon-warning-sign js-show-tooltip" data-header="<?php _e( 'Warning', 'wpcf' ); ?>" data-content="<?php printf( __( 'Style is not available for %s field', 'wpcf' ), $data['field_name'] ); ?>"></i><?php printf( __( 'Style is not available for %s field', 'wpcf' ), $data['field_name'] ); ?><!-- /ko -->
             <!-- ko if: supports('style') -->
             <span class="help-text"><?php _e( 'enter the css for your inline style (e.g. color:red;font-weight:bold)', 'wpcf' ); ?></span><!-- /ko -->
         </p>
@@ -188,7 +187,7 @@ $data = array_merge(
     </p>
     <div class="group-nested">
         <p class="form-inline">
-            <label for="post-id-related-post-type"><?php _e( 'Post type', 'wpcf' ); ?></label>
+            <label for="post-id-related-post-type"><?php _e( 'Post Type', 'wpcf' ); ?></label>
             <select id="post-id-related-post-type" name="related_post" data-bind="selectedOptions: selectPostType">
                 <?php foreach ( $data['post_types'] as $post_type ): ?>
                 <option value="<?php echo $post_type; ?>"><?php echo $post_type; ?></option>
@@ -205,11 +204,28 @@ $data = array_merge(
     <div class="group-nested" data-bind="visible: relatedPost() == 'post_id'">
         <p class="form-inline">
             <label for="post-id-post_id"><?php _e( 'Post selection', 'wpcf' ); ?></label>
-            <input type="number" id="post-id-post_id" name="specific_post_id" data-bind="value: specificPostID" />
+            <input type="number" id="post-id-post_id" name="specific_post_id" min="0" data-bind="value: specificPostID" />
         </p>
     </div>
 
 </script><!-- END POST ID FORM -->
+
+<!-- TERM ID FORM -->
+<script id="tpl-types-editor-modal-term_id" type="text/html">
+
+    <input class="wpcf-form-hidden form-hidden hidden" type="hidden" value="true" name="is_termmeta">
+
+</script><!-- END TERM ID FORM -->
+
+<!-- USER ID FORM -->
+<script id="tpl-types-editor-modal-user_id" type="text/html">
+
+    <?php if ( in_array( 'user_id', $data['supports'] ) ) { ?>
+		<h2><?php _e( 'Display the field for this user', 'wpcf' ); ?></h2>
+        <?php echo $data['user_form']; ?>
+	<?php } ?>
+
+</script><!-- END USER ID FORM -->
 
 <!--<p class="form-inline">
         <input id="types-modal-output" type="checkbox" name="output" value="html" data-bind="checked: output" />

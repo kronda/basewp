@@ -18,11 +18,28 @@ class WPToolset_Field_Wysiwyg extends WPToolset_Field_Textarea
         $attributes = $this->getAttr();
         $form = array();
         $markup = '';
+		$wpml_action = $this->getWPMLAction();
+		
         if ( is_admin() ) {
             $markup .= '<div class="form-item form-item-markup">';
+			$extra_markup = '';
+			if (
+				defined( 'WPML_TM_VERSION' ) 
+				&& intval( $wpml_action ) === 1 
+				&& function_exists( 'wpcf_wpml_post_is_original' )
+				&& ! wpcf_wpml_post_is_original()
+				&& function_exists( 'wpcf_wpml_have_original' )
+				&& wpcf_wpml_have_original()
+			) {
+				$attributes['readonly'] = 'readonly';
+				$extra_markup .= sprintf(
+                        '<img src="%s/images/locked.png" alt="%s" title="%s" style="position:relative;left:2px;top:2px;" />', WPCF_EMBEDDED_RES_RELPATH, __('This field is locked for editing because WPML will copy its value from the original language.', 'wpcf'), __('This field is locked for editing because WPML will copy its value from the original language.', 'wpcf')
+                );
+			}
             $markup .= sprintf(
-                '<label class="wpt-form-label wpt-form-textfield-label">%s</label>',
-                stripcslashes($this->getTitle())
+                '<label class="wpt-form-label wpt-form-textfield-label">%1$s%2$s</label>',
+                stripcslashes($this->getTitle()),
+				$extra_markup
             );
         }
         $markup .= stripcslashes($this->getDescription());
@@ -31,8 +48,8 @@ class WPToolset_Field_Wysiwyg extends WPToolset_Field_Textarea
             $markup .= '</div>';
         }
         $form[] = array(
-            '#type' => 'markup',
-            '#markup' => $markup
+            '#type'			=> 'markup',
+            '#markup'		=> $markup
         );
         return $form;
     }
@@ -40,8 +57,16 @@ class WPToolset_Field_Wysiwyg extends WPToolset_Field_Textarea
     protected function _editor(&$attributes)
     {
 
-        if (isset($attributes['readonly'])&&$attributes['readonly']=='readonly') {
+		$media_buttons = $this->_data['has_media_button'];
+		$quicktags = true;
+		
+        if (
+			isset( $attributes['readonly'] )
+			&& $attributes['readonly'] == 'readonly'
+		) {
             add_filter( 'tiny_mce_before_init',  array(&$this, 'tiny_mce_before_init_callback'));
+			$media_buttons = false;
+			$quicktags = false;
         }
 
         //EMERSON: Rewritten to set do_concat to TRUE so WordPress won't echo styles directly to the browser
@@ -56,7 +81,7 @@ class WPToolset_Field_Wysiwyg extends WPToolset_Field_Textarea
         wp_editor( $this->getValue(), $this->getId(),
             array(
                 'wpautop' => true, // use wpautop?
-                'media_buttons' => $this->_data['has_media_button'], // show insert/upload button(s)
+                'media_buttons' => $media_buttons, // show insert/upload button(s)
                 'textarea_name' => $this->getName(), // set the textarea name to something different, square brackets [] can be used here
                 'textarea_rows' => get_option( 'default_post_edit_rows', 10 ), // rows="..."
                 'tabindex' => '',
@@ -65,19 +90,22 @@ class WPToolset_Field_Wysiwyg extends WPToolset_Field_Textarea
                 'teeny' => false, // output the minimal editor config used in Press This
                 'dfw' => false, // replace the default fullscreen with DFW (needs specific DOM elements and css)
                 'tinymce' => true, // load TinyMCE, can be used to pass settings directly to TinyMCE using an array()
-                'quicktags' => true // load Quicktags, can be used to pass settings directly to Quicktags using an array(),
+                'quicktags' => $quicktags // load Quicktags, can be used to pass settings directly to Quicktags using an array(),
             ) );
-        return ob_get_clean() . "\n\n";
+        $return = ob_get_clean() . "\n\n";
+		if (
+			isset( $attributes['readonly'] )
+			&& $attributes['readonly'] == 'readonly'
+		) {
+            remove_filter( 'tiny_mce_before_init',  array(&$this, 'tiny_mce_before_init_callback'));
+			$return = str_replace( '<textarea', '<textarea readonly="readonly"', $return );
+        }
         $wp_styles->do_concat=FALSE;
+		return $return;
    }
 
-    /*RICCARDO: removed anonymous function for retrocompatibility */
-    public function tiny_mce_before_init_callback($args)
-    {
-        // do you existing check for published here
-        if ( 1 == 1 )
-            $args['readonly'] = 1;
-
+    public function tiny_mce_before_init_callback( $args ) {
+        $args['readonly'] = 1;
         return $args;
     }
 

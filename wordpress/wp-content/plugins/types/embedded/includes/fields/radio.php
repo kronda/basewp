@@ -6,11 +6,17 @@
  * @return type 
  */
 function wpcf_fields_radio() {
+
     return array(
         'id' => 'wpcf-radio',
         'title' => __( 'Radio', 'wpcf' ),
         'description' => __( 'Radio', 'wpcf' ),
-        'validate' => array('required'),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            )
+        ),
+        'font-awesome' => 'dot-circle-o',
     );
 }
 
@@ -104,10 +110,19 @@ function wpcf_fields_radio_editor_callback( $field, $data ) {
  */
 function wpcf_fields_radio_editor_submit( $data, $field, $context ) {
     $add = '';
-    $types_attr = $context == 'usermeta' ? 'usermeta' : 'field';
-    if ( $context == 'usermeta' ) {
-        $add .= wpcf_get_usermeta_form_addon_submit();
-    }
+	switch ( $context ) {
+		case 'usermeta':
+			$types_attr = 'usermeta';
+			$add .= wpcf_get_usermeta_form_addon_submit();
+			break;
+		case 'termmeta':
+			$types_attr = 'termmeta';
+			$add .= wpcf_get_termmeta_form_addon_submit();
+			break;
+		default:
+			$types_attr = 'field';
+			break;
+	}
     if ( isset( $data['display'] ) && $data['display'] == 'value' && !empty( $data['options'] ) ) {
         $shortcode = '';
         foreach ( $data['options'] as $option_id => $value ) {
@@ -118,6 +133,8 @@ function wpcf_fields_radio_editor_submit( $data, $field, $context ) {
     } else {
         if ( $context == 'usermeta' ) {
             $shortcode = wpcf_usermeta_get_shortcode( $field, $add );
+		} elseif ( $context == 'termmeta' ) {
+			$shortcode = wpcf_termmeta_get_shortcode( $field, $add );
         } else {
             $shortcode = wpcf_fields_get_shortcode( $field, $add );
         }
@@ -134,7 +151,10 @@ function wpcf_fields_radio_view( $params ) {
     if ( isset( $params['style'] ) && $params['style'] == 'raw' ) {
         return '';
     }
-    if ( isset( $params['usermeta'] ) && !empty( $params['usermeta'] ) ) {
+	if ( isset( $params['termmeta'] ) && !empty( $params['termmeta'] ) ) {
+        $field = wpcf_fields_get_field_by_slug( $params['field']['slug'],
+                'wpcf-termmeta' );
+    } else if ( isset( $params['usermeta'] ) && !empty( $params['usermeta'] ) ) {
         $field = wpcf_fields_get_field_by_slug( $params['field']['slug'],
                 'wpcf-usermeta' );
     } else {
@@ -142,7 +162,6 @@ function wpcf_fields_radio_view( $params ) {
     }
 
     $output = '';
-
     // See if user specified output for each field
     if ( isset( $params['option'] ) ) {
         foreach ( $field['data']['options'] as $option_key => $option ) {
@@ -166,17 +185,13 @@ function wpcf_fields_radio_view( $params ) {
                     && stripslashes( $option['value'] )  == stripslashes( $params['field_value'] ) ) {
 				// We need to translate here because the stored value is on the original language
 				// When updaing the value in the Field group, we might have problems
-				// @wpmlhere
                 $field_value = wpcf_translate( 'field ' . $params['field']['id'] . ' option ' . $option_key . ' title', $option['title'] );
-				//$field_value = $option['title'];
                 if ( isset( $params['field']['data']['display'] )
                         && $params['field']['data']['display'] != 'db'
                         && !empty( $option['display_value'] ) ) {
 					// We need to translate here because the stored value is on the original language
 					// When updaing the value in the Field group, we might have problems
-					// @wpmlhere
                     $field_value = wpcf_translate( 'field ' . $params['field']['id'] . ' option ' . $option_key . ' display value', $option['display_value'] );
-					//$field_value = $option['display_value'];
                 }
             }
         }

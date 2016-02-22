@@ -1,6 +1,6 @@
 <?php
 /*
- * Child table taxonomy non-hierarchical form.
+ * Child table Taxonomy non-hierarchical form.
  */
 $defaults = array('taxonomy' => 'category');
 extract( wp_parse_args( $data, $defaults ), EXTR_SKIP );
@@ -34,7 +34,7 @@ $html_id = "wpcf-reltax-{$taxonomy}-" . wpcf_unique_id( $taxonomy );
 				<h4>
 					<a id="<?php echo $html_id; ?>-add-toggle" href="#<?php echo $html_id; ?>-add" class="hide-if-no-js">
 						<?php
-							/* translators: %s: add new taxonomy label */
+							/* translators: %s: add new Taxonomy label */
 							printf( __( '+ %s', 'wpcf' ), $tax->labels->add_new_item );
 						?>
 					</a>

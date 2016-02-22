@@ -20,7 +20,9 @@ function wpcf_admin_userprofile_init($user_id){
 		$user_id = new stdClass();
 		$user_id->ID = 0;
 	}
-	$user_role = isset($user_id->roles) ? array_shift($user_id->roles) : 'subscriber';
+	$current_user_roles = isset( $user_id->roles ) ? $user_id->roles : array( 'subscriber' );
+	$current_user_roles = array_values( $current_user_roles );
+	$user_role = array_shift( $current_user_roles );
 	$groups = wpcf_admin_usermeta_get_groups_fields();
 	$wpcf_active = false;
     $profile_only_preview = '';

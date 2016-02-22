@@ -59,12 +59,15 @@ function wpcf_fields_checkbox_insert_form( $form_data ) {
             'data-wpcf-type' => 'checkbox',
             'data-required-message-0' => __("This value can't be zero", 'wpcf'),
             'data-required-message' => __("Please enter a value", 'wpcf')
-        )
+        ),
+        '#inline' => true,
+        '#pattern' => '<tr class="wpcf-border-top"><td><LABEL></td><td><ERROR><BEFORE><ELEMENT><AFTER></td></tr>',
     );
     $cb_migrate_save = !empty( $form_data['slug'] ) ? "wpcfCbSaveEmptyMigrate(jQuery(this), '{$form_data['slug']}', '', '" . wp_create_nonce( 'cb_save_empty_migrate' ) . "', 'save_check', '{$meta_type}');" : '';
     $cb_migrate_do_not_save = !empty( $form_data['slug'] ) ? "wpcfCbSaveEmptyMigrate(jQuery(this), '{$form_data['slug']}', '', '" . wp_create_nonce( 'cb_save_empty_migrate' ) . "', 'do_not_save_check', '{$meta_type}');" : '';
     $update_response = !empty( $form_data['slug'] ) ? "<div id='wpcf-cb-save-empty-migrate-response-{$form_data['slug']}' class='wpcf-cb-save-empty-migrate-response'></div>" : '<div class="wpcf-cb-save-empty-migrate-response"></div>';
     $form['save_empty'] = array(
+        '#title' => __('Save option', 'wpcf'),
         '#type' => 'radios',
         '#name' => 'save_empty',
         '#default_value' => !empty( $form_data['data']['save_empty'] ) ? $form_data['data']['save_empty'] : 'no',
@@ -73,15 +76,24 @@ function wpcf_fields_checkbox_insert_form( $form_data ) {
                 '#title' => __( 'save 0 to the database', 'wpcf' ),
                 '#value' => 'yes',
                 '#attributes' => array('class' => 'wpcf-cb-save-empty-migrate', 'onclick' => $cb_migrate_save),
+                '#inline' => true,
+                '#before' => '<li>',
+                '#after' => '</li>',
             ),
             'no' => array(
                 '#title' => __( "don't save anything to the database", 'wpcf' ),
                 '#value' => 'no',
                 '#attributes' => array('class' => 'wpcf-cb-save-empty-migrate', 'onclick' => $cb_migrate_do_not_save),
+                '#inline' => true,
+                '#before' => '<li>',
+                '#after' => '</li>',
             ),
         ),
         '#description' => '<strong>' . __( 'When unchecked:', 'wpcf' ) . '</strong>',
         '#after' => $update_response,
+        '#inline' => true,
+        '#before' => '<ul>',
+        '#after' => '</ul>',
     );
     if ( isset($_GET['page']) && $_GET['page'] == 'wpcf-edit' ) {
         $form['checked'] = array(
@@ -89,9 +101,11 @@ function wpcf_fields_checkbox_insert_form( $form_data ) {
             '#title' => __( 'Set checked by default (on new post)?', 'wpcf' ),
             '#name' => 'checked',
             '#default_value' => !empty( $form_data['data']['checked'] ) ? 1 : 0,
+            '#inline' => true,
         );
     }
     $form['display'] = array(
+        '#title' => __('Value to show', 'wpcf'),
         '#type' => 'radios',
         '#default_value' => 'db',
         '#name' => 'display',
@@ -101,15 +115,27 @@ function wpcf_fields_checkbox_insert_form( $form_data ) {
                 '#name' => 'display',
                 '#value' => 'db',
                 '#inline' => true,
-                '#after' => '<br />'
+                '#before' => '<li>',
+                '#after' => '</li>',
             ),
             'display_values' => array(
                 '#title' => __( 'Show one of these two values:', 'wpcf' ),
                 '#name' => 'display',
                 '#value' => 'value',
+                '#inline' => true,
+                '#before' => '<li>',
+                '#after' => '</li>',
             ),
         ),
         '#inline' => true,
+        '#before' => '<ul>',
+        '#after' => '</ul>',
+        '#pattern' => '<tr class="wpcf-border-top"><td><LABEL></td><td><ERROR><BEFORE><ELEMENT><AFTER>',
+    );
+    $form['display-open'] = array(
+        '#type' => 'markup',
+        '#markup' => '<div>',
+        '#pattern' => '<ERROR><BEFORE><ELEMENT><AFTER><dl>',
     );
     $form['display-value-1'] = array(
         '#type' => 'textfield',
@@ -120,6 +146,8 @@ function wpcf_fields_checkbox_insert_form( $form_data ) {
         '#attributes' => array(
             'placeholder' => __('Enter not selected value', 'wpcf'),
         ),
+        '#inline' => true,
+        '#pattern' => '<dt><LABEL></dt><dd><ERROR><BEFORE><ELEMENT><AFTER></dd>',
     );
     $form['display-value-2'] = array(
         '#type' => 'textfield',
@@ -129,10 +157,19 @@ function wpcf_fields_checkbox_insert_form( $form_data ) {
         '#attributes' => array(
             'placeholder' => __('Enter selected value', 'wpcf'),
         ),
+        '#inline' => true,
+        '#pattern' => '<dt><LABEL></dt><dd><ERROR><BEFORE><ELEMENT><AFTER></dd>',
     );
+    $form['display-close'] = array(
+        '#type' => 'markup',
+        '#markup' => '</dl></div>',
+        '#pattern' => '<ERROR><BEFORE><ELEMENT><AFTER></td></tr>',
+    );
+    /*
     $form['help'] = array(
         '#type' => 'markup',
         '#markup' => '<p style="text-align:right"><a href="http://wp-types.com/documentation/functions/checkbox/" target="_blank">' . __( 'Checkbox help', 'wpcf' ) . '</a></p>',
     );
+     */
     return $form;
 }

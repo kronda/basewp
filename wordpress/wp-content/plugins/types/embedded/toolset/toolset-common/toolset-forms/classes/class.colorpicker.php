@@ -83,15 +83,16 @@ class WPToolset_Field_Colorpicker extends FieldFactory
 
         $form = array();
         $form['name'] = array(
-            '#type' => 'textfield',
-            '#title' => $this->getTitle(),
-            '#description' => $this->getDescription(),
-            '#value' => $this->getValue(),
-            '#name' => $this->getName(),
-            '#attributes' => $attributes,
-            '#validate' => $validation,
-            '#after' => '',
-            '#repetitive' => $this->isRepetitive(),
+            '#type'			=> 'textfield',
+            '#title'		=> $this->getTitle(),
+            '#description'	=> $this->getDescription(),
+            '#value'		=> $this->getValue(),
+            '#name'			=> $this->getName(),
+            '#attributes'	=> $attributes,
+            '#validate'		=> $validation,
+            '#after'		=> '',
+            '#repetitive'	=> $this->isRepetitive(),
+			'wpml_action'	=> $this->getWPMLAction(),
         );
         return $form;
     }

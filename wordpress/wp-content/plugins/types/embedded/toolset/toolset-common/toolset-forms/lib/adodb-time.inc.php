@@ -995,21 +995,16 @@ global $_month_table_normal,$_month_table_leaf;
 		0 => $origd
 	);
 }
-/*
-		if ($isphp5)
-				$dates .= sprintf('%s%04d',($gmt<=0)?'+':'-',abs($gmt)/36); 
-			else
-				$dates .= sprintf('%s%04d',($gmt<0)?'+':'-',abs($gmt)/36); 
-			break;*/
+
 function adodb_tz_offset($gmt,$isphp5)
 {
 	$zhrs = abs($gmt)/3600;
 	$hrs = floor($zhrs);
-	if ($isphp5) 
+	if ($isphp5) {
 		return sprintf('%s%02d%02d',($gmt<=0)?'+':'-',floor($zhrs),($zhrs-$hrs)*60); 
-	else
-		return sprintf('%s%02d%02d',($gmt<0)?'+':'-',floor($zhrs),($zhrs-$hrs)*60); 
-	break;
+	} else {
+		return sprintf('%s%02d%02d',($gmt<0)?'+':'-',floor($zhrs),($zhrs-$hrs)*60);
+	}		
 }
 
 

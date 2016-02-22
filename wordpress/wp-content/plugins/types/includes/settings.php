@@ -5,8 +5,8 @@
 
 /**
  * Settings form.
- * 
- * @return string 
+ *
+ * @return string
  */
 function wpcf_admin_general_settings_form()
 {
@@ -23,15 +23,16 @@ function wpcf_admin_general_settings_form()
     $form['images'] = array(
         '#id' => 'add_resized_images_to_library',
         '#name' => 'wpcf_settings[add_resized_images_to_library]',
-        '#title' => __('Remote Images', 'wpcf'),
+        '#title' => __('Images', 'wpcf'),
         '#type' => 'checkbox',
         '#label' => __('Add resized images to the media library', 'wpcf'),
-        '#description' => __('Types will automatically add the resized images as attachments to the media library. Choose this to automatically upload resized images to a CDN.', 'wpcf'),
+        '#description' => __('Types will automatically add the resized images as attachments to the media library.', 'wpcf'),
         '#inline' => true,
         '#default_value' => !empty($settings['add_resized_images_to_library']),
         '#pattern' => '<tr><th scope="row"><TITLE></th><td><ELEMENT><LABEL><DESCRIPTION>',
     );
     $form['images_remote'] = array(
+    '#title' => __('Remote Images', 'wpcf'),
         '#id' => 'images_remote',
         '#name' => 'wpcf_settings[images_remote]',
         '#type' => 'checkbox',
@@ -93,6 +94,7 @@ function wpcf_admin_general_settings_form()
             '#inline' => true,
         );
     }
+
     $form['help-box'] = array(
         '#id' => 'help_box',
         '#name' => 'wpcf_settings[help_box]',
@@ -100,15 +102,15 @@ function wpcf_admin_general_settings_form()
         '#options' => array(
             'all' => array(
                 '#value' => 'all',
-                '#title' => __("Show help box on all custom post editing screens", 'wpcf')
+                '#title' => __("Show promotional messages on all custom post editing screens and on all Types create/edit pages", 'wpcf')
             ),
             'by_types' => array(
                 '#value' => 'by_types',
-                '#title' => __("Show help box only on custom post types that were created by Types", 'wpcf')
+                '#title' => __("Show promotional messages only on post types that were created by Types and on all Types create/edit pages", 'wpcf')
             ),
             'no' => array(
                 '#value' => 'no',
-                '#title' => __("Don't show help box on any custom post type editing screen", 'wpcf')
+                '#title' => __("Don't show promotional messages anywhere", 'wpcf')
             ),
         ),
         '#inline' => true,
@@ -121,7 +123,6 @@ function wpcf_admin_general_settings_form()
         '#id' => 'hide_standard_custom_fields_metabox',
         '#name' => 'wpcf_settings[hide_standard_custom_fields_metabox]',
         '#type' => 'radios',
-        '#description' => __('This setting allow to hide standard WordPress Custom Field Metabox.', 'wpcf'),
         '#options' => array(
             'all' => array(
                 '#value' => 'show',
@@ -138,6 +139,7 @@ function wpcf_admin_general_settings_form()
         '#pattern' => '<tr><th scope="row"><TITLE></th><td><ELEMENT><DESCRIPTION></td></th>',
     );
 
+    /* This is obsolete with our new way to handle these messages (see types-508)
     if ( !WPCF_Types_Marketing_Messages::check_register() ) {
         $form['toolset_messages'] = array(
             '#id' => 'toolset_messages',
@@ -150,6 +152,7 @@ function wpcf_admin_general_settings_form()
             '#inline' => true,
         );
     }
+    */
 
     $form['postmeta-unfiltered-html'] = array(
         '#id' => 'postmeta_unfiltered_html',
@@ -159,16 +162,16 @@ function wpcf_admin_general_settings_form()
         '#options' => array(
             'on' => array(
                 '#value' => 'on',
-                '#title' => __('Enable saving unfiltered HTML in Types custom fields for users with higher roles', 'wpcf'),
+                '#title' => __('Allow saving unfiltered HTML in Types custom fields for users with higher roles', 'wpcf'),
             ),
             'off' => array(
                 '#value' => 'off',
-                '#title' => __('Disable saving unfiltered HTML in Types custom fields for all users', 'wpcf'),
+                '#title' => __('Disallow saving unfiltered HTML in Types custom fields for all users', 'wpcf'),
             ),
         ),
         '#inline' => false,
         '#default_value' => $settings['postmeta_unfiltered_html'],
-        '#pattern' => '<tr><th scope="row"><TITLE></th><td><ELEMENT><LABEL><DESCRIPTION></td></th>',
+        '#pattern' => '<tr><th scope="row"><TITLE></th><td><ELEMENT><DESCRIPTION></td></th>',
     );
     $form['usermeta-unfiltered-html'] = array(
         '#id' => 'usermeta_unfiltered_html',
@@ -178,16 +181,16 @@ function wpcf_admin_general_settings_form()
         '#options' => array(
             'on' => array(
                 '#value' => 'on',
-                '#title' => __("Enable saving unfiltered HTML in Types usermeta fields for users with higher roles", 'wpcf'),
+                '#title' => __("Allow saving unfiltered HTML in Types usermeta fields for users with higher roles", 'wpcf'),
             ),
             'off' => array(
                 '#value' => 'off',
-                '#title' => __("Disable saving unfiltered HTML in Types usermeta fields for all users", 'wpcf')
+                '#title' => __("Disallow saving unfiltered HTML in Types usermeta fields for all users", 'wpcf')
             ),
         ),
         '#inline' => false,
         '#default_value' => $settings['usermeta_unfiltered_html'],
-        '#pattern' => '<tr><th scope="row"><TITLE></th><td><ELEMENT><LABEL><DESCRIPTION></td></th>',
+        '#pattern' => '<tr><th scope="row"><TITLE></th><td><ELEMENT><DESCRIPTION></td></th>',
     );
 
     $form['open-close'] = array(
@@ -206,8 +209,8 @@ function wpcf_admin_general_settings_form()
 
 /**
  * Saves settings.
- * 
- * @param type $form 
+ *
+ * @param type $form
  */
 function wpcf_admin_general_settings_form_submit($form)
 {

@@ -28,7 +28,7 @@
 add_filter( 'types_register_fields', 'my_types' );
 
 /**
- * Register custom post type on 'types_register_fields' hook.
+ * Register post type on 'types_register_fields' hook.
  * 
  * @param array $fields
  * @return type

@@ -54,6 +54,8 @@ class WPToolset_Field_Date extends FieldFactory {
         $datepicker = $hour = $minute = null;
         $timestamp = null;
         $readonly = false;
+		$wpml_action = $this->getWPMLAction();
+		
         if (is_admin()) {
             if (is_array($time_value) && array_key_exists('timestamp', $time_value) && $time_value) {
                 $timestamp = $time_value['timestamp'];
@@ -95,6 +97,19 @@ class WPToolset_Field_Date extends FieldFactory {
             }
         }
         $data = $this->getData();
+		
+		$field_disable = false;
+		if (
+			is_admin()
+			&& defined( 'WPML_TM_VERSION' ) 
+			&& intval( $wpml_action ) === 1 
+			&& function_exists( 'wpcf_wpml_post_is_original' )
+			&& ! wpcf_wpml_post_is_original()
+			&& function_exists( 'wpcf_wpml_have_original' )
+			&& wpcf_wpml_have_original()
+		) {
+			$field_disable = true;
+		}
 
         if (!$timestamp) {
             // If there is no timestamp, we need to make it an empty string
@@ -107,7 +122,14 @@ class WPToolset_Field_Date extends FieldFactory {
 
         $def_class_aux = 'js-wpt-date-auxiliar';
 
-        if (isset($data['attribute']) && isset($data['attribute']['readonly']) && $data['attribute']['readonly'] == 'readonly') {
+        if (
+			$field_disable
+			|| ( 
+				isset($data['attribute']) 
+				&& isset($data['attribute']['readonly']) 
+				&& $data['attribute']['readonly'] == 'readonly'
+			)
+		) {
             $def_class .= ' js-wpv-date-readonly';
             $def_class_aux .= ' js-wpt-date-readonly';
             $readonly = true;
@@ -143,6 +165,7 @@ class WPToolset_Field_Date extends FieldFactory {
             '#name' => $this->getName() . '[display-only]',
             '#value' => $datepicker,
             '#inline' => true,
+			'wpml_action' => $wpml_action,
         );
         $form[] = array(
             '#type' => 'hidden',
@@ -230,13 +253,18 @@ class WPToolset_Field_Date extends FieldFactory {
             '#type' => 'markup',
             '#inline' => true,
             '#markup' => sprintf(
-                    '<input type="button" class="button button-secondary js-wpt-date-clear wpt-date-clear" value="%s" %s/>', esc_attr(__('Clear', 'wpv-views')) . " Date",
-                    /**
-                     * show button if array is empty or timestamp in array is
-                     * empty
-                     */ (
-                    empty($time_value) || !isset($time_value['timestamp']) || (isset($time_value['timestamp']) && empty($time_value['timestamp']))
-                    ) ? 'style="display:none" ' : ''
+                '<input type="button" class="button button-secondary js-wpt-date-clear wpt-date-clear" value="%s" %s/>', 
+				esc_attr(__('Clear', 'wpv-views')) . " Date",
+                /**
+                * show button if array is empty or timestamp in array is
+                * empty
+                */
+                (
+                    empty($time_value)
+                    || !isset($time_value['timestamp'])
+                    || (isset($time_value['timestamp']) && empty($time_value['timestamp']))
+					|| $readonly
+                ) ? 'style="display:none" ':''
             ),
         );
         return $form;

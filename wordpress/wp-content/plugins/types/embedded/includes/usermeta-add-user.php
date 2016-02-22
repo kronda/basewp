@@ -39,7 +39,6 @@ function wpcf_usermets_add_user_submit( $user_id ) {
  */
 function wpcf_usermeta_add_user_screen_init() {
     require_once WPCF_EMBEDDED_INC_ABSPATH . '/usermeta-post.php';
-    require_once WPCF_EMBEDDED_INC_ABSPATH . '/usermeta.php';
     require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields-post.php';
     remove_action( 'admin_footer', 'wpcf_admin_profile_js_validation' );
 }

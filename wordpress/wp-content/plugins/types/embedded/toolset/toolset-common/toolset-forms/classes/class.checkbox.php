@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  *
@@ -10,33 +11,31 @@ require_once 'class.field_factory.php';
  *
  * @author Srdjan
  */
-class WPToolset_Field_Checkbox extends FieldFactory
-{
-    public function metaform()
-    {
+class WPToolset_Field_Checkbox extends FieldFactory {
+
+    public function metaform() {
         global $post;
         $value = $this->getValue();
-        $data = $this->getData();        
+        $data = $this->getData();
         $checked = null;
 
         /**
          * autocheck for new posts
          */
-        if (isset($post) && 'auto-draft' == $post->post_status && array_key_exists( 'checked', $data ) && $data['checked']) {
+        if (isset($post) && 'auto-draft' == $post->post_status && array_key_exists('checked', $data) && $data['checked']) {
             $checked = true;
         }
         /**
          * is checked?
          */
-        if ( isset($data['options']) && array_key_exists( 'checked', $data['options'] ) ) {
+        if (isset($data['options']) && array_key_exists('checked', $data['options'])) {
             $checked = $data['options']['checked'];
-        }                
+        }
         /**
          * if is a default value, there value is 1 or default_value
          */
         if (
-            array_key_exists('default_value', $data)
-            && ( 'y' === $value || $value === $data['default_value'])
+                array_key_exists('default_value', $data) && ( 'y' === $value || $value === $data['default_value'])
         ) {
             $checked = true;
         }
@@ -52,7 +51,7 @@ class WPToolset_Field_Checkbox extends FieldFactory
         $form = array(
             '#type' => 'checkbox',
             '#value' => $value,
-            '#default_value' => array_key_exists( 'default_value', $data )? $data['default_value']:null,
+            '#default_value' => array_key_exists('default_value', $data) ? $data['default_value'] : null,
             '#name' => $this->getName(),
             '#description' => $this->getDescription(),
             '#title' => $this->getTitle(),
@@ -60,7 +59,13 @@ class WPToolset_Field_Checkbox extends FieldFactory
             '#after' => '<input type="hidden" name="_wptoolset_checkbox[' . $this->getId() . ']" value="1" />',
             '#checked' => $checked,
             '#repetitive' => $this->isRepetitive(),
+            /*
+             * class attribute was missed
+             */
+            '#attributes' => $this->getAttr(),
+            'wpml_action' => $this->getWPMLAction(),
         );
         return array($form);
     }
+
 }

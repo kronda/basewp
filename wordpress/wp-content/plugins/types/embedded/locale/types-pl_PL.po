@@ -20,8 +20,8 @@ msgstr ""
 #. #-#-#-#-#  wp_types.pot (Types 1.8)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: admin.php:63 admin.php:64
-#: embedded/common/visual-editor/editor-addon.class.php:104
-#: embedded/common/visual-editor/editor-addon.class.php:350
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:104
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:350
 #: embedded/includes/fields/file.php:122 help.php:336
 msgid "Types"
 msgstr "Types"
@@ -345,32 +345,32 @@ msgstr "Dodaj potomka"
 msgid "Sorry, can not delete all fields."
 msgstr "Niestety, nie można usunąć wszystkich pól."
 
-#: embedded/classes/validate.php:199 embedded/common/classes/validate.php:202
+#: embedded/classes/validate.php:199 embedded/toolset/toolset-common/classes/validate.php:202
 msgid "Required"
 msgstr "Wymagane"
 
-#: embedded/classes/validate.php:266 embedded/common/classes/validate.php:264
+#: embedded/classes/validate.php:266 embedded/toolset/toolset-common/classes/validate.php:264
 #: embedded/includes/fields/email.php:11 embedded/includes/fields/email.php:12
 msgid "Email"
 msgstr "Email"
 
-#: embedded/classes/validate.php:317 embedded/common/classes/validate.php:312
+#: embedded/classes/validate.php:317 embedded/toolset/toolset-common/classes/validate.php:312
 #: embedded/includes/fields/date.php:97 embedded/includes/fields/date.php:98
 msgid "Date"
 msgstr "Data"
 
-#: embedded/classes/validate.php:352 embedded/common/classes/validate.php:347
+#: embedded/classes/validate.php:352 embedded/toolset/toolset-common/classes/validate.php:347
 msgid "Digits"
 msgstr "Cyfry"
 
-#: embedded/classes/validate.php:381 embedded/common/classes/validate.php:375
+#: embedded/classes/validate.php:381 embedded/toolset/toolset-common/classes/validate.php:375
 #: embedded/includes/fields/numeric.php:22
 #: embedded/includes/fields/numeric.php:23
 msgid "Numeric"
 msgstr "Numeryczne"
 
 #: embedded/classes/validation-cakephp.php:399
-#: embedded/common/classes/validation-cakephp.php:376
+#: embedded/toolset/toolset-common/classes/validation-cakephp.php:376
 msgid ""
 "You must define the $operator parameter for Wpcf_Cake_Validation::"
 "comparison()"
@@ -378,36 +378,36 @@ msgstr ""
 "Musisz zdefiniować parametr $operator dla Wpcf_Cake_Validation::comparison()"
 
 #: embedded/classes/validation-cakephp.php:423
-#: embedded/common/classes/validation-cakephp.php:400
+#: embedded/toolset/toolset-common/classes/validation-cakephp.php:400
 msgid "You must define a regular expression for Wpcf_Cake_Validation::custom()"
 msgstr ""
 "Musisz zdefiniować wyrażenie regularne dla Wpcf_Cake_Validation::custom()"
 
 #: embedded/classes/validation-cakephp.php:1005
-#: embedded/common/classes/validation-cakephp.php:1002
-#: embedded/common/toolset-forms/lib/CakePHP-Validation.php:1010
+#: embedded/toolset/toolset-common/classes/validation-cakephp.php:1002
+#: embedded/toolset/toolset-common/toolset-forms/lib/CakePHP-Validation.php:1010
 msgid "Could not find %s class, unable to complete validation."
 msgstr "Nie znaleziono klasy %s, nie można ukończyć walidacji."
 
 #: embedded/classes/validation-cakephp.php:1009
-#: embedded/common/classes/validation-cakephp.php:1006
-#: embedded/common/toolset-forms/lib/CakePHP-Validation.php:1014
+#: embedded/toolset/toolset-common/classes/validation-cakephp.php:1006
+#: embedded/toolset/toolset-common/toolset-forms/lib/CakePHP-Validation.php:1014
 msgid "Method %s does not exist on %s unable to complete validation."
 msgstr "Metoda %s nie istnieje na %s, nie można ukończyć walidacji."
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:107
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:107
 msgid "Design with Toolset"
 msgstr "Tworzone za pomocą Toolseta"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:125
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:125
 msgid "Remove this menu"
 msgstr "Przenieś menu"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:637
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:637
 msgid "Create a new"
 msgstr "Utwórz"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:648
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:648
 #: embedded/includes/relationship/child-table-row.php:39 help.php:37
 #: help.php:121 help.php:153 help.php:282
 #: includes/classes/class.wpcf.custom.fields.list.table.php:144
@@ -421,44 +421,44 @@ msgstr "Utwórz"
 msgid "Edit"
 msgstr "Edycja"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:651
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:686
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:651
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:686
 msgid "Layout"
 msgstr "Szablon"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:652
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:687
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:652
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:687
 msgid "Archive"
 msgstr "Archiwa"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:652
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:687
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:652
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:687
 msgid "Template"
 msgstr "Szablon"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:691
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:691
 msgid "for"
 msgstr "dla"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:697
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:697
 msgid "Error 404 page"
 msgstr "Strona błędu 404"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:704
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:718
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:720
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:704
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:718
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:720
 msgid "Archives"
 msgstr "Archiwa"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:722
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:722
 msgid "Unsupported post type archives"
 msgstr "Niewspierane archiwum typu wpisu"
 
-#: embedded/common/classes/class-toolset-admin-bar-menu.php:726
+#: embedded/toolset/toolset-common/classes/class-toolset-admin-bar-menu.php:726
 msgid "Unsupported page"
 msgstr "Niewybrana strona"
 
-#: embedded/common/classes/class.toolset.promo.php:123
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:123
 msgid ""
 "Want to edit Views, CRED forms and Layouts? Get the full <em>Toolset</em> "
 "package!"
@@ -466,7 +466,7 @@ msgstr ""
 "Czy chcesz edytować Widoki, formularze CRED oraz Układy? Zdobądź pełną "
 "wersję pakietu <em>Toolset</em>!"
 
-#: embedded/common/classes/class.toolset.promo.php:126
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:126
 msgid ""
 "The full <em>Toolset</em> package allows you to develop and customize themes "
 "without touching PHP. You will be able to:"
@@ -474,32 +474,32 @@ msgstr ""
 "Pełna wersja pakietu <em>Toolset</e< pozwala na zmiany i personalazcję "
 "wyświetlanie bez potrzeby użycia PHP. Możliwości:"
 
-#: embedded/common/classes/class.toolset.promo.php:130
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:130
 msgid "Create templates"
 msgstr "Stwórz szablony"
 
-#: embedded/common/classes/class.toolset.promo.php:131
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:131
 msgid "Design page layouts using drag-and-drop"
 msgstr "Zaprojektuj szablon motodą podnieś-upuść"
 
-#: embedded/common/classes/class.toolset.promo.php:132
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:132
 #: embedded/includes/fields-post.php:1841
 msgid "Build parametric searches"
 msgstr "Utwórz zaawansowaną wyszukiwarkę"
 
-#: embedded/common/classes/class.toolset.promo.php:135
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:135
 msgid "Display lists of content"
 msgstr "Wyświetla listę zawartości"
 
-#: embedded/common/classes/class.toolset.promo.php:136
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:136
 msgid "Create front-end content editing forms"
 msgstr "Twórz formularze edycji w części publicznej"
 
-#: embedded/common/classes/class.toolset.promo.php:137
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:137
 msgid "and more…"
 msgstr "oraz więcej…"
 
-#: embedded/common/classes/class.toolset.promo.php:141
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:141
 msgid ""
 "Once you buy the full Toolset, you will be able to edit Views, CRED forms "
 "and Layouts in your site, as well as build new ones."
@@ -507,20 +507,20 @@ msgstr ""
 "Jak tylko kupisz pakiet Toolset będzie można edytować oraz dodawać Widoki, "
 "Formularze CRED oraz Układy."
 
-#: embedded/common/classes/class.toolset.promo.php:144
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:144
 msgid "<em>Toolset</em> Package Options"
 msgstr "Opcję pakietu <em>Toolset</em>"
 
-#: embedded/common/classes/class.toolset.promo.php:146
+#: embedded/toolset/toolset-common/classes/class.toolset.promo.php:146
 msgid "Learn more about <em>Toolset</em>"
 msgstr "Dowiedz się więcej na temat pakietu <em>Toolset</em>"
 
-#: embedded/common/debug/debug-information.php:14
-#: embedded/common/debug/debug-information.php:17
+#: embedded/toolset/toolset-common/debug/debug-information.php:14
+#: embedded/toolset/toolset-common/debug/debug-information.php:17
 msgid "Debug information"
 msgstr "Informacje o debugowaniu"
 
-#: embedded/common/debug/debug-information.php:19
+#: embedded/toolset/toolset-common/debug/debug-information.php:19
 msgid ""
 "This information allows our support team to see the versions of WordPress, "
 "plugins and theme on your site. Provide this information if requested in our "
@@ -531,93 +531,93 @@ msgstr ""
 "będą wymagane, na naszym forum pomocy technicznej. Dane te nie zawierają "
 "haseł ani żadnych informacji poufnych."
 
-#: embedded/common/debug/functions_debug_information.php:63
+#: embedded/toolset/toolset-common/debug/functions_debug_information.php:63
 msgid "n/a"
 msgstr "n.d."
 
-#: embedded/common/functions.php:416
+#: embedded/toolset/toolset-common/functions.php:416
 msgid "Error while parsing the evaluate expression"
 msgstr "Błąd podczas analizy wyrażenia ewaluacji"
 
-#: embedded/common/functions.php:420
+#: embedded/toolset/toolset-common/functions.php:420
 msgid "Conditional expression includes illegal characters"
 msgstr "Wyrażenie warunkowe zawiera niedopuszczalne znaki"
 
-#: embedded/common/functions.php:424
+#: embedded/toolset/toolset-common/functions.php:424
 msgid "Correct conditional expression has not been found"
 msgstr "Nie znaleziono poprawnego wyrażenia warunkowego"
 
-#: embedded/common/functions.php:602
+#: embedded/toolset/toolset-common/functions.php:602
 msgid "Don't show this message again"
 msgstr "Nie wyświetlaj więcej tego komunikatu"
 
-#: embedded/common/toolset-forms/classes/class.audio.php:29
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.audio.php:29
 msgid "You can add only audio."
 msgstr "Możesz dodać jedynie dźwięk."
 
-#: embedded/common/toolset-forms/classes/class.colorpicker.php:34
-#: embedded/common/toolset-forms/classes/class.credfile.php:143
-#: embedded/common/toolset-forms/classes/class.date.php:233
-#: embedded/common/visual-editor/editor-addon.class.php:699
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.colorpicker.php:34
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.credfile.php:143
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.date.php:233
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:699
 msgid "Clear"
 msgstr "Wyczyść"
 
-#: embedded/common/toolset-forms/classes/class.colorpicker.php:35
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.colorpicker.php:35
 #: includes/fields/radio.php:206 includes/fields/select.php:135
 msgid "Default"
 msgstr "Domyślne"
 
-#: embedded/common/toolset-forms/classes/class.colorpicker.php:36
-#: embedded/common/toolset-forms/classes/class.date.php:129
-#: embedded/common/toolset-forms/classes/class.date.php:197
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.colorpicker.php:36
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.date.php:129
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.date.php:197
 #: embedded/includes/fields/select.php:10
 #: embedded/includes/fields/select.php:11
 msgid "Select"
 msgstr "Wybierz"
 
-#: embedded/common/toolset-forms/classes/class.colorpicker.php:65
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.colorpicker.php:65
 msgid "You can add valid hexadecimal."
 msgstr "Możesz dodać poprawną wartość szesnastkową."
 
-#: embedded/common/toolset-forms/classes/class.credfile.php:94
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.credfile.php:94
 msgid "Featured Image"
 msgstr "Ikona wpisu"
 
-#: embedded/common/toolset-forms/classes/class.credfile.php:139
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.credfile.php:139
 msgid "Restore original"
 msgstr "Przywróć oryginał"
 
-#: embedded/common/toolset-forms/classes/class.date.php:192
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.date.php:192
 #: embedded/includes/fields/date.php:232
 #: embedded/includes/usermeta-post.php:645
 msgid "Hour"
 msgstr "Godzina"
 
-#: embedded/common/toolset-forms/classes/class.date.php:215
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.date.php:215
 #: embedded/includes/fields/date.php:254
 #: embedded/includes/usermeta-post.php:645
 msgid "Minute"
 msgstr "Minuta"
 
-#: embedded/common/toolset-forms/classes/class.date.php:220
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.date.php:220
 msgid "Select minute"
 msgstr "Wybierz minutę"
 
-#: embedded/common/toolset-forms/classes/class.date.scripts.php:134
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.date.scripts.php:134
 #: embedded/includes/fields/date/js.php:30
 msgid "Select date"
 msgstr "Wybierz datę"
 
-#: embedded/common/toolset-forms/classes/class.date.scripts.php:137
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.date.scripts.php:137
 #: embedded/includes/fields/date/js.php:12
 msgid "Input format: %s"
 msgstr "Format wprowadzania: %s"
 
-#: embedded/common/toolset-forms/classes/class.date.scripts.php:141
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.date.scripts.php:141
 msgid "This is a read-only date input"
 msgstr "To jest pole daty tylko do odczytu"
 
-#: embedded/common/toolset-forms/classes/class.eforms.php:389
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.eforms.php:389
 #: embedded/includes/fields-post.php:1424
 #: embedded/includes/fields-post.php:1425
 msgid ""
@@ -627,100 +627,100 @@ msgstr ""
 "Edycja tego pola została zablokowana, ponieważ WPML skopiuje jego wartość z "
 "języka źródłowego."
 
-#: embedded/common/toolset-forms/classes/class.file.php:111
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.file.php:111
 msgid "audio"
 msgstr "dźwięk"
 
-#: embedded/common/toolset-forms/classes/class.file.php:114
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.file.php:114
 msgid "image"
 msgstr "obraz"
 
-#: embedded/common/toolset-forms/classes/class.file.php:117
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.file.php:117
 msgid "video"
 msgstr "wideo"
 
-#: embedded/common/toolset-forms/classes/class.file.php:120
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.file.php:120
 msgid "file"
 msgstr "plik"
 
-#: embedded/common/toolset-forms/classes/class.file.php:126
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.file.php:126
 #: embedded/includes/fields/file.php:29
 msgid "Select %s"
 msgstr "Wybierz %s"
 
-#: embedded/common/toolset-forms/classes/class.form_factory.php:269
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.form_factory.php:269
 msgid "There is a problem rendering field <strong>%s (%s)</strong>."
 msgstr "Wystąpił problem z wyświetleniem pola <strong>%s (%s)</strong>."
 
-#: embedded/common/toolset-forms/classes/class.image.php:39
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.image.php:39
 msgid "You can add only images."
 msgstr "Możesz dodać jedynie obrazy."
 
-#: embedded/common/toolset-forms/classes/class.skype.php:36
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:36
 #: embedded/includes/fields/skype.php:90 embedded/includes/fields/skype.php:92
 msgid "Edit Skype button"
 msgstr "Edytuj przycisk Skype"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:103
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:103
 msgid "Edit Skype"
 msgstr "Edytuj przycisk Skype"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:135
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:135
 msgid "Preview of your Skype button"
 msgstr "Zobacz przycisk Skype"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:136
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:136
 msgid "*Hover over to see the menu"
 msgstr "*Najedź żeby zobaczyć menu"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:137
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:137
 msgid "Note"
 msgstr "Notatka"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:138
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:138
 msgid ""
 "Skype button background is transparent and will work on any colour "
 "backgrounds."
 msgstr "Przycisk Skype ma przezroczyste tło i będzie widoczny Tło "
 
-#: embedded/common/toolset-forms/classes/class.skype.php:152
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:152
 #: embedded/includes/fields/skype.php:198
 msgid "Enter your Skype Name"
 msgstr "Wpisz swoją nazwę w Skype"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:161
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:161
 msgid "Call"
 msgstr "Rozmowa"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:162
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:162
 msgid "Start a call with just a click."
 msgstr "Zacznij rozmowę po kliknięciu."
 
-#: embedded/common/toolset-forms/classes/class.skype.php:171
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:171
 msgid "Chat"
 msgstr "Czat"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:173
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:173
 msgid "Start the conversation with an instant message."
 msgstr "Zacznij czat za pomocą komunikatora."
 
-#: embedded/common/toolset-forms/classes/class.skype.php:180
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:180
 msgid "Choose what you'd like your button to do"
 msgstr "Wybierz co przycisk ma robić"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:185
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:185
 msgid "Choose how you want your button to look"
 msgstr "Wybierz jak przycisk ma wyglądać"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:194
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:194
 msgid "Blue"
 msgstr "Niebieski"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:202
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:202
 msgid "White"
 msgstr "Biały"
 
-#: embedded/common/toolset-forms/classes/class.skype.php:246
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.skype.php:246
 #: embedded/includes/relationship/child-table-row.php:31
 #: includes/common-functions.php:56 includes/fields-form.php:295
 #: includes/fields-form.php:903 includes/post-relationship.php:252
@@ -729,7 +729,7 @@ msgstr "Biały"
 msgid "Save"
 msgstr "Zapisz"
 
-#: embedded/common/toolset-forms/classes/class.taxonomyhierarchical.php:96
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.taxonomyhierarchical.php:96
 #: embedded/views/editor-modal-window.php:89 includes/fields-form.php:1524
 #: includes/fields-form.php:1639 includes/post-relationship.php:378
 #: includes/post-relationship.php:432
@@ -742,11 +742,11 @@ msgstr "Zapisz"
 msgid "Cancel"
 msgstr "Anuluj"
 
-#: embedded/common/toolset-forms/classes/class.video.php:65
+#: embedded/toolset/toolset-common/toolset-forms/classes/class.video.php:65
 msgid "You can add only video."
 msgstr "Możesz dodać jedynie wideo."
 
-#: embedded/common/toolset-forms/lib/CakePHP-Validation.php:385
+#: embedded/toolset/toolset-common/toolset-forms/lib/CakePHP-Validation.php:385
 msgid ""
 "You must define the $operator parameter for WPToolset_Cake_Validation::"
 "comparison()"
@@ -754,20 +754,20 @@ msgstr ""
 "Musisz zdefiniować parametr $operator dla WPToolset_Cake_Validation::"
 "comparison()"
 
-#: embedded/common/toolset-forms/lib/CakePHP-Validation.php:409
+#: embedded/toolset/toolset-common/toolset-forms/lib/CakePHP-Validation.php:409
 msgid ""
 "You must define a regular expression for WPToolset_Cake_Validation::custom()"
 msgstr ""
 "Musisz zdefiniować wyrażenie regularne dla WPToolset_Cake_Validation::"
 "custom()"
 
-#: embedded/common/toolset-forms/templates/metaform-item.php:13
+#: embedded/toolset/toolset-common/toolset-forms/templates/metaform-item.php:13
 #: embedded/includes/repetitive-fields-ordering.php:93
 #: embedded/includes/repetitive-usermetafields-ordering.php:93
 msgid "Delete %s"
 msgstr "Usuń %s"
 
-#: embedded/common/toolset-forms/templates/metaform-item.php:33
+#: embedded/toolset/toolset-common/toolset-forms/templates/metaform-item.php:33
 #: embedded/includes/relationship/child-table-row.php:50 help.php:43
 #: help.php:127 help.php:159 help.php:288
 #: includes/classes/class.wpcf.custom.fields.list.table.php:162
@@ -782,143 +782,143 @@ msgstr "Usuń %s"
 msgid "Delete"
 msgstr "Usuń"
 
-#: embedded/common/toolset-forms/templates/metaform.php:18
-#: embedded/common/toolset-forms/templates/metaform.php:59
+#: embedded/toolset/toolset-common/toolset-forms/templates/metaform.php:18
+#: embedded/toolset/toolset-common/toolset-forms/templates/metaform.php:59
 msgid "Add new %s"
 msgstr "Dodaj nowy %s"
 
-#: embedded/common/visual-editor/editor-addon-generic.class.php:42
+#: embedded/toolset/toolset-common/visual-editor/editor-addon-generic.class.php:42
 msgid "Insert conditional shortcode"
 msgstr "Wstaw shortcode z warunkiem"
 
-#: embedded/common/visual-editor/editor-addon-generic.class.php:43
+#: embedded/toolset/toolset-common/visual-editor/editor-addon-generic.class.php:43
 msgid "conditional output"
 msgstr "warunkowa treść"
 
-#: embedded/common/visual-editor/editor-addon-generic.class.php:49
+#: embedded/toolset/toolset-common/visual-editor/editor-addon-generic.class.php:49
 msgid "You can only use an image file here"
 msgstr "Możesz tu użyć tylko pliku obrazu"
 
-#: embedded/common/visual-editor/editor-addon.class.php:72
-#: embedded/common/visual-editor/editor-addon.class.php:543
-#: embedded/common/visual-editor/editor-addon.class.php:661
-#: embedded/common/visual-editor/views-editor-addon.class.php:203
-#: embedded/common/visual-editor/views-editor-addon.class.php:215
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:72
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:543
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:661
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:203
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:215
 msgid "Content Template"
 msgstr "Szablon Treści"
 
-#: embedded/common/visual-editor/editor-addon.class.php:74
-#: embedded/common/visual-editor/editor-addon.class.php:83
-#: embedded/common/visual-editor/editor-addon.class.php:305
-#: embedded/common/visual-editor/editor-addon.class.php:448
-#: embedded/common/visual-editor/editor-addon.class.php:453
-#: embedded/common/visual-editor/editor-addon.class.php:546
-#: embedded/common/visual-editor/editor-addon.class.php:572
-#: embedded/common/visual-editor/editor-addon.class.php:659
-#: embedded/common/visual-editor/editor-addon.class.php:734
-#: embedded/common/visual-editor/editor-addon.class.php:739
-#: embedded/common/visual-editor/editor-addon.class.php:745
-#: embedded/common/visual-editor/views-editor-addon.class.php:199
-#: embedded/common/visual-editor/views-editor-addon.class.php:222
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:74
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:83
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:305
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:448
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:453
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:546
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:572
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:659
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:734
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:739
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:745
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:199
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:222
 msgid "Post View"
 msgstr "Widok wpisu"
 
-#: embedded/common/visual-editor/editor-addon.class.php:76
-#: embedded/common/visual-editor/editor-addon.class.php:85
-#: embedded/common/visual-editor/editor-addon.class.php:449
-#: embedded/common/visual-editor/editor-addon.class.php:455
-#: embedded/common/visual-editor/editor-addon.class.php:546
-#: embedded/common/visual-editor/editor-addon.class.php:574
-#: embedded/common/visual-editor/editor-addon.class.php:658
-#: embedded/common/visual-editor/editor-addon.class.php:737
-#: embedded/common/visual-editor/editor-addon.class.php:745
-#: embedded/common/visual-editor/editor-addon.class.php:749
-#: embedded/common/visual-editor/views-editor-addon.class.php:198
-#: embedded/common/visual-editor/views-editor-addon.class.php:223
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:76
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:85
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:449
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:455
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:546
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:574
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:658
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:737
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:745
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:749
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:198
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:223
 msgid "Taxonomy View"
 msgstr "Widok taksonomii"
 
-#: embedded/common/visual-editor/editor-addon.class.php:78
-#: embedded/common/visual-editor/editor-addon.class.php:87
-#: embedded/common/visual-editor/editor-addon.class.php:450
-#: embedded/common/visual-editor/editor-addon.class.php:457
-#: embedded/common/visual-editor/editor-addon.class.php:547
-#: embedded/common/visual-editor/editor-addon.class.php:576
-#: embedded/common/visual-editor/editor-addon.class.php:657
-#: embedded/common/visual-editor/editor-addon.class.php:739
-#: embedded/common/visual-editor/editor-addon.class.php:743
-#: embedded/common/visual-editor/editor-addon.class.php:749
-#: embedded/common/visual-editor/views-editor-addon.class.php:197
-#: embedded/common/visual-editor/views-editor-addon.class.php:224
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:78
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:87
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:450
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:457
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:547
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:576
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:657
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:739
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:743
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:749
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:197
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:224
 msgid "User View"
 msgstr "Widok użytkownika"
 
-#: embedded/common/visual-editor/editor-addon.class.php:102
-#: embedded/common/visual-editor/editor-addon.class.php:132
-#: embedded/common/visual-editor/editor-addon.class.php:348
-#: embedded/common/visual-editor/editor-addon.class.php:363
-#: embedded/common/visual-editor/views-editor-addon.class.php:145
-#: embedded/common/visual-editor/views-editor-addon.class.php:150
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:102
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:132
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:348
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:363
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:145
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:150
 msgid "Fields and Views"
 msgstr "Pola i widoki"
 
-#: embedded/common/visual-editor/editor-addon.class.php:155
-#: embedded/common/visual-editor/editor-addon.class.php:378
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:155
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:378
 msgid "Go to"
 msgstr "Przejdź do"
 
-#: embedded/common/visual-editor/editor-addon.class.php:199
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:199
 msgid "User ID"
 msgstr "ID użytkownika"
 
-#: embedded/common/visual-editor/editor-addon.class.php:199
-#: embedded/common/visual-editor/editor-addon.class.php:200
-#: embedded/common/visual-editor/editor-addon.class.php:201
-#: embedded/common/visual-editor/editor-addon.class.php:202
-#: embedded/common/visual-editor/editor-addon.class.php:203
-#: embedded/common/visual-editor/editor-addon.class.php:204
-#: embedded/common/visual-editor/editor-addon.class.php:205
-#: embedded/common/visual-editor/editor-addon.class.php:206
-#: embedded/common/visual-editor/editor-addon.class.php:207
-#: embedded/common/visual-editor/editor-addon.class.php:208
-#: embedded/common/visual-editor/editor-addon.class.php:209
-#: embedded/common/visual-editor/editor-addon.class.php:210
-#: embedded/common/visual-editor/editor-addon.class.php:211
-#: embedded/common/visual-editor/editor-addon.class.php:212
-#: embedded/common/visual-editor/editor-addon.class.php:213
-#: embedded/common/visual-editor/editor-addon.class.php:221
-#: embedded/common/visual-editor/editor-addon.class.php:538
-#: embedded/common/visual-editor/editor-addon.class.php:663
-#: embedded/common/visual-editor/views-editor-addon.class.php:205
-#: embedded/common/visual-editor/views-editor-addon.class.php:213
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:199
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:200
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:201
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:202
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:203
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:204
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:205
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:206
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:207
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:208
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:209
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:210
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:211
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:212
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:213
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:221
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:538
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:663
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:205
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:213
 msgid "Basic"
 msgstr "Podstawowy"
 
-#: embedded/common/visual-editor/editor-addon.class.php:200
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:200
 msgid "User Email"
 msgstr "E-mail użytkownika"
 
-#: embedded/common/visual-editor/editor-addon.class.php:201
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:201
 msgid "User Login"
 msgstr "Login użytkownika"
 
-#: embedded/common/visual-editor/editor-addon.class.php:202
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:202
 msgid "First Name"
 msgstr "Imię"
 
-#: embedded/common/visual-editor/editor-addon.class.php:203
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:203
 msgid "Last Name"
 msgstr "Nazwisko"
 
-#: embedded/common/visual-editor/editor-addon.class.php:204
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:204
 msgid "Nickname"
 msgstr "Pseudonim"
 
-#: embedded/common/visual-editor/editor-addon.class.php:205
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:205
 msgid "Display Name"
 msgstr "Nazwa wyświetlana"
 
-#: embedded/common/visual-editor/editor-addon.class.php:206
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:206
 #: includes/classes/class.wpcf.custom.fields.list.table.php:228
 #: includes/classes/class.wpcf.custom.post.types.list.table.php:249
 #: includes/classes/class.wpcf.custom.taxonomies.list.table.php:236
@@ -930,58 +930,58 @@ msgstr "Nazwa wyświetlana"
 msgid "Description"
 msgstr "Opis"
 
-#: embedded/common/visual-editor/editor-addon.class.php:207
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:207
 msgid "Yahoo IM"
 msgstr "Yahoo IM"
 
-#: embedded/common/visual-editor/editor-addon.class.php:208
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:208
 msgid "Jabber"
 msgstr "Jabber"
 
-#: embedded/common/visual-editor/editor-addon.class.php:209
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:209
 msgid "AIM"
 msgstr "AIM"
 
-#: embedded/common/visual-editor/editor-addon.class.php:210
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:210
 msgid "User Url"
 msgstr "Url użytkownika"
 
-#: embedded/common/visual-editor/editor-addon.class.php:211
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:211
 msgid "Registration Date"
 msgstr "Data rejestracji"
 
-#: embedded/common/visual-editor/editor-addon.class.php:212
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:212
 msgid "User Status"
 msgstr "Status użytkownika"
 
-#: embedded/common/visual-editor/editor-addon.class.php:213
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:213
 msgid "User Spam Status"
 msgstr "Status spamu użytkownika"
 
-#: embedded/common/visual-editor/editor-addon.class.php:219
-#: embedded/common/visual-editor/editor-addon.class.php:222
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:219
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:222
 msgid "Translatable string"
 msgstr "Fraza przetłumaczalna"
 
-#: embedded/common/visual-editor/editor-addon.class.php:242
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:242
 msgid "Users fields"
 msgstr "Pola użytkowników"
 
-#: embedded/common/visual-editor/editor-addon.class.php:251 help.php:65
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:251 help.php:65
 msgid "User fields"
 msgstr "Pola użytkownika"
 
-#: embedded/common/visual-editor/editor-addon.class.php:291
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:291
 msgid "Types fields"
 msgstr "Pola typów"
 
-#: embedded/common/visual-editor/editor-addon.class.php:551
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:551
 msgid "Field"
 msgstr "Pole"
 
-#: embedded/common/visual-editor/editor-addon.class.php:660
-#: embedded/common/visual-editor/views-editor-addon.class.php:200
-#: embedded/common/visual-editor/views-editor-addon.class.php:221
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:660
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:200
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:221
 #: includes/classes/class.wpcf.custom.fields.list.table.php:176
 #: includes/classes/class.wpcf.custom.post.types.list.table.php:191
 #: includes/classes/class.wpcf.custom.taxonomies.list.table.php:184
@@ -990,43 +990,43 @@ msgstr "Pole"
 msgid "View"
 msgstr "Widok"
 
-#: embedded/common/visual-editor/editor-addon.class.php:662
-#: embedded/common/visual-editor/views-editor-addon.class.php:204
-#: embedded/common/visual-editor/views-editor-addon.class.php:214 help.php:353
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:662
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:204
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:214 help.php:353
 #: plus/types-access/includes/admin-edit-access.php:161
 msgid "Taxonomy"
 msgstr "Taksonomia"
 
-#: embedded/common/visual-editor/editor-addon.class.php:664
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:664
 msgid "Other Fields"
 msgstr "Inne pola"
 
-#: embedded/common/visual-editor/editor-addon.class.php:697
-#: embedded/common/visual-editor/views-editor-addon.class.php:250
+#: embedded/toolset/toolset-common/visual-editor/editor-addon.class.php:697
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:250
 msgid "Search"
 msgstr "Szukaj"
 
-#: embedded/common/visual-editor/views-editor-addon.class.php:112
-#: embedded/common/visual-editor/views-editor-addon.class.php:201
-#: embedded/common/visual-editor/views-editor-addon.class.php:220
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:112
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:201
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:220
 msgid "Post field"
 msgstr "Pole wpisu"
 
-#: embedded/common/visual-editor/views-editor-addon.class.php:169
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:169
 msgid "Jump to:"
 msgstr "Przejdź do"
 
-#: embedded/common/visual-editor/views-editor-addon.class.php:196
-#: embedded/common/visual-editor/views-editor-addon.class.php:225
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:196
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:225
 msgid "WPML"
 msgstr "WPML"
 
-#: embedded/common/visual-editor/views-editor-addon.class.php:202
-#: embedded/common/visual-editor/views-editor-addon.class.php:216
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:202
+#: embedded/toolset/toolset-common/visual-editor/views-editor-addon.class.php:216
 msgid "User basic data"
 msgstr "Podstawowe informacje"
 
-#: embedded/common/wp-pointer.php:156
+#: embedded/toolset/toolset-common/wp-pointer.php:156
 msgid "Some pointer hints have been hidden on this page. %sShow them again%s"
 msgstr ""
 "Niektóre wskazówki kontekstowe na tej stronie zostały ukryte. %sWyświetl je "

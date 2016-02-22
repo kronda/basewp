@@ -13,12 +13,40 @@
  */
 
 jQuery(document).ready(function($){
+
+    /**
+     * bind validation checkboxes
+     */
+    $('#post-body-content').on('change', '.js-wpcf-validation-checkbox', function() {
+        next = $(this).closest('tr');
+
+        // as there different number of hidden inputs between the checkbox
+        // and the validation error message input we need to trick
+        for( i = 0; i < 10; i++ ) {
+            next = next.next();
+
+            // break loop if next tr is found
+            if( next.prop( 'tagName' ).toLowerCase() == 'tr' )
+                break;
+
+        }
+
+        if( next.attr( 'type' ) == 'hidden' )
+            next = next.next();
+
+        if ( $(this).is(':checked') ) {
+            $('input', next).removeAttr('disabled').focus();
+        } else {
+            $('input', next).attr('disabled', 'disabled');
+        }
+    });
+
     // Invoke drag on mouse enter
     $('#wpcf-fields-sortable').on('mouseenter', '.js-types-sortable', function(){
         if (!$(this).parent().hasClass('ui-sortable')) {
             $(this).parent().sortable({
                 revert: true,
-                handle: 'img.js-types-sort-button',
+                handle: '.js-types-sort-button',
                 start: function(e, ui){
                         ui.placeholder.height(ui.item.find('.wpcf-form-fieldset').height());
                     }
@@ -40,7 +68,7 @@ jQuery(document).ready(function($){
     $('.wpcf-fields-radio-sortable,.wpcf-fields-select-sortable').sortable({
         cursor: 'ns-resize',
         axis: 'y',
-        handle: 'img.js-types-sort-button',
+        handle: '.js-types-sort-button',
         start: function(e, ui){
                 ui.placeholder.height(ui.item.height() - 2);
             }
@@ -49,7 +77,7 @@ jQuery(document).ready(function($){
     $('.wpcf-fields-checkboxes-sortable').sortable({
         cursor: 'ns-resize',
         axis: 'y',
-        handle: 'img.js-types-sort-button',
+        handle: '.js-types-sort-button',
         start: function(e, ui){
                 ui.placeholder.height(ui.item.height() + 13);
             }
@@ -69,6 +97,22 @@ jQuery(document).ready(function($){
         $(this).parent().slideUp('slow', function() {
             $('#conditional-logic-button-open').fadeIn();
         });
+        return false;
+    });
+
+    /**
+     * delete option
+     */
+    $(document).on('click', '.js-wpcf-button-delete', function() {
+        var $thiz = $(this);
+        if (confirm($(this).data('message-delete-confirm'))) {
+            $thiz.closest('tr').fadeOut(function(){
+                $(this).remove();
+                $('.'+$thiz.data('id')).fadeOut(function(){
+                    $(this).remove();
+                });
+            });
+        }
         return false;
     });
 });
@@ -106,4 +150,3 @@ function wpcf_checkbox_value_zero(field) {
     }
     return !passed;
 }
-

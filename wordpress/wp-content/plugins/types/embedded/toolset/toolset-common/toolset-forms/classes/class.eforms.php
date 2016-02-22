@@ -389,6 +389,7 @@ class Enlimbo_Forms {
                         '<img src="%s/images/locked.png" alt="%s" title="%s" style="position:relative;left:2px;top:2px;" />', WPCF_EMBEDDED_RES_RELPATH, __('This field is locked for editing because WPML will copy its value from the original language.', 'wpcf'), __('This field is locked for editing because WPML will copy its value from the original language.', 'wpcf')
                 );
                 $element['#attributes']['readonly'] = true;
+                $element['#attributes']['disabled'] = true;
             }
             return $this->{$method}($element);
         }
@@ -415,7 +416,7 @@ class Enlimbo_Forms {
                 case 'radio':
                 case 'checkbox':
                 case 'file':
-                //https://onthegosystems.myjetbrains.com/youtrack/issue/cred-162
+                //cred-162
                 case 'option':
                     break;
                 default:
@@ -443,13 +444,18 @@ class Enlimbo_Forms {
 
         foreach ($element['#attributes'] as $attribute => $value) {
             // Prevent undesired elements
-            if (in_array($attribute, array('id', 'name'))) {
+            if (in_array($attribute, array('id', 'name', 'options', 'actual_value', 'actual_options'))) {
                 continue;
             }
             // Don't set disabled for checkbox
-            if ($attribute == 'disabled' && $element['#type'] == 'checkbox') {
+            if (
+                    $element['#type'] == 'checkbox' && (
+                    $attribute == 'disabled' || $attribute == 'readonly'
+                    )
+            ) {
                 continue;
             }
+
             // Set return string
             $attributes .= ' ' . $attribute . '="' . $value . '"';
         }
@@ -751,9 +757,15 @@ class Enlimbo_Forms {
         $clone = $element;
         $clone['#type'] = 'checkbox';
         $element['_render']['element'] = '';
+        $allowed_inherited_attributes = array('disabled');
         foreach ($element['#options'] as $ID => $value) {
             if (!is_array($value)) {
                 $value = array('#title' => $ID, '#value' => $value, '#name' => $element['#name'] . '[]');
+            }
+            foreach ($allowed_inherited_attributes as $allowed_in_att) {
+                if (isset($element['#attributes'][$allowed_in_att])) {
+                    $value['#attributes'][$allowed_in_att] = $element['#attributes'][$allowed_in_att];
+                }
             }
             $element['_render']['element'] .= $this->checkbox($value);
         }
@@ -825,12 +837,17 @@ class Enlimbo_Forms {
             $value['#name'] = $element['#name'];
             $value['#default_value'] = isset($element['#default_value']) ? $element['#default_value'] : $value['#value'];
             $value['#disable'] = isset($element['#disable']) ? $element['#disable'] : false;
+            if (
+                    isset($element['#attributes']['disabled']) && $element['#attributes']['disabled']
+            ) {
+                $value['#disable'] = true;
+            }
             $element['_render']['element'] .= $this->radio($value);
         }
         if (is_admin()) {
-            $pattern = '<BEFORE><PREFIX><TITLE><DESCRIPTION><ELEMENT><SUFFIX><AFTER>';
+            $pattern = '<BEFORE><PREFIX><TITLE><DESCRIPTION><ELEMENT><ERROR><SUFFIX><AFTER>';
         } else {
-            $pattern = '<BEFORE><PREFIX><DESCRIPTION><ELEMENT><SUFFIX><AFTER>';
+            $pattern = '<BEFORE><PREFIX><DESCRIPTION><ELEMENT><ERROR><SUFFIX><AFTER>';
         }
 
         $pattern = $this->_getStatndardPatern($element, $pattern);

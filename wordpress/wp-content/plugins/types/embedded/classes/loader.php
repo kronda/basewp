@@ -169,11 +169,13 @@ class WPCF_Loader
                     WPCF_EMBEDDED_RES_RELPATH . '/css/colorbox.css', array(),
                     WPCF_VERSION );
         }
-        if ( !wp_style_is( 'toolset-font-awesome', 'registered' ) ) {
-            wp_register_style( 'toolset-font-awesome',
-                    WPCF_EMBEDDED_RES_RELPATH . '/css/font-awesome/css/font-awesome.min.css',
-                    array('admin-bar', 'wp-admin', 'buttons', 'media-views'),
-                    WPCF_VERSION );
+        if ( !wp_style_is( 'font-awesome', 'registered' ) ) {
+            wp_register_style(
+                'font-awesome',
+                WPCF_EMBEDDED_RELPATH.'/toolset/toolset-common/utility/css/font-awesome/css/font-awesome.min.css',
+                array(),
+                '4.4.0'
+            );
         }
         if ( !wp_style_is( 'toolset-dashicons', 'registered' ) ) {
             wp_register_style(

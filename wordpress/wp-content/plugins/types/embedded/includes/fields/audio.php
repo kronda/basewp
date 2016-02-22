@@ -16,46 +16,74 @@ function wpcf_fields_audio() {
         'description' => __( 'Audio', 'wpcf' ),
         'wp_version' => '3.6',
         'inherited_field_type' => 'file',
-        'validate' => array('required'),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            )
+        ),
+        'font-awesome' => 'music',
     );
 }
 
 /**
  * View function.
- * 
+ *
  * @global type $wp_embed
  * @param type $params
  * @return string
  */
-function wpcf_fields_audio_view( $params ) {
-    if ( is_string( $params['field_value'] ) ) {
-        $params['field_value'] = stripslashes( $params['field_value'] );
-    }
-    $value = $params['field_value'];
-    if ( empty( $value ) ) {
+function wpcf_fields_audio_view( $params )
+{
+    /**
+     * check value
+     */
+    if (
+        !isset($params['field_value'] ) 
+        || !is_string( $params['field_value'] )
+        || empty($params['field_value'])
+    ) {
         return '__wpcf_skip_empty';
     }
-    $url = trim( strval( $value ) );
-    $add = '';
-    if ( !empty( $params['loop'] ) ) {
-        $add .= " loop=\"{$params['loop']}\"";
+    $src = esc_url_raw($params['field_value']);
+    /**
+     * sanitize src
+     * see: https://codex.wordpress.org/Audio_Shortcode#Options
+     */
+    if ( !preg_match('/(mp3|m4a|ogg|wav|wma)$/i', $src ) ) {
+        return '__wpcf_skip_empty';
     }
-    if ( !empty( $params['autoplay'] ) ) {
-        $add .=" autoplay=\"{$params['autoplay']}\"";
+    /**
+     * shortcode
+     */
+    $shortcode = sprintf( '[audio src="%s"', $src);
+    /**
+     * add options: loop, autoplay
+     */
+    foreach( array( 'loop', 'autoplay' ) as $key ) {
+        if ( !empty($params[$key]) && preg_match( '/^(on|1|true)$/', $params[$key] ) ) {
+            $shortcode .= sprintf( ' %s="on"', $key);
+        }
     }
-    if ( !empty( $params['preload'] ) ) {
-        $add .=" preload=\"{$params['preload']}\"";
+    /**
+     * add option preload
+     */
+    if ( !empty($params['preload']) ) {
+        if ( preg_match( '/^(on|1|true|auto)$/', $params['preload'] ) ) {
+            $shortcode .= ' preload="auto"';
+        } else if ( 'metadata' == $params['preload'] ) {
+            $shortcode .= ' preload="metadata"';
+        }
     }
-
-    $shortcode = "[audio src=\"{$url}\"{$add}]";
+    $shortcode .= ']';
+    /**
+     * output
+     */
     $output = do_shortcode( $shortcode );
     if ( empty( $output ) ) {
         return '__wpcf_skip_empty';
     }
     return $output;
 }
-
-
 
 /**
  * Editor callback form.
@@ -91,6 +119,9 @@ function wpcf_fields_audio_editor_submit( $data, $field, $context ) {
     if ( $context == 'usermeta' ) {
         $add .= wpcf_get_usermeta_form_addon_submit();
         $shortcode = wpcf_usermeta_get_shortcode( $field, $add );
+	} elseif ( $context == 'termmeta' ) {
+        $add .= wpcf_get_termmeta_form_addon_submit();
+        $shortcode = wpcf_termmeta_get_shortcode( $field, $add );
     } else {
         $shortcode = wpcf_fields_get_shortcode( $field, $add );
     }

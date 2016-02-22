@@ -808,12 +808,11 @@ function wpcf_wpml_group_form_filter_terms_filter( $terms ) {
  * @param type $group
  * @return type
  */
-function wpcf_wpml_post_group_filter_taxonomies( $group, $post, $context,
-        $post_terms ) {
-
+function wpcf_wpml_post_group_filter_taxonomies( $group, $post, $context, $post_terms )
+{
     global $sitepress, $wpdb;
 
-    if ( empty( $post->ID ) ) {
+    if (empty( $post->ID )) {
         return $group;
     }
 
@@ -1230,6 +1229,10 @@ function wpcf_wpml_warnings_init()
     }
 }
 
+
+/**
+ * Display all relevant WPML admin notices of the "wp-types" group.
+ */
 function wpcf_wpml_warning()
 {
 	if(!defined('WPML_ST_PATH') || !class_exists( 'ICL_AdminNotifier' )) return;

@@ -10,12 +10,17 @@ function wpcf_fields_colorpicker() {
         'id' => 'wpcf-colorpicker',
         'title' => __( 'Colorpicker', 'wpcf' ),
         'description' => __( 'Colorpicker', 'wpcf' ),
-        'validate' => array('required'),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            )
+        ),
         'meta_box_js' => array(
             'wpcf-jquery-fields-colorpicker' => array(
                 'inline' => 'wpcf_fields_colorpicker_render_js',
             ),
         ),
+        'font-awesome' => 'eyedropper',
     );
 }
 

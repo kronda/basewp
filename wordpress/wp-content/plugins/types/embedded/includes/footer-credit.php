@@ -40,17 +40,19 @@ function wpcf_footer_credits_init() {
 /**
  * Default credits.
  * 
- * @return type 
+ * @return string[]
+ *
+ * @fixme this is ancient, might need a review
  */
 function wpcf_footer_credit_defaults() {
     return array(
-        sprintf(__("Functionality enhanced using %sWordPress Custom Fields%s", 'wpcf'),
+        sprintf(__("Functionality enhanced using %sWordPress Post Fields%s", 'wpcf'),
                 '<a href="http://wp-types.com/documentation/user-guides/using-custom-fields/" target="_blank">',
                 ' &raquo;</a>'),
-        sprintf(__("Functionality enhanced using %sWordPress Custom Post Types%s", 'wpcf'),
+        sprintf(__("Functionality enhanced using %sWordPress Post Types%s", 'wpcf'),
                 '<a href="http://wp-types.com/documentation/user-guides/create-a-custom-post-type/" target="_blank">',
                 ' &raquo;</a>'),
-        sprintf(__("Functionality enhanced using %sWordPress Custom Taxonomy%s", 'wpcf'),
+        sprintf(__("Functionality enhanced using %sWordPress Taxonomy%s", 'wpcf'),
                 '<a href="http://wp-types.com/documentation/user-guides/create-custom-taxonomies/" target="_blank">',
                 ' &raquo;</a>'),
     );
@@ -105,7 +107,7 @@ function wpcf_footer_credit_message() {
     }
     $option = get_option('wpcf_footer_credit', false);
     if (empty($option['active'])) {
-        $message = __('You too can support Types! Would you like to add a small credit link, saying that you\'re using Types for custom fields or custom post types?', 'wpcf')
+        $message = __('You too can support Types! Would you like to add a small credit link, saying that you\'re using Types for custom fields or post types?', 'wpcf')
                 . '<br /><br />'
                 . '<a onclick="jQuery(this).parent().parent().fadeOut();" class="wpcf-ajax-link button-primary" href="'
                 . admin_url('admin-ajax.php?action=wpcf_ajax&amp;wpcf_action=footer_credit_activate_message&amp;_wpnonce='

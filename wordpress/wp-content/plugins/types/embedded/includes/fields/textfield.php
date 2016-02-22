@@ -10,7 +10,12 @@ function wpcf_fields_textfield() {
         'id' => 'wpcf-texfield',
         'title' => __( 'Single line', 'wpcf' ),
         'description' => __( 'Textfield', 'wpcf' ),
-        'validate' => array('required'),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            )
+        ),
+        'font-awesome' => 'minus',
     );
 }
 

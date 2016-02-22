@@ -130,7 +130,7 @@ jQuery(function(){
                         ?>
                         <br /><br />
                         <?php
-                        _e('CRED lets you build forms that work directly on WordPress content. CRED forms include fields for standard fields, custom fields and taxonomy. Everything that you can build with Types, CRED can edit.', 'wpcf');
+                        _e('CRED lets you build forms that work directly on WordPress content. CRED forms include fields for standard fields, Post Fields and Taxonomy. Everything that you can build with Types, CRED can edit.', 'wpcf');
 
                         ?>
                         <br /><br />

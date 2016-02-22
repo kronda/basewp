@@ -47,7 +47,7 @@ $data = array_merge( array(
 							<label for="date-custom"><?php _e( 'Custom', 'wpcf' ); ?></label>
 							<input id="date-custom-format" type="text" name="custom" value="<?php echo $data['custom']; ?>" />
 							<p>
-								<a href="http://codex.wordpress.org/Formatting_Date_and_Time" target="_blank"><i class="icon-book"></i><?php _e( 'Documentation on date and time formatting', 'wpcf' ); ?></a>
+								<a href="http://codex.wordpress.org/Formatting_Date_and_Time" target="_blank"><i class="fa fa-book icon-book"></i><?php _e( 'Documentation on date and time formatting', 'wpcf' ); ?></a>
 							</p>
 						</li>
 				</ul>

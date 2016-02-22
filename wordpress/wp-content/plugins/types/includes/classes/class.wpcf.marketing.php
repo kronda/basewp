@@ -118,19 +118,20 @@ class WPCF_Types_Marketing
         return $classes;
     }
 
-    protected function get_page_type()
-    {
-        $screen = get_current_screen();
-        switch($screen->id) {
-        case 'types_page_wpcf-edit-type':
-            return 'cpt';
-        case 'types_page_wpcf-edit-tax':
-            return 'taxonomy';
-        case 'types_page_wpcf-edit':
-        case 'types_page_wpcf-edit-usermeta':
-            return 'fields';
-        }
-        return false;
+    protected function get_page_type() {
+	    $screen = get_current_screen();
+	    switch ( $screen->id ) {
+		    case 'types_page_wpcf-edit-type':
+			    return 'cpt';
+		    case 'types_page_wpcf-edit-tax':
+			    return 'taxonomy';
+		    case 'types_page_wpcf-edit':
+		    case 'types_page_wpcf-edit-usermeta':
+		    case 'types_page_wpcf-termmeta-edit':
+			    return 'fields';
+	    }
+
+	    return false;
     }
 
     public function get_options()
@@ -214,10 +215,17 @@ class WPCF_Types_Marketing
      */
     public function add_getting_started_to_admin_menu()
     {
+        if ( !isset($_REQUEST['page']) ) {
+            return;
+        }
+        $slug = basename(dirname(dirname(dirname(__FILE__)))).'/marketing/getting-started/index.php';
+        if( $_REQUEST['page'] != $slug ) {
+            return;
+        }
         $menu = array(
             'page_title' => __( 'What kind of site are you building?', 'wpcf' ),
             'menu_title' => __( 'Getting Started', 'wpcf' ),
-            'menu_slug' => basename(dirname(dirname(dirname(__FILE__)))).'/marketing/getting-started/index.php',
+            'menu_slug' => $slug,
             'hook' => 'wpcf_marketing',
             'load_hook' => 'wpcf_marketing_hook',
         );

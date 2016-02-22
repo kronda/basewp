@@ -18,7 +18,7 @@ var wptFile = (function($, w) {
             });
         });
         /*
-        $('.js-wpt-field').on('click', 'a.js-wpt-file-upload', function() {
+        $('.js-wpt-field').on('click', '.js-wpt-file-upload', function() {
             if ( $(this).data('attched-thickbox') ) {
                 return;
             }
@@ -26,7 +26,8 @@ var wptFile = (function($, w) {
         });
         */
         // Build the choose from library frame.
-        $('.js-wpt-field').on('click', 'a.js-wpt-file-upload', function( event ) {
+        $('.js-wpt-field').on('click', '.js-wpt-file-upload', function( event ) {
+			event.preventDefault();
             wptFile.bindOpen($(this), event);
         });
     }

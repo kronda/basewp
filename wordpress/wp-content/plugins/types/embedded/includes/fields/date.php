@@ -1,4 +1,76 @@
 <?php
+/**
+ * Register data (called automatically).
+ * 
+ * @return type 
+ */
+function wpcf_fields_date() {
+    $settings = array(
+        'id' => 'wpcf-date',
+        'title' => __( 'Date', 'wpcf' ),
+        'description' => __( 'Date', 'wpcf' ),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            ),
+            'date' => array(
+                'form-settings' => array_replace_recursive(
+                    include( dirname( __FILE__ ) . '/patterns/validate/form-settings/default.php' ),
+                    array(
+                        'control' => array(
+                            '#label' => __( 'Date', 'wpcf' ),
+                            '#title' => __( 'Validation', 'wpcf' ),
+                        )
+                    )
+                )
+            )
+        ),
+        'meta_key_type' => 'TIME',
+        'version' => '1.2',
+        'font-awesome' => 'calendar',
+    );
+
+    if ( !defined( 'WPTOOLSET_FORMS_ABSPATH' ) ) {
+        // Allow localized Datepicker if date format does not need translating
+        $localized_date_formats = array(
+            'Y/m/d', // 2011/12/23
+            'm/d/Y', // 12/23/2011
+            'd/m/Y', // 23/22/2011
+            'd/m/y', // 23/22/11
+        );
+
+        $date_format = wpcf_get_date_format();
+        $localized_js = array();
+
+        if ( in_array( $date_format, $localized_date_formats ) ) {
+            $locale = str_replace( '_', '-', strtolower( get_locale() ) );
+            $localized_js = array(
+                'src' => file_exists( WPCF_EMBEDDED_RES_ABSPATH . '/js/i18n/jquery.ui.datepicker-'
+                        . $locale . '.js' ) ? WPCF_EMBEDDED_RES_RELPATH . '/js/i18n/jquery.ui.datepicker-'
+                        . $locale . '.js' : '',
+                'deps' => array('jquery-ui-core'),
+            );
+        }
+        $settings['meta_box_js'] = array(
+            'wpcf-jquery-fields-date' => array(
+                'src' => WPCF_EMBEDDED_RES_RELPATH . '/js/jquery.ui.datepicker.min.js',
+                'deps' => array('jquery-ui-core'),
+            ),
+            'wpcf-jquery-fields-date-inline' => array(
+                'inline' => 'wpcf_fields_date_meta_box_js_inline',
+            ),
+            'wpcf-jquery-fields-date-localization' => $localized_js,
+        );
+        $settings['meta_box_css'] = array(
+            'wpcf-jquery-ui' => array(
+                'src' => WPCF_EMBEDDED_RES_RELPATH
+                . '/css/jquery-ui/jquery-ui-1.9.2.custom.min.css',
+            ),
+        );
+    }
+    return $settings;
+}
+
 /*
  * 
  * Date Field
@@ -18,7 +90,7 @@ require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields/date/js.php';
 
 // Parsing date function
 if ( !function_exists( 'wpv_filter_parse_date' ) ) {
-    require_once WPCF_EMBEDDED_ABSPATH . '/common/wpv-filter-date-embedded.php';
+    require_once WPCF_EMBEDDED_ABSPATH . '/toolset/toolset-common/wpv-filter-date-embedded.php';
 }
 
 /*
@@ -85,62 +157,6 @@ if ( defined( 'DOING_AJAX' ) ) {
  * 1.3 Changed to use 'wpv_condition' hook.
  */
 add_action( 'wpv_condition', 'wpcf_fields_custom_conditional_statement_hook' );
-
-/**
- * Register data (called automatically).
- * 
- * @return type 
- */
-function wpcf_fields_date() {
-    $settings = array(
-        'id' => 'wpcf-date',
-        'title' => __( 'Date', 'wpcf' ),
-        'description' => __( 'Date', 'wpcf' ),
-        'validate' => array('required', 'date'),
-        'meta_key_type' => 'TIME',
-        'version' => '1.2',
-    );
-
-    if ( !defined( 'WPTOOLSET_FORMS_ABSPATH' ) ) {
-        // Allow localized Datepicker if date format does not need translating
-        $localized_date_formats = array(
-            'Y/m/d', // 2011/12/23
-            'm/d/Y', // 12/23/2011
-            'd/m/Y', // 23/22/2011
-            'd/m/y', // 23/22/11
-        );
-
-        $date_format = wpcf_get_date_format();
-        $localized_js = array();
-
-        if ( in_array( $date_format, $localized_date_formats ) ) {
-            $locale = str_replace( '_', '-', strtolower( get_locale() ) );
-            $localized_js = array(
-                'src' => file_exists( WPCF_EMBEDDED_RES_ABSPATH . '/js/i18n/jquery.ui.datepicker-'
-                        . $locale . '.js' ) ? WPCF_EMBEDDED_RES_RELPATH . '/js/i18n/jquery.ui.datepicker-'
-                        . $locale . '.js' : '',
-                'deps' => array('jquery-ui-core'),
-            );
-        }
-        $settings['meta_box_js'] = array(
-            'wpcf-jquery-fields-date' => array(
-                'src' => WPCF_EMBEDDED_RES_RELPATH . '/js/jquery.ui.datepicker.min.js',
-                'deps' => array('jquery-ui-core'),
-            ),
-            'wpcf-jquery-fields-date-inline' => array(
-                'inline' => 'wpcf_fields_date_meta_box_js_inline',
-            ),
-            'wpcf-jquery-fields-date-localization' => $localized_js,
-        );
-        $settings['meta_box_css'] = array(
-            'wpcf-jquery-ui' => array(
-                'src' => WPCF_EMBEDDED_RES_RELPATH
-                . '/css/jquery-ui/jquery-ui-1.9.2.custom.min.css',
-            ),
-        );
-    }
-    return $settings;
-}
 
 /**
  * From data for post edit page.
@@ -453,6 +469,31 @@ function wpcf_fields_date_editor_callback( $field, $settings ) {
     // Custom format
     $data['custom'] = isset( $settings['custom'] ) ? $settings['custom'] : get_option( 'date_format' );
 
+    /**
+     * date with hour and minutes
+     */
+    if (
+        isset($field['data'])
+        && isset( $field['data']['date_and_time'])
+        && 'and_time' == $field['data']['date_and_time']
+    ) {
+        $date_formats = apply_filters( 'date_formats',
+            array(
+                __( 'F j, Y g:i a', 'wpcf' ),
+                'Y/m/d g:i a',
+                'm/d/Y h:i a',
+                'd/m/Y G:i',
+                'd/m/y H:i',
+            )
+        );
+        // Custom format
+        $data['custom'] = sprintf(
+            '%s %s',
+            get_option('date_format'),
+            get_option('time_format')
+        );
+    }
+
     $data['default'] = 'custom';
 
     foreach ( $date_formats as $k => $format ) {
@@ -504,11 +545,15 @@ function wpcf_fields_date_editor_submit( $data, $field, $context ) {
             $add .= ' format="' . $format . '"';
         }
     }
-    if ( $context == 'usermeta' ) {
+	if ( $context == 'usermeta' ) {
         $add .= wpcf_get_usermeta_form_addon_submit();
         $shortcode = wpcf_usermeta_get_shortcode( $field, $add );
+	} elseif ( $context == 'termmeta' ) {
+        $add .= wpcf_get_termmeta_form_addon_submit();
+        $shortcode = wpcf_termmeta_get_shortcode( $field, $add );
     } else {
         $shortcode = wpcf_fields_get_shortcode( $field, $add );
     }
+    
     return $shortcode;
 }

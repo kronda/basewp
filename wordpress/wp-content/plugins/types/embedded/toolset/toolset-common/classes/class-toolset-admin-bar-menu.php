@@ -136,9 +136,9 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
 				$menu_item_definitions = apply_filters( 'toolset_filter_toolset_admin_bar_menu_insert', array(), $this->get_context(), get_the_ID() );
 
 				foreach( $menu_item_definitions as $menu_row ) {
-					$title = sanitize_text_field( toolset_getarr( $menu_row, 'title', null ) );
-					$edit_url = esc_url_raw( toolset_getarr( $menu_row, 'href', null ) );
-					$menu_id = esc_attr( toolset_getarr( $menu_row, 'menu_id', null ) );
+					$title = sanitize_text_field( toolset_getarr_safe( $menu_row, 'title', null ) );
+					$edit_url = esc_url_raw( toolset_getarr_safe( $menu_row, 'href', null ) );
+					$menu_id = esc_attr( toolset_getarr_safe( $menu_row, 'menu_id', null ) );
 					if( !empty( $title ) && !empty( $edit_url ) && !empty( $menu_id ) ) {
 						$wp_admin_bar->add_node( array(
 							'parent' => 'toolset_admin_bar_menu',

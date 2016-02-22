@@ -27,6 +27,9 @@ add_filter('types_message_custom_taxonomy_saved',
 
 add_filter('types_message_custom_fields_saved',
         'types_marketing_message_custom_fields_saved', 10, 3);
+
+add_filter('types_message_term_fields_saved',
+        'types_marketing_message_term_fields_saved', 10, 3);
 		
 add_filter('types_message_usermeta_saved',
         'types_marketing_message_usermeta_saved', 10, 3);			
@@ -39,27 +42,42 @@ add_filter('types_message_usermeta_saved',
  */
 
 function types_marketing_message_custom_post_type_saved($message, $data, $update) {
-    $title = $data['labels']['name'];
-    $type = 'post_type';
-    ob_start();
-    include WPCF_ABSPATH . '/marketing/congrats-post-types/index.php';
-    $message = ob_get_contents();
-    ob_end_clean();
-    return $message;
+    if( isset( $data['labels']['name'] ) ) {
+        $title = $data['labels']['name'];
+        $type  = 'post_type';
+        ob_start();
+        include WPCF_ABSPATH . '/marketing/congrats-post-types/index.php';
+        $message = ob_get_contents();
+        ob_end_clean();
+
+        return $message;
+    }
+    return '';
 }
 
 function types_marketing_message_custom_taxonomy_saved($message, $data, $update) {
-    $title = $data['labels']['singular_name'];
-    $type = 'taxonomy';
-    ob_start();
-    include WPCF_ABSPATH . '/marketing/congrats-post-types/index.php';
-    $message = ob_get_contents();
-    ob_end_clean();
-    return $message;
+    if( isset( $data['labels']['singular_name'] ) ) {
+        $title = $data['labels']['singular_name'];
+        $type = 'taxonomy';
+        ob_start();
+        include WPCF_ABSPATH . '/marketing/congrats-post-types/index.php';
+        $message = ob_get_contents();
+        ob_end_clean();
+        return $message;
+    }
+    return '';
 }
 
 function types_marketing_message_custom_fields_saved($message, $title, $update) {
     $type = 'fields';
+    ob_start();
+    include WPCF_ABSPATH . '/marketing/congrats-post-types/index.php';
+    $message = ob_get_contents();
+    ob_end_clean();
+    return $message;
+}
+function types_marketing_message_term_fields_saved($message, $title, $update) {
+    $type = 'term';
     ob_start();
     include WPCF_ABSPATH . '/marketing/congrats-post-types/index.php';
     $message = ob_get_contents();

@@ -1,11 +1,11 @@
-=== Types ===
-Contributors: brucepearson, AmirHelzer, jozik, mihaimihai, iworks
+=== Toolset Types ===
+Contributors: adrianosilva, AmirHelzer, bedas, brucepearson, christianglingener, jadpm, jans-1
 Donate link: http://wp-types.com
-Tags: CMS, custom field, custom fields, custom post type, custom post types, field, fields post, post type, post types, taxonomies, taxonomy
+Tags: CMS, custom field, custom fields, custom post type, custom post types, field, fields post, post type, post types, taxonomies, taxonomy, toolset
 License: GPLv2
-Requires at least: 3.4
-Tested up to: 4.4
-Stable tag: 1.8.11
+Requires at least: 3.7
+Tested up to: 4.4.1
+Stable tag: 1.9
 
 The complete and reliable plugin for managing custom post types, custom taxonomies and custom fields.
 
@@ -13,16 +13,10 @@ The complete and reliable plugin for managing custom post types, custom taxonomi
 
 Types let's you customize the WordPress admin by adding content types, custom fields and taxonomies. You will be able to craft the WordPress admin and turn it into your very own content management system.
 
-[vimeo http://vimeo.com/112053938]
+[vimeo https://vimeo.com/152983601]
 
 = POWERFUL PHP API, SIMPLE GUI FOR NON-CODERS =
 If you're an experienced PHP developer, you'll appreciate Types comprehensive [PHP API](http://wp-types.com/documentation/functions/) and [documentation](http://wp-types.com/documentation/user-guides/).
-
-Types and the other [Toolset](http://wp-types.com) plugins let you build complete sites without coding.
-
-* **[Views](http://wp-types.com/home/views-create-elegant-displays-for-your-content/)** - a powerful content display engine
-* **[CRED](http://wp-types.com/home/cred/)** - front-end form builder for content creation and editing
-* **[Access](http://wp-types.com/home/types-access/)** - roles and access control management
 
 The full [Toolset](http://wp-types.com) package lets you build complete WordPress sites from within the admin dashboard.
 
@@ -30,7 +24,7 @@ The full [Toolset](http://wp-types.com) package lets you build complete WordPres
 Types lets you add custom fields for both posts (meaning, WordPress posts, pages and custom content types), as well as users. You can add any field types to different user profiles.
 
 = ACCESS CONTROL FOR FIELDS =
-Using [Access](http://wp-types.com/home/types-access/), you will be able to control what fields different users can edit and view. This way, you can make some field groups read-only for certain users, and fully-editable for other users.
+Using [Access](https://wp-types.com/home/toolset-components/#access), you will be able to control what fields different users can edit and view. This way, you can make some field groups read-only for certain users, and fully-editable for other users.
 
 For example, when you build a membership site, the site admin will be able to change membership levels for everyone and users will see their membership fields as read-only.
 
@@ -143,17 +137,54 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 
 == Screenshots ==
 
-1. Post types list
-2. Custom taxonomies list
-3. Edit Custom Post Type
+1. Post Types list
+2. Custom Taxonomies list
+3. Edit Post Type
 4. Edit Taxonomy
-5. Editing custom fields group
-6. Editing user fields group
+5. Editing post field group
+6. Editing user field group
 7. Inserting custom fields to content
-8. Bulk editing child content using Field Tables
-9. Children post list
+8. Custom fields on the post editing page
+9. Bulk editing child content using Field Tables
 
 == Changelog ==
+
+= 1.9 =
+
+* Release date: 2016-02-17
+* New: Taxonomy term meta (custom fields for taxonomy).
+* Major upgrade to user interface.
+* Renamed "Custom Fields" to "Post Fields".
+* Added post arguments “show_rest” and “rest_base” to options on post type edit screen.
+* Added ability to rename built-in post types “Posts”, “Pages” and “Media”.
+* Added new filter "wpcf_exclude_meta_boxes_on_post_type" that allows to exclude own Post Types from wpcf_add_meta_boxes() function in order to avoid adding Types meta boxes to certain custom posts.
+* Added ability to modify the title placeholder, displayed when creating a new post, for each post type.
+* Added ability to deactivate built-in taxonomies.
+* CPTs can now be positioned anywhere in the admin menu.
+* Promotional messages can now be disabled in settings.
+* Fixed date fields so they properly display "hour" and "minutes" when they provide those options.
+* Fix wrong field type conversion options for checkboxes fields.
+* Avoid clearing the roles for the current user as global when editing a user by visiting its profile.
+* Properly escape data used as attributes on a javascript methods controlling the post types, taxonomies, Content Templates or user roles assigned to a field group.
+* Ensure a user creating children posts on a Fields Table table has the right capabilities to do so, including Access rights.
+* Extend meta queries coming from Views so they work with Types checkboxes fields for users and taxonomy terms. Also, allow filtering by checkbox value in addition to checkbox title.
+* Allow to filter checkboxes fields by a value that contains a comma in its title.
+* Fix pagination in the Fields Table of a parent post type: it was returning the posts per page setting to its default state of 5.
+* Fix the Next pagination button missing on Fields Tables when the table is set to show N children each time and you have N+1 children assigned to that parent.
+* Fix custom taxonomy export/import when it is attached to a post type whose slug starts with a number.
+
+
+= 1.8.10 =
+
+* Release date: 2015-11-18
+* Changed Installer version to 1.7.2
+* Fixed usability issue with select2.
+
+= 1.8.9 =
+
+* Release date: 2015-11-10
+* Changed Installer version to 1.7
+* Changed Common version to 1.8
 
 = 1.8.11 =
 
@@ -165,8 +196,7 @@ Additionally, Types is the only plugin that lets you define parent/child relatio
 = 1.8.10 =
 
 * Release date: 2015-11-18
-* Changed Installer version to 1.7.2
-* Fixed usability issue with select2.
+* Added filter "wpcf_init_custom_types_taxonomies".
 
 = 1.8.9 =
 

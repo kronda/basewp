@@ -171,6 +171,7 @@ if( !class_exists( 'Editor_addon_generic' ) )
             $this->initialized = false;
             $this->icon_class = $icon_class;
 
+
             if ( ( $media_button_image != '' || $icon_class != '' ) && $print_button ) {
                 // Media buttons
                 //Adding "embed form" button

@@ -1,24 +1,8 @@
-/*
-Embedded CSS
 
-Before moving to full version - check twice!
-NO DUPLICATES
-*/
-
-#icon-wpcf {
-    background: url('../images/logo-32.png') no-repeat;
-}
 #icon-wpcf-access {
     background: url('../images/access-icon-32x32.png') no-repeat;
 }
-#icon-wpcf-search {
-    background: url('../images/search_36x34.png') no-repeat;
-}
-.wpcf-ajax-loading {
-    background: url('../images/ajax-loader-big.gif') no-repeat;
-    width: 32px;
-    height: 32px;
-}
+
 .wpcf-ajax-loading-small {
     background: url('../images/ajax-loader-small.gif') no-repeat;
     width: 16px;
@@ -27,18 +11,277 @@ NO DUPLICATES
 
 /* FORMS */
 .wpcf-form-fieldset {
-    background-color: #ffffff;
+    background-color: #fff;
     padding: 0 15px 15px 15px;
-    border: 1px solid #cccccc;
-    border-color: #cccccc;
+    border: 1px solid #ccc;
+    border-color: #ccc;
     margin: 15px 0 25px 0;
 }
 .wpcf-form-fieldset fieldset {
     margin-bottom: 0;
 }
-.wpcf-fields-form fieldset {
+
+.wpcf-fields h3 i.fa
+{
+    text-align: center;
+    width: 2em;
+}
+
+.wpcf-fields-form fieldset
+{
     width: auto;
 }
+
+#poststuff .wpcf-fields .inside
+,#poststuff #types_labels .inside
+,#poststuff #types_labels .inside table
+,#custom_fields .inside .wpcf-custom-field-group ul
+,body .ui-dialog .wpcf-ui-dialog-cancel
+,#wpcf-types-form-visibility-table
+,#wpcf-types-form-visibility-table td
+,.widefat .wpcf-fields-field-value-options .hndle
+{
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+body.wp-admin .wpcf-ui-dialog
+,body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar
+,body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar-close
+,body.wp-admin .wpcf-ui-dialog .ui-dialog-content
+,body.wp-admin .ui-corner-all
+{
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+#poststuff #types_labels .wpcf-inside
+{
+    margin: 6px 0 0 0;
+    padding: 0 12px 12px;
+}
+
+#poststuff .wpcf-box-loading .spinner
+{
+    visibility: visible;
+    float: left;
+}
+
+body.types_page_wpcf-edit-usermeta #major-publishing-actions
+,body.types_page_wpcf-edit #major-publishing-actions
+{
+    border-top: 0;
+}
+
+#custom_fields .inside .wpcf-custom-field-group h4
+{
+    margin-top: 0;
+    margin-bottom: .5em;
+}
+
+#custom_fields .inside .wpcf-custom-field-group
+{
+    width: 200px;
+    float: left;
+    margin: 10px 10px 0 10px;
+}
+
+#custom_fields .menu-item-handle
+{
+    display: inline-block;
+    margin: 0 10px 10px 10px;
+}
+
+#custom_fields .wpcf-custom-field-order
+{
+    border-top: 1px solid #eee;
+    padding-top: 4px;
+}
+
+#types_options .inside h3
+,#relationship .inside h3
+{
+    padding-left: 0;
+}
+
+.wpcf-fields-field-value-options
+{
+    border-collapse: collapse;
+}
+.widefat .wpcf-fields-field-value-options td
+{
+    vertical-align: middle;
+    padding: 4px;
+}
+
+/* Make input fields for Select/Radio options resize together with table cells. */
+.widefat .wpcf-fields-field-value-options td > input[type=text] {
+    width: 100%;
+}
+
+.wpcf-fields table ul
+,.wpcf-fields dd
+{
+    margin: 0;
+}
+
+.wpcf-fields dd
+{
+    padding-bottom: 1em;
+}
+
+.wpcf-fields .wpcf-border-top td .wpcf-fields-field-value-options th
+,.wpcf-fields .wpcf-border-top td .wpcf-fields-field-value-options td
+{
+    border: 0;
+    font-size: inherit;
+    line-height: inherit;
+    padding: 0 8px 4px 8px;
+}
+
+.wpcf-fields .wpcf-border-top td td
+{
+    border: 0;
+    padding: 2px;
+}
+
+.wpcf-fields .wpcf-border-top td
+{
+    border-top: 1px solid #e5e5e5;
+    padding-top: 11px;
+}
+
+.wpcf-fields-field-value-options i.fa
+{
+    font-size: 1.2em;
+}
+
+.wpcf-fields-field-value-options
+{
+    border: 0;
+}
+
+/**
+ *  jQuery UI
+ */
+
+.wpcf-child-post-fields-dialog .ui-dialog-title
+{
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.wpcf-field-remove
+,#wpcf-conditional a
+,body .ui-dialog .wpcf-ui-dialog-cancel
+,body .ui-dialog .wpcf-ui-dialog-cancel:active
+,body .ui-dialog .wpcf-ui-dialog-cancel:focus
+{
+    color: #a00;
+}
+
+input.disabled, input:disabled, select.disabled, select:disabled, textarea.disabled, textarea:disabled {
+    background: rgba(0,0,0,0.05);
+}
+
+.wpcf-field-remove
+,#wpcf-conditional a
+{
+    text-decoration: none;
+}
+body .ui-dialog .wpcf-ui-dialog-cancel:hover
+{
+    color: #f00;
+}
+
+body .ui-dialog .wpcf-ui-dialog-cancel
+,body .ui-dialog .wpcf-ui-dialog-cancel:active
+,body .ui-dialog .wpcf-ui-dialog-cancel:focus
+{
+    background: none;
+    left: 16px;
+    padding: 1px 2px;
+    position: absolute;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow:    none;
+    box-shadow:         none;
+}
+
+body.wp-admin .wpcf-ui-dialog
+,body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar
+,body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar-close
+,body.wp-admin .wpcf-ui-dialog .ui-dialog-content
+{
+    border: 0;
+    background-image: none;
+    color: #444;
+}
+
+body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar
+,body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar-close
+{
+    background-color: transparent;
+}
+
+.wpcf-choose-field .wpcf-form-button:hover i
+,body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar-close:hover
+{
+    color: #00a0d2;
+}
+
+body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar
+,body.wp-admin .wpcf-ui-dialog .ui-dialog-buttonpane
+{
+    background-color: #fcfcfc;
+}
+
+body.wp-admin .wpcf-ui-dialog .ui-dialog-titlebar
+{
+    border-bottom: 1px solid #dfdfdf;
+}
+
+body.wp-admin .wpcf-ui-dialog .ui-dialog-buttonpane
+{
+    padding: 8px 16px;
+}
+
+.wpcf-filter-dialog h3
+{
+    border-bottom: 1px solid #ddd;
+}
+
+.wpcf-filter-dialog li
+{
+    width: 33%;
+    float: left;
+}
+
+.wpcf-filter-dialog .inside .form-item-textfield
+{
+    margin-bottom: 1em;
+}
+
+.wpcf-child-post-fields-dialog ul
+,.ui-dialog .wpcf-form-item
+{
+    margin: 0;
+}
+
+#types_where .wpcf-filter-container:last-of-type
+{
+    padding-bottom: 2em;
+}
+
+#types_where .wpcf-filter-container h3
+{
+    padding-left: 0;
+}
+
 .wpcf-form-fieldset legend {
     font-weight: bold;
 }
@@ -56,9 +299,7 @@ NO DUPLICATES
     background-position: 0px 3px;
     cursor: pointer;
 }
-.wpcf-form-fieldset .collapsed {
-    display: none;
-}
+
 .wpcf-form-item
 {
     margin-bottom: 25px;
@@ -81,7 +322,13 @@ NO DUPLICATES
     font-style: italic;
     margin-bottom: 5px;
 }
-.wpcf-form-description-fieldset {
+td>.wpcf-form-description-fieldset
+{
+    margin-top: 0;
+}
+
+.wpcf-form-description-fieldset
+{
     font-size: 1em;
     font-style: normal;
     margin: 10px 0;
@@ -99,26 +346,6 @@ NO DUPLICATES
 .wpcf-form-fieldset .wpcf-form-label
 {
     white-space: normal;
-}
-.wpcf-form-textfield-label {
-    font-size: 1em;
-    font-weight: bold;
-    display: block;
-}
-.wpcf-form-textfield {
-    width: 200px;
-}
-.wpcf-form-item-file label {
-    font-size: 1em;
-    font-weight: bold;
-    display: block;
-}
-.wpcf-form-item-textarea label,
-.wpcf-form-title-checkboxes,
-.wpcf-form-title-radios,
-.wpcf-form-select-label {
-    font-size: 1em;
-    font-weight: bold;
 }
 .wpcf-form-item-textarea label {
     display: block;
@@ -156,9 +383,6 @@ input.wpcf-form-error {
 .wpcf-fields-form .ui-draggable .wpcf-form-fieldset .wpcf-form-fieldset legend {
     cursor: pointer;
 }
-.wpcf-fields-form .ui-sortable {
-    padding: 0 0 10px 0;
-}
 .wpcf-fields-form .ui-sortable-placeholder {
     border: 1px dashed #CCCCCC;
     width: auto;
@@ -193,50 +417,19 @@ input.wpcf-form-error {
     width: 400px;
 }
 
-/* STRANGE */
-#ui-datepicker-div {
-    display: none;
-}
-
 .wpcf-shortcode {
     margin-top: 5px;
 }
 .wpcf-pointer {
     cursor: pointer;
 }
-.wpcf-fields-form-validate-table {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    border: 1px solid #D2D2D2;
-}
-.wpcf-fields-form-validate-table td {
-    padding: 5px 10px;
-    margin: 0;
-}
-.wpcf-fields-form-validate-table thead tr {
-    background-color: #E8E8E8;
-    font-weight: bold;
-}
-.wpcf-fields-form-validate-table thead td {
-    border-bottom: 1px solid #D2D2D2;
-}
-.wpcf-fields-form-validate-table tbody tr:nth-child(odd) {
-    background-color: #F7F7F7;
-}
-.wpcf-fields-form-validate-table tbody tr:nth-child(even) {
-    background-color: #EEEEEE;
-}
-.wpcf-fields-form-validate-table td .textfield{
-    width: 100%;
-}
+
 .wpcf-fields-form-radio-move-field {
     cursor: move;
 }
 
 /* TYPES FORM */
 #wpcf-types-form-name-table,
-#wpcf-types-form-visibility-table,
 #wpcf-types-form-labels-table,
 #wpcf-types-form-taxonomies-table,
 #wpcf-types-form-supports-table,
@@ -252,23 +445,48 @@ input.wpcf-form-error {
 .wpcf-types-form-table td {
     border: none;
 }
-#wpcf-types-form-name-table tbody tr td:first-child {
+
+#wpcf-types-form-name-table tbody tr td:first-child
+,.wpcf-fields tbody td:first-child
+,#poststuff #types_labels .inside td:first-child
+{
     text-align: right;
 }
 #wpcf-types-form-name-table tbody tr:first-child td
 {
     padding-top: 10px;
 }
+
+.wpcf-fields table
+,.wpcf-fields .wpcf-fields-field-value-options
+{
+    border: 0;
+}
+
 #wpcf-types-form-name-table tbody td:first-child
+,.wpcf-fields tbody td:first-child
 {
     min-width: 200px;
     width: 20%;
 }
+
 .wpcf-types-form-table td:first-child
 {
     width: 20%;
     max-width: 300px;
     min-width: 100px;
+}
+
+.wpcf-fields .wpcf-fields-field-value-options td:first-child
+{
+    min-width: 0;
+    width: auto;
+    text-align: inherit;
+}
+
+.widefat .wpcf-fields-field-value-options .num input
+{
+    margin: 0;
 }
 
 .wpcf-types-form #custom_fields .menu-item-handle
@@ -279,26 +497,14 @@ input.wpcf-form-error {
 #wpcf-types-form-name-table tbody tr:first-child td {
     padding-top: 10px;
 }
-#wpcf-types-form-name-table input {
-    width: 100%;
+#wpcf-types-form-name-table input[type=button]
+{
+    width: auto;
 }
 #wpcf-types-form-name-table input[type="checkbox"] {
     width: auto;
 }
 #wpcf-types-form-name-table label {
-    font-weight: normal;
-}
-#wpcf-types-form-visibility-table tbody table {
-    margin-top: 5px;
-}
-#wpcf-types-form-visibility-table tbody table td {
-    padding: 0;
-    vertical-align: middle;
-}
-#wpcf-types-form-visibility-table tbody table tr td:first-child {
-    text-align: right;
-}
-#wpcf-types-form-visibility-table tbody table label {
     font-weight: normal;
 }
 
@@ -357,8 +563,8 @@ input.wpcf-form-error {
     margin: 1em 0 1em 0;
 }
 .wpcf-error {
-    background-color: #FFEBE8;
-    border-color: #CC0000;
+    background-color: #ffebe8;
+    border-color: #c00;
     padding: 5px;
 }
 .wpcf-admin-fields-help {
@@ -374,7 +580,7 @@ input.wpcf-form-error {
     min-width:19px;
     padding-left:20px;
     padding-top:4px;
-    background:url('../../common/res/images/question.png') no-repeat 0 6px;
+    background:url('../../toolset/toolset-common/res/images/question.png') no-repeat 0 6px;
     text-decoration:none !important;
     position:relative;
     z-index:100;
@@ -389,24 +595,13 @@ input.wpcf-form-error {
     background-position:0 -19px;
 }
 
-.wpcf-form-options-header-title {
-    position: absolute;
-    margin: -18px 0 0 40px;
-}
-.wpcf-form-options-header-value {
-    position: absolute;
-    margin: -18px 0 0 125px;
-}
-
 .wpcf-loading {
     width: 20px;
     height: 16px;
     background: url('../images/wpspin.gif') no-repeat 2px 0;
     display: inline-block;
 }
-.wpcf-hide {
-    display: none;
-}
+
 .wpcf-show {
     /*display: block;*/
 }
@@ -431,9 +626,9 @@ input.wpcf-form-error {
     padding: 20px;
     width: 80%;
 }
-#wpcf-ajax #wpfooter {
+#wpcf-ajax #wpfooter
+{
     clear: both;
-    display: none;
 }
 .wpcf-editor-popup-advanced-link {
     display: block;
@@ -463,34 +658,20 @@ input.wpcf-form-error {
     font-size: 0.9em;
     font-style: italic;
 }
-.types-ajax #screen-meta-links,
-.types-ajax #screen-meta {
-    display: none;
-}
-.ac_results{
-	/**
-	* Commented out because it breaks autocomplete suggestions in, well, everywhere, if any result is longer.
-	* Adjust to specific place if needed, using the resultsClass option.
-	*/
-	/*width:200px !important;*/
-}
 
 /* temp */
-.wpcf_custom_field_invalid_date {
-    display: none;
-}
 .types-help {
     border: 1px solid;
     border-radius: 4px 4px 4px 4px;
     clear: both;
     margin: 20px 0;
     position: relative;
-    background: linear-gradient(to bottom, #ECFCE8 0%, #DCFFD4 100%) repeat scroll 0 0 transparent;
-    border-color: #BAFCA9;
+    background: linear-gradient(to bottom, #ecfce8 0%, #dcffd4 100%) repeat scroll 0 0 transparent;
+    border-color: #bafca9;
     min-height: 140px;
 }
 .types-help-content {
-    color: #4F4F4F;
+    color: #4f4f4f;
     min-height: 105px;
     padding: 15px 160px 15px 15px;
 }
@@ -578,12 +759,36 @@ input.wpcf-form-error {
 }
 
 .wp-core-ui .toolset-message-after-activate .button-primary
+,#poststuff .wpcf-fields-add-new
 {
-    background-color:#f05a28;
-    border-color:#ed4e26;
+    background-color: #f05a28;
+    border-color: #ed4e26;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,175,148,0.5), 0 1px 0 rgba(0,0,0,.15);
+    box-shadow: inset 0 1px 0 rgba(255,175,148,0.5), 0 1px 0 rgba(0,0,0,.15);
+}
+
+#poststuff .wpcf-fields-add-new
+{
+    color: #fff;
+    font-weight: 700;
+    height: auto;
+    padding: 10px 15px 10px 10px;
+    margin-bottom: 1em;
+}
+
+#poststuff .wpcf-fields-add-new .dashicons {
+    vertical-align: middle;
+}
+
+.wpcf-second-submit-container {
+    text-align: right;
+    border-top: 1px solid #ddd;
+    padding-top: 17px;
+    margin-top: 25px;
 }
 
 .toolset-message-after-activate:after
+,ul.types:after
 {
     content: " ";
     display: block;
@@ -649,8 +854,49 @@ input.wpcf-form-error {
 }
 
 #wp-content-editor-tools .types-marketing-views .ont-color-orange
+,.wpcf-howto-views .icon-views-logo
 {
     color: #f05a28;
+}
+
+.wpcf-info-box-with-icon div.wpcf-icon {
+    width: 40px;
+    position:absolute;
+    top: 0;
+    left: 10px;
+}
+
+.wpcf-info-box-with-icon div.wpcf-info {
+    box-sizing: border-box;
+    padding-left: 46px;
+}
+
+.wpcf-info-box-with-icon div.wpcf-icon span {
+    color: #f05a28;
+}
+
+.wpcf-info-box-with-icon:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.wpcf-no-glow:focus {
+    box-shadow: none;
+}
+
+.wpcf-arrow-right:after,
+.wpcf-arrow-down:after {
+    content: '\25B8';
+    font-size: 120%;
+    line-height: 100%;
+}
+
+.wpcf-arrow-down:after {
+    content: '\25BE';
+}
+#wp-content-editor-tools .types-marketing-views .ont-color-orange
+{
     font-size: 1.5em;
 }
 
@@ -664,15 +910,156 @@ input.wpcf-form-error {
     color: green;
 }
 
-.wpcf-types-read-only #relationship p
+#relationship .disabled label
+,#relationship .disabled .wpcf-form-checkbox
+{
+    opacity: .7;
+    cursor: default;
+}
+
+#relationship .inside span
+{
+    visibility: hidden;
+}
+
+#relationship .inside .active span
+{
+    visibility: visible;
+}
+
+/* WPCF Tabs for Fields Group filters */
+body.wp-admin .wpcf-ui-dialog.wpcf-filter-dialog .ui-dialog-titlebar {
+    border: 0;
+}
+
+.wpcf-ui-dialog.wpcf-filter-dialog .ui-dialog-titlebar {
+    height: auto;
+}
+
+.wpcf-ui-dialog.wpcf-filter-dialog {
+    overflow: hidden;
+}
+
+.wpcf-tabs-menu {
+    width: 100%;
+    box-sizing: content-box;
+    position:relative;
+    clear: both;
+    top:0;
+    margin: 6px -16px 0;
+    padding: 0 36px 0 16px;
+    border-bottom: 1px solid #dfdfdf;
+    box-shadow: 0 10px 15px #fff;
+    z-index: 100;
+}
+
+.wpcf-tabs-menu li {
+    width: auto;
+    display: inline-block;
+    float: none;
+    margin-bottom: -1px;
+    border-bottom: 1px solid #dfdfdf;
+}
+
+.wpcf-tabs-menu .wpcf-tabs-menu-current {
+    border-color: #fff;
+}
+
+.wpcf-tabs-menu span {
+    color: #0073aa;
+    font-weight: normal;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    padding: 8px 10px 9px;
+    margin: 0;
+    height: 18px;
+    line-height: 18px;
+    font-size: 14px;
+    text-decoration: none;
+    -webkit-transition: none;
+    transition: none;
+}
+
+.wpcf-tabs-menu > span:last-child {
+    border-right: 0;
+}
+
+.wpcf-tabs-menu > span:active {
+    outline: none;
+}
+
+.wpcf-tabs-menu .wpcf-tabs-menu-current span,
+.wpcf-tabs-menu span:hover {
+    color: #32373c;
+}
+
+.wpcf-tabs-menu .wpcf-tabs-menu-current span {
+    margin: -1px -1px 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-bottom: none;
+}
+
+.wpcf-tabs > div {
+    display: none;
+}
+
+.wpcf-tabs div:first-child {
+    display: block;
+}
+
+.wpcf-fields-group-conditions-description {
+    display: none;
+}
+
+.js-wpcf-fields-group-conditions-condition {
+    font-weight: bold;
+}
+.js-wpcf-fields-group-conditions-condition span {
+    font-weight: normal;
+}
+
+.wpcf-filter-button-edit-container {
+    text-align:right;
+}
+
+#wpcf-fields-form-filters-association-form {
+    padding-top: 10px;
+    margin: 15px 0 0;
+    border-top: 1px solid #eee;
+}
+
+button .ui-button-icon-primary
+,.types-ajax #screen-meta
+,.types-ajax #screen-meta-links
+,#ui-datepicker-div
+,#wpcf-ajax #wpfooter
+,#wpcf-conditional a span
+,#wpcf-conditional thead
+,.wpcf_custom_field_invalid_date
+,.wpcf-form-fieldset .collapsed
+,.wpcf-hide
+,.wpcf-types-read-only #conditional-logic-button-open
 ,.wpcf-types-read-only #relationship a
+,.wpcf-types-read-only #relationship p
 ,.wpcf-types-read-only .ui-draggable
 ,.wpcf-types-read-only .wpcf-fields-checkboxes-draggable
 ,.wpcf-types-read-only .wpcf-fields-form-move-field
 ,.wpcf-types-read-only .wpcf-form-fields-delete
-,.wpcf-types-read-only #conditional-logic-button-open
+,#wpcf-types-form-visibility-table thead
 {
     display: none;
+}
+
+.wpcf-conditions-dialog .wpcf-cd-relation
+{
+    margin-bottom: 1em;
+}
+
+.wpcf-conditions-dialog .wpcf-form-title-radios
+{
+    display: inline;
 }
 
 .wpcf-types-read-only dl
@@ -696,4 +1083,319 @@ input.wpcf-form-error {
 #tab-panel-wpcf dt
 {
     font-weight: bold;
+}
+
+/**
+ * Types Dashboard
+ */
+
+#post-body-content .types .dashicons
+{
+    height: auto;
+    width: 100%;
+}
+
+#post-body-content .types span.dashicons:before
+{
+    font-size: 2em;
+    line-height: normal;
+}
+
+#post-body-content .types span:before
+{
+    font-size:3em;
+}
+
+#post-body-content .types span:before
+,#post-body-content .types .dashicons
+{
+    padding: 10px 0;
+}
+
+#post-body-content .types span
+{
+    display: block;
+}
+
+#post-body-content .types li a
+{
+    display: block;
+    width: 200px;
+    height: 100px;
+    background-color: #fff;
+    border: 1px solid #999;
+    margin: 0 20px 20px 0;
+    text-align: center;
+    text-decoration: none;
+}
+
+.types li
+{
+    float: left;
+}
+
+/**
+ * #postbox-container-2 related classes
+ */
+
+#postbox-container-2 .wpcf-list
+{
+    margin-bottom: 0;
+}
+
+#postbox-container-2 .wpcf-list li
+{
+    display: inline-block;
+    width: 150px;
+    margin: 0 10px 10px 0;
+}
+
+#postbox-container-2 .flat-in-postbox-container-2:after
+{
+    content: '';
+    display: block;
+    clear: both;
+}
+#postbox-container-2 .flat-in-postbox-container-2 li
+{
+    float: left;
+    padding: 0 10px;
+}
+
+/**
+ * select icon
+ */
+.wpcf-howto-views a
+{
+    text-decoration: none;
+}
+
+.wpcf-howto-views span
+{
+    font-size: 3em;
+    padding-right: 5px;
+}
+
+.wpcf-dashicons .selected
+,.tooltip
+{
+    -webkit-box-shadow: 0 0 5px 0 rgba(50, 50, 50, 0.50);
+    -moz-box-shadow:    0 0 5px 0 rgba(50, 50, 50, 0.50);
+    box-shadow:         0 0 5px 0 rgba(50, 50, 50, 0.50);
+    border-color: #ddd;
+}
+
+.wpcf-dashicons .spinner
+{
+    visibility: visible;
+    float: left;
+}
+
+.wpcf-dashicons .dashicons-before:before
+{
+    padding-right: 10px;
+}
+
+.wpcf-dashicons a
+{
+    display: block;
+    width: 155px;
+    padding: 5px;
+    text-decoration: none;
+    color: #000;
+}
+
+.wpcf-dashicons li
+{
+    float: left;
+    margin: 0 10px;
+    border: 1px solid transparent;
+}
+
+/**
+ * Where to include
+ */
+.wpcf-filter-container hr
+{
+    margin-top: 20px;
+}
+.wpcf-filter-container .clear .wpcf-filter-button-edit
+{
+    margin-bottom: .5em;
+}
+
+/**
+ * add new field
+ */
+
+.wpcf-choose-field .wpcf-form-button i
+{
+    display: block;
+    font-size: 1.4em;
+    margin: 0 auto;
+    padding-top: 10px;
+}
+
+.wpcf-choose-field .wpcf-form-button:hover i
+,.wpcf-tooltip
+{
+    color: #00a0d2;
+}
+
+body .wpcf-choose-field button.wpcf-form-button span
+{
+    display: block;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 90%;
+}
+
+.wpcf-choose-field .form-item-textfield
+{
+    padding-bottom: 1em;
+}
+
+.wpcf-choose-field button.wpcf-form-button
+{
+    height: auto;
+    margin: 0 10px 10px 0;
+    padding: 0 5px;
+    text-align: center;
+    width: 140px;
+    line-height: 1.75em;
+}
+
+.wpcf-choose-field button.wpcf-switch-to-exists
+,.wpcf-choose-field button.wpcf-switch-to-new
+{
+    width: auto;
+    padding: 0 .5em;
+}
+
+#wpcf-specific
+{
+    padding-left: 3em;
+}
+
+#postbox-container-2 .wpcf-list
+{
+    margin-bottom: 0;
+}
+
+#wpcf-specific li
+,#postbox-container-2 .wpcf-list li
+,#relationship li
+,.wpcf-list-of-items li
+{
+    display: inline-block;
+    width: 200px;
+    padding: 3px 10px;
+    margin: 0 10px 10px 0;
+    vertical-align: top;
+}
+
+/**
+ *  jQuery UI
+ */
+.types_page_wpcf-edit-type .wpcf-ui-dialog-cancel
+,.types_page_wpcf-edit-type .wpcf-ui-dialog-cancel:active
+,.types_page_wpcf-edit-type .wpcf-ui-dialog-cancel:focus
+,#wpcf-types-form-visibility-table
+{
+    border: 0;
+    background: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow:    none;
+    box-shadow:         none;
+}
+
+body .wp-core-ui .button-primary
+{
+    text-shadow: none;
+}
+
+/* normalise text-decoration for links in dialogs  */
+body.wp-admin .wpcf-ui-dialog a {
+    text-decoration: none;
+}
+
+body.wp-admin .wpcf-ui-dialog a:hover {
+    text-decoration: underline;
+}
+
+/* button center */
+.wpcf-block-center {
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+/**
+ * tooltip
+ */
+.wpcf-tooltip
+{
+    opacity: .9;
+}
+
+.tooltip
+{
+    margin: 8px;
+    padding: 8px;
+    background-color: #fff;
+    position: absolute;
+    z-index:  2;
+    max-width: 200px;
+}
+
+/* WP4.4 fixes */
+.wpcf-ui-dialog #poststuff h3 { font-size: 14px; padding: 8px 12px; margin: 0; line-height: 1.4; }
+.wpcf-ui-dialog .postbox .handlediv:before,
+.js-wpcf-fields .postbox .handlediv:before {right:12px;font:400 20px/1 dashicons;speak:none;display:inline-block;padding:8px 10px;top:0;position:relative;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-decoration:none!important;content:'\f142'}
+.wpcf-ui-dialog .postbox.closed .handlediv:before,
+.js-wpcf-fields .postbox.closed .handlediv:before {content:'\f140';}
+
+
+/* Hide remove margin of empty p tags in admin message */
+div.message p:empty {
+    margin: 0;
+}
+
+
+/* Temporary notification on the Add Term page. */
+.wpcf-add-term-page-box {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding:10px;
+    border:1px solid #8cceea;
+    border-radius: 3px;
+    background-color:#eff8fc
+}
+
+/* Field Icons */
+.wpcf-choose-field i.types-field-icon {
+    display: block;
+    margin: 3px auto 0 auto;
+    height: 15px;
+}
+
+.wpcf-fields h3 i.types-field-icon {
+    width: 2em;
+    height: 20px;
+    vertical-align: bottom;
+}
+
+.types-field-icon {
+    display: inline-block;
+    background-size: contain;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.types-field-icon-checkboxes {
+    background-image: url( '../images/fields/checkboxes.png' );
+}
+
+.types-field-icon-select {
+    background-image: url( '../images/fields/select.png' );
 }

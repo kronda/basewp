@@ -23,10 +23,10 @@ add_filter( 'wpcf_post_form_error', 'wpcf_conditional_post_form_error_filter',
  * Logger
  */
 if ( !function_exists( 'wplogger' ) ) {
-    require_once WPCF_EMBEDDED_ABSPATH . '/common/wplogger.php';
+    require_once WPCF_EMBEDDED_ABSPATH . '/toolset/toolset-common/wplogger.php';
 }
 if ( !function_exists( 'wpv_filter_parse_date' ) ) {
-    require_once WPCF_EMBEDDED_ABSPATH . '/common/wpv-filter-date-embedded.php';
+    require_once WPCF_EMBEDDED_ABSPATH . '/toolset/toolset-common/wpv-filter-date-embedded.php';
 }
 
 require_once WPTOOLSET_FORMS_ABSPATH . '/classes/class.conditional.php';
@@ -63,13 +63,11 @@ function wpcf_cd_post_groups_filter( $groups, $post, $context ) {
             $suffix = '';
 
             $cond = array();
-            if (isset( $post->ID )) {
+            $cond_values = array();
+            if (isset( $post->ID ) && $post->ID) {
                 $cond_values = get_post_custom( $post->ID );
-            } else {
-                $cond_values = array();
             }
             $_cond_values = array();
-
 
             foreach ( $cond_values as $k => $v ) {
                 $v = maybe_unserialize( $v[0] );
@@ -199,15 +197,15 @@ function wpcf_cd_post_edit_field_filter( $element, $field, $post,
  */
 function wpcf_cd_admin_operations() {
     return array(
-        '=' => __( 'Equal to', 'wpcf' ),
-        '>' => __( 'Larger than', 'wpcf' ),
-        '<' => __( 'Less than', 'wpcf' ),
-        '>=' => __( 'Larger or equal to', 'wpcf' ),
-        '<=' => __( 'Less or equal to', 'wpcf' ),
-        '===' => __( 'Identical to', 'wpcf' ),
-        '<>' => __( 'Not identical to', 'wpcf' ),
-        '!==' => __( 'Strictly not equal', 'wpcf' ),
-//        'between' => __('Between', 'wpcf'),
+        '='     => '=',
+        '>'     => '>',
+        '<'     => '<',
+        '>='    => '>=',
+        '<='    => '<=',
+        '==='   => '===',
+        '<>'    => '!=',
+        '!=='   => '!==',
+//        'between' => __('between', 'wpcf'),
     );
 }
 

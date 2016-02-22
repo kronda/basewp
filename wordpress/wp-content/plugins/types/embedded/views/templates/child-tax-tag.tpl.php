@@ -1,6 +1,6 @@
 <?php
 /*
- * Child table taxonomy non-hierarchical form.
+ * Child table Taxonomy non-hierarchical form.
  */
 
 $defaults = array('taxonomy' => 'post_tag');

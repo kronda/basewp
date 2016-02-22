@@ -37,9 +37,15 @@ function wpcf_fields_date_calculate_time( $value ) {
 
 /**
  * Converts date to time on post saving.
- * 
+ *
  * @param array $value Use 'datepicker' to convert to timestamp.
- * @return int timestamp 
+ * @param $field
+ * @param $field_object WPCF_Field|WPCF_Usermeta_Field|null Since 1.9, this can also be null (because of term fields).
+ *
+ * @return int timestamp
+ *
+ * @todo This needs some review. Is there a situation when this filter is executed and we _don't_ have toolset-forms
+ * @todo loaded? I don't think so but you can never be sure...
  */
 function wpcf_fields_date_value_save_filter( $value, $field, $field_object ) {
 
@@ -73,7 +79,7 @@ function wpcf_fields_date_value_save_filter( $value, $field, $field_object ) {
     global $wpcf;
 
     // Remove additional meta if any
-    if ( isset( $field_object->post->ID ) ) {
+    if ( ( null != $field_object ) && isset( $field_object->post->ID ) ) {
         delete_post_meta(
                 $field_object->post->ID,
                 '_wpcf_' . $field_object->cf['id'] . '_hour_and_minute' );

@@ -30,17 +30,18 @@ class WPCF_Fields
      * Returns array of available (registered) field types
      * and paths to config files.
      * 
-     * @return type
+     * @return array
      */
     public static function getFieldsTypes() {
         $fields = array(
             'audio' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/audio.php',
-            'checkbox' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/checkbox.php',
             'checkboxes' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/checkboxes.php',
+            'checkbox' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/checkbox.php',
             'colorpicker' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/colorpicker.php',
             'date' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/date.php',
             'email' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/email.php',
             'embed' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/embed.php',
+            //'entry' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/entry.php',
             'file' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/file.php',
             'image' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/image.php',
             'map' => WPCF_EMBEDDED_INC_ABSPATH . '/fields/map.php',
@@ -99,8 +100,8 @@ class WPCF_Fields
     /**
      * Returns data for certain field type.
      * 
-     * @param type $type
-     * @return type
+     * @param string $path
+     * @return array
      */
     public static function getFieldTypeConfig( $path ) {
         if ( !is_string( $path ) ) {
@@ -157,9 +158,9 @@ class WPCF_Fields
                 if ( !isset( $data_script['src'] ) ) {
                     continue;
                 }
-                $deps = !empty( $data_script['deps'] ) ? $data_script['deps'] : array();
-                wp_enqueue_script( $handle, $data_script['src'], $deps,
-                        WPCF_VERSION );
+                $deps = isset($data_script['deps']) && !empty( $data_script['deps'] ) ? $data_script['deps'] : array();
+                $ver = !empty( $data_script['ver'] ) ? $data_script['ver'] : WPCF_VERSION;
+                wp_enqueue_script( $handle, $data_script['src'], $deps, $ver);
             }
         }
     }

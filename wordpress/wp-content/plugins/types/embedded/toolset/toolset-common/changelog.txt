@@ -1,3 +1,11 @@
+Common 1.9 (February 15, 2016)
+	- Tagged for Types 1.9, Views 1.12, CRED 1.5, Layouts 1.5 and Access 1.2.8
+	- Updated parser.php constructors for PHP7 compatibility.
+	- Updated the adodb time library for PHP7 compatibility.
+	- Introduced the Shortcode Generator class.
+	- New utils.
+
+-------------------------------------------------------------------------------------------------------------------
 Common 1.8 (November 10, 2015)
 	- Tagged for Views 1.11.1, Types 1.8.9 and CRED 1.4.2
 	- Improved the media manager script.

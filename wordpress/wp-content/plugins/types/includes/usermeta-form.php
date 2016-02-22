@@ -56,7 +56,7 @@ function wpcf_admin_save_usermeta_groups_submit($form)
                 wpcf_admin_message(
                     sprintf(
                         __("A group by name <em>%s</em> already exists. Please use a different name and save again.", 'wpcf'),
-                        $group_name
+                        apply_filters('the_title', $exists->post_title)
                     ),
                     'error'
                 );
@@ -79,7 +79,7 @@ function wpcf_admin_save_usermeta_groups_submit($form)
             wpcf_admin_message(
                 sprintf(
                     __("A group by name <em>%s</em> already exists. Please use a different name and save again.", 'wpcf'),
-                    $group_name
+                    apply_filters('the_title', $exists->post_title)
                 ),
                 'error'
             );
@@ -92,12 +92,19 @@ function wpcf_admin_save_usermeta_groups_submit($form)
     if (!empty($_POST['wpcf']['fields'])) {
         // Before anything - search unallowed characters
         foreach ($_POST['wpcf']['fields'] as $key => $field) {
+            if (empty( $field['slug'] ) && !empty($field['name']) && preg_match( '#[^a-zA-Z0-9\s\_\-]#', $field['name'])) {
+                $field['slug'] = sanitize_title($field['name']);
+            }
+            if ( empty($field['slug'] ) ) {
+                $form->triggerError();
+                wpcf_admin_message( sprintf( __( 'Field slugs cannot be empty. Please edit this field name %s and save again.', 'wpcf' ), $field['name'] ), 'error' );
+                return $form;
+            }
             if ((empty($field['slug']) && preg_match('#[^a-zA-Z0-9\s\_\-]#', $field['name']))
                     || (!empty($field['slug']) && preg_match('#[^a-zA-Z0-9\s\_\-]#',
                             $field['slug']))) {
                 $form->triggerError();
-                wpcf_admin_message(sprintf(__('Field slugs cannot contain non-English characters. Please edit this field name %s and save again.',
-                                        'wpcf'), $field['name']), 'error');
+                wpcf_admin_message(sprintf(__('Field slugs cannot contain non-English characters. Please edit this field name %s and save again.', 'wpcf'), $field['name']), 'error');
                 return $form;
             }
         }
@@ -136,7 +143,7 @@ function wpcf_admin_save_usermeta_groups_submit($form)
      * Admin styles
      */
     if ( isset( $_POST['wpcf']['group']['admin_styles'] ) ) {
-        $admin_style = $_POST['wpcf']['group']['admin_styles'];
+        $admin_style = esc_html($_POST['wpcf']['group']['admin_styles']);
     }
     // Rename if needed
     if (isset($_REQUEST['group_id'])) {
@@ -173,7 +180,15 @@ function wpcf_admin_save_usermeta_groups_submit($form)
         }
         $_POST['wpcf']['group']['fields'] = isset($_POST['wpcf']['fields']) ? $_POST['wpcf']['fields'] : array();
         do_action('wpcf_save_group', $_POST['wpcf']['group']);
-        wpcf_admin_message_store(apply_filters('types_message_usermeta_saved', __('Group saved', 'wpcf'), $group_name, $new_group ? false : true), 'custom');
+        wpcf_admin_message_store(
+            apply_filters(
+                'types_message_usermeta_saved',
+                __('Group saved', 'wpcf'),
+                $group_name,
+                $new_group ? false : true
+            ),
+            'custom'
+        );
         wp_safe_redirect(
             admin_url(sprintf('admin.php?page=wpcf-edit-usermeta&group_id=%d', $group_id))
         );
@@ -240,7 +255,7 @@ function wpcf_admin_usermeta_form()
         $form['help-icon'] = array(
             '#type' => 'markup',
             '#markup' => '<div class="wpcf-admin-fields-help"><img src="' . WPCF_EMBEDDED_RELPATH
-            . '/common/res/images/question.png" style="position:relative;top:2px;" />&nbsp;<a href="http://wp-types.com/documentation/user-guides/using-custom-fields/" target="_blank">'
+            . '/toolset/toolset-common/res/images/question.png" style="position:relative;top:2px;" />&nbsp;<a href="http://wp-types.com/documentation/user-guides/using-custom-fields/" target="_blank">'
             . __('Usermeta help', 'wpcf') . '</a></div>',
             );
         $form['submit2'] = array(
@@ -482,7 +497,6 @@ function wpcf_admin_usermeta_form()
         $temp = '';
         if ($update){
             require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields.php';
-            require_once WPCF_EMBEDDED_INC_ABSPATH . '/usermeta.php';
             require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields-post.php';
             require_once WPCF_EMBEDDED_INC_ABSPATH . '/usermeta-post.php';
 
@@ -651,9 +665,9 @@ var wpcfDefaultCss = ' .  json_encode( base64_encode($admin_styles_value) ) . ';
 
 
     wpcf_admin_add_js_settings( 'wpcf_filters_association_or',
-            '\'' . __( 'This group will appear on %pt% edit pages where content belongs to taxonomy: %tx% or Content Template is: %vt%', 'wpcf' ) . '\'' );
+            '\'' . __( 'This group will appear on %pt% edit pages where content belongs to Taxonomy: %tx% or Content Template is: %vt%', 'wpcf' ) . '\'' );
     wpcf_admin_add_js_settings( 'wpcf_filters_association_and',
-            '\'' . __( 'This group will appear on %pt% edit pages where content belongs to taxonomy: %tx% and Content Template is: %vt%', 'wpcf' ) . '\'' );
+            '\'' . __( 'This group will appear on %pt% edit pages where content belongs to Taxonomy: %tx% and Content Template is: %vt%', 'wpcf' ) . '\'' );
     wpcf_admin_add_js_settings( 'wpcf_filters_association_all_pages',
             '\'' . __( 'all', 'wpcf' ) . '\'' );
     wpcf_admin_add_js_settings( 'wpcf_filters_association_all_taxonomies',

@@ -1,8 +1,4 @@
 <?php
-/*
- * User Meta and groups functions exitend includes/fields.php 
- */
-require_once WPCF_EMBEDDED_INC_ABSPATH . '/usermeta.php';
 
 /**
  * Returns HTML formatted AJAX activation link for usermeta.

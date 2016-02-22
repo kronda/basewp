@@ -179,7 +179,7 @@ var typesPostScreen = (function($){
     }
     function previewWarning(header, content) {
         $(document).ready(function(){
-            $('#post-preview').before('<i class="icon-warning-sign" id="types-preview-warning" data-header="'+header+'" data-content="'+content+'"></i>');
+            $('#post-preview').before('<i class="fa fa-exclamation-triangle icon-warning-sign" id="types-preview-warning" data-header="'+header+'" data-content="'+content+'"></i>');
             bindChange();
         });
     }

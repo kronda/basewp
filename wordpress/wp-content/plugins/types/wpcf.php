@@ -1,11 +1,11 @@
 <?php
 /*
-  Plugin Name: Types
+  Plugin Name: Toolset Types
   Plugin URI: http://wordpress.org/extend/plugins/types/
-  Description: Define custom post types, custom taxonomies and custom fields.
+  Description: Toolset Types defines custom content in WordPress. Easily create custom post types, fields and taxonomy and connect everything together.
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com
-  Version: 1.8.11
+  Version: 1.9
  */
 /**
  *
@@ -16,7 +16,7 @@ if ( !defined( 'WPCF_VERSION' ) ) {
     /**
      * make sure that WPCF_VERSION in embedded/bootstrap.php is the same!
      */
-    define( 'WPCF_VERSION', '1.8.11' );
+    define( 'WPCF_VERSION', '1.9' );
 }
 
 define( 'WPCF_REPOSITORY', 'http://api.wp-types.com/' );
@@ -49,9 +49,9 @@ require_once WPCF_INC_ABSPATH . '/constants.php';
  */
 require_once WPCF_ABSPATH . '/embedded/types.php';
 
-require_once WPCF_ABSPATH . '/embedded/onthego-resources/loader.php';
-onthego_initialize(WPCF_ABSPATH . '/embedded/onthego-resources/',
-                                   WPCF_RELPATH . '/embedded/onthego-resources/' );
+require_once WPCF_ABSPATH . '/embedded/toolset/onthego-resources/loader.php';
+onthego_initialize(WPCF_ABSPATH . '/embedded/toolset/onthego-resources/',
+                                   WPCF_RELPATH . '/embedded/toolset/onthego-resources/' );
 
 // Plugin mode only hooks
 add_action( 'plugins_loaded', 'wpcf_init' );
@@ -61,6 +61,16 @@ add_action( 'init', 'wpcf_wp_init' );
 
 register_deactivation_hook( __FILE__, 'wpcf_deactivation_hook' );
 register_activation_hook( __FILE__, 'wpcf_activation_hook' );
+
+
+add_action( 'after_setup_theme', 'wpcf_initialize_autoloader_full', 20 );
+
+/**
+ * Configure autoloader also for full Types (it has been loaded by embedded Types by now).
+ */
+function wpcf_initialize_autoloader_full() {
+	WPCF_Autoloader::get_instance()->add_path( WPCF_INC_ABSPATH . '/classes' );
+}
 
 /**
  * Deactivation hook.
@@ -109,7 +119,7 @@ function wpcf_activation_hook()
 function wpcf_init()
 {
     if ( !defined( 'EDITOR_ADDON_RELPATH' ) ) {
-        define( 'EDITOR_ADDON_RELPATH', WPCF_RELPATH . '/embedded/common/visual-editor' );
+        define( 'EDITOR_ADDON_RELPATH', WPCF_RELPATH . '/embedded/toolset/toolset-common/visual-editor' );
     }
 
     if ( is_admin() ) {
@@ -161,6 +171,52 @@ function wpcf_wp_init()
     }
 }
 
+
+
+function ajax_wpcf_is_reserved_name() {
+
+    // slug
+    $name = isset( $_POST['slug'] )
+        ? $_POST['slug']
+        : '';
+
+    // context
+    $context = isset( $_POST['context'] )
+        ? $_POST['context']
+        : false;
+
+    // check also page slugs
+    $check_pages = isset( $_POST['check_pages'] ) && $_POST['check_pages'] == false
+        ? false
+        : true;
+
+    // slug pre save
+    if( isset( $_POST['slugPreSave'] )
+        && $_POST['slugPreSave'] !== 0 ) {
+
+        // for taxonomy
+        if( $context == 'taxonomy' )
+            $_POST['ct']['wpcf-tax'] = $_POST['slugPreSave'];
+
+        // for post_type
+        if( $context == 'post_type' )
+            $_POST['ct']['wpcf-post-type'] = $_POST['slugPreSave'];
+    }
+
+    if( $context == 'post_type' || $context == 'taxonomy' ) {
+        $used_reserved = wpcf_is_reserved_name( $name, $context, $check_pages );
+
+        if( $used_reserved ) {
+            die( json_encode( array( 'already_in_use' => 1 ) ) );
+        }
+    }
+
+    // die( json_encode( $_POST ) );
+    die( json_encode( array( 'already_in_use' => 0 ) ) );
+}
+
+add_action( 'wp_ajax_wpcf_get_forbidden_names', 'ajax_wpcf_is_reserved_name' );
+
 /**
  * Checks if name is reserved.
  *
@@ -197,8 +253,17 @@ function wpcf_is_reserved_name($name, $context, $check_pages = true)
                 $post_types );
     }
     // Unset to avoid checking itself
+    /* Note: This will unset any post type with the same slug, so it's possible to overwrite it
     if ( $context == 'post_type' && isset( $post_types[$name] ) ) {
         unset( $post_types[$name] );
+    }
+    */
+    // abort test...
+    if( $context == 'post_type' // ... for post type ...
+        && isset( $_POST['ct']['wpcf-post-type'] ) // ... if it's an already saved taxonomy ...
+        && $_POST['ct']['wpcf-post-type'] == $name // ... and the slug didn't changed.
+    ) {
+        return false;
     }
 
     // Add taxonomies
@@ -209,9 +274,20 @@ function wpcf_is_reserved_name($name, $context, $check_pages = true)
         $taxonomies = array_merge( array_combine( $custom_taxonomies,
                         $custom_taxonomies ), $taxonomies );
     }
+
     // Unset to avoid checking itself
+    /* Note: This will unset any taxonomy with the same slug, so it's possible to overwrite it
     if ( $context == 'taxonomy' && isset( $taxonomies[$name] ) ) {
         unset( $taxonomies[$name] );
+    }
+    */
+
+    // abort test...
+    if( $context == 'taxonomy' // ... for taxonomy ...
+        && isset( $_POST['ct']['wpcf-tax'] ) // ... if it's an already saved taxonomy ...
+        && $_POST['ct']['wpcf-tax'] == $name // ... and the slug didn't changed.
+    ) {
+        return false;
     }
 
     $reserved_names = wpcf_reserved_names();
@@ -323,4 +399,123 @@ function wpcf_fix_translated_post_relationships($post_id)
     require_once WPCF_EMBEDDED_ABSPATH . '/includes/post-relationship.php';
     wpcf_post_relationship_set_translated_parent( $post_id );
     wpcf_post_relationship_set_translated_children( $post_id );
+}
+
+// this is for testing promotional message
+// set WPCF_PAYED true in your wp-config
+if ( !defined( 'WPCF_PAYED' ) )
+    define( 'WPCF_PAYED', true );
+
+if( ! function_exists( 'wpcf_is_client' ) ) {
+    /**
+     * Check if user is a client, who bought Toolset
+     * @return bool
+     */
+    function wpcf_is_client() {
+
+        // for testing
+        if( ! WPCF_PAYED )
+            return false;
+
+        // check db stored value
+        if( get_option( 'wpcf-is-client' ) ) {
+            $settings = wpcf_get_settings( 'help_box' );
+
+            // prioritise settings if available
+            if( $settings ) {
+                switch( $settings ) {
+                    case 'by_types':
+                    case 'all':
+                        return false;
+                    case 'no':
+                        return true;
+                }
+            }
+
+            $is_client = get_option( 'wpcf-is-client' );
+
+            // client
+            if( $is_client === 'yes' )
+                return true;
+
+            // user
+            return false;
+        }
+
+        // no db stored value
+        // make sure get_plugins() is available
+        if ( ! function_exists( 'get_plugins' ) )
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+        // all plugins
+        $plugins = get_plugins();
+
+        // check each plugin
+        foreach( $plugins as $plugin ) {
+            // skip plugin that is not created by us
+            if( $plugin['Author'] != 'OnTheGoSystems' )
+                continue;
+
+            // check for toolset plugin and not embedded = user bought toolset
+            if( preg_match( "#(access|cred|layouts|module manager|views)#i", $plugin['Name'] )
+                && ! preg_match( '#embedded#i', $plugin['Name'] ) ) {
+                add_option( 'wpcf-is-client', 'yes' );
+
+                // set settings "help box" ounce to none
+                $settings = get_option( 'wpcf_settings', array() );
+                $settings['help_box'] = 'no';
+                update_option( 'wpcf_settings', $settings );
+
+                return true;
+            }
+        }
+
+        // if script comes to this point we have no option "wpcf-is-client" set
+        // and also no bought toolset plugin
+        add_option( 'wpcf-is-client', 'no' );
+        return false;
+    }
+}
+
+/**
+ * On plugin activation clear option "wpcf-is-client"
+ */
+if( ! function_exists( 'wpcf_clear_option_is_client' ) ) {
+    function wpcf_clear_option_is_client() {
+        $option_is_client = get_option( 'wpcf-is-client' );
+        if( $option_is_client == 'no' ) {
+            delete_option( 'wpcf-is-client' );
+        }
+
+    }
+}
+
+add_action( 'activated_plugin', 'wpcf_clear_option_is_client' );
+
+
+/**
+ * Make sure in built taxonomies are stored
+ */
+$stored_taxonomies = get_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array() );
+
+if( empty( $stored_taxonomies ) || !isset( $stored_taxonomies['category'] ) || !isset( $stored_taxonomies['post_tag'] ) ) {
+    require_once WPCF_ABSPATH . '/embedded/classes/utils.php';
+    $taxonomies = WPCF_Utils::object_to_array_deep( get_taxonomies( array( 'public' => true, '_builtin' => true ), 'objects' ) );
+
+    if( isset( $taxonomies['post_format'] ) )
+        unset( $taxonomies['post_format'] );
+
+    foreach( $taxonomies as $slug => $settings ) {
+        if( isset( $stored_taxonomies[$slug] ) )
+            continue;
+
+        $taxonomies[$slug]['slug'] = $slug;
+        foreach( $settings['object_type'] as $support ) {
+            $taxonomies[$slug]['supports'][$support] = 1;
+        }
+
+        $stored_taxonomies[$slug] = $taxonomies[$slug];
+    }
+
+    update_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $stored_taxonomies );
 }

@@ -18,6 +18,27 @@
 define('WPCF_OPTION_NAME_CUSTOM_TYPES', 'wpcf-custom-types');
 define('WPCF_OPTION_NAME_CUSTOM_TAXONOMIES', 'wpcf-custom-taxonomies');
 
+/**
+ * PHP 5.2 support.
+ *
+ * get_called_class() is only in PHP >= 5.3, this is a workaround.
+ * This function is needed by WPDDL_Theme_Integration_Abstract.
+ */
+if ( !function_exists( 'get_called_class' ) ) {
+    function get_called_class() {
+        $bt = debug_backtrace();
+        $l = 0;
+        do {
+            $l++;
+            $lines = file( $bt[ $l ]['file'] );
+            $callerLine = $lines[ $bt[ $l ]['line'] - 1 ];
+            preg_match( '/([a-zA-Z0-9\_]+)::' . $bt[ $l ]['function'] . '/', $callerLine, $matches );
+        } while( $matches[1] === 'parent' && $matches[1] );
+
+        return $matches[1];
+    }
+}
+
 /*
  * Record all instances.
  * Used to track all active Types code.

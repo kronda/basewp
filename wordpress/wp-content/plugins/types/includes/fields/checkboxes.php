@@ -50,6 +50,7 @@ function wpcf_fields_checkboxes_insert_form( $form_data, $parent_name = '' ) {
     $update_response = !empty( $form_data['slug'] ) ? '<div id="wpcf-cb-save-empty-migrate-response-'
             . $form_data['slug'] . '" class="wpcf-cb-save-empty-migrate-response"></div>' : '<div class="wpcf-cb-save-empty-migrate-response"></div>';
     $form['save_empty'] = array(
+        '#title' => __('Save option', 'wpcf'),
         '#type' => 'radios',
         '#name' => 'save_empty',
         '#default_value' => !empty( $form_data['data']['save_empty'] ) ? $form_data['data']['save_empty'] : 'no',
@@ -58,20 +59,28 @@ function wpcf_fields_checkboxes_insert_form( $form_data, $parent_name = '' ) {
                 '#title' => __( 'When unchecked, save 0 to the database', 'wpcf' ),
                 '#value' => 'yes',
                 '#attributes' => array('class' => 'wpcf-cb-save-empty-migrate', 'onclick' => $cb_migrate_save),
+                '#pattern' => '<li><ELEMENT><LABEL></li>',
+                '#inline' => true,
             ),
             'no' => array(
                 '#title' => __( "When unchecked, don't save anything to the database", 'wpcf' ),
                 '#value' => 'no',
                 '#attributes' => array('class' => 'wpcf-cb-save-empty-migrate', 'onclick' => $cb_migrate_do_not_save),
+                '#pattern' => '<li><ELEMENT><LABEL></li>',
+                '#inline' => true,
             ),
         ),
         '#after' => $update_response,
+        '#inline' => true,
+        '#before' => '<ul>',
+        '#after' => '</ul>',
+        '#pattern' => '<tr class="wpcf-border-top"><td><LABEL></td><td><ERROR><BEFORE><ELEMENT><AFTER></td></tr>',
     );
     $form['options-markup-open'] = array(
+        '#title' => __('Checkboxes', 'wpcf'),
         '#type' => 'markup',
-        '#markup' => '<strong>' . __( 'Checkboxes', 'wpcf' )
-        . '</strong><br /><br /><div id="' . $id . '-sortable"'
-        . ' class="wpcf-fields-checkboxes-sortable wpcf-compare-unique-value-wrapper">',
+        '#markup' => '<div id="' . $id . '-sortable" class="wpcf-fields-checkboxes-sortable wpcf-compare-unique-value-wrapper">',
+        '#pattern' => '<tr><td><LABEL></td><td><ERROR><BEFORE><ELEMENT><AFTER>',
     );
     $existing_options = array();
     $options = !empty( $form_data['options'] ) ? $form_data['options'] : array();
@@ -83,8 +92,7 @@ function wpcf_fields_checkboxes_insert_form( $form_data, $parent_name = '' ) {
             }
             $option['key'] = $option_key;
             $option['default'] = isset( $options['default'] ) ? $options['default'] : null;
-            $form_option = wpcf_fields_checkboxes_get_option( $parent_name,
-                    $option, $form_data );
+            $form_option = wpcf_fields_checkboxes_get_option( $parent_name, $option, $form_data );
             $existing_options[array_shift( $form_option )] = $option;
             $form = $form + $form_option;
         }
@@ -96,6 +104,7 @@ function wpcf_fields_checkboxes_insert_form( $form_data, $parent_name = '' ) {
     $form['options-markup-close'] = array(
         '#type' => 'markup',
         '#markup' => '</div>',
+        '#pattern' => '<ERROR><BEFORE><ELEMENT><AFTER>',
     );
 
     if ( !empty( $options ) ) {
@@ -106,20 +115,17 @@ function wpcf_fields_checkboxes_insert_form( $form_data, $parent_name = '' ) {
 
     $form['options-add-option'] = array(
         '#type' => 'markup',
-        '#markup' => '<br /><a href="'
+        '#markup' => '<a href="'
         . admin_url( 'admin-ajax.php?action=wpcf_ajax&amp;wpcf_action=add_checkboxes_option&amp;_wpnonce='
-                . wp_create_nonce( 'add_checkboxes_option' ) . '&amp;wpcf_ajax_update_add='
-                . $id . '-sortable&amp;parent_name=' . urlencode( $parent_name )
-                . '&amp;page='. sanitize_text_field( $_GET['page'] )
-                . '&amp;count=' . $count)
+        . wp_create_nonce( 'add_checkboxes_option' ) . '&amp;wpcf_ajax_update_add='
+        . $id . '-sortable&amp;parent_name=' . urlencode( $parent_name )
+        . '&amp;count=' . $count)
         . '" onclick="wpcfFieldsFormCountOptions(jQuery(this));"'
         . ' class="button-secondary wpcf-ajax-link">'
         . __( 'Add option', 'wpcf' ) . '</a>',
-    );
-    $form['options-close'] = array(
-        '#type' => 'markup',
-        '#markup' => '<br /><br />',
-    );
+            '#pattern' => '<ERROR><BEFORE><ELEMENT><AFTER></td></tr>',
+        );
+
     return $form;
 }
 
@@ -130,8 +136,7 @@ function wpcf_fields_checkboxes_insert_form( $form_data, $parent_name = '' ) {
  * @param type $form_data
  * @return type 
  */
-function wpcf_fields_checkboxes_get_option( $parent_name = '',
-        $form_data = array(), $field = array() ) {
+function wpcf_fields_checkboxes_get_option( $parent_name = '', $form_data = array(), $field = array() ) {
     $id = isset( $form_data['key'] ) ? $form_data['key'] : 'wpcf-fields-checkboxes-option-' . wpcf_unique_id( serialize( $form_data ) . $parent_name );
     $form = array();
     $count = isset( $_GET['count'] ) ? intval( $_GET['count'] ) : 1;
@@ -150,12 +155,14 @@ function wpcf_fields_checkboxes_get_option( $parent_name = '',
         . '\')) { jQuery(this).parent().fadeOut().next().fadeOut(function(){jQuery(this).remove(); '
         . '}); }"'
         . 'alt="' . __( 'Delete this checkbox', 'wpcf' ) . '" /></div>',
+        '#pattern' => '<ELEMENT>',
     );
     $form[$id] = array(
         '#type' => 'fieldset',
         '#title' => $title,
         '#collapsed' => isset( $form_data['key'] ) ? true : false,
         '#collapsible' => true,
+        '#pattern' => '<ELEMENT><dl>',
     );
     $form[$id]['title'] = array(
         '#type' => 'textfield',
@@ -167,7 +174,7 @@ function wpcf_fields_checkboxes_get_option( $parent_name = '',
         '#attributes' => array(
             'class' => 'wpcf-form-groups-check-update-title-display-value',
         ),
-        '#before' => '<br />',
+        '#pattern' => '<dt><LABEL></dt><dd><ERROR><BEFORE><ELEMENT><AFTER></dd>',
     );
     $form[$id]['value'] = array(
         '#type' => 'textfield',
@@ -178,8 +185,8 @@ function wpcf_fields_checkboxes_get_option( $parent_name = '',
             'data-wpcf-type' => 'checkbox',
             'data-required-message-0' => __("This value can't be zero", 'wpcf'),
             'data-required-message' => __("Please enter a value", 'wpcf')
-        )
-
+        ),
+        '#pattern' => '<dt><LABEL></dt><dd><ERROR><BEFORE><ELEMENT><AFTER></dd>',
     );
     if ( isset($_GET['page']) && $_GET['page'] == 'wpcf-edit' ) {
         $form[$id]['checked'] = array(
@@ -188,6 +195,8 @@ function wpcf_fields_checkboxes_get_option( $parent_name = '',
             '#title' => __( 'Set checked by default (on new post)?', 'wpcf' ),
             '#name' => $parent_name . '[options][' . $id . '][checked]',
             '#default_value' => !empty( $form_data['checked'] ) ? 1 : 0,
+            '#inline' => true,
+            '#pattern' => '</dl><p><ELEMENT><LABEL></p>',
         );
     }
     $form[$id]['display'] = array(
@@ -200,15 +209,20 @@ function wpcf_fields_checkboxes_get_option( $parent_name = '',
                 '#name' => $parent_name . '[options][' . $id . '][display]',
                 '#value' => 'db',
                 '#inline' => true,
-                '#after' => '<br />'
+                '#before' => '<li>',
+                '#after' => '</li>',
             ),
             'display_values' => array(
                 '#title' => __( 'Show one of these two values:', 'wpcf' ),
                 '#name' => $parent_name . '[options][' . $id . '][display]',
                 '#value' => 'value',
+                '#inline' => true,
+                '#before' => '<li>',
+                '#after' => '</li>',
             ),
         ),
         '#inline' => true,
+        '#pattern' => '<LABEL><ul><ELEMENT></ul><dl>',
     );
     $form[$id]['display-value'] = array(
         '#type' => 'textfield',
@@ -219,6 +233,7 @@ function wpcf_fields_checkboxes_get_option( $parent_name = '',
         '#attributes' => array(
             'placeholder' => __('Enter not selected value', 'wpcf'),
         ),
+        '#pattern' => '<dt><LABEL></dt><dd><ERROR><BEFORE><ELEMENT><AFTER></dd>',
     );
     $form[$id]['display-value-2'] = array(
         '#type' => 'textfield',
@@ -228,10 +243,12 @@ function wpcf_fields_checkboxes_get_option( $parent_name = '',
         '#attributes' => array(
             'placeholder' => __('Enter selected value', 'wpcf'),
         ),
+        '#pattern' => '<dt><LABEL></dt><dd><ERROR><BEFORE><ELEMENT><AFTER></dd>',
     );
     $form[$id . 'drag-close'] = array(
         '#type' => 'markup',
-        '#markup' => '</div>',
+        '#markup' => '</dl></div>',
+        '#pattern' => '<ELEMENT>',
     );
     return $form;
 }
@@ -243,10 +260,13 @@ function wpcf_fields_checkboxes_get_option( $parent_name = '',
  * @param type $form_data
  * @return type 
  */
-function wpcf_fields_checkboxes_get_option_alt_text( $id, $parent_name = '',
-        $form_data = array() ) {
+function wpcf_fields_checkboxes_get_option_alt_text( $id, $parent_name = '', $form_data = array() ) {
     $form = array();
-    $title = isset( $_GET['count'] ) ? __( 'Checkbox title', 'wpcf' ) . ' ' . $_GET['count'] : __( 'Checkbox title', 'wpcf' ) . ' 1';
+    $title = sprintf(
+        '%s %d',
+        __( 'Checkbox title', 'wpcf' ),
+        intval( isset($_GET['count'])? $_GET['count']: 1)
+    );
     $title = isset( $form_data['title'] ) ? $form_data['title'] : $title;
     $value = isset( $_GET['count'] ) ? intval( $_GET['count'] ) : 1;
     $value = isset( $form_data['value'] ) ? $form_data['value'] : $value;

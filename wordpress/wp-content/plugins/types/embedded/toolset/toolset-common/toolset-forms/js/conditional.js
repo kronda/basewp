@@ -79,7 +79,6 @@ var wptCond = (function ($) {
         if ($('body').hasClass('wp-admin')) {
             trigger = trigger.replace(/wpcf\-/, 'wpcf[') + ']';
             $trigger = $('[data-wpt-name="' + trigger + '"]', formID);
-
         }
         /**
          * handle skype field
@@ -105,6 +104,16 @@ var wptCond = (function ($) {
         if ($trigger.length > 0 && 'option' == $trigger.data('wpt-type')) {
             $trigger = $trigger.parent();
         }
+
+        /**
+         * Try with cred fields
+         */
+        if ($trigger.length < 1) {
+            $trigger = _getTrigger('cred-' + trigger, formID);
+            if (wptCondDebug)
+                console.log('$trigger', $trigger);
+        }
+
         /**
          * debug
          */
@@ -586,8 +595,7 @@ var wptCond = (function ($) {
 
                         value = 'ARRAY(' + val_array + ')';
 
-                    }
-                    else
+                    } else
                     {
                         if (value === '' || isNaN(value)) {
                             value = '\'' + value + '\'';
@@ -609,16 +617,12 @@ var wptCond = (function ($) {
             });
 
             var result = false;
-            //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/196173370/comments#309696464
-            //Added a new check using text element on select
-            var result2 = false;
 
             try {
                 var parser = new ToolsetParser.Expression(expression);
                 parser.parse();
                 result = parser.eval();
-            }
-            catch (e) {
+            } catch (e) {
                 if (wptCondDebug)
                     console.info("Error in Tokenizer", e, expression, " there may be an error in your expression syntax");
             }
@@ -686,8 +690,7 @@ var wptCond = (function ($) {
 
                         value = 'ARRAY(' + val_array + ')';
 
-                    }
-                    else
+                    } else
                     {
                         if (value === '' || isNaN(value)) {
                             value = '\'' + value + '\'';
@@ -708,17 +711,21 @@ var wptCond = (function ($) {
 
             });
 
-            try {
-                var parser = new ToolsetParser.Expression(expression);
-                parser.parse();
-                result2 = parser.eval();
-            }
-            catch (e) {
-                if (wptCondDebug)
-                    console.info("Error in Tokenizer", e, expression, " there may be an error in your expression syntax");
-            }
-
-            _showHide(result || result2, _getAffected(field, formID));
+            if (result == false) {
+                //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/196173370/comments#309696464
+                //Added a new check using text element on select
+                var result2 = false;
+                try {
+                    var parser = new ToolsetParser.Expression(expression);
+                    parser.parse();
+                    result2 = parser.eval();
+                } catch (e) {
+                    if (wptCondDebug)
+                        console.info("Error in Tokenizer", e, expression, " there may be an error in your expression syntax");
+                }
+                _showHide(result || result2, _getAffected(field, formID));
+            } else
+                _showHide(result, _getAffected(field, formID));
 
         });
         wptCallbacks.conditionalCheck.fire(formID);

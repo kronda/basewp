@@ -4,11 +4,11 @@
 
 @font-face {
   font-family: "onthegosystems-icons";
-  src: font-url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.eot");
-  src: font-url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.eot?#iefix") format("embedded-opentype"),
-       font-url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.woff") format("woff"),
-       font-url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.ttf") format("truetype"),
-       font-url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.svg#onthegosystems-icons") format("svg");
+  src: font-url("../fonts/onthegosystems-icons_397ea366af9eb4eb01e6afbdaaf9b5c7.eot");
+  src: font-url("../fonts/onthegosystems-icons_397ea366af9eb4eb01e6afbdaaf9b5c7.eot?#iefix") format("embedded-opentype"),
+       font-url("../fonts/onthegosystems-icons_397ea366af9eb4eb01e6afbdaaf9b5c7.woff") format("woff"),
+       font-url("../fonts/onthegosystems-icons_397ea366af9eb4eb01e6afbdaaf9b5c7.ttf") format("truetype"),
+       font-url("../fonts/onthegosystems-icons_397ea366af9eb4eb01e6afbdaaf9b5c7.svg#onthegosystems-icons") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -16,7 +16,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: "onthegosystems-icons";
-    src: font-url("../fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.svg#onthegosystems-icons") format("svg");
+    src: font-url("../fonts/onthegosystems-icons_397ea366af9eb4eb01e6afbdaaf9b5c7.svg#onthegosystems-icons") format("svg");
   }
 }
 
@@ -32,11 +32,14 @@
 .icon-cred:before,
 .icon-cred-logo:before,
 .icon-layouts:before,
+.icon-layouts-genesis:before,
+.icon-layouts-genesis-logo:before,
 .icon-layouts-logo:before,
 .icon-module:before,
 .icon-module-logo:before,
 .icon-packager:before,
 .icon-packager-logo:before,
+.icon-toolset-genesis-logo:before,
 .icon-toolset-logo:before,
 .icon-toolset-map:before,
 .icon-toolset-map-logo:before,
@@ -68,11 +71,14 @@
 .icon-cred:before { content: "\f114"; }
 .icon-cred-logo:before { content: "\f115"; }
 .icon-layouts:before { content: "\f116"; }
+.icon-layouts-genesis:before { content: "\f129"; }
+.icon-layouts-genesis-logo:before { content: "\f127"; }
 .icon-layouts-logo:before { content: "\f117"; }
 .icon-module:before { content: "\f118"; }
 .icon-module-logo:before { content: "\f119"; }
 .icon-packager:before { content: "\f120"; }
 .icon-packager-logo:before { content: "\f121"; }
+.icon-toolset-genesis-logo:before { content: "\f128"; }
 .icon-toolset-logo:before { content: "\f11a"; }
 .icon-toolset-map:before { content: "\f125"; }
 .icon-toolset-map-logo:before { content: "\f124"; }

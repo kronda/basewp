@@ -29,37 +29,36 @@
  * 
  * @return type 
  */
-function wpcf_fields_date_insert_form( $form_data ) {
-    $form = array();
-    $form['name'] = array(
-        '#type' => 'textfield',
-        '#title' => __( 'Name of custom field', 'wpcf' ),
-        '#description' => __( 'Under this name field will be stored in DB (sanitized)', 'wpcf' ),
-        '#name' => 'name',
-        '#attributes' => array('class' => 'wpcf-forms-set-legend'),
-        '#validate' => array('required' => array('value' => true)),
-    );
-    $form['description'] = array(
-        '#type' => 'textarea',
-        '#title' => __( 'Description', 'wpcf' ),
-        '#description' => __( 'Text that describes function to user', 'wpcf' ),
-        '#name' => 'description',
-        '#attributes' => array('rows' => 5, 'cols' => 1),
+function wpcf_fields_date_insert_form( $form)
+{
+    $form = array(
+        'description' => array(),
+        'placeholder' => array(),
     );
     $form['date_and_time'] = array(
         '#type' => 'radios',
+        '#title' => __('Time', 'wpcf'),
         '#name' => 'date_and_time',
         '#default_value' => isset( $form_data['data']['date_and_time'] ) ? strval( $form_data['data']['date_and_time'] ) : 'date',
         '#options' => array(
             'date' => array(
                 '#title' => __( 'Input only the date', 'wpcf' ),
                 '#value' => 'date',
+                '#inline' => true,
+                '#before' => '<li>',
+                '#after' => '</li>',
             ),
             'and_time' => array(
                 '#title' => __( 'Input date and time', 'wpcf' ),
                 '#value' => 'and_time',
+                '#inline' => true,
+                '#before' => '<li>',
+                '#after' => '</li>',
             ),
         ),
+        '#inline' => true,
+        '#before' => '<ul>',
+        '#after' => '</ul>',
     );
 
     return $form;

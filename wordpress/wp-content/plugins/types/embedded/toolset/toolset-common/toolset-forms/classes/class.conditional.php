@@ -506,7 +506,7 @@ if (!class_exists('WPV_Handle_Users_Functions')) {
             }
             global $current_user;
 
-            get_currentuserinfo();
+            $current_user = wp_get_current_user();
 
             switch (self::$field) {
                 case 'role':

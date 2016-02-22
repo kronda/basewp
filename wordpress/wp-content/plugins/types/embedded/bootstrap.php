@@ -44,6 +44,11 @@ define('TYPES_CUSTOM_FIELD_GROUP_CPT_NAME', 'wp-types-group');
 define('TYPES_USER_META_FIELD_GROUP_CPT_NAME', 'wp-types-user-group');
 
 /**
+ * user meta filed groups - post type
+ */
+define('TYPES_TERM_META_FIELD_GROUP_CPT_NAME', 'wp-types-term-group');
+
+/**
  * default capability
  */
 
@@ -66,7 +71,14 @@ add_action( 'init', 'wpcf_embedded_init', TYPES_INIT_PRIORITY );
  * register_post_type & register_taxonomy - must be with default pririty to 
  * handle defult taxonomies
  */
-add_action('init', 'wpcf_init_custom_types_taxonomies');
+/**
+ * Priotity for wpcf_init_custom_types_taxonomies()
+ *
+ * Priotity for function wpcf_init_custom_types_taxonomies() in init WP
+ * action..
+ *
+ */
+add_action( 'init', 'wpcf_init_custom_types_taxonomies', apply_filters('wpcf_init_custom_types_taxonomies', 10));
 
 /*
  *
@@ -93,7 +105,7 @@ if ( !defined( 'TYPES_DEBUG' ) ) {
 * Load common and local localization
 */
 if ( !defined( 'WPT_LOCALIZATION' ) ) {
-	require_once( WPCF_EMBEDDED_ABSPATH . '/common/localization/wpt-localization.php' );
+	require_once( WPCF_EMBEDDED_ABSPATH . '/toolset/toolset-common/localization/wpt-localization.php' );
 }
 new WPToolset_Localization( 'wpcf', WPCF_EMBEDDED_ABSPATH . '/locale', 'types-%s' );
 
@@ -102,14 +114,14 @@ new WPToolset_Localization( 'wpcf', WPCF_EMBEDDED_ABSPATH . '/locale', 'types-%s
  * Include common code.
  */
 if ( !defined( 'ICL_COMMON_FUNCTIONS' ) ) {
-    require_once WPCF_EMBEDDED_ABSPATH . '/common/functions.php';
+    require_once WPCF_EMBEDDED_ABSPATH . '/toolset/toolset-common/functions.php';
     if ( !defined( 'WPTOOLSET_COMMON_PATH' ) ) {
-        define( 'WPTOOLSET_COMMON_PATH', WPCF_EMBEDDED_ABSPATH . '/common' );
+        define( 'WPTOOLSET_COMMON_PATH', WPCF_EMBEDDED_ABSPATH . '/toolset/toolset-common' );
     }
 } else if ( !defined( 'WPTOOLSET_COMMON_PATH' ) ) {
     //$__types_common_reflection = new ReflectionFunction( 'wpv_condition' );
     //define( 'WPTOOLSET_COMMON_PATH', dirname( $__types_common_reflection->getFileName() ) );
-	define( 'WPTOOLSET_COMMON_PATH', WPCF_EMBEDDED_ABSPATH . '/common' );
+	define( 'WPTOOLSET_COMMON_PATH', WPCF_EMBEDDED_ABSPATH . '/toolset/toolset-common' );
 }
 if ( !defined( 'WPTOOLSET_FORMS_VERSION' ) ) {
     require_once WPTOOLSET_COMMON_PATH . '/toolset-forms/bootstrap.php';
@@ -127,6 +139,26 @@ wpcf_embedded_after_setup_theme_hook();
  * Set $wpcf global var as generic class
  */
 $GLOBALS['wpcf'] = new stdClass();
+
+
+
+/**
+ * Initialize the autoloader (for newer parts of code).
+ */
+function wpcf_initialize_autoloader_embedded() {
+	require_once WPCF_EMBEDDED_INC_ABSPATH . '/autoloader.php';
+	$autoloader = WPCF_Autoloader::get_instance();
+	$autoloader->add_prefix( 'WPCF' );
+
+	// This will trigger the loading mechanism for legacy classes.
+	$autoloader->add_prefix( 'Types' );
+	$autoloader->add_prefix( 'WPToolset' );
+
+	$autoloader->add_path( WPCF_EMBEDDED_ABSPATH . '/classes' );
+}
+
+wpcf_initialize_autoloader_embedded();
+
 
 /**
  * Main init hook.
@@ -156,7 +188,7 @@ function wpcf_embedded_init() {
     // Define necessary constants if plugin is not present
     // This ones are skipped if used as embedded code!
     if ( !defined( 'WPCF_VERSION' ) ) {
-        define( 'WPCF_VERSION', '1.8.11' );
+        define( 'WPCF_VERSION', '1.9' );
         define( 'WPCF_META_PREFIX', 'wpcf-' );
     }
 
@@ -292,12 +324,18 @@ function wpcf_embedded_init() {
 
     // Set usermeta field object
     $wpcf->usermeta_field = new WPCF_Usermeta_Field();
-
-    // Set repeater object
-    $wpcf->usermeta_repeater = new WPCF_Usermeta_Repeater();
-
-    // Set repeater object
+	
+	// Set termmeta field object
+	$wpcf->termmeta_field = new WPCF_Termmeta_Field();
+	
+	// Set repeater object
     $wpcf->repeater = new WPCF_Repeater();
+
+    // Set usermeta repeater object
+    $wpcf->usermeta_repeater = new WPCF_Usermeta_Repeater();
+	
+	// Set termmeta repeater object
+	$wpcf->termmeta_repeater = new WPCF_Termmeta_Repeater();
 
     // Set relationship object
     $wpcf->relationship = new WPCF_Relationship();
@@ -325,9 +363,10 @@ function wpcf_embedded_init() {
     // 'attachment' = Media
     //
     $wpcf->excluded_post_types = array(
-        'dd_layouts',
         'cred-form',
         'cred-user-form',
+        'dd_layouts',
+        'deprecated_log',
         'mediapage',
         'nav_menu_item',
         'revision',
@@ -336,6 +375,18 @@ function wpcf_embedded_init() {
         'wp-types-group',
         'wp-types-user-group',
     );
+
+    /**
+     * Do use this CPT in Toolset "actions"
+     *
+     * Filter allow to add own post types which will be not used in 
+     * Toolset plugins
+     *
+     * @since 1.9.0
+     *
+     * @param array $post_types array of post types slugs
+     */
+    $wpcf->excluded_post_types = apply_filters( 'toolset_filter_exclude_own_post_types', $wpcf->excluded_post_types );
 
     // Init loader
     WPCF_Loader::init();
@@ -353,6 +404,28 @@ function wpcf_embedded_init() {
     // Check if import/export request is going on
     wpcf_embedded_check_import();
 
+	// Initialize (new) parts of the GUI.
+	// Btw. current_screen is being fired during admin_init.
+	add_action( 'current_screen', 'wpcf_initialize_admin_gui' );
+
     do_action( 'types_after_init' );
     do_action( 'wpcf_after_init' );
+}
+
+
+/**
+ * Initialize parts of GUI depending on current screen.
+ *
+ * @since 1.9
+ */
+function wpcf_initialize_admin_gui() {
+
+	$screen = get_current_screen();
+
+	// Should be always true.
+	if( $screen instanceof WP_Screen ) {
+		if( in_array( $screen->base, array( 'edit-tags', 'term' ) ) ) {
+			WPCF_GUI_Term_Field_Editing::initialize();
+		}
+	}
 }

@@ -18,16 +18,27 @@ class WPToolset_Field_Select extends FieldFactory {
         $data = $this->getData();
         $attributes = $this->getAttr();
 
-        $form = array();
-        $options = array();
+        $form = $options = array();
+
+        if( !isset( $data['default_value'] ) ) {
+            $options[] = array(
+                '#value' => '',
+                '#title' => __( '--- not set ---' ),
+            );
+        }
+
         if (isset($data['options'])) {
 
             if (!is_admin()) {
                 $new_options = array();
                 foreach ($data['options'] as $key => $option) {
-                    $tmp = $option['value'];
-                    $option['value'] = $option['types-value'];
-                    $option['types-value'] = $tmp;
+                    if (isset($option['types-value'])) {
+                        $tmp = $option['value'];
+                        $option['value'] = $option['types-value'];
+                        $option['types-value'] = $tmp;
+                    } else {
+                        $option['types-value'] = $option['value'];
+                    }
                     $new_options[$key] = $option;
                     unset($tmp);
                 }
@@ -91,6 +102,11 @@ class WPToolset_Field_Select extends FieldFactory {
             '#validate' => $this->getValidationData(),
             '#class' => 'form-inline',
             '#repetitive' => $this->isRepetitive(),
+            /*
+             * class attribute was missed
+             */
+            '#attributes' => $attributes,
+            'wpml_action' => $this->getWPMLAction(),
         );
 
         return $form;

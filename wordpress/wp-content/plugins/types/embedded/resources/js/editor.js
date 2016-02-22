@@ -152,6 +152,10 @@ var tedFrame = (function(window, $){
             window.parent.typesWPViews.wizardSendShortcode(shortcode);
             return true;
         }
+		if (ted.callback == 'admin_bar') {
+            window.parent.typesWPViews.adminBarCreateShortcode(shortcode);
+            return true;
+        }
         // Check if there is custom handler
         if (window.parent.wpcfFieldsEditorCallback_redirect) {
             eval(window.parent.wpcfFieldsEditorCallback_redirect['function'] + '(\''+esc_shortcode+'\', window.parent.wpcfFieldsEditorCallback_redirect[\'params\'])');

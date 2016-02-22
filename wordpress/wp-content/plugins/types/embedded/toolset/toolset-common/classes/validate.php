@@ -197,22 +197,30 @@ if(!class_exists('Wpcf_Validate')) {
 	    public static function required_form($field, $data = array())
 	    {
 	        $form = array();
-	        $form['required-checkbox'] = array(
-	            '#type' => 'checkbox',
-	            '#title' => __('Required', 'wpcf'),
-	            '#name' => $field['#name'] . '[active]',
-	            '#default_value' => isset($data['active']) ? 1 : 0,
-	            '#inline' => true,
-	            '#suffix' => '<br />',
-	        );
+
+		    $form['required-checkbox'] = self::merge_form_with_field_settings(
+			    array(
+				    '#type' => 'checkbox',
+				    '#title' => __('Required', 'wpcf'),
+				    '#name' => $field['#name'] . '[active]',
+				    '#default_value' => isset($data['active']) ? 1 : 0,
+				    '#inline' => true,
+				    '#suffix' => '<br />',
+			    ),
+			    $data
+		    );
+
 	        $form['required-value'] = array(
 	            '#type' => 'hidden',
 	            '#value' => 'true',
 	            '#name' => $field['#name'] . '[value]',
 	        );
+
 	        $form['required-message'] = self::get_custom_message($field,
 	                        self::get_message('required'), $data);
-	        return $form;
+
+
+		    return $form;
 	    }
 	
 	    /**
@@ -259,18 +267,22 @@ if(!class_exists('Wpcf_Validate')) {
 	    public static function email_form($field, $data = array())
 	    {
 	        $form = array();
-	        $form['email-checkbox'] = array(
-	            '#type' => 'checkbox',
-	            '#title' => __('Email', 'wpcf'),
-	            '#name' => $field['#name'] . '[active]',
-	            '#default_value' => isset($data['active']) ? 1 : 0,
-	            '#inline' => true,
-	            '#suffix' => '<br />',
+	        $form['email-checkbox'] = self::merge_form_with_field_settings(
+		        array(
+			        '#type' => 'checkbox',
+			        '#title' => __('Email', 'wpcf'),
+			        '#name' => $field['#name'] . '[active]',
+			        '#default_value' => isset($data['active']) ? 1 : 0,
+			        '#inline' => true,
+			        '#suffix' => '<br />',
+		        ),
+		        $data
 	        );
 	
 	        $form['email-message'] = self::get_custom_message($field,
 	                        self::get_message('email'), $data);
-	        return $form;
+
+		    return $form;
 	    }
 	
 	    /**
@@ -283,15 +295,19 @@ if(!class_exists('Wpcf_Validate')) {
 	    public static function url_form($field, $data = array())
 	    {
 	        $form = array();
-	        $form['url-checkbox'] = array(
-	            '#type' => 'checkbox',
-	            '#title' => 'URL',
-	            '#name' => $field['#name'] . '[active]',
-	            '#default_value' => isset($data['active']) ? 1 : 0,
-	            '#inline' => true,
-	            '#suffix' => '<br />',
+	        $form['url-checkbox'] = self::merge_form_with_field_settings(
+		        array(
+			        '#type' => 'checkbox',
+			        '#title' => 'URL',
+			        '#name' => $field['#name'] . '[active]',
+			        '#default_value' => isset($data['active']) ? 1 : 0,
+			        '#inline' => true,
+			        '#suffix' => '<br />',
+		        ),
+		        $data
 	        );
-	
+		    $form['url-checkbox'] = self::setForced($form['url-checkbox'], $field, $data);
+
 	        $form['url-message'] = self::get_custom_message($field,
 	                        self::get_message('url'), $data);
 	        return $form;
@@ -307,13 +323,16 @@ if(!class_exists('Wpcf_Validate')) {
 	    public static function date_form($field, $data = array())
 	    {
 	        $form = array();
-	        $form['date-checkbox'] = array(
-	            '#type' => 'checkbox',
-	            '#title' => __('Date', 'wpcf'),
-	            '#name' => $field['#name'] . '[active]',
-	            '#default_value' => isset($data['active']) ? 1 : 0,
-	            '#inline' => true,
-	            '#suffix' => '<br />',
+	        $form['date-checkbox'] = self::merge_form_with_field_settings(
+		        array(
+		            '#type' => 'checkbox',
+		            '#title' => __('Date', 'wpcf'),
+		            '#name' => $field['#name'] . '[active]',
+		            '#default_value' => isset($data['active']) ? 1 : 0,
+		            '#inline' => true,
+		            '#suffix' => '<br />',
+		        ),
+		        $data
 	        );
 	        $form['date-format'] = array(
 	            '#type' => 'hidden',
@@ -370,22 +389,75 @@ if(!class_exists('Wpcf_Validate')) {
 	        $form = array();
 	        $attributes = array();
 	        $default_value = isset($data['active']) ? 1 : 0;
-	        $form['number-checkbox'] = array(
-	            '#type' => 'checkbox',
-	            '#title' => __('Numeric', 'wpcf'),
-	            '#name' => $field['#name'] . '[active]',
-	            '#default_value' => $default_value,
-	            '#inline' => true,
-	            '#suffix' => '<br />',
-	            '#attributes' => $attributes,
+	        $form['number-checkbox'] = self::merge_form_with_field_settings(
+		        array(
+		            '#type' => 'checkbox',
+		            '#title' => __('Numeric', 'wpcf'),
+		            '#name' => $field['#name'] . '[active]',
+		            '#default_value' => $default_value,
+		            '#inline' => true,
+		            '#suffix' => '<br />',
+		            '#attributes' => $attributes,
+	            ),
+		        $data
 	        );
+
 	        $form['number-checkbox'] = self::setForced($form['number-checkbox'], $field, $data);
-	
+
 	        $form['number-message'] = self::get_custom_message($field,
 	                        self::get_message('number'), $data);
-	        return $form;
+
+		    return $form;
 	    }
-	    
+
+		/**
+		 * @param $args
+		 * @param $value
+		 *
+		 * @return bool
+		 */
+		public static function skype( $args, $value )
+		{
+			return true;
+		}
+
+		/**
+		 * Returns form data.
+		 *
+		 * @param type $field
+		 * @param type $data
+		 * @return array
+		 */
+		public static function skype_form( $field, $data = array() )
+		{
+			$form = array();
+			$form['skype-checkbox'] = self::merge_form_with_field_settings(
+				array(
+					'#type' => 'checkbox',
+					'#title' => __('Validation', 'wpcf' ),
+					'#label' => __('Skype', 'wpcf'),
+					'#name' => $field['#name'] . '[active]',
+					'#default_value' => isset( $data['active'] ) ? 1 : 0,
+					'#inline' => true,
+				),
+				$data
+			);
+			$form['skype-checkbox'] = self::setForced( $form['skype-checkbox'], $field, $data );
+			$form['skype-message'] = self::get_custom_message( $field, self::get_message( 'skype' ), $data );
+			return $form;
+		}
+
+		/**
+		 * Makes a checkbox always being checked.
+		 * For example a numeric field has always numeric validation checked,
+		 *  the user can only change the validation error message
+		 *
+		 * @param $element
+		 * @param $field
+		 * @param array $data
+		 *
+		 * @return array
+		 */
 	    public static function setForced($element, $field, $data = array())
 	    {
 	        $attributes = array();
@@ -411,15 +483,105 @@ if(!class_exists('Wpcf_Validate')) {
 	     */
 	    public static function get_custom_message($field, $default, $data)
 	    {
-	        return array(
-	            '#type' => 'textfield',
-	//            '#title' => __('Custom message', 'wpcf'),
-	            '#name' => $field['#name'] . '[message]',
-	            '#value' => !empty($data['message']) ? $data['message'] : $default,
-	            '#inline' => true,
-	//            '#suffix' => '<br /><br />',
-	        );
+		    $validate_message_form = array(
+			    '#type' => 'textfield',
+		        // '#title' => __('Custom message', 'wpcf'),
+			    '#name' => $field['#name'] . '[message]',
+			    '#value' => !empty($data['message']) ? $data['message'] : $default,
+			    '#inline' => true,
+			    // '#suffix' => '<br /><br />',
+		    );
+
+		    // active or not
+		    if( ( !isset( $data['method_data']['forced'] ) || $data['method_data']['forced'] == false )
+			    && ( !isset($data['active'] ) || $data['active'] == 0 ) ) {
+			    $validate_message_form['#attributes']['disabled'] = 'disabled';
+		    }
+
+		    return self::merge_form_with_field_settings( $validate_message_form, $data, 'message' );
 	    }
+
+		/**
+		 * This function is called to apply individual settings of the field,
+		 * for example adding/changing a css class, a label, or a output pattern
+		 *
+		 * example of how to add such individual settings:
+		 * open in Types field setting files under /embedded/includes/fields/numeric.php
+		 *
+		 * @param $form
+		 * @param $field_settings
+		 * @param $control_or_message_input
+		 *      'control' = updates the control input settings, mostly a checkbox
+		 *      'message' = updates the validation error message input
+		 *
+		 * @return array
+		 */
+		public static function merge_form_with_field_settings( $form, $field_settings, $control_or_message_input = 'control' ) {
+			// field settings overrides
+			if( isset( $field_settings['method_data']['form-settings'][$control_or_message_input] ) ) {
+				$form = array_replace_recursive(
+					$form,
+					$field_settings['method_data']['form-settings'][$control_or_message_input]
+				);
+			}
+
+			return $form;
+		}
+
+		/**
+		 * @param $args
+		 * @param $value
+		 *
+		 * @return array|bool
+		 */
+		public static function negativeTimestamp( $args, $value ) {
+			if ( !fields_date_timestamp_neg_supported() && intval( $value ) < 0 ) {
+				return array(
+					'error' => 1,
+				);
+			}
+			return true;
+		}
 	
+	}
+}
+
+/* IF PHP < 5.3 */
+if ( !function_exists( 'array_replace_recursive' ) ) {
+	function wpcf_recurse( $array, $array1 ) {
+		foreach ($array1 as $key => $value)
+		{
+			// create new key in $array, if it is empty or not an array
+			if (!isset($array[$key]) || (isset($array[$key]) && !is_array($array[$key])))
+			{
+				$array[$key] = array();
+			}
+
+			// overwrite the value in the base array
+			if (is_array($value))
+			{
+				$value = array_replace_recursive($array[$key], $value);
+			}
+			$array[$key] = $value;
+		}
+		return $array;
+	}
+
+	function array_replace_recursive( $array, $array1 ) {
+		// handle the arguments, merge one by one
+		$args = func_get_args();
+		$array = $args[0];
+		if (!is_array($array))
+		{
+			return $array;
+		}
+		for ($i = 1; $i < count($args); $i++)
+		{
+			if (is_array($args[$i]))
+			{
+				$array = wpcf_recurse($array, $args[$i]);
+			}
+		}
+		return $array;
 	}
 }

@@ -14,7 +14,12 @@ function wpcf_fields_textarea()
         'id' => 'wpcf-textarea',
         'title' => __('Multiple lines', 'wpcf'),
         'description' => __('Textarea', 'wpcf'),
-        'validate' => array('required'),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            )
+        ),
+        'font-awesome' => 'align-justify',
     );
 }
 

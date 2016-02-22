@@ -20,15 +20,15 @@ class WPToolset_Field_Textfield extends FieldFactory
     {
         $metaform = array();
         $metaform[] = array(
-            '#type' => 'textfield',
-            '#title' => $this->getTitle(),
-            '#description' => $this->getDescription(),
-            '#name' => $this->getName(),
-            '#value' => $this->getValue(),
-            '#validate' => $this->getValidationData(),
-            '#repetitive' => $this->isRepetitive(),
-            '#attributes' => $this->getAttr(),
-            'wpml_action' => $this->getWPMLAction(),
+            '#type'			=> 'textfield',
+            '#title'		=> $this->getTitle(),
+            '#description'	=> $this->getDescription(),
+            '#name'			=> $this->getName(),
+            '#value'		=> $this->getValue(),
+            '#validate'		=> $this->getValidationData(),
+            '#repetitive'	=> $this->isRepetitive(),
+            '#attributes'	=> $this->getAttr(),
+            'wpml_action'	=> $this->getWPMLAction(),
         );
         return $metaform;
     }

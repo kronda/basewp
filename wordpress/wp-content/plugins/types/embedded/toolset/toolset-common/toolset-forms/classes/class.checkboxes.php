@@ -77,6 +77,7 @@ class WPToolset_Field_Checkboxes extends FieldFactory
             '#type' => 'checkboxes',
             '#options' => $_options,
             '#description' => $this->getDescription(),
+			'wpml_action' => $this->getWPMLAction(),
         );
         if ( is_admin() ) {
             $metaform['#title'] = $this->getTitle();

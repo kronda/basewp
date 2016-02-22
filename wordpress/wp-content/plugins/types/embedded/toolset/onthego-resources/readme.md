@@ -1,4 +1,4 @@
-# OnTheGoSystem Resources loader master branch
+# OnTheGoSystem Resources loader develop branch
 
 We have code and resources in GIT for branding of our plugins.
 https://www.onthegosystems.com/misc_svn/onthegosystems-branding/

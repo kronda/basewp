@@ -2,25 +2,25 @@
 This file is a collection of generic colors used in our styles
 */
 .ont-color-default {
-  color: #444444; }
+  color: #444444!important; }
 
 .ont-color-orange {
-  color: #f05a28; }
+  color: #f05a28!important; }
 
 .ont-color-gray {
-  color: #888; }
+  color: #888!important; }
 
 .ont-color-white {
-  color: white; }
+  color: white!important; }
 
 .ont-color-menu {
-  color: #999999; }
+  color: #999999!important; }
 
 .ont-color-link {
-  color: #0074a2; }
+  color: #0074a2!important; }
 
 .ont-color-menu:hover {
-  color: #2ea2cc; }
+  color: #2ea2cc!important; }
 
 .ont-color-link:hover {
-  color: #0074a2; }
+  color: #0074a2!important; }

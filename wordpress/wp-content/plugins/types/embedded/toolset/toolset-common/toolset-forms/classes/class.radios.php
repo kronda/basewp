@@ -58,7 +58,8 @@ class WPToolset_Field_Radios extends FieldFactory {
                         '<li class="%s">', implode(' ', $clases)
                 );
                 $one_option_data['#after'] = '</li>';
-                $one_option_data['#pattern'] = '<BEFORE><PREFIX><ELEMENT><LABEL><ERROR><SUFFIX><DESCRIPTION><AFTER>';
+                //moved error from element to before prefix
+                $one_option_data['#pattern'] = '<BEFORE><ERROR><PREFIX><ELEMENT><LABEL><SUFFIX><DESCRIPTION><AFTER>';
             }
             /**
              * add default value if needed
@@ -99,6 +100,8 @@ class WPToolset_Field_Radios extends FieldFactory {
             '#default_value' => isset($data['default_value']) ? $data['default_value'] : false,
             '#repetitive' => $this->isRepetitive(),
             '#validate' => $this->getValidationData(),
+			'wpml_action' => $this->getWPMLAction(),
+            '#after' => '<input type="hidden" name="_wptoolset_radios[' . $this->getId() . ']" value="1" />',
         );
 
         if (!is_admin()) {// TODO maybe add a doing_ajax() check too, what if we want to load a form using AJAX?

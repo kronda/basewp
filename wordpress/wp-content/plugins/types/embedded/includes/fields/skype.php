@@ -10,16 +10,22 @@
  * @return type
  */
 function wpcf_fields_skype() {
+
     return array(
         'id' => 'wpcf-skype',
         'title' => __( 'Skype', 'wpcf' ),
         'description' => __( 'Skype', 'wpcf' ),
         'validate' => array(
-            'required',
-            'skype',
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            ),
+            'skype' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/default.php' )
+            ),
             'maxlength' => array('value' => 32),
             'minlength' => array('value' => 6)
         ),
+        'font-awesome' => 'skype',
     );
 }
 
@@ -146,6 +152,9 @@ function wpcf_fields_skype_editor_submit( $data, $field, $context ) {
     if ( $context == 'usermeta' ) {
         $add .= wpcf_get_usermeta_form_addon_submit();
         $shortcode = wpcf_usermeta_get_shortcode( $field, $add );
+	} elseif ( $context == 'termmeta' ) {
+        $add .= wpcf_get_termmeta_form_addon_submit();
+        $shortcode = wpcf_termmeta_get_shortcode( $field, $add );
     } else {
         $shortcode = wpcf_fields_get_shortcode( $field, $add );
     }

@@ -187,8 +187,6 @@ function wpcf_admin_common_only_show($form)
         case 'hidden':
             unset($form[$key]);
             break;
-        default:
-            d($data, $data['#type']);
         }
         $form[$key]['#type'] = 'markup';
     }

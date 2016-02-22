@@ -50,7 +50,7 @@ var wptValidation = (function ($) {
                     var val = $(element).val();
                     //Fix https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/189231348/comments
                     // we have data-types-value that in select contains the exactly value
-                    //With Fix https://onthegosystems.myjetbrains.com/youtrack/issue/cred-165 
+                    //With Fix cred-165 
                     //this could be removed:
 //                        $(element).find('option').each(function(index, option){
 //                            if ($(option).val()==value) {
@@ -74,7 +74,7 @@ var wptValidation = (function ($) {
                     //Fixing YT cred-196
                     if (jQuery(element).hasClass("wpt-form-radio")) {
                         var $name = jQuery(element).attr("name");
-                        var val = jQuery('input[name='+$name+']:checked').val();
+                        var val = jQuery('input[name="'+$name+'"]:checked').val();
                         return val && $.trim(val).length > 0;
                     }
                     
@@ -166,6 +166,16 @@ var wptValidation = (function ($) {
 //            },
             errorClass: 'wpt-form-error'
         });
+
+        // On some pages the form may not be ready yet at this point (e.g. Edit Term page).
+        jQuery(document).ready(function () {
+            $(formID).on('submit', function () {
+                if ($form.valid()) {
+                    $('.js-wpt-remove-on-submit', $(this)).remove();
+                }
+            });
+        });
+
         $form.on('submit', function () {
             if ($form.valid()) {
                 $('.js-wpt-remove-on-submit', $(this)).remove();

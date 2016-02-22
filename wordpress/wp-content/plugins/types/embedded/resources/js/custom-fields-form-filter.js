@@ -6,11 +6,15 @@ jQuery(document).ready(function(){
 	//jQuery('#wpfooter').css({'position':'relative'});
 });
 
-function wpcfFieldsFormFiltersSummary() {
+function wpcfFieldsFormFiltersSummary()
+{
+    if ( 'undefined' == typeof wpcf_settings ) {
+        return;
+    }
     if (jQuery('#wpcf-fields-form-filters-association-form').find("input:checked").val() == 'all') {
-        var string = wpcf_filters_association_and;
+        var string = wpcf_settings.wpcf_filters_association_and;
     } else {
-        var string = wpcf_filters_association_or;
+        var string = wpcf_settings.wpcf_filters_association_or;
     }
     var pt = new Array();
     jQuery('#wpcf-form-fields-post_types').find("input:checked").each(function(){
@@ -25,13 +29,13 @@ function wpcfFieldsFormFiltersSummary() {
         vt.push(jQuery(this).next().html());
     });
     if (pt.length < 1) {
-        pt.push(wpcf_filters_association_all_pages);
+        pt.push(wpcf_settings.wpcf_filters_association_all_pages);
     }
     if (tx.length < 1) {
-        tx.push(wpcf_filters_association_all_taxonomies);
+        tx.push(wpcf_settings.wpcf_filters_association_all_taxonomies);
     }
     if (vt.length < 1) {
-        vt.push(wpcf_filters_association_all_templates);
+        vt.push(wpcf_settings.wpcf_filters_association_all_templates);
     }
     string = string.replace('%pt%', pt.join(', '));
     string = string.replace('%tx%', tx.join(', '));
@@ -197,7 +201,7 @@ function wpcfFilterOkClick(object, edit, title, title_not_empty, title_empty) {
      *
      *
      *
-     * Do custom post types
+     * Do post types
      */
     if (edit == 'custom_post_types') {
 
@@ -312,7 +316,7 @@ function wpcfFilterOkClick(object, edit, title, title_not_empty, title_empty) {
     }
 	else if (edit == 'admin_styles') {
 		jQuery("#wpcf-admin-styles-box").css({width:'400px','border-color':'#dfdfdf','box-shadow':'none','z-index':'0'});
-		jQuery('html, body').animate({scrollTop:jQuery('#wpcf-admin-styles-box').position().top}, 'fast');
+		//jQuery('html, body').animate({scrollTop:jQuery('#wpcf-admin-styles-box').position().top}, 'fast');
         toggle.slideUp();
     }
 
@@ -334,7 +338,7 @@ function wpcfFilterCancelClick(object, edit, title, title_not_empty, title_empty
      *
      *
      *
-     * Do custom post types
+     * Do post types
      */
     if (edit == 'custom_post_types') {
         /*

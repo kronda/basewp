@@ -29,14 +29,28 @@ class WPToolset_Field_Date_Scripts
     public function __construct()
     {
         global $pagenow;
-        if ( 
-        //for front-end
-        !is_admin() ||
-        //for edit group pages 
-        ( ( isset($_GET['page']) && ($_GET['page'] == 'wpcf-edit-usermeta' || $_GET['page'] == 'wpcf-edit') ) ||
-        //for edit pages including profile pages
-        ($pagenow == 'profile.php' || $pagenow == 'post-new.php' || $pagenow == 'user-edit.php' || $pagenow == 'user-new.php' || $pagenow == 'post.php' || $pagenow == 'admin-ajax.php') && is_admin() )  ){    
-        add_action( 'admin_enqueue_scripts', array( $this,'date_enqueue_scripts' ) );
+
+	    $is_frontend = ( !is_admin() );
+
+	    $current_admin_page = isset( $_GET['page'] ) ? $_GET['page'] : null;
+	    $field_group_edit_pages = array( 'wpcf-edit-usermeta', 'wpcf-edit', 'wpcf-termmeta-edit' );
+	    $is_types_edit_page = in_array( $current_admin_page, $field_group_edit_pages );
+
+	    $backend_field_edit_pages = array(
+		    'profile.php', 'post-new.php', 'user-edit.php', 'user-new.php', 'post.php', 'admin-ajax.php',
+		    'edit-tags.php', 'term.php'
+	    );
+	    $is_edit_page = ( is_admin() && in_array( $pagenow, $backend_field_edit_pages ) );
+
+	    /**
+	     * Allows for overriding the conditions for enqueuing scripts for date field.
+	     *
+	     * @param bool $enqueue_scripts If true, the scripts will be enqueued disregarding other conditions.
+	     */
+	    $is_activated_by_filter = apply_filters( 'toolset_forms_enqueue_date_scripts', false );
+
+        if ( $is_frontend || $is_types_edit_page || $is_edit_page || $is_activated_by_filter ) {
+            add_action( 'admin_enqueue_scripts', array( $this,'date_enqueue_scripts' ) );
             if ( defined('CRED_FE_VERSION')) {
                 add_action( 'wp_enqueue_scripts', array( $this, 'date_enqueue_scripts' ) );
             }

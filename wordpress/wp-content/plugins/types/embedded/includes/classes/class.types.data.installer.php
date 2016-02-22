@@ -131,7 +131,7 @@ if ( !class_exists('Types_Data_Installer') ) {
         /**
          * Helper for CPT & CT.
          *
-         * Helper for importing custom post types and custom taxonomies.
+         * Helper for importing post types and custom taxonomies.
          *
          * @since 1.6.6
          * @access private
@@ -163,7 +163,7 @@ if ( !class_exists('Types_Data_Installer') ) {
         /**
          * Build data for CPT & CT
          *
-         * Build data to importing custom post types and custom taxonomies.
+         * Build data to importing post types and custom taxonomies.
          *
          * @since 1.6.6
          * @access private

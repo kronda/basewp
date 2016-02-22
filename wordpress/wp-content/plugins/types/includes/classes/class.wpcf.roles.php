@@ -16,6 +16,11 @@ define('WPCF_USER_META_FIELD_VIEW',         'wpcf_user_meta_field_view');
 define('WPCF_USER_META_FIELD_EDIT',         'wpcf_user_meta_field_edit');
 define('WPCF_USER_META_FIELD_EDIT_OTHERS',  'wpcf_user_meta_field_edit_others');
 
+define('WPCF_TERM_FIELD_VIEW',         'wpcf_user_meta_field_view');
+define('WPCF_TERM_FIELD_EDIT',         'wpcf_user_meta_field_edit');
+define('WPCF_TERM_FIELD_EDIT_OTHERS',  'wpcf_user_meta_field_edit_others');
+
+
 define('WPCF_EDIT',                         'manage_options');
 
 /**
@@ -62,27 +67,30 @@ class WPCF_Roles
         return $data;
     }
 
-    public static final function wpcf_get_capabilities()
-    {
-        return array(
+    public static final function wpcf_get_capabilities() {
+	    return array(
 
-            WPCF_CUSTOM_POST_TYPE_VIEW        => __('View Custom Post Types', 'wpcf'),
-            WPCF_CUSTOM_POST_TYPE_EDIT        => __('Create and edit my Custom Post Types', 'wpcf'),
-            WPCF_CUSTOM_POST_TYPE_EDIT_OTHERS => __('Edit others Custom Post Types', 'wpcf'),
+		    WPCF_CUSTOM_POST_TYPE_VIEW => __( 'View Post Types', 'wpcf' ),
+		    WPCF_CUSTOM_POST_TYPE_EDIT => __( 'Create and edit my Post Types', 'wpcf' ),
+		    WPCF_CUSTOM_POST_TYPE_EDIT_OTHERS => __( 'Edit others Post Types', 'wpcf' ),
 
-            WPCF_CUSTOM_TAXONOMY_VIEW         => __('View Custom Taxonomies', 'wpcf'),
-            WPCF_CUSTOM_TAXONOMY_EDIT         => __('Create and edit my Custom Taxonomies', 'wpcf'),
-            WPCF_CUSTOM_TAXONOMY_EDIT_OTHERS  => __('Edit others Custom Taxonomies', 'wpcf'),
+		    WPCF_CUSTOM_TAXONOMY_VIEW => __( 'View Taxonomies', 'wpcf' ),
+		    WPCF_CUSTOM_TAXONOMY_EDIT => __( 'Create and edit my Taxonomies', 'wpcf' ),
+		    WPCF_CUSTOM_TAXONOMY_EDIT_OTHERS => __( 'Edit others Taxonomies', 'wpcf' ),
 
-            WPCF_CUSTOM_FIELD_VIEW            => __('View Custom Fields', 'wpcf'),
-            WPCF_CUSTOM_FIELD_EDIT            => __('Create and edit my Custom Fields', 'wpcf'),
-            WPCF_CUSTOM_FIELD_EDIT_OTHERS     => __('Edit others Custom Fields', 'wpcf'),
+		    WPCF_CUSTOM_FIELD_VIEW => __( 'View Post Fields', 'wpcf' ),
+		    WPCF_CUSTOM_FIELD_EDIT => __( 'Create and edit my Post Fields', 'wpcf' ),
+		    WPCF_CUSTOM_FIELD_EDIT_OTHERS => __( 'Edit others Post Fields', 'wpcf' ),
 
-            WPCF_USER_META_FIELD_VIEW         => __('View User Meta Fields', 'wpcf'),
-            WPCF_USER_META_FIELD_EDIT         => __('Create and edit my User Meta Fields', 'wpcf'),
-            WPCF_USER_META_FIELD_EDIT_OTHERS  => __('Edit others User Meta Fields', 'wpcf'),
+		    WPCF_USER_META_FIELD_VIEW => __( 'View User Fields', 'wpcf' ),
+		    WPCF_USER_META_FIELD_EDIT => __( 'Create and edit my User Fields', 'wpcf' ),
+		    WPCF_USER_META_FIELD_EDIT_OTHERS => __( 'Edit others User Fields', 'wpcf' ),
 
-        );
+		    WPCF_TERM_FIELD_VIEW => __( 'View Term Fields', 'wpcf' ),
+		    WPCF_TERM_FIELD_EDIT => __( 'Create and edit my Term Fields', 'wpcf' ),
+		    WPCF_TERM_FIELD_EDIT_OTHERS => __( 'Edit others Term Fields', 'wpcf' ),
+
+	    );
     }
 
     public static function get_cap_for_page($page)
@@ -178,36 +186,46 @@ class WPCF_Roles
 
     }
 
-    public static function user_can_create($type = 'custom-post-type')
-    {
-        switch( $type ) {
-        case 'custom-post-type':
-            return current_user_can( WPCF_CUSTOM_POST_TYPE_EDIT );
-        case 'custom-taxonomy':
-            return current_user_can( WPCF_CUSTOM_TAXONOMY_EDIT );
-        case 'custom-field':
-            return current_user_can( WPCF_CUSTOM_FIELD_EDIT );
-        case 'user-meta-field':
-            return current_user_can( WPCF_USER_META_FIELD_EDIT );
-        }
-        return false;
+    public static function user_can_create($type = 'custom-post-type') {
+	    switch ( $type ) {
+		    case 'custom-post-type':
+			    return current_user_can( WPCF_CUSTOM_POST_TYPE_EDIT );
+		    case 'custom-taxonomy':
+			    return current_user_can( WPCF_CUSTOM_TAXONOMY_EDIT );
+		    case 'custom-field':
+			    return current_user_can( WPCF_CUSTOM_FIELD_EDIT );
+		    case 'user-meta-field':
+			    return current_user_can( WPCF_USER_META_FIELD_EDIT );
+		    case 'term-field':
+				return current_user_can( WPCF_TERM_FIELD_EDIT );
+	    }
+
+	    return false;
     }
 
-    public static function user_can_edit_other($type = 'custom-post-type')
-    {
-        switch( $type ) {
-        case 'custom-post-type':
-            return current_user_can( WPCF_CUSTOM_POST_TYPE_EDIT_OTHERS );
-        case 'custom-taxonomy':
-            return current_user_can( WPCF_CUSTOM_TAXONOMY_EDIT_OTHERS );
-        case 'custom-field':
-            return current_user_can( WPCF_CUSTOM_FIELD_EDIT_OTHERS );
-        case 'user-meta-field':
-            return current_user_can( WPCF_USER_META_FIELD_EDIT_OTHERS );
-        }
-        return false;
+    public static function user_can_edit_other($type = 'custom-post-type') {
+	    switch ( $type ) {
+		    case 'custom-post-type':
+			    return current_user_can( WPCF_CUSTOM_POST_TYPE_EDIT_OTHERS );
+		    case 'custom-taxonomy':
+			    return current_user_can( WPCF_CUSTOM_TAXONOMY_EDIT_OTHERS );
+		    case 'custom-field':
+			    return current_user_can( WPCF_CUSTOM_FIELD_EDIT_OTHERS );
+		    case 'user-meta-field':
+			    return current_user_can( WPCF_USER_META_FIELD_EDIT_OTHERS );
+		    case 'term-field':
+			    return current_user_can( WPCF_TERM_FIELD_EDIT_OTHERS );
+	    }
+
+	    return false;
     }
 
+	/**
+	 * @param string $type
+	 * @param array|null $item
+	 *
+	 * @return bool
+	 */
     public static function user_can_edit($type = 'custom-post-type', $item)
     {
         /**
@@ -228,6 +246,7 @@ class WPCF_Roles
             break;
         case 'custom-field':
         case 'user-meta-field':
+        case 'term-field':
             if ( !isset($item['id'] ) || empty($item['id']) ) {
                 return self::user_can_create($type);
             }
@@ -259,19 +278,21 @@ class WPCF_Roles
         return ( $item[WPCF_AUTHOR] == $user_id ) && self::user_can_create( $type );
     }
 
-    public static function user_can_view()
-    {
-        switch( $type ) {
-        case 'custom-post-type':
-            return current_user_can( WPCF_CUSTOM_POST_TYPE_VIEW);
-        case 'custom-taxonomy':
-            return current_user_can( WPCF_CUSTOM_TAXONOMY_VIEW );
-        case 'custom-field':
-            return current_user_can( WPCF_CUSTOM_FIELD_VIEW );
-        case 'user-meta-field':
-            return current_user_can( WPCF_USER_META_FIELD_VIEW );
-        }
-        return false;
+    public static function user_can_view( $type ) {
+	    switch ( $type ) {
+		    case 'custom-post-type':
+			    return current_user_can( WPCF_CUSTOM_POST_TYPE_VIEW );
+		    case 'custom-taxonomy':
+			    return current_user_can( WPCF_CUSTOM_TAXONOMY_VIEW );
+		    case 'custom-field':
+			    return current_user_can( WPCF_CUSTOM_FIELD_VIEW );
+		    case 'user-meta-field':
+			    return current_user_can( WPCF_USER_META_FIELD_VIEW );
+		    case 'term-field':
+			    return current_user_can( WPCF_TERM_FIELD_VIEW );
+	    }
+
+	    return false;
     }
 
     public static function user_can_edit_custom_post_by_slug($slug)
@@ -289,6 +310,10 @@ class WPCF_Roles
         if (isset($entries[$slug])) {
             return self::user_can_edit('custom-taxonomy', $entries[$slug]);
         }
+        $taxonomy = get_taxonomy($slug);
+        if ( is_object($taxonomy) ) {
+            return self::user_can_edit('custom-taxonomy', array( 'slug' => $taxonomy->name));
+        }
         return false;
     }
 
@@ -297,6 +322,14 @@ class WPCF_Roles
         $item = self::get_entry($id, 'wp-types-group');
         return self::user_can_edit('custom-field', $item);
     }
+
+
+	public static function user_can_edit_term_field_group_by_id( $id )
+	{
+		$item = self::get_entry($id, WPCF_Field_Group_Term::POST_TYPE );
+		return self::user_can_edit('term-field', $item);
+	}
+
 
     public static function user_can_edit_usermeta_field_group_by_id( $id )
     {

@@ -8,9 +8,9 @@
  */
 function wpcf_admin_usermeta_list()
 {
-    include_once dirname(__FILE__).'/classes/class.wpcf.user.fields.list.table.php';
+    include_once dirname(__FILE__).'/classes/class.types.admin.usermeta.groups.list.table.php';
     //Create an instance of our package class...
-    $listTable = new WPCF_User_Fields_List_Table();
+    $listTable = new Types_Admin_Usermeta_Groups_List_Table();
     //Fetch, prepare, sort, and filter our data...
     $listTable->prepare_items();
     ?>
@@ -18,7 +18,7 @@ function wpcf_admin_usermeta_list()
         <form id="usermeta-filter" method="post">
             <!-- For plugins, we also need to ensure that the form posts back to our current page -->
             <input type="hidden" name="page" value="<?php echo esc_attr($_REQUEST['page']); ?>" />
-            <?php $listTable->search_box(__('Search user fields', 'wpcf'), 'search_id'); ?>
+            <?php $listTable->search_box(__('Search User Field Groups', 'wpcf'), 'search_id'); ?>
             <!-- Now we can render the completed list table -->
             <?php $listTable->display() ?>
         </form>
@@ -46,7 +46,7 @@ function wpcf_admin_fields_list_metabox_to_custom_fields_control()
 {
     $form['table-1-open'] = array(
         '#type' => 'markup',
-        '#markup' => '<table class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th>' . __( 'User Fields Control', 'wpcf' ) . '</th></tr></thead><tbody>',
+        '#markup' => '<table class="wpcf-types-form-table widefat js-wpcf-slugize-container"><thead><tr><th>' . __( 'User Field Control', 'wpcf' ) . '</th></tr></thead><tbody>',
         '_builtin' => true,
     );
     $form['table-row-1-open'] = array(
@@ -66,7 +66,7 @@ function wpcf_admin_fields_list_metabox_to_custom_fields_control()
         '#markup' => sprintf(
             ' <a class="button" href="%s">%s</a></p>',
             esc_url( admin_url(sprintf('admin.php?page=%s', 'wpcf-user-fields-control'))),
-            __('User Fields Control', 'wpcf')
+            __('User Field Control', 'wpcf')
         ),
         '_builtin' => true,
     );

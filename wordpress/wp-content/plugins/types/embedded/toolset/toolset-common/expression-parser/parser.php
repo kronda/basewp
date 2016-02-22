@@ -31,7 +31,7 @@ class Toolset_Regex
 {
     private $_regex='';
 
-    public function Toolset_Regex($rx,$opts='')
+    public function __construct($rx,$opts='')
     {
         // remove flags not supported by PHP
         $this->_regex='/'.$rx.'/'.str_replace('g','',$opts); // PHP does not support 'g' modifier
@@ -124,6 +124,12 @@ class Toolset_Date
         );
 
     private static $_today=false;
+	
+	public function __construct($date=null)
+    {
+        if (isset($date))
+            $this->setDate($date);
+    }
 
     public static function setToday($date)
     {
@@ -138,13 +144,6 @@ class Toolset_Date
         $today=new Toolset_Date();
         return  $today->setDateByTimestamp();
     }
-
-    public function Toolset_Date($date=null)
-    {
-        if (isset($date))
-            $this->setDate($date);
-    }
-
 
     public function getDate($key=null)
     {
@@ -1570,6 +1569,17 @@ class Toolset_Parser
     private $arrTokens = null;
     private $arrPostFix = null;
     private $dtFormat = "d/m/Y";
+	
+	public function __construct($exp=null)
+    {
+        if (isset($exp) && $exp!==null)
+        {
+            $this->strInFix = $exp;
+            $this->arrTokens=$this->arrPostFix=null;
+        }
+        // init tokenizer here, else tokens become undefined on addVar
+        Toolset_Tokenizer::init();
+    }
 
     /*------------------------------------------------------------------------------
      * NAME       : HandleFunctions
@@ -2828,17 +2838,6 @@ class Toolset_Parser
     public static function setParams($params)
     {
         Toolset_Functions::setParams((array)$params);
-    }
-
-    public function Toolset_Parser($exp=null)
-    {
-        if (isset($exp) && $exp!==null)
-        {
-            $this->strInFix = $exp;
-            $this->arrTokens=$this->arrPostFix=null;
-        }
-        // init tokenizer here, else tokens become undefined on addVar
-        Toolset_Tokenizer::init();
     }
 
     public function dateLocales($a=null,$b=null,$c=null)

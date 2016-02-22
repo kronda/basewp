@@ -175,28 +175,6 @@ function wpcfCdAddCondition(object, isGroup) {
 }
 
 /**
- * Remove Condition AJAX call
- */
-function wpcfCdRemoveCondition(object) {
-    object.parent().fadeOut(function(){
-        jQuery(this).remove();
-    });
-    var count = object.parent().parent().parent().find('input[type=hidden].wpcf-cd-count').val();
-    object.parent().parent().parent().find('input[type=hidden].wpcf-cd-count').val(parseInt(count)-1);
-    if (object.parent().parent().find('.wpcf-cd-entry').length < 3) {
-        var customConditions = object.parent().parent().parent().find('.toggle-cd');
-        customConditions.find('.textarea').val('');
-    }
-    /**
-     * handle "Data-dependent display filters" for groups
-     */
-    var wrapper = object.closest('#wpcf-cd-group');
-    if ( 'wpcf-cd-group' == wrapper.attr('id') ) {
-        jQuery('span.count', wrapper.closest('td')).html('('+(parseInt(jQuery('.wpcf-cd-entry', wrapper).length)-1)+')');
-    }
-}
-
-/**
  * Init Date conditional form check.
  */
 function wpcfConditionalFormDateInit()

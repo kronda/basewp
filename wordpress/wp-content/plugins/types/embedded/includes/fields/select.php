@@ -9,7 +9,12 @@ function wpcf_fields_select() {
         'id' => 'wpcf-select',
         'title' => __('Select', 'wpcf'),
         'description' => __('Select', 'wpcf'),
-        'validate' => array('required'),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            )
+        ),
+        'types-field-image' => 'select',
     );
 }
 
@@ -77,9 +82,7 @@ function wpcf_fields_select_view($params) {
                     && $option['value'] == $params['field_value']) {
 				// We need to translate here because the stored value is on the original language
 				// When updaing the value in the Field group, we might have problems
-				// @wpmlhere
                 $field_value = wpcf_translate('field ' . $params['field']['id'] . ' option ' . $option_key . ' title', $option['title']);
-				//$field_value = $option['title'];
             }
         }
         $output = $field_value;

@@ -8,40 +8,42 @@
 /**
  * Returns contextual help.
  *
- * @param type $page
- * @param type $contextual_help
+ * @param string $page
+ * @param $contextual_help
+ *
+ * @return string
  */
 function wpcf_admin_help($page, $contextual_help)
 {
     $help = '';
     switch ($page) {
-        // Custom Fields (list)
+        // Post Fields (list)
         case 'custom_fields':
             $help.= ''
-                .__("Types plugin organizes custom fields in groups. Once you create a group, you can add the fields to it and control to what content it belongs.", 'wpcf')
+                .__("Types plugin organizes post fields in groups. Once you create a group, you can add the fields to it and control to what content it belongs.", 'wpcf')
                 .PHP_EOL
                 .PHP_EOL
                 .sprintf(
-                    __('You can read more about Custom Fields in this tutorial: %s.', 'wpcf'),
+                    __('You can read more about Post Fields in this tutorial: %s.', 'wpcf'),
                     '<a href="http://wp-types.com/user-guides/using-custom-fields/" target="_blank">http://wp-types.com/user-guides/using-custom-fields/ &raquo;</a>'
                 )
                 .PHP_EOL
                 .PHP_EOL
-                .__("On this page you can see your current custom field groups, as well as information about which post types and taxonomies they are attached to, and whether they are active or not.", 'wpcf')
+                .__("On this page you can see your current post field groups, as well as information about which post types and taxonomies they are attached to, and whether they are active or not.", 'wpcf')
                 .PHP_EOL
                 .PHP_EOL
                 .sprintf('<h3>%s</h3>', __('You have the following options:', 'wpcf'))
                 .'<dl>'
                 .'<dt>'.__('Add New', 'wpcf').'</dt>'
-                .'<dd>'.__('Use this to add a new custom fields group which can be attached to a post type', 'wpcf').'</dd>'
+                .'<dd>'.__('Use this to add a new post fields group which can be attached to a post type', 'wpcf').'</dd>'
                 .'<dt>'.__('Edit', 'wpcf').'</dt>'
-                .'<dd>'.__('Click to edit the custom field group', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to edit the post field group', 'wpcf').'</dd>'
                 .'<dt>'.__('Activate', 'wpcf').'</dt>'
-                .'<dd>'.__('Click to activate a custom field group', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to activate a post field group', 'wpcf').'</dd>'
                 .'<dt>'.__('Deactivate', 'wpcf').'</dt>'
-                .'<dd>'.__('Click to deactivate a custom field group (this can be re-activated at a later date)', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to deactivate a post field group (this can be re-activated at a later date)', 'wpcf').'</dd>'
                 .'<dt>'.__('Delete', 'wpcf').'</dt>'
-                .'<dd>'.__('Click to delete a custom field group.', 'wpcf')
+                .'<dd>'.__('Click to delete a post field group.', 'wpcf')
                 .' '
                 .sprintf('<strong>%s</strong>', __('Warning: This cannot be undone.', 'wpcf'))
                 .'</dd>'
@@ -50,19 +52,22 @@ function wpcf_admin_help($page, $contextual_help)
             break;
 
         case 'need-more-help':
-            $help .= sprintf('<h4>%s</h4>', __('Custom fields', 'wpcf'));
+
+			// Post fields
+            $help .= sprintf('<h4>%s</h4>', __('Post Fields', 'wpcf'));
             $help .= '<ul>';
             $help .= sprintf(
                 '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/using-custom-fields/#1?utm_source=typesplugin&utm_medium=help&utm_term=adding-fields&utm_campaign=types">%s &raquo;</a></li>',
-                __('Adding custom fields to content', 'wpcf')
+                __('Adding post fields to content', 'wpcf')
             );
             $help .= sprintf(
                 '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/displaying-wordpress-custom-fields/?utm_source=typesplugin&utm_medium=help&utm_term=displaying-fields&utm_campaign=types">%s &raquo;</a></li>',
-                __('Displaying custom fields on front-end', 'wpcf')
+                __('Displaying post fields on front-end', 'wpcf')
             );
             $help .= '</ul>';
 
-            $help .= sprintf('<h4>%s</h4>', __('User fields', 'wpcf'));
+			// User fields
+            $help .= sprintf('<h4>%s</h4>', __('User Fields', 'wpcf'));
             $help .= '<ul>';
             $help .= sprintf(
                 '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/user-fields/?utm_source=typesplugin&utm_medium=help&utm_term=adding-user-fields&utm_campaign=types">%s &raquo;</a></li>',
@@ -74,15 +79,27 @@ function wpcf_admin_help($page, $contextual_help)
             );
             $help .= '</ul>';
 
-            $help .= sprintf('<h4>%s</h4>', __('Custom post types and taxonomy', 'wpcf'));
+	        // Term fields
+	        $help .= sprintf(
+		        '<h4>%s</h4>
+				<ul>
+					<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/term-fields/?utm_source=typesplugin&utm_medium=help&utm_term=adding-term-fields&utm_campaign=types">%s &raquo;</a></li>
+					<li><a target="_blank" href="https://wp-types.com/documentation/user-guides/displaying-wordpress-term-fields/?utm_source=typesplugin&utm_medium=help&utm_term=displaying-term-fields&utm_campaign=types">%s &raquo;</a></li>
+				</ul>',
+		        __( 'Term Fields', 'wpcf' ),
+		        __( 'Adding term fields to taxonomies', 'wpcf' ),
+		        __( 'Displaying term fields on front-end', 'wpcf' )
+	        );
+
+            $help .= sprintf('<h4>%s</h4>', __('Post Types and Taxonomy', 'wpcf'));
             $help .= '<ul>';
             $help .= sprintf(
                 '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/create-a-custom-post-type/?utm_source=typesplugin&utm_medium=help&utm_term=custom-post-types&utm_campaign=types">%s &raquo;</a></li>',
-                __('Creating and using custom post types', 'wpcf')
+                __('Creating and using post types', 'wpcf')
             );
             $help .= sprintf(
                 '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/create-custom-taxonomies/?utm_source=typesplugin&utm_medium=help&utm_term=custom-taxonomy&utm_campaign=types">%s &raquo;</a></li>',
-                __('Arranging content with taxonomy', 'wpcf')
+                __('Arranging content with Taxonomy', 'wpcf')
             );
             $help .= sprintf(
                 '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/creating-post-type-relationships/?utm_source=typesplugin&utm_medium=help&utm_term=post-relationship&utm_campaign=types">%s &raquo;</a></li>',
@@ -90,26 +107,17 @@ function wpcf_admin_help($page, $contextual_help)
             );
             $help .= '</ul>';
 
-            $help .= sprintf('<h4>%s</h4>', __('Access control', 'wpcf'));
-            $help .= '<ul>';
-            $help .= sprintf(
-                '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/access-control-for-user-fields/?utm_source=typesplugin&utm_medium=help&utm_term=access-fields&utm_campaign=types">%s &raquo;</a></li>',
-                __('Controlling which users can view and edit different fields', 'wpcf')
-            );
-            $help .= sprintf(
-                '<li><a target="_blank" href="http://wp-types.com/documentation/user-guides/setting-access-control/?utm_source=typesplugin&utm_medium=help&utm_term=access-post-types&utm_campaign=types">%s &raquo;</a></li>',
-                __('Controlling which users can access different post types', 'wpcf')
-            );
-            $help .= '</ul>';
+
+
             break;
 
         case 'custom_taxonomies_list':
             $help .= ''
-                . __('This is the your Custom Taxonomies list. It provides you with an overview of your data.', 'wpcf')
+                . __('This is the your Taxonomies list. It provides you with an overview of your data.', 'wpcf')
                 .PHP_EOL
                 .PHP_EOL
                 .sprintf(
-                    __('You can read more about Custom Post Types and Taxonomies in this tutorial. %s', 'wpcf'),
+                    __('You can read more about Post Types and Taxonomies in this tutorial. %s', 'wpcf'),
                     '<a href="https://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">https://wp-types.com/user-guides/create-a-custom-post-type/ &raquo;</a>'
                 )
                 .PHP_EOL
@@ -117,15 +125,15 @@ function wpcf_admin_help($page, $contextual_help)
                 .sprintf('<h3>%s</h3>', __('On this page you have the following options:', 'wpcf'))
                 .'<dl>'
                 .'<dt>'.__('Add New', 'wpcf')
-                .'<dd>'.__('Use to create a new Custom Taxonomy', 'wpcf')
+                .'<dd>'.__('Use to create a new Taxonomy', 'wpcf')
                 .'<dt>'.__('Edit', 'wpcf')
-                .'<dd>'.__('Click to edit the settings of a Custom Taxonomy', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to edit the settings of a Taxonomy', 'wpcf').'</dd>'
                 .'<dt>'.__('Deactivate', 'wpcf')
-                .'<dd>'.__('Click to deactivate a Custom Taxonomy (this can be reactivated at a later date)', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to deactivate a Taxonomy (this can be reactivated at a later date)', 'wpcf').'</dd>'
                 .'<dt>'.__('Duplicate', 'wpcf')
-                .'<dd>'.__('Click to duplicate a Custom Taxonomy', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to duplicate a Taxonomy', 'wpcf').'</dd>'
                 .'<dt>'.__('Delete', 'wpcf')
-                .'<dd>'.__('Click to delete a Custom Taxonomy.', 'wpcf')
+                .'<dd>'.__('Click to delete a Taxonomy.', 'wpcf')
                 .' '
                 .sprintf('<strong>%s</strong>', __('Warning: This cannot be undone.', 'wpcf'))
                 .'</dd>'
@@ -134,14 +142,14 @@ function wpcf_admin_help($page, $contextual_help)
 
         case 'post_types_list':
             $help .= ''
-                . __('This is the main admin page for built-in Post Types and your Custom Post Types. It provides you with an overview of your data.', 'wpcf')
+                . __('This is the main admin page for built-in Post Types and your Post Types. It provides you with an overview of your data.', 'wpcf')
                .PHP_EOL
                .PHP_EOL
                .__('Post Types are built-in and user-defined content types.', 'wpcf')
                .PHP_EOL
                .PHP_EOL
                .sprintf(
-                    __('You can read more about Custom Post Types and Taxonomies in this tutorial. %s', 'wpcf'),
+                    __('You can read more about Post Types and Taxonomies in this tutorial. %s', 'wpcf'),
                     '<a href="https://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">https://wp-types.com/user-guides/create-a-custom-post-type/ &raquo;</a>'
                 )
                 .PHP_EOL
@@ -149,15 +157,15 @@ function wpcf_admin_help($page, $contextual_help)
                 .sprintf('<h3>%s</h3>', __('On this page you have the following options:', 'wpcf'))
                 .'<dl>'
                 .'<dt>'.__('Add New', 'wpcf').'</dt>'
-                .'<dd>'.__('Use to create a new Custom Post Type', 'wpcf').'</dd>'
+                .'<dd>'.__('Use to create a new Post Type', 'wpcf').'</dd>'
                 .'<dt>'.__('Edit', 'wpcf').'</dt>'
                 .'<dd>'.__('Click to edit the settings of a Post Type', 'wpcf').'</dd>'
                 .'<dt>'.__('Deactivate', 'wpcf').'</dt>'
-                .'<dd>'.__('Click to deactivate a Custom Post Type (this can be reactivated at a later date)', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to deactivate a Post Type (this can be reactivated at a later date)', 'wpcf').'</dd>'
                 .'<dt>'.__('Duplicate', 'wpcf')
-                .'<dd>'.__('Click to duplicate a Custom Post Type', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to duplicate a Post Type', 'wpcf').'</dd>'
                 .'<dt>'.__('Delete', 'wpcf').'</dt>'
-                .'<dd>'.__('Click to delete a Custom Post Type.', 'wpcf')
+                .'<dd>'.__('Click to delete a Post Type.', 'wpcf')
                 .' '
                 .sprintf('<strong>%s</strong>', __('Warning: This cannot be undone.', 'wpcf'))
                 .'</dd>'
@@ -168,7 +176,7 @@ function wpcf_admin_help($page, $contextual_help)
         // Import/Export page
         case 'import_export':
             $help .= 
-                __('Use this page to import and export custom post types, taxonomies and custom fields to and from Types.', 'wpcf')
+                __('Use this page to import and export post types, taxonomies and post fields to and from Types.', 'wpcf')
                     . PHP_EOL
                     . PHP_EOL
                     . __('On this page you have the following options:', 'wpcf')
@@ -178,7 +186,7 @@ function wpcf_admin_help($page, $contextual_help)
                     .'<dt>' .__('Step 1:', 'wpcf') .'</dt>'
                     .'<dd>' .__('Choose and upload an XML file.', 'wpcf') .'</dd>'
                     .'<dt>' .__('Step 2:', 'wpcf') .'</dt>'
-                    .'<dd>' . __('Select which custom post types, taxonomies and custom fields should be imported.', 'wpcf') .'</dd>'
+                    .'<dd>' . __('Select which post types, taxonomies and post fields should be imported.', 'wpcf') .'</dd>'
                     .'</dl>'
 
                     .'<h3>' . __('Import Types data text input', 'wpcf') . '</h3>'
@@ -186,7 +194,7 @@ function wpcf_admin_help($page, $contextual_help)
                     .'<dt>' .__('Step 1:', 'wpcf') .'</dt>'
                     .'<dd>' .__('Paste XML content directly into the text area.', 'wpcf') .'</dd>'
                     .'<dt>' .__('Step 2:', 'wpcf') .'</dt>'
-                    .'<dd>' .__('Select which custom post types, taxonomies and custom fields should be imported.', 'wpcf') .'</dd>'
+                    .'<dd>' .__('Select which post types, taxonomies and post fields should be imported.', 'wpcf') .'</dd>'
                     .'</dl>'
 
                     .'<h3>' . __('Export', 'wpcf') . '</h3>'
@@ -197,39 +205,33 @@ function wpcf_admin_help($page, $contextual_help)
         // Add/Edit group form page
         case 'edit_group':
             $help .= ''
-                .__('This is the edit page for your Custom Fields Groups.', 'wpcf')
-                . PHP_EOL
-                . PHP_EOL
-                .sprintf(
-                    __('You can read more about creating a Custom Fields Group here: %s', 'wpcf'),
-                    '<a href="http://wp-types.com/user-guides/using-custom-fields/" target="_blank">http://wp-types.com/user-guides/using-custom-fields/ &raquo;</a>'
-                )
-                . PHP_EOL
-                . PHP_EOL
+                .__('This is the edit page for your Post Field Groups.', 'wpcf')
+                 .PHP_EOL
+                 .PHP_EOL
                 .__('On this page you can create and edit your groups. To create a group, do the following:', 'wpcf')
                 .'<ol style="list-style-type:decimal;"><li style="list-style-type:decimal;">'
-                .__('Add a Title', 'wpcf')
+                .__('Add a Title.', 'wpcf')
                 .'</li><li style="list-style-type:decimal;">'
-                .__('Choose where to display your group. You can attach this to both default WordPress post types and Custom Post Types. (nb: you can also associate taxonomy terms with Custom Field Groups)', 'wpcf')
+                .__('Choose where to display your group. You can attach this to both default WordPress post types and Post Types (you can also associate Taxonomy terms with Post Field Groups).', 'wpcf')
                 .'</li><li style="list-style-type:decimal;">'
-                .__('To add a field click on the field you desire under “Available Fields” on the right hand side of your screen.This will be added to your Custom Field Group', 'wpcf')
+                .__('To add a field, click on "Add New Field" and choose the field you desire. This will be added to your Post Field Group.', 'wpcf')
                 .'</li><li style="list-style-type:decimal;">'
-                .__('Add information about your Custom Field', 'wpcf')
+                .__('Add information about your Post Field.', 'wpcf')
                 .'</li></ol>'
                 .'<h3>' .__('Tips', 'wpcf') .'</h3>'
                 .'<ul><li>'
-                .__('To ensure a user completes a field, check the box for validation required', 'wpcf')
+                .__('To ensure a user fills out a field, check Required in Validation section.', 'wpcf')
                 .'</li><li>'
-                .__('Once you have created a field it will be saved for future use under "User created fields"', 'wpcf')
+                .__('Once you have created a field, it will be saved for future use under "Choose from previously created fields" of "Add New Field" dialog.', 'wpcf')
                 .'</li><li>'
-                .__('You can drag and drop the order of your custom fields using the blue icon', 'wpcf')
+                .__('You can drag and drop the order of your post fields.', 'wpcf')
                 .'</li></ul>';
             break;
 
             // Add/Edit custom type form page
         case 'edit_type':
             $help .= ''
-               .__('Use this page to create a WordPress post type. If you’d like to learn more about Custom Post Types you can read our detailed guide: <a href="https://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">https://wp-types.com/user-guides/create-a-custom-post-type/</a> or check out our tutorial on creating them with Types: <a href="http://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">http://wp-types.com/user-guides/create-a-custom-post-type/ &raquo;</a>', 'wpcf')
+               .__('Use this page to create a WordPress post type. If you’d like to learn more about Post Types you can read our detailed guide: <a href="https://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">https://wp-types.com/user-guides/create-a-custom-post-type/</a> or check out our tutorial on creating them with Types: <a href="http://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">http://wp-types.com/user-guides/create-a-custom-post-type/ &raquo;</a>', 'wpcf')
                .PHP_EOL
                .PHP_EOL
                .'<dt>'.__('Name and Description', 'wpcf').'</dt>'
@@ -241,30 +243,30 @@ function wpcf_admin_help($page, $contextual_help)
                .'<dt>'.__('Select Taxonomies', 'wpcf').'</dt>'
                .'<dd>'.__('Choose which taxonomies are to be associated with this post type.', 'wpcf').'</dd>'
                .'<dt>'.__('Labels', 'wpcf').'</dt>'
-               .'<dd>'.__('Labels are the text that is attached to your custom post type name. Examples of them in use are “Add New Post” (where “Add New” is the label”) and “Edit Post” (where “Edit” is the label). In normal circumstances the defaults will suffice.', 'wpcf').'</dd>'
+               .'<dd>'.__('Labels are the text that is attached to your post type name. Examples of them in use are “Add New Post” (where “Add New” is the label”) and “Edit Post” (where “Edit” is the label). In normal circumstances the defaults will suffice.', 'wpcf').'</dd>'
                .'<dt>'.__('Custom Post Properites', 'wpcf').'</dt>'
                .'<dd>'.__('Choose which sections to display on your “Add New” page.', 'wpcf').'</dd>'
                .'<dt>'.__('Advanced Settings', 'wpcf').'</dt>'
-               .'<dd>'.__('Advanced settings give you even more control over your custom post type. You can read in detail what all of these settings do on our tutorial.', 'wpcf').'</dd>'
+               .'<dd>'.__('Advanced settings give you even more control over your post type. You can read in detail what all of these settings do on our tutorial.', 'wpcf').'</dd>'
                 .'</dl>'
                 ;
             break;
 
-        // Add/Edit custom taxonomy form page
+        // Add/Edit Taxonomy form page
         case 'edit_tax':
             $help .= ''
-                .__('You can use Custom Taxonomies to categorize your content. Read more about what they are on our website: <a href="https://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">https://wp-types.com/user-guides/create-a-custom-post-type/ &raquo;</a> or you can read our guide about how to set them up: <a href="http://wp-types.com/user-guides/create-custom-taxonomies/" target="_blank">http://wp-types.com/user-guides/create-custom-taxonomies/</a>', 'wpcf')
+                .__('You can use Taxonomies to categorize your content. Read more about what they are on our website: <a href="https://wp-types.com/user-guides/create-a-custom-post-type/" target="_blank">https://wp-types.com/user-guides/create-a-custom-post-type/ &raquo;</a> or you can read our guide about how to set them up: <a href="http://wp-types.com/user-guides/create-custom-taxonomies/" target="_blank">http://wp-types.com/user-guides/create-custom-taxonomies/</a>', 'wpcf')
                 .'<dl>'
                 .'<dt>'.__('Name and Description', 'wpcf') .'</dt>'
-                .'<dd>'.__('Add a singular and plural name for your taxonomy. You should also add a slug. This will be created from the taxonomy name if none is added.', 'wpcf').'</dd>'
+                .'<dd>'.__('Add a singular and plural name for your Taxonomy. You should also add a slug. This will be created from the Taxonomy name if none is added.', 'wpcf').'</dd>'
                 .'<dt>'.__('Visibility', 'wpcf') .'</dt>'
-                .'<dd>'.__('Determine whether your taxonomy will be visible on the admin menu to your users.', 'wpcf').'</dd>'
+                .'<dd>'.__('Determine whether your Taxonomy will be visible on the admin menu to your users.', 'wpcf').'</dd>'
                 .'<dt>'.__('Select Post Types', 'wpcf') .'</dt>'
-                .'<dd>'.__('Choose which post types this taxonomy should be associated with.', 'wpcf').'</dd>'
+                .'<dd>'.__('Choose which Post Types this Taxonomy should be associated with.', 'wpcf').'</dd>'
                 .'<dt>'.__('Labels', 'wpcf') .'</dt>'
-                .'<dd>'.__('Labels are the text that is attached to your custom taxonomy name. Examples of them in use are “Add New Taxonomy” (where “Add New” is the label”) and “Edit Taxonomy” (where “Edit” is the label). In normal circumstances the defaults will suffice.', 'wpcf').'</dd>'
+                .'<dd>'.__('Labels are the text that is attached to your Taxonomy name. Examples of them in use are “Add New Taxonomy” (where “Add New” is the label”) and “Edit Taxonomy” (where “Edit” is the label). In normal circumstances the defaults will suffice.', 'wpcf').'</dd>'
                 .'<dt>'.__('Options', 'wpcf') .'</dt>'
-                .'<dd>'.__('Advanced settings give you even more control over your custom taxonomy. You can read in detail what all of these settings do on our tutorial.', 'wpcf').'</dd>'
+                .'<dd>'.__('Advanced settings give you even more control over your Taxonomy. You can read in detail what all of these settings do on our tutorial.', 'wpcf').'</dd>'
                 .'</dl>'
                 ;
             break;
@@ -278,15 +280,15 @@ function wpcf_admin_help($page, $contextual_help)
                 . sprintf('<h3>%s</h3>', __('You have the following options:', 'wpcf'))
                 .'<dl>'
                 .'<dt>'.__('Add New', 'wpcf').'</dt>'
-                .'<dd>'.__('Use this to add a new User Fields Group', 'wpcf').'</dd>'
+                .'<dd>'.__('Use this to add a new User Field Group', 'wpcf').'</dd>'
                 .'<dt>'.__('Edit', 'wpcf').'</dt>'
-                .'<dd>'.__('Click to edit the User Fields Group', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to edit the User Field Group', 'wpcf').'</dd>'
                 .'<dt>'.__('Activate', 'wpcf').'</dt>'
-                .'<dd>'.__('Click to activate a User Fields Group', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to activate a User Field Group', 'wpcf').'</dd>'
                 .'<dt>'.__('Deactivate', 'wpcf').'</dt>'
-                .'<dd>'.__('Click to deactivate a User Fields Group (this can be re-activated at a later date)', 'wpcf').'</dd>'
+                .'<dd>'.__('Click to deactivate a User Field Group (this can be re-activated at a later date)', 'wpcf').'</dd>'
                 .'<dt>'.__('Delete', 'wpcf').'</dt>'
-                .'<dd>'.__('Click to delete a User Fields Group.', 'wpcf')
+                .'<dd>'.__('Click to delete a User Field Group.', 'wpcf')
                 .' '
                 .sprintf('<strong>%s</strong>', __('Warning: This cannot be undone.', 'wpcf'))
                 .'</dd>'
@@ -296,27 +298,79 @@ function wpcf_admin_help($page, $contextual_help)
 
         case 'user_fields_edit':
             $help .= ''
-                .__('This is the edit page for your User Fields Group.', 'wpcf')
+                .__('This is the edit page for your User Field Groups.', 'wpcf')
                 .PHP_EOL
                 .PHP_EOL
-                . __('On this page you can create and edit your group. To create a group, do the following:', 'wpcf')
+                . __('On this page you can create and edit your groups. To create a group, do the following:', 'wpcf')
                 .'<ol><li>'
                 . __('Add a Title', 'wpcf')
                 .'</li><li>'
-                . __('Choose where to display your group. You can attach this to both default WordPress post types and User Post Types. (nb: you can also associate taxonomy terms with User Field Groups)', 'wpcf')
+                . __('Choose where to display your group. You can attach this to both default WordPress user roles and custom roles.', 'wpcf')
                 .'</li><li>'
-                . __('To add a field click on the field you desire under “Available Fields” on the right hand side of your screen. This will be added to your User Field Group', 'wpcf')
+                . __('To add a field, click on "Add New Field" and choose the field you desire. This will be added to your User Field Group.', 'wpcf')
                 .'</li><li>'
-                . __('Add information about your User Field', 'wpcf')
+                . __('Add information about your User Field.', 'wpcf')
                 .'</li></ol>'
                 .'<h3>' . __('Tips', 'wpcf') .'</h3>'
                 .'<ul><li>'
-                . __('To ensure a user completes a field, check the box for validation required', 'wpcf')
+                . __('To ensure a user fills out a field, check Required in Validation section.', 'wpcf')
                 .'</li><li>'
-                . __('Once you have created a field it will be saved for future use under "User created fields"', 'wpcf')
+                . __('Once you have created a field, it will be saved for future use under "Choose from previously created fields" of "Add New Field" dialog.', 'wpcf')
                 .'</li><li>'
-                . __('You can drag and drop the order of your custom fields using the blue icon', 'wpcf')
+                . __('You can drag and drop the order of your user fields.', 'wpcf')
                 .'</li></ul>';
+            break;
+
+
+	    case 'edit_termmeta':
+		    $help .= ''
+			    .__('This is the edit page for your Term Field Groups.', 'wpcf')
+			    .PHP_EOL
+			    .PHP_EOL
+			    . __('On this page you can create and edit your groups. To create a group, do the following:', 'wpcf')
+			    .'<ol><li>'
+			    . __('Add a Title.', 'wpcf')
+			    .'</li><li>'
+			    . __('Choose where to display your group. You can attach this to any taxonomy.', 'wpcf')
+			    .'</li><li>'
+			    . __('To add a field, click on "Add New Field" and choose the field you desire. This will be added to your Term Field Group.', 'wpcf')
+			    .'</li><li>'
+			    . __('Add information about your Term Field.', 'wpcf')
+			    .'</li></ol>'
+			    .'<h3>' . __('Tips', 'wpcf') .'</h3>'
+			    .'<ul><li>'
+			    . __('To ensure a user fills out a field, check Required in Validation section.', 'wpcf')
+			    .'</li><li>'
+			    . __('Once you have created a field, it will be saved for future use under "Choose from previously created fields" of "Add New Field" dialog.', 'wpcf')
+			    .'</li><li>'
+			    . __('You can drag and drop the order of your term fields.', 'wpcf')
+			    .'</li></ul>';
+		    break;
+
+
+	    case 'term_fields_list':
+            $help .= ''
+                     .__("Types plugin organizes Term Fields in groups. Once you create a group, you can add the fields to it and control to what content it belongs.", 'wpcf')
+                     .PHP_EOL
+                     .PHP_EOL
+                     .__("On this page you can see your current Term Field groups, as well as information about which taxonomies they are attached to, and whether they are active or not.", 'wpcf')
+                     . sprintf('<h3>%s</h3>', __('You have the following options:', 'wpcf'))
+                     .'<dl>'
+                     .'<dt>'.__('Add New', 'wpcf').'</dt>'
+                     .'<dd>'.__('Use this to add a new Term Field Group', 'wpcf').'</dd>'
+                     .'<dt>'.__('Edit', 'wpcf').'</dt>'
+                     .'<dd>'.__('Click to edit the Term Field Group', 'wpcf').'</dd>'
+                     .'<dt>'.__('Activate', 'wpcf').'</dt>'
+                     .'<dd>'.__('Click to activate a Term Field Group', 'wpcf').'</dd>'
+                     .'<dt>'.__('Deactivate', 'wpcf').'</dt>'
+                     .'<dd>'.__('Click to deactivate a Term Field Group (this can be re-activated at a later date)', 'wpcf').'</dd>'
+                     .'<dt>'.__('Delete', 'wpcf').'</dt>'
+                     .'<dd>'.__('Click to delete a Term Field Group.', 'wpcf')
+                     .' '
+                     .sprintf('<strong>%s</strong>', __('Warning: This cannot be undone.', 'wpcf'))
+                     .'</dd>'
+                     .'</dl>'
+            ;
             break;
 
     }
@@ -346,7 +400,7 @@ function wpcf_admin_help_add_tabs($call, $hook, $contextual_help = '')
             break;
 
     case 'custom_taxonomies_list':
-        $title =  __( 'Custom Taxonomies', 'wpcf' );
+        $title =  __( 'Taxonomies', 'wpcf' );
         break;
 
     case 'edit_tax':
@@ -354,19 +408,27 @@ function wpcf_admin_help_add_tabs($call, $hook, $contextual_help = '')
         break;
 
     case 'custom_fields':
-        $title = __('Custom Fields', 'wpcf');
+        $title = __('Post Fields', 'wpcf');
         break;
 
     case 'edit_group':
-        $title = __('Custom Fields Group', 'wpcf');
+        $title = __('Post Field Group', 'wpcf');
         break;
 
     case 'user_fields_list':
-        $title = __('User Fields Groups', 'wpcf');
+        $title = __('User Field Groups', 'wpcf');
         break;
 
     case 'user_fields_edit':
-        $title = __('User Fields Group', 'wpcf');
+        $title = __('User Field Group', 'wpcf');
+        break;
+
+    case 'edit_termmeta':
+        $title = __( 'Term Field Group', 'wpcf' );
+        break;
+
+    case 'term_fields_list':
+        $title = __( 'Term Field Groups', 'wpcf' );
         break;
 
     case 'import_export':

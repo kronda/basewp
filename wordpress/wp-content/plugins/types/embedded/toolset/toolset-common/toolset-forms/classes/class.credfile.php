@@ -58,6 +58,7 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield {
         wp_enqueue_script('wpt-field-credfile');
 
         $this->disable_progress_bar = version_compare(CRED_FE_VERSION, '1.3.6.2', '<=');
+        $this->disable_progress_bar = apply_filters('cred_file_upload_disable_progress_bar', $this->disable_progress_bar);
         if ($this->disable_progress_bar)
             return;
 
@@ -89,13 +90,13 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield {
 
         //require_once WPTOOLSET_COMMON_PATH . "/utility/utils.php";
         //wp_localize_script('my_ajax_file_uploader_thing', 'settings', array('ajaxurl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('uploader_nonce')));
-        wp_localize_script('my_ajax_file_uploader', 'settings', 
-                array('media_settings' => self::get_image_sizes('thumbnail'), 
-                    'ajaxurl' => plugins_url("submit.php", __FILE__), 
-                    'delete_confirm_text' => __('Are you sure to delete this file ?', 'wp-cred'),
-                    'delete_alert_text' => __('Generic Error in deleting file', 'wp-cred'),
-                    'too_big_file_alert_text' => __('File is too big', 'wp-cred'),
-                    'nonce' => wp_create_nonce('ajax_nonce')));
+        wp_localize_script('my_ajax_file_uploader', 'settings', array('media_settings' => self::get_image_sizes('thumbnail'),
+            'ajaxurl' => plugins_url("submit.php", __FILE__),
+            'delete_confirm_text' => __('Are you sure to delete this file ?', 'wp-cred'),
+            'delete_alert_text' => __('Generic Error in deleting file', 'wp-cred'),
+            'delete_text' => __('delete', 'wp-cred'),
+            'too_big_file_alert_text' => __('File is too big', 'wp-cred'),
+            'nonce' => wp_create_nonce('ajax_nonce')));
     }
 
     public static function registerScripts() {

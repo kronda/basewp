@@ -15,8 +15,9 @@ function wpcf_fields_wysiwyg() {
                 'inline' => 'wpcf_fields_wysiwyg_css',
             ),
         ),
+        'wp_version' => '3.3',
+        'font-awesome' => 'list-alt',
     );
-    $settings['wp_version'] = '3.3';
     return $settings;
 }
 

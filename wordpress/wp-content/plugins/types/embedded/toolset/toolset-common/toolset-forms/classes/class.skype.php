@@ -45,6 +45,8 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
     public function metaform() {
         $value = wp_parse_args( $this->getValue(), $this->_defaults );
         $attributes = $this->getAttr();
+		$wpml_action = $this->getWPMLAction();		
+		
         if ( isset($attributes['class'] ) ) {
             $attributes['class'] .= ' ';
         } else {
@@ -62,6 +64,7 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
             '#validate' => $this->getValidationData(),
             '#attributes' => $attributes,
             '#repetitive' => $this->isRepetitive(),
+			'wpml_action' => $wpml_action,
         );
 
         /**
@@ -105,6 +108,19 @@ class WPToolset_Field_Skype extends WPToolset_Field_Textfield
                 'class' => 'js-wpt-skype-edit-button button button-small button-secondary',
             ),
         );
+		
+		if (
+			is_admin()
+			&& defined( 'WPML_TM_VERSION' ) 
+			&& intval( $wpml_action ) === 1 
+			&& function_exists( 'wpcf_wpml_post_is_original' )
+			&& ! wpcf_wpml_post_is_original()
+			&& function_exists( 'wpcf_wpml_have_original' )
+			&& wpcf_wpml_have_original()
+		) {
+			$button_element['#attributes']['disabled'] = 'disabled';
+		}
+		
         foreach( $value as $key => $val ) {
             $button_element['#attributes']['data-'.esc_attr($key)] = $val;
         }

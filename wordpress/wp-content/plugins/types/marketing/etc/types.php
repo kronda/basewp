@@ -28,6 +28,13 @@ return array(
                 'link' => __('http://wp-types.com/landing/types/', 'wpcf'),
             ),
         ),
+        'term' => array(
+            array(
+                'header' => __( 'Toolset lets you display custom fields without coding!', 'wpcf' ),
+                'description' => __( 'See how Toolset can help you build custom WordPress sites without writing PHP', 'wpcf' ),
+                'link' => __('http://wp-types.com/landing/types/', 'wpcf'),
+            ),
+        ),
     ),
 
     /*
@@ -124,14 +131,14 @@ return array(
         ),
         'taxonomy' => array(
             array(
-                'header' => __( 'Toolset lets you design product templates with fields and taxonomy, but no coding!', 'wpcf' ),
+                'header' => __( 'Toolset lets you design product templates with fields and Taxonomy, but no coding!', 'wpcf' ),
                 'description' => __( 'Add a WooCommerce store to any theme using Toolset and no PHP coding', 'wpcf' ),
                 'link' => __('http://wp-types.com/landing/types/', 'wpcf'),
             ),
         ),
         'fields' => array(
             array(
-                'header' => __( 'Toolset lets you design product templates with fields and taxonomy, but no coding!', 'wpcf' ),
+                'header' => __( 'Toolset lets you design product templates with fields and Taxonomy, but no coding!', 'wpcf' ),
                 'description' => __( 'Add a WooCommerce store to any theme using Toolset and no PHP coding', 'wpcf' ),
                 'link' => __('http://wp-types.com/landing/types/', 'wpcf'),
             ),

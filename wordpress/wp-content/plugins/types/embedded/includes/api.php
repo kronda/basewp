@@ -22,9 +22,19 @@ function types_get_field( $field, $meta_type = 'postmeta' ) {
         return $cache[$cache_key];
     }
     WPCF_Loader::loadInclude( 'fields' );
-    $meta_type = $meta_type == 'usermeta' ? 'wpcf-usermeta' : 'wpcf-fields';
+	switch ( $meta_type ) {
+		case 'usermeta':
+			$meta_type_key = 'wpcf-usermeta';
+			break;
+		case 'termmeta':
+			$meta_type_key = 'wpcf-termmeta';
+			break;
+		default:
+			$meta_type_key = 'wpcf-fields';
+			break;
+	}
     $cache[$cache_key] = wpcf_admin_fields_get_field( strval( $field ), false,
-            false, false, $meta_type );
+            false, false, $meta_type_key );
     return $cache[$cache_key];
 }
 

@@ -82,7 +82,7 @@ if ($data['warning_remote']) {
 
 <?php if ( $data['warning_remote'] ) : ?>
 <!--		Conditional icon displaying for dismissed warning message -->
-<i class="icon-warning-sign js-show-tooltip" data-header="<?php _e( 'Image resize disabled', 'wpcf' ); ?>" data-content="<?php echo esc_attr($warning_remote); ?>"></i>
+<i class="fa fa-exclamation-triangle icon-warning-sign js-show-tooltip" data-header="<?php _e( 'Image resize disabled', 'wpcf' ); ?>" data-content="<?php echo esc_attr($warning_remote); ?>"></i>
 <?php endif; ?>
 
 	</p>

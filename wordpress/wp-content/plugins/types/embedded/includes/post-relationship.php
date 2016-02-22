@@ -45,12 +45,22 @@ function wpcf_pr_admin_post_init_action( $post_type, $post, $groups, $wpcf_activ
             array('output' => $output)
         );
         if ( !empty( $output ) ) {
-            wp_enqueue_script(
+            wp_register_script(
                 'wpcf-post-relationship',
                 WPCF_EMBEDDED_RELPATH . '/resources/js/post-relationship.js',
                 array('jquery', 'select2'),
                 WPCF_VERSION
             );
+            wp_localize_script(
+                'wpcf-post-relationship',
+                'wpcf_post_relationship_messages',
+                array(
+                    'parent_saving' => __('Saving post parent.', 'wpcf'),
+                    'parent_saving_success' => __('Saved.', 'wpcf'),
+                )
+            );
+            wp_enqueue_script( 'wpcf-post-relationship');
+
             wp_enqueue_style( 'wpcf-post-relationship',
                     WPCF_EMBEDDED_RELPATH . '/resources/css/post-relationship.css',
                     array(), WPCF_VERSION );
@@ -326,7 +336,7 @@ function wpcf_pr_admin_post_meta_box_belongs_form( $post, $type, $belongs )
         '#id' => $id,
         '#attributes' => array(
             'class' => 'wpcf-pr-belongs',
-            'data-loading' => esc_attr__('Loading...', 'wpcf'),
+            'data-loading' => esc_attr__('Please Wait, Loading…', 'wpcf'),
             'data-nounce' => wp_create_nonce($id),
             'data-placeholder' => esc_attr__('Search for a entries', 'wpcf'),
             'data-post-id' => $post->ID,
@@ -434,7 +444,7 @@ function wpcf_pr_admin_has_pagination( $post, $post_type, $page, $prev, $next,
         'dir' => 'next',
         'post_id' => $post->ID,
         'post_type' => $post_type,
-        $wpcf->relationship->items_per_page_option_name => $wpcf->relationship->items_per_page,
+        $wpcf->relationship->items_per_page_option_name => $wpcf->relationship->get_items_per_page( $post->post_type, $post_type ),
         '_wpnonce' => wp_create_nonce( 'pr_pagination' ) . $add,
     );
     $url = admin_url('admin-ajax.php');
@@ -611,12 +621,15 @@ function wpcf_pr_admin_wpcf_relationship_search()
     /* Restore original Post Data */
     wp_reset_postdata();
 
-    // If WPML is on
-    if ( $active_lang = apply_filters( 'wpml_current_language', false ) ) {
+    // @todo If WPML is on, but I truly think this is done in WP_Query directly... worth to check
+	$is_translated_post_type = apply_filters( 'wpml_is_translated_post_type', false, esc_attr( $_REQUEST['post_type'] ) );
+    if ( 
+		$is_translated_post_type
+		&& $active_lang = apply_filters( 'wpml_current_language', false ) 
+	) {
         foreach ($posts['items'] as $key => $item) {
             $args = array('element_id' => $posts['items'][ $key ]['ID'], 'element_type' => $posts['items'][ $key ]['post_type'] );
             $item_lang = apply_filters( 'wpml_element_language_code', NULL, $args );
-
             // unset the item if not in the current language
             if (
                 !is_null($item_lang)
@@ -649,6 +662,7 @@ function wpcf_pr_admin_wpcf_relationship_entry()
         'edit_link' => html_entity_decode(get_edit_post_link($wpcf_post['ID'])),
         'post_title' => $wpcf_post['post_title'],
         'post_type' => $wpcf_post['post_type'],
+        'save' => 'no-save',
     );
     echo json_encode($wpcf_post);
     die;

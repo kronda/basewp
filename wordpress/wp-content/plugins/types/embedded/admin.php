@@ -3,7 +3,7 @@
  *
  *
  */
-require_once(WPCF_EMBEDDED_ABSPATH . '/common/visual-editor/editor-addon.class.php');
+require_once(WPCF_EMBEDDED_ABSPATH . '/toolset/toolset-common/visual-editor/editor-addon.class.php');
 require_once WPCF_EMBEDDED_ABSPATH . '/includes/post-relationship.php';
 
 if ( defined( 'DOING_AJAX' ) ) {
@@ -162,23 +162,52 @@ function wpcf_admin_fields_postfields_styles(){
 }
 
 /**
+ * Add styles to userfields groups
+ */
+function wpcf_admin_fields_userfields_styles(){
+
+    require_once WPCF_EMBEDDED_INC_ABSPATH . '/usermeta-post.php';
+
+
+//    $groups = wpcf_admin_fields_get_groups();
+    $groups = wpcf_admin_usermeta_get_groups_fields();
+
+    if ( !empty( $groups ) ) {
+		echo '<style type="text/css">';
+        foreach ( $groups as $key => $group ) {
+            echo str_replace( "}", "}\n",
+                    wpcf_admin_get_groups_admin_styles_by_group( $group['id'] ) );
+        }
+		echo '</style>';
+    }
+}
+
+/** @noinspection PhpUndefinedClassInspection */
+
+/**
  * Initiates/returns specific form.
  * 
  * @staticvar array $wpcf_forms
- * @param type $id
- * @param type $form
- * @return array 
+ * @param string $id
+ * @param array $form
+ * @return Enlimbo_Forms_Wpcf
  */
 function wpcf_form( $id, $form = array() ) {
-    static $wpcf_forms = array();
-    if ( isset( $wpcf_forms[$id] ) ) {
-        return $wpcf_forms[$id];
-    }
-    require_once WPCF_EMBEDDED_ABSPATH . '/classes/forms.php';
-    $new_form = new Enlimbo_Forms_Wpcf();
-    $new_form->autoHandle( $id, $form );
-    $wpcf_forms[$id] = $new_form;
-    return $wpcf_forms[$id];
+	static $wpcf_forms = array();
+
+	if ( isset( $wpcf_forms[ $id ] ) ) {
+		return $wpcf_forms[ $id ];
+	}
+
+	require_once WPCF_EMBEDDED_ABSPATH . '/classes/forms.php';
+	/** @noinspection PhpUndefinedClassInspection */
+
+	$new_form = new Enlimbo_Forms_Wpcf();
+	$new_form->autoHandle( $id, $form );
+
+	$wpcf_forms[ $id ] = $new_form;
+
+	return $wpcf_forms[ $id ];
 }
 
 /**
@@ -334,8 +363,9 @@ function wpcf_admin_message_sanitize( $message )
 /**
  * Adds admin notice.
  *
- * @param type $message
- * @param type $class 
+ * @param string $message
+ * @param string $class
+ * @param string $mode 'action'|'echo'
  */
 function wpcf_admin_message( $message, $class = 'updated', $mode = 'action' )
 {
@@ -346,7 +376,11 @@ function wpcf_admin_message( $message, $class = 'updated', $mode = 'action' )
                         '$screen = get_current_screen(); if (!$screen->is_network) echo "<div class=\"message $class\"><p>" . wpcf_admin_message_sanitize ($message) . "</p></div>";' ) );
     } elseif ( 'echo' == $mode ) {
         printf(
-            '<div class="message %s"><p>%s</p></div>',
+            '<div class="message %s is-dismissible"><p>%s</p> <button type="button" class="notice-dismiss">
+            <span class="screen-reader-text">
+               '. __( 'Dismiss this notice.' ) .'
+            </span>
+        </button></div>',
             $class,
             wpcf_admin_message_sanitize($message)
         );
@@ -362,13 +396,14 @@ function wpcf_show_admin_messages($mode = 'action')
     $messages_for_user = isset( $messages[get_current_user_id()] ) ? $messages[get_current_user_id()] : array();
     $dismissed = get_option( 'wpcf_dismissed_messages', array() );
     if ( !empty( $messages_for_user ) && is_array( $messages_for_user ) ) {
-        foreach ( $messages_for_user as $message_id => $message ) {
-            if ( !in_array( $message['keep_id'], $dismissed ) ) {
+        foreach( $messages_for_user as $message_id => $message ) {
+            if( ! in_array( $message['keep_id'], $dismissed ) ) {
                 wpcf_admin_message( $message['message'], $message['class'], $mode );
             }
-            if ( empty( $message['keep_id'] )
-                    || in_array( $message['keep_id'], $dismissed ) ) {
-                unset( $messages[get_current_user_id()][$message_id] );
+            if( empty( $message['keep_id'] )
+                || in_array( $message['keep_id'], $dismissed )
+            ) {
+                unset( $messages[ get_current_user_id() ][ $message_id ] );
             }
         }
     }
@@ -378,9 +413,8 @@ function wpcf_show_admin_messages($mode = 'action')
 /**
  * Stores admin notices if redirection is performed.
  * 
- * @param type $message
- * @param type $class
- * @return type 
+ * @param string $message
+ * @param string $class
  */
 function wpcf_admin_message_store( $message, $class = 'updated', $keep_id = false )
 {

@@ -127,18 +127,18 @@ function wpcf_admin_fields_adjust_group( $post, $add_fields = false ) {
 /**
  * Gets Fields Admin Styles supported by specific group.
  *
- * @param type $group_id
- * @return type
+ * @param int $group_id
+ * @return string
  */
-function wpcf_admin_get_groups_admin_styles_by_group( $group_id )
-{
-    if (
-        defined('TYPES_USE_STYLING_EDITOR')
-        && TYPES_USE_STYLING_EDITOR
-    ) {
-        $admin_styles = get_post_meta( $group_id, '_wp_types_group_admin_styles', true );
-        return trim( $admin_styles );
-    }
+function wpcf_admin_get_groups_admin_styles_by_group( $group_id ) {
+	if (
+		defined( 'TYPES_USE_STYLING_EDITOR' )
+		&& TYPES_USE_STYLING_EDITOR
+	) {
+		$admin_styles = get_post_meta( $group_id, '_wp_types_group_admin_styles', true );
+
+		return trim( $admin_styles );
+	}
 }
 
 /**
@@ -161,7 +161,7 @@ function wpcf_admin_fields_save_group_admin_styles( $group_id, $admin_styles ) {
  * @param string $option_name
  * @param bool $use_cache
  * @param bool $clear_cache
- * @return type
+ * @return array
  *
  * added param $use_cache by Gen (used when adding new fields to group)
  * added param $use_cache by Gen (used when adding new fields to group)
@@ -174,6 +174,19 @@ function wpcf_admin_fields_get_fields( $only_active = false,
 
     if ( $clear_cache ) {
         $cache = array();
+    }
+
+    /**
+     * Sanitize option name
+     */
+    switch( $option_name ) {
+	    case 'wpcf-usermeta':
+	    case 'wpcf-fields':
+	    case WPCF_Field_Term_Definition_Factory::FIELD_DEFINITIONS_OPTION:
+		    break;
+	    default:
+		    $option_name = 'wpcf-fields';
+		    break;
     }
 
     $cache_key = md5( $only_active . $disabled_by_type . $strictly_active . $option_name . $use_cache );
@@ -226,7 +239,14 @@ function wpcf_admin_fields_get_fields( $only_active = false,
         }
         $v['id'] = $k;
         $v['meta_key'] = wpcf_types_get_meta_prefix( $v ) . $k;
-        $v['meta_type'] = $option_name == 'wpcf-fields' ? 'postmeta' : 'usermeta';
+
+	    $option_name_to_meta_type = array(
+		    'wpcf-fields' => 'postmeta',
+		    'wpcf-usermeta' => 'usermeta',
+		    WPCF_Field_Term_Definition_Factory::FIELD_DEFINITIONS_OPTION => 'termmeta'
+	    );
+
+        $v['meta_type'] = $option_name_to_meta_type[ $option_name ];
         $fields[$k] = wpcf_sanitize_field( $v );
     }
     $cache[$cache_key] = apply_filters( 'types_fields', $fields );
@@ -282,18 +302,21 @@ add_filter('wpcf_fields_by_group', 'wpcf_admin_fields_get_fields_by_group', 10, 
 /**
  * Gets all fields that belong to specific group.
  *
- * @param type $group_id
- * @param type $key
- * @param type $only_active
- * @param type $post_type
- * @param type $meta_name
- * @param type $use_cache
- * @return type
+ * @param int $group_id
+ * @param string $key
+ * @param bool $only_active
+ * @param bool $disabled_by_type
+ * @param bool $strictly_active
+ * @param string $post_type
+ * @param string $option_name
+ * @param bool $use_cache
+ *
+ * @return array
  */
 function wpcf_admin_fields_get_fields_by_group( $group_id, $key = 'slug',
         $only_active = false, $disabled_by_type = false,
         $strictly_active = false, $post_type = TYPES_CUSTOM_FIELD_GROUP_CPT_NAME,
-        $meta_name = 'wpcf-fields', $use_cache = true ) {
+        $option_name = 'wpcf-fields', $use_cache = true ) {
     static $cache = array();
     $cache_key = md5( serialize( func_get_args() ) );
     if ( $use_cache && isset( $cache[$cache_key] ) ) {
@@ -305,7 +328,7 @@ function wpcf_admin_fields_get_fields_by_group( $group_id, $key = 'slug',
     }
     $group_fields = explode( ',', trim( $group_fields, ',' ) );
     $fields = wpcf_admin_fields_get_fields( $only_active, $disabled_by_type,
-            $strictly_active, $meta_name );
+            $strictly_active, $option_name );
     $results = array();
     foreach ( $group_fields as $field_id ) {
         if ( !isset( $fields[$field_id] ) ) {
@@ -607,6 +630,162 @@ function wpcf_fields_get_shortcode( $field, $add = '', $content = '' )
     return $shortcode;
 }
 
+function wpcf_termmeta_get_shortcode( $field, $add = '', $content = '' ) {
+    $shortcode = '[';
+    $shortcode .= 'types termmeta="' . $field['slug'] . '"' . $add;
+    $shortcode .= ']' . $content . '[/types]';
+    $shortcode = apply_filters( 'wpcf_fields_shortcode', $shortcode, $field );
+    $shortcode = apply_filters( 'wpcf_fields_shortcode_type_' . $field['type'], $shortcode, $field );
+    $shortcode = apply_filters( 'wpcf_fields_shortcode_slug_' . $field['slug'], $shortcode, $field );
+    return $shortcode;
+}
+
+function wpcf_get_termmeta_form_addon_submit() {
+	$add = '';
+    if ( ! empty( $_POST['is_termmeta'] ) ) {
+		
+    }
+    return $add;
+}
+
+/**
+ * Returns shortcode for specified usermeta field.
+ *
+ * @param type $field
+ * @param type $add Additional attributes
+ */
+function wpcf_usermeta_get_shortcode( $field, $add = '', $content = '' ) {
+    /*if ( isset($_GET['field_type']) && $_GET['field_type'] =='views-usermeta' ) {
+            $add .= ' user_from_this_loop="true"';
+    }*/
+    $shortcode = '[';
+    $shortcode .= 'types usermeta="' . $field['slug'] . '"' . $add;
+    $shortcode .= ']' . $content . '[/types]';
+    $shortcode = apply_filters( 'wpcf_fields_shortcode', $shortcode, $field );
+    $shortcode = apply_filters( 'wpcf_fields_shortcode_type_' . $field['type'], $shortcode, $field );
+    $shortcode = apply_filters( 'wpcf_fields_shortcode_slug_' . $field['slug'], $shortcode, $field );
+    return $shortcode;
+}
+
+/*
+ * Usermeta fields addon.
+ * Add form user users
+ *
+ * @global object $wpdb
+ *
+ */
+
+function wpcf_get_usermeta_form_addon( $settings = array() ) {
+	global $wpdb;
+	$form = array();
+	$users = $wpdb->get_results(
+		"SELECT ID, user_login, display_name 
+		FROM {$wpdb->users} 
+		LIMIT 5"
+	);
+	$form[] = array(
+		'#type' => 'hidden',
+		'#value' => 'true',
+        '#name' => 'is_usermeta',
+	);
+	$__default = 'post_autor';
+	$form[] = array(
+		'#type' => 'radio',
+		'#before' => '<div class="fieldset"><p class="form-inline">',
+		'#suffix' => '</p>',
+		'#value' => 'post_autor',
+		'#title' => 'Author of this post',
+        '#name' => 'display_username_for',
+		'#default_value' => isset( $settings['user_is_author'] ) && $settings['user_is_author'] == 'true' ? 'post_autor' : $__default,
+        '#inline' => true,
+		'#attributes' => array('onclick' => 'wpcf_showmore(false)')
+	);
+	$form[] = array(
+		'#type' => 'radio',
+		'#before' => '<p class="form-inline">',
+		'#suffix' => '</p>',
+		'#value' => 'current_user',
+		'#title' => 'The current logged in user',
+        '#name' => 'display_username_for',
+		'#default_value' => isset( $settings['user_current'] ) && $settings['user_current'] == 'true' ? 'current_user' : $__default,
+        '#inline' => true,
+		'#attributes' => array('onclick' => 'wpcf_showmore(false)')
+	);
+	$form[] = array(
+		'#type' => 'radio',
+		'#before' => '<p class="form-inline">',
+		'#suffix' => '</p>',
+		'#title' => 'A specific user',
+		'#value' => 'pecific_user',
+		'#id' => 'display_username_for_suser',
+        '#name' => 'display_username_for',
+		'#default_value' => isset( $settings['user_id'] ) || isset( $settings['user_name'] ) ? 'pecific_user' : $__default,
+		'#after' => '',
+        '#inline' => true,
+		'#attributes' => array('onclick' => 'wpcf_showmore(true)')
+	);
+    $__username = isset( $settings['user_name'] ) ? $settings['user_name'] : '';
+    $__userid = isset( $settings['user_id'] ) ? intval( $settings['user_id'] ) : '';
+    $__hidden = !isset( $settings['user_id'] ) && !isset( $settings['user_name'] ) ? ' style="display:none;"' : '';
+    $__hiddenId = !isset( $settings['user_id'] ) && isset( $settings['user_name'] ) ? ' style="display:none;"' : '';
+	$form[] = array(
+		'#type' => 'radio',
+		'#title' => 'User ID',
+		'#value' => 'specific_user_by_id',
+		'#id' => 'display_username_for_suser_id',
+        '#name' => 'display_username_for_suser_selector',
+		'#before' => '<div class="group-nested form-inline" id="specific_user_div"' . $__hidden . '><p>',
+		'#after' => '<input type="text" class="wpcf-form-textfield form-textfield textfield" name="display_username_for_suser_id_value" value="' . $__userid . '"'.
+		' id="display_username_for_suser_id_value" value=""' . $__hiddenId . '></p>',
+		'#default_value' => isset( $settings['user_id'] ) || !isset( $settings['user_name'] ) ? 'specific_user_by_id' : '',
+        '#inline' => true,
+		'#attributes' => array('onclick' => 'hideControls(\'display_username_for_suser_username_value\',\'display_username_for_suser_id_value\')')
+	);
+	$dropdown_users = '';
+	foreach ($users as $u) {
+        $dropdown_users .= '<option value="' . $u->user_login . '">' . $u->display_name . ' (' . $u->user_login . ')' . '</option>';
+    }
+    $__hidden = !isset( $settings['user_name'] ) ? ' style="display:none;"' : '';
+	$form[] = array(
+		'#type' => 'radio',
+		'#title' => 'User name',
+		'#value' => 'specific_user_by_username',
+		'#id' => 'display_username_for_suser_username',
+        '#name' => 'display_username_for_suser_selector',
+		'#before' => '<p class="types-suggest-user types-suggest" id="types-suggest-user">',
+		'#after' => '<input type="text" class="input wpcf-form-textfield form-textfield textfield"'. $__hidden .
+		' name="display_username_for_suser_username_value" id="display_username_for_suser_username_value" value="' . $__username . '"></p></div></div>',
+		'#default_value' => isset( $settings['user_name'] ) ? 'specific_user_by_username' : '',
+        '#inline' => true,
+		'#attributes' => array('onclick' => 'hideControls(\'display_username_for_suser_id_value\',\'display_username_for_suser_username_value\')')
+	);
+
+	return $form;
+}
+
+/*
+ * Callback sumit form usermeta addon
+ */
+
+function wpcf_get_usermeta_form_addon_submit() {
+    $add = '';
+    if ( !empty( $_POST['is_usermeta'] ) ) {
+        if ( $_POST['display_username_for'] == 'post_autor' ) {
+            $add .= ' user_is_author="true"';
+        } elseif ( $_POST['display_username_for'] == 'current_user' ) {
+            $add .= ' user_current="true"';
+        }
+         else {
+            if ( $_POST['display_username_for_suser_selector'] == 'specific_user_by_id' ) {
+                $add .= ' user_id="' . sanitize_text_field($_POST['display_username_for_suser_id_value']) . '"';
+            } else {
+                $add .= ' user_name="' . sanitize_text_field($_POST['display_username_for_suser_username_value']) . '"';
+            }
+        }
+    }
+    return $add;
+}
+
 /**
  * Gets all available types and their config data.
  */
@@ -622,7 +801,17 @@ function wpcf_admin_fields_get_available_types() {
 function wpcf_sanitize_field( $field ) {
     // Sanitize name
     if ( isset( $field['name'] ) ) {
-        $field['name'] = wp_kses_post( $field['name'] );
+        $field['name'] = sanitize_text_field( $field['name'] );
+    }
+    /**
+     * autocreate name based on field type
+     */
+    if ( empty($field['name'] ) && isset($field['type']) ) {
+        $field['name'] = sprintf(
+            '%s - %s',
+            ucfirst($field['type']),
+            substr(md5(rand()), 0, 8)
+        );
     }
     // Sanitize slug
     if ( !empty( $field['slug'] ) ) {
@@ -643,7 +832,18 @@ function wpcf_admin_fields_get_groups_by_field( $field_id,
         $post_type = TYPES_CUSTOM_FIELD_GROUP_CPT_NAME ) {
     static $cache = array();
     $groups = wpcf_admin_fields_get_groups( $post_type );
-    $meta_name = ($post_type == TYPES_CUSTOM_FIELD_GROUP_CPT_NAME ? 'wpcf-fields' : 'wpcf-usermeta');
+	switch ( $post_type ) {
+		case TYPES_TERM_META_FIELD_GROUP_CPT_NAME:
+			$meta_name = 'wpcf-termmeta';
+			break;
+		case TYPES_USER_META_FIELD_GROUP_CPT_NAME:
+			$meta_name = 'wpcf-usermeta';
+			break;
+		case TYPES_CUSTOM_FIELD_GROUP_CPT_NAME:
+		default:
+			$meta_name = 'wpcf-fields';
+			break;
+	}
     $return = array();
     foreach ( $groups as $group_id => $group ) {
         if ( isset( $cache['groups'][$group_id] ) ) {
@@ -700,7 +900,7 @@ function wpcf_admin_fields_get_field_last_settings( $field_id ) {
  *
  * @since: 1.7
  *
- * @param string $post_type custom post type
+ * @param string $post_type post type
  *
  * @return array allowed meta keys
  */
@@ -723,3 +923,45 @@ function wpcf_admin_get_allowed_fields_by_post_type($post_type)
     return $allowed_fields;
 }
 
+/**
+ * Returns all used field slugs except current group
+ */
+function wpcf_get_all_field_slugs_except_current_group( $current_group = false ) {
+    $all_slugs       = array();
+    $all_post_fields = get_option( 'wpcf-fields', array() );
+    $all_user_fields = get_option( 'wpcf-usermeta', array() );
+    $all_term_fields = get_option( 'wpcf-termmeta', array() );
+
+    $all_fields = array_merge( $all_post_fields, $all_user_fields, $all_term_fields );
+
+    if( !empty( $all_fields ) ) {
+        foreach( $all_fields as $field ) {
+            $all_slugs[] = $field['slug'];
+        }
+    }
+    if( !$current_group && isset( $_REQUEST['group_id'] ) )
+        $current_group = $_REQUEST['group_id'];
+
+    // if no new group
+    if( $current_group && !empty( $all_fields ) ) {
+
+        $current_group_fields = get_post_meta( $current_group, '_wp_types_group_fields', true );
+        $current_group_fields = explode( ',', trim( $current_group_fields, ',' ) );
+
+        if( !empty( $current_group_fields) ) {
+            foreach( $current_group_fields as $field ) {
+                $all_slugs = array_diff( $all_slugs, array( $field ) );
+            }
+        }
+
+    }
+    $all_slugs = array_values( $all_slugs );
+    if( isset( $_POST['return'] )
+        && $_POST['return'] == 'ajax-json' ) {
+        echo json_encode( $all_slugs );
+        die();
+    }
+
+    return $all_slugs;
+}
+add_action('wp_ajax_wpcf_get_all_field_slugs_except_current_group', 'wpcf_get_all_field_slugs_except_current_group');

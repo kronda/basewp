@@ -1,13 +1,13 @@
 {
   "checksum": {
-    "previous": "69b3ac844e2982eac8a71a161ae6068f035af7c234b4049fa236b4bce932a523",
-    "current": "69b3ac844e2982eac8a71a161ae6068f035af7c234b4049fa236b4bce932a523"
+    "previous": "397ea366af9eb4eb01e6afbdaaf9b5c733766f918f10f0becec71e77ca55ff1e",
+    "current": "397ea366af9eb4eb01e6afbdaaf9b5c733766f918f10f0becec71e77ca55ff1e"
   },
   "fonts": [
-    "fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.ttf",
-    "fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.svg",
-    "fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.woff",
-    "fonts/onthegosystems-icons_69b3ac844e2982eac8a71a161ae6068f.eot"
+    "fonts/onthegosystems-icons_397ea366af9eb4eb01e6afbdaaf9b5c7.ttf",
+    "fonts/onthegosystems-icons_397ea366af9eb4eb01e6afbdaaf9b5c7.svg",
+    "fonts/onthegosystems-icons_397ea366af9eb4eb01e6afbdaaf9b5c7.woff",
+    "fonts/onthegosystems-icons_397ea366af9eb4eb01e6afbdaaf9b5c7.eot"
   ],
   "glyphs": {
     "access": {
@@ -46,6 +46,14 @@
       "codepoint": 61718,
       "source": "vectors/layouts.svg"
     },
+    "layouts-genesis": {
+      "codepoint": 61737,
+      "source": "vectors/layouts-genesis.svg"
+    },
+    "layouts-genesis-logo": {
+      "codepoint": 61735,
+      "source": "vectors/layouts-genesis-logo.svg"
+    },
     "layouts-logo": {
       "codepoint": 61719,
       "source": "vectors/layouts-logo.svg"
@@ -65,6 +73,10 @@
     "packager-logo": {
       "codepoint": 61729,
       "source": "vectors/packager-logo.svg"
+    },
+    "toolset-genesis-logo": {
+      "codepoint": 61736,
+      "source": "vectors/toolset-genesis-logo.svg"
     },
     "toolset-logo": {
       "codepoint": 61722,
@@ -103,7 +115,7 @@
     "autowidth": false,
     "config": "fontcustom.yml",
     "css_selector": ".icon-{{glyph}}",
-    "debug": true,
+    "debug": false,
     "file_hash": false,
     "font_name": "onthegosystems-icons",
     "force": false,

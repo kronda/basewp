@@ -14,9 +14,9 @@ if ( $top = $marketing->show_top($update) ) {
         switch( $type ) {
         case 'post_type':
             if ( $update ) {
-                $message = __( 'Congratulations! Your custom post type %s was successfully updated.', 'wpcf' );
+                $message = __( 'Congratulations! Your Post Type %s was successfully updated.', 'wpcf' );
             } else {
-                $message = __( 'congratulations! your new custom post type %s was successfully created.', 'wpcf' );
+                $message = __( 'congratulations! your new Post Type %s was successfully created.', 'wpcf' );
             }
             break;
         case 'fields':
@@ -28,9 +28,9 @@ if ( $top = $marketing->show_top($update) ) {
             break;
         case 'taxonomy':
             if ( $update) {
-                $message = __( 'Congratulations! Your custom taxonomy %s was successfully updated.', 'wpcf' );
+                $message = __( 'Congratulations! Your Taxonomy %s was successfully updated.', 'wpcf' );
             } else {
-                $message = __( 'Congratulations! Your new custom taxonomy %s was successfully created.', 'wpcf' );
+                $message = __( 'Congratulations! Your new Taxonomy %s was successfully created.', 'wpcf' );
             }
             break;
         case 'usermeta':
@@ -75,7 +75,7 @@ if ( $top = $marketing->show_top($update) ) {
 
             ?> &raquo;</a></li>
                 <li><a target="_blank" href="http://wp-types.com/documentation/user-guides/creating-wordpress-custom-taxonomy-archives/?utm_source=typesplugin&utm_medium=next-steps&utm_term=custom-taxonomy-archives&utm_campaign=types"><?php
-                    _e( 'Display custom taxonomy <strong>archives</strong>', 'wpcf' );
+                    _e( 'Display Taxonomy <strong>archives</strong>', 'wpcf' );
 
             ?> &raquo;</a></li>
             </ul>
@@ -116,4 +116,3 @@ if ( $top = $marketing->show_top($update) ) {
         <a href="javascript:void(0);" class="wpcf-button hide" style="float:right;"><?php _e( 'Hide notifications', 'wpcf' ); ?><span class="wpcf-button-arrow hide"></span></a>
     </div><!-- END .wpcf-notif-dropdown -->
         <?php } ?>
-<!-- END .wpcf-notif -->

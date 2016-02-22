@@ -84,17 +84,37 @@ class WPCF_Custom_Fields_List_Table extends WP_List_Table
             case 'description':
                 return stripslashes($item[$column_name]);
             case 'post_types':
+                global $wp_post_types;
                 $post_types = wpcf_admin_get_post_types_by_group($item['id']);
-                return empty($post_types) ? __('All post types', 'wpcf') : implode(', ', $post_types);
+                $supports = array();
+
+                if( ! empty( $post_types ) ) {
+
+                    foreach( $post_types as $key => $post_type_slug ) {
+
+                        if( isset( $wp_post_types[$post_type_slug]->labels->singular_name ) ) {
+                            $supports[] = $wp_post_types[$post_type_slug]->labels->singular_name;
+                        } else {
+                            $supports[] = $post_type_slug;
+                        }
+                    }
+                }
+
+
+                return empty($post_types) ? __('All post types', 'wpcf') : implode(', ', $supports);
                 break;
             case 'taxonomies':
+                global $wp_taxonomies;
+
                 $taxonomies = wpcf_admin_get_taxonomies_by_group($item['id']);
                 $output = '';
                 if (empty($taxonomies)) {
                     $output = __('None', 'wpcf');
                 } else {
                     foreach ($taxonomies as $taxonomy => $terms) {
-                        $output .= '<em>' . $taxonomy . '</em>: ';
+                        $output .= isset( $wp_taxonomies[$taxonomy]->labels->singular_name )
+                            ? '<em>' . $wp_taxonomies[$taxonomy]->labels->singular_name . '</em>: '
+                            : '<em>' . $taxonomy . '</em>: ';
                         $terms_output = array();
                         foreach ($terms as $term_id => $term) {
                             $terms_output[] = $term['name'];
@@ -227,7 +247,7 @@ class WPCF_Custom_Fields_List_Table extends WP_List_Table
             'title'       => __('Group Name', 'wpcf'),
             'description' => __('Description', 'wpcf'),
             'status'      => __('Active', 'wpcf'),
-            'post_types'  => __('Post types', 'wpcf'),
+            'post_types'  => __('Post Types', 'wpcf'),
             'taxonomies'  => __('Taxonomies', 'wpcf'),
         );
         if ( !WPCF_Roles::user_can_create('custom-field') ) {
@@ -543,10 +563,7 @@ class WPCF_Custom_Fields_List_Table extends WP_List_Table
             _e('No custom field groups found.','wpcf');
             return;
         }
-        printf(
-            '<p>%s</p>',
-            __('To use custom fields, please create a group to hold them.', 'wpcf')
-        );
+        echo wpautop(__('To use post fields, please create a group to hold them.', 'wpcf'));
         printf(
             '<a class="button-primary" href="%s">%s</a>',
             esc_url(

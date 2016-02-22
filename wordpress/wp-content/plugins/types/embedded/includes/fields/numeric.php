@@ -17,15 +17,26 @@ add_filter( 'wpcf_fields_numeric_meta_box_form_value_display',
  * @return type 
  */
 function wpcf_fields_numeric() {
+
     return array(
         'id' => 'wpcf-numeric',
         'title' => __( 'Numeric', 'wpcf' ),
         'description' => __( 'Numeric', 'wpcf' ),
-        'validate' => array('required', 'number' => array('forced' => true)),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' ),
+            ),
+            'number' => array(
+                'forced' => true,
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/numeric.php' )
+            )
+        ),
         'inherited_field_type' => 'textfield',
         'meta_key_type' => 'NUMERIC',
         'meta_box_js' => array('wpcf_field_number_validation_fix' => array(
-                'inline' => 'wpcf_field_number_validation_fix')),
+            'inline' => 'wpcf_field_number_validation_fix')
+        ),
+        'font-awesome' => 'calculator',
     );
 }
 
@@ -105,6 +116,9 @@ function wpcf_fields_numeric_editor_submit( $data, $field, $context ) {
     if ( $context == 'usermeta' ) {
         $add .= wpcf_get_usermeta_form_addon_submit();
         $shortcode = wpcf_usermeta_get_shortcode( $field, $add );
+	} elseif ( $context == 'termmeta' ) {
+        $add .= wpcf_get_termmeta_form_addon_submit();
+        $shortcode = wpcf_termmeta_get_shortcode( $field, $add );
     } else {
         $shortcode = wpcf_fields_get_shortcode( $field, $add );
     }

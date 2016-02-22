@@ -27,10 +27,12 @@ function wpcf_post_relationship_init() {
 function wpcf_post_relationship_add_metabox($meta_boxes, $type )
 {
     if ( 'post_type' == $type ) {
-        $key = 'relationship';
-        if ( !in_array($key, $meta_boxes['side']) && !in_array($key, $meta_boxes['normal'])) {
-            $meta_boxes['normal'][] = $key;
-        }
+        $meta_boxes['relationship'] = array(
+            'callback' => 'wpcf_admin_metabox_relationship',
+            'title' => __('Post Relationships (Parent / Child)', 'wpcf'),
+            'default' => 'normal',
+            'priority' => 'low',
+        );
     }
     return $meta_boxes;
 }
@@ -40,7 +42,8 @@ function wpcf_post_relationship_add_metabox($meta_boxes, $type )
  *
  * @param type $data
  */
-function wpcf_pr_custom_types_save_action( $data ) {
+function wpcf_pr_custom_types_save_action( $data )
+{
     $relationships = get_option( 'wpcf_post_relationship', array() );
     $save_has_data = array();
     // Reset has
@@ -77,6 +80,24 @@ function wpcf_pr_custom_types_save_action( $data ) {
             }
         }
     }
+
+    /**
+     * sanitization
+     */
+    $post_types = get_post_types();
+    foreach( $relationships as $parent => $data ) {
+        if ( !isset($post_types[$parent]) ) {
+            unset($relationships[$parent]);
+            continue;
+        }
+        foreach( $data as $child => $chid_data) {
+            if ( !isset($post_types[$child]) ) {
+                unset($relationships[$parent][$child]);
+                continue;
+            }
+        }
+    }
+
     update_option( 'wpcf_post_relationship', $relationships );
 }
 
@@ -98,14 +119,41 @@ function wpcf_pr_admin_edit_fields( $parent, $child ) {
         die( __( 'Relationship do not exist', 'wpcf' ) );
     }
     $data = $relationships[$parent][$child];
+
     wp_enqueue_script( 'jquery' );
     wp_enqueue_style( 'types' );
     wpcf_admin_ajax_head( 'Edit fields', 'wpcf' );
     // Process submit
     if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'pt_edit_fields' ) ) {
         $relationships[$parent][$child]['fields_setting'] = sanitize_text_field( $_POST['fields_setting'] );
-		// @todo Maybe sanitization here
-        $relationships[$parent][$child]['fields'] = isset( $_POST['fields'] ) ? $_POST['fields'] : array();
+
+        /**
+         * sanitize
+         */
+        $relationships[$parent][$child]['fields'] = array();
+        if (  isset( $_POST['fields'] ) && is_array($_POST['fields'])) {
+            $allowed_keys = wpcf_post_relationship_get_specific_fields_keys($child);
+            foreach( $_POST['fields'] as $key => $value ) {
+                /**
+                 * sanitize Taxonomy
+                 */
+                if ( '_wpcf_pr_taxonomies' == $key ) {
+                    if ( is_array($value) ) {
+                        $relationships[$parent][$child]['fields'][$key] = array();
+                        foreach( array_keys($value) as $taxonomy) {
+                            $taxonomy = get_taxonomy($taxonomy);
+                            if ( is_object($taxonomy) ) {
+                                $relationships[$parent][$child]['fields'][$key][$taxonomy->name] = 1;
+                            }
+                        }
+                    }
+                    continue;
+                }
+                if ( array_key_exists( $key, $allowed_keys) ) {
+                    $relationships[$parent][$child]['fields'][$key] = 1;
+                }
+            }
+        }
         update_option( 'wpcf_post_relationship', $relationships );
         ?>
         <script type="text/javascript">
@@ -173,30 +221,10 @@ function wpcf_pr_admin_edit_fields( $parent, $child ) {
      */
     $options = array();
     /**
-     * check and add build-in properites
+     * check and add built-in properites
      */
-    $check_support = array(
-        'title' => array(
-            'name' => '_wp_title',
-            'title' => __( 'Post title', 'wpcf' )
-        ),
-        'editor' => array(
-            'name' => '_wp_body',
-            'title' => __( 'Post body', 'wpcf' )
-        ),
-        'excerpt' => array(
-            'name' => '_wp_excerpt',
-            'title' => __( 'Post excerpt', 'wpcf' )
-        ),
-        'thumbnail' => array(
-            'name' => '_wp_featured_image',
-            'title' => __( 'Post featured image', 'wpcf' )
-        ),
-    );
-    foreach ( $check_support as $child_field_key => $child_field_data ) {
-        if ( !post_type_supports( $child, $child_field_key ) ) {
-            continue;
-        }
+    $supports= wpcf_post_relationship_get_supported_fields_by_post_type($child);
+    foreach ( $supports as $child_field_key => $child_field_data ) {
         $options[$child_field_data['name']] = array(
             '#title' => $child_field_data['title'],
             '#name' => sprintf('fields[%s]', $child_field_data['name']),
@@ -291,7 +319,31 @@ function wpcf_pr_admin_edit_fields( $parent, $child ) {
 function wpcf_admin_metabox_relationship($post_type)
 {
     $form = array();
-    $form['table-pr-open'] = wpcf_admin_metabox_begin(__( 'Post Relationship', 'wpcf' ), 'relationship', 'wpcf-types-form-pr-table', false);
+    $form['description'] = array(
+        '#type' => 'markup',
+        '#markup' => sprintf(
+            '<p class="description">%s</p>',
+            __('Parent/child relationship lets you connect between posts of different types. When you edit a parent, you will see its children listed in a table and you can edit the fields of the children. When you edit a child, you can choose the parents. On the front-end, you can display a list of children or information about the parents. <a href="https://wp-types.com/documentation/user-guides/creating-post-type-relationships/?utm_source=typesplugin&utm_medium=postedit&utm_campaign=parent_child_relationship" target="_blank">Parent/child documentation</a>.', 'wpcf')
+        )
+    );
+    if ( !isset($_REQUEST['wpcf-post-type']) ) {
+        $form['alert'] = array(
+            '#type' => 'notice',
+            '#markup' => __( 'Please save first, before you can edit the relationship.', 'wpcf' ),
+        );
+        $form = wpcf_form(__FUNCTION__, $form);
+        echo $form->renderForm();
+        return false;
+    }
+
+    $post_type = false;;
+    $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
+    if ( !isset( $custom_types[$_REQUEST['wpcf-post-type']] ) ) {
+        return false;
+    }
+    $post_type = $custom_types[$_REQUEST['wpcf-post-type']];
+    unset($custom_types);
+
     /**
      * belongs/children section
      */
@@ -299,42 +351,24 @@ function wpcf_admin_metabox_relationship($post_type)
     $belongs = wpcf_pr_admin_get_belongs( $post_type['slug'] );
     $post_types = get_post_types( '', 'objects' );
 
-    if ( empty( $has ) || empty( $post_type['slug'] ) ) {
-        $txt_has = __( "Children: None", 'wpcf' );
-    } else {
-        $txt_has = array();
-        foreach ( $has as $pr_key => $pr_data ) {
-            $txt_has[] = isset( $post_types[$pr_key] ) ? $post_types[$pr_key]->labels->singular_name : $pr_key;
-        }
-        $txt_has = sprintf( __( "Children: %s", 'wpcf' ), implode( ', ', $txt_has ) );
-    }
-    if ( !empty( $belongs ) ) {
-        $txt_belongs = array();
-        foreach ( $belongs as $pr_key => $pr_data ) {
-            $txt_belongs[] = isset( $post_types[$pr_key] ) ? $post_types[$pr_key]->labels->singular_name : $pr_key;
-        }
-        $txt_belongs = sprintf( __( "Parent: %s", 'wpcf' ),
-            implode( ', ', $txt_belongs ) );
-    } else {
-        $txt_belongs = __( "Parent: None", 'wpcf' );
-    }
-    // Others belonging to
-    if ( !empty( $belongs ) ) {
-        $txt_belongs = array();
-        foreach ( $belongs as $pr_key => $pr_data ) {
-            $txt_belongs[] = isset( $post_types[$pr_key] ) ? $post_types[$pr_key]->labels->singular_name : $pr_key;
-        }
-        $txt_belongs = sprintf( __( "Parent: %s", 'wpcf' ),
-            implode( ', ', $txt_belongs ) );
-    } else {
-        $txt_belongs = __( "Parent: None", 'wpcf' );
-    }
-    $form['table-pr-belongs'] = array(
+    /**
+     * parents
+     */
+    $form['parent-h3'] = array(
         '#type' => 'markup',
-        '#markup' => '<div style="margin: 10px 0 10px 0;"><span class="wpcf-pr-belongs-summary">' . $txt_belongs . '</span>&nbsp;'
-        . '<a href="javascript:void(0);" id="wpcf-pr-belongs-edit" class="button-secondary wpcf-pr-edit">'
-        . __( 'Edit', 'wpcf' ) . '</a>',
-            );
+        '#markup' => sprintf(
+            '<h3>%s</h3>',
+            __('Parent Post Types:', 'wpcf')
+        )
+    );
+
+    $form['parent-description'] = array(
+        '#type' => 'markup',
+        '#markup' => sprintf(
+            '<p class="description">%s</p>',
+            __('Select which post types will be parents of this type.', 'wpcf')
+        )
+    );
     $options = array();
 
     /**
@@ -354,35 +388,51 @@ function wpcf_admin_metabox_relationship($post_type)
         ) {
             continue;
         }
-        // Check if it's in has
+        $options[$temp_post_type_slug] = array(
+            '#name' => 'ct[post_relationship][belongs][' . $temp_post_type_slug . ']',
+            '#title' => $temp_post_type->labels->singular_name,
+            '#default_value' => isset( $belongs[$temp_post_type_slug] ),
+            '#inline' => true,
+            '#before' => '<li>',
+            '#after' => '</li>',
+            '#attributes' => array(
+                'class' => 'js-wpcf-relationship-checkbox',
+                'data-wpcf-type' => 'belongs',
+                'data-wpcf-value' => esc_attr($temp_post_type_slug),
+                'data-wpcf-message-disabled' => esc_attr__('This post type is disabled, becouse is used as child post.', 'wpcf'),
+            ),
+        );
         if ( isset( $has[$temp_post_type_slug] ) ) {
-            continue;
-        }
-        $options[$temp_post_type_slug]['#name'] = 'ct[post_relationship][belongs][' . $temp_post_type_slug . ']';
-        $options[$temp_post_type_slug]['#title'] = $temp_post_type->labels->singular_name;
-        $options[$temp_post_type_slug]['#default_value'] = isset( $belongs[$temp_post_type_slug] );
-        $options[$temp_post_type_slug]['#inline'] = true;
-        $options[$temp_post_type_slug]['#after'] = '&nbsp;&nbsp;';
-        if ( is_rtl() ) {
-            $options[$temp_post_type_slug]['#before'] = '<div style="float:right;margin-left:10px;">';
-            $options[$temp_post_type_slug]['#after'] .= '</div>';
+            $options[$temp_post_type_slug]['#before'] = '<li class="disabled">';
+            $options[$temp_post_type_slug]['#attributes']['disabled'] = 'disabled';
         }
     }
-    $form['table-pr-has-form'] = array(
+    $form['table-pr-belongs-form'] = array(
         '#type' => 'checkboxes',
         '#options' => $options,
         '#name' => 'ct[post_relationship]',
-        '#before' => '<div style="display:none; margin: 10px 0 20px 0;">',
-        '#after' => '<br /><br /><a href="javascript:void(0);" class="button-primary wpcf-pr-belongs-apply">'
-        . __( 'Apply', 'wpcf' ) . '</a>&nbsp;<a href="javascript:void(0);" class="button-secondary wpcf-pr-belongs-cancel">'
-        . __( 'Cancel', 'wpcf' ) . '</a></div></div>',
         '#inline' => true,
+        '#before' => '<ul>',
+        '#after' => '</ul>',
     );
-    $form['table-pr-has'] = array(
+
+    /**
+     * child posts
+     */
+    $form['child-h3'] = array(
         '#type' => 'markup',
-        '#markup' => '<div style="margin: 10px 0 5px 0;"><span class="wpcf-pr-has-summary">' . $txt_has . '</span>&nbsp;'
-        . '<a href="javascript:void(0);" id="wpcf-pr-has-edit" class="button-secondary wpcf-pr-edit">'
-        . __( 'Edit', 'wpcf' ) . '</a>',
+        '#markup' => sprintf(
+            '<hr /><h3>%s</h3>',
+            __('Children Post Types:', 'wpcf')
+        )
+    );
+
+    $form['child-description'] = array(
+        '#type' => 'markup',
+        '#markup' => sprintf(
+            '<p class="description">%s</p>',
+            __('Select which post types will be children of this type.', 'wpcf')
+        )
     );
     $options = array();
     foreach ( $post_types as $temp_post_type_slug => $temp_post_type ) {
@@ -395,65 +445,128 @@ function wpcf_admin_metabox_relationship($post_type)
         ) {
             continue;
         }
+
+        $nonce = sprintf(
+            'child-post-fields-%s-%s',
+            $post_type['slug'],
+            $temp_post_type_slug
+        );
+        $a = sprintf(
+            ' <span>(<a class="js-wpcf-edit-child-post-fields" href="#" data-wpcf-nonce="%s" data-wpcf-child="%s" data-wpcf-parent="%s" data-wpcf-title="%s" data-wpcf-buttons-apply="%s" data-wpcf-buttons-cancel="%s" data-wpcf-message-loading="%s" data-wpcf-save-status="%s">%s</a>)</span>',
+            esc_attr(wp_create_nonce($nonce)),
+            esc_attr($temp_post_type_slug),
+            esc_attr($post_type['slug']),
+            esc_attr(
+                sprintf(
+                    __('Select child fields from %s to be displayed in Post Relationship table', 'wpcf'),
+                    $temp_post_type->labels->singular_name
+                )
+            ),
+            esc_attr__('Apply', 'wpcf'),
+            esc_attr__('Cancel', 'wpcf'),
+            esc_attr__('Please Wait, Loading…', 'wpcf'),
+            esc_attr(isset( $has[$temp_post_type_slug] )?'saved':'new'),
+            esc_attr__('Select fields', 'wpcf')
+        );
+
+        $options[$temp_post_type_slug] = array(
+            '#name' => 'ct[post_relationship][has][' . $temp_post_type_slug . ']',
+            '#title' => $temp_post_type->labels->singular_name,
+            '#inline' => true,
+            '#before' => '<li>',
+            '#after' => $a.'</li>',
+            '#attributes' => array(
+                'class' => 'js-wpcf-relationship-checkbox',
+                'data-wpcf-type' => 'has',
+                'data-wpcf-value' => esc_attr($temp_post_type_slug),
+                'data-wpcf-message-disabled' => esc_attr__('This post type is disabled, becouse is used as parent post.', 'wpcf'),
+            ),
+        );
         // Check if it already belongs
         if ( isset( $belongs[$temp_post_type_slug] ) ) {
-            continue;
-        }
-        $options[$temp_post_type_slug]['#name'] = 'ct[post_relationship][has][' . $temp_post_type_slug . ']';
-        $options[$temp_post_type_slug]['#title'] = $temp_post_type->labels->singular_name;
-        $options[$temp_post_type_slug]['#default_value'] = isset( $has[$temp_post_type_slug] );
-        $options[$temp_post_type_slug]['#inline'] = true;
-        $options[$temp_post_type_slug]['#after'] = isset( $has[$temp_post_type_slug] ) ? ''
-                . '<a href="'
-                . admin_url( 'admin-ajax.php?action=wpcf_ajax&wpcf_action=pt_edit_fields&child='
-                        . $temp_post_type_slug . '&parent='
-                        . $post_type['slug']
-                        . '&_wpnonce='
-                        . wp_create_nonce( 'pt_edit_fields' )
-                        . '&KeepThis=true&TB_iframe=true' )
-                . '" class="thickbox" title="'
-                . __('Select child fields to be displayed', 'wpcf') . '">('
-                . __( 'Edit fields', 'wpcf' ) . ')</a>&nbsp;&nbsp;' : ''
-                . '<a href="javascript:void(0);" style="color:Gray;" title="'
-                . __( 'Please save the page first, before you can edit the child items', 'wpcf' ) . '">('
-                . __( 'Edit fields', 'wpcf' ) . ')</a>&nbsp;&nbsp;';
-        if ( is_rtl() ) {
-            $options[$temp_post_type_slug]['#before'] = '<div style="float:right;margin-left:10px;">';
-            $options[$temp_post_type_slug]['#after'] .= '</div>';
+            $options[$temp_post_type_slug]['#before'] = '<li class="disabled">';
+            $options[$temp_post_type_slug]['#attributes']['disabled'] = 'disabled';
+        } else if ( isset( $has[$temp_post_type_slug] ) ) {
+            $options[$temp_post_type_slug]['#default_value'] = true;
+            $options[$temp_post_type_slug]['#before'] = '<li class="active">';
         }
     }
-    $form['table-pr-belongs-form'] = array(
+    $form['table-pr-has-form'] = array(
         '#type' => 'checkboxes',
         '#options' => $options,
         '#name' => 'ct[post_relationship]',
-        '#before' => '<div style="display:none; margin: 10px 0 20px 0;">',
-        '#after' => '<br /><br /><a href="javascript:void(0);" class="button-primary wpcf-pr-has-apply">'
-        . __( 'Apply', 'wpcf' ) . '</a>&nbsp;<a href="javascript:void(0);" class="button-secondary wpcf-pr-has-cancel">'
-        . __( 'Cancel', 'wpcf' ) . '</a></div></div>',
         '#inline' => true,
+        '#before' => '<ul>',
+        '#after' => '</ul>',
     );
-    $form['table-pr-explanation'] = array(
-        '#type' => 'markup',
-        '#markup' => '<p>'
-        . __( "You can choose which fields will show when editing parent pages.", 'wpcf' )
-        . '<br />' . __( "Click on the 'edit' button to select them for each parent.", 'wpcf' )
-        . '<br />'
-        . sprintf( __( 'Learn about %sPost Type Relationships%s', 'wpcf' ),
-                '<a href="http://wp-types.com/documentation/user-guides/creating-post-type-relationships/" target="_blank">',
-                ' &raquo;</a>' )
-        . '</p>',
-    );
-    /**
-     * close form
-     */
-    $form['table-pr-close'] = wpcf_admin_metabox_end();
-    /**
-        * additional settings
-    */
-    wpcf_admin_add_js_settings( 'wpcf_pr_has_empty_txt', '\'' . __( "Children: None", 'wpcf' ) . '\'' );
-    wpcf_admin_add_js_settings( 'wpcf_pr_has_txt', '\'' . __( "Children: %s", 'wpcf' ) . '\'' );
-    wpcf_admin_add_js_settings( 'wpcf_pr_belongs_empty_txt', '\'' . __( "Parent: None", 'wpcf' ) . '\'' );
-    wpcf_admin_add_js_settings( 'wpcf_pr_belongs_txt', '\'' . __( "Parent: %s", 'wpcf' ) . '\'' );
-    return $form;
+
+     $form = wpcf_form(__FUNCTION__, $form);
+     echo $form->renderForm();
 }
 
+/**
+ * Get allowed keys
+ *
+ * Function colect proper keys of all fields - built-in and CF's
+ *
+ * @since 1.9.0
+ *
+ * @param string $child post type slug
+ * @return array array of allowed slugs
+ */
+function wpcf_post_relationship_get_specific_fields_keys($child)
+{
+    $options = array();
+    $groups = wpcf_admin_get_groups_by_post_type( $child );
+    foreach ( $groups as $group ) {
+        $fields = wpcf_admin_fields_get_fields_by_group( $group['id'] );
+        foreach ( $fields as $key => $cf ) {
+            $__key = wpcf_types_cf_under_control( 'check_outsider', $key ) ? $key : WPCF_META_PREFIX . $key;
+            $options[$__key] = 1;
+        }
+    }
+    $supports = wpcf_post_relationship_get_supported_fields_by_post_type($child);
+    foreach ( $supports as $child_field_key => $child_field_data ) {
+        $options[$child_field_data['name']] = 1;
+    }
+    return $options;
+}
+
+/**
+ * Get built-in post fields
+ *
+ * Get only built-in post fields based on post type.
+ *
+ * @since 1.9.0
+ *
+ * @param string $post_type post type slug
+ * @return array larray of supported built-in post fields
+ */
+function wpcf_post_relationship_get_supported_fields_by_post_type($post_type)
+{
+    $check_support = array(
+        'title' => array(
+            'name' => '_wp_title',
+            'title' => __( 'Post title', 'wpcf' )
+        ),
+        'editor' => array(
+            'name' => '_wp_body',
+            'title' => __( 'Post body', 'wpcf' )
+        ),
+        'excerpt' => array(
+            'name' => '_wp_excerpt',
+            'title' => __( 'Post excerpt', 'wpcf' )
+        ),
+        'thumbnail' => array(
+            'name' => '_wp_featured_image',
+            'title' => __( 'Post featured image', 'wpcf' )
+        ),
+    );
+    foreach ( $check_support as $child_field_key => $child_field_data ) {
+        if ( post_type_supports( $post_type, $child_field_key ) ) {
+            continue;
+        }
+        unset($check_support[$child_field_key]);
+    }
+    return $check_support;
+}

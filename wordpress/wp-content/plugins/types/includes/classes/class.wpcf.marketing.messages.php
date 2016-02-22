@@ -6,7 +6,8 @@
  *
  */
 
-include_once dirname(__FILE__).'/class.wpcf.marketing.php';
+include_once WPCF_INC_ABSPATH.'/classes/class.wpcf.marketing.php';
+require_once WPCF_INC_ABSPATH.'/classes/class.types.admin.taxonomies.php';
 
 /**
  * Types Marketing Class
@@ -21,6 +22,7 @@ include_once dirname(__FILE__).'/class.wpcf.marketing.php';
 class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
 {
     private $state;
+    private $taxonomies;
 
     public function __construct()
     {
@@ -28,6 +30,7 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
         add_action('admin_enqueue_scripts', array($this, 'register_scripts'), 1);
         add_action('admin_notices', array($this, 'add_message_after_activate'));
         $this->set_state();
+        $this->taxonomies = new Types_Admin_Taxonomies();
     }
 
     private function set_state()
@@ -129,9 +132,25 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
                 && array_key_exists('wpcf-tax', $_GET)
             ) {
                 $taxonomies = get_option(WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, array());
+                $taxonomies = $this->taxonomies->get();
+
                 $candidate_key = sanitize_text_field( $_GET['wpcf-tax'] );
                 if ( array_key_exists($candidate_key, $taxonomies) ) {
-                    $text = preg_replace( '/TTT/', $taxonomies[$candidate_key]['labels']['name'], $text);
+                    $ttt = __('unknown', 'wpcf');
+                    if (
+                        true
+                        && isset($taxonomies[$candidate_key])
+                        && isset($taxonomies[$candidate_key]['labels'])
+                    ) {
+                        if ( isset( $taxonomies[$candidate_key]['labels']['name'] ) ) {
+                            $ttt = $taxonomies[$candidate_key]['labels']['name'];
+                        } else 
+                        if ( isset( $taxonomies[$candidate_key]['labels']['singular_name'] ) ) {
+                            $ttt = $taxonomies[$candidate_key]['labels']['singular_name'];
+                        }
+
+                    }
+                    $text = preg_replace( '/TTT/', $ttt, $text);
                     if ( array_key_exists('supports', $taxonomies[$candidate_key]) ) {
                         $types = get_option(WPCF_OPTION_NAME_CUSTOM_TYPES, array());
                         $post_type = array_keys($taxonomies[$candidate_key]['supports']);

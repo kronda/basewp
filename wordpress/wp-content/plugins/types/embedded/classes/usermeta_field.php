@@ -9,12 +9,14 @@
 class WPCF_Usermeta_Field extends WPCF_Field
 {
 
-    /**
-     * Set current post and field.
-     *
-     * @param type $post
-     * @param type $cf
-     */
+	/**
+	 * Set current post and field.
+	 *
+	 * @param int $user_id
+	 * @param type $cf
+	 *
+	 * @return bool
+	 */
     function set( $user_id, $cf ) {
 
         global $wpcf;

@@ -10,8 +10,16 @@ function wpcf_fields_url() {
         'id' => 'wpcf-url',
         'title' => 'URL',
         'description' => 'URL',
-        'validate' => array('required', 'url'),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            ),
+            'url' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/url.php' )
+            ),
+        ),
         'inherited_field_type' => 'textfield',
+        'font-awesome' => 'globe',
     );
 }
 
@@ -104,6 +112,9 @@ function wpcf_fields_url_editor_submit( $data, $field, $context ) {
     if ( $context == 'usermeta' ) {
         $add .= wpcf_get_usermeta_form_addon_submit();
         $shortcode = wpcf_usermeta_get_shortcode( $field, $add );
+	} elseif ( $context == 'termmeta' ) {
+        $add .= wpcf_get_termmeta_form_addon_submit();
+        $shortcode = wpcf_termmeta_get_shortcode( $field, $add );
     } else {
         $shortcode = wpcf_fields_get_shortcode( $field, $add );
     }

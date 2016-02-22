@@ -68,6 +68,7 @@ class WPToolset_Field_File extends WPToolset_Field_Textfield
         $translated_type = '';
         $form = array();
         $preview = '';
+		$wpml_action = $this->getWPMLAction();
 
         // Get attachment by guid
         if ( !empty( $value ) ) {
@@ -120,23 +121,39 @@ class WPToolset_Field_File extends WPToolset_Field_Textfield
                 $translated_type = __( 'file', 'wpv-views' );
                 break;
         }
+		
+		$button_status = '';
+		if (
+			is_admin()
+			&& defined( 'WPML_TM_VERSION' ) 
+			&& intval( $wpml_action ) === 1 
+			&& function_exists( 'wpcf_wpml_post_is_original' )
+			&& ! wpcf_wpml_post_is_original()
+			&& function_exists( 'wpcf_wpml_have_original' )
+			&& wpcf_wpml_have_original()
+		) {
+			$button_status = ' disabled="disabled"';
+		}
+		
         $button = sprintf(
-            '<a href="#" class="js-wpt-file-upload button button-secondary" data-wpt-type="%s">%s</a>',
+            '<button class="js-wpt-file-upload button button-secondary" data-wpt-type="%s"%s>%s</button>',
             $type,
+			$button_status,
             sprintf( __( 'Select %s', 'wpv-views' ), $translated_type )
         );
 
         // Set form
         $form[] = array(
-            '#type' => 'textfield',
-            '#name' => $this->getName(),
-            '#title' => $this->getTitle(),
-            '#description' => $this->getDescription(),
-            '#value' => $value,
-            '#suffix' => '&nbsp;' . $button,
-            '#validate' => $this->getValidationData(),
-            '#repetitive' => $this->isRepetitive(),
-            '#attributes' => $this->getAttr(),
+            '#type'			=> 'textfield',
+            '#name'			=> $this->getName(),
+            '#title'		=> $this->getTitle(),
+            '#description'	=> $this->getDescription(),
+            '#value'		=> $value,
+            '#suffix'		=> '&nbsp;' . $button,
+            '#validate'		=> $this->getValidationData(),
+            '#repetitive'	=> $this->isRepetitive(),
+            '#attributes'	=> $this->getAttr(),
+			'wpml_action'	=> $wpml_action,
         );
 
         $form[] = array(

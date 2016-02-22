@@ -1,13 +1,5 @@
 <?php
 /**
- *
- *
- */
-
-add_action( 'save_post', 'wpcf_fields_checkbox_save_check', 15, 1 );
-add_action( 'edit_attachment', 'wpcf_fields_checkbox_save_check', 15, 1 );
-
-/**
  * Register data (called automatically).
  *
  * @return type
@@ -18,10 +10,23 @@ function wpcf_fields_checkbox()
         'id' => 'wpcf-checkbox',
         'title' => __( 'Checkbox', 'wpcf' ),
         'description' => __( 'Checkbox', 'wpcf' ),
-        'validate' => array('required'),
+        'validate' => array(
+            'required' => array(
+                'form-settings' => include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' )
+            )
+        ),
         'meta_key_type' => 'BINARY',
+        'font-awesome' => 'check-square-o',
     );
 }
+
+/**
+ *
+ *
+ */
+
+add_action( 'save_post', 'wpcf_fields_checkbox_save_check', 15, 1 );
+add_action( 'edit_attachment', 'wpcf_fields_checkbox_save_check', 15, 1 );
 
 /**
  * Form data for post edit page.
@@ -58,10 +63,10 @@ function wpcf_fields_checkbox_meta_box_form($field, $field_object)
     }
     return array(
         '#type' => 'checkbox',
-        '#value' => $field['data']['set_value'],
+        '#value' => esc_attr($field['data']['set_value']),
         '#default_value' => $checked,
         '#after' => '<input type="hidden" name="_wpcf_check_checkbox['
-        . $field_object->post->ID . '][' . $field_object->slug
+        . esc_attr($field_object->post->ID) . '][' . esc_attr($field_object->slug)
         . ']" value="1" />',
     );
 }
@@ -105,11 +110,11 @@ function wpcf_fields_checkbox_editor_callback($field, $settings)
 function wpcf_fields_checkbox_editor_submit($data, $field, $context)
 {
     $add = '';
-    $types_attr = 'field';
     if ( $context == 'usermeta' ) {
         $add .= wpcf_get_usermeta_form_addon_submit();
-        $types_attr = 'usermeta';
-    }
+    } elseif ( $context == 'termmeta' ) {
+        $add .= wpcf_get_termmeta_form_addon_submit();
+	}
 
     if ( isset($data['display']) && $data['display'] == 'value' ) {
 
@@ -121,6 +126,11 @@ function wpcf_fields_checkbox_editor_submit($data, $field, $context)
                     $checked_add, $data['selected'] );
             $shortcode_unchecked = wpcf_usermeta_get_shortcode( $field,
                     $unchecked_add, $data['not_selected'] );
+		} else if ( $context == 'termmeta' ) {
+			$shortcode_checked = wpcf_termmeta_get_shortcode( $field,
+                    $checked_add, $data['selected'] );
+            $shortcode_unchecked = wpcf_termmeta_get_shortcode( $field,
+                    $unchecked_add, $data['not_selected'] );
         } else {
             $shortcode_checked = wpcf_fields_get_shortcode( $field,
                     $checked_add, $data['selected'] );
@@ -131,6 +141,8 @@ function wpcf_fields_checkbox_editor_submit($data, $field, $context)
     } else {
         if ( $context == 'usermeta' ) {
             $shortcode = wpcf_usermeta_get_shortcode( $field, $add );
+		} else if ( $context == 'termmeta' ) {
+			$shortcode = wpcf_termmeta_get_shortcode( $field, $add );
         } else {
             $shortcode = wpcf_fields_get_shortcode( $field, $add );
         }
@@ -193,29 +205,25 @@ function wpcf_fields_checkbox_view($params)
         'db' == $params['field']['data']['display']
         && $params['field_value'] != ''
     ) {
+		// We need to translate here because the stored value is on the original language
+		// When updaing the value in the Field group, we might have problems
         $output = $params['field_value'];
         // Show the translated value if we have one.
         $field = wpcf_fields_get_field_by_slug( $params['field']['slug'], $option_name );
-		// We need to translate here because the stored value is on the original language
-		// When updaing the value in the Field group, we might have problems
-		// @wpmlhere
         $output = wpcf_translate( 'field ' . $field['id'] . ' checkbox value', $output );
     } elseif ( $params['field']['data']['display'] == 'value'
             && $params['field_value'] != '' ) {
         if ( !empty( $params['field']['data']['display_value_selected'] ) ) {
-            $output = $params['field']['data']['display_value_selected'];
 			// We need to translate here because the stored value is on the original language
 			// When updaing the value in the Field group, we might have problems
-			// @wpmlhere
-            $output = wpcf_translate( 'field ' . $params['field']['id'] . ' checkbox value selected',
-                    $output );
+            $output = $params['field']['data']['display_value_selected'];
+            $output = wpcf_translate( 'field ' . $params['field']['id'] . ' checkbox value selected', $output );
         }
     } elseif ( $params['field']['data']['display'] == 'value'
         && !empty( $params['field']['data']['display_value_not_selected'] ) ) {
-        $output = $params['field']['data']['display_value_not_selected'];
 		// We need to translate here because the stored value is on the original language
 		// When updaing the value in the Field group, we might have problems
-		// @wpmlhere
+        $output = $params['field']['data']['display_value_not_selected'];
         $output = wpcf_translate( 'field ' . $params['field']['id'] . ' checkbox value not selected', $output );
     } else {
         return '__wpcf_skip_empty';

@@ -62,7 +62,7 @@ if (!class_exists("FieldConfig")) {
                     break;
                 case 'checkboxes':
                     if (is_array($field_arr['attr']['default']) && count($field_arr['attr']['default'])) {
-                        $this->default_value = $field_arr['attr']['default'][0];
+                        $this->default_value = isset($field_arr['attr']['default'][0]) ? $field_arr['attr']['default'][0] : "";
                     }
                     break;
 
@@ -86,12 +86,12 @@ if (!class_exists("FieldConfig")) {
 
                 case 'checkbox':
                     $this->default_value = isset($field_arr['data']['checked']) ? $field_arr['data']['checked'] : false;
-                    /*if (!$this->default_value)
-                        $this->default_value = isset($field_arr['data']['set_value']) && $field_arr['data']['set_value'] == 'y' ? true : false;*/
+                    /* if (!$this->default_value)
+                      $this->default_value = isset($field_arr['data']['set_value']) && $field_arr['data']['set_value'] == 'y' ? true : false; */
                     break;
 
                 default:
-                    $this->default_value = "";
+                    $this->default_value = isset($field_arr['attr']['preset_value']) ? $field_arr['attr']['preset_value'] : "";
                     break;
             }
         }
@@ -103,7 +103,8 @@ if (!class_exists("FieldConfig")) {
                     $arr = $attrs;
                     break;
                 case 'checkboxes':
-                    foreach ($attrs['actual_titles'] as $refvalue => $title) {
+                    $actual_titles = isset($attrs['actual_titles']) ? $attrs['actual_titles'] : array();
+                    foreach ($actual_titles as $refvalue => $title) {
                         $value = $attrs['actual_values'][$refvalue];
                         $arr[$refvalue] = array('value' => $refvalue, 'title' => $title, 'name' => $name, 'data-value' => $value);
                         if (in_array($refvalue, $attrs['default'])) {
@@ -112,7 +113,7 @@ if (!class_exists("FieldConfig")) {
                     }
                     break;
                 case 'select':
-                    $values = $attrs['options'];
+                    $values = isset($attrs['options']) ? $attrs['options'] : array();
                     foreach ($values as $refvalue => $title) {
                         $arr[$refvalue] = array(
                             'value' => $refvalue,
@@ -122,7 +123,8 @@ if (!class_exists("FieldConfig")) {
                     }
                     break;
                 case 'radios':
-                    foreach ($attrs['actual_titles'] as $refvalue => $title) {
+                    $actual_titles = isset($attrs['actual_titles']) ? $attrs['actual_titles'] : array();
+                    foreach ($actual_titles as $refvalue => $title) {
                         $arr[$refvalue] = array(
                             'value' => $refvalue,
                             'title' => $title,

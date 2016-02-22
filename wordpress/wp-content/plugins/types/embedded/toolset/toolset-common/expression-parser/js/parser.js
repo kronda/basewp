@@ -119,7 +119,7 @@ window.ToolsetParser=window.ToolsetParser ||
             {
                 var found=false;
                 var ii=a.length;
-                //Fixed https://onthegosystems.myjetbrains.com/youtrack/issue/cred-262
+                //Fixed cred-262
                 if (ii==0 && v=='') return true; 
                 //####################################################################
                 while(--ii>=0)
@@ -2583,7 +2583,6 @@ window.ToolsetParser=window.ToolsetParser ||
                     //console.log(myarrPostFix);
                     while (intIndex < myarrPostFix.length)
                     {
-                        //console.log(myStack.toString());
                         strTok = myarrPostFix[intIndex];
                         switch (strTok.type)
                         {
@@ -2723,7 +2722,7 @@ window.ToolsetParser=window.ToolsetParser ||
                                         objTmp2 = null;
                                         objOp2  = myStack.Pop();
                                         objOp1  = myStack.Pop();
-                                        
+
                                         if (objOp1.isVariable)
                                             objOp1 = _getVariable(objOp1.val, myvarArr);
                                         if (objOp2.isVariable)
@@ -2731,13 +2730,17 @@ window.ToolsetParser=window.ToolsetParser ||
 
                                         if (objOp1.isStringLiteral && objOp2.isNumber)
                                         {                                            
-                                            dblVal1 = objOp1.val.toString();
-                                            dblVal2 = objOp2.val.toString();
+                                            //dblVal1 = objOp1.val.toString();
+                                            //dblVal2 = objOp2.val.toString();
+                                            dblVal1 = Tokenizer.toNumber(objOp1.val);
+                                            dblVal2 = Tokenizer.toNumber(objOp2.val);
                                         }
                                         else if (objOp1.isNumber && objOp2.isStringLiteral)
                                         {
-                                            dblVal1 = objOp1.val.toString();
-                                            dblVal2 = objOp2.val.toString();
+                                            //dblVal1 = objOp1.val.toString();
+                                            //dblVal2 = objOp2.val.toString();
+                                            dblVal1 = Tokenizer.toNumber(objOp1.val);
+                                            dblVal2 = Tokenizer.toNumber(objOp2.val);
                                         }
                                         else if (objOp1.isNumber && objOp2.isNumber)
                                         {                                            

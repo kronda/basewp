@@ -6,12 +6,30 @@
  * @return type 
  */
 function wpcf_fields_email() {
+
     return array(
         'id' => 'wpcf-email',
         'title' => __( 'Email', 'wpcf' ),
         'description' => __( 'Email', 'wpcf' ),
-        'validate' => array('required', 'email'),
+        'validate' => array(
+            'required' => array(
+                'form-settings' =>
+                    include( dirname( __FILE__ ) . '/patterns/validate/form-settings/required.php' ),
+            ),
+            'email' => array(
+                'form-settings' => array_replace_recursive(
+                    include( dirname( __FILE__ ) . '/patterns/validate/form-settings/default.php' ),
+                    array(
+                        'control' => array(
+                            '#title' => __('Validation', 'wpcf' ),
+                            '#label' => 'Email',
+                        )
+                    )
+                )
+            )
+        ),
         'inherited_field_type' => 'textfield',
+        'font-awesome' => 'envelope',
     );
 }
 
@@ -68,6 +86,9 @@ function wpcf_fields_email_editor_submit( $data, $field, $context ) {
     if ( $context == 'usermeta' ) {
         $add .= wpcf_get_usermeta_form_addon_submit();
         $shortcode = wpcf_usermeta_get_shortcode( $field, $add );
+	} elseif ( $context == 'termmeta' ) {
+        $add .= wpcf_get_termmeta_form_addon_submit();
+        $shortcode = wpcf_termmeta_get_shortcode( $field, $add );
     } else {
         $shortcode = wpcf_fields_get_shortcode( $field, $add );
     }

@@ -55,7 +55,7 @@ class WPCF_Editor
                 array('jquery', 'types-knockout'), WPCF_VERSION, true );
         wp_register_style( 'types-editor',
                 WPCF_EMBEDDED_RES_RELPATH . '/css/editor.css',
-                array('admin-bar', 'wp-admin', 'buttons', 'media-views', 'toolset-font-awesome'),
+                array('admin-bar', 'wp-admin', 'buttons', 'media-views', 'font-awesome'),
                 WPCF_VERSION );
         wp_register_style( 'types-editor-cloned',
                 WPCF_EMBEDDED_RES_RELPATH . '/css/editor-cloned.css', array(),
@@ -87,7 +87,7 @@ class WPCF_Editor
      * @param string $shortcode
      */
     function frame( $field, $meta_type = 'postmeta', $post_id = -1,
-            $shortcode = null, $callback = false, $views_usermeta = false ) {
+            $shortcode = null, $callback = false, $views_meta = false ) {
 
         global $wp_version, $wpcf;
 
@@ -101,7 +101,7 @@ class WPCF_Editor
         wp_enqueue_script( 'wp-pointer' );
         wp_enqueue_style( 'types-editor' );
         wp_enqueue_style( 'wp-pointer' );
-        wp_enqueue_style( 'toolset-font-awesome' );
+        wp_enqueue_style( 'font-awesome' );
 
         // Load cloned WP Media Modal CSS
         if ( version_compare( $wp_version, '3.5', '<' ) ) {
@@ -175,11 +175,16 @@ class WPCF_Editor
 
         // Add User ID form
         if ( $this->_meta_type == 'usermeta' ) {
-            if ( !$views_usermeta ){    
+            if ( ! $views_meta ) {
+				$this->_data['supports'][] = 'user_id';
                 $this->_data['user_form'] = wpcf_form_simple( wpcf_get_usermeta_form_addon( $this->_settings ) );
-                $this->_data['supports'][] = 'user_id';
             }
-           
+		} elseif ( $this->_meta_type == 'termmeta' ) {
+			if ( ! $views_meta ) {
+				$this->_data['supports'][] = 'term_id';
+                //$this->_data['user_form'] = wpcf_form_simple( wpcf_get_usermeta_form_addon( $this->_settings ) );
+                //$this->_data['supports'][] = 'user_id';
+            }
         } else {
             // Add Post ID form
             $this->_data['supports'][] = 'post_id';
@@ -192,32 +197,53 @@ class WPCF_Editor
 
         // Set icons
         $icons = array(
-            'audio' => 'icon-music',
-            'checkbox' => 'icon-check',
-            'checkboxes' => 'icon-checkboxes',
-            'colorpicker' => 'icon-tint',
-            'date' => 'icon-calendar',
-            'email' => 'icon-envelope-alt',
-            'embed' => 'icon-youtube-play',
-            'file' => 'icon-file-alt',
-            'image' => 'icon-picture',
-            'map' => 'icon-map-marker',
-            'numeric' => 'icon-numeric',
-            'phone' => 'icon-phone',
-            'radio' => 'icon-radio-button',
-            'select' => 'icon-select-box',
-            'skype' => 'icon-skype',
-            'textarea' => 'icon-text-area',
-            'textfield' => 'icon-text-field',
-            'url' => 'icon-link',
-            'video' => 'icon-film',
-            'wysiwyg' => 'icon-wysiwyg',
+            'audio' => 'music',
+            'checkbox' => 'check',
+            'checkboxes' => 'checkboxes',
+            'colorpicker' => 'tint',
+            'date' => 'calendar',
+            'email' => 'envelope-alt',
+            'embed' => 'youtube-play',
+            'file' => 'file-alt',
+            'image' => 'picture',
+            'map' => 'map-marker',
+            'numeric' => 'numeric',
+            'phone' => 'phone',
+            'radio' => 'radio-button',
+            'select' => 'select-box',
+            'skype' => 'skype',
+            'textarea' => 'text-area',
+            'textfield' => 'text-field',
+            'url' => 'link',
+            'video' => 'film',
+            'wysiwyg' => 'wysiwyg',
         );
-        $this->_data['icon_class'] = isset( $icons[$field['type']] ) ? $icons[$field['type']] : 'icon-text-field';
+        $this->_data['icon_class'] = 'fa ';
+        if ( isset( $icons[$field['type']] ) ) {
+            $this->_data['icon_class'] .= sprintf(
+                'fa-%s icon-%s',
+                $icons[$field['type']],
+                $icons[$field['type']]
+            );
+        } else {
+            $filter = sprintf('toolset_editor_%s_icon_class', $field['type']);
+            $this->_data['icon_class'] .= apply_filters($filter, 'fa-text-field icon-text-field');
+        }
 
         // Is repetitive
         $this->_data['is_repetitive'] = (bool) types_is_repetitive( $field );
-        if ( $this->_data['is_repetitive'] ) {
+        /**
+         * Show or hide separator.
+         *
+         * Filter allow to hide separator choosing tab when we do not need 
+         * this tab in Types shortcode GUI
+         *
+         * @since 1.9.0
+         *
+         * @param boolean $show Show separator tab - default true.
+         */
+        $show_separator = apply_filters('toolset_editor_show_separator_'.$field['type'], true);
+        if ( $show_separator && $this->_data['is_repetitive'] ) {
             $this->_data['supports'][] = 'separator';
         }
 
@@ -292,6 +318,9 @@ class WPCF_Editor
                 if ( $this->_meta_type == 'usermeta' ) {
                     $add = wpcf_get_usermeta_form_addon_submit();
                     $shortcode = wpcf_usermeta_get_shortcode( $this->field, $add );
+				} elseif ( $this->_meta_type == 'termmeta' ) {
+                    $add = wpcf_get_termmeta_form_addon_submit();
+                    $shortcode = wpcf_termmeta_get_shortcode( $this->field, $add );
                 } else {
                     $shortcode = wpcf_fields_get_shortcode( $this->field );
                 }
