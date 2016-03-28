@@ -628,11 +628,6 @@ abstract class Types_Admin_Edit_Fields extends Types_Admin
     protected function fields_begin()
     {
         $form = array();
-        $form['fields-header'] = array(
-            '#type' => 'markup',
-            '#markup' => sprintf('<h2>%s</h2>', __('Fields', 'wpcf')),
-            '_builtin' => true,
-        );
         $form += $this->button_add_new();
         return $form;
     }

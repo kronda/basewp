@@ -197,14 +197,14 @@ function wpcf_cd_post_edit_field_filter( $element, $field, $post,
  */
 function wpcf_cd_admin_operations() {
     return array(
-        '='     => '=',
-        '>'     => '>',
-        '<'     => '<',
-        '>='    => '>=',
-        '<='    => '<=',
-        '==='   => '===',
-        '<>'    => '!=',
-        '!=='   => '!==',
+        '='     => '= (' . __( 'equal to', 'wpcf' ) . ')',
+        '>'     => '> (' . __( 'larger than', 'wpcf' ) . ')',
+        '<'     => '< (' . __( 'less than', 'wpcf' ) . ')',
+        '>='    => '>= (' . __( 'larger or equal to', 'wpcf' ) . ')',
+        '<='    => '<= (' . __( 'less or equal to', 'wpcf' ) . ')',
+        '==='   => '=== (' . __( 'identical to', 'wpcf' ) . ')',
+        '<>'    => '!= (' . __( 'not identical to', 'wpcf' ) . ')',
+        '!=='   => '!== (' . __( 'strictly not equal', 'wpcf' ) . ')',
 //        'between' => __('between', 'wpcf'),
     );
 }

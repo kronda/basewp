@@ -5,19 +5,23 @@
   Description: Toolset Types defines custom content in WordPress. Easily create custom post types, fields and taxonomy and connect everything together.
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com
-  Version: 1.9
+  Version: 1.9.1
  */
+
+if( ! defined( 'TYPES_VERSION' ) )
+    define( 'TYPES_VERSION', '1.9.1' );
+
+if( ! defined( 'TYPES_RELEASE_NOTES' ) )
+    define( 'TYPES_RELEASE_NOTES', 'https://wp-types.com/version/types-1-9/?utm_source=typesplugin&utm_campaign=types&utm_medium=release-notes-admin-notice&utm_term=Types 1.9 release notes' );
+
+
 /**
  *
  *
  */
-// Added check because of activation hook and theme embedded code
-if ( !defined( 'WPCF_VERSION' ) ) {
-    /**
-     * make sure that WPCF_VERSION in embedded/bootstrap.php is the same!
-     */
-    define( 'WPCF_VERSION', '1.9' );
-}
+// make sure that WPCF_VERSION in embedded/bootstrap.php is the same!
+if ( ! defined( 'WPCF_VERSION' ) )
+    define( 'WPCF_VERSION', TYPES_VERSION );
 
 define( 'WPCF_REPOSITORY', 'http://api.wp-types.com/' );
 
@@ -518,4 +522,16 @@ if( empty( $stored_taxonomies ) || !isset( $stored_taxonomies['category'] ) || !
     }
 
     update_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $stored_taxonomies );
+}
+
+/* Plugin Meta */
+add_filter( 'plugin_row_meta', 'types_plugin_plugin_row_meta', 10, 4 );
+
+function types_plugin_plugin_row_meta( $plugin_meta, $plugin_file, $plugin_data, $status ) {
+    $this_plugin = basename( WPCF_ABSPATH ) . '/wpcf.php';
+    if ( $plugin_file == $this_plugin ) {
+        $plugin_meta[] = '<a href="' . TYPES_RELEASE_NOTES . '" target="_blank">'
+        . sprintf( __( 'Types %s release notes', 'wpcf' ), TYPES_VERSION ) . '</a>';
+    }
+    return $plugin_meta;
 }

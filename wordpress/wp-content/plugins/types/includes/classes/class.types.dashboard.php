@@ -22,12 +22,6 @@ class Types_Dashboard extends Types_Admin
                 'title' => __('Types Tools', 'wpcf'),
                 'default' => 'normal',
             ),
-            'types_admin_dashboard_site_type' => array(
-                'callback' => array($this, 'box_site_type'),
-                'title' => __('Do you need a help?', 'wpcf'),
-                'default' => 'side',
-//                'priority' => 'core',
-            ),
         );
     }
 
@@ -140,21 +134,6 @@ class Types_Dashboard extends Types_Admin
             echo '<li>';
         }
         echo '</ul>';
-    }
-
-    public function box_site_type()
-    {
-        $marketing = new WPCF_Types_Marketing_Messages();
-?>
-<div class="wrap wp-types select-kind">
-    <p><?php _e('<b>Select what kind of site you are building</b> and <b>we will advise you</b> about what features are needed and how to use them:', 'wpcf'); ?></p>
-    <form method="post">
-        <?php wp_nonce_field('update', 'marketing'); ?>
-        <?php $marketing->kind_list(); ?>
-        <a href="#" id="wcpf-getting-started-button" class="button"><?php _e('Show me!', 'wpcf'); ?></a>
-    </form>
-</div>
-<?php
     }
 }
 

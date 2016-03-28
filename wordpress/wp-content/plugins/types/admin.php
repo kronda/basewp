@@ -21,7 +21,6 @@ add_action( 'init', 'wpcf_init_admin_pages' );
 
 add_action( 'admin_menu', 'wpcf_admin_menu_hook' );
 add_action( 'wpcf_admin_page_init', 'wpcf_enqueue_scripts' );
-add_action( 'admin_enqueue_scripts', 'wpcf_admin_enqueue_scripts' );
 
 // OMG, why so early? At this point we don't even have embedded Types (with functions.php).
 if ( defined( 'DOING_AJAX' ) ) {
@@ -1335,38 +1334,6 @@ function wpcf_get_temporary_directory()
 }
 
 /**
- *
- */
-
-function wpcf_admin_enqueue_scripts($hook)
-{
-    wp_register_script(
-        'marketing-getting-started',
-        plugin_dir_url( __FILE__ ).'/marketing/getting-started/assets/scripts/getting-started.js',
-        array('jquery'),
-        WPCF_VERSION,
-        true
-    );
-    if ( preg_match( '@/marketing/getting-started/[^/]+.php$@', $hook ) ) {
-        $marketing = new WPCF_Types_Marketing_Messages();
-        wp_localize_script(
-            'marketing-getting-started',
-            'marketing_getting_started',
-            array( 'id' => $marketing->get_option_name() )
-        );
-        wp_enqueue_script('marketing-getting-started');
-        wp_enqueue_style(
-            'marketing-getting-started',
-            plugin_dir_url( __FILE__ ).'/marketing/getting-started/assets/css/getting-started.css',
-            array(),
-            WPCF_VERSION,
-            'all'
-        );
-    }
-}
-
-
-/**
  * add types configuration to debug
  */
 
@@ -1513,3 +1480,80 @@ function wpcf_admin_menu_user_fields_control() {
     echo '</form>';
     wpcf_add_admin_footer();
 }
+
+
+/* Delete this with release of 2.0 as it's than fixed in toolset-common */
+function types_670() { ?>
+	<script type="text/javascript">
+		function typesCheckTrigger(trigger, formID)
+		{
+			var $ = jQuery;
+			$trigger = $('[data-wpt-name="' + trigger + '"]', formID)
+
+			if ($('body').hasClass('wp-admin')) {
+				trigger = trigger.replace(/wpcf\-/, 'wpcf[') + ']';
+				$trigger = $('[data-wpt-name="' + trigger + '"]', formID);
+			}
+
+			if ($trigger.length < 1) {
+				$trigger = $('[data-wpt-name="' + trigger + '[skypename]"]', formID);
+			}
+
+			if ($trigger.length < 1) {
+				$trigger = $('[data-wpt-name="' + trigger + '[datepicker]"]', formID);
+			}
+
+			if ($trigger.length < 1) {
+				$trigger = $('[data-wpt-name="' + trigger + '[]"]', formID);
+			}
+
+			if ($trigger.length > 0 && 'option' == $trigger.data('wpt-type')) {
+				$trigger = $trigger.parent();
+			}
+
+			if ($trigger.length < 1) {
+				if( trigger.indexOf( 'cred-' ) == -1 )
+					$trigger = typesCheckTrigger('cred-' + trigger, formID);
+
+
+				return false;
+			}
+			return $trigger;
+		}
+
+		if( typeof wptCondTriggers !== 'undefined' ) {
+			_.each(wptCondTriggers, function (triggers, formID) {
+				_.each(triggers, function (fields, trigger) {
+					if( ! typesCheckTrigger(trigger, formID, trigger) ) {
+						delete wptCondTriggers[formID][trigger];
+						if( typeof wptCondFields !== 'undefined' ) {
+							_.each( wptCondFields, function( fields, pageID ) {
+								_.each( fields, function( field, fieldKey ) {
+									_.each( field[ 'conditions' ], function( condition, conditionKey ) {
+										if( condition[ 'id' ] == trigger ) {
+											delete wptCondFields[ pageID ][ fieldKey ][ 'conditions' ][ conditionKey ];
+										}
+									} )
+								} );
+							} );
+						}
+					}
+				});
+			});
+		}
+
+		if( typeof wptCondCustomTriggers !== 'undefined' ) {
+			_.each( wptCondCustomTriggers, function( triggers, formID ) {
+				_.each( triggers, function( fields, trigger ) {
+					if( !typesCheckTrigger( trigger, formID, trigger ) ) {
+						delete wptCondCustomTriggers[ formID ][ trigger ];
+					}
+				} );
+			} );
+		}
+
+	</script>
+	<?php
+}
+
+add_action( 'admin_print_footer_scripts', 'types_670', 100 );

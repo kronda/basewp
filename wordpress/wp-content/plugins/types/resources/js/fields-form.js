@@ -432,6 +432,34 @@ jQuery(document).ready(function($){
             ? 'bottom'
             : 'top';
 
+        function add_field_to_fields_list( html ) {
+            var newField;
+
+            if( position == 'top' ) {
+                $( '#post-body-content .js-wpcf-fields' ).prepend( html );
+                newField = $( '#post-body-content .js-wpcf-fields .postbox' ).first();
+            } else {
+                $( '#post-body-content .js-wpcf-fields .js-wpcf-fields-add-new-last' ).before( html );
+                newField = $( '#post-body-content .js-wpcf-fields .postbox' ).last();
+            }
+
+            $( 'html, body' ).animate( {
+                scrollTop: newField.offset().top - 50
+            }, 1000 );
+
+            dialog.dialog( 'close' );
+
+            wpcfBindAutoCreateSlugs();
+            wpcfAddPostboxToggles();
+
+            newField.typesFieldOptionsSortable();
+            newField.typesMarkExistingField();
+
+            // show bottom "Add new field" and "Save Group Fields" buttons
+            $( '.js-wpcf-fields-add-new, .js-wpcf-second-submit-container' ).removeClass( 'hidden' );
+            wpcf_setup_conditions();
+        }
+
         dialog.load(
             ajaxurl,
             {
@@ -458,27 +486,7 @@ jQuery(document).ready(function($){
                         }
                     })
                     .done(function(html){
-                        if( position == 'top' ) {
-                            $('#post-body-content .js-wpcf-fields').prepend( html );
-                            //$('.js-wpcf-slugize-source', $('#post-body-content .js-wpcf-fields .postbox:first-of-type')).focus();
-                            $( 'html, body' ).animate( {
-                                scrollTop: $( '#post-body-content .js-wpcf-fields .postbox' ).first().offset().top - 50
-                            }, 1000 );
-                        } else {
-                            $('#post-body-content .js-wpcf-fields .js-wpcf-fields-add-new-last').before( html );
-                            $( 'html, body' ).animate( {
-                                scrollTop: $( '#post-body-content .js-wpcf-fields .postbox' ).last().offset().top - 50
-                            }, 1000 );
-                        }
-
-                        dialog.dialog('close');
-
-                        wpcfBindAutoCreateSlugs();
-                        wpcfAddPostboxToggles();
-
-                        // show bottom "Add new field" and "Save Group Fields" buttons
-                        $( '.js-wpcf-fields-add-new, .js-wpcf-second-submit-container' ).removeClass( 'hidden' );
-                        wpcf_setup_conditions();
+                        add_field_to_fields_list( html );
                     });
                 });
                 /**
@@ -548,11 +556,7 @@ jQuery(document).ready(function($){
                                 }
                             })
                             .done(function(html){
-                                $('#post-body-content .js-wpcf-fields .js-wpcf-fields-add-new-last').before(html);
-                                dialog.dialog('close');
-                                $('.js-wpcf-slugize-source', $('#post-body-content .js-wpcf-fields .postbox:last-of-type')).focus();
-                                wpcfBindAutoCreateSlugs();
-                                wpcfAddPostboxToggles();
+                                add_field_to_fields_list( html );
                             });
                         });
                     });
@@ -678,6 +682,11 @@ jQuery(document).ready(function($){
             checkedArr.push($(this).data('slug'));
         });
         $('.wpcf-forms-field-slug').each(function(index){
+
+            // skip for "existing fields" if no change in input slug
+            if( $( this ).data( 'types-existing-field' ) && $( this ).data( 'types-existing-field' ) == $( this ).val() )
+                return true;
+
             var currentValue = $(this).val().toLowerCase();
             if (currentValue != ''
                 && $.inArray(currentValue, checkedArr) > -1) {

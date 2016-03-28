@@ -380,6 +380,9 @@ jQuery(document).ready(function($) {
 
         wpcfInitValueOfSelect2DoneClear();
         var $button = $(this), $table = $button.parents('.js-types-relationship-child-posts').find('table');
+
+        typesRelationControlsAjaxStart();
+
         $.ajax({
             url: $button.attr('href'),
             type: 'get',
@@ -423,6 +426,9 @@ jQuery(document).ready(function($) {
 				};
 				
 				$( document ).trigger( 'js_event_wpcf_types_relationship_child_added', [ data_for_events ] );
+            },
+            complete: function() {
+                typesRelationControlsAjaxComplete();
             }
         });
         return false;
@@ -438,6 +444,9 @@ jQuery(document).ready(function($) {
             return false;
         }
         var object = jQuery(this);
+
+        typesRelationControlsAjaxStart();
+
         jQuery.ajax({
             url: jQuery(this).attr('href'),
             type: 'get',
@@ -474,6 +483,9 @@ jQuery(document).ready(function($) {
                  * select2
                  */
                 wpcfBindSelect2($);
+            },
+            complete: function() {
+                typesRelationControlsAjaxComplete();
             }
         });
         return false;
@@ -660,6 +672,9 @@ jQuery(document).ready(function($) {
                 .find('.wpcf-pr-edited').removeClass('wpcf-pr-edited');
         var height = $row.height(), rand = Math.round(Math.random() * 10000);
         window.wpcf_pr_edited = false;
+
+        typesRelationControlsAjaxStart();
+
         $.ajax({
             url: $button.attr('href'),
             type: 'post',
@@ -670,48 +685,51 @@ jQuery(document).ready(function($) {
                 $row.after('<tr id="wpcf-pr-update-' + rand + '"><td style="height: ' + height + 'px;"><div style="margin-top:20px;" class="wpcf-ajax-loading-small"></div></td></tr>').hide();
             },
             success: function(data) {
-                if (data != null) {
-                    if (typeof data.output != 'undefined') {
-                        $row.replaceWith(data.output).show();
+                if( data != null ) {
+                    if( typeof data.output != 'undefined' ) {
+                        $row.replaceWith( data.output ).show();
                         wpcfDisableControls();
-                        $('#wpcf-pr-update-' + rand + '').remove();
-                        wpcfRelationshipInit('', 'save');
+                        $( '#wpcf-pr-update-' + rand + '' ).remove();
+                        wpcfRelationshipInit( '', 'save' );
                         tChildTable.reset();
-                        if (typeof wptCallbacks != 'undefined') {
-                            wptCallbacks.reset.fire('#'+rowId);
+                        if( typeof wptCallbacks != 'undefined' ) {
+                            wptCallbacks.reset.fire( '#' + rowId );
                         }
-                        if ( 'undefined' != typeof wptFile ) {
+                        if( 'undefined' != typeof wptFile ) {
                             wptFile.init();
                         }
                     }
-                    if (typeof data.conditionals != 'undefined' && typeof wptCond != 'undefined') {
-                        wptCond.addConditionals(data.conditionals);
+                    if( typeof data.conditionals != 'undefined' && typeof wptCond != 'undefined' ) {
+                        wptCond.addConditionals( data.conditionals );
                     }
                     /**
                      * rebind images
                      */
-                    if ( 'function' == typeof bind_colorbox_to_thumbnail_preview ) {
+                    if( 'function' == typeof bind_colorbox_to_thumbnail_preview ) {
                         bind_colorbox_to_thumbnail_preview();
                     }
                     /**
                      * show errors
                      */
-                    $('#wpcf-post-relationship div.message').detach();
-                    if ('undefined' != typeof data.errors && 0 < data.errors.length ) {
-                        $('#wpcf-post-relationship h3.hndle').after(data.errors);
+                    $( '#wpcf-post-relationship div.message' ).detach();
+                    if( 'undefined' != typeof data.errors && 0 < data.errors.length ) {
+                        $( '#wpcf-post-relationship h3.hndle' ).after( data.errors );
                     }
                     /**
                      * select2
                      */
                     wpcfInitValueOfSelect2DoneClear();
-                    wpcfBindSelect2($);
-					
-					var data_for_events = {
-						table: $table
-					};
-					
-					$( document ).trigger( 'js_event_wpcf_types_relationship_child_saved', [ data_for_events ] );
+                    wpcfBindSelect2( $ );
+
+                    var data_for_events = {
+                        table: $table
+                    };
+
+                    $( document ).trigger( 'js_event_wpcf_types_relationship_child_saved', [ data_for_events ] );
                 }
+            },
+            complete: function() {
+                typesRelationControlsAjaxComplete();
             }
         });
         return false;
@@ -1101,12 +1119,12 @@ function wpcfEnableControls() {
     jQuery( 'input[name^="save"]' ).removeAttr( 'disabled' );
 }
 
-jQuery( document ).ajaxStart( function() {
+function typesRelationControlsAjaxStart() {
     wpcfDisableControls();
-});
+}
 
-jQuery( document ).ajaxComplete( function() {
+function typesRelationControlsAjaxComplete() {
     if( jQuery.active == 1 ) {
         wpcfEnableControls();
     }
-});
+}

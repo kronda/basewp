@@ -1,14 +1,16 @@
 === Plugin Name ===
 Contributors: johnnytee
 Donate link: http://seedprod.com/
-Tags: wordpress coming soon, wordpress maintenance mode. wordpress under construction, maintenance mode, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, newsletter, coming soon page, landing page
+Tags: maintenance mode, coming soon, under construction, launch page, launch, maintenance, construction, offline, unavailable, coming soon page, under construction page, landing page
 Requires at least: 3
-Tested up to: 4.4.1
-Stable tag: 1.16.0
+Tested up to: 4.4.2
+Stable tag: 1.16.1
 
 Creates a Coming Soon page or Launch page for your Website while it's under construction and collects emails from your visitors.
 
+
 == Description ==
+>** Important: This plugin is being deprecated and will be removed soon from wordpress.org. Please use our new version located at: [Coming Soon Page & Maintenance Mode by SeedProd](https://wordpress.org/plugins/coming-soon/)**
 
 The **Ultimate Coming Soon Page** plugin allows you quick and easily set up a coming soon or launch page for your website.
 
@@ -143,6 +145,9 @@ To fix:
 
 
 == Changelog ==
+= 1.16.1 =
+This plugin is being deprecated and will be removed soon from wordpress.org. Please use our new version located at: Coming Soon Page & Maintenance Mode by SeedProd
+
 = 1.16.0 =
 * Fixed issue with image upload
 
@@ -360,6 +365,9 @@ To fix:
 * Alpha Launch
 
 == Upgrade Notice ==
+= 1.16.1 =
+This plugin is being deprecated and will be removed soon from wordpress.org. Please use our new version located at: Coming Soon Page & Maintenance Mode by SeedProd
+
 = 1.16.0 =
 * Fixed issue with image upload
 

@@ -812,21 +812,21 @@ function wpcf_views_user_query( $query, $view_settings ) {
  * @param type $view_settings
  * @return string
  */
-function wpcf_views_query( $query, $view_settings, $key = 'wpcf-fields' ) {
+function wpcf_views_query( $query, $view_settings, $meta_key = 'wpcf-fields' ) {
 	
-	if ( ! in_array( $key, array( 'wpcf-fields', 'wpcf-usermeta', 'wpcf-termmeta' ) ) ) {
+	if ( ! in_array( $meta_key, array( 'wpcf-fields', 'wpcf-usermeta', 'wpcf-termmeta' ) ) ) {
 		return $query;
 	}
 
     $meta_filter_required = false;
 
-    $opt = get_option( $key );
+    $opt = get_option( $meta_key );
 
     if ( isset( $query['meta_query'] ) ) {
         foreach ( $query['meta_query'] as $index => $meta ) {
             if ( is_array( $meta ) && isset( $meta['key'] ) ) {
                 $field_name = $meta['key'];
-                if ( _wpcf_is_checkboxes_field( $field_name, $key ) ) {
+                if ( _wpcf_is_checkboxes_field( $field_name, $meta_key ) ) {
 
                     $orginal = $query['meta_query'][$index];
 

@@ -121,12 +121,28 @@ function types_get_field_type($type)
 
 /**
  * Imports settings.
+ *
+ * @fixme Are we touching this on EVERY page load?!
+ * @since unknown
  */
 function wpcf_embedded_check_import()
 {
-    if ( file_exists( WPCF_EMBEDDED_ABSPATH . '/settings.php' ) ) {
+
+	if( !defined( 'WPCF_EMBEDDED_CONFIG_ABSPATH' ) ) {
+
+		/**
+		 * Allow for overriding path to settings.php and settings.xml by a third party.
+		 *
+		 * Falls back to WPCF_EMBEDDED_ABSPATH if not defined.
+		 *
+		 * @since 1.9.1
+		 */
+		define( 'WPCF_EMBEDDED_CONFIG_ABSPATH', WPCF_EMBEDDED_ABSPATH );
+	}
+
+	if ( file_exists( WPCF_EMBEDDED_CONFIG_ABSPATH . '/settings.php' ) ) {
         require_once WPCF_EMBEDDED_ABSPATH . '/admin.php';
-        require_once WPCF_EMBEDDED_ABSPATH . '/settings.php';
+        require_once WPCF_EMBEDDED_CONFIG_ABSPATH . '/settings.php';
         $dismissed = get_option( 'wpcf_dismissed_messages', array() );
         if ( in_array( $timestamp, $dismissed ) ) {
             return false;
@@ -137,7 +153,7 @@ function wpcf_embedded_check_import()
                 && isset( $_GET['_wpnonce'] )
                 && wp_verify_nonce( $_GET['_wpnonce'], 'embedded-import')
             ) {
-                if ( file_exists( WPCF_EMBEDDED_ABSPATH . '/settings.xml' ) ) {
+                if ( file_exists( WPCF_EMBEDDED_CONFIG_ABSPATH . '/settings.xml' ) ) {
                     $_POST['overwrite-groups'] = 1;
                     $_POST['overwrite-fields'] = 1;
                     $_POST['overwrite-types'] = 1;
@@ -145,7 +161,7 @@ function wpcf_embedded_check_import()
                     $_POST['post_relationship'] = 1;
                     require_once WPCF_EMBEDDED_INC_ABSPATH . '/fields.php';
                     require_once WPCF_EMBEDDED_INC_ABSPATH . '/import-export.php';
-                    $data = @file_get_contents( WPCF_EMBEDDED_ABSPATH . '/settings.xml' );
+                    $data = @file_get_contents( WPCF_EMBEDDED_CONFIG_ABSPATH . '/settings.xml' );
                     wpcf_admin_import_data( $data, false, 'types-auto-import' );
                     update_option( 'wpcf-types-embedded-import', $timestamp );
                     wp_safe_redirect( esc_url_raw(admin_url() ));
@@ -1011,6 +1027,18 @@ function wpcf_getarr( &$source, $key, $default = '', $valid = null ) {
  */
 function wpcf_ensarr( $array, $default = array() ) {
 	return ( is_array( $array ) ? $array : $default );
+}
+
+
+/**
+ * Wrap a variable value in an array if it's not array already.
+ * 
+ * @param mixed $input
+ * @return array
+ * @since 1.9.1
+ */
+function wpcf_wraparr( $input ) {
+	return ( is_array( $input ) ? $input : array( $input ) );
 }
 
 

@@ -244,7 +244,7 @@ function wpcf_admin_help($page, $contextual_help)
                .'<dd>'.__('Choose which taxonomies are to be associated with this post type.', 'wpcf').'</dd>'
                .'<dt>'.__('Labels', 'wpcf').'</dt>'
                .'<dd>'.__('Labels are the text that is attached to your post type name. Examples of them in use are “Add New Post” (where “Add New” is the label”) and “Edit Post” (where “Edit” is the label). In normal circumstances the defaults will suffice.', 'wpcf').'</dd>'
-               .'<dt>'.__('Custom Post Properites', 'wpcf').'</dt>'
+               .'<dt>'.__('Custom Post Properties', 'wpcf').'</dt>'
                .'<dd>'.__('Choose which sections to display on your “Add New” page.', 'wpcf').'</dd>'
                .'<dt>'.__('Advanced Settings', 'wpcf').'</dt>'
                .'<dd>'.__('Advanced settings give you even more control over your post type. You can read in detail what all of these settings do on our tutorial.', 'wpcf').'</dd>'

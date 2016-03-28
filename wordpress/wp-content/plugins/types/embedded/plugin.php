@@ -5,7 +5,7 @@
   Description: Toolset Types use previously defined custom content in WordPress. Easily use custom post types, fields and taxonomy and connect everything together.
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com
-  Version: 1.9
+  Version: 1.9.1
  */
 /**
  *

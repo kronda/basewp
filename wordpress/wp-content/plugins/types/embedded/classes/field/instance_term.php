@@ -9,6 +9,7 @@
  */
 final class WPCF_Field_Instance_Term extends WPCF_Field_Instance {
 
+	
 	/**
 	 * Add a single field value to the database.
 	 *

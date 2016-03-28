@@ -12,7 +12,10 @@ class WPCF_Field_Accessor_Termmeta extends WPCF_Field_Accessor_Abstract {
 
 
 	public function get_raw_value() {
-		return get_term_meta( $this->object_id, $this->meta_key, $this->is_single );
+		// Since meta data (for posts and users, anyway) was historically loaded by get_*_meta() with $single = false,
+	    // it always returned an array even for single fields. Keeping that for compatibility with toolset-forms and
+		// simplicity.
+		return get_term_meta( $this->object_id, $this->meta_key, false );
 	}
 
 	public function update_raw_value( $value, $prev_value = '' ) {
@@ -29,6 +32,7 @@ class WPCF_Field_Accessor_Termmeta extends WPCF_Field_Accessor_Abstract {
 	public function add_raw_value( $value ) {
 		return add_term_meta( $this->object_id, $this->meta_key, $value, $this->is_single );
 	}
+
 
 	/**
 	 * Delete field value from the database.

@@ -660,6 +660,10 @@ function wpcf_conditional_get_curent($data)
                     mktime( 0, 0, 0, $condition['date'], $condition['month'], $condition['year'] )
                 );
             }
+            
+            /* remove operators description */
+            $operation = preg_replace( '#\([^)]+\)#', '', $operation );
+
             $current .= sprintf(
                 '<li><span>%s %s %s</span></li>',
                 esc_html($all_types_fields[$condition['field']]['name']),

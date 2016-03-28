@@ -495,7 +495,7 @@ class Types_Admin_Edit_Taxonomy extends Types_Admin
             '#type' => 'checkbox',
             '#name' => 'ct[query_var_enabled]',
             '#title' => 'query_var',
-            '#description' => __( 'False to prevent queries, or string to customize query var. Default will use $taxonomy as query var.', 'wpcf' ) . '<br />' . __( 'Default: $taxonomy.', 'wpcf' ),
+            '#description' => __( 'Disable to prevent queries like "mysite.com/?taxonomy=example". Enable to use queries like "mysite.com/?taxonomy=example". Enable and set a value to use queries like "mysite.com/?query_var_value=example"', 'wpcf' ) . '<br />' . __( 'Default: true - set to $taxonomy.', 'wpcf' ),
             '#default_value' => !empty( $this->ct['query_var_enabled'] ),
             '#after' => '<div id="wpcf-types-form-queryvar-toggle"' . $hidden . '><input type="text" name="ct[query_var]" value="' . $query_var . '" class="regular-text wpcf-form-textfield form-textfield textfield" /><div class="description wpcf-form-description wpcf-form-description-checkbox description-checkbox">' . __( 'Optional', 'wpcf' ) . '. ' . __( 'String to customize query var', 'wpcf' ) . '</div></div>',
             '#inline' => true,

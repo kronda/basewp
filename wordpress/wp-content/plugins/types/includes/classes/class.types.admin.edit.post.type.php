@@ -219,10 +219,24 @@ class Types_Admin_Edit_Post_Type extends Types_Admin
             update_option( WPCF_OPTION_NAME_CUSTOM_TAXONOMIES, $custom_taxonomies);
         }
 
+        /*
+         * menu icon
+         */
+        switch( $this->ct['slug'] ) {
+            case 'page':
+                $menu_icon = 'admin-page';
+                break;
+            case 'attachment':
+                $menu_icon = 'admin-media';
+                break;
+            default:
+                $menu_icon = isset( $this->ct['icon']) && !empty($this->ct['icon']) ? $this->ct['icon'] : 'admin-post';
+                break;
+        }
+
         /**
          * post icon field
          */
-        $menu_icon = isset( $this->ct['icon']) && !empty($this->ct['icon']) ? $this->ct['icon'] : 'admin-post';
         $form['icon'] = array(
             '#type' => 'hidden',
             '#name' => 'ct[icon]',
@@ -323,9 +337,11 @@ class Types_Admin_Edit_Post_Type extends Types_Admin
         );
 
         // disable for inbuilt
-        if ( $this->ct['_builtin'] )
+        if ( $this->ct['_builtin'] ) {
             $form['slug']['#disable'] = 1;
-
+            $form['slug']['#pattern'] = '<tr><td><LABEL></td><td><ERROR><BEFORE><ELEMENT><DESCRIPTION><AFTER></td></tr>';
+            $form['slug']['#description'] = __('This option is not available for built-in post types.', 'wpcf');
+        }
 
         $form['description'] = array(
             '#type' => 'textarea',
@@ -376,7 +392,7 @@ class Types_Admin_Edit_Post_Type extends Types_Admin
              */
             if ( $this->ct['_builtin'] ) {
                 $form['choose-icon']['#disable'] = 1;
-                $form['choose-icon']['#description'] = __('These options are not available for built-in post types.', 'wpcf');
+                $form['choose-icon']['#description'] = __('This option is not available for built-in post types.', 'wpcf');
             }
         }
         $form['table-1-close'] = array(
@@ -563,14 +579,16 @@ class Types_Admin_Edit_Post_Type extends Types_Admin
         /**
          * dashboard glance option to show counters on admin dashbord widget
          */
-        $form['dashboard_glance'] = array(
-            '#type' => 'checkbox',
-            '#before' => '<div class="misc-pub-section">',
-            '#after' => '</div>',
-            '#name' => 'ct[dashboard_glance]',
-            '#title' => __( 'Show number of entries on "At a Glance" admin widget.', 'wpcf' ),
-            '#default_value' => !empty( $this->ct['dashboard_glance'] ),
-        );
+        if( $this->ct['slug'] != 'post' && $this->ct['slug'] != 'page' ) {
+            $form['dashboard_glance'] = array(
+                '#type' => 'checkbox',
+                '#before' => '<div class="misc-pub-section">',
+                '#after' => '</div>',
+                '#name' => 'ct[dashboard_glance]',
+                '#title' => __( 'Show number of entries on "At a Glance" admin widget.', 'wpcf' ),
+                '#default_value' => !empty( $this->ct['dashboard_glance'] ),
+            );
+        }
 
         $form = $this->submitdiv($button_text, $form);
 
@@ -734,7 +752,7 @@ class Types_Admin_Edit_Post_Type extends Types_Admin
             '#type' => 'checkbox',
             '#name' => 'ct[query_var_enabled]',
             '#title' => 'query_var',
-            '#description' => __( 'False to prevent queries, or string value of the query var to use for this post type.', 'wpcf' ) . '<br />' . __( 'Default: true - set to $post_type.', 'wpcf' ),
+            '#description' => __( 'Disable to prevent queries like "mysite.com/?post_type=example". Enable to use queries like "mysite.com/?post_type=example". Enable and set a value to use queries like "mysite.com/?query_var_value=example"', 'wpcf' ) . '<br />' . __( 'Default: true - set to $post_type.', 'wpcf' ),
             '#default_value' => !empty( $this->ct['query_var_enabled'] ),
             '#after' => '<div id="wpcf-types-form-queryvar-toggle"' . $hidden . '><input type="text" name="ct[query_var]" value="' . $query_var . '" class="regular-text" /><div class="description wpcf-form-description wpcf-form-description-checkbox description-checkbox">' . __( 'Optional', 'wpcf' ) . '. ' . __( 'String to customize query var', 'wpcf' ) . '</div></div>',
             '#inline' => true,
@@ -762,7 +780,7 @@ class Types_Admin_Edit_Post_Type extends Types_Admin
             '#type' => 'textfield',
             '#name' => 'ct[rest_base]',
             '#title' => __( 'Rest Base', 'wpcf' ),
-            '#description' => __( 'Whether to expose this post type in the REST API.', 'wpcf' ) . '<br />' . __( 'Default: $post_type.', 'wpcf' ),
+            '#description' => __( 'The base slug that this post type will use when accessed using the REST API.', 'wpcf' ) . '<br />' . __( 'Default: $post_type.', 'wpcf' ),
             '#value' => isset( $this->ct['rest_base'] ) ? $this->ct['rest_base'] : '',
             '#inline' => true,
         );
@@ -1647,6 +1665,15 @@ class Types_Admin_Edit_Post_Type extends Types_Admin
         if (  isset( $fields['fields'] ) && is_array($fields['fields'])) {
             $allowed_keys = wpcf_post_relationship_get_specific_fields_keys($child);
             foreach( $fields['fields'] as $key => $value ) {
+
+                // other parent cpts
+                if ( '_wpcf_pr_parents' == $key ) {
+                    $relationships[$parent][$child]['fields'][$key] = array();
+                    foreach( array_keys($value) as $parents) {
+                        $relationships[$parent][$child]['fields'][$key][$parents] = 1;
+                    }
+                }
+
                 /**
                  * sanitize Taxonomy
                  */

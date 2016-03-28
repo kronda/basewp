@@ -102,14 +102,14 @@ function wpcf_custom_types_init() {
 
     // rearrange menu items
     add_filter( 'custom_menu_order' , '__return_true');
-    add_filter( 'menu_order', 'wpcf_custom_types_menu_order_set' );
+    add_filter( 'menu_order', 'types_menu_order' );
     // rearrange menu items - end
 
     /** This filter is documented in wp-admin/wp-admin/edit-form-advanced.php */
     add_filter('enter_title_here', 'wpcf_filter_enter_title_here', 10, 2);
 }
 
-function wpcf_custom_types_menu_order_set( $menu ) {
+function types_menu_order( $menu ) {
 	$custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
 
 	if ( !empty( $custom_types ) ) {
@@ -120,28 +120,70 @@ function wpcf_custom_types_menu_order_set( $menu ) {
 				continue;
 
 			// at this point we have not only an integer as menu position
-			$menu_position = explode( '--wpcf-add-menu-after--', $data['menu_position'] );
+			$target_url = explode( '--wpcf-add-menu-after--', $data['menu_position'] );
 
-			if( !isset( $menu_position[1] ) || empty( $menu_position[1] ) )
+			if( !isset( $target_url[1] ) || empty( $target_url[1] ) )
 				continue;
 
-			$current_index = array_search( 'edit.php?post_type=' . $data['slug'], $menu );
+            $target_url = $target_url[1];
 
-            // remove all items of $menu which are not matching selected menu
-            $menu_filtered = array_keys( $menu, $menu_position[1] );
+            // current url
+            switch( $data['slug'] ) {
+                case 'post':
+                    $current_url = 'edit.php';
+                    break;
+                case 'attachment':
+                    $current_url = 'upload.php';
+                    break;
+                default:
+                    $current_url = 'edit.php?post_type=' . $data['slug'];
+                    break;
+            }
 
-            // use last match for resorting
-            // https://onthegosystems.myjetbrains.com/youtrack/issue/types-591
-            $add_menu_after_index = array_pop( $menu_filtered );
+            types_menu_order_item_sort( $menu, $current_url, $target_url );
 
-			// if both found resort menu
-			if( $current_index && $add_menu_after_index )
-				wpcf_custom_types_menu_order_move( $menu, $current_index, $add_menu_after_index );
+            // store already reordered items
+            $reordered[$target_url][] = array(
+                'current_url' => $current_url,
+                'menu_position' => $target_url
+            );
 
+            // sort previous sorted items which depend on current again
+            if( isset( $reordered[$current_url] ) ) {
+                foreach( $reordered[$current_url] as $post_type ) {
+                    types_menu_order_item_sort( $menu, $post_type['current_url'], $post_type['menu_position'] );
+                }
+
+                unset( $reordered[$current_url] );
+            }
 		}
 	}
 
 	return $menu;
+}
+
+/**
+ * @param $menu
+ * @param $data
+ * @param $menu_position
+ *
+ * @return mixed
+ */
+function types_menu_order_item_sort( &$menu, $current_url, $target_url ) {
+
+    // current index
+    $current_index = array_search( $current_url, $menu );
+
+    // remove all items of $menu which are not matching selected menu
+    $menu_filtered = array_keys( $menu, $target_url );
+
+    // use last match for resorting
+    // https://onthegosystems.myjetbrains.com/youtrack/issue/types-591
+    $add_menu_after_index = array_pop( $menu_filtered );
+
+    // if both found resort menu
+    if( $current_index && $add_menu_after_index )
+        wpcf_custom_types_menu_order_move( $menu, $current_index, $add_menu_after_index );return $menu;
 }
 
 /**
@@ -405,20 +447,32 @@ add_filter('dashboard_glance_items', 'wpcf_dashboard_glance_items');
  */
 function wpcf_dashboard_glance_items($elements)
 {
+    // remove when https://core.trac.wordpress.org/ticket/27414 is fixed
+    wp_register_style( 'wpcf-fix-wordpress-core', WPCF_EMBEDDED_RES_RELPATH . '/css/fix-wordpress-core.css', array(), WPCF_VERSION );
+    wp_enqueue_style( 'wpcf-fix-wordpress-core' );
+
     $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
     if ( empty( $custom_types ) ) {
         return $elements;
     }
     ksort($custom_types);
     foreach ( $custom_types as $post_type => $data ) {
-        if ( !isset($data['dashboard_glance']) || !$data['dashboard_glance']) {
+        if ( !isset($data['dashboard_glance']) || !$data['dashboard_glance'] || $post_type == 'post' || $post_type == 'page' ) {
             continue;
         }
         if ( isset($data['disabled']) && $data['disabled'] ) {
             continue;
         }
+
+        if( $post_type == 'attachment' )
+            $data['icon'] = 'admin-media';
+
         $num_posts = wp_count_posts($post_type);
-        $num = number_format_i18n($num_posts->publish);
+
+        $num = $post_type == 'attachment'
+            ? number_format_i18n($num_posts->inherit)
+            : number_format_i18n($num_posts->publish);
+
         $text = _n( $data['labels']['singular_name'], $data['labels']['name'], intval($num_posts->publish) );
         $elements[] = sprintf(
             '<a href="%s"%s>%d %s</a>',
@@ -618,3 +672,28 @@ function types_rename_build_in_post_types() {
 }
 
 add_action( 'init', 'types_rename_build_in_post_types' );
+
+
+/**
+ * Visibility of inbuild types
+ */
+function types_visibility_build_in_types() {
+    $custom_types = get_option( WPCF_OPTION_NAME_CUSTOM_TYPES, array() );
+
+    // Type: Posts
+    if( isset( $custom_types['post']['public'] )
+        && $custom_types['post']['public'] == 'hidden' )
+        remove_menu_page( 'edit.php' );
+
+    // Type: Pages
+    if( isset( $custom_types['page']['public'] )
+        && $custom_types['page']['public'] == 'hidden' )
+        remove_menu_page( 'edit.php?post_type=page' );
+
+    // Type: Media
+    if( isset( $custom_types['attachment']['public'] )
+        && $custom_types['attachment']['public'] == 'hidden' )
+        remove_menu_page( 'upload.php' );
+}
+
+add_action( 'admin_menu', 'types_visibility_build_in_types' );

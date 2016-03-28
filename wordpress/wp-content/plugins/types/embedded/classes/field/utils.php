@@ -20,7 +20,7 @@ final class WPCF_Field_Utils {
 	 */
 	public static function create_term_field_instance( $field_slug, $term_id ) {
 		try {
-			return new WPCF_Field_Instance( WPCF_Field_Term_Definition_Factory::load( $field_slug ), $term_id );
+			return new WPCF_Field_Instance_Term( WPCF_Field_Term_Definition_Factory::load( $field_slug ), $term_id );
 		} catch( Exception $e ) {
 			return null;
 		}
@@ -62,5 +62,4 @@ final class WPCF_Field_Utils {
 		}
 		return $field_definitions;
 	}
-
 }

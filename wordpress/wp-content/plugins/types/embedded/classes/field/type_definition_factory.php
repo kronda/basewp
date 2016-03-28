@@ -8,9 +8,26 @@
  * Currently it is only possible to load existing field types, not create new ones. We're depending on the legacy code
  * in WPCF_Fields and field types defined through specially named functions. But that is hidden from anyone who uses
  * this class.
+ *
+ * @since 1.9
  */
 final class WPCF_Field_Type_Definition_Factory {
 
+	const AUDIO = 'audio';
+	const COLORPICKER = 'colorpicker';
+	const DATE = 'date';
+	const EMBED = 'embed';
+	const FILE = 'file';
+	const GOOGLE_ADDRESS = 'google_address';
+	const CHECKBOX = 'checkbox';
+	const CHECKBOXES = 'checkboxes';
+	const IMAGE = 'image';
+	const RADIO = 'radio';
+	const SELECT = 'select';
+	const SKYPE = 'skype';
+	const URL = 'url';
+	const VIDEO = 'video';
+	
 	private static $instance = null;
 
 	private function __construct() { }
@@ -67,19 +84,23 @@ final class WPCF_Field_Type_Definition_Factory {
 		}
 
 		// Check if we can use cached version.
-		if( !in_array( $field_type_slug, $this->field_type_definitions ) ) {
+		if( !array_key_exists( $field_type_slug, $this->field_type_definitions ) ) {
 
 			// now it gets hacky
 			$field_types = $this->get_legacy_field_types();
-			if( !in_array( $field_type_slug, array_keys( $field_types ) ) ) {
+			if( !array_key_exists( $field_type_slug, $field_types ) ) {
 				// Field slug not recognized. Maybe we got a field identifier instead. Check if we can remove
 				// the wpcf- prefix and try again.
 				$prefix = 'wpcf-';
 				if( substr( $field_type_slug, 0, strlen( $prefix ) ) == $prefix ) {
 					$field_type_slug = substr( $field_type_slug, strlen( $prefix ) );
-					if( !in_array( $field_type_slug, $field_types ) ) {
+					if( !array_key_exists( $field_type_slug, $field_types ) ) {
 						// Removing prefix didn't help
 						return null;
+					}
+					// Check the cache again (now with correct slug).
+					if( array_key_exists( $field_type_slug, $this->field_type_definitions ) ) {
+						return $this->field_type_definitions[ $field_type_slug ];
 					}
 				} else {
 					// There was no prefix to remove.

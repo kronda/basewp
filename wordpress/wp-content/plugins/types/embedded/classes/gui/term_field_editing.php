@@ -47,6 +47,7 @@ final class WPCF_GUI_Term_Field_Editing {
 
 		$is_toolset_forms_support_needed = false;
 
+		// Hooks for editing term fields
 		foreach( $groups_by_taxonomies as $taxonomy => $groups ) {
 			if( !empty( $groups ) ) {
 
@@ -57,6 +58,14 @@ final class WPCF_GUI_Term_Field_Editing {
 
 				$is_toolset_forms_support_needed = true;
 			}
+		}
+
+		// Columns on the term listing
+		$is_term_listing_page = ( 'edit' != wpcf_getget( 'action' ) );
+		if( $is_term_listing_page ) {
+			$screen = get_current_screen();
+			add_action( "manage_{$screen->id}_columns", array( $this, 'manage_term_listing_columns' ) );
+			add_filter( "manage_{$screen->taxonomy}_custom_column", array( $this, 'manage_term_listing_cell'), 10, 3 );
 		}
 
 		if( $is_toolset_forms_support_needed ) {
@@ -231,6 +240,12 @@ final class WPCF_GUI_Term_Field_Editing {
 
 		// We need to append form-specific data for the JS validation script.
 		add_action( 'admin_footer', array( $this, 'render_js_validation_data' ) );
+
+		// Pretend we're about to create new form via toolset-forms, even if we're not going to.
+		// This will load some assets needed for image field preview (specifically the 'wptoolset-forms-admin' style).
+		// Hacky, but better than re-registering the toolset-forms stylesheet elsewhere.
+		$faux_form_bootstrap = new WPToolset_Forms_Bootstrap();
+		$faux_form_bootstrap->form( 'faux' );
 	}
 
 
@@ -316,5 +331,81 @@ final class WPCF_GUI_Term_Field_Editing {
 
 		return $tf_renderer->render( false );
 
+	}
+
+
+	/** Prefix for column names so we have no conflicts beyond any doubt. */
+	const LISTING_COLUMN_PREFIX = 'wpcf_field_';
+
+
+	/**
+	 * Add a column for each term field on the term listing page.
+	 *
+	 * @param string[string] $columns Column definitions (column name => display name).
+	 * @return string[string] Updated column definitions.
+	 * @link https://make.wordpress.org/docs/plugin-developer-handbook/10-plugin-components/custom-list-table-columns/
+	 * @since 1.9.1
+	 */
+	public function manage_term_listing_columns( $columns ) {
+
+		$taxonomy_slug = wpcf_getget( 'taxonomy' );
+		$groups = WPCF_Field_Group_Term_Factory::get_instance()->get_groups_by_taxonomy( $taxonomy_slug );
+
+		$columns_to_insert = array();
+		foreach( $groups as $group ) {
+			foreach( $group->get_field_definitions() as $field_definition ) {
+				$columns_to_insert[ self::LISTING_COLUMN_PREFIX . $field_definition->get_slug() ] = $field_definition->get_display_name();
+			}
+		}
+
+		// Insert before the last column, which displays counts of posts using the term (that's probably why column
+		// has the label "Count" and name "posts" :-P).
+		$columns = WPCF_Utils::insert_at_position( $columns, $columns_to_insert, array( 'key' => 'posts', 'where' => 'before' ) );
+		return $columns;
+	}
+
+
+	/**
+	 * Render single cell in a term listing table.
+	 *
+	 * Catch field columns by their name prefix and render field values with preview renderer.
+	 *
+	 * @param mixed $value ""
+	 * @param string $column_name
+	 * @param int $term_id
+	 * @link https://make.wordpress.org/docs/plugin-developer-handbook/10-plugin-components/custom-list-table-columns/
+	 * @return string Rendered HTML with the table cell content.
+	 * @since 1.9.1
+	 */
+	public function manage_term_listing_cell( $value, $column_name, $term_id ) {
+
+		// Deal only with our custom columns.
+		$is_term_field_cell = ( substr( $column_name, 0, strlen( self::LISTING_COLUMN_PREFIX ) ) == self::LISTING_COLUMN_PREFIX );
+
+		if( $is_term_field_cell ) {
+
+			try {
+
+				$field_slug = substr( $column_name, strlen( self::LISTING_COLUMN_PREFIX ) );
+				$field_definition = WPCF_Field_Term_Definition_Factory::load( $field_slug );
+				$field = new WPCF_Field_Instance_Term( $field_definition, $term_id );
+
+				$renderer_args = array(
+					'maximum_item_count' => 5,
+					'maximum_item_length' => 30,
+					'maximum_total_length' => 100
+				);
+
+				$renderer = WPCF_Field_Renderer_Factory::get_instance()->create_preview_renderer( $field, $renderer_args );
+
+				$value = $renderer->render();
+
+			} catch( Exception $e ) {
+				// Do nothing when we're unable to load the field.
+			}
+
+		}
+
+		return $value;
 	}
 }

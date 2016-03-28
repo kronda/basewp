@@ -28,7 +28,6 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
     {
         parent::__construct();
         add_action('admin_enqueue_scripts', array($this, 'register_scripts'), 1);
-        add_action('admin_notices', array($this, 'add_message_after_activate'));
         $this->set_state();
         $this->taxonomies = new Types_Admin_Taxonomies();
     }
@@ -65,16 +64,16 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
 
     private function get_data()
     {
-        /**
-         * check kind
-         */
-        $kind = $this->get_kind();
-        /**
-         * get default
-         */
-        if ( empty($kind) ) {
-            $kind = $this->get_default_kind();
-        }
+		/*
+		* Legacy
+		*
+		* THere was a time where we had a weird getting started page, and $kind was stored depending on a user selection
+		* It was one of the following values: brochure | directory_classifieds | classifieds | e-commerce | blog
+		* It sets which message is shown when updating a post type, taxonomy or fields group
+		* As we are reviewing marketing messages it might be a good time to do it.
+		*/
+		$kind = 'brochure';
+		
         /**
          * check exists?
          */
@@ -223,6 +222,7 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
         echo '<div class="updated"><p>', $message, '</p></div>';
     }
 
+	// @todo this might be deprecated, could not locate where this is being triggered...
     public function update_options()
     {
         if(!isset($_POST['marketing'])) {
@@ -231,51 +231,12 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
         if ( !wp_verify_nonce($_POST['marketing'], 'update')) {
             return;
         }
-        if (
-            array_key_exists($this->option_name, $_POST)
-            && array_key_exists($_POST[$this->option_name], $this->options)
-        ) {
-            if ( !add_option($this->option_name, $_POST[$this->option_name], '', 'no') ) {
-                update_option($this->option_name, $_POST[$this->option_name]);
-            }
-        }
         $this->set_state();
     }
 
     public function delete_option_kind()
     {
         delete_option($this->option_name);
-    }
-
-    public function get_kind_list()
-    {
-        $type = get_option($this->option_name);
-        $content = '<ul class="marketing-kind-list">';
-        foreach( $this->options as $key => $one ) {
-            $content .= '<li>';
-            $content .= sprintf(
-                '<input type="radio" name="%s" value="%s" id="getting_started_%s" %s/>',
-                $this->get_option_name(),
-                $key,
-                $key,
-                $type == $key? ' checked="checked" ':''
-            );
-            $content .= sprintf(
-                '<label for="getting_started_%s"> <strong>%s</strong>%s%s</label>',
-                $key,
-                $one['title'],
-                array_key_exists('description', $one)? ' | ':'',
-                array_key_exists('description', $one)? $one['description']:''
-            );
-            $content .= '</li>';
-        }
-        $content .= '</ul>';
-        return $content;
-    }
-
-    public function kind_list()
-    {
-        echo $this->get_kind_list();
     }
 
     public function show_top($update = true)
@@ -291,7 +252,15 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
             if ( isset($data['link']) ) {
                 $content .= sprintf(
                     '<a href="%s">%s</a>',
-                    $this->add_ga_campain($data['link'], 'save-updated'),
+					esc_url(
+						add_query_arg(
+							array(
+								'utm_source' => 'typesplugin',
+								'utm_medium' =>  'save-updated',
+							),
+							$data['link']
+						)
+					),
                     $data['description']
                 );
             } else {
@@ -311,42 +280,6 @@ class WPCF_Types_Marketing_Messages extends WPCF_Types_Marketing
         update_user_option($user_id, 'types-modal', $key);
 
         return $content;
-    }
-
-    public function get_content()
-    {
-        if ( $url = $this->get_kind_url() ) {
-            include_once dirname(__FILE__).'/class.wpcf.marketing.tutorial.php';
-            $tutorial = new WPCF_Types_Marketing_Tutorial();
-            return $tutorial->get_content('kind');
-        }
-        return;
-    }
-
-    public function add_message_after_activate()
-    {
-        if ( !isset($_GET['activate']) ) {
-            return;
-        }
-        if ( is_multisite() ) {
-            return;
-        }
-        if ( 'show' != get_option('types_show_on_activate') ) {
-            return;
-        }
-        wp_enqueue_style('onthego-admin-styles');
-        wp_enqueue_style('wpcf-css-embedded');
-        $data = array(
-            'header' => __('Need help with <em>Types</em>?', 'wpcf'),
-            'text' => __('Types plugin includes a lot of options. Tell us what kind of site you are building and we\'ll show you how to use Types in the best way.', 'wpcf'),
-            'button_primary_url' => esc_url(add_query_arg( 'page', basename(dirname(dirname(__FILE__))).'/marketing/getting-started/index.php', admin_url('admin.php') )),
-            'button_primary_text' => __('Get Started', 'wpcf'),
-            'button_dismiss_url' => '',
-            'button_dismiss_text' =>  __('Dismiss', 'wpcf'),
-        );
-        wp_localize_script('marketing-getting-started', 'types_activate', $data);
-        wp_enqueue_script('marketing-getting-started');
-        update_option('types_show_on_activate', 'hide');
     }
 
 }

@@ -299,12 +299,15 @@ function wpcf_admin_bulk_string_translation() {
 
     // Register groups
     $groups = wpcf_admin_fields_get_groups();
-    foreach ( $groups as $group_id => $group ) {
+    foreach ( $groups as $group_key => $group ) {
+        //Get correct group ID
+        $group_id = isset( $group['id'] ) ? $group['id'] : $group_key;
+
         wpcf_translate_register_string( 'plugin Types',
-                'group ' . $group_id . ' name', $group['name'] );
+            'group ' . $group_id . ' name', $group['name'] );
         if ( isset( $group['description'] ) ) {
             wpcf_translate_register_string( 'plugin Types',
-                    'group ' . $group_id . ' description', $group['description'] );
+                'group ' . $group_id . ' description', $group['description'] );
         }
     }
 

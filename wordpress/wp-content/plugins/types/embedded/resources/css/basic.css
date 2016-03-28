@@ -334,7 +334,7 @@ td>.wpcf-form-description-fieldset
     margin: 10px 0;
 }
 .wpcf-form-textarea {
-    width: 100%;
+    width: 99%;
 }
 .wpcf-form-description-textarea,
 .wpcf-form-description-checkboxes,
@@ -1398,4 +1398,8 @@ div.message p:empty {
 
 .types-field-icon-select {
     background-image: url( '../images/fields/select.png' );
+}
+
+input#slug+p.wpcf-form-description {
+    margin-bottom: 0;
 }

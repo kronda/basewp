@@ -3,7 +3,7 @@
 Plugin Name: Ultimate Coming Soon Page
 Plugin URI: http://www.seedprod.com
 Description: Creates a Coming Soon or Launch page for your website.
-Version: 1.16.0
+Version: 1.16.1
 Text Domain: ultimate-coming-soon-page
 Domain Path: /languages
 Author: SeedProd
@@ -39,4 +39,12 @@ function seedprod_ucsp_activation() {
         deactivate_plugins( __FILE__  );
         wp_die( __('WordPress 3.0 and higher required. The plugin has now disabled itself. On a side note why are you running an old version :( Upgrade!','ultimate-coming-soon-page') );
     }
+}
+
+add_action( 'after_plugin_row_' .  plugin_basename( __FILE__ ), 'seedprod_ucsp_deprication_msg', 10, 2 );
+
+function seedprod_ucsp_deprication_msg($file, $plugin){
+	echo '<tr class="plugin-update-tr"><td colspan="3" class="plugin-update">';
+	echo '<div style=" color: #a94442; background:#f2dede; padding:10px; border: 1px #ebccd1 solid;"><strong>Important:</strong> Ultimate Coming Soon Page plugin is being deprecated and will be removed soon from wordpress.org. Please use our new version located at: <a href="plugin-install.php?tab=search&s=Coming+Soon+Page+%26+Maintenance+Mode+by+SeedProd">Coming Soon Page & Maintenance Mode by SeedProd. </a></div>';
+	echo '</td></tr>';
 }

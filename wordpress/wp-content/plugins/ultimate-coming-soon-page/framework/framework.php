@@ -112,6 +112,7 @@ if (!class_exists('SeedProd_Framework')) {
         	<div class="wrap seedprod">
         	    <?php screen_icon(); ?>
         		<h2><?php echo $this->plugin_name; ?> </h2>
+                <div style="margin:30px 0; color: #a94442; background:#f2dede; padding:10px; border: 1px #ebccd1 solid;"><strong>Important:</strong> This plugin is being deprecated and will be removed soon from wordpress.org. Please use our new version located at: <a href="plugin-install.php?tab=search&s=Coming+Soon+Page+%26+Maintenance+Mode+by+SeedProd">Coming Soon Page & Maintenance Mode by SeedProd</a></div>
                 <a href="http://www.seedprod.com/ultimate-coming-soon-page-vs-coming-soon-pro/?utm_source=plugin&utm_medium=banner&utm_campaign=coming-soon-pro-in-plugin-banner" target="_blank">
                 <img src="//s3.amazonaws.com/static.seedprod.com/ads/ultimate-coming-soon-page-banner-772x250.jpg" style="max-width:100%">
                 </a>

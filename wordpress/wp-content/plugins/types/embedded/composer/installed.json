@@ -197,12 +197,12 @@
     },
     {
         "name": "otgs/installer",
-        "version": "1.7.5",
-        "version_normalized": "1.7.5.0",
+        "version": "1.7.6",
+        "version_normalized": "1.7.6.0",
         "source": {
             "type": "git",
             "url": "git@git.onthegosystems.com:installer/installer.git",
-            "reference": "d8cca1e015fab641e590a186460953bbdfb76603"
+            "reference": "61f0d3178e84f9c96cd8580a5e28d30a84ff4e5a"
         },
         "require": {
             "composer/installers": "~1.0",
@@ -211,7 +211,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.5"
         },
-        "time": "2016-01-29 12:21:17",
+        "time": "2016-02-23 13:04:37",
         "type": "wordpress-plugin",
         "extra": {
             "branch-alias": {

@@ -42,7 +42,7 @@ abstract class WPCF_Page_Listing_Abstract extends WPCF_Page_Abstract {
 	 *
 	 * @param array[] $all_submenus
 	 * @param array $submenu_to_add
-	 *
+	 * @deprecated Use WPCF_Utils::insert_at_position() instead.
 	 * @return array
 	 */
 	protected function add_submenu_at_the_end( $all_submenus, $submenu_to_add ) {

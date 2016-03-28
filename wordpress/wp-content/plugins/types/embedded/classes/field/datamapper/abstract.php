@@ -8,6 +8,9 @@
  *
  * The correct data mapper for a field is chosen in WPCF_Field_Definition::get_data_mapper().
  *
+ * Note that data mappers do not deal with displaying field values (except in form inputs). To properly display a field,
+ * use one of existing renderers (WPCF_Field_Renderer_Factory) or create new one.
+ *
  * @since 1.9
  */
 abstract class WPCF_Field_DataMapper_Abstract {

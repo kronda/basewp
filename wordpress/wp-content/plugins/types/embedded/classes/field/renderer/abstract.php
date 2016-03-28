@@ -7,6 +7,8 @@ abstract class WPCF_Field_Renderer_Abstract {
 	protected $field = null;
 
 	public function __construct( $field ) {
+
+		// todo sanitize
 		$this->field = $field;
 	}
 

@@ -25,10 +25,8 @@ class WPCF_Types_Marketing
 
     public function __construct()
     {
-        $this->options = include WPCF_ABSPATH.'/marketing/etc/types-site-kinds.php';
+        $this->options = array();
         $this->adverts = include WPCF_ABSPATH.'/marketing/etc/types.php';
-        add_filter('admin_body_class', array($this, 'admin_body_class'));
-        add_action( 'wpcf_menu_plus', array( $this, 'add_getting_started_to_admin_menu'), PHP_INT_MAX);
         add_filter('editor_addon_dropdown_after_title', array($this, 'add_views_advertising'));
     }
 
@@ -103,21 +101,6 @@ class WPCF_Types_Marketing
         return $content;
     }
 
-    public function admin_body_class($classes)
-    {
-        $screen = get_current_screen();
-        if ( isset($screen->id) && preg_match( '@marketing/getting-started/index$@', $screen->id ) ) {
-            if ( !isset($_GET['kind'] )) {
-                $classes = 'wpcf-marketing';
-            }
-            else if ( isset($_POST['marketing'])) {
-                $classes = 'wpcf-marketing';
-            }
-        }
-
-        return $classes;
-    }
-
     protected function get_page_type() {
 	    $screen = get_current_screen();
 	    switch ( $screen->id ) {
@@ -144,48 +127,6 @@ class WPCF_Types_Marketing
         return $this->option_name;
     }
 
-    public function get_default_kind()
-    {
-        if ( isset($this->options) && is_array($this->options) ) {
-            foreach ( $this->options as $kind => $options ) {
-                if ( array_key_exists('default', $options ) && $options['default']) {
-                    return $kind;
-                }
-            }
-        }
-        return false;
-    }
-
-    public function get_kind()
-    {
-        $kind = get_option($this->option_name, false);
-        if (
-            $kind
-            && isset($this->options)
-            && is_array($this->options)
-            && array_key_exists( $kind, $this->options )
-        ) {
-            return $kind;
-        }
-        return false;
-    }
-
-    public function get_kind_url($kind = false)
-    {
-        if ( empty($kind) ) {
-            $kind = $this->get_kind();
-        }
-        if (
-            $kind
-            && isset($this->options)
-            && is_array($this->options)
-            && array_key_exists('url', $this->options[$kind] )
-        ) {
-            return $this->options[$kind]['url'];
-        }
-        return;
-    }
-
     public function get_option_disiable_value()
     {
         return get_option($this->option_disable, 0);
@@ -194,42 +135,6 @@ class WPCF_Types_Marketing
     public function get_option_disiable_name()
     {
         return $this->option_disable;
-    }
-
-    protected function add_ga_campain($url, $utm_medium = 'getting-started')
-    {
-        return esc_url(
-            add_query_arg(
-                array(
-                    'utm_source' => 'typesplugin',
-                    'utm_medium' =>  $utm_medium,
-                    'utm_campaign' => sprintf('%s-howto', $this->get_kind() ),
-                ),
-                $url
-            )
-        );
-    }
-
-    /**
-     * add Getting Started to menu
-     */
-    public function add_getting_started_to_admin_menu()
-    {
-        if ( !isset($_REQUEST['page']) ) {
-            return;
-        }
-        $slug = basename(dirname(dirname(dirname(__FILE__)))).'/marketing/getting-started/index.php';
-        if( $_REQUEST['page'] != $slug ) {
-            return;
-        }
-        $menu = array(
-            'page_title' => __( 'What kind of site are you building?', 'wpcf' ),
-            'menu_title' => __( 'Getting Started', 'wpcf' ),
-            'menu_slug' => $slug,
-            'hook' => 'wpcf_marketing',
-            'load_hook' => 'wpcf_marketing_hook',
-        );
-        wpcf_admin_add_submenu_page($menu);
     }
 
 }

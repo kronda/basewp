@@ -65,23 +65,33 @@ jQuery(document).ready(function($){
             }
     });
 
-    $('.wpcf-fields-radio-sortable,.wpcf-fields-select-sortable').sortable({
-        cursor: 'ns-resize',
-        axis: 'y',
-        handle: '.js-types-sort-button',
-        start: function(e, ui){
+    $.fn.typesFieldOptionsSortable = function() {
+
+        $( '.wpcf-fields-radio-sortable, .wpcf-fields-select-sortable, .wpcf-fields-checkboxes-sortable', this ).sortable({
+            cursor: 'ns-resize',
+            axis: 'y',
+            handle: '.js-types-sort-button',
+            start: function(e, ui){
                 ui.placeholder.height(ui.item.height() - 2);
             }
-    });
+        });
 
-    $('.wpcf-fields-checkboxes-sortable').sortable({
-        cursor: 'ns-resize',
-        axis: 'y',
-        handle: '.js-types-sort-button',
-        start: function(e, ui){
+        $( '.wpcf-fields-checkboxes-sortable', this ).sortable({
+            start: function(e, ui){
                 ui.placeholder.height(ui.item.height() + 13);
             }
-    });
+        });
+    }
+
+    $.fn.typesMarkExistingField = function() {
+
+        var slug = $( '.wpcf-forms-field-slug', this );
+
+        if( slug.length && slug.val() != '' )
+            slug.attr( 'data-types-existing-field', slug.val() );
+    }
+
+    $( 'body' ).typesFieldOptionsSortable();
 
     $('[data-wpcf-type="checkbox"],[data-wpcf-type=checkboxes]').each( function() {
         $(this).bind('change', function() {

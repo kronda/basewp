@@ -388,8 +388,11 @@ function wpcfBindAutoCreateSlugs()
             slug = jQuery('.js-wpcf-slugize-source', jQuery(this).closest('.js-wpcf-slugize-container')).val();
         }
         if ( '' != slug ){
-            val = wpcf_slugize(slug);
-            jQuery(this).val(val.substring(0,20));
+            var validSlug = wpcf_slugize( slug );
+
+            if( validSlug != slug || jQuery(this).val() == ''  ) {
+                jQuery( this ).val( validSlug.substring( 0, 200 ) );
+            }
         }
     });
 }

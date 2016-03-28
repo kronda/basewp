@@ -1,11 +1,13 @@
 === Toolset Types Embedded ===
-Contributors: brucepearson, AmirHelzer, jadpm, jozik, mihaimihai, jans-1, christianglingener, iworks
+Contributors: AmirHelzer, brucepearson, christianglingener, jadpm, zaantar
 Donate link: http://wp-types.com
 Tags: CMS, custom field, custom fields, custom post type, custom post types, field, fields post, post type, post types, taxonomies, taxonomy, toolset
+Text Domain: wpcf
+Domain Path: /locale
 License: GPLv2
 Requires at least: 3.7
 Tested up to: 4.4.1
-Stable tag: 1.9
+Stable tag: 1.9.1
 
 The Embedded version lets you create custom types, taxonomies and fields for your theme or plugin, without requiring any plugin.
 
