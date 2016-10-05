@@ -15,6 +15,12 @@ $options = get_option( 'wpseo' );
 $wpseo_bulk_titles_table      = new WPSEO_Bulk_Title_Editor_List_Table();
 $wpseo_bulk_description_table = new WPSEO_Bulk_Description_List_Table();
 
+get_current_screen()->set_screen_reader_content( array(
+	'heading_views'      => __( 'Filter posts list' ),
+	'heading_pagination' => __( 'Posts list navigation' ),
+	'heading_list'       => __( 'Posts list' ),
+) );
+
 // If type is empty, fill it with value of first tab (title).
 $_GET['type'] = ( ! empty( $_GET['type'] ) ) ? $_GET['type'] : 'title';
 
@@ -37,10 +43,24 @@ if ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
 
 	<div class="tabwrapper">
 		<div id="title" class="wpseotab">
-			<?php $wpseo_bulk_titles_table->show_page(); ?>
+			<?php
+
+			$tab_video_url = 'https://yoa.st/screencast-tools-bulk-editor';
+			include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
+
+			$wpseo_bulk_titles_table->show_page();
+
+			?>
 		</div>
 		<div id="description" class="wpseotab">
-			<?php $wpseo_bulk_description_table->show_page(); ?>
+			<?php
+
+			$tab_video_url = 'https://yoa.st/screencast-tools-bulk-editor';
+			include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
+
+			$wpseo_bulk_description_table->show_page();
+
+			?>
 		</div>
 
 	</div>

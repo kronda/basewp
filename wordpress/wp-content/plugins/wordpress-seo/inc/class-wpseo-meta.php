@@ -100,9 +100,10 @@ class WPSEO_Meta {
 	public static $meta_fields = array(
 		'general'  => array(
 			'snippetpreview' => array(
-				'type'  => 'snippetpreview',
-				'title' => '', // Translation added later.
-				'help'  => '', // Translation added later.
+				'type'         => 'snippetpreview',
+				'title'        => '', // Translation added later.
+				'help'         => '', // Translation added later.
+				'help-button'  => '', // Translation added later.
 			),
 			'focuskw_text_input' => array(
 				'type'          => 'text',
@@ -111,6 +112,7 @@ class WPSEO_Meta {
 				'autocomplete'  => false,
 				'help'          => '', // Translation added later.
 				'description'   => '<div id="focuskwresults"></div>',
+				'help-button'   => '', // Translation added later.
 			),
 			'focuskw' => array(
 				'type'  => 'hidden',
@@ -138,6 +140,12 @@ class WPSEO_Meta {
 				'default_value' => '0',
 				'description'   => '',
 			),
+			'content_score'  => array(
+				'type'          => 'hidden',
+				'title'         => 'content_score',
+				'default_value' => '0',
+				'description'   => '',
+			),
 			'metakeywords'   => array(
 				'type'          => 'text',
 				'title'         => '', // Translation added later.
@@ -146,9 +154,10 @@ class WPSEO_Meta {
 				'description'   => '', // Translation added later.
 			),
 			'pageanalysis'   => array(
-				'type'  => 'pageanalysis',
-				'title' => '', // Translation added later.
-				'help'  => '', // Translation added later.
+				'type'         => 'pageanalysis',
+				'title'        => '', // Translation added later.
+				'help'         => '', // Translation added later.
+				'help-button'  => '', // Translation added later.
 			),
 		),
 		'advanced' => array(
@@ -239,7 +248,6 @@ class WPSEO_Meta {
 	private static $social_networks = array(
 		'opengraph'  => 'opengraph',
 		'twitter'    => 'twitter',
-		'googleplus' => 'google-plus',
 	);
 
 	/**
@@ -412,7 +420,7 @@ class WPSEO_Meta {
 
 
 				/* Don't show the breadcrumb title field if breadcrumbs aren't enabled */
-				if ( $options['breadcrumbs-enable'] !== true ) {
+				if ( $options['breadcrumbs-enable'] !== true && ! current_theme_supports( 'yoast-seo-breadcrumbs' ) ) {
 					unset( $field_defs['bctitle'] );
 				}
 
@@ -459,7 +467,6 @@ class WPSEO_Meta {
 					$clean = strval( $int ); // Convert to string to make sure default check works.
 				}
 				break;
-
 
 			case ( $field_def['type'] === 'checkbox' ):
 				// Only allow value if it's one of the predefined options.
@@ -519,6 +526,19 @@ class WPSEO_Meta {
 			default:
 				if ( is_string( $meta_value ) ) {
 					$clean = WPSEO_Utils::sanitize_text_field( trim( $meta_value ) );
+				}
+
+				if ( $meta_key === self::$meta_prefix . 'focuskw' ) {
+					$clean = str_replace( array(
+						'&lt;',
+						'&gt;',
+						'&quot',
+						'&#96',
+						'<',
+						'>',
+						'"',
+						'`',
+					), '', $clean );
 				}
 				break;
 		}
@@ -724,6 +744,19 @@ class WPSEO_Meta {
 		return update_post_meta( $post_id, self::$meta_prefix . $key, $meta_value );
 	}
 
+	/**
+	 * Deletes a meta value for a post
+	 *
+	 * @static
+	 *
+	 * @param string $key The internal key of the meta value to change (without prefix).
+	 * @param int    $post_id The ID of the post to change the meta for.
+	 *
+	 * @return bool Whether the value was changed
+	 */
+	public static function delete( $key, $post_id ) {
+		return delete_post_meta( $post_id, self::$meta_prefix . $key );
+	}
 
 	/**
 	 * Used for imports, this functions imports the value of $old_metakey into $new_metakey for those post
@@ -1022,6 +1055,11 @@ class WPSEO_Meta {
 	 * @return array
 	 */
 	public static function keyword_usage( $keyword, $post_id ) {
+
+		if ( empty( $keyword ) ) {
+			return array();
+		}
+
 		$get_posts = new WP_Query(
 			array(
 				'meta_key'       => '_yoast_wpseo_focuskw',

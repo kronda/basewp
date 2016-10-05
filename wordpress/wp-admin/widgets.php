@@ -15,7 +15,7 @@ require_once(ABSPATH . 'wp-admin/includes/widgets.php');
 if ( ! current_user_can( 'edit_theme_options' ) ) {
 	wp_die(
 		'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
-		'<p>' . __( 'You are not allowed to edit theme options on this site.' ) . '</p>',
+		'<p>' . __( 'Sorry, you are not allowed to edit theme options on this site.' ) . '</p>',
 		403
 	);
 }
@@ -357,7 +357,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' ); ?>
 				),
 				admin_url( 'customize.php' )
 			) ),
-			__( 'Manage in Customizer' )
+			__( 'Manage with Live Preview' )
 		);
 	}
 ?>
@@ -425,7 +425,7 @@ foreach ( $wp_registered_sidebars as $sidebar => $registered_sidebar ) {
 
 							submit_button( __( 'Clear Inactive Widgets' ), 'delete', 'removeinactivewidgets', false, $attributes );
 							?>
-							<span class="spinner">
+							<span class="spinner"></span>
 						</p>
 						<?php wp_nonce_field( 'remove-inactive-widgets', '_wpnonce_remove_inactive_widgets' ); ?>
 					</form>
@@ -455,12 +455,12 @@ $sidebars_count = count( $theme_sidebars );
 if ( $sidebars_count > 1 ) {
 	$split = ceil( $sidebars_count / 2 );
 } else {
-	$single_sidebar_class = ' class="single-sidebar"';
+	$single_sidebar_class = ' single-sidebar';
 }
 
 ?>
 <div class="widget-liquid-right">
-<div id="widgets-right"<?php echo $single_sidebar_class; ?>>
+<div id="widgets-right" class="wp-clearfix<?php echo $single_sidebar_class; ?>">
 <div class="sidebars-column-1">
 <?php
 

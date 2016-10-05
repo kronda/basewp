@@ -77,7 +77,7 @@ class Yoast_Social_Facebook {
 			}
 		}
 
-		return WPSEO_Utils::json_encode(
+		return wp_json_encode(
 			array(
 				'success' => $success,
 				'html'    => $response_body,
@@ -160,7 +160,7 @@ class Yoast_Social_Facebook {
 		unset( $admin_id );
 
 		// Clean up the referrer url for later use.
-		if ( filter_input( INPUT_SERVER, 'REQUEST_URI' ) ) {
+		if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
 			$this->cleanup_referrer_url( 'nonce', 'delfbadmin' );
 		}
 	}
@@ -178,7 +178,7 @@ class Yoast_Social_Facebook {
 		$this->success_notice( __( 'Successfully cleared all Facebook Data', 'wordpress-seo' ) );
 
 		// Clean up the referrer url for later use.
-		if ( filter_input( INPUT_SERVER, 'REQUEST_URI' ) ) {
+		if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
 			$this->cleanup_referrer_url( 'nonce', 'fbclearall' );
 		}
 	}
@@ -189,9 +189,7 @@ class Yoast_Social_Facebook {
 	private function cleanup_referrer_url() {
 		$_SERVER['REQUEST_URI'] = remove_query_arg(
 			func_get_args(),
-			filter_input(
-				INPUT_SERVER, 'REQUEST_URI', FILTER_CALLBACK, array( 'options' => 'sanitize_text_field' )
-			)
+			sanitize_text_field( $_SERVER['REQUEST_URI'] )
 		);
 	}
 
@@ -288,7 +286,7 @@ class Yoast_Social_Facebook_Form {
 	 * @return $this
 	 */
 	private function form_head() {
-		echo '<h4>' . esc_html__( 'Facebook Insights and Admins', 'wordpress-seo' ) . '</h4>';
+		echo '<h2>' . esc_html__( 'Facebook Insights and Admins', 'wordpress-seo' ) . '</h2>';
 		echo '<p>', sprintf(
 			/* translators: %1$s and %2$s expand to a link to Facebook Insights */
 			esc_html__( 'To be able to access %1$sFacebook Insights%2$s for your site, you need to specify a Facebook Admin. This can be a user. If you have an app for your site, you could use that as well.', 'wordpress-seo' ),
@@ -330,7 +328,7 @@ class Yoast_Social_Facebook_Form {
 		echo '</div>';
 		echo "<p class='submit'>";
 		echo '<input type="hidden" name="fb_admin_nonce" value="' . wp_create_nonce( 'wpseo_fb_admin_nonce' ) . '" />';
-		echo '<input type="submit" value="' . __( 'Add Facebook admin', 'wordpress-seo' ) . '" class="button-primary" onclick="javascript:wpseo_add_fb_admin();" />';
+		echo '<input type="submit" value="' . __( 'Add Facebook admin', 'wordpress-seo' ) . '" class="button button-primary" onclick="javascript:wpseo_add_fb_admin();" />';
 		echo '</p>';
 		echo '</div>';
 		echo '</div>';
@@ -463,7 +461,7 @@ class Yoast_Social_Facebook_Form {
 	}
 
 	/**
-	 * Check if the clear button should be displayed. This is based on the the set options
+	 * Check if the clear button should be displayed. This is based on the set options.
 	 *
 	 * @return bool
 	 */

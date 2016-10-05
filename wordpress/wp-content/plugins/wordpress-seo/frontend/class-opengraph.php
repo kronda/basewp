@@ -233,7 +233,7 @@ class WPSEO_OpenGraph {
 		elseif ( is_category() || is_tax() || is_tag() ) {
 			$title = WPSEO_Taxonomy_Meta::get_meta_without_term( 'opengraph-title' );
 			if ( $title === '' ) {
-				$title = $frontend->get_taxonomy_title( '' );
+				$title = $frontend->title( '' );
 			}
 			else {
 				// Replace Yoast SEO Variables.
@@ -758,7 +758,10 @@ class WPSEO_OpenGraph_Image {
 	 */
 	private $images = array();
 
-	/** @var array $dimensions Holds image dimensions, if determined. */
+	/**
+	 * @TODO This needs to be refactored since we only hold one set of dimensions for multiple images. R.
+	 * @var array $dimensions Holds image dimensions, if determined.
+	 */
 	protected $dimensions = array();
 
 	/**
@@ -769,10 +772,12 @@ class WPSEO_OpenGraph_Image {
 	 */
 	public function __construct( $options, $image = false ) {
 		$this->options = $options;
-		$this->set_images();
 
-		if ( ! empty( $image ) ) {
-			$this->add_image( $image );
+		if ( ! empty( $image ) && $this->add_image( $image ) ) {
+			// Safely assume an image was added so we don't need to automatically determine it anymore.
+		}
+		else {
+			$this->set_images();
 		}
 	}
 
@@ -801,6 +806,9 @@ class WPSEO_OpenGraph_Image {
 		if ( is_front_page() ) {
 			$this->get_front_page_image();
 		}
+		elseif ( is_home() ) { // Posts page, which won't be caught by is_singular() below.
+			$this->get_posts_page_image();
+		}
 
 		if ( is_singular() ) {
 			$this->get_singular_image();
@@ -823,12 +831,32 @@ class WPSEO_OpenGraph_Image {
 	}
 
 	/**
+	 * Get the images of the posts page.
+	 */
+	private function get_posts_page_image() {
+
+		$post_id = get_option( 'page_for_posts' );
+
+		if ( $this->get_opengraph_image_post( $post_id ) ) {
+			return;
+		}
+
+		if ( $this->get_featured_image( $post_id ) ) {
+			return;
+		}
+	}
+
+	/**
 	 * Get the images of the singular post.
 	 */
 	private function get_singular_image() {
 		global $post;
 
 		if ( $this->get_opengraph_image_post() ) {
+			return;
+		}
+
+		if ( $this->get_attachment_page_image( $post->ID ) ) {
 			return;
 		}
 
@@ -843,18 +871,20 @@ class WPSEO_OpenGraph_Image {
 	 * Get default image and call add_image
 	 */
 	private function get_default_image() {
-		if ( count( $this->images ) == 0 && isset( $this->options['og_default_image'] ) && $this->options['og_default_image'] !== '' ) {
+		if ( count( $this->images ) === 0 && isset( $this->options['og_default_image'] ) && $this->options['og_default_image'] !== '' ) {
 			$this->add_image( $this->options['og_default_image'] );
 		}
 	}
 
 	/**
-	 * If opengraph-image is set, call add_image and return true
+	 * If opengraph-image is set, call add_image and return true.
+	 *
+	 * @param int $post_id Optional post ID to use.
 	 *
 	 * @return bool
 	 */
-	private function get_opengraph_image_post() {
-		$ogimg = WPSEO_Meta::get_value( 'opengraph-image' );
+	private function get_opengraph_image_post( $post_id = 0 ) {
+		$ogimg = WPSEO_Meta::get_value( 'opengraph-image', $post_id );
 		if ( $ogimg !== '' ) {
 			$this->add_image( $ogimg );
 
@@ -896,6 +926,27 @@ class WPSEO_OpenGraph_Image {
 				$this->dimensions['height'] = $thumb[2];
 
 				return $this->add_image( $thumb[0] );
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * If this is an attachment page, call add_image with the attachment and return true
+	 *
+	 * @param int $post_id The post ID.
+	 *
+	 * @return bool
+	 */
+	private function get_attachment_page_image( $post_id ) {
+		if ( get_post_type( $post_id ) === 'attachment' ) {
+			$mime_type = get_post_mime_type( $post_id );
+			switch ( $mime_type ) {
+				case 'image/jpeg':
+				case 'image/png':
+				case 'image/gif':
+					return $this->add_image( wp_get_attachment_url( $post_id ) );
 			}
 		}
 
@@ -950,8 +1001,15 @@ class WPSEO_OpenGraph_Image {
 	 * @return bool
 	 */
 	private function add_image( $img ) {
+
+		$original = trim( $img );
+
 		// Filter: 'wpseo_opengraph_image' - Allow changing the OpenGraph image.
 		$img = trim( apply_filters( 'wpseo_opengraph_image', $img ) );
+
+		if ( $original !== $img ) {
+			$this->dimensions = array();
+		}
 
 		if ( empty( $img ) ) {
 			return false;
